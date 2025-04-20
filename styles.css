@@ -7,12 +7,14 @@ body {
 header {
     background-color: #333;
     padding: 10px;
+    text-align: center;
 }
 
 nav a {
     color: white;
     margin: 0 15px;
     text-decoration: none;
+    font-size: 18px;
 }
 
 #hero {
@@ -22,12 +24,23 @@ nav a {
     color: white;
 }
 
+#hero h1 {
+    font-size: 48px;
+    margin: 0;
+}
+
+#hero p {
+    font-size: 20px;
+    margin: 10px 0;
+}
+
 #hero button {
     padding: 10px 20px;
     background-color: #333;
     color: white;
     border: none;
     cursor: pointer;
+    font-size: 16px;
 }
 
 #contenido {
@@ -41,4 +54,9 @@ footer {
     padding: 10px;
     background-color: #333;
     color: white;
+}
+
+footer a {
+    color: #4CAF50;
+    text-decoration: none;
 }
