@@ -2,25 +2,29 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SysRiser - Aprende Sistemas y Redes</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="index.html">Inicio</a>
-            <a href="cursos.md">Cursos</a>
-            <a href="proyectos.md">Proyectos</a>
-        </nav>
-    </header>
-    <section id="hero">
-        <h1>¡Bienvenidos a mi página de aprendizaje!</h1>
-        <p>Aprende sistemas y redes de forma divertida.</p>
-        <button onclick="window.location.href='cursos.md'">Empieza ahora</button>
-    </section>
-    <section id="contenido">
-        <div id="markdown-content"></div>
-    </section>
+    <div class="container">
+        <header>
+            <nav>
+                <a href="index.html">Inicio</a>
+                <a href="cursos.md">Cursos</a>
+                <a href="proyectos.md">Proyectos</a>
+            </nav>
+        </header>
+        <section id="hero">
+            <h1>¡Bienvenidos a mi página de aprendizaje!</h1>
+            <p>Aprende sistemas y redes de forma divertida.</p>
+            <button onclick="window.location.href='cursos.md'">Empieza ahora</button>
+        </section>
+        <main id="contenido">
+            <div id="markdown-content"></div>
+        </main>
+    </div>
     <footer>
         <p>Sígueme en <a href="https://github.com/sysriser">GitHub</a></p>
     </footer>
