@@ -1,62 +1,111 @@
-body {
-    font-family: Arial, sans-serif;
+* {
     margin: 0;
-    background-color: #f0f0f0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #1a1a1a;
+    color: #333;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.container {
+    flex: 1;
 }
 
 header {
-    background-color: #333;
-    padding: 10px;
+    background-color: #2c2c2c;
+    padding: 15px;
     text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
 }
 
 nav a {
-    color: white;
-    margin: 0 15px;
+    color: #ffffff;
+    margin: 0 20px;
     text-decoration: none;
     font-size: 18px;
+    font-weight: 700;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #00cc66;
 }
 
 #hero {
     text-align: center;
-    padding: 50px;
-    background-color: #4CAF50;
+    padding: 80px 20px;
+    background: linear-gradient(135deg, #00cc66 0%, #00994c 100%);
     color: white;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 #hero h1 {
     font-size: 48px;
-    margin: 0;
+    margin-bottom: 15px;
+    font-weight: 700;
 }
 
 #hero p {
     font-size: 20px;
-    margin: 10px 0;
+    margin-bottom: 25px;
 }
 
 #hero button {
-    padding: 10px 20px;
-    background-color: #333;
+    padding: 12px 30px;
+    background-color: #2c2c2c;
     color: white;
     border: none;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    font-weight: 700;
+    transition: background-color 0.3s;
+}
+
+#hero button:hover {
+    background-color: #444;
 }
 
 #contenido {
-    padding: 20px;
-    max-width: 800px;
+    padding: 40px 20px;
+    max-width: 900px;
     margin: 0 auto;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-top: -30px;
+}
+
+#contenido h1, #contenido h2 {
+    color: #00cc66;
+    margin-bottom: 15px;
+}
+
+#contenido p, #contenido li {
+    line-height: 1.6;
+    margin-bottom: 10px;
 }
 
 footer {
     text-align: center;
-    padding: 10px;
-    background-color: #333;
+    padding: 20px;
+    background-color: #2c2c2c;
     color: white;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.3);
 }
 
 footer a {
-    color: #4CAF50;
+    color: #00cc66;
     text-decoration: none;
+    font-weight: 700;
+}
+
+footer a:hover {
+    color: #00ff80;
 }
