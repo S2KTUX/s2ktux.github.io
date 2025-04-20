@@ -2,27 +2,27 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi Página de Aprendizaje</title>
+    <title>SysRiser - Aprende Sistemas y Redes</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <nav>
-            <a href="#home">Inicio</a>
-            <a href="#cursos">Cursos</a>
-            <a href="#proyectos">Proyectos</a>
+            <a href="index.html">Inicio</a>
+            <a href="cursos.md">Cursos</a>
+            <a href="proyectos.md">Proyectos</a>
         </nav>
     </header>
     <section id="hero">
         <h1>¡Bienvenidos a mi página de aprendizaje!</h1>
         <p>Aprende sistemas y redes de forma divertida.</p>
-        <button>Empieza ahora</button>
+        <button onclick="window.location.href='cursos.md'">Empieza ahora</button>
     </section>
     <section id="contenido">
         <div id="markdown-content"></div>
     </section>
     <footer>
-        <p>Sígueme en GitHub</p>
+        <p>Sígueme en <a href="https://github.com/sysriser">GitHub</a></p>
     </footer>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="script.js"></script>
