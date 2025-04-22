@@ -5,17 +5,18 @@
 }
 
 body {
-    font-family: 'Open Sans', sans-serif;
+    font-family: 'Roboto', sans-serif; /* Nueva fuente: Roboto */
     background-color: #f9f9f9;
     color: #333;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    cursor: default; /* Cursor por defecto para la página */
 }
 
 header {
-    background-color: #e8ecef; /* Color suave para el header */
+    background-color: #e8ecef;
     border-bottom: 1px solid #ddd;
     padding: 15px 20px;
     display: flex;
@@ -41,6 +42,7 @@ nav a {
     font-weight: 700;
     font-size: 16px;
     transition: color 0.3s;
+    cursor: pointer; /* Cursor para los enlaces */
 }
 
 nav a:hover {
@@ -76,7 +78,7 @@ main {
     font-size: 24px;
 }
 
-/* Contenedor para las cajas */
+/* Contenedor para las cajas (solo en index.html) */
 .box-container {
     display: flex;
     flex-wrap: wrap;
@@ -84,13 +86,13 @@ main {
     justify-content: center;
 }
 
-/* Estilo para las cajas */
+/* Estilo para las cajas (solo en index.html) */
 .box {
     background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 5px;
     padding: 15px;
-    width: 250px; /* Tamaño fijo para que sean cuadradas */
+    width: 250px;
     min-height: 150px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s, box-shadow 0.2s;
@@ -107,15 +109,10 @@ main {
     margin-bottom: 10px;
 }
 
-.box p, .box li {
+.box p {
     margin-bottom: 10px;
     color: #666;
     font-size: 14px;
-}
-
-.box ul {
-    list-style-type: disc;
-    padding-left: 20px;
 }
 
 .box a {
@@ -124,18 +121,89 @@ main {
     font-weight: 700;
     display: block;
     margin-top: 10px;
+    cursor: pointer;
 }
 
 .box a:hover {
     text-decoration: underline;
 }
 
+/* Estilo para la lista interactiva en cursos.html */
+.course-list {
+    list-style: none;
+    padding: 0;
+}
+
+.course-list li {
+    background-color: #ffffff;
+    border-left: 4px solid #007bff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.course-list li:hover {
+    transform: translateX(5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.course-list li a {
+    color: #333;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.course-list li a:hover {
+    color: #007bff;
+}
+
+.course-list li p {
+    color: #666;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Estilo para los proyectos en proyectos.html */
+.project-card {
+    background: linear-gradient(135deg, #f0f4f8 0%, #e8ecef 100%);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.project-card:hover {
+    transform: scale(1.02);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+}
+
+.project-card h3 {
+    font-size: 20px;
+    color: #333;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #007bff;
+    padding-bottom: 5px;
+}
+
+.project-card p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Estilo para las subpáginas (redes-basicas.html y terminal-linux.html) */
 .back-link {
     display: inline-block;
     margin: 20px 0;
     color: #007bff;
     text-decoration: none;
     font-weight: 700;
+    cursor: pointer;
 }
 
 .back-link:hover {
@@ -170,6 +238,7 @@ footer {
     color: #007bff;
     text-decoration: none;
     font-weight: 700;
+    cursor: pointer;
 }
 
 .footer-links a:hover {
