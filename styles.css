@@ -5,14 +5,13 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif !important; /* Forzar la fuente Roboto */
+    font-family: 'Roboto', sans-serif !important;
     background-color: #f9f9f9;
     color: #333;
     line-height: 1.6;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    cursor: url('https://cdnjs.cloudflare.com/ajax/libs/ionicons/5.5.2/collection/components/icon/icon.css') default; /* Cursor personalizado */
 }
 
 header {
@@ -42,7 +41,6 @@ nav a {
     font-weight: 700;
     font-size: 16px;
     transition: color 0.3s;
-    cursor: pointer;
 }
 
 nav a:hover {
@@ -78,7 +76,7 @@ main {
     font-size: 24px;
 }
 
-/* Contenedor para las cajas (solo en index.html) */
+/* Contenedor para las cajas (index.html y cursos.html) */
 .box-container {
     display: flex;
     flex-wrap: wrap;
@@ -86,7 +84,7 @@ main {
     justify-content: center;
 }
 
-/* Estilo para las cajas (solo en index.html) */
+/* Estilo para las cajas (index.html) */
 .box {
     background-color: #ffffff;
     border: 1px solid #ddd;
@@ -121,69 +119,60 @@ main {
     font-weight: 700;
     display: block;
     margin-top: 10px;
-    cursor: pointer;
 }
 
 .box a:hover {
     text-decoration: underline;
 }
 
-/* Estilo para la lista interactiva en cursos.html */
-.course-list {
-    list-style: none;
-    padding: 0;
-}
-
-.course-list li {
+/* Estilo para las tarjetas de cursos (cursos.html) */
+.course-card {
     background-color: #ffffff;
-    border-left: 4px solid #007bff;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 4px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    width: 300px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s, box-shadow 0.2s;
+    position: relative;
+    overflow: hidden;
 }
 
-.course-list li:hover {
-    transform: translateX(5px);
+.course-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 5px;
+    background: linear-gradient(to right, #007bff, #00c4b4);
+}
+
+.course-card:hover {
+    transform: translateY(-5px);
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.course-list li a {
+.course-card h3 {
+    font-size: 20px;
     color: #333;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: 16px;
-    cursor: pointer;
+    margin-bottom: 10px;
 }
 
-.course-list li a:hover {
-    color: #007bff;
-}
-
-.course-list li p {
+.course-card p {
     color: #666;
     font-size: 14px;
-    margin-top: 5px;
+    margin-bottom: 15px;
 }
 
-.course-list ul {
-    list-style: none;
-    padding-left: 20px;
-    margin-top: 10px;
+.course-card a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 700;
 }
 
-.course-list ul li {
-    border-left: 2px solid #ddd;
-    padding: 10px;
-    margin-bottom: 5px;
-    box-shadow: none;
-}
-
-.course-list ul li:hover {
-    transform: none;
-    box-shadow: none;
-    background-color: #f0f4f8;
+.course-card a:hover {
+    text-decoration: underline;
 }
 
 /* Estilo para los proyectos en proyectos.html */
@@ -248,7 +237,7 @@ main {
     color: #007bff;
     text-decoration: none;
     font-weight: 700;
-    cursor: pointer;
+    font-size: 16px; /* Tamaño más grande para los títulos */
 }
 
 .sidebar ul li a:hover {
@@ -282,17 +271,83 @@ main {
     padding-left: 20px;
 }
 
+/* Estilo para secciones colapsables */
+.collapsible {
+    background-color: #f0f4f8;
+    color: #333;
+    cursor: pointer;
+    padding: 10px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.collapsible:hover {
+    background-color: #e8ecef;
+}
+
+.collapsible-content {
+    padding: 0 15px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background-color: #fff;
+    border-radius: 5px;
+}
+
 .back-link {
     display: inline-block;
     margin: 20px 0;
     color: #007bff;
     text-decoration: none;
     font-weight: 700;
-    cursor: pointer;
 }
 
 .back-link:hover {
     text-decoration: underline;
+}
+
+/* Botón de volver arriba */
+#back-to-top {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 700;
+    display: none;
+    transition: opacity 0.3s;
+}
+
+#back-to-top:hover {
+    background-color: #0056b3;
+}
+
+/* Tooltips en el footer */
+.footer-links a {
+    position: relative;
+}
+
+.footer-links a:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 10;
 }
 
 footer {
@@ -323,7 +378,6 @@ footer {
     color: #007bff;
     text-decoration: none;
     font-weight: 700;
-    cursor: pointer;
 }
 
 .footer-links a:hover {
