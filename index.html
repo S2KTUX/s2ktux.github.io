@@ -6,37 +6,57 @@
     <title>SysRiser - Aprende Sistemas y Redes</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
 </head>
 <body>
     <header>
+        <a href="index.html" class="header-logo">SysRiser</a>
         <nav>
             <a href="index.html">Inicio</a>
             <a href="cursos.html">Cursos</a>
             <a href="proyectos.html">Proyectos</a>
         </nav>
+    </header>
+    <main id="contenido">
         <div class="hero">
             <h1>Aprende Sistemas y Redes</h1>
             <p>Un lugar para aprender conceptos clave de forma sencilla.</p>
         </div>
-    </header>
-    <main id="contenido">
-        <div class="box">
-            <h2>Cursos Disponibles</h2>
-            <ul>
-                <li><a href="redes-basicas.html">Configuración de Redes</a>: Aprende a configurar una red básica.</li>
-                <li><a href="terminal-linux.html">Comandos de Terminal</a>: Domina herramientas como <code>du</code> y <code>parted</code>.</li>
-            </ul>
+        <h2>Cursos Disponibles</h2>
+        <div class="box-container">
+            <div class="box">
+                <h3>Configuración de Redes</h3>
+                <p>Aprende a configurar una red básica.</p>
+                <a href="redes-basicas.html">Ver curso</a>
+            </div>
+            <div class="box">
+                <h3>Comandos de Terminal</h3>
+                <p>Domina herramientas como <code>du</code> y <code>parted</code>.</p>
+                <a href="terminal-linux.html">Ver curso</a>
+            </div>
         </div>
-        <div class="box">
-            <h2>Proyectos</h2>
-            <ul>
-                <li>Crear un servidor local.</li>
-                <li>Optimizar el uso de disco.</li>
-            </ul>
+        <h2>Proyectos</h2>
+        <div class="box-container">
+            <div class="box">
+                <h3>Servidor Local</h3>
+                <p>Crear un servidor local.</p>
+            </div>
+            <div class="box">
+                <h3>Uso de Disco</h3>
+                <p>Optimizar el uso de disco.</p>
+            </div>
         </div>
     </main>
     <footer>
-        <p>SysRiser | <a href="https://github.com/sysriser">GitHub</a></p>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser">GitHub</a>
+                <a href="mailto:contact@sysriser.com">Contacto</a>
+                <a href="https://linkedin.com">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser">Youtube</a>
+            </div>
+        </div>
     </footer>
 </body>
 </html>
