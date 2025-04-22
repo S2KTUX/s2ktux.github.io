@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    scroll-behavior: smooth; /* Desplazamiento suave */
+    scroll-behavior: smooth;
 }
 
 body {
@@ -17,14 +17,24 @@ body {
     transition: background-color 0.3s, color 0.3s;
 }
 
-/* Fondo de partículas */
-#particles-js {
+/* Fondo degradado animado */
+.gradient-bg {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
+    background: linear-gradient(45deg, #007bff, #00c4b4, #ff6f61, #9c27b0);
+    background-size: 400%;
+    animation: gradientAnimation 15s ease infinite;
     z-index: -1;
+    opacity: 0.2;
+}
+
+@keyframes gradientAnimation {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 /* Tema oscuro */
@@ -42,42 +52,66 @@ body.dark-theme footer {
 body.dark-theme .hero h1,
 body.dark-theme .hero p,
 body.dark-theme #contenido h2,
-body.dark-theme .box h3,
 body.dark-theme .course-card h3,
-body.dark-theme .project-card h3,
-body.dark-theme .timeline-content h3,
+body.dark-theme .project-overlay h3,
 body.dark-theme .course-accordeon,
 body.dark-theme .course-content p,
 body.dark-theme .course-content h4,
 body.dark-theme .content h2,
-body.dark-theme .content h3,
-body.dark-theme .collapsible {
+body.dark-theme .content h3 {
     color: #ddd;
 }
 
-body.dark-theme .box,
 body.dark-theme .course-card,
-body.dark-theme .project-card,
-body.dark-theme .timeline-content,
 body.dark-theme .course-content,
-body.dark-theme .collapsible-content {
+body.dark-theme .study-bg {
     background-color: #2a2a2a;
     border-color: #444;
 }
 
-body.dark-theme .course-accordeon,
-body.dark-theme .collapsible {
+body.dark-theme .course-accordeon {
     background-color: #333;
 }
 
-body.dark-theme .course-accordeon:hover,
-body.dark-theme .collapsible:hover {
+body.dark-theme .course-accordeon:hover {
     background-color: #444;
 }
 
 body.dark-theme .sidebar {
     background-color: #222;
     border-color: #444;
+}
+
+/* Modo de enfoque */
+body.focus-mode header,
+body.focus-mode footer,
+body.focus-mode .sidebar,
+body.focus-mode .back-link,
+body.focus-mode #focus-mode,
+body.focus-mode #back-to-top {
+    display: none;
+}
+
+body.focus-mode .course-page {
+    display: block;
+}
+
+body.focus-mode .content {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px;
+}
+
+/* Barra de progreso de lectura */
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 4px;
+    background-color: #007bff;
+    z-index: 100;
+    transition: width 0.3s;
 }
 
 header {
@@ -114,6 +148,10 @@ nav a {
 
 nav a:hover {
     color: #007bff;
+}
+
+.theme-toggle {
+    margin: 0 20px;
 }
 
 .theme-toggle button {
@@ -193,6 +231,7 @@ main {
 .course-card:nth-child(3) { animation-delay: 0.2s; }
 .course-card:nth-child(4) { animation-delay: 0.3s; }
 .course-card:nth-child(5) { animation-delay: 0.4s; }
+.course-card:nth-child(6) { animation-delay: 0.5s; }
 
 .course-card::before {
     content: '';
@@ -233,95 +272,71 @@ main {
     text-decoration: underline;
 }
 
-/* Estilo para la línea de tiempo (proyectos.html) */
-.timeline {
-    position: relative;
-    max-width: 800px;
+/* Galería de proyectos (proyectos.html) */
+.project-gallery {
+    column-count: 3;
+    column-gap: 20px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 20px 0;
 }
 
-.timeline::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 50%;
-    width: 4px;
-    height: 100%;
-    background: #007bff;
-    transform: translateX(-50%);
-}
-
-.timeline-item {
+.project-card {
+    break-inside: avoid;
+    margin-bottom: 20px;
     position: relative;
-    width: 50%;
-    padding: 20px;
-    box-sizing: border-box;
+    overflow: hidden;
+    border-radius: 5px;
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 0.5s forwards;
 }
 
-.timeline-item:nth-child(odd) {
-    left: 0;
-    text-align: right;
+.project-card:nth-child(2) { animation-delay: 0.1s; }
+.project-card:nth-child(3) { animation-delay: 0.2s; }
+.project-card:nth-child(4) { animation-delay: 0.3s; }
+.project-card:nth-child(5) { animation-delay: 0.4s; }
+.project-card:nth-child(6) { animation-delay: 0.5s; }
+
+.project-card img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s;
 }
 
-.timeline-item:nth-child(even) {
-    left: 50%;
-    text-align: left;
-}
-
-.timeline-item:nth-child(2) { animation-delay: 0.1s; }
-.timeline-item:nth-child(3) { animation-delay: 0.2s; }
-.timeline-item:nth-child(4) { animation-delay: 0.3s; }
-.timeline-item:nth-child(5) { animation-delay: 0.4s; }
-
-.timeline-item::before {
-    content: '';
+.project-overlay {
     position: absolute;
-    top: 30px;
-    width: 20px;
-    height: 20px;
-    background: #007bff;
-    border-radius: 50%;
-    z-index: 1;
-}
-
-.timeline-item:nth-child(odd)::before {
-    right: -12px;
-}
-
-.timeline-item:nth-child(even)::before {
-    left: -12px;
-}
-
-.timeline-content {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    transition: opacity 0.3s;
     padding: 20px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    position: relative;
+    text-align: center;
 }
 
-.timeline-content h3 {
+.project-card:hover .project-overlay {
+    opacity: 1;
+}
+
+.project-card:hover img {
+    transform: scale(1.1);
+}
+
+.project-overlay h3 {
     font-size: 20px;
-    color: #333;
     margin-bottom: 10px;
 }
 
-.timeline-content p {
-    color: #666;
+.project-overlay p {
     font-size: 14px;
-    margin-bottom: 15px;
-}
-
-.timeline-content img {
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 5px;
 }
 
 /* Estilo para la lista de cursos (cursos.html) */
@@ -402,7 +417,7 @@ main {
     text-decoration: underline;
 }
 
-/* Estilo para las páginas de cursos (redes-basicas.html y terminal-linux.html) */
+/* Estilo para las páginas de cursos */
 .course-page {
     display: flex;
     gap: 20px;
@@ -470,32 +485,31 @@ main {
     padding-left: 20px;
 }
 
-/* Estilo para secciones colapsables */
-.collapsible {
-    background-color: #f0f4f8;
-    color: #333;
-    cursor: pointer;
-    padding: 10px;
+/* Fondo para estudio */
+.study-bg {
+    background-color: #fffef0;
+    background-image: url('https://www.transparenttextures.com/patterns/paper-fibers.png');
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Botón de modo enfoque */
+.focus-button {
+    display: inline-block;
+    margin: 20px 0;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
     border: none;
-    text-align: left;
-    outline: none;
-    font-size: 16px;
+    border-radius: 5px;
     font-weight: 700;
-    margin-bottom: 5px;
-    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.collapsible:hover {
-    background-color: #e8ecef;
-}
-
-.collapsible-content {
-    padding: 0 15px;
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out;
-    background-color: #fff;
-    border-radius: 5px;
+.focus-button:hover {
+    background-color: #0056b3;
 }
 
 .back-link {
