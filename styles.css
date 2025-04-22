@@ -55,13 +55,55 @@ nav a:hover {
     padding: 20px;
 }
 
-#contenido h1, #contenido h2 {
+#contenido h2 {
     color: #333;
+    margin-bottom: 15px;
+    font-size: 24px;
+}
+
+#contenido ul {
+    list-style: none;
+    padding: 0;
+}
+
+#contenido ul li {
     margin-bottom: 15px;
 }
 
-#contenido p, #contenido li {
+#contenido ul li a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+#contenido ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Estilo para las cajas */
+.box {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.box h3 {
+    font-size: 20px;
+    color: #333;
     margin-bottom: 10px;
+}
+
+.box p, .box li {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.box ul {
+    list-style-type: disc;
+    padding-left: 20px;
 }
 
 footer {
