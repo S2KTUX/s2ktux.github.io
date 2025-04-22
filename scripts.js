@@ -7,21 +7,17 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             backToTop.style.display = 'none';
         }
-    };
 
-    // Secciones colapsables (redes-basicas.html y terminal-linux.html)
-    const collapsibles = document.getElementsByClassName('collapsible');
-    for (let i = 0; i < collapsibles.length; i++) {
-        collapsibles[i].addEventListener('click', function() {
-            this.classList.toggle('active');
-            const content = this.nextElementSibling;
-            if (content.style.maxHeight) {
-                content.style.maxHeight = null;
-            } else {
-                content.style.maxHeight = content.scrollHeight + 'px';
-            }
-        });
-    }
+        // Barra de progreso de lectura
+        const progressBar = document.querySelector('.reading-progress');
+        if (progressBar) {
+            const windowHeight = window.innerHeight;
+            const documentHeight = document.documentElement.scrollHeight - windowHeight;
+            const scrollPosition = window.scrollY;
+            const progress = (scrollPosition / documentHeight) * 100;
+            progressBar.style.width = progress + '%';
+        }
+    };
 
     // Acordeón para cursos.html
     const accordions = document.getElementsByClassName('course-accordeon');
@@ -52,74 +48,46 @@ document.addEventListener('DOMContentLoaded', function() {
         themeToggle.textContent = '☀️';
     }
 
-    // Configuración de Particles.js
-    particlesJS('particles-js', {
-        particles: {
-            number: {
-                value: 80,
-                density: {
-                    enable: true,
-                    value_area: 800
-                }
-            },
-            color: {
-                value: '#007bff'
-            },
-            shape: {
-                type: 'circle',
-                stroke: {
-                    width: 0,
-                    color: '#000000'
-                }
-            },
-            opacity: {
-                value: 0.5,
-                random: false
-            },
-            size: {
-                value: 3,
-                random: true
-            },
-            line_linked: {
-                enable: true,
-                distance: 150,
-                color: '#007bff',
-                opacity: 0.4,
-                width: 1
-            },
-            move: {
-                enable: true,
-                speed: 2,
-                direction: 'none',
-                random: false,
-                straight: false,
-                out_mode: 'out',
-                bounce: false
+    // Efecto de escritura en el hero
+    const heroTitle = document.querySelector('.hero h1');
+    if (heroTitle) {
+        const text = heroTitle.textContent;
+        heroTitle.textContent = '';
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                heroTitle.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
             }
-        },
-        interactivity: {
-            detect_on: 'canvas',
-            events: {
-                onhover: {
-                    enable: true,
-                    mode: 'repulse'
-                },
-                onclick: {
-                    enable: true,
-                    mode: 'push'
-                },
-                resize: true
-            },
-            modes: {
-                repulse: {
-                    distance: 100,
-                    duration: 0.4
-                },
-                push: {
-                    particles_nb: 4
-                }
-            }
-        },
-        retina_detect: true
+        }
+        typeWriter();
+    }
+
+    // Modo de enfoque para cursos
+    const focusButton = document.getElementById('focus-mode');
+    if (focusButton) {
+        focusButton.addEventListener('click', function() {
+            document.body.classList.toggle('focus-mode');
+            focusButton.textContent = document.body.classList.contains('focus-mode') ? 'Salir del modo enfoque' : 'Modo enfoque';
+        });
+    }
+
+    // Efecto 3D en las tarjetas
+    const cards = document.querySelectorAll('.course-card, .project-card');
+    cards.forEach(card => {
+        card.addEventListener('mousemove', (e) => {
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = (y - centerY) / 20;
+            const rotateY = (centerX - x) / 20;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+        });
+        card.addEventListener('mouseleave', () => {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg)';
+        });
     });
 });
