@@ -51,12 +51,24 @@
         <div class="footer-content">
             <p>SysRiser | Un lugar para aprender sistemas y redes</p>
             <div class="footer-links">
-                <a href="https://github.com/sysriser">GitHub</a>
-                <a href="mailto:contact@sysriser.com">Contacto</a>
-                <a href="https://linkedin.com">LinkedIn</a>
-                <a href="https://www.youtube.com/@sysriser">YouTube</a>
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
             </div>
         </div>
     </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script>
+        // Mostrar/ocultar botón de volver arriba
+        window.onscroll = function() {
+            const backToTop = document.getElementById('back-to-top');
+            if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                backToTop.style.display = 'block';
+            } else {
+                backToTop.style.display = 'none';
+            }
+        };
+    </script>
 </body>
 </html>
