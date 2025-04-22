@@ -9,25 +9,38 @@ body {
     background-color: #f9f9f9;
     color: #333;
     line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
 }
 
 header {
-    background-color: #ffffff;
+    background-color: #e8ecef; /* Color suave para el header */
     border-bottom: 1px solid #ddd;
-    padding: 20px 0;
-    text-align: center;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    text-decoration: none;
 }
 
 nav {
-    margin-bottom: 20px;
+    display: flex;
+    gap: 20px;
 }
 
 nav a {
     color: #333;
-    margin: 0 15px;
     text-decoration: none;
     font-weight: 700;
     font-size: 16px;
+    transition: color 0.3s;
 }
 
 nav a:hover {
@@ -36,6 +49,7 @@ nav a:hover {
 
 .hero {
     padding: 30px 20px;
+    text-align: center;
 }
 
 .hero h1 {
@@ -49,35 +63,25 @@ nav a:hover {
     color: #666;
 }
 
-#contenido {
-    max-width: 800px;
+main {
+    flex: 1;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
 }
 
 #contenido h2 {
     color: #333;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     font-size: 24px;
 }
 
-#contenido ul {
-    list-style: none;
-    padding: 0;
-}
-
-#contenido ul li {
-    margin-bottom: 15px;
-}
-
-#contenido ul li a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 700;
-}
-
-#contenido ul li a:hover {
-    text-decoration: underline;
+/* Contenedor para las cajas */
+.box-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
 }
 
 /* Estilo para las cajas */
@@ -85,13 +89,20 @@ nav a:hover {
     background-color: #ffffff;
     border: 1px solid #ddd;
     border-radius: 5px;
-    padding: 20px;
-    margin-bottom: 20px;
+    padding: 15px;
+    width: 250px; /* Tamaño fijo para que sean cuadradas */
+    min-height: 150px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.box:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .box h3 {
-    font-size: 20px;
+    font-size: 18px;
     color: #333;
     margin-bottom: 10px;
 }
@@ -99,6 +110,7 @@ nav a:hover {
 .box p, .box li {
     margin-bottom: 10px;
     color: #666;
+    font-size: 14px;
 }
 
 .box ul {
@@ -106,19 +118,60 @@ nav a:hover {
     padding-left: 20px;
 }
 
+.box a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 700;
+    display: block;
+    margin-top: 10px;
+}
+
+.box a:hover {
+    text-decoration: underline;
+}
+
+.back-link {
+    display: inline-block;
+    margin: 20px 0;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.back-link:hover {
+    text-decoration: underline;
+}
+
 footer {
     text-align: center;
     padding: 20px;
-    background-color: #f1f1f1;
+    background-color: #e8ecef;
     border-top: 1px solid #ddd;
-    margin-top: 20px;
 }
 
-footer a {
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-content p {
+    margin-bottom: 10px;
+    color: #666;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 10px;
+}
+
+.footer-links a {
     color: #007bff;
     text-decoration: none;
+    font-weight: 700;
 }
 
-footer a:hover {
+.footer-links a:hover {
     text-decoration: underline;
 }
