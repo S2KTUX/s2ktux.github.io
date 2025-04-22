@@ -2,6 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    scroll-behavior: smooth; /* Desplazamiento suave */
 }
 
 body {
@@ -12,6 +13,71 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    position: relative;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+/* Fondo de partículas */
+#particles-js {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+/* Tema oscuro */
+body.dark-theme {
+    background-color: #1a1a1a;
+    color: #ddd;
+}
+
+body.dark-theme header,
+body.dark-theme footer {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
+
+body.dark-theme .hero h1,
+body.dark-theme .hero p,
+body.dark-theme #contenido h2,
+body.dark-theme .box h3,
+body.dark-theme .course-card h3,
+body.dark-theme .project-card h3,
+body.dark-theme .timeline-content h3,
+body.dark-theme .course-accordeon,
+body.dark-theme .course-content p,
+body.dark-theme .course-content h4,
+body.dark-theme .content h2,
+body.dark-theme .content h3,
+body.dark-theme .collapsible {
+    color: #ddd;
+}
+
+body.dark-theme .box,
+body.dark-theme .course-card,
+body.dark-theme .project-card,
+body.dark-theme .timeline-content,
+body.dark-theme .course-content,
+body.dark-theme .collapsible-content {
+    background-color: #2a2a2a;
+    border-color: #444;
+}
+
+body.dark-theme .course-accordeon,
+body.dark-theme .collapsible {
+    background-color: #333;
+}
+
+body.dark-theme .course-accordeon:hover,
+body.dark-theme .collapsible:hover {
+    background-color: #444;
+}
+
+body.dark-theme .sidebar {
+    background-color: #222;
+    border-color: #444;
 }
 
 header {
@@ -21,6 +87,8 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    position: relative;
+    z-index: 10;
 }
 
 .header-logo {
@@ -33,6 +101,7 @@ header {
 nav {
     display: flex;
     gap: 20px;
+    align-items: center;
 }
 
 nav a {
@@ -47,9 +116,24 @@ nav a:hover {
     color: #007bff;
 }
 
+.theme-toggle button {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.theme-toggle button:hover {
+    transform: scale(1.2);
+}
+
 .hero {
     padding: 30px 20px;
     text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards;
 }
 
 .hero h1 {
@@ -68,15 +152,20 @@ main {
     max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
+    position: relative;
+    z-index: 10;
 }
 
 #contenido h2 {
     color: #333;
     margin-bottom: 20px;
     font-size: 24px;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards 0.2s;
 }
 
-/* Contenedor para las cajas (index.html y cursos.html) */
+/* Contenedor para las tarjetas */
 .box-container {
     display: flex;
     flex-wrap: wrap;
@@ -84,48 +173,7 @@ main {
     justify-content: center;
 }
 
-/* Estilo para las cajas (index.html) */
-.box {
-    background-color: #ffffff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 15px;
-    width: 250px;
-    min-height: 150px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.box:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.box h3 {
-    font-size: 18px;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.box p {
-    margin-bottom: 10px;
-    color: #666;
-    font-size: 14px;
-}
-
-.box a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 700;
-    display: block;
-    margin-top: 10px;
-}
-
-.box a:hover {
-    text-decoration: underline;
-}
-
-/* Estilo para las tarjetas de cursos (cursos.html) */
+/* Estilo para las tarjetas (index.html) */
 .course-card {
     background-color: #ffffff;
     border: 1px solid #ddd;
@@ -136,7 +184,15 @@ main {
     transition: transform 0.2s, box-shadow 0.2s;
     position: relative;
     overflow: hidden;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards;
 }
+
+.course-card:nth-child(2) { animation-delay: 0.1s; }
+.course-card:nth-child(3) { animation-delay: 0.2s; }
+.course-card:nth-child(4) { animation-delay: 0.3s; }
+.course-card:nth-child(5) { animation-delay: 0.4s; }
 
 .course-card::before {
     content: '';
@@ -159,9 +215,11 @@ main {
     margin-bottom: 10px;
 }
 
-.course-card p {
-    color: #666;
-    font-size: 14px;
+.course-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
     margin-bottom: 15px;
 }
 
@@ -175,33 +233,173 @@ main {
     text-decoration: underline;
 }
 
-/* Estilo para los proyectos en proyectos.html */
-.project-card {
-    background: linear-gradient(135deg, #f0f4f8 0%, #e8ecef 100%);
-    border: 1px solid #ddd;
-    border-radius: 8px;
+/* Estilo para la línea de tiempo (proyectos.html) */
+.timeline {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px 0;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 4px;
+    height: 100%;
+    background: #007bff;
+    transform: translateX(-50%);
+}
+
+.timeline-item {
+    position: relative;
+    width: 50%;
     padding: 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s forwards;
 }
 
-.project-card:hover {
-    transform: scale(1.02);
-    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15);
+.timeline-item:nth-child(odd) {
+    left: 0;
+    text-align: right;
 }
 
-.project-card h3 {
+.timeline-item:nth-child(even) {
+    left: 50%;
+    text-align: left;
+}
+
+.timeline-item:nth-child(2) { animation-delay: 0.1s; }
+.timeline-item:nth-child(3) { animation-delay: 0.2s; }
+.timeline-item:nth-child(4) { animation-delay: 0.3s; }
+.timeline-item:nth-child(5) { animation-delay: 0.4s; }
+
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    top: 30px;
+    width: 20px;
+    height: 20px;
+    background: #007bff;
+    border-radius: 50%;
+    z-index: 1;
+}
+
+.timeline-item:nth-child(odd)::before {
+    right: -12px;
+}
+
+.timeline-item:nth-child(even)::before {
+    left: -12px;
+}
+
+.timeline-content {
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    position: relative;
+}
+
+.timeline-content h3 {
     font-size: 20px;
     color: #333;
     margin-bottom: 10px;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 5px;
 }
 
-.project-card p {
+.timeline-content p {
     color: #666;
     font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.timeline-content img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+/* Estilo para la lista de cursos (cursos.html) */
+.course-list {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.course-accordeon {
+    background-color: #f0f4f8;
+    color: #333;
+    cursor: pointer;
+    padding: 15px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    width: 100%;
+    transition: background-color 0.3s;
+}
+
+.course-accordeon:hover {
+    background-color: #e8ecef;
+}
+
+.course-content {
+    padding: 0 20px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+    background-color: #fff;
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+.course-content p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 15px;
+}
+
+.course-content h4 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.course-content ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.course-content ul li {
+    margin-bottom: 10px;
+}
+
+.course-content ul li a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.course-content ul li a:hover {
+    text-decoration: underline;
+}
+
+.course-link {
+    display: inline-block;
+    margin-top: 10px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.course-link:hover {
+    text-decoration: underline;
 }
 
 /* Estilo para las páginas de cursos (redes-basicas.html y terminal-linux.html) */
@@ -237,7 +435,7 @@ main {
     color: #007bff;
     text-decoration: none;
     font-weight: 700;
-    font-size: 16px; /* Tamaño más grande para los títulos */
+    font-size: 16px;
 }
 
 .sidebar ul li a:hover {
@@ -261,7 +459,8 @@ main {
     color: #333;
 }
 
-.content p, .content li {
+.content p,
+.content li {
     margin-bottom: 10px;
     color: #666;
 }
@@ -355,6 +554,8 @@ footer {
     padding: 20px;
     background-color: #e8ecef;
     border-top: 1px solid #ddd;
+    position: relative;
+    z-index: 10;
 }
 
 .footer-content {
@@ -382,4 +583,16 @@ footer {
 
 .footer-links a:hover {
     text-decoration: underline;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
