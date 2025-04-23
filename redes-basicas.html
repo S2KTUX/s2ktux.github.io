@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SysRiser - Redes Básicas</title>
+    <title>SysRiser - Terminal Linux</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="favicon.png">
@@ -24,64 +24,46 @@
     </header>
     <main id="contenido">
         <div class="hero">
-            <h1>Redes Básicas</h1>
-            <p>Aprende a configurar redes desde cero.</p>
+            <h1>Terminal Linux</h1>
+            <p>Domina los comandos esenciales de Linux.</p>
         </div>
         <a href="cursos.html" class="back-link">← Volver a Cursos</a>
-        <button id="focus-mode" class="focus-button">Modo enfoque</button>
-        <div class="study-timer">
-            <h3>Temporizador de Estudio</h3>
-            <div id="timer-display">25:00</div>
-            <button id="timer-start">Iniciar</button>
-            <button id="timer-reset">Reiniciar</button>
-        </div>
+        <button class="edit-toggle">Editar Contenido</button>
         <div class="course-page">
             <div class="sidebar">
                 <h3>Contenido del Curso</h3>
                 <ul>
                     <li><a href="#descripcion">Descripción</a></li>
-                    <li><a href="#conceptos">Conceptos Básicos</a></li>
-                    <li><a href="#configuracion">Configuración de IP</a></li>
-                    <li><a href="#herramientas">Herramientas de Red</a></li>
+                    <li><a href="#comandos">Comandos Básicos</a></li>
+                    <li><a href="#gestion">Gestión de Archivos</a></li>
                     <li><a href="#duracion">Duración</a></li>
                 </ul>
             </div>
-            <div class="content study-bg">
+            <div class="content">
                 <div class="timeline">
-                    <div class="timeline-item">
+                    <div class="timeline-item" contenteditable="false">
                         <h2 id="descripcion">Descripción</h2>
-                        <p>Aprende a configurar routers y switches desde cero. Este curso está diseñado para principiantes que quieren entender los fundamentos de las redes.</p>
+                        <p>Domina los comandos esenciales de Linux para principiantes. Este curso te enseñará a usar la terminal de forma eficiente.</p>
                     </div>
-                    <div class="timeline-item">
-                        <h3 id="conceptos">Conceptos Básicos</h3>
+                    <div class="timeline-item" contenteditable="false">
+                        <h3 id="comandos">Comandos Básicos</h3>
                         <p>En esta sección aprenderás:</p>
                         <ul>
-                            <li>¿Qué es una red y cómo funciona?</li>
-                            <li>Tipos de redes (LAN, WAN, etc.).</li>
-                            <li>Introducción a los dispositivos de red.</li>
+                            <li>Uso de comandos como <code>ls</code>, <code>cd</code>, y <code>pwd</code>.</li>
+                            <li>Explorar el sistema de archivos.</li>
                         </ul>
                     </div>
-                    <div class="timeline-item">
-                        <h3 id="configuracion">Configuración de IP</h3>
+                    <div class="timeline-item" contenteditable="false">
+                        <h3 id="gestion">Gestión de Archivos</h3>
                         <p>Aprenderás a:</p>
                         <ul>
-                            <li>Asignar direcciones IP estáticas y dinámicas.</li>
-                            <li>Configurar subredes.</li>
-                            <li>Introducción a protocolos como TCP/IP.</li>
+                            <li>Crear, mover y eliminar archivos y directorios.</li>
+                            <li>Comandos para monitoreo del sistema (<code>du</code>, <code>df</code>).</li>
                         </ul>
                     </div>
-                    <div class="timeline-item">
-                        <h3 id="herramientas">Herramientas de Red</h3>
-                        <p>Explora herramientas útiles para diagnosticar redes:</p>
-                        <ul>
-                            <li><code>ping</code>: Verifica la conectividad con otro dispositivo.</li>
-                            <li><code>traceroute</code>: Rastrea la ruta de los paquetes.</li>
-                            <li><code>netstat</code>: Muestra estadísticas de red.</li>
-                        </ul>
-                    </div>
-                    <div class="timeline-item">
+                    <div class="timeline-item" contenteditable="false">
                         <h2 id="duracion">Duración</h2>
-                        <p>4 semanas</p>
+                        <p>3 semanas</p>
                     </div>
                 </div>
             </div>
@@ -99,16 +81,6 @@
         </div>
     </footer>
     <a href="#" id="back-to-top">↑ Volver arriba</a>
-    <div id="chatbot">
-        <div id="chatbot-header">💬 Asistente</div>
-        <div id="chatbot-messages"></div>
-        <input type="text" id="chatbot-input" placeholder="Pregunta algo...">
-    </div>
-    <div id="achievements">
-        <h3>Logros</h3>
-        <div id="achievement-list"></div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html>
