@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 101.1 Determinar y configurar los ajustes de hardware (LPIC-1 101) en SysRiser. Aprende a gestionar hardware en Linux.">
+    <meta name="keywords" content="LPIC-1, hardware, Linux, curso, tecnología, ajustes">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 101.1 Determinar y configurar los ajustes de hardware </title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="cursos.html">Cursos</a>
+            <a href="proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>101.1 Determinar y configurar los ajustes de hardware</h1>
+            <p>Aprende a identificar y configurar hardware en sistemas Linux.</p>
+        </div>
+        <a href="arquitectura-sistema.html" class="back-link">← Volver a Arquitectura del Sistema</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#activacion">Activación de Dispositivos</a></li>
+                    <li><a href="#inspeccion">Inspección de dispositivos en Linux</a></li>
+                    <li><a href="#almacenamiento">Dispositivos de almacenamiento</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="activacion">
+                    <h2>Activación de Dispositivos</h2>
+                    <p>BIOS se presenta al presionar una tecla durante el arranque (F1, F2, Esc…). Aquí podemos habilitar/deshabilitar periféricos integrados, activar protección básica contra errores y cambiar configuraciones como DMA y IRQ.</p>
+                </section>
+                <section id="inspeccion">
+                    <h2>Inspección de dispositivos en Linux</h2>
+                    <p>Podemos identificar recursos de hardware en un sistema Linux de dos maneras: usar comandos o leer archivos específicos.</p>
+                    
+                    <h3>Comandos:</h3>
+                    <ul>
+                        <li><strong>lspci:</strong> Muestra los dispositivos conectados al bus PCI.<br>
+                            Para más información sobre un dispositivo podemos usar:<br>
+                            → <code>lspci -s 01:00.0 -v</code><br>
+                            → <code>lspci -s 04:02.0 -k</code> (más detallado)
+                        </li>
+                        <li><strong>lsusb:</strong> Muestra los dispositivos USB conectados a la máquina.<br>
+                            Para más información sobre un dispositivo podemos usar:<br>
+                            → <code>lsusb -v -d 0424:2514</code><br>
+                            → <code>lsusb -t</code> (En forma de árbol)<br>
+                            Puede que veamos un dispositivo pero que este no esté accesible porque requiere de un módulo de kernel (Driver). Mencionar que estos comandos requieren de root.
+                        </li>
+                        <li><strong>lsmod:</strong> Ver módulos cargados en el sistema.<br>
+                            En este comando vemos el nombre (Module), el tamaño en bytes (Size) y el número de módulos que están usando este módulo (Used By).<br>
+                            Además, podemos usar otros comandos:<br>
+                            → <code>modprobe -r modulo</code> (Descargar un módulo)<br>
+                            → <code>modprobe -p modulo</code> (Información sobre un módulo)<br>
+                            Los parámetros personalizados los podemos encontrar en <strong>/etc/modprobe.d/.</strong><br>
+                            Si un módulo causa problemas, podemos bloquearlo en <code>/etc/modprobe.d/blacklist.conf</code> añadiendo <code>blacklist modulo</code>.
+                        </li>
+                    </ul>
+                    
+                    <h3>Archivos:</h3>
+                    <p>La información se guarda en <code>/sys</code> y en <code>/proc</code>, que son filesystems utilizados por el kernel del sistema operativo para guardar configuraciones “en vivo” y la información de procesos en ejecución.</p>
+                    <ul>
+                        <li><strong>/proc:</strong> Es un filesystem orientado más para la información del sistema y procesos. Algunos de sus archivos son:<br>
+                            → <code>/proc/cpuinfo</code>: Información sobre la CPU<br>
+                            → <code>/proc/interrupts</code>: Interrupciones de dispositivos de entrada y salida para cada CPU<br>
+                            → <code>/proc/ioports</code>: Información sobre los puertos de entrada y salida en uso<br>
+                            → <code>/proc/dma</code>: Información sobre los canales de DMA en uso
+                        </li>
+                        <li><strong>/sys:</strong> Es un filesystem orientado más a interactuar con dispositivos y el kernel.</li>
+                        <li><strong>/dev:</strong> Este filesystem es un directorio donde están los archivos de los dispositivos. Los dispositivos extraíbles son manejados por <strong>UDEV,</strong> que los crea en <code>/dev</code>.<br>
+                            Udev es un demonio que gestiona los dispositivos durante el arranque del sistema operativo (coldplugs) y los que se conectan una vez el sistema ya está iniciado (hotplug). Cuando se detectan nuevos, udev busca reglas en <strong>/etc/udev/rules.d/.</strong>
+                        </li>
+                    </ul>
+                </section>
+                <section id="almacenamiento">
+                    <h2>Dispositivos de almacenamiento</h2>
+                    <p>En Linux, los dispositivos de almacenamiento se llaman dispositivos de bloques y cada dispositivo se identifica con un archivo, de la siguiente manera:</p>
+                    <ul>
+                        <li>Canales IDE: <code>/dev/hdX</code></li>
+                        <li>Floppy Disk: <code>/dev/dfX</code></li>
+                        <li>Canales SCSI: <code>/dev/sdX</code></li>
+                        <li>Canales SD Cards: <code>/dev/mmcblkXpY</code></li>
+                        <li>Canales NVME: <code>/dev/nvmeZnXpY</code></li>
+                    </ul>
+                    <p><strong>Z</strong> representa el puerto PCI Express, <strong>X</strong> representa el disco e <strong>Y</strong> la partición.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="scripts.js"></script>
+</body>
+</html>
