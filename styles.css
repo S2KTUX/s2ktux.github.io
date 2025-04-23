@@ -128,18 +128,10 @@ header {
 }
 
 .header-logo {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     font-size: 24px;
     font-weight: 700;
     color: #fff;
     text-decoration: none;
-}
-
-.header-logo-icon {
-    width: 24px;
-    height: 24px;
 }
 
 nav {
