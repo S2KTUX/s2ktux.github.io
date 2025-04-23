@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Proyecto de Servidor Local en SysRiser. Aprende a crear un servidor local con Ubuntu.">
+    <meta name="keywords" content="servidor, Ubuntu, sistemas, redes, proyecto">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - Servidor Local</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1087/1087840.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="cursos.html">Cursos</a>
+            <a href="proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>Servidor Local</h1>
+            <p>Crear un servidor local con Ubuntu, ideal para practicar la configuración de servicios y redes.</p>
+        </div>
+        <a href="proyectos.html" class="back-link">← Volver a Proyectos</a>
+        <div class="project-content">
+            <section>
+                <h2>Introducción</h2>
+                <p>En este proyecto aprenderás a configurar un servidor local usando Ubuntu. Este proyecto es ideal para principiantes que desean familiarizarse con la administración de servidores.</p>
+            </section>
+            <section>
+                <h3>Pasos para Configurar el Servidor</h3>
+                <ol>
+                    <li>Instala Ubuntu Server en una máquina virtual o física.</li>
+                    <li>Actualiza el sistema con <code>sudo apt update && sudo apt upgrade</code>.</li>
+                    <li>Configura una IP estática editando <code>/etc/netplan/01-netcfg.yaml</code>.</li>
+                    <li>Instala un servidor web como Apache con <code>sudo apt install apache2</code>.</li>
+                    <li>Prueba el servidor accediendo desde un navegador a la IP del servidor.</li>
+                </ol>
+            </section>
+            <section>
+                <h3>Recursos Adicionales</h3>
+                <ul>
+                    <li><a href="https://ubuntu.com/server/docs" target="_blank">Documentación oficial de Ubuntu Server</a></li>
+                    <li><a href="https://httpd.apache.org/docs/" target="_blank">Documentación de Apache</a></li>
+                </ul>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="scripts.js"></script>
+</body>
+</html>
