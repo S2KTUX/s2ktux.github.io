@@ -128,10 +128,18 @@ header {
 }
 
 .header-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
     font-size: 24px;
     font-weight: 700;
     color: #fff;
     text-decoration: none;
+}
+
+.header-logo-icon {
+    width: 24px;
+    height: 24px;
 }
 
 nav {
@@ -818,5 +826,207 @@ footer {
     to {
         opacity: 1;
         transform: translateY(0);
+    }
+}
+
+/* Media Queries para Responsividad */
+
+/* Tablets y pantallas pequeñas (hasta 768px) */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .header-left {
+        margin-bottom: 10px;
+    }
+
+    nav {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .welcome-section {
+        height: 60vh;
+    }
+
+    .welcome-content {
+        padding: 20px;
+        max-width: 90%;
+    }
+
+    .welcome-content h1 {
+        font-size: 32px;
+    }
+
+    .welcome-content p {
+        font-size: 16px;
+    }
+
+    .about-section {
+        padding: 30px 15px;
+    }
+
+    .about-section h2 {
+        font-size: 24px;
+    }
+
+    .about-section p {
+        font-size: 14px;
+    }
+
+    .first-steps-section {
+        padding: 30px 15px;
+    }
+
+    .first-steps-section h2 {
+        font-size: 24px;
+    }
+
+    .steps-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .step-card {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .testimonials-section {
+        padding: 30px 15px;
+    }
+
+    .testimonials-section h2 {
+        font-size: 24px;
+    }
+
+    .testimonials-container {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .testimonial-card {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .subscribe-section {
+        padding: 30px 15px;
+    }
+
+    .subscribe-section h2 {
+        font-size: 24px;
+    }
+
+    .subscribe-form {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .subscribe-form input {
+        width: 100%;
+        max-width: 300px;
+    }
+
+    .course-page, .project-content {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        display: none; /* Ocultar la barra lateral en móviles */
+    }
+
+    .content, .project-content {
+        padding: 15px;
+        width: 100%;
+    }
+
+    .content h2, .project-content h2 {
+        font-size: 20px;
+    }
+
+    .content h3, .project-content h3 {
+        font-size: 18px;
+    }
+
+    .content p, .project-content p {
+        font-size: 14px;
+    }
+
+    .parallax-container {
+        max-width: 100%;
+    }
+
+    .parallax-card {
+        margin-bottom: 20px;
+    }
+
+    .parallax-image {
+        height: 200px;
+    }
+
+    .course-tabs {
+        max-width: 100%;
+    }
+
+    .tab-buttons {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .tab-button {
+        font-size: 14px;
+        padding: 8px 15px;
+    }
+}
+
+/* Móviles pequeños (hasta 480px) */
+@media (max-width: 480px) {
+    .welcome-content h1 {
+        font-size: 24px;
+    }
+
+    .welcome-content p {
+        font-size: 14px;
+    }
+
+    .cta-button {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+
+    .about-section h2 {
+        font-size: 20px;
+    }
+
+    .first-steps-section h2 {
+        font-size: 20px;
+    }
+
+    .testimonials-section h2 {
+        font-size: 20px;
+    }
+
+    .subscribe-section h2 {
+        font-size: 20px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+
+    .hero p {
+        font-size: 16px;
+    }
+
+    .content h2, .project-content h2 {
+        font-size: 18px;
+    }
+
+    .content h3, .project-content h3 {
+        font-size: 16px;
     }
 }
