@@ -56,14 +56,30 @@ body.dark-theme .content li,
 body.dark-theme .sidebar h3,
 body.dark-theme .sidebar a,
 body.dark-theme .welcome-content h1,
-body.dark-theme .welcome-content p {
+body.dark-theme .welcome-content p,
+body.dark-theme .about-section h2,
+body.dark-theme .about-section p,
+body.dark-theme .first-steps-section h2,
+body.dark-theme .first-steps-section p,
+body.dark-theme .step-card h3,
+body.dark-theme .step-card p,
+body.dark-theme .testimonials-section h2,
+body.dark-theme .testimonial-card p,
+body.dark-theme .testimonial-card h4,
+body.dark-theme .subscribe-section h2,
+body.dark-theme .subscribe-section p,
+body.dark-theme .form-note {
     color: #e0e0e0;
 }
 
 body.dark-theme .course-card,
 body.dark-theme .tab-content,
 body.dark-theme .parallax-content,
-body.dark-theme .welcome-section {
+body.dark-theme .welcome-section,
+body.dark-theme .welcome-content,
+body.dark-theme .step-card,
+body.dark-theme .testimonial-card,
+body.dark-theme .subscribe-section {
     background-color: #1e1e1e;
     border-color: #555;
 }
@@ -200,6 +216,169 @@ body.dark-theme .welcome-content {
 
 .cta-button:hover {
     background-color: #0056b3;
+}
+
+/* Sección Sobre Nosotros (index.html) */
+.about-section {
+    padding: 50px 20px;
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.about-section h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.about-section p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+/* Sección Primeros Pasos (index.html) */
+.first-steps-section {
+    padding: 50px 20px;
+    background-color: #f0f4f8;
+}
+
+body.dark-theme .first-steps-section {
+    background-color: #1e1e1e;
+}
+
+.first-steps-section h2 {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.first-steps-section p {
+    text-align: center;
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.steps-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.step-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    transition: transform 0.2s;
+}
+
+.step-card:hover {
+    transform: translateY(-5px);
+}
+
+.step-card h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.step-card p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Sección Testimonios (index.html) */
+.testimonials-section {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.testimonials-section h2 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.testimonials-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.testimonial-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.testimonial-card p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.testimonial-card h4 {
+    font-size: 16px;
+    color: #333;
+}
+
+/* Sección Suscripción (index.html) */
+.subscribe-section {
+    padding: 50px 20px;
+    background-color: #f0f4f8;
+    text-align: center;
+}
+
+body.dark-theme .subscribe-section {
+    background-color: #1e1e1e;
+}
+
+.subscribe-section h2 {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.subscribe-section p {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 30px;
+}
+
+.subscribe-form {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.subscribe-form input {
+    padding: 10px;
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+.subscribe-form button {
+    padding: 10px 20px;
+}
+
+.form-note {
+    font-size: 12px;
+    color: #999;
 }
 
 /* Hero */
