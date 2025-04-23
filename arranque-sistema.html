@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 101.2 Arranque del Sistema (LPIC-1 101) en SysRiser. Aprende cómo funciona el proceso de arranque en Linux.">
+    <meta name="keywords" content="LPIC-1, arranque, Linux, curso, tecnología, GRUB, kernel">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 101.2 Arranque del Sistema (LPIC-1 101)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="cursos.html">Cursos</a>
+            <a href="proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>101.2 Arranque del Sistema</h1>
+            <p>Aprende cómo funciona el proceso de arranque en sistemas Linux.</p>
+        </div>
+        <a href="arquitectura-sistema.html" class="back-link">← Volver a Arquitectura del Sistema</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#bios-uefi">BIOS o UEFI</a></li>
+                    <li><a href="#cargador-arranque">El cargador de arranque</a></li>
+                    <li><a href="#inicializacion">Inicialización del sistema</a></li>
+                    <li><a href="#inspeccion">Inspección de inicialización</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="bios-uefi">
+                    <h2>BIOS o UEFI</h2>
+                    <p>Para controlar un equipo, el núcleo (kernel) debe cargarse mediante un programa llamado bootloader, y este a su vez lo carga el firmware, que puede ser BIOS o UEFI.</p>
+                    
+                    <h3>BIOS</h3>
+                    <p>BIOS es un firmware (programa) almacenado en la memoria volátil conectada a la placa y su almacenamiento es independiente.</p>
+                    <p>Su misión es revisar el hardware y buscar el sistema operativo. Para encontrarlo, mira los primeros 512 bytes del disco duro (llamados MBR), donde están las instrucciones mínimas para iniciar.</p>
+                    <p>Si el MBR no contiene los datos correctos, el sistema no podrá arrancar.</p>
+                    
+                    <h3>UEFI</h3>
+                    <p>UEFI es también un firmware y, a diferencia de BIOS, no se basa en MBR, sino que tiene en cuenta la configuración en su memoria no volátil y que puede ser un gestor de arranque, herramientas de reparación, etc.</p>
+                    <p>La partición EFI (ESP) contiene las aplicaciones EFI y no debe compartirse con otros filesystems.</p>
+                    <p>UEFI admite Secure Boot y los filesystems compatibles son FAT12, FAT16, FAT32 para dispositivos como USB.</p>
+                    
+                    <table style="margin: 0 auto; border-collapse: collapse; width: 80%; text-align: left;">
+                        <thead>
+                            <tr style="background-color: #f0f4f8; border-bottom: 2px solid #ddd;">
+                                <th style="padding: 10px; font-weight: 600;">BIOS</th>
+                                <th style="padding: 10px; font-weight: 600;">UEFI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <td style="padding: 10px;">1. POST</td>
+                                <td style="padding: 10px;">1. POST</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <td style="padding: 10px;">2. Activar componentes básicos</td>
+                                <td style="padding: 10px;">2. Activar componentes básicos</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <td style="padding: 10px;">3. Carga la primera etapa del gestor de arranque desde MBR</td>
+                                <td style="padding: 10px;">3. Lee las definiciones almacenadas en la NVRAM para ejecutar la aplicación definida</td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #ddd;">
+                                <td style="padding: 10px;">4. La primera etapa llama a la segunda etapa que carga el kernel</td>
+                                <td style="padding: 10px;">4. Si la app definida es un gestor de arranque, cargará el kernel</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </section>
+                <section id="cargador-arranque">
+                    <h2>El cargador de arranque</h2>
+                    <p>El gestor de arranque más popular en Linux es <strong>GRUB</strong>. Este muestra una lista de los sistemas operativos disponibles. Si no aparece GRUB, se puede invocar presionando Shift (BIOS) o Esc (UEFI).</p>
+                    <p>Desde el menú GRUB se puede elegir qué núcleo y parámetros cargar. Algunos parámetros son:</p>
+                    <ul>
+                        <li><strong>init:</strong> Establece un iniciador alternativo (init=/bin/bash)</li>
+                        <li><strong>system.unit:</strong> Se indica la unidad a usar por systemd</li>
+                        <li><strong>maxcpus:</strong> Cantidad de CPUs a usar (maxcpus=2)</li>
+                        <li><strong>root:</strong> Establece en qué partición está raíz (root=/dev/sda2)</li>
+                        <li><strong>rootflags:</strong> Parámetros para el filesystem raíz</li>
+                        <li><strong>ro:</strong> Montaje de solo lectura para raíz</li>
+                        <li><strong>rw:</strong> Montaje de lectura y escritura para raíz</li>
+                    </ul>
+                </section>
+                <section id="inicializacion">
+                    <h2>Inicialización del sistema</h2>
+                    <p>El sistema operativo depende de otros componentes durante el proceso de inicialización, desde scripts hasta servicios (daemon) que pueden estar siempre activos.</p>
+                    <p>El inicio comienza cuando el gestor de arranque carga el kernel en la RAM. Pasará a hacerse cargo de la CPU y por último comenzará a detectar el sistema operativo y sus configuraciones.</p>
+                    <p>El <strong>kernel</strong> abrirá <strong>initramfs</strong> (archivo que contiene un filesystem utilizado como filesystem raíz temporal). El kernel pasará a montar los archivos configurados en <code>/etc/fstab</code> y ejecutará el primer programa (init), que es el encargado de ejecutar todos los scripts y demonios del sistema operativo.</p>
+                    <p>Una vez se ha cargado <strong>init</strong>, initramfs se elimina de la RAM. Init puede ser SysVinit, Systemd o Upstart (obsoleto).</p>
+                </section>
+                <section id="inspeccion">
+                    <h2>Inspección de inicialización</h2>
+                    <p>Durante el arranque pueden ocurrir errores. El espacio donde el kernel guarda sus mensajes se llama <strong>kernel ring buffer</strong> y este pierde todos sus mensajes cuando se apaga o con el comando <code>dmesg --clear</code>.</p>
+                    <p>Sin opciones, <code>dmesg</code> mostrará los mensajes actuales.</p>
+                    <p>En sistemas operativos con Systemd, <code>journalctl</code> mostrará los mensajes de inicio. Los registros de inicios anteriores se mantienen. Algunos comandos son:</p>
+                    <ul>
+                        <li><code>journalctl --list-boots</code>: Listará el número de arranques</li>
+                        <li><code>journalctl -b 0</code>: Mostrará los mensajes del inicio actual. (-b 1 mostraría el anterior)</li>
+                        <li><code>journalctl -D RUTA</code>: Hay otros mensajes que están en <code>/var/log/journal</code> y para verlos deberemos usar este comando</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="scripts.js"></script>
+</body>
+</html>
