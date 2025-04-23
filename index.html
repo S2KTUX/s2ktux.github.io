@@ -3,17 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="SysRiser - Aprende sistemas y redes de forma sencilla. Prepárate para tu futuro en tecnología con nuestros cursos y proyectos prácticos.">
+    <meta name="keywords" content="sistemas, redes, cursos, tecnología, Linux, proyectos, academia">
+    <meta name="author" content="SysRiser">
     <title>SysRiser - Aprende Sistemas y Redes</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1087/1087840.png">
 </head>
 <body>
     <div class="gradient-bg"></div>
     <header>
-        <a href="index.html" class="header-logo">SysRiser</a>
-        <div class="theme-toggle">
-            <button id="theme-toggle">🌙</button>
+        <div class="header-left">
+            <a href="index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
         </div>
         <nav>
             <a href="index.html">Inicio</a>
@@ -22,70 +27,67 @@
         </nav>
     </header>
     <main id="contenido">
-        <div class="hero">
-            <h1>Aprende Sistemas y Redes</h1>
-            <p>Un lugar para aprender conceptos clave de forma sencilla.</p>
-        </div>
-        <h2>Cursos Disponibles</h2>
-        <div class="box-container">
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Redes Básicas" loading="lazy">
-                <h3>Redes Básicas</h3>
-                <a href="redes-basicas.html">Ver curso</a>
+        <!-- Sección de Bienvenida -->
+        <section class="welcome-section">
+            <div class="welcome-content">
+                <h1>Bienvenido a SysRiser</h1>
+                <p>Tu camino hacia el dominio de sistemas y redes comienza aquí. Aprende con cursos prácticos y proyectos reales, diseñados para prepararte para el futuro de la tecnología.</p>
+                <a href="cursos.html" class="cta-button">Explora los Cursos</a>
             </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Terminal Linux" loading="lazy">
-                <h3>Terminal Linux</h3>
-                <a href="terminal-linux.html">Ver curso</a>
+        </section>
+
+        <!-- Sección Sobre Nosotros -->
+        <section class="about-section">
+            <h2>Sobre Nosotros</h2>
+            <p>En SysRiser, nuestro objetivo es convertirnos en la academia líder en formación de sistemas y redes. Ofrecemos contenido práctico y accesible para que cualquier persona, desde principiantes hasta profesionales, pueda dominar las habilidades necesarias para el mundo tecnológico.</p>
+            <p>Con un enfoque en la práctica, te ayudamos a construir una base sólida mientras trabajas en proyectos reales que puedes aplicar en tu carrera.</p>
+        </section>
+
+        <!-- Sección Primeros Pasos -->
+        <section class="first-steps-section">
+            <h2>Primeros Pasos: Configura tu Entorno</h2>
+            <p>Si eres nuevo en sistemas y redes, aquí tienes una guía rápida para empezar:</p>
+            <div class="steps-container">
+                <div class="step-card">
+                    <h3>Paso 1: Instala Linux</h3>
+                    <p>Descarga e instala una distribución de Linux como Ubuntu. Es un sistema operativo esencial para aprender sistemas.</p>
+                </div>
+                <div class="step-card">
+                    <h3>Paso 2: Aprende Comandos Básicos</h3>
+                    <p>Practica comandos como <code>ls</code>, <code>cd</code>, y <code>pwd</code> en la terminal para familiarizarte con el entorno.</p>
+                </div>
+                <div class="step-card">
+                    <h3>Paso 3: Configura una Red</h3>
+                    <p>Conecta tu máquina a una red y prueba comandos como <code>ping</code> para verificar la conectividad.</p>
+                </div>
             </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Seguridad en Redes" loading="lazy">
-                <h3>Seguridad en Redes</h3>
-                <a href="#">Ver curso</a>
+        </section>
+
+        <!-- Sección Testimonios -->
+        <section class="testimonials-section">
+            <h2>Lo que dicen nuestros estudiantes</h2>
+            <div class="testimonials-container">
+                <div class="testimonial-card">
+                    <p>"SysRiser me ayudó a entender redes desde cero. Los proyectos prácticos son lo mejor para aprender."</p>
+                    <h4>— Ana G., Estudiante</h4>
+                </div>
+                <div class="testimonial-card">
+                    <p>"Gracias a los cursos de SysRiser, conseguí mi primer trabajo en TI. ¡Altamente recomendado!"</p>
+                    <h4>— Luis M., Técnico de Sistemas</h4>
+                </div>
             </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Administración de Servidores" loading="lazy">
-                <h3>Administración de Servidores</h3>
-                <a href="#">Ver curso</a>
+        </section>
+
+        <!-- Sección Suscripción -->
+        <section class="subscribe-section">
+            <h2>Únete a Nuestra Comunidad</h2>
+            <p>Suscríbete para recibir actualizaciones sobre nuevos cursos y proyectos.</p>
+            <div class="subscribe-form">
+                <input type="email" placeholder="Ingresa tu correo electrónico" disabled>
+                <button class="cta-button">Suscribirse</button>
             </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Virtualización" loading="lazy">
-                <h3>Virtualización</h3>
-                <a href="#">Ver curso</a>
-            </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Automatización con Scripts" loading="lazy">
-                <h3>Automatización con Scripts</h3>
-                <a href="#">Ver curso</a>
-            </div>
-        </div>
-        <h2>Proyectos</h2>
-        <div class="box-container">
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Servidor Local" loading="lazy">
-                <h3>Servidor Local</h3>
-            </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Uso de Disco" loading="lazy">
-                <h3>Uso de Disco</h3>
-            </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Firewall Básico" loading="lazy">
-                <h3>Firewall Básico</h3>
-            </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Monitor de Red" loading="lazy">
-                <h3>Monitor de Red</h3>
-            </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Backup Automático" loading="lazy">
-                <h3>Backup Automático</h3>
-            </div>
-            <div class="course-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80" alt="Cluster Kubernetes" loading="lazy">
-                <h3>Cluster Kubernetes</h3>
-            </div>
-        </div>
+            <p class="form-note">*Nota: Este formulario es una simulación. Pronto habilitaremos la suscripción.</p>
+        </section>
     </main>
     <footer>
         <div class="footer-content">
