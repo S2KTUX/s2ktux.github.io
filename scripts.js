@@ -28,40 +28,16 @@ themeToggle.addEventListener('click', () => {
     themeToggle.textContent = document.body.classList.contains('dark-theme') ? '☀️' : '🌙';
 });
 
-// Edición de contenido
-document.querySelectorAll('.edit-toggle').forEach(button => {
+// Manejo de pestañas (cursos.html)
+document.querySelectorAll('.tab-button').forEach(button => {
     button.addEventListener('click', () => {
-        const timelineItems = document.querySelectorAll('.timeline-item');
-        const isEditing = button.textContent === 'Editar Contenido';
+        // Remover clase active de todos los botones y contenidos
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-        timelineItems.forEach(item => {
-            item.contentEditable = isEditing;
-            item.focus();
-        });
-
-        button.textContent = isEditing ? 'Guardar Cambios' : 'Editar Contenido';
-
-        if (!isEditing) {
-            // Guardar cambios en localStorage
-            const content = {};
-            timelineItems.forEach((item, index) => {
-                content[`section-${index}`] = item.innerHTML;
-            });
-            localStorage.setItem('courseContent', JSON.stringify(content));
-        }
+        // Añadir clase active al botón y contenido seleccionados
+        button.classList.add('active');
+        const tabId = button.getAttribute('data-tab');
+        document.getElementById(tabId).classList.add('active');
     });
-});
-
-// Cargar contenido guardado desde localStorage
-window.addEventListener('load', () => {
-    const savedContent = localStorage.getItem('courseContent');
-    if (savedContent) {
-        const content = JSON.parse(savedContent);
-        const timelineItems = document.querySelectorAll('.timeline-item');
-        timelineItems.forEach((item, index) => {
-            if (content[`section-${index}`]) {
-                item.innerHTML = content[`section-${index}`];
-            }
-        });
-    }
 });
