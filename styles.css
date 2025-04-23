@@ -6,7 +6,7 @@
 }
 
 body {
-    font-family: 'Roboto', sans-serif !important;
+    font-family: 'Roboto', sans-serif;
     background-color: #f9f9f9;
     color: #333;
     line-height: 1.6;
@@ -41,7 +41,7 @@ body.dark-theme footer {
     border-color: #444;
 }
 
-body.dark-theme .hero h1,
+body.dark-theme .hero h1,
 body.dark-theme .hero p,
 body.dark-theme #contenido h2,
 body.dark-theme .course-card h3,
@@ -74,6 +74,14 @@ body.dark-theme .tab-button.active {
 body.dark-theme .sidebar {
     background-color: #222;
     border-color: #444;
+}
+
+body.dark-theme .timeline-item::before {
+    background-color: #444;
+}
+
+body.dark-theme .timeline-dot {
+    background-color: #007bff;
 }
 
 /* Modo de enfoque */
@@ -416,6 +424,7 @@ main {
 .course-page {
     display: flex;
     gap: 20px;
+    margin-top: 20px;
 }
 
 .sidebar {
@@ -457,35 +466,58 @@ main {
     padding: 20px;
 }
 
-.content-section {
+/* Estilo de línea de tiempo para el contenido */
+.timeline {
+    position: relative;
+    padding-left: 40px;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 20px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background-color: #ddd;
+}
+
+.timeline-item {
+    position: relative;
     margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid #eee;
 }
 
-.content-section:last-child {
-    border-bottom: none;
+.timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -38px;
+    top: 5px;
+    width: 16px;
+    height: 16px;
+    background-color: #007bff;
+    border-radius: 50%;
+    border: 3px solid #fff;
+    box-shadow: 0 0 0 3px #ddd;
 }
 
-.content h2 {
+.timeline-item h2,
+.timeline-item h3 {
     font-size: 24px;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.content h3 {
-    font-size: 20px;
     margin-bottom: 10px;
     color: #333;
 }
 
-.content p,
-.content li {
+.timeline-item h3 {
+    font-size: 20px;
+}
+
+.timeline-item p,
+.timeline-item li {
     margin-bottom: 10px;
     color: #666;
 }
 
-.content ul {
+.timeline-item ul {
     list-style-type: disc;
     padding-left: 20px;
 }
@@ -567,6 +599,65 @@ main {
     text-decoration: underline;
 }
 
+/* Footer */
+footer {
+    background-color: #e8ecef;
+    border-top: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
+    margin-top: auto;
+    width: 100%;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.footer-content p {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.footer-links a {
+    color: #007bff;
+    text-decoration: none;
+    font-weight: 700;
+    position: relative;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+.footer-links a[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+
+.footer-links a:hover[data-tooltip]::after {
+    opacity: 1;
+}
+
 /* Botón de volver arriba */
 #back-to-top {
     position: fixed;
@@ -634,4 +725,56 @@ main {
 }
 
 /* Sistema de logros */
-#ach
+#achievements {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 300px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    padding: 15px;
+}
+
+#achievements h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.achievement-item {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f0f4f8;
+    margin-bottom: 10px;
+    opacity: 0.5;
+}
+
+.achievement-item.unlocked {
+    opacity: 1;
+    background-color: #e8f5e9;
+}
+
+.achievement-item h4 {
+    font-size: 16px;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.achievement-item p {
+    font-size: 12px;
+    color: #666;
+}
+
+/* Animaciones */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
