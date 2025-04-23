@@ -27,9 +27,13 @@
             <p>Explora los cursos disponibles para aprender sistemas y redes.</p>
         </div>
         <h2>Cursos Disponibles</h2>
-        <div class="course-list">
-            <button class="course-accordeon">Curso de LPIC</button>
-            <div class="course-content">
+        <div class="course-tabs">
+            <div class="tab-buttons">
+                <button class="tab-button active" data-tab="tab1">Curso de LPIC</button>
+                <button class="tab-button" data-tab="tab2">Redes Básicas</button>
+                <button class="tab-button" data-tab="tab3">Terminal Linux</button>
+            </div>
+            <div class="tab-content active" id="tab1">
                 <p>Prepárate para la certificación LPIC con este curso completo que cubre los fundamentos de Linux.</p>
                 <h4>Temas del Curso:</h4>
                 <ul>
@@ -39,8 +43,7 @@
                 </ul>
                 <a href="#" class="course-link">Inscribirse</a>
             </div>
-            <button class="course-accordeon">Redes Básicas</button>
-            <div class="course-content">
+            <div class="tab-content" id="tab2">
                 <p>Aprende a configurar redes desde cero, desde conceptos básicos hasta protocolos como TCP/IP.</p>
                 <h4>Temas del Curso:</h4>
                 <ul>
@@ -49,8 +52,7 @@
                 </ul>
                 <a href="redes-basicas.html" class="course-link">Ver curso</a>
             </div>
-            <button class="course-accordeon">Terminal Linux</button>
-            <div class="course-content">
+            <div class="tab-content" id="tab3">
                 <p>Domina los comandos esenciales de Linux para gestionar archivos y monitorear el sistema.</p>
                 <h4>Temas del Curso:</h4>
                 <ul>
@@ -73,6 +75,15 @@
         </div>
     </footer>
     <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <div id="chatbot">
+        <div id="chatbot-header">💬 Asistente</div>
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Pregunta algo...">
+    </div>
+    <div id="achievements">
+        <h3>Logros</h3>
+        <div id="achievement-list"></div>
+    </div>
     <script src="scripts.js"></script>
 </body>
 </html>
