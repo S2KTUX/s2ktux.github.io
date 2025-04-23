@@ -27,45 +27,45 @@
             <p>Explora proyectos prácticos para aplicar tus conocimientos.</p>
         </div>
         <h2>Proyectos Disponibles</h2>
-        <div class="project-gallery">
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Servidor Local">
-                <div class="project-overlay">
+        <div class="parallax-container">
+            <div class="parallax-card">
+                <div class="parallax-image" style="background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="parallax-content">
                     <h3>Servidor Local</h3>
                     <p>Crear un servidor local con Ubuntu, ideal para practicar la configuración de servicios y redes.</p>
                 </div>
             </div>
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Uso de Disco">
-                <div class="project-overlay">
+            <div class="parallax-card">
+                <div class="parallax-image" style="background-image: url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="parallax-content">
                     <h3>Uso de Disco</h3>
                     <p>Analizar y optimizar el uso de disco con herramientas CLI como <code>du</code> y <code>df</code>.</p>
                 </div>
             </div>
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1563986768494-4dee31d90965?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Firewall Básico">
-                <div class="project-overlay">
+            <div class="parallax-card">
+                <div class="parallax-image" style="background-image: url('https://images.unsplash.com/photo-1563986768494-4dee31d90965?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="parallax-content">
                     <h3>Firewall Básico</h3>
                     <p>Configura un firewall básico para proteger tu red local.</p>
                 </div>
             </div>
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1516321165247-4aa89a48d416?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Monitor de Red">
-                <div class="project-overlay">
+            <div class="parallax-card">
+                <div class="parallax-image" style="background-image: url('https://images.unsplash.com/photo-1516321165247-4aa89a48d416?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="parallax-content">
                     <h3>Monitor de Red</h3>
                     <p>Implementa un sistema para monitorear el tráfico de red en tiempo real.</p>
                 </div>
             </div>
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1581092160607-2e0ce8c2f7b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Backup Automático">
-                <div class="project-overlay">
+            <div class="parallax-card">
+                <div class="parallax-image" style="background-image: url('https://images.unsplash.com/photo-1581092160607-2e0ce8c2f7b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="parallax-content">
                     <h3>Backup Automático</h3>
                     <p>Automatiza backups de datos usando scripts en Linux.</p>
                 </div>
             </div>
-            <div class="project-card">
-                <img src="https://images.unsplash.com/photo-1531497861053-6ee8e1b41553?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&q=80" alt="Cluster Kubernetes">
-                <div class="project-overlay">
+            <div class="parallax-card">
+                <div class="parallax-image" style="background-image: url('https://images.unsplash.com/photo-1531497861053-6ee8e1b41553?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80');"></div>
+                <div class="parallax-content">
                     <h3>Cluster Kubernetes</h3>
                     <p>Configura un cluster básico de Kubernetes para aprender sobre contenedores.</p>
                 </div>
@@ -84,6 +84,15 @@
         </div>
     </footer>
     <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <div id="chatbot">
+        <div id="chatbot-header">💬 Asistente</div>
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Pregunta algo...">
+    </div>
+    <div id="achievements">
+        <h3>Logros</h3>
+        <div id="achievement-list"></div>
+    </div>
     <script src="scripts.js"></script>
 </body>
 </html>
