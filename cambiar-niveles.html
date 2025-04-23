@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 101.3 Cambiar los niveles de ejecución / objetivos de arranque y apagar o reiniciar el sistema (LPIC-1 101) en SysRiser. Aprende a gestionar runlevels y apagar/reiniciar sistemas Linux.">
+    <meta name="keywords" content="LPIC-1, runlevels, Linux, curso, tecnología, systemd, apagado, reinicio">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 101.3 Cambiar los niveles de ejecución / objetivos de arranque y apagar o reiniciar el sistema (LPIC-1 101)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="cursos.html">Cursos</a>
+            <a href="proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>101.3 Cambiar los niveles de ejecución / objetivos de arranque y apagar o reiniciar el sistema</h1>
+            <p>Aprende a gestionar runlevels y apagar o reiniciar sistemas Linux.</p>
+        </div>
+        <a href="arquitectura-sistema.html" class="back-link">← Volver a Arquitectura del Sistema</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#sysvinit">Estándar SysVinit</a></li>
+                    <li><a href="#systemd">Systemd</a></li>
+                    <li><a href="#upstart">Upstart</a></li>
+                    <li><a href="#apagado-reinicio">Apagado y Reinicio</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="sysvinit">
+                    <h2>Estándar SysVinit</h2>
+                    <p>El administrador de servicios basado en SysVinit proporciona estados de sistemas llamados <strong>runlevels</strong> y sus archivos son scripts para ser ejecutados. Los runlevels son:</p>
+                    <ul>
+                        <li><strong>0:</strong> Apagado del sistema</li>
+                        <li><strong>1:</strong> Modo monousuario sin red (mantenimiento)</li>
+                        <li><strong>2, 3, 4:</strong> Modo multiusuario</li>
+                        <li><strong>5:</strong> Modo multiusuario con interfaz gráfica</li>
+                        <li><strong>6:</strong> Reinicio del sistema</li>
+                    </ul>
+                    <p>El responsable de administrar es <strong>/sbin/init</strong>, que identifica el nivel solicitado definido en el kernel o en <strong>/etc/inittab</strong> y carga los scripts ubicados en <strong>/etc/init.d/</strong>.</p>
+                    <p>La sintaxis de <code>/etc/inittab</code> es: <code>id:runlevels:action:process</code></p>
+                    <p><strong>Id</strong> es el nombre genérico, <strong>runlevels</strong> es una lista de números de niveles y <strong>action</strong> define cómo init ejecutará el proceso (<strong>process</strong>). Las acciones disponibles son:</p>
+                    <ul>
+                        <li><strong>boot:</strong> Se ejecuta durante el inicio del sistema. El campo de runlevels se ignora.</li>
+                        <li><strong>bootwait:</strong> Se ejecuta durante el inicio del sistema e init esperará a que termine para continuar. El campo runlevels se ignora.</li>
+                        <li><strong>sysinit:</strong> Se ejecutará después del inicio del sistema independientemente del nivel de ejecución. El campo runlevels se ignora.</li>
+                        <li><strong>wait:</strong> Se ejecutará con el runlevel dado e init esperará a que finalice.</li>
+                        <li><strong>respawn:</strong> El proceso se reiniciará si finaliza.</li>
+                        <li><strong>ctrlaltdel:</strong> El proceso se ejecutará cuando init reciba SIGINT (Ctrl + Alt + Sup).</li>
+                    </ul>
+                    <p>Para recargar los cambios en <code>/etc/inittab</code>, usaremos el comando <code>telinit q</code>. El comando <code>runlevel</code> muestra el nivel de ejecución anterior (N) y el actual.</p>
+                    <p>Podemos cambiar el nivel de ejecución con el comando <code>telinit N</code>.</p>
+                </section>
+                <section id="systemd">
+                    <h2>Systemd</h2>
+                    <p>Systemd es el más utilizado y utiliza unidades. Algunos tipos de unidades son:</p>
+                    <ul>
+                        <li><strong>service:</strong> Gestiona servicios que se pueden iniciar, apagar, reiniciar...</li>
+                        <li><strong>socket:</strong> Pueden ser de red o de filesystem. Requieren de un service.</li>
+                        <li><strong>device:</strong> Dispositivo hardware identificado por udev.</li>
+                        <li><strong>mount:</strong> Define un punto de montaje, similar a fstab.</li>
+                        <li><strong>automount:</strong> Requiere de mount, monta automáticamente un punto de montaje.</li>
+                        <li><strong>target:</strong> Agrupación de unidades.</li>
+                        <li><strong>snapshot:</strong> Snapshot del administrador del sistema.</li>
+                    </ul>
+                    <p>El comando para gestionar systemd es <strong>systemctl</strong>, con el que podemos realizar diferentes acciones:</p>
+                    <ul>
+                        <li><code>systemctl start/stop unit.service</code>: Levantar/Parar un servicio</li>
+                        <li><code>systemctl is-active unit.service</code>: Comprobar si un servicio está en ejecución o inactivo</li>
+                        <li><code>systemctl restart unit.service</code>: Reiniciar un servicio</li>
+                        <li><code>systemctl status unit.service</code>: Comprobar el estado de un servicio</li>
+                        <li><code>systemctl enable/disable unit.service</code>: Habilitar/Deshabilitar un servicio para que cargue durante el inicio del sistema</li>
+                        <li><code>systemctl is-enabled unit.service</code>: Comprobar si un servicio está habilitado o no</li>
+                    </ul>
+                    <p>También podemos controlar targets para cambiar el runlevel, por ejemplo: <code>systemctl isolate graphical.target</code> o <code>systemctl set-default graphical.target</code>. Sería equivalente a <code>telinit N</code>.</p>
+                    <p>Systemd <strong>no</strong> utiliza <code>/etc/fstab</code>. Los archivos de configuración están ubicados en <code>/lib/systemd/system</code>.</p>
+                    <p>El comando <code>systemctl list-unit-files --type=tipo</code> permite ver las unidades y si están disponibles, como por ejemplo <code>systemctl list-unit-files --type=service</code>.</p>
+                </section>
+                <section id="upstart">
+                    <h2>Upstart</h2>
+                    <p>Upstart está obsoleto y no es prácticamente usado, pero es útil conocer lo más básico.</p>
+                    <p>Los scripts de inicialización utilizados por Upstart se encuentran en <code>/etc/init/</code>. Podemos enumerar los servicios del sistema con el comando <code>initctl list</code> y tenemos comandos para cada acción:</p>
+                    <ul>
+                        <li><code>start tty6</code>: Iniciar, en este caso la sexta terminal virtual</li>
+                        <li><code>status tty6</code>: Comprobar el estado actual</li>
+                        <li><code>stop tty6</code>: Interrumpir el servicio</li>
+                    </ul>
+                </section>
+                <section id="apagado-reinicio">
+                    <h2>Apagado y Reinicio</h2>
+                    <p>Un comando tradicional para apagar o reiniciar un sistema es <code>shutdown</code>.</p>
+                    <p><code>shutdown [option] time [message]</code>. Las opciones son:</p>
+                    <ul>
+                        <li><code>shutdown -h</code>: Apaga (similar a init 0)</li>
+                        <li><code>shutdown -r</code>: Reinicia (similar a init 6)</li>
+                    </ul>
+                    <p>Cuando no se utilizan opciones, pasa a modo usuario único (runlevel 1).</p>
+                    <p>El parámetro tiempo se puede definir:</p>
+                    <ul>
+                        <li><code>hh:mm</code>: Formato tiempo</li>
+                        <li><code>+m</code>: Cuántos minutos esperar</li>
+                        <li><code>now</code> o <code>+0</code>: Inmediato</li>
+                    </ul>
+                    <p>Systemctl tiene por su parte los comandos <code>poweroff</code> (apagado) y <code>reboot</code> (reinicio).</p>
+                    <p>Por último, el comando <code>wall</code> sirve para enviar un mensaje a las sesiones de terminal de todos los usuarios conectados.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="scripts.js"></script>
+</body>
+</html>
