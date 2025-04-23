@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Repaso del Tema 101 (LPIC-1 101) en SysRiser. Resumen de arquitectura del sistema, arranque y gestión de runlevels para el examen.">
+    <meta name="keywords" content="LPIC-1, repaso, arquitectura del sistema, arranque, runlevels, Linux, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - Repaso Tema 101 (LPIC-1 101)</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav>
+            <a href="index.html">Inicio</a>
+            <a href="cursos.html">Cursos</a>
+            <a href="proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>Repaso Tema 101 (LPIC-1 101)</h1>
+            <p>Resumen rápido para el examen: arquitectura, arranque y runlevels en Linux.</p>
+        </div>
+        <a href="arquitectura-sistema.html" class="back-link">← Volver a Arquitectura del Sistema</a>
+        <div class="course-page">
+            <div class="content">
+                <section id="101-1">
+                    <h2>101.1 Determinar y configurar los ajustes de hardware</h2>
+                    <h3>Comandos clave</h3>
+                    <ul>
+                        <li><strong>lspci:</strong> Lista dispositivos PCI (<code>lspci -s NUMERO -v</code> o <code>-k</code>)</li>
+                        <li><strong>lsusb:</strong> Lista dispositivos USB (<code>lsusb -d ID -v</code>)</li>
+                        <li><strong>lsmod:</strong> Muestra módulos del kernel. Bloquea módulos en <code>/etc/modprobe.d/blacklist.conf</code></li>
+                    </ul>
+                    <h3>Archivos importantes</h3>
+                    <ul>
+                        <li><strong>/proc:</strong> Info del sistema (<code>/proc/cpuinfo</code>, <code>/proc/interrupts</code>, <code>/proc/ioports</code>, <code>/proc/dma</code>)</li>
+                        <li><strong>/sys:</strong> Interacción con dispositivos y kernel</li>
+                        <li><strong>/dev:</strong> Archivos de dispositivos, gestionados por Udev (reglas en <code>/etc/udev/rules.d/</code>)</li>
+                    </ul>
+                    <h3>Dispositivos de bloque</h3>
+                    <ul>
+                        <li>IDE: <code>/dev/hdX</code> | Floppy: <code>/dev/dfX</code> | SCSI: <code>/dev/sdX</code></li>
+                        <li>SD Cards: <code>/dev/mmcblkXpY</code> | NVMe: <code>/dev/nvmeZnXpY</code></li>
+                    </ul>
+                </section>
+                <section id="101-2">
+                    <h2>101.2 Arranque del Sistema</h2>
+                    <h3>Firmware</h3>
+                    <ul>
+                        <li><strong>BIOS:</strong> Usa MBR (512 bytes iniciales del disco), memoria volátil</li>
+                        <li><strong>UEFI:</strong> Usa partición EFI (ESP), memoria no volátil, soporta Secure Boot, compatible con FAT12/16/32</li>
+                    </ul>
+                    <h3>Gestor de arranque (GRUB)</h3>
+                    <ul>
+                        <li>Parámetros: <code>init=/bin/bash</code>, <code>root=/dev/sda2</code>, <code>ro</code>, <code>rw</code>, <code>maxcpus=2</code></li>
+                        <li>Hacer persistentes: Edita <code>/etc/default/grub</code> (<code>GRUB_CMDLINE_LINUX</code>), actualiza con <code>update-grub</code></li>
+                        <li>Ver parámetros actuales: <code>/proc/cmdline</code></li>
+                    </ul>
+                    <h3>Inicialización</h3>
+                    <p>Gestor → RAM → CPU → S.O. → Kernel abre <strong>initramfs</strong> → Monta <code>/etc/fstab</code> → Ejecuta <strong>init</strong> (SysVinit, Systemd, Upstart) → Borra initramfs</p>
+                    <h3>Errores</h3>
+                    <ul>
+                        <li><strong>Kernel ring buffer:</strong> Usa <code>dmesg</code> (borra con <code>dmesg --clear</code>)</li>
+                        <li><strong>Systemd:</strong> Usa <code>journalctl</code> (<code>--list-boots</code>, <code>-b 0</code>, <code>-D /var/log/journal</code>)</li>
+                    </ul>
+                </section>
+                <section id="101-3">
+                    <h2>101.3 Cambiar niveles de ejecución y apagar/reiniciar</h2>
+                    <h3>SysVinit</h3>
+                    <ul>
+                        <li><strong>Runlevels:</strong> 0 (apagado), 1 (monousuario), 2-4 (multiusuario), 5 (gráfico), 6 (reinicio)</li>
+                        <li><strong>/sbin/init:</strong> Usa <code>/etc/inittab</code> (sintaxis: <code>id:runlevel:action:process</code>)</li>
+                        <li>Acciones: <code>boot</code>, <code>bootwait</code>, <code>sysinit</code>, <code>wait</code>, <code>respawn</code>, <code>ctrlaltdel</code></li>
+                        <li>Cambiar: <code>telinit N</code> | Recargar: <code>telinit q</code></li>
+                    </ul>
+                    <h3>Systemd</h3>
+                    <ul>
+                        <li><strong>Unidades:</strong> <code>service</code>, <code>target</code>, <code>mount</code>, etc. Config en <code>/lib/systemd/system</code></li>
+                        <li><strong>systemctl:</strong> <code>start/stop/restart/status unit.service</code>, <code>enable/disable unit.service</code></li>
+                        <li>Cambiar runlevel: <code>systemctl isolate graphical.target</code></li>
+                    </ul>
+                    <h3>Apagado y Reinicio</h3>
+                    <ul>
+                        <li><strong>Apagar:</strong> <code>shutdown -h</code> o <code>systemctl poweroff</code></li>
+                        <li><strong>Reiniciar:</strong> <code>shutdown -r</code> o <code>systemctl reboot</code></li>
+                        <li><strong>Notificar:</strong> <code>wall</code> (mensaje a usuarios)</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="scripts.js"></script>
+</body>
+</html>
