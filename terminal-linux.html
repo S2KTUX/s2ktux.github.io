@@ -3,18 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Curso de Terminal Linux en SysRiser. Domina los comandos esenciales de Linux para principiantes.">
+    <meta name="keywords" content="Linux, terminal, comandos, sistemas, curso">
+    <meta name="author" content="SysRiser">
     <title>SysRiser - Terminal Linux</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/1087/1087840.png">
 </head>
 <body>
     <div class="gradient-bg"></div>
     <div class="reading-progress"></div>
     <header>
-        <a href="index.html" class="header-logo">SysRiser</a>
-        <div class="theme-toggle">
-            <button id="theme-toggle">🌙</button>
+        <div class="header-left">
+            <a href="index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
         </div>
         <nav>
             <a href="index.html">Inicio</a>
@@ -28,13 +33,6 @@
             <p>Domina los comandos esenciales de Linux.</p>
         </div>
         <a href="cursos.html" class="back-link">← Volver a Cursos</a>
-        <button id="focus-mode" class="focus-button">Modo enfoque</button>
-        <div class="study-timer">
-            <h3>Temporizador de Estudio</h3>
-            <div id="timer-display">25:00</div>
-            <button id="timer-start">Iniciar</button>
-            <button id="timer-reset">Reiniciar</button>
-        </div>
         <div class="course-page">
             <div class="sidebar">
                 <h3>Contenido del Curso</h3>
@@ -45,33 +43,31 @@
                     <li><a href="#duracion">Duración</a></li>
                 </ul>
             </div>
-            <div class="content study-bg">
-                <div class="timeline">
-                    <div class="timeline-item">
-                        <h2 id="descripcion">Descripción</h2>
-                        <p>Domina los comandos esenciales de Linux para principiantes. Este curso te enseñará a usar la terminal de forma eficiente.</p>
-                    </div>
-                    <div class="timeline-item">
-                        <h3 id="comandos">Comandos Básicos</h3>
-                        <p>En esta sección aprenderás:</p>
-                        <ul>
-                            <li>Uso de comandos como <code>ls</code>, <code>cd</code>, y <code>pwd</code>.</li>
-                            <li>Explorar el sistema de archivos.</li>
-                        </ul>
-                    </div>
-                    <div class="timeline-item">
-                        <h3 id="gestion">Gestión de Archivos</h3>
-                        <p>Aprenderás a:</p>
-                        <ul>
-                            <li>Crear, mover y eliminar archivos y directorios.</li>
-                            <li>Comandos para monitoreo del sistema (<code>du</code>, <code>df</code>).</li>
-                        </ul>
-                    </div>
-                    <div class="timeline-item">
-                        <h2 id="duracion">Duración</h2>
-                        <p>3 semanas</p>
-                    </div>
-                </div>
+            <div class="content">
+                <section id="descripcion">
+                    <h2>Descripción</h2>
+                    <p>Domina los comandos esenciales de Linux para principiantes. Este curso te enseñará a usar la terminal de forma eficiente.</p>
+                </section>
+                <section id="comandos">
+                    <h3>Comandos Básicos</h3>
+                    <p>En esta sección aprenderás:</p>
+                    <ul>
+                        <li>Uso de comandos como <code>ls</code>, <code>cd</code>, y <code>pwd</code>.</li>
+                        <li>Explorar el sistema de archivos.</li>
+                    </ul>
+                </section>
+                <section id="gestion">
+                    <h3>Gestión de Archivos</h3>
+                    <p>Aprenderás a:</p>
+                    <ul>
+                        <li>Crear, mover y eliminar archivos y directorios.</li>
+                        <li>Comandos para monitoreo del sistema (<code>du</code>, <code>df</code>).</li>
+                    </ul>
+                </section>
+                <section id="duracion">
+                    <h2>Duración</h2>
+                    <p>3 semanas</p>
+                </section>
             </div>
         </div>
     </main>
@@ -87,16 +83,6 @@
         </div>
     </footer>
     <a href="#" id="back-to-top">↑ Volver arriba</a>
-    <div id="chatbot">
-        <div id="chatbot-header">💬 Asistente</div>
-        <div id="chatbot-messages"></div>
-        <input type="text" id="chatbot-input" placeholder="Pregunta algo...">
-    </div>
-    <div id="achievements">
-        <h3>Logros</h3>
-        <div id="achievement-list"></div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
     <script src="scripts.js"></script>
 </body>
 </html>
