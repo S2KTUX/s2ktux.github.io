@@ -7,29 +7,29 @@
     <meta name="keywords" content="LPIC-1, repaso, arquitectura del sistema, arranque, runlevels, Linux, curso">
     <meta name="author" content="SysRiser">
     <title>SysRiser - Repaso Tema 101 (LPIC-1 101)</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="/conf/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
 </head>
 <body>
     <div class="gradient-bg"></div>
     <header>
         <div class="header-left">
-            <a href="index.html" class="header-logo">SysRiser</a>
+            <a href="/index.html" class="header-logo">SysRiser</a>
             <div class="theme-toggle">
                 <button id="theme-toggle">🌙</button>
             </div>
         </div>
         <nav>
-            <a href="index.html">Inicio</a>
-            <a href="cursos.html">Cursos</a>
-            <a href="proyectos.html">Proyectos</a>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
         </nav>
     </header>
     <main id="contenido">
         <div class="hero">
             <h1>Repaso Tema 101 (LPIC-1 101)</h1>
-            <p>Resumen rápido para el examen: arquitectura, arranque y runlevels en Linux.</p>
+            <p>Resumen esencial para el examen: arquitectura del sistema, arranque y niveles de ejecución en Linux.</p>
         </div>
         <a href="arquitectura-sistema.html" class="back-link">← Volver a Arquitectura del Sistema</a>
         <div class="course-page">
@@ -37,64 +37,136 @@
                 <section id="101-1">
                     <h2>101.1 Determinar y configurar los ajustes de hardware</h2>
                     <h3>Comandos clave</h3>
+                    <p>Estos comandos te ayudan a inspeccionar y configurar hardware:</p>
                     <ul>
-                        <li><strong>lspci:</strong> Lista dispositivos PCI (<code>lspci -s NUMERO -v</code> o <code>-k</code>)</li>
-                        <li><strong>lsusb:</strong> Lista dispositivos USB (<code>lsusb -d ID -v</code>)</li>
-                        <li><strong>lsmod:</strong> Muestra módulos del kernel. Bloquea módulos en <code>/etc/modprobe.d/blacklist.conf</code></li>
+                        <li><strong>lspci:</strong> Muestra dispositivos PCI conectados (ej. tarjetas gráficas, de red). Usa <code>lspci -v</code> para detalles o <code>-k</code> para ver los controladores.</li>
+                        <li><strong>lsusb:</strong> Lista dispositivos USB conectados. Usa <code>lsusb -v</code> para información detallada o <code>-d ID</code> para un dispositivo específico.</li>
+                        <li><strong>lsmod:</strong> Muestra los módulos del kernel cargados. Si necesitas bloquear un módulo (para evitar que se cargue), edita <code>/etc/modprobe.d/blacklist.conf</code> y añade <code>blacklist nombre_modulo</code>.</li>
                     </ul>
-                    <h3>Archivos importantes</h3>
+                    <h3>Archivos del sistema</h3>
+                    <p>Estos directorios contienen información sobre el hardware:</p>
                     <ul>
-                        <li><strong>/proc:</strong> Info del sistema (<code>/proc/cpuinfo</code>, <code>/proc/interrupts</code>, <code>/proc/ioports</code>, <code>/proc/dma</code>)</li>
-                        <li><strong>/sys:</strong> Interacción con dispositivos y kernel</li>
-                        <li><strong>/dev:</strong> Archivos de dispositivos, gestionados por Udev (reglas en <code>/etc/udev/rules.d/</code>)</li>
+                        <li><strong>/proc:</strong> Información dinámica del sistema. Archivos clave:
+                            <ul>
+                                <li><code>/proc/cpuinfo</code>: Detalles de la CPU (modelo, núcleos, velocidad).</li>
+                                <li><code>/proc/interrupts</code>: Interrupciones de hardware (IRQs).</li>
+                                <li><code>/proc/ioports</code>: Puertos de entrada/salida usados.</li>
+                                <li><code>/proc/dma</code>: Canales DMA asignados.</li>
+                            </ul>
+                        </li>
+                        <li><strong>/sys:</strong> Interfaz para interactuar con el kernel y dispositivos (más moderno que /proc).</li>
+                        <li><strong>/dev:</strong> Contiene archivos de dispositivos (ej. <code>/dev/sda</code> para discos). Gestionado por <strong>Udev</strong>, que usa reglas en <code>/etc/udev/rules.d/</code> para asignar nombres a dispositivos.</li>
                     </ul>
                     <h3>Dispositivos de bloque</h3>
+                    <p>Identificadores de discos y dispositivos de almacenamiento:</p>
                     <ul>
-                        <li>IDE: <code>/dev/hdX</code> | Floppy: <code>/dev/dfX</code> | SCSI: <code>/dev/sdX</code></li>
-                        <li>SD Cards: <code>/dev/mmcblkXpY</code> | NVMe: <code>/dev/nvmeZnXpY</code></li>
+                        <li>IDE: <code>/dev/hdX</code> (ej. <code>/dev/hda</code>).</li>
+                        <li>SCSI/SATA: <code>/dev/sdX</code> (ej. <code>/dev/sda</code>).</li>
+                        <li>SD Cards: <code>/dev/mmcblkXpY</code> (ej. <code>/dev/mmcblk0p1</code>).</li>
+                        <li>NVMe: <code>/dev/nvmeZnXpY</code> (ej. <code>/dev/nvme0n1p1</code>).</li>
+                        <li>Floppy Disk: <code>/dev/fdX</code> (ej. <code>/dev/fd0</code>).</li>
                     </ul>
                 </section>
                 <section id="101-2">
                     <h2>101.2 Arranque del Sistema</h2>
-                    <h3>Firmware</h3>
+                    <h3>Firmware: BIOS y UEFI</h3>
+                    <p>El firmware inicia el equipo y carga el sistema operativo:</p>
                     <ul>
-                        <li><strong>BIOS:</strong> Usa MBR (512 bytes iniciales del disco), memoria volátil</li>
-                        <li><strong>UEFI:</strong> Usa partición EFI (ESP), memoria no volátil, soporta Secure Boot, compatible con FAT12/16/32</li>
+                        <li><strong>BIOS:</strong> Usa el MBR (primeros 512 bytes del disco) para encontrar el gestor de arranque. Almacena datos en memoria volátil.</li>
+                        <li><strong>UEFI:</strong> Más moderno, usa la partición EFI (ESP) con aplicaciones EFI. Almacena configuraciones en memoria no volátil (NVRAM). Soporta Secure Boot y sistemas de archivos FAT12/16/32 (útil para USB).</li>
                     </ul>
-                    <h3>Gestor de arranque (GRUB)</h3>
+                    <h3>Gestor de arranque: GRUB</h3>
+                    <p>GRUB es el gestor de arranque más común en Linux:</p>
                     <ul>
-                        <li>Parámetros: <code>init=/bin/bash</code>, <code>root=/dev/sda2</code>, <code>ro</code>, <code>rw</code>, <code>maxcpus=2</code></li>
-                        <li>Hacer persistentes: Edita <code>/etc/default/grub</code> (<code>GRUB_CMDLINE_LINUX</code>), actualiza con <code>update-grub</code></li>
-                        <li>Ver parámetros actuales: <code>/proc/cmdline</code></li>
+                        <li>Muestra un menú de sistemas operativos. Si no aparece, presiona <strong>Shift</strong> (BIOS) o <strong>Esc</strong> (UEFI).</li>
+                        <li>Parámetros clave para personalizar el arranque:
+                            <ul>
+                                <li><code>init=/bin/bash</code>: Usa un iniciador alternativo (útil para recuperación).</li>
+                                <li><code>root=/dev/sda2</code>: Define la partición raíz.</li>
+                                <li><code>ro</code>: Monta la raíz en solo lectura (para revisiones).</li>
+                                <li><code>rw</code>: Monta la raíz en lectura/escritura (normal).</li>
+                                <li><code>maxcpus=2</code>: Limita el número de CPUs a usar.</li>
+                            </ul>
+                        </li>
+                        <li>Para hacer los parámetros persistentes: Edita <code>/etc/default/grub</code> (línea <code>GRUB_CMDLINE_LINUX</code>) y actualiza con <code>update-grub</code> o <code>grub-mkconfig</code>.</li>
+                        <li>Ver parámetros actuales: <code>cat /proc/cmdline</code>.</li>
                     </ul>
-                    <h3>Inicialización</h3>
-                    <p>Gestor → RAM → CPU → S.O. → Kernel abre <strong>initramfs</strong> → Monta <code>/etc/fstab</code> → Ejecuta <strong>init</strong> (SysVinit, Systemd, Upstart) → Borra initramfs</p>
-                    <h3>Errores</h3>
+                    <h3>Inicialización del sistema</h3>
+                    <p>Pasos del arranque:</p>
+                    <ol>
+                        <li>Gestor de arranque carga el kernel en la RAM.</li>
+                        <li>Kernel toma el control de la CPU.</li>
+                        <li>Kernel detecta el sistema operativo y sus configuraciones.</li>
+                        <li>Kernel abre <strong>initramfs</strong> (sistema de archivos temporal en RAM).</li>
+                        <li>Monta los sistemas de archivos desde <code>/etc/fstab</code>.</li>
+                        <li>Ejecuta <strong>init</strong> (SysVinit, Systemd o Upstart, aunque este último está obsoleto).</li>
+                        <li>Initramfs se elimina de la RAM.</li>
+                    </ol>
+                    <h3>Errores en el arranque</h3>
+                    <p>Para diagnosticar problemas:</p>
                     <ul>
-                        <li><strong>Kernel ring buffer:</strong> Usa <code>dmesg</code> (borra con <code>dmesg --clear</code>)</li>
-                        <li><strong>Systemd:</strong> Usa <code>journalctl</code> (<code>--list-boots</code>, <code>-b 0</code>, <code>-D /var/log/journal</code>)</li>
+                        <li><strong>Kernel ring buffer:</strong> Almacena mensajes del kernel. Usa <code>dmesg</code> para verlos. Se borran al apagar o con <code>dmesg --clear</code>.</li>
+                        <li><strong>Systemd (journalctl):</strong> Muestra logs de arranque:
+                            <ul>
+                                <li><code>journalctl --list-boots</code>: Lista todos los arranques registrados.</li>
+                                <li><code>journalctl -b 0</code>: Muestra mensajes del arranque actual (<code>-b 1</code> para el anterior).</li>
+                                <li><code>journalctl -D /var/log/journal</code>: Accede a logs almacenados en esa ruta.</li>
+                            </ul>
+                        </li>
                     </ul>
                 </section>
                 <section id="101-3">
                     <h2>101.3 Cambiar niveles de ejecución y apagar/reiniciar</h2>
-                    <h3>SysVinit</h3>
+                    <h3>SysVinit: Runlevels</h3>
+                    <p>SysVinit usa niveles de ejecución para definir el estado del sistema:</p>
                     <ul>
-                        <li><strong>Runlevels:</strong> 0 (apagado), 1 (monousuario), 2-4 (multiusuario), 5 (gráfico), 6 (reinicio)</li>
-                        <li><strong>/sbin/init:</strong> Usa <code>/etc/inittab</code> (sintaxis: <code>id:runlevel:action:process</code>)</li>
-                        <li>Acciones: <code>boot</code>, <code>bootwait</code>, <code>sysinit</code>, <code>wait</code>, <code>respawn</code>, <code>ctrlaltdel</code></li>
-                        <li>Cambiar: <code>telinit N</code> | Recargar: <code>telinit q</code></li>
+                        <li><strong>0:</strong> Apagado.</li>
+                        <li><strong>1:</strong> Modo monousuario (sin red, para reparaciones).</li>
+                        <li><strong>2-4:</strong> Modo multiusuario (varía según la distro, 2 suele ser sin interfaz gráfica).</li>
+                        <li><strong>5:</strong> Modo multiusuario con interfaz gráfica.</li>
+                        <li><strong>6:</strong> Reinicio.</li>
                     </ul>
-                    <h3>Systemd</h3>
+                    <p>Configuración:</p>
                     <ul>
-                        <li><strong>Unidades:</strong> <code>service</code>, <code>target</code>, <code>mount</code>, etc. Config en <code>/lib/systemd/system</code></li>
-                        <li><strong>systemctl:</strong> <code>start/stop/restart/status unit.service</code>, <code>enable/disable unit.service</code></li>
-                        <li>Cambiar runlevel: <code>systemctl isolate graphical.target</code></li>
+                        <li><strong>/sbin/init:</strong> Proceso principal que lee <code>/etc/inittab</code>.</li>
+                        <li><code>/etc/inittab</code>: Define runlevels (sintaxis: <code>id:runlevel:action:process</code>). Acciones comunes:
+                            <ul>
+                                <li><code>boot</code>: Ejecuta al arrancar.</li>
+                                <li><code>sysinit</code>: Scripts de inicialización.</li>
+                                <li><code>respawn</code>: Reinicia un proceso si falla.</li>
+                            </ul>
+                        </li>
+                        <li>Cambiar runlevel: <code>telinit N</code> (ej. <code>telinit 3</code>).</li>
+                        <li>Recargar <code>inittab</code>: <code>telinit q</code>.</li>
                     </ul>
-                    <h3>Apagado y Reinicio</h3>
+                    <h3>Systemd: Targets</h3>
+                    <p>Systemd reemplaza a SysVinit y usa "targets" (equivalentes a runlevels):</p>
                     <ul>
-                        <li><strong>Apagar:</strong> <code>shutdown -h</code> o <code>systemctl poweroff</code></li>
-                        <li><strong>Reiniciar:</strong> <code>shutdown -r</code> o <code>systemctl reboot</code></li>
-                        <li><strong>Notificar:</strong> <code>wall</code> (mensaje a usuarios)</li>
+                        <li>Targets comunes:
+                            <ul>
+                                <li><code>poweroff.target</code>: Apagado (runlevel 0).</li>
+                                <li><code>rescue.target</code>: Modo monousuario (runlevel 1).</li>
+                                <li><code>multi-user.target</code>: Modo multiusuario (runlevel 2-4).</li>
+                                <li><code>graphical.target</code>: Modo gráfico (runlevel 5).</li>
+                                <li><code>reboot.target</code>: Reinicio (runlevel 6).</li>
+                            </ul>
+                        </li>
+                        <li>Unidades: Además de targets, Systemd gestiona <code>service</code> (servicios), <code>mount</code> (montajes), <code>socket</code>, etc.</li>
+                        <li>Configuración: Archivos en <code>/lib/systemd/system/</code>.</li>
+                        <li>Comandos con <code>systemctl</code>:
+                            <ul>
+                                <li><code>systemctl isolate multi-user.target</code>: Cambia al target indicado.</li>
+                                <li><code>systemctl start servicio.service</code>: Inicia un servicio.</li>
+                                <li><code>systemctl enable servicio.service</code>: Habilita un servicio al arranque.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h3>Apagado y reinicio</h3>
+                    <p>Comandos para apagar o reiniciar el sistema:</p>
+                    <ul>
+                        <li><strong>Apagar:</strong> <code>shutdown -h now</code> o <code>poweroff</code> (Systemd: <code>systemctl poweroff</code>).</li>
+                        <li><strong>Reiniciar:</strong> <code>shutdown -r now</code> o <code>reboot</code> (Systemd: <code>systemctl reboot</code>).</li>
+                        <li><strong>Notificar usuarios:</strong> Usa <code>wall</code> para enviar un mensaje a todos los usuarios conectados antes de apagar (ej. <code>wall "El sistema se apagará en 5 minutos"</code>).</li>
                     </ul>
                 </section>
             </div>
@@ -112,6 +184,6 @@
         </div>
     </footer>
     <a href="#" id="back-to-top">↑ Volver arriba</a>
-    <script src="scripts.js"></script>
+    <script src="/conf/scripts.js"></script>
 </body>
 </html>
