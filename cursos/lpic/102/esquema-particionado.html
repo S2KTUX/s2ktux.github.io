@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 102.1 (LPIC-1 102) en SysRiser. Aprende a diseñar el esquema de particionado del disco duro en Linux.">
+    <meta name="keywords" content="LPIC-1, particionado, disco duro, Linux, LVM, swap, curso, tecnología">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 102.1 Diseño del esquema de particionado del disco</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>102.1 Diseño del esquema de particionado del disco</h1>
+            <p>Aprende a estructurar particiones en Linux para un sistema eficiente y seguro.</p>
+        </div>
+        <a href="instalacion-paquetes.html" class="back-link">← Volver a Instalación de Linux y gestión de paquetes</a>
+        <div class="course-page">
+            <div class="content">
+                <section id="puntos-montaje">
+                    <h2>Puntos de montaje</h2>
+                    <p>Para acceder a un sistema de archivos en Linux, el directorio debe estar creado y montado previamente. Puedes montarlo donde desees.</p>
+                    <p>Antiguamente, se montaba en <code>/mnt</code>, pero hoy en día es más común usar <code>/media</code>. Por ejemplo:</p>
+                    <ul>
+                        <li>Un USB se montaría automáticamente en <code>/media/USER/ETIQUETA</code>, como <code>/media/sysriser/FlashDrive</code>.</li>
+                    </ul>
+                    <p>Si vas a montar manualmente un sistema de archivos, es buena práctica hacerlo en <code>/mnt</code>.</p>
+                </section>
+                <section id="manteniendo-separadas">
+                    <h2>Manteniendo las cosas separadas</h2>
+                    <p>En Linux, es recomendable tener ciertos directorios en particiones separadas para mejorar la estabilidad y facilitar la administración. Estas son algunas particiones recomendadas:</p>
+                    <ul>
+                        <li><strong>/boot:</strong> Para arrancar el sistema aunque la raíz (<code>/</code>) tenga problemas.
+                            <ul>
+                                <li>Contiene archivos del gestor de arranque y se monta en <code>/boot</code>. Los archivos de GRUB se guardan en <code>/boot/grub</code>.</li>
+                                <li>Es la primera partición de arranque y un tamaño adecuado es de aproximadamente 300 MB.</li>
+                                <li><strong>Partición EFI:</strong> Usada por máquinas UEFI, almacena cargadores de arranque e imágenes del núcleo. Está formateada en un sistema de archivos FAT y se monta en <code>/boot/efi</code>.</li>
+                            </ul>
+                        </li>
+                        <li><strong>/home:</strong> Facilita la reinstalación del sistema.
+                            <ul>
+                                <li>Es el directorio principal de cada usuario y su tamaño depende del uso.</li>
+                                <li>Excepción: el usuario <code>root</code> y otros usuarios del sistema no usan este directorio.</li>
+                            </ul>
+                        </li>
+                        <li><strong>/var:</strong> Facilita la administración del sistema.
+                            <ul>
+                                <li>Contiene datos variables, como registros del sistema (<code>/var/log</code>), archivos temporales (<code>/var/tmp</code>) y archivos de caché (<code>/var/cache</code>), entre otros.</li>
+                                <li>Tener esta partición separada puede otorgar estabilidad, ya que un proceso podría escribir logs infinitamente y bloquear el sistema.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="particion-intercambio">
+                    <h2>Partición de intercambio</h2>
+                    <p>La partición <strong>SWAP</strong> se usa para intercambiar páginas de memoria RAM a disco. Debe ser de un tipo específico y configurarse con el comando <code>mkswap</code> antes de usarse.</p>
+                    <ul>
+                        <li>No se puede montar como otras particiones, por lo que no se puede acceder a ella directamente.</li>
+                        <li>Linux también admite archivos de intercambio en lugar de particiones.</li>
+                        <li><strong>Tamaño recomendado:</strong> Igual al tamaño de la RAM si es ≤ 8 GB; si hay más de 8 GB de RAM, al menos 4 GB suelen ser suficientes.</li>
+                    </ul>
+                </section>
+                <section id="lvm">
+                    <h2>LVM</h2>
+                    <p>LVM (Logical Volume Manager) es una virtualización del almacenamiento y su objetivo es facilitar la gestión de las necesidades de
+                        almacenamiento de sus usuarios finales . Su estructura básica incluye:</p>
+                    <ul>
+                        <li><strong>Physical Volume (PV):</strong> Unidad básica, como una partición o disco.</li>
+                        <li><strong>Volume Group (VG):</strong> Agrupa varios PVs.</li>
+                        <li><strong>Logical Volume (LV):</strong> Subdivisiones dentro de un VG, donde se crean los sistemas de archivos.</li>
+                        <li><strong>Extents:</strong> Unidad más pequeña dentro de los grupos de volúmenes.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
