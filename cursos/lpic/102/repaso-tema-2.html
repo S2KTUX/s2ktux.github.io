@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Repaso del Tema 102 (LPIC-1 102) en SysRiser. Resumen de instalación de Linux y gestión de paquetes para el examen.">
+    <meta name="keywords" content="LPIC-1, repaso, instalación de Linux, gestión de paquetes, particionado, GRUB, Debian, RPM, virtualización, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - Repaso Tema 102 (LPIC-1 102)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>Repaso Tema 102 (LPIC-1 102)</h1>
+            <p>Resumen esencial para el examen: instalación de Linux, gestión de paquetes y virtualización .</p>
+        </div>
+        <a href="instalacion-paquetes.html" class="back-link">← Volver a Instalación de Linux y gestión de paquetes</a>
+        <div class="course-page">
+            <div class="content">
+                <section id="102-1">
+                    <h2>102.1 Diseño del esquema de particionado del disco duro</h2>
+                    <h3>Conceptos clave</h3>
+                    <ul>
+                        <li><strong>Particiones primarias:</strong> Máximo 4 por disco (MBR). Numeradas como <code>/dev/sda1</code> a <code>/dev/sda4</code>.</li>
+                        <li><strong>Particiones extendidas:</strong> Una partición primaria puede ser extendida para contener particiones lógicas (numeradas desde <code>/dev/sda5</code> en adelante).</li>
+                        <li><strong>Particiones lógicas:</strong> Dentro de una partición extendida, para superar el límite de 4 particiones.</li>
+                        <li><strong>GPT:</strong> Reemplazo moderno para MBR, soporta hasta 128 particiones, discos > 2TB, y no necesita particiones extendidas.</li>
+                    </ul>
+                    <h3>Directorios clave</h3>
+                    <ul>
+                        <li><strong>/boot:</strong> Archivos de arranque (kernel, initramfs). Necesita ~500 MB, debe ser accesible para el gestor de arranque (en MBR, asegúrate de que esté dentro de los primeros 2TB).</li>
+                        <li><strong>/:</strong> Raíz del sistema. Tamaño depende del uso (mínimo 10-20 GB).</li>
+                        <li><strong>/home:</strong> Archivos de usuarios. Sepáralo para facilitar respaldos (tamaño según usuarios).</li>
+                        <li><strong>swap:</strong> Memoria virtual. Regla general: igual a la RAM si es ≤ 2GB; si es > 2GB, 2-4 GB suelen bastar.</li>
+                    </ul>
+                    <h3>Herramientas</h3>
+                    <ul>
+                        <li><code>fdisk /dev/sdX</code>: Gestiona particiones MBR. Usa <code>fdisk -l</code> para listar.</li>
+                        <li><code>parted /dev/sdX</code>: Gestiona particiones MBR y GPT. Ejemplo: <code>parted /dev/sda mklabel gpt</code>.</li>
+                        <li><code>mkfs -t ext4 /dev/sdX1</code>: Formatea particiones (ext4 es común).</li>
+                        <li><code>mkswap /dev/sdX2</code>: Crea una partición swap.</li>
+                    </ul>
+                </section>
+                <section id="102-2">
+                    <h2>102.2 Instalar un gestor de arranque</h2>
+                    <h3>GRUB Legacy vs. GRUB2</h3>
+                    <ul>
+                        <li><strong>GRUB Legacy:</strong> Antigua (0.x). Configuración en <code>/boot/grub/menu.lst</code>.</li>
+                        <li><strong>GRUB2:</strong> Moderna (1.9x o superior). Configuración en <code>/boot/grub/grub.cfg</code> (no editar manualmente) y <code>/etc/default/grub</code>.</li>
+                    </ul>
+                    <h3>Instalación y configuración</h3>
+                    <ul>
+                        <li>Instalar GRUB: <code>grub-install /dev/sda</code> (instala en el MBR del disco).</li>
+                        <li>Actualizar configuración: <code>update-grub</code> (o <code>grub-mkconfig -o /boot/grub/grub.cfg</code>).</li>
+                        <li>Configuración en <code>/etc/default/grub</code>:
+                            <ul>
+                                <li><code>GRUB_TIMEOUT</code>: Tiempo de espera en el menú.</li>
+                                <li><code>GRUB_DEFAULT</code>: Sistema por defecto (0 para el primero).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h3>GRUB en UEFI</h3>
+                    <ul>
+                        <li>Necesita una partición EFI (ESP), típicamente <code>/boot/efi</code>, formateada como FAT32.</li>
+                        <li>Instalar: <code>grub-install --target=x86_64-efi --efi-directory=/boot/efi</code>.</li>
+                    </ul>
+                </section>
+                <section id="102-3">
+                    <h2>102.3 Gestión de librerías compartidas</h2>
+                    <h3>Librerías y su ubicación</h3>
+                    <ul>
+                        <li><strong>Librerías compartidas:</strong> Archivos con extensión <code>.so</code> (shared object), como <code>libc.so.6</code>.</li>
+                        <li>Ubicaciones: <code>/lib</code>, <code>/usr/lib</code>, <code>/usr/local/lib</code>.</li>
+                        <li><code>/etc/ld.so.conf</code>: Define directorios adicionales de librerías (o usa <code>/etc/ld.so.conf.d/</code>).</li>
+                    </ul>
+                    <h3>Comandos clave</h3>
+                    <ul>
+                        <li><code>ldd /bin/ls</code>: Muestra las librerías que necesita un binario.</li>
+                        <li><code>ldconfig</code>: Actualiza la caché de librerías (<code>/etc/ld.so.cache</code>) tras añadir nuevas librerías o modificar <code>/etc/ld.so.conf</code>.</li>
+                        <li>Variable <code>LD_LIBRARY_PATH</code>: Define directorios temporales para buscar librerías. Ejemplo: <code>export LD_LIBRARY_PATH=/opt/lib</code>.</li>
+                    </ul>
+                </section>
+                <section id="102-4">
+                    <h2>102.4 Gestión de paquetes Debian</h2>
+                    <h3>Paquetes y herramientas</h3>
+                    <ul>
+                        <li>Paquetes: Archivos <code>.deb</code>.</li>
+                        <li><strong>dpkg:</strong> Herramienta de bajo nivel para gestionar paquetes.
+                            <ul>
+                                <li><code>dpkg -i paquete.deb</code>: Instala un paquete.</li>
+                                <li><code>dpkg -r paquete</code>: Elimina un paquete (sin dependencias).</li>
+                                <li><code>dpkg -l</code>: Lista paquetes instalados.</li>
+                            </ul>
+                        </li>
+                        <li><strong>apt:</strong> Herramienta de alto nivel, gestiona dependencias y repositorios.
+                            <ul>
+                                <li><code>apt update</code>: Actualiza la lista de paquetes.</li>
+                                <li><code>apt install paquete</code>: Instala un paquete con dependencias.</li>
+                                <li><code>apt remove paquete</code>: Elimina un paquete (deja configuraciones).</li>
+                                <li><code>apt purge paquete</code>: Elimina un paquete y sus configuraciones.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h3>Repositorios</h3>
+                    <ul>
+                        <li><code>/etc/apt/sources.list</code>: Define repositorios (líneas como <code>deb http://deb.debian.org/debian stable main</code>).</li>
+                        <li><code>/etc/apt/sources.list.d/</code>: Directorio para añadir repositorios adicionales.</li>
+                    </ul>
+                </section>
+                <section id="102-5">
+                    <h2>102.5 Gestión de paquetes RPM y YUM</h2>
+                    <h3>Paquetes y herramientas</h3>
+                    <ul>
+                        <li>Paquetes: Archivos <code>.rpm</code>.</li>
+                        <li><strong>rpm:</strong> Herramienta de bajo nivel.
+                            <ul>
+                                <li><code>rpm -ivh paquete.rpm</code>: Instala un paquete (<code>-i</code> para instalar, <code>-v</code> para verbose, <code>-h</code> para hash).</li>
+                                <li><code>rpm -e paquete</code>: Elimina un paquete.</li>
+                                <li><code>rpm -qa</code>: Lista paquetes instalados.</li>
+                            </ul>
+                        </li>
+                        <li><strong>yum/dnf:</strong> Herramientas de alto nivel, gestionan dependencias y repositorios.
+                            <ul>
+                                <li><code>yum install paquete</code>: Instala un paquete.</li>
+                                <li><code>yum remove paquete</code>: Elimina un paquete.</li>
+                                <li><code>yum update</code>: Actualiza todos los paquetes.</li>
+                                <li><code>dnf</code>: Reemplazo moderno de <code>yum</code> en Fedora (mismos comandos).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <h3>Repositorios</h3>
+                    <ul>
+                        <li><code>/etc/yum.repos.d/</code>: Directorio con archivos de repositorios (ej. <code>epel.repo</code>).</li>
+                        <li><code>yum repolist</code>: Lista repositorios activos.</li>
+                    </ul>
+                </section>
+                <section id="102-6">
+                    <h2>102.6 Linux como sistema virtualizado</h2>
+                    <h3>Conceptos clave</h3>
+                    <ul>
+                        <li><strong>Hipervisor:</strong> Software que crea y gestiona máquinas virtuales (VM).
+                            <ul>
+                                <li>Tipo 1: Bare-metal (ej. VMware ESXi, Xen).</li>
+                                <li>Tipo 2: Hospedado (ej. VirtualBox, VMware Workstation).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Contenedores:</strong> Alternativa ligera a VMs, comparten el kernel del host (ej. Docker).</li>
+                    </ul>
+                    <h3>Herramientas de virtualización</h3>
+                    <ul>
+                        <li><strong>KVM:</strong> Hipervisor para Linux, usa <code>virt-manager</code> para gestión gráfica.</li>
+                        <li><strong>Xen:</strong> Hipervisor tipo 1, soporta paravirtualización (mejor rendimiento).</li>
+                        <li><strong>VirtualBox:</strong> Hipervisor tipo 2, fácil de usar.</li>
+                    </ul>
+                    <h3>Configuración en Linux como huésped</h3>
+                    <ul>
+                        <li>Instala drivers del hipervisor (ej. <code>virtio</code> para KVM) para mejor rendimiento.</li>
+                        <li>Habilita <code>nested virtualization</code> si necesitas VMs dentro de una VM: <code>modprobe kvm_intel nested=1</code>.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
