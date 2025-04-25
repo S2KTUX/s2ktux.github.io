@@ -45,12 +45,12 @@
             <div class="content">
                 <section id="descripcion-virtualizacion">
                     <h2>Descripción general de virtualización</h2>
-                    <p>Nosotros usamos la virtualización para crear máquinas virtuales que actúan como computadoras completas dentro de una sola máquina física. Esto lo hacemos con un programa especial llamado hipervisor, que se encarga de repartir los recursos del equipo (como la CPU o la RAM) entre las máquinas virtuales, también conocidas como "invitados". Así podemos tener varios sistemas operativos funcionando al mismo tiempo.</p>
+                    <p>Usamos la virtualización para crear máquinas virtuales que actúan como computadoras completas dentro de una sola máquina física. Esto lo hacemos con un programa especial llamado hipervisor, que se encarga de repartir los recursos del equipo (como la CPU o la RAM) entre las máquinas virtuales, también conocidas como "invitados". Así podemos tener varios sistemas operativos funcionando al mismo tiempo.</p>
                     <p>En Linux, los hipervisores más comunes que usamos son: Xen (Tipo 1, que funciona directamente en el equipo), KVM (que puede ser Tipo 1 o Tipo 2, integrado en Linux), y VirtualBox (Tipo 2, que se instala como una aplicación).</p>
                 </section>
                 <section id="tipos-maquinas-virtuales">
                     <h2>Tipos de Máquinas Virtuales</h2>
-                    <p>Nosotros podemos crear tres tipos principales de máquinas virtuales:</p>
+                    <p>Se pueden crear tres tipos principales de máquinas virtuales:</p>
                     <ul>
                         <li><strong>Totalmente virtualizadas:</strong> Estas máquinas no saben que están en un entorno virtual. Funcionan como si fueran una computadora real, pero necesitan hardware especial (como Intel VT-x o AMD-V).</li>
                         <li><strong>Paravirtualizadas:</strong> Estas sí saben que son virtuales y usan controladores especiales para trabajar mejor con el hipervisor, lo que mejora su rendimiento.</li>
@@ -59,12 +59,12 @@
                 </section>
                 <section id="plantillas-maquinas-virtuales">
                     <h2>Trabajando con plantillas de máquinas virtuales</h2>
-                    <p>Cuando necesitamos crear varias máquinas virtuales iguales, nosotros usamos plantillas. Una plantilla es como una máquina virtual ya configurada con lo básico (sistema operativo y ajustes iniciales). La copiamos, hacemos pequeños cambios (como el nombre o la dirección de red), y ya tenemos una nueva máquina lista rápidamente.</p>
+                    <p>Cuando necesitamos crear varias máquinas virtuales iguales, usamos plantillas. Una plantilla es como una máquina virtual ya configurada con lo básico (sistema operativo y ajustes iniciales). La copiamos, hacemos pequeños cambios (como el nombre o la dirección de red), y ya tenemos una nueva máquina lista rápidamente.</p>
                     <p>Algo importante que revisamos es el D-Bus Machine ID, un identificador único que cada máquina virtual debe tener. Si clonamos una máquina, debemos asegurarnos de que este ID sea diferente para evitar problemas con el hipervisor.</p>
                 </section>
                 <section id="maquinas-virtuales-nube">
                     <h2>Implementación de máquinas virtuales en la nube</h2>
-                    <p>Nosotros también podemos usar máquinas virtuales en la nube con servicios como AWS o Azure (conocidos como IaaS). Aquí creamos y gestionamos nuestras máquinas virtuales a través de herramientas web. Algunos puntos clave que consideramos son: las <strong>instancias de computación</strong> (cuánto tiempo de CPU usamos), el <strong>almacenamiento</strong> (dónde guardamos los datos y su costo), y las <strong>redes</strong> (cómo configuramos subredes o firewalls).</p>
+                    <p>Por ultimo, podemos usar máquinas virtuales en la nube con servicios como AWS o Azure (conocidos como IaaS). Aquí creamos y gestionamos nuestras máquinas virtuales a través de herramientas web. Algunos puntos clave que consideramos son: las <strong>instancias de computación</strong> (cuánto tiempo de CPU usamos), el <strong>almacenamiento</strong> (dónde guardamos los datos y su costo), y las <strong>redes</strong> (cómo configuramos subredes o firewalls).</p>
                     <p>Para acceder a estas máquinas, usamos OpenSSH con claves públicas y privadas, lo que nos permite conectarnos de forma segura. También podemos usar <strong>cloud-init</strong>, una herramienta que nos ayuda a configurar automáticamente las máquinas al crearlas (por ejemplo, ajustando la red o instalando paquetes).</p>
                 </section>
             </div>
