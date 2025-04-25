@@ -36,27 +36,24 @@
             <div class="content">
                 <section id="grub-legacy-vs-grub2">
                     <h2>GRUB Legacy vs. GRUB 2</h2>
-                    <p>El gestor de arranque GRUB (Grand Unified Bootloader) es esencial para iniciar Linux. Existen dos versiones principales:</p>
+                    <p>El gestor de arranque GRUB es clave para iniciar Linux, existiendo dos versiones principales:</p>
                     <ul>
-                        <li><strong>GRUB Legacy:</strong> Desarrollado en 1995 como reemplazo de LILO. Su desarrollo cesó en 2005 y usa <code>/boot/grub/menu.lst</code> para configurarse.</li>
-                        <li><strong>GRUB 2:</strong> Versión moderna, más limpia, segura y robusta. Es la más utilizada actualmente y se configura principalmente mediante <code>/etc/default/grub</code>.</li>
+                        <li><strong>GRUB Legacy:</strong> Desarrollado en 1995 como reemplazo de LILO. Su desarrollo finalizó en 2005 y su archivo de configuración es: <code>/boot/grub/menu.lst</code>.</li>
+                        <li><strong>GRUB 2:</strong> Versión moderna, más limpia, segura y robusta. Es la más utilizada  y su archivo de configuración es :<code>/etc/default/grub.cfg</code>.</li>
                     </ul>
                 </section>
                 <section id="ubicacion-cargador-arranque">
                     <h2>¿Dónde se ubica el cargador de arranque?</h2>
-                    <p>Historicamente se particionaba con MBR.</p>
-                    <ul>
-                        <li>El <strong>MBR</strong>es el primer sector de 512 bytes del disco. Tiene limitaciones como máximo 4 particiones primarias y discos de hasta 2TB.contiene una tabla con las particiones del disco y el código de arranque . Este código de arranque se carga, ejecuta y pasa a un cargador de arranque secundario ubicado en un espacio de  32 KB entre el MBR y la primera partición.</li>
-                        <li>los discos con particiones <strong>GPT</strong> solucionan las limitaciones de MBR y se pueden usar en BIOS o UEFI</li>
-                         <ul>
+                    <p>Historicamente se particionaba con MBR. El <strong>MBR</strong> es el primer sector de 512 bytes del disco. Tiene limitaciones como máximo 4 particiones primarias y discos de hasta 2TB.contiene una tabla con las particiones del disco y el código de arranque. Este código de arranque se carga, ejecuta y pasa a un cargador de arranque secundario ubicado en un espacio de  32 KB entre el MBR y la primera partición.</p>
+                    <p>Por otro lado, los discos con particiones <strong>GPT</strong> solucionan las limitaciones de MBR y se pueden usar en BIOS o UEFI </p>
+                        <ul>
                             <li><strong>BIOS:</strong> La segunda parte de GRUB se almacena en una partición especial de arranque BIOS.</li>
                             <li><strong>UEFI:</strong> GRUB se carga desde el firmware usando <code>grubia32.efi</code> o <code>grubx64.efi</code>, ubicados en la partición EFI (ESP).</li>
                         </ul>
-                    </ul>
                 </section>
                 <section id="particion-boot">
                     <h2>La partición /boot</h2>
-                    <p>La partición <code>/boot</code> contiene los archivos necesarios para el arranque del sistema. Suele ser la primera partición del disco y es recomendable separarla de raíz, aunque no es obligatorio. Su tamaño recomendado es de 300MB y su contenido principal :</p>
+                    <p>La partición <code>/boot</code> contiene los archivos necesarios para el arranque del sistema. Suele ser la primera partición del disco y es recomendable separarla de raíz, aunque no obligatorio. Su tamaño recomendado son 300MB y su contenido principal :</p>
                     <ul>
                         <li><strong>Archivo de configuración:</strong> <code>config-version</code>. Parámetros de configuración del kernel.</li>
                         <li><strong>Mapa del sistema:</strong> <code>system.map-version</code>. Tabla que asocia nombres de símbolos (como variables) con sus posiciones en memoria.</li>
@@ -67,13 +64,13 @@
                 </section>
                 <section id="grub2">
                     <h2>GRUB 2</h2>
-                    <p>GRUB 2 se instala con el comando <code>grub-install</code>y con <code>fdisk -l</code> podemos comprobar si hay una partición boot. Si el sistema no arranca, podriamos usar un Live-CD como por ejemplo:</p>
+                    <p>GRUB 2 se instala con el comando <code>grub-install</code>y con el comando <code>fdisk -l</code> podemos comprobar si hay una partición boot. Si el sistema no arranca, podriamos usar un Live-CD, como por ejemplo:</p>
                     <ul>
                         <li>Monta la partición: <code>mount /dev/sda1 /mnt/tmp</code>.</li>
-                        <li>Instala GRUB: <code>grub-install --boot-directory=/mnt/tmp /dev/sda</code>. Si no tuviesemos partición /boot, podríamos instalar directamente : <code>grub-install --boot-directory=/boot /dev/sda</code> </li>
+                        <li>Instala GRUB: <code>grub-install --boot-directory=/mnt/tmp /dev/sda</code>. (Si no tuviesemos partición /boot, podríamos instalarlo ahí directamente : <code>grub-install --boot-directory=/boot /dev/sda</code>) </li>
                     </ul>
                     <h3>Configuración</h3>
-                    <p>El archivo principal de configuración es <code>/boot/grub/grub.cfg</code>, pero no se edita. Para modificaciones editaremos <code>/etc/default/grub</code> y sus parámetros principales:</p>
+                    <p>El archivo principal de configuración es <code>/boot/grub/grub.cfg</code>, pero este no se edita. Para modificaciones editaremos <code>/etc/default/grub</code> y sus parámetros principales son:</p>
                     <ul>
                         <li><strong>GRUB_DEFAULT:</strong> Entrada predeterminada (valor numérico, nombre, o <code>saved</code>).</li>
                         <li><strong>GRUB_SAVEDEFAULT:</strong> Inicia la última entrada seleccionada (<code>true</code>, con <code>GRUB_DEFAULT=saved</code>).</li>
@@ -92,8 +89,8 @@ menuentry "Default OS" {
 }
                     </pre>
                     <h3>Interactuar con GRUB 2</h3>
-                    <p>En el menú de GRUB 2 podemos editar una opción con la tecla <code>e</code> y acceder a la shell GRUB con la tecla <code>c</code>. Volveriamos al menú con <code>Esc</code>. Por otro lado, podríamos arrancar el sistema desde la consola de grub o desde la consola de rescate </p>
-                    <p>Arranque desde la consola GRUB 2:</p>
+                    <p> Una vez en el menú de GRUB 2 podemos editar una opción con la tecla <code>e</code>, acceder a la shell GRUB con la tecla <code>c</code> y volver al menú con <code>Esc</code>. Por otro lado, podríamos arrancar el sistema de varias formas en caso de fallo de arranque desde el menú: </p>
+                    <p><strong>Arranque desde la consola GRUB 2</strong>:</p>
                     <ul>
                         <li>Buscamos la partición: <code>ls</code>.</li>
                         <li>Configuramos <code>set root=(hd0,msdos1)</code>.</li>
@@ -101,7 +98,7 @@ menuentry "Default OS" {
                         <li>Cargamos el disco RAM: <code>initrd /initrd.img</code>.</li>
                         <li>Iniciamos con <code>boot</code>.</li>
                     </ul>
-                    <p>Arranque desde consola de rescate:</p>
+                    <p><strong>Arranque desde consola de rescate:</strong></p>
                     <ul>
                         <li>Buscamos la partición: <code>ls</code>.</li>
                         <li>Configuramos: <code>set prefix=(hd0,msdos1)/boot/grub</code>.</li>
@@ -111,7 +108,7 @@ menuentry "Default OS" {
                 </section>
                 <section id="grub-legacy">
                     <h2>GRUB Legacy</h2>
-                    <p>Podemos instalar GRUB Legacy con el comando <code>grub-install /dev/sda</code> o desde la shell GRUB :</p>
+                    <p>Podemos instalar GRUB Legacy con el comando <code>grub-install /dev/sda</code> o desde la shell GRUB de la siguiente manera:</p>
                     <ul>
                         <li>Buscamos el dispositivo: <code>find /boot/grub/stage1</code>.</li>
                         <li>Configuramos la partición: <code>root (hd0,0)</code>.</li>
