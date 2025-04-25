@@ -33,41 +33,51 @@
         </div>
         <a href="instalacion-paquetes.html" class="back-link">← Volver a Instalación de Linux y gestión de paquetes</a>
         <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#grub-legacy-vs-grub2">GRUB Legacy vs. GRUB 2</a></li>
+                    <li><a href="#ubicacion-cargador-arranque">Ubicación del cargador de arranque</a></li>
+                    <li><a href="#particion-boot">La partición /boot</a></li>
+                    <li><a href="#grub2">GRUB 2</a></li>
+                    <li><a href="#grub-legacy">GRUB Legacy</a></li>
+                </ul>
+            </div>
             <div class="content">
                 <section id="grub-legacy-vs-grub2">
                     <h2>GRUB Legacy vs. GRUB 2</h2>
                     <p>El gestor de arranque GRUB es clave para iniciar Linux, existiendo dos versiones principales:</p>
                     <ul>
                         <li><strong>GRUB Legacy:</strong> Desarrollado en 1995 como reemplazo de LILO. Su desarrollo finalizó en 2005 y su archivo de configuración es: <code>/boot/grub/menu.lst</code>.</li>
-                        <li><strong>GRUB 2:</strong> Versión moderna, más limpia, segura y robusta. Es la más utilizada  y su archivo de configuración es :<code>/etc/default/grub.cfg</code>.</li>
+                        <li><strong>GRUB 2:</strong> Versión moderna, más limpia, segura y robusta. Es la más utilizada y su archivo de configuración es: <code>/etc/default/grub</code>.</li>
                     </ul>
                 </section>
                 <section id="ubicacion-cargador-arranque">
                     <h2>¿Dónde se ubica el cargador de arranque?</h2>
-                    <p>Historicamente se particionaba con MBR. El <strong>MBR</strong> es el primer sector de 512 bytes del disco. Tiene limitaciones como máximo 4 particiones primarias y discos de hasta 2TB.contiene una tabla con las particiones del disco y el código de arranque. Este código de arranque se carga, ejecuta y pasa a un cargador de arranque secundario ubicado en un espacio de  32 KB entre el MBR y la primera partición.</p>
-                    <p>Por otro lado, los discos con particiones <strong>GPT</strong> solucionan las limitaciones de MBR y se pueden usar en BIOS o UEFI </p>
-                        <ul>
-                            <li><strong>BIOS:</strong> La segunda parte de GRUB se almacena en una partición especial de arranque BIOS.</li>
-                            <li><strong>UEFI:</strong> GRUB se carga desde el firmware usando <code>grubia32.efi</code> o <code>grubx64.efi</code>, ubicados en la partición EFI (ESP).</li>
-                        </ul>
+                    <p>Historicamente se particionaba con MBR. El <strong>MBR</strong> es el primer sector de 512 bytes del disco. Tiene limitaciones como máximo 4 particiones primarias y discos de hasta 2TB. Contiene una tabla con las particiones del disco y el código de arranque. Este código de arranque se carga, ejecuta y pasa a un cargador de arranque secundario ubicado en un espacio de 32 KB entre el MBR y la primera partición.</p>
+                    <p>Por otro lado, los discos con particiones <strong>GPT</strong> solucionan las limitaciones de MBR y se pueden usar en BIOS o UEFI:</p>
+                    <ul>
+                        <li><strong>BIOS:</strong> La segunda parte de GRUB se almacena en una partición especial de arranque BIOS.</li>
+                        <li><strong>UEFI:</strong> GRUB se carga desde el firmware usando <code>grubia32.efi</code> o <code>grubx64.efi</code>, ubicados en la partición EFI (ESP).</li>
+                    </ul>
                 </section>
                 <section id="particion-boot">
                     <h2>La partición /boot</h2>
-                    <p>La partición <code>/boot</code> contiene los archivos necesarios para el arranque del sistema. Suele ser la primera partición del disco y es recomendable separarla de raíz, aunque no obligatorio. Su tamaño recomendado son 300MB y su contenido principal :</p>
+                    <p>La partición <code>/boot</code> contiene los archivos necesarios para el arranque del sistema. Suele ser la primera partición del disco y es recomendable separarla de raíz, aunque no obligatorio. Su tamaño recomendado son 300MB y su contenido principal:</p>
                     <ul>
                         <li><strong>Archivo de configuración:</strong> <code>config-version</code>. Parámetros de configuración del kernel.</li>
                         <li><strong>Mapa del sistema:</strong> <code>system.map-version</code>. Tabla que asocia nombres de símbolos (como variables) con sus posiciones en memoria.</li>
                         <li><strong>Kernel de Linux:</strong> <code>linux-version</code> (o <code>linuz</code> si está comprimido). Núcleo del sistema operativo.</li>
                         <li><strong>Disco RAM inicial:</strong> <code>initrd.img-version</code>. Sistema de archivos raíz mínimo cargado en RAM, con utilidades y módulos para montar el sistema de archivos raíz real.</li>
-                        <li><strong>Archivos del cargador de arranque:</strong> En <code>/boot/grub</code>que incluye:<code>menu.lst</code> (GRUB Legacy) o <code>grub.cfg</code> (GRUB 2),módulos <code>i386-pc</code>, etc... </li>
+                        <li><strong>Archivos del cargador de arranque:</strong> En <code>/boot/grub</code> que incluye: <code>menu.lst</code> (GRUB Legacy) o <code>grub.cfg</code> (GRUB 2), módulos <code>i386-pc</code>, etc...</li>
                     </ul>
                 </section>
                 <section id="grub2">
                     <h2>GRUB 2</h2>
-                    <p>GRUB 2 se instala con el comando <code>grub-install</code>y con el comando <code>fdisk -l</code> podemos comprobar si hay una partición boot. Si el sistema no arranca, podriamos usar un Live-CD, como por ejemplo:</p>
+                    <p>GRUB 2 se instala con el comando <code>grub-install</code> y con el comando <code>fdisk -l</code> podemos comprobar si hay una partición boot. Si el sistema no arranca, podríamos usar un Live-CD, como por ejemplo:</p>
                     <ul>
                         <li>Monta la partición: <code>mount /dev/sda1 /mnt/tmp</code>.</li>
-                        <li>Instala GRUB: <code>grub-install --boot-directory=/mnt/tmp /dev/sda</code>. (Si no tuviesemos partición /boot, podríamos instalarlo ahí directamente : <code>grub-install --boot-directory=/boot /dev/sda</code>) </li>
+                        <li>Instala GRUB: <code>grub-install --boot-directory=/mnt/tmp /dev/sda</code>. (Si no tuviésemos partición /boot, podríamos instalarlo ahí directamente: <code>grub-install --boot-directory=/boot /dev/sda</code>)</li>
                     </ul>
                     <h3>Configuración</h3>
                     <p>El archivo principal de configuración es <code>/boot/grub/grub.cfg</code>, pero este no se edita. Para modificaciones editaremos <code>/etc/default/grub</code> y sus parámetros principales son:</p>
@@ -89,21 +99,21 @@ menuentry "Default OS" {
 }
                     </pre>
                     <h3>Interactuar con GRUB 2</h3>
-                    <p> Una vez en el menú de GRUB 2 podemos editar una opción con la tecla <code>e</code>, acceder a la shell GRUB con la tecla <code>c</code> y volver al menú con <code>Esc</code>. Por otro lado, podríamos arrancar el sistema de varias formas en caso de fallo de arranque desde el menú: </p>
-                    <p><strong>Arranque desde la consola GRUB 2</strong>:</p>
+                    <p>Una vez en el menú de GRUB 2 podemos editar una opción con la tecla <code>e</code>, acceder a la shell GRUB con la tecla <code>c</code> y volver al menú con <code>Esc</code>. Por otro lado, podríamos arrancar el sistema de varias formas en caso de fallo de arranque desde el menú:</p>
+                    <p><strong>Arranque desde la consola GRUB 2:</strong></p>
                     <ul>
                         <li>Buscamos la partición: <code>ls</code>.</li>
-                        <li>Configuramos <code>set root=(hd0,msdos1)</code>.</li>
-                        <li>Cargamos  el kernel: <code>linux /vmlinuz root=/dev/sda1</code>.</li>
+                        <li>Configuramos: <code>set root=(hd0,msdos1)</code>.</li>
+                        <li>Cargamos el kernel: <code>linux /vmlinuz root=/dev/sda1</code>.</li>
                         <li>Cargamos el disco RAM: <code>initrd /initrd.img</code>.</li>
-                        <li>Iniciamos con <code>boot</code>.</li>
+                        <li>Iniciamos con: <code>boot</code>.</li>
                     </ul>
                     <p><strong>Arranque desde consola de rescate:</strong></p>
                     <ul>
                         <li>Buscamos la partición: <code>ls</code>.</li>
                         <li>Configuramos: <code>set prefix=(hd0,msdos1)/boot/grub</code>.</li>
                         <li>Cargamos los módulos: <code>insmod normal; insmod linux</code>.</li>
-                        <li>Repetiriamos los pases del arranque desde la consola GRUB</li>
+                        <li>Repetiríamos los pasos del arranque desde la consola GRUB.</li>
                     </ul>
                 </section>
                 <section id="grub-legacy">
