@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 102.2 (LPIC-1 102) en SysRiser. Aprende a instalar y configurar un gestor de arranque en Linux (GRUB Legacy y GRUB 2).">
+    <meta name="keywords" content="LPIC-1, gestor de arranque, GRUB, GRUB 2, GRUB Legacy, Linux, curso, tecnología">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 102.2 Instalar un gestor de arranque</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>102.2 Instalar un gestor de arranque</h1>
+            <p>Aprende a instalar y configurar gestores de arranque en Linux: GRUB Legacy y GRUB 2.</p>
+        </div>
+        <a href="instalacion-paquetes.html" class="back-link">← Volver a Instalación de Linux y gestión de paquetes</a>
+        <div class="course-page">
+            <div class="content">
+                <section id="grub-legacy-vs-grub2">
+                    <h2>GRUB Legacy vs. GRUB 2</h2>
+                    <p>El gestor de arranque GRUB (Grand Unified Bootloader) es esencial para iniciar Linux. Existen dos versiones principales:</p>
+                    <ul>
+                        <li><strong>GRUB Legacy:</strong> Desarrollado en 1995 como reemplazo de LILO. Su desarrollo cesó en 2005 y usa <code>/boot/grub/menu.lst</code> para configurarse.</li>
+                        <li><strong>GRUB 2:</strong> Versión moderna, más limpia, segura y robusta. Es la más utilizada actualmente y se configura principalmente mediante <code>/etc/default/grub</code>.</li>
+                    </ul>
+                </section>
+                <section id="ubicacion-cargador-arranque">
+                    <h2>¿Dónde se ubica el cargador de arranque?</h2>
+                    <p>La ubicación del cargador de arranque depende del esquema de particionado y el firmware utilizado:</p>
+                    <h3>MBR (Master Boot Record)</h3>
+                    <ul>
+                        <li>El MBR es el primer sector de 512 bytes del disco. Contiene:
+                            <ul>
+                                <li>Tabla de particiones (máximo 4 particiones primarias).</li>
+                                <li>Código de arranque, que carga un cargador secundario.</li>
+                            </ul>
+                        </li>
+                        <li>El cargador secundario se almacena en un espacio de 32 KB entre el MBR y la primera partición.</li>
+                        <li><strong>Limitaciones:</strong> Solo soporta discos de hasta 2 TB y 4 particiones primarias.</li>
+                    </ul>
+                    <h3>GPT (GUID Partition Table)</h3>
+                    <ul>
+                        <li>Soporta discos mayores a 2 TB y más particiones. Compatible con BIOS y UEFI.</li>
+                        <li><strong>BIOS:</strong> La segunda parte de GRUB se almacena en una partición especial de arranque BIOS.</li>
+                        <li><strong>UEFI:</strong> GRUB se carga desde el firmware usando <code>grubia32.efi</code> o <code>grubx64.efi</code>, ubicados en la partición EFI (ESP).</li>
+                    </ul>
+                </section>
+                <section id="particion-boot">
+                    <h2>La partición /boot</h2>
+                    <p>La partición <code>/boot</code> contiene los archivos necesarios para el arranque del sistema:</p>
+                    <ul>
+                        <li><strong>Características:</strong>
+                            <ul>
+                                <li>Suele ser la primera partición del disco.</li>
+                                <li>Recomendable separarla de la raíz (<code>/</code>), aunque no es obligatorio.</li>
+                                <li>Tamaño recomendado: ~300 MB.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Contenido:</strong>
+                            <ul>
+                                <li><strong>Archivo de configuración:</strong> <code>config-version</code>. Parámetros de configuración del kernel.</li>
+                                <li><strong>Mapa del sistema:</strong> <code>system.map-version</code>. Tabla que asocia nombres de símbolos (como variables) con sus posiciones en memoria.</li>
+                                <li><strong>Kernel de Linux:</strong> <code>linux-version</code> (o <code>linuz</code> si está comprimido). Núcleo del sistema operativo.</li>
+                                <li><strong>Disco RAM inicial:</strong> <code>initrd.img-version</code>. Sistema de archivos raíz mínimo cargado en RAM, con utilidades y módulos para montar el sistema de archivos raíz real.</li>
+                                <li><strong>Archivos del cargador de arranque:</strong> En <code>/boot/grub</code>. Incluyen:
+                                    <ul>
+                                        <li>Configuración: <code>menu.lst</code> (GRUB Legacy) o <code>grub.cfg</code> (GRUB 2).</li>
+                                        <li>Fuentes (<code>fonts</code>) y archivos de traducción (<code>locale</code>).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="grub2">
+                    <h2>GRUB 2</h2>
+                    <h3>Instalación</h3>
+                    <p>GRUB 2 se instala con el comando <code>grub-install</code>. Pasos para instalarlo:</p>
+                    <ul>
+                        <li>Verifica la partición de arranque: <code>fdisk -l</code>.</li>
+                        <li>Si el sistema no arranca, usa un Live CD:
+                            <ul>
+                                <li>Monta la partición: <code>mount /dev/sda1 /mnt/tmp</code>.</li>
+                                <li>Instala GRUB: <code>grub-install --boot-directory=/mnt/tmp /dev/sda</code>.</li>
+                            </ul>
+                        </li>
+                        <li>Si no hay partición <code>/boot</code>, instala directamente: <code>grub-install --boot-directory=/boot /dev/sda</code>.</li>
+                    </ul>
+                    <h3>Configuración</h3>
+                    <p>El archivo principal de configuración es <code>/boot/grub/grub.cfg</code>, pero no se edita manualmente. Usa <code>/etc/default/grub</code> para ajustar parámetros:</p>
+                    <ul>
+                        <li><strong>GRUB_DEFAULT:</strong> Entrada predeterminada (valor numérico, nombre, o <code>saved</code>).</li>
+                        <li><strong>GRUB_SAVEDEFAULT:</strong> Inicia la última entrada seleccionada (<code>true</code>, con <code>GRUB_DEFAULT=saved</code>).</li>
+                        <li><strong>GRUB_TIMEOUT:</strong> Tiempo para elegir (<code>0</code> para inmediato, <code>-1</code> para infinito).</li>
+                        <li><strong>GRUB_CMDLINE_LINUX:</strong> Opciones para el kernel (ej. <code>init</code>, <code>rw</code>, <code>root</code>).</li>
+                        <li><strong>GRUB_CMDLINE_LINUX_DEFAULT:</strong> Genera entradas adicionales, incluyendo modo de recuperación.</li>
+                        <li><strong>GRUB_ENABLE_CRYPTODISK:</strong> Habilita cifrado de disco (<code>y</code>).</li>
+                    </ul>
+                    <h3>Administrar entradas de menú</h3>
+                    <p>Personaliza entradas en <code>/etc/grub.d/</code>. Los archivos deben ser ejecutables, y las entradas personalizadas suelen ir en <code>40_custom</code>. Ejemplo:</p>
+                    <pre>
+menuentry "Default OS" {
+    set root=(hd0,1)
+    linux /vmlinuz root=/dev/sda1 ro quiet splash
+    initrd /initrd.img
+}
+                    </pre>
+                    <h3>Interactuar con GRUB 2</h3>
+                    <p>En el menú de GRUB 2:</p>
+                    <ul>
+                        <li>Edita una opción con la tecla <code>e</code>.</li>
+                        <li>Accede a la shell GRUB con la tecla <code>c</code>.</li>
+                        <li>Vuelve al menú con <code>Esc</code>.</li>
+                        <li>Nota: El menú no aparece si <code>GRUB_TIMEOUT=0</code>.</li>
+                    </ul>
+                    <p>Arranque manual desde la consola GRUB 2:</p>
+                    <ul>
+                        <li>Busca la partición: <code>ls</code>.</li>
+                        <li>Configura: <code>set root=(hd0,msdos1)</code>.</li>
+                        <li>Carga el kernel: <code>linux /vmlinuz root=/dev/sda1</code>.</li>
+                        <li>Carga el disco RAM: <code>initrd /initrd.img</code>.</li>
+                        <li>Inicia: <code>boot</code>.</li>
+                    </ul>
+                    <p>Arranque desde consola de rescate (si falla):</p>
+                    <ul>
+                        <li>Busca la partición: <code>ls</code>.</li>
+                        <li>Configura: <code>set prefix=(hd0,msdos1)/boot/grub</code>.</li>
+                        <li>Carga módulos: <code>insmod normal; insmod linux</code>.</li>
+                        <li>Repite los pasos de arranque manual.</li>
+                    </ul>
+                </section>
+                <section id="grub-legacy">
+                    <h2>GRUB Legacy</h2>
+                    <h3>Instalación</h3>
+                    <p>Instala GRUB Legacy con el comando:</p>
+                    <ul>
+                        <li><code>grub-install /dev/sda</code>.</li>
+                    </ul>
+                    <p>Instalación desde la shell GRUB:</p>
+                    <ul>
+                        <li>Busca el dispositivo: <code>find /boot/grub/stage1</code>.</li>
+                        <li>Configura la partición: <code>root (hd0,0)</code>.</li>
+                        <li>Instala en el MBR: <code>setup (hd0)</code>.</li>
+                    </ul>
+                    <h3>Configuración de entradas y ajustes del menú</h3>
+                    <p>El archivo de configuración es <code>/boot/grub/menu.lst</code>. Discos y particiones se numeran desde 0 (ej. <code>hd0,0</code> para la primera partición del primer disco).</p>
+                    <p>Ejemplo de entrada para Debian:</p>
+                    <pre>
+title Debian
+root (hd0,0)
+kernel /vmlinuz root=/dev/hda1
+                    </pre>
+                    <p>Ejemplo para cargar Windows:</p>
+                    <pre>
+title Windows 10
+root (hd0,1)
+makeactive
+chainload +1
+boot
+                    </pre>
+                    <ul>
+                        <li><strong>makeactive:</strong> Marca la partición como activa.</li>
+                        <li><strong>chainload +1:</strong> Carga el primer sector de la partición de arranque.</li>
+                    </ul>
+                    <h3>Carga de módulos</h3>
+                    <p>GRUB Legacy permite cargar módulos desde <code>/boot/grub/i386-pc</code> mediante su archivo de configuración.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
