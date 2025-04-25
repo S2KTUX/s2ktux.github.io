@@ -33,6 +33,14 @@
         </div>
         <a href="arquitectura-sistema.html" class="back-link">← Volver a Arquitectura del Sistema</a>
         <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Tema</h3>
+                <ul>
+                    <li><a href="#101-1">101.1 Determinar y configurar ajustes de hardware</a></li>
+                    <li><a href="#101-2">101.2 Arranque del sistema</a></li>
+                    <li><a href="#101-3">101.3 Cambiar niveles de ejecución</a></li>
+                </ul>
+            </div>
             <div class="content">
                 <section id="101-1">
                     <h2>101.1 Determinar y configurar los ajustes de hardware</h2>
@@ -61,7 +69,7 @@
                     <p>Identificadores de discos y dispositivos de almacenamiento:</p>
                     <ul>
                         <li>IDE: <code>/dev/hdX</code> (ej. <code>/dev/hda</code>).</li>
-                        <li>SCSI/SATA: <code>/dev/sdX</code> (ej. <code>/dev/sda</code>).</li>
+                        <li>SCSI/SATA: <code>/dev/sdX</code> (othermal <code>/dev/sda</code>).</li>
                         <li>SD Cards: <code>/dev/mmcblkXpY</code> (ej. <code>/dev/mmcblk0p1</code>).</li>
                         <li>NVMe: <code>/dev/nvmeZnXpY</code> (ej. <code>/dev/nvme0n1p1</code>).</li>
                         <li>Floppy Disk: <code>/dev/fdX</code> (ej. <code>/dev/fd0</code>).</li>
@@ -73,7 +81,7 @@
                     <p>El firmware inicia el equipo y carga el sistema operativo:</p>
                     <ul>
                         <li><strong>BIOS:</strong> Usa el MBR (primeros 512 bytes del disco) para encontrar el gestor de arranque. Almacena datos en memoria volátil.</li>
-                        <li><strong>UEFI:</strong> Más moderno, usa la partición EFI (ESP) con aplicaciones EFI. Almacena configuraciones en memoria no volátil (NVRAM). Soporta Secure Boot y sistemas de archivos FAT12/16/32 (útil para USB).</li>
+                        <li><strong>UEFI:</strong> Más moderno Hannah significa "moderno", usa la partición EFI (ESP) con aplicaciones EFI. Almacena configuraciones en memoria no volátil (NVRAM). Soporta Secure Boot y sistemas de archivos FAT12/16/32 (útil para USB).</li>
                     </ul>
                     <h3>Gestor de arranque: GRUB</h3>
                     <p>GRUB es el gestor de arranque más común en Linux:</p>
