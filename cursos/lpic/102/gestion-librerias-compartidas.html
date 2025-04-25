@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 102.3 (LPIC-1 102) en SysRiser. Aprende a gestionar librerías compartidas en Linux: conceptos, configuración y dependencias.">
+    <meta name="keywords" content="LPIC-1, librerías compartidas, Linux, ldconfig, ldd, LD_LIBRARY_PATH, curso, tecnología">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 102.3 Gestión de librerías compartidas</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+            <div class="theme-toggle">
+                <button id="theme-toggle">🌙</button>
+            </div>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>102.3 Gestión de librerías compartidas</h1>
+            <p>Aprende a gestionar librerías compartidas en Linux: conceptos, configuración y dependencias.</p>
+        </div>
+        <a href="instalacion-paquetes.html" class="back-link">← Volver a Instalación de Linux y gestión de paquetes</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#concepto-bibliotecas">Concepto de bibliotecas compartidas</a></li>
+                    <li><a href="#convenciones-nomenclatura">Convenciones de nomenclatura</a></li>
+                    <li><a href="#configuracion-rutas">Configuración de rutas</a></li>
+                    <li><a href="#buscando-dependencias">Buscando dependencias</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="concepto-bibliotecas">
+                    <h2>Concepto de bibliotecas compartidas</h2>
+                    <p>Hay dos tipos de librerías: estáticas y dinámicas.</p>
+                    <ul>
+                        <li><strong>Estáticas:</strong> Forman parte del programa, por lo que no tienen dependencias, pero ocupan un mayor tamaño.</li>
+                        <li><strong>Dinámicas:</strong> El programa depende de la librería. Ocupan menos tamaño y son usadas por varios programas.</li>
+                    </ul>
+                </section>
+                <section id="convenciones-nomenclatura">
+                    <h2>Convenciones de nomenclatura de archivos de objetos compartidos</h2>
+                    <p>El nombre de la librería sigue un patrón, por ejemplo: <code>libpthread.so.0</code>.</p>
+                    <ul>
+                        <li><strong>Nombre de la biblioteca:</strong> Normalmente precedido por <code>lib</code>.</li>
+                        <li><strong>so:</strong> Indica que es un objeto compartido (shared object).</li>
+                        <li><strong>Número de versión:</strong> Indica la versión de la biblioteca.</li>
+                    </ul>
+                    <p>Las ubicaciones comunes para las bibliotecas compartidas en un sistema Linux son:</p>
+                    <ul>
+                        <li><code>/lib</code></li>
+                        <li><code>/lib32</code></li>
+                        <li><code>/lib64</code></li>
+                        <li><code>/usr/lib</code></li>
+                        <li><code>/usr/local/lib</code></li>
+                    </ul>
+                </section>
+                <section id="configuracion-rutas">
+                    <h2>Configuración de rutas de bibliotecas compartidas</h2>
+                    <p>El fichero de configuración se encuentra en <code>/etc/ld.so.conf</code> y en los archivos que residen en el directorio <code>/etc/ld.so.conf.d/</code>. El comando <code>ldconfig</code> se encarga de leer estos archivos de configuración.</p>
+                    <p>La variable de entorno <code>LD_LIBRARY_PATH</code> se puede utilizar para agregar nuevas rutas para bibliotecas compartidas temporalmente o realizando un <code>export LD_LIBRARY_PATH=/usr/local/mylib</code> para que los cambios sean permanentes.</p>
+                </section>
+                <section id="buscando-dependencias">
+                    <h2>Buscando las dependencias de un ejecutable particular</h2>
+                    <p>Para buscar las librerías que usa una aplicación, podemos usar el comando <code>ldd ruta_programa</code>. También sirve para comprobar las dependencias de un objeto compartido, como por ejemplo:</p>
+                    <pre><code>ldd /lib/x86_64-linux-gnu/libc.so.6</code></pre>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
