@@ -14,7 +14,6 @@ body {
     flex-direction: column;
     min-height: 100vh;
     position: relative;
-    transition: background-color 0.3s, color 0.3s;
 }
 
 /* Fondo estático */
@@ -27,89 +26,6 @@ body {
     background: linear-gradient(45deg, #e6f0fa, #f0f4f8);
     z-index: -1;
     opacity: 0.5;
-}
-
-/* Tema oscuro */
-body.dark-theme {
-    background-color: #121212;
-    color: #f5f5f5;
-}
-
-body.dark-theme header,
-body.dark-theme footer {
-    background-color: #003f87;
-    border-color: #555;
-}
-
-body.dark-theme .hero h1,
-body.dark-theme .hero p,
-body.dark-theme #contenido h2,
-body.dark-theme .course-card h3,
-body.dark-theme .parallax-content h3,
-body.dark-theme .tab-button,
-body.dark-theme .tab-content p,
-body.dark-theme .tab-content h4,
-body.dark-theme .content h2,
-body.dark-theme .content h3,
-body.dark-theme .content p,
-body.dark-theme .content li,
-body.dark-theme .sidebar h3,
-body.dark-theme .sidebar a,
-body.dark-theme .welcome-content h1,
-body.dark-theme .welcome-content p,
-body.dark-theme .about-section h2,
-body.dark-theme .about-section p,
-body.dark-theme .first-steps-section h2,
-body.dark-theme .first-steps-section p,
-body.dark-theme .step-card h3,
-body.dark-theme .step-card p,
-body.dark-theme .testimonials-section h2,
-body.dark-theme .testimonial-card p,
-body.dark-theme .testimonial-card h4,
-body.dark-theme .subscribe-section h2,
-body.dark-theme .subscribe-section p,
-body.dark-theme .form-note {
-    color: #f5f5f5;
-}
-
-body.dark-theme p,
-body.dark-theme .welcome-content p,
-body.dark-theme .about-section p,
-body.dark-theme .first-steps-section p,
-body.dark-theme .step-card p,
-body.dark-theme .testimonials-section p,
-body.dark-theme .testimonial-card p,
-body.dark-theme .subscribe-section p,
-body.dark-theme .content p,
-body.dark-theme .parallax-content p,
-body.dark-theme .tab-content p {
-    color: #d1d1d1;
-}
-
-body.dark-theme .course-card,
-body.dark-theme .tab-content,
-body.dark-theme .parallax-content,
-body.dark-theme .welcome-section,
-body.dark-theme .welcome-content,
-body.dark-theme .step-card,
-body.dark-theme .testimonial-card,
-body.dark-theme .subscribe-section {
-    background-color: #1e1e1e;
-    border-color: #555;
-}
-
-body.dark-theme .tab-button {
-    background-color: #444;
-}
-
-body.dark-theme .tab-button:hover,
-body.dark-theme .tab-button.active {
-    background-color: #555;
-}
-
-body.dark-theme .sidebar {
-    background-color: #1e1e1e;
-    border-color: #555;
 }
 
 /* Barra de progreso de lectura */
@@ -166,22 +82,6 @@ nav a:hover {
     color: #a3cfff;
 }
 
-.theme-toggle {
-    margin: 0;
-}
-
-.theme-toggle button {
-    background: none;
-    border: none;
-    font-size: 20px;
-    cursor: pointer;
-    transition: transform 0.3s;
-}
-
-.theme-toggle button:hover {
-    transform: scale(1.2);
-}
-
 /* Sección de bienvenida (index.html) */
 .welcome-section {
     position: relative;
@@ -199,10 +99,6 @@ nav a:hover {
     padding: 40px;
     border-radius: 10px;
     max-width: 600px;
-}
-
-body.dark-theme .welcome-content {
-    background: rgba(30, 30, 30, 0.9);
 }
 
 .welcome-content h1 {
@@ -256,10 +152,6 @@ body.dark-theme .welcome-content {
 .first-steps-section {
     padding: 50px 20px;
     background-color: #f0f4f8;
-}
-
-body.dark-theme .first-steps-section {
-    background-color: #1e1e1e;
 }
 
 .first-steps-section h2 {
@@ -352,11 +244,6 @@ body.dark-theme .first-steps-section {
 .subscribe-section {
     padding: 50px 20px;
     background-color: #f0f4f8;
-    text-align: center;
-}
-
-body.dark-theme .subscribe-section {
-    background-color: #1e1e1e;
 }
 
 .subscribe-section h2 {
@@ -748,8 +635,15 @@ main {
     word-wrap: break-word;
 }
 
-body.dark-theme .content pre, body.dark-theme .project-content pre {
-    background-color: #333;
+/* Estilo para la etiqueta <code> */
+code {
+    font-family: 'Courier New', Courier, monospace;
+    background-color: #f0f4f8;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 1em; /* Igual al tamaño del texto circundante */
+    line-height: inherit; /* Evita cambios en el espaciado vertical */
+    color: #1a1a1a;
 }
 
 .back-link {
@@ -777,10 +671,6 @@ th, td {
 th {
     background-color: #f0f4f8;
     font-weight: 600;
-}
-
-body.dark-theme th {
-    background-color: #333;
 }
 
 /* Footer */
@@ -873,8 +763,6 @@ footer {
 }
 
 /* Media Queries para Responsividad */
-
-/* Tablets y pantallas pequeñas (hasta 768px) */
 @media (max-width: 768px) {
     header {
         flex-direction: column;
@@ -979,7 +867,7 @@ footer {
 
     .sidebar {
         width: 100%;
-        display: none; /* Ocultar la barra lateral en móviles */
+        display: none;
     }
 
     .content, .project-content {
@@ -1046,7 +934,6 @@ footer {
         padding: 8px 15px;
     }
 
-    /* Ajustes para tablas */
     table {
         width: 100%;
         box-sizing: border-box;
@@ -1060,7 +947,6 @@ footer {
     }
 }
 
-/* Móviles pequeños (hasta 480px) */
 @media (max-width: 480px) {
     .welcome-content h1 {
         font-size: 24px;
@@ -1124,7 +1010,6 @@ footer {
         word-wrap: break-word;
     }
 
-    /* Ajustes adicionales para tablas en móviles pequeños */
     table {
         width: 100%;
     }
