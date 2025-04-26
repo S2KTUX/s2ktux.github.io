@@ -103,6 +103,8 @@
                     <ul>
                         <li><strong><code>sed</code></strong> (borrar): Elimina líneas que coincidan.<br>
                             <em>Ejemplo:</em> <code>sed '/cat/d' nombres.txt</code> elimina líneas con "cat".</li>
+                        <li><strong><code>sed</code></strong> (imprimir coincidencias): Con <code>-n</code> y <code>/patrón/p</code>, imprime solo las líneas que coinciden.<br>
+                            <em>Ejemplo:</em> <code>sed -n '/cat/p' ftu.txt</code> muestra solo las líneas de <code>ftu.txt</code> que contienen "cat".</li>    
                         <li><strong><code>sed</code></strong> (reemplazar): Sustituye texto.<br>
                             <em>Ejemplo:</em> <code>sed 's/cat/dog/' nombres.txt</code> cambia "cat" por "dog".</li>
                         <li><strong><code>sed</code></strong> (con backup): Reemplaza y crea un respaldo.<br>
