@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 103.1 Trabajar desde la línea de comandos (LPIC-1 103) en SysRiser. Aprende a usar comandos básicos en Linux.">
+    <meta name="keywords" content="LPIC-1, línea de comandos, Linux, terminal, curso, tecnología">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 103.1 Trabajar desde la línea de comandos (LPIC-1 103)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>103.1 Trabajar desde la línea de comandos</h1>
+            <p>Aprende a usar comandos básicos en la terminal de Linux.</p>
+        </div>
+        <a href="/cursos/lpic/103/103.html" class="back-link">← Volver a Comandos GNU y Unix</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#info-sistema">Obteniendo información del sistema</a></li>
+                    <li><a href="#info-comandos">Obteniendo información de los comandos</a></li>
+                    <li><a href="#variables-entorno">Encontrar, crear y eliminar variables de entorno</a></li>
+                    <li><a href="#caracteres-especiales">Mantener el valor de caracteres especiales</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="info-sistema">
+                    <h2>Obteniendo información del sistema</h2>
+                    <p>Estos comandos te ayudan a conocer detalles del sistema y del entorno de trabajo.</p>
+                    <ul>
+                        <li><strong><code>pwd</code></strong>: Muestra el directorio actual en el que estás.<br>
+                            <em>Ejemplo:</em> Si estás en <code>/home/usuario</code>, al ejecutar <code>pwd</code> obtendrás: <code>/home/usuario</code>.</li>
+                        <li><strong><code>touch</code></strong>: Crea un archivo vacío.<br>
+                            <em>Ejemplo:</em> <code>touch archivo.txt</code> crea un archivo llamado <code>archivo.txt</code>.</li>
+                        <li><strong><code>ls</code></strong>: Lista los archivos y carpetas del directorio actual.<br>
+                            <em>Ejemplo:</em> <code>ls</code> podría mostrar: <code>archivo.txt  documentos  imagen.jpg</code>.</li>
+                        <li><strong><code>uname -a</code></strong>: Muestra información completa del sistema.<br>
+                            <em>Ejemplo:</em> <code>uname -a</code> podría mostrar: <code>Linux mi-pc 5.15.0-73-generic #80-Ubuntu SMP Mon May 15 15:11:47 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux</code>.</li>
+                    </ul>
+                </section>
+                <section id="info-comandos">
+                    <h2>Obteniendo información de los comandos</h2>
+                    <p>Estos comandos te ayudan a aprender más sobre otros comandos y su uso.</p>
+                    <ul>
+                        <li><strong><code>man</code></strong>: Muestra el manual de un comando.<br>
+                            <em>Ejemplo:</em> <code>man ls</code> muestra la documentación del comando <code>ls</code>.</li>
+                        <li><strong><code>apropos</code></strong>: Busca páginas del manual relacionadas con una palabra clave.<br>
+                            <em>Ejemplo:</em> <code>apropos copy</code> podría mostrar comandos como <code>cp</code> (copiar archivos).</li>
+                        <li><strong><code>type</code></strong>: Indica qué tipo de comando es (integrado, alias, etc.).<br>
+                            <em>Ejemplo:</em> <code>type cd</code> muestra: <code>cd is a shell builtin</code>.</li>
+                        <li><strong><code>hash -d</code></strong>: Limpia la caché de rutas de comandos.<br>
+                            <em>Ejemplo:</em> Si cambias la ubicación de un comando, ejecuta <code>hash -d ls</code> para actualizar la caché de <code>ls</code>.</li>
+                        <li><strong><code>which</code></strong>: Muestra la ruta absoluta de un comando.<br>
+                            <em>Ejemplo:</em> <code>which ls</code> podría mostrar: <code>/bin/ls</code>.</li>
+                        <li><strong><code>history</code></strong>: Lista los comandos que has ejecutado. También se guarda en el archivo <code>.bash_history</code>.<br>
+                            <em>Ejemplo:</em> <code>history</code> podría mostrar: <code>1  ls  2  cd /home  3  pwd</code>.</li>
+                    </ul>
+                </section>
+                <section id="variables-entorno">
+                    <h2>Encontrar, crear y eliminar variables de entorno</h2>
+                    <p>Las variables de entorno almacenan información útil para el sistema y los programas.</p>
+                    <ul>
+                        <li><strong><code>env</code></strong>: Muestra todas las variables de entorno.<br>
+                            <em>Ejemplo:</em> <code>env</code> podría mostrar: <code>PATH=/usr/bin:/bin  HOME=/home/usuario</code>.</li>
+                        <li><strong><code>echo $VARIABLE</code></strong>: Muestra el valor de una variable.<br>
+                            <em>Ejemplo:</em> <code>echo $HOME</code> muestra: <code>/home/usuario</code>.</li>
+                        <li><strong><code>export VARIABLE</code></strong>: Crea o hace permanente una variable.<br>
+                            <em>Ejemplo:</em> <code>export MI_VAR="hola"</code> crea la variable <code>MI_VAR</code> con el valor <code>hola</code>.</li>
+                        <li><strong><code>set</code></strong>: Lista todas las variables y funciones del entorno.<br>
+                            <em>Ejemplo:</em> <code>set</code> podría mostrar: <code>MI_VAR='hola'  PATH='/usr/bin:/bin'</code>.</li>
+                        <li><strong><code>unset</code></strong>: Elimina una variable de entorno.<br>
+                            <em>Ejemplo:</em> <code>unset MI_VAR</code> elimina la variable <code>MI_VAR</code>.</li>
+                    </ul>
+                </section>
+                <section id="caracteres-especiales">
+                    <h2>Mantener el valor de caracteres especiales</h2>
+                    <p>En Bash, los caracteres alfanuméricos (a-z, 0-9) se leen literalmente, pero los caracteres especiales (como espacios o símbolos) necesitan un tratamiento especial para ser interpretados correctamente.</p>
+                    <p>Por ejemplo, si intentas crear un archivo con <code>touch my big file</code>, Bash interpretará los espacios como separadores y fallará. Para solucionarlo, puedes usar:</p>
+                    <ul>
+                        <li><strong>Comillas simples (''):</strong> Interpreta todo de forma literal.<br>
+                            <em>Ejemplo:</em> <code>touch 'my big file'</code> crea un archivo llamado <code>my big file</code>.</li>
+                        <li><strong>Comillas dobles (""):</strong> Interpreta algunos símbolos como <code>$</code>, <code>`</code>, <code>\</code>, y a veces <code>!</code>.<br>
+                            <em>Ejemplo:</em> <code>touch "my big file"</code> también crea un archivo llamado <code>my big file</code>.</li>
+                        <li><strong>Contrabarra (\):</strong> Hace que Bash lea el siguiente carácter literalmente.<br>
+                            <em>Ejemplo:</em> <code>touch my\ big\ file</code> crea un archivo llamado <code>my big file</code>.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
