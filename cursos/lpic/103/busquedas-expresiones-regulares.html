@@ -137,16 +137,16 @@
                 </section>
                 <section id="manipulacion-sed">
                     <h2>Manipulación con sed</h2>
-                    <p><code>sed</code> edita texto en flujos o archivos usando patrones:</p>
+                    <p>Con <code>sed</code> puedes editar texto en archivos o flujos. Estos son los usos principales:</p>
                     <ul>
-                        <li><strong>Eliminar </strong> la primera linea<br>
-                            <em>Ejemplo:</em> <code>sed '1d' archivo.txt > nuevo.txt</code>.</li>
-                        <li><strong>Sustituir</strong> "gato" por "perro" de forma global.<br>
-                            <em>Ejemplo:</em> <code>sed 's/gato/perro/g' archivo.txt > nuevo.txt</code>.</li>
-                        <li><strong>Sustitución directa</strong> del archivo.<br>
-                            <em>Ejemplo:</em> <code>sed -i 's/gato/perro/g' archivo.txt</code>.</li>
-                        <li><strong>Sustitución con backup</strong><br>
-                            <em>Ejemplo:</em> <code>sed -i.backup 's/gato/perro/g' archivo.txt</code> genera <code>archivo.txt.backup</code>.</li>
+                        <li><strong>Eliminar líneas:</strong> Borra la primera línea y guarda el resultado en un nuevo archivo.<br>
+                            <code>sed '1d' archivo.txt > nuevo.txt</code></li>
+                        <li><strong>Reemplazar texto:</strong> Sustituye "gato" por "perro" en todas las líneas.<br>
+                            <code>sed 's/gato/perro/g' archivo.txt > nuevo.txt</code></li>
+                        <li><strong>Reemplazo directo:</strong> Modifica el archivo original al reemplazar "gato" por "perro".<br>
+                            <code>sed -i 's/gato/perro/g' archivo.txt</code></li>
+                        <li><strong>Reemplazo con respaldo:</strong> Reemplaza y crea un archivo de respaldo (archivo.txt.backup).<br>
+                            <code>sed -i.backup 's/gato/perro/g' archivo.txt</code></li>
                     </ul>
                 </section>
             </div>
