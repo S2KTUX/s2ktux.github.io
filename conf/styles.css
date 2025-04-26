@@ -741,8 +741,26 @@ main {
     font-weight: 600;
 }
 
-.back-link:hover {
-    text-decoration: underline;
+/* Estilo para tablas */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #f0f4f8;
+    font-weight: 600;
+}
+
+body.dark-theme th {
+    background-color: #333;
 }
 
 /* Footer */
@@ -986,6 +1004,19 @@ footer {
         font-size: 14px;
         padding: 8px 15px;
     }
+
+    /* Ajustes para tablas */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        font-size: 14px;
+    }
+
+    th, td {
+        padding: 8px;
+        min-width: 100px;
+    }
 }
 
 /* Móviles pequeños (hasta 480px) */
@@ -1033,5 +1064,15 @@ footer {
 
     .content h3, .project-content h3 {
         font-size: 16px;
+    }
+
+    /* Ajustes adicionales para tablas en móviles pequeños */
+    table {
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 6px;
+        min-width: 80px;
     }
 }
