@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Repaso del Tema 102 (LPIC-1 102) en SysRiser. Resumen de instalación de Linux y gestión de paquetes para el examen.">
-    <meta name="keywords" content="LPIC-1, repaso, instalación de Linux, gestión de paquetes, particionado, GRUB, Debian, RPM, virtualización, curso">
+    <meta name="description" content="Repaso del Tema 102 (LPIC-1 102) en SysRiser. Resumen de particiones, GRUB, bibliotecas, paquetes Debian/RPM, y virtualización para el examen.">
+    <meta name="keywords" content="LPIC-1, repaso, particiones, GRUB, bibliotecas, paquetes, virtualización, curso, tecnología">
     <meta name="author" content="SysRiser">
-    <title>SysRiser - Repaso Tema 102 (LPIC-1 102)</title>
+    <title>SysRiser - Repaso Tema 102: Instalación de Linux y gestión de paquetes</title>
     <link rel="stylesheet" href="/conf/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/images/favicon.png">
@@ -28,151 +28,77 @@
     </header>
     <main id="contenido">
         <div class="hero">
-            <h1>Repaso Tema 102 (LPIC-1 102)</h1>
-            <p>Resumen esencial para el examen: instalación de Linux, gestión de paquetes y virtualización .</p>
+            <h1>Repaso Tema 102: Instalación de Linux y gestión de paquetes</h1>
+            <p>Repaso de los puntos clave del Tema 102 del LPIC-1 para el examen: particiones, GRUB, bibliotecas, paquetes y virtualización.</p>
         </div>
         <a href="instalacion-paquetes.html" class="back-link">← Volver a Instalación de Linux y gestión de paquetes</a>
         <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Repaso</h3>
+                <ul>
+                    <li><a href="#subtema-1021">102.1 Particiones y sistemas de archivos</a></li>
+                    <li><a href="#subtema-1022">102.2 Instalación de un gestor de arranque</a></li>
+                    <li><a href="#subtema-1023">102.3 Bibliotecas compartidas</a></li>
+                    <li><a href="#subtema-1024">102.4 Gestión de paquetes Debian</a></li>
+                    <li><a href="#subtema-1025">102.5 Gestión de paquetes RPM y YUM</a></li>
+                    <li><a href="#subtema-1026">102.6 Linux como sistema virtualizado</a></li>
+                </ul>
+            </div>
             <div class="content">
-                <section id="102-1">
-                    <h2>102.1 Diseño del esquema de particionado del disco duro</h2>
-                    <h3>Conceptos clave</h3>
+                <section id="subtema-1021">
+                    <h2>102.1 Particiones y sistemas de archivos</h2>
+                    <p>Saber cómo gestionar discos y particiones:</p>
                     <ul>
-                        <li><strong>Particiones primarias:</strong> Máximo 4 por disco (MBR). Numeradas como <code>/dev/sda1</code> a <code>/dev/sda4</code>.</li>
-                        <li><strong>Particiones extendidas:</strong> Una partición primaria puede ser extendida para contener particiones lógicas (numeradas desde <code>/dev/sda5</code> en adelante).</li>
-                        <li><strong>Particiones lógicas:</strong> Dentro de una partición extendida, para superar el límite de 4 particiones.</li>
-                        <li><strong>GPT:</strong> Reemplazo moderno para MBR, soporta hasta 128 particiones, discos > 2TB, y no necesita particiones extendidas.</li>
-                    </ul>
-                    <h3>Directorios clave</h3>
-                    <ul>
-                        <li><strong>/boot:</strong> Archivos de arranque (kernel, initramfs). Necesita ~500 MB, debe ser accesible para el gestor de arranque (en MBR, asegúrate de que esté dentro de los primeros 2TB).</li>
-                        <li><strong>/:</strong> Raíz del sistema. Tamaño depende del uso (mínimo 10-20 GB).</li>
-                        <li><strong>/home:</strong> Archivos de usuarios. Sepáralo para facilitar respaldos (tamaño según usuarios).</li>
-                        <li><strong>swap:</strong> Memoria virtual. Regla general: igual a la RAM si es ≤ 2GB; si es > 2GB, 2-4 GB suelen bastar.</li>
-                    </ul>
-                    <h3>Herramientas</h3>
-                    <ul>
-                        <li><code>fdisk /dev/sdX</code>: Gestiona particiones MBR. Usa <code>fdisk -l</code> para listar.</li>
-                        <li><code>parted /dev/sdX</code>: Gestiona particiones MBR y GPT. Ejemplo: <code>parted /dev/sda mklabel gpt</code>.</li>
-                        <li><code>mkfs -t ext4 /dev/sdX1</code>: Formatea particiones (ext4 es común).</li>
-                        <li><code>mkswap /dev/sdX2</code>: Crea una partición swap.</li>
+                        <li>Crear particiones con <code>fdisk</code> o <code>parted</code>, y sistemas de archivos con <code>mkfs</code>.</li>
+                        <li>Montar y desmontar con <code>mount</code> y <code>umount</code>. Configurar montajes automáticos en <code>/etc/fstab</code>.</li>
+                        <li>Gestionar espacio con <code>df</code> (uso del disco) y <code>du</code> (tamaño de archivos).</li>
+                        <li>Crear y activar swap con <code>mkswap</code> y <code>swapon</code>.</li>
                     </ul>
                 </section>
-                <section id="102-2">
-                    <h2>102.2 Instalar un gestor de arranque</h2>
-                    <h3>GRUB Legacy vs. GRUB2</h3>
+                <section id="subtema-1022">
+                    <h2>102.2 Instalación de un gestor de arranque</h2>
+                    <p> GRUB para arrancar Linux:</p>
                     <ul>
-                        <li><strong>GRUB Legacy:</strong> Antigua (0.x). Configuración en <code>/boot/grub/menu.lst</code>.</li>
-                        <li><strong>GRUB2:</strong> Moderna (1.9x o superior). Configuración en <code>/boot/grub/grub.cfg</code> (no editar manualmente) y <code>/etc/default/grub</code>.</li>
-                    </ul>
-                    <h3>Instalación y configuración</h3>
-                    <ul>
-                        <li>Instalar GRUB: <code>grub-install /dev/sda</code> (instala en el MBR del disco).</li>
-                        <li>Actualizar configuración: <code>update-grub</code> (o <code>grub-mkconfig -o /boot/grub/grub.cfg</code>).</li>
-                        <li>Configuración en <code>/etc/default/grub</code>:
-                            <ul>
-                                <li><code>GRUB_TIMEOUT</code>: Tiempo de espera en el menú.</li>
-                                <li><code>GRUB_DEFAULT</code>: Sistema por defecto (0 para el primero).</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <h3>GRUB en UEFI</h3>
-                    <ul>
-                        <li>Necesita una partición EFI (ESP), típicamente <code>/boot/efi</code>, formateada como FAT32.</li>
-                        <li>Instalar: <code>grub-install --target=x86_64-efi --efi-directory=/boot/efi</code>.</li>
+                        <li><strong>GRUB 2:</strong> Instalamos con <code>grub-install</code>. Configuramos en <code>/etc/default/grub</code> y generamos <code>/boot/grub/grub.cfg</code> con <code>grub-mkconfig</code>.</li>
+                        <li><strong>GRUB Legacy:</strong> Configuramos en <code>/boot/grub/menu.lst</code>. Discos/particiones se numeran desde 0 (ej. <code>hd0,0</code>).</li>
+                        <li>La partición <code>/boot</code> contiene el kernel, disco RAM (<code>initrd.img</code>), y archivos de GRUB.</li>
                     </ul>
                 </section>
-                <section id="102-3">
-                    <h2>102.3 Gestión de librerías compartidas</h2>
-                    <h3>Librerías y su ubicación</h3>
+                <section id="subtema-1023">
+                    <h2>102.3 Bibliotecas compartidas</h2>
+                    <p>Las bibliotecas compartidas (<code>.so</code>) permiten a los programas compartir código:</p>
                     <ul>
-                        <li><strong>Librerías compartidas:</strong> Archivos con extensión <code>.so</code> (shared object), como <code>libc.so.6</code>.</li>
-                        <li>Ubicaciones: <code>/lib</code>, <code>/usr/lib</code>, <code>/usr/local/lib</code>.</li>
-                        <li><code>/etc/ld.so.conf</code>: Define directorios adicionales de librerías (o usa <code>/etc/ld.so.conf.d/</code>).</li>
-                    </ul>
-                    <h3>Comandos clave</h3>
-                    <ul>
-                        <li><code>ldd /bin/ls</code>: Muestra las librerías que necesita un binario.</li>
-                        <li><code>ldconfig</code>: Actualiza la caché de librerías (<code>/etc/ld.so.cache</code>) tras añadir nuevas librerías o modificar <code>/etc/ld.so.conf</code>.</li>
-                        <li>Variable <code>LD_LIBRARY_PATH</code>: Define directorios temporales para buscar librerías. Ejemplo: <code>export LD_LIBRARY_PATH=/opt/lib</code>.</li>
+                        <li>Están en <code>/lib</code> o <code>/usr/lib</code>. Usamos <code>ldd</code> para ver dependencias de un programa.</li>
+                        <li>Configuramos rutas en <code>/etc/ld.so.conf</code> y actualizamos con <code>ldconfig</code>.</li>
+                        <li>Podemos añadir rutas temporales con la variable <code>LD_LIBRARY_PATH</code>.</li>
                     </ul>
                 </section>
-                <section id="102-4">
+                <section id="subtema-1024">
                     <h2>102.4 Gestión de paquetes Debian</h2>
-                    <h3>Paquetes y herramientas</h3>
+                    <p> Gestion de paquetes en Debian con estas herramientas:</p>
                     <ul>
-                        <li>Paquetes: Archivos <code>.deb</code>.</li>
-                        <li><strong>dpkg:</strong> Herramienta de bajo nivel para gestionar paquetes.
-                            <ul>
-                                <li><code>dpkg -i paquete.deb</code>: Instala un paquete.</li>
-                                <li><code>dpkg -r paquete</code>: Elimina un paquete (sin dependencias).</li>
-                                <li><code>dpkg -l</code>: Lista paquetes instalados.</li>
-                            </ul>
-                        </li>
-                        <li><strong>apt:</strong> Herramienta de alto nivel, gestiona dependencias y repositorios.
-                            <ul>
-                                <li><code>apt update</code>: Actualiza la lista de paquetes.</li>
-                                <li><code>apt install paquete</code>: Instala un paquete con dependencias.</li>
-                                <li><code>apt remove paquete</code>: Elimina un paquete (deja configuraciones).</li>
-                                <li><code>apt purge paquete</code>: Elimina un paquete y sus configuraciones.</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <h3>Repositorios</h3>
-                    <ul>
-                        <li><code>/etc/apt/sources.list</code>: Define repositorios (líneas como <code>deb http://deb.debian.org/debian stable main</code>).</li>
-                        <li><code>/etc/apt/sources.list.d/</code>: Directorio para añadir repositorios adicionales.</li>
+                        <li><strong>dpkg</strong> (bajo nivel): <code>dpkg -i paquete.deb</code> (instalar), <code>dpkg -r/--purge paquete</code> (eliminar/purgar), <code>dpkg -l</code> (listar).</li>
+                        <li><strong>apt</strong> (alto nivel): <code>apt install paquete</code>, <code>apt update</code>, <code>apt upgrade</code>, <code>apt remove/purge paquete</code>.</li>
+                        <li>Repositorios en <code>/etc/apt/sources.list</code> y <code>/etc/apt/sources.list.d/</code>. Actualizamos con <code>apt update</code>.</li>
                     </ul>
                 </section>
-                <section id="102-5">
+                <section id="subtema-1025">
                     <h2>102.5 Gestión de paquetes RPM y YUM</h2>
-                    <h3>Paquetes y herramientas</h3>
+                    <p>El uso de varias herramientas de gestion de paquetes en sistemas Red Hat, Fedora y SUSE:</p>
                     <ul>
-                        <li>Paquetes: Archivos <code>.rpm</code>.</li>
-                        <li><strong>rpm:</strong> Herramienta de bajo nivel.
-                            <ul>
-                                <li><code>rpm -ivh paquete.rpm</code>: Instala un paquete (<code>-i</code> para instalar, <code>-v</code> para verbose, <code>-h</code> para hash).</li>
-                                <li><code>rpm -e paquete</code>: Elimina un paquete.</li>
-                                <li><code>rpm -qa</code>: Lista paquetes instalados.</li>
-                            </ul>
-                        </li>
-                        <li><strong>yum/dnf:</strong> Herramientas de alto nivel, gestionan dependencias y repositorios.
-                            <ul>
-                                <li><code>yum install paquete</code>: Instala un paquete.</li>
-                                <li><code>yum remove paquete</code>: Elimina un paquete.</li>
-                                <li><code>yum update</code>: Actualiza todos los paquetes.</li>
-                                <li><code>dnf</code>: Reemplazo moderno de <code>yum</code> en Fedora (mismos comandos).</li>
-                            </ul>
-                        </li>
-                    </ul>
-                    <h3>Repositorios</h3>
-                    <ul>
-                        <li><code>/etc/yum.repos.d/</code>: Directorio con archivos de repositorios (ej. <code>epel.repo</code>).</li>
-                        <li><code>yum repolist</code>: Lista repositorios activos.</li>
+                        <li><strong>rpm</strong> (bajo nivel): <code>rpm -i/-U paquete.rpm</code> (instalar/actualizar), <code>rpm -e paquete</code> (eliminar), <code>rpm -qa</code> (listar).</li>
+                        <li><strong>yum/dnf</strong> (Red Hat/Fedora): <code>yum/dnf install paquete</code>, <code>yum/dnf update/upgrade paquete</code>, <code>yum/dnf remove paquete</code>.</li>
+                        <li><strong>zypper</strong> (SUSE): <code>zypper in paquete</code>, <code>zypper update</code>, <code>zypper rm paquete</code>.</li>
+                        <li>Repositorios en <code>/etc/yum.repos.d/</code>. Gestionamos con <code>yum-config-manager</code>, <code>dnf config-manager</code>, o <code>zypper addrepo</code>.</li>
                     </ul>
                 </section>
-                <section id="102-6">
+                <section id="subtema-1026">
                     <h2>102.6 Linux como sistema virtualizado</h2>
-                    <h3>Conceptos clave</h3>
+                    <p>Uso de Linux en entornos virtualizados:</p>
                     <ul>
-                        <li><strong>Hipervisor:</strong> Software que crea y gestiona máquinas virtuales (VM).
-                            <ul>
-                                <li>Tipo 1: Bare-metal (ej. VMware ESXi, Xen).</li>
-                                <li>Tipo 2: Hospedado (ej. VirtualBox, VMware Workstation).</li>
-                            </ul>
-                        </li>
-                        <li><strong>Contenedores:</strong> Alternativa ligera a VMs, comparten el kernel del host (ej. Docker).</li>
-                    </ul>
-                    <h3>Herramientas de virtualización</h3>
-                    <ul>
-                        <li><strong>KVM:</strong> Hipervisor para Linux, usa <code>virt-manager</code> para gestión gráfica.</li>
-                        <li><strong>Xen:</strong> Hipervisor tipo 1, soporta paravirtualización (mejor rendimiento).</li>
-                        <li><strong>VirtualBox:</strong> Hipervisor tipo 2, fácil de usar.</li>
-                    </ul>
-                    <h3>Configuración en Linux como huésped</h3>
-                    <ul>
-                        <li>Instala drivers del hipervisor (ej. <code>virtio</code> para KVM) para mejor rendimiento.</li>
-                        <li>Habilita <code>nested virtualization</code> si necesitas VMs dentro de una VM: <code>modprobe kvm_intel nested=1</code>.</li>
+                        <li><strong>Virtualización:</strong> Se pueden usar hipervisores como Xen (Tipo 1), KVM (Tipo 1/2), VirtualBox (Tipo 2). Tipos de máquinas: totalmente virtualizadas, paravirtualizadas, híbridas.</li>
+                        <li><strong>Plantillas:</strong> Nos ayudan a crear máquinas virtuales rápido. Revisamos que el D-Bus Machine ID sea único.</li>
+                        <li><strong>Nube:</strong> Hay IaaS (AWS, Azure). Gestionamos instancias, almacenamiento y redes. Accedemos con OpenSSH y configuramos con <code>cloud-init</code>.</li>
                     </ul>
                 </section>
             </div>
