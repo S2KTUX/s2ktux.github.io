@@ -1,8 +1,8 @@
 // Barra de progreso de lectura
 window.addEventListener('scroll', () => {
-    const scrollTop = window.scrollY;
-    const scrollHeight = document.documentElement.scrollHeight - window.innerHeight;
-    const scrolled = (scrollTop / scrollHeight) * 100;
+    const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrolled = (winScroll / height) * 100;
     document.querySelector('.reading-progress').style.width = scrolled + '%';
 });
 
@@ -21,42 +21,21 @@ backToTopButton.addEventListener('click', (e) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// Botón de copiar código en bloques <pre>
+// Manejo de pestañas
 document.addEventListener('DOMContentLoaded', () => {
-    const preBlocks = document.querySelectorAll('pre');
-    preBlocks.forEach((pre, index) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'code-block-wrapper';
-        wrapper.style.position = 'relative';
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
 
-        const copyButton = document.createElement('button');
-        copyButton.className = 'copy-button';
-        copyButton.textContent = 'Copiar';
-        copyButton.style.position = 'absolute';
-        copyButton.style.top = '5px';
-        copyButton.style.right = '5px';
-        copyButton.style.padding = '5px 10px';
-        copyButton.style.backgroundColor = '#007bff';
-        copyButton.style.color = '#fff';
-        copyButton.style.border = 'none';
-        copyButton.style.borderRadius = '3px';
-        copyButton.style.cursor = 'pointer';
-        copyButton.style.fontSize = '12px';
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // Remover clase active de todos los botones y contenidos
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            tabContents.forEach(content => content.classList.remove('active'));
 
-        pre.parentNode.insertBefore(wrapper, pre);
-        wrapper.appendChild(pre);
-        wrapper.appendChild(copyButton);
-
-        copyButton.addEventListener('click', () => {
-            const code = pre.textContent;
-            navigator.clipboard.writeText(code).then(() => {
-                copyButton.textContent = '¡Copiado!';
-                setTimeout(() => {
-                    copyButton.textContent = 'Copiar';
-                }, 2000);
-            }).catch(() => {
-                copyButton.textContent = 'Error';
-            });
+            // Añadir clase active al botón clicado y al contenido correspondiente
+            button.classList.add('active');
+            const tabId = button.getAttribute('data-tab');
+            document.getElementById(tabId).classList.add('active');
         });
     });
 });
