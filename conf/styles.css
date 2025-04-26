@@ -700,6 +700,7 @@ main {
 .content, .project-content {
     flex: 1;
     padding: 20px;
+    width: 100%;
 }
 
 .content section, .project-content section {
@@ -733,6 +734,18 @@ main {
     color: #3d3d3d;
 }
 
+.content pre, .project-content pre {
+    background-color: #f0f4f8;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-x: auto;
+    font-size: 14px;
+}
+
+body.dark-theme .content pre, body.dark-theme .project-content pre {
+    background-color: #333;
+}
+
 .back-link {
     display: inline-block;
     margin: 20px 0;
@@ -752,6 +765,7 @@ th, td {
     border: 1px solid #ddd;
     padding: 10px;
     text-align: left;
+    vertical-align: top;
 }
 
 th {
@@ -965,6 +979,8 @@ footer {
     .content, .project-content {
         padding: 15px;
         width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
     }
 
     .content h2, .project-content h2 {
@@ -977,6 +993,19 @@ footer {
 
     .content p, .project-content p {
         font-size: 14px;
+    }
+
+    .content ul, .project-content ul, .content ol, .project-content ol {
+        padding-left: 15px;
+    }
+
+    .content ul li, .project-content ul li, .content ol li, .project-content ol li {
+        font-size: 14px;
+    }
+
+    .content pre, .project-content pre {
+        font-size: 12px;
+        padding: 8px;
     }
 
     .parallax-container {
@@ -1011,11 +1040,15 @@ footer {
         overflow-x: auto;
         white-space: nowrap;
         font-size: 14px;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     th, td {
         padding: 8px;
-        min-width: 100px;
+        min-width: 80px;
+        font-size: 14px;
+        line-height: 1.4;
     }
 }
 
@@ -1066,6 +1099,19 @@ footer {
         font-size: 16px;
     }
 
+    .content p, .project-content p {
+        font-size: 13px;
+    }
+
+    .content ul li, .project-content ul li, .content ol li, .project-content ol li {
+        font-size: 13px;
+    }
+
+    .content pre, .project-content pre {
+        font-size: 11px;
+        padding: 6px;
+    }
+
     /* Ajustes adicionales para tablas en móviles pequeños */
     table {
         font-size: 12px;
@@ -1073,6 +1119,8 @@ footer {
 
     th, td {
         padding: 6px;
-        min-width: 80px;
+        min-width: 60px;
+        font-size: 12px;
+        line-height: 1.3;
     }
 }
