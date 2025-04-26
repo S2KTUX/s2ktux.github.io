@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Repaso rápido de Comandos GNU y Unix (LPIC-1 103) en SysRiser. Prepara tu examen en 5 minutos.">
+    <meta name="keywords" content="LPIC-1, comandos, Linux, repaso, examen, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - Repaso Rápido: Comandos GNU y Unix (LPIC-1 103)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>Repaso Rápido: Comandos GNU y Unix (LPIC-1 103)</h1>
+            <p>Resumen de 5 minutos para el examen LPIC-1.</p>
+        </div>
+        <a href="/cursos/lpic/103/103.html" class="back-link">← Volver a Comandos GNU y Unix</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Repaso</h3>
+                <ul>
+                    <li><a href="#103-1">103.1 Línea de comandos</a></li>
+                    <li><a href="#103-2">103.2 Filtros de texto</a></li>
+                    <li><a href="#103-3">103.3 Archivos</a></li>
+                    <li><a href="#103-4">103.4 Secuencias y redirecciones</a></li>
+                    <li><a href="#103-5">103.5 Procesos</a></li>
+                    <li><a href="#103-6">103.6 Prioridad de procesos</a></li>
+                    <li><a href="#103-7">103.7 Expresiones regulares</a></li>
+                    <li><a href="#103-8">103.8 Edición de archivos</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="103-1">
+                    <h2>103.1 Trabajar desde la línea de comandos</h2>
+                    <ul>
+                        <li><strong>Información del sistema</strong>:
+                            <ul>
+                                <li><code>pwd</code>: Muestra el directorio actual (ej. <code>/home/usuario</code>).</li>
+                                <li><code>touch archivo.txt</code>: Crea un archivo vacío.</li>
+                                <li><code>ls</code>: Lista archivos (ej. <code>archivo.txt documentos</code>).</li>
+                                <li><code>uname -a</code>: Información del sistema (ej. kernel, arquitectura).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Información de comandos</strong>:
+                            <ul>
+                                <li><code>man ls</code>: Manual del comando.</li>
+                                <li><code>apropos copy</code>: Busca comandos relacionados (ej. <code>cp</code>).</li>
+                                <li><code>type cd</code>: Tipo de comando (ej. shell builtin).</li>
+                                <li><code>which ls</code>: Ruta del comando (ej. <code>/bin/ls</code>).</li>
+                                <li><code>history</code>: Lista comandos ejecutados.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Variables de entorno</strong>:
+                            <ul>
+                                <li><code>env</code>: Muestra variables (ej. <code>PATH</code>, <code>HOME</code>).</li>
+                                <li><code>echo $HOME</code>: Valor de variable (ej. <code>/home/usuario</code>).</li>
+                                <li><code>export MI_VAR="hola"</code>: Crea variable.</li>
+                                <li><code>unset MI_VAR</code>: Elimina variable.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Caracteres especiales</strong>: Usa comillas o <code>\</code> para espacios. Ejemplo: <code>touch 'my file'</code>.</li>
+                    </ul>
+                </section>
+                <section id="103-2">
+                    <h2>103.2 Procesar secuencias de texto usando filtros</h2>
+                    <ul>
+                        <li><strong>Redirecciones y tuberías</strong>:
+                            <ul>
+                                <li><code>echo "Hola" > file.txt</code>: Sobrescribe.</li>
+                                <li><code>echo "Adiós" >> file.txt</code>: Añade.</li>
+                                <li><code>ls | grep ".txt"</code>: Filtra archivos.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Archivos comprimidos</strong>:
+                            <ul>
+                                <li><code>gzip file.txt</code>: Comprime (crea <code>file.txt.gz</code>).</li>
+                                <li><code>zcat file.txt.gz</code>: Muestra contenido comprimido.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Ver archivos</strong>:
+                            <ul>
+                                <li><code>less file.txt</code>: Navegación interactiva.</li>
+                                <li><code>head -n 3 file.txt</code>: Primeras 3 líneas.</li>
+                                <li><code>tail -n 2 file.txt</code>: Últimas 2 líneas.</li>
+                            </ul>
+                        </li>
+                        <li><strong>sed</strong>:
+                            <ul>
+                                <li><code>sed 's/cat/dog/' file.txt</code>: Reemplaza.</li>
+                                <li><code>sed -i 's/cat/dog/' file.txt</code>: Reemplaza directamente.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Otros</strong>:
+                            <ul>
+                                <li><code>wc -l file.txt</code>: Cuenta líneas.</li>
+                                <li><code>sort -n file.txt</code>: Ordena numéricamente.</li>
+                                <li><code>sha256sum file.txt</code>: Genera hash para verificar integridad.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="103-3">
+                    <h2>103.3 Administración básica de archivos</h2>
+                    <ul>
+                        <li><strong>Listar</strong>:
+                            <ul>
+                                <li><code>ls -la</code>: Muestra archivos ocultos y detalles.</li>
+                                <li><code>ls -R</code>: Lista recursiva.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Manipulación</strong>:
+                            <ul>
+                                <li><code>touch file.txt</code>: Crea archivo.</li>
+                                <li><code>cp file.txt copia.txt</code>: Copia.</li>
+                                <li><code>mv file.txt /tmp/</code>: Mueve.</li>
+                                <li><code>rm -r dir</code>: Elimina.</li>
+                                <li><code>mkdir -p dir/subdir</code>: Crea directorios.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Comodines</strong>:
+                            <ul>
+                                <li><code>*</code>: Cero o más (ej. <code>ls *.txt</code>).</li>
+                                <li><code>?</code>: Un carácter (ej. <code>ls file?.txt</code>).</li>
+                            </ul>
+                        </li>
+                        <li><strong>find</strong>:
+                            <ul>
+                                <li><code>find / -name "file.txt"</code>: Por nombre.</li>
+                                <li><code>find /home -size +5M</code>: Por tamaño.</li>
+                                <li><code>find /tmp -mtime +2</code>: Por tiempo.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Archivado</strong>:
+                            <ul>
+                                <li><code>tar -cvf file.tar file1.txt</code>: Crea archivo.</li>
+                                <li><code>tar -czvf file.tar.gz dir</code>: Comprime con gzip.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="103-4">
+                    <h2>103.4 Uso de secuencias, tuberías y redirecciones</h2>
+                    <ul>
+                        <li><strong>Redirecciones</strong>:
+                            <ul>
+                                <li><code>wc -l < file.txt</code>: Entrada.</li>
+                                <li><code>ls > lista.txt</code>: Salida (sobrescribe).</li>
+                                <li><code>ls 2> errores.txt</code>: Errores.</li>
+                                <li><code>ls &> salida.txt</code>: Salida y errores.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Here Document/String</strong>:
+                            <ul>
+                                <li><code>wc -c << EOF</code>: Entrada multilínea.</li>
+                                <li><code>wc -c <<< "texto"</code>: Entrada de una línea.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Tuberías</strong>:
+                            <ul>
+                                <li><code>ls | grep ".txt"</code>: Filtra.</li>
+                                <li><code>ps aux | grep "python" | sort -k 3 -r</code>: Filtra y ordena.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Sustitución</strong>:
+                            <ul>
+                                <li><code>echo $(ls)</code>: Usa salida de comando.</li>
+                                <li><code>find . -name "*.log" | xargs rm</code>: Pasa resultados a otro comando.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="103-5">
+                    <h2>103.5 Crear, supervisar y matar procesos</h2>
+                    <ul>
+                        <li><strong>Control de trabajos</strong>:
+                            <ul>
+                                <li><code>jobs</code>: Lista trabajos.</li>
+                                <li><code>fg %1</code>: Trae a primer plano.</li>
+                                <li><code>sleep 500 &</code>: Ejecuta en segundo plano.</li>
+                                <li><code>kill -9 1234</code>: Termina proceso.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Monitoreo</strong>:
+                            <ul>
+                                <li><code>ps -aux</code>: Lista todos los procesos.</li>
+                                <li><code>top</code>: Vista en tiempo real.</li>
+                                <li><code>pgrep python</code>: Busca procesos.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Multiplexores</strong>:
+                            <ul>
+                                <li>Screen.</li>
+                                <li>Tmux</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="103-6">
+                    <h2>103.6 Modificar la prioridad de ejecución de los procesos</h2>
+                    <ul>
+                        <li><strong>Prioridad</strong>: Valor <em>nice</em> de -20 (alta) a 19 (baja). Por defecto: 0.</li>
+                        <li><strong>Comandos</strong>:
+                            <ul>
+                                <li><code>nice -n 10 comando</code>: Inicia con <em>nice</em> 10.</li>
+                                <li><code>renice 15 1234</code>: Cambia <em>nice</em> del PID 1234.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Ver prioridades</strong>: <code>top</code>, <code>ps -el</code>.</li>
+                    </ul>
+                </section>
+                <section id="103-7">
+                    <h2>103.7 Realizar búsquedas en archivos de texto usando expresiones regulares</h2>
+                    <ul>
+                        <li><strong>Expresiones básicas</strong>:
+                            <ul>
+                                <li><code>.</code>: Cualquier carácter.</li>
+                                <li><code>^</code>: Inicio de línea.</li>
+                                <li><code>$</code>: Final de línea.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Corchetes</strong>: <code>[a-z]</code>, <code>[[:digit:]]</code>.</li>
+                        <li><strong>Cuantificadores</strong>: <code>*</code> (0 o más), <code>+</code> (1 o más, con <code>egrep</code>).</li>
+                        <li><strong>grep</strong>:
+                            <ul>
+                                <li><code>grep -i "hola" file.txt</code>: Ignora mayúsculas.</li>
+                                <li><code>egrep "Hola|Adios"</code>: Ramas.</li>
+                            </ul>
+                        </li>
+                        <li><strong>find</strong>: <code>find / -regex ".*/\..*"</code>.</li>
+                        <li><strong>sed</strong>: <code>sed 's/gato/perro/g' file.txt</code>.</li>
+                    </ul>
+                </section>
+                <section id="103-8">
+                    <h2>103.8 Edición básica de archivos</h2>
+                    <ul>
+                        <li><strong>vi</strong>: Modos: normal, inserción (<code>i</code> para entrar, <code>Esc</code> para salir).</li>
+                        <li><strong>Comandos vi</strong>:
+                            <ul>
+                                <li><code>h j k l</code>: Moverse.</li>
+                                <li><code>yy</code>, <code>p</code>: Copiar y pegar.</li>
+                                <li><code>:w</code>, <code>:q</code>: Guardar y salir.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
