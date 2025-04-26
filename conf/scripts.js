@@ -21,34 +21,7 @@ backToTopButton.addEventListener('click', (e) => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-// 1. Tabla de contenidos dinámica
-document.addEventListener('DOMContentLoaded', () => {
-    const content = document.querySelector('.content');
-    if (!content) return;
-
-    const headings = content.querySelectorAll('h2');
-    if (headings.length === 0) return;
-
-    const toc = document.createElement('div');
-    toc.className = 'table-of-contents';
-    toc.innerHTML = '<h3>Tabla de Contenidos</h3><ul></ul>';
-
-    const tocList = toc.querySelector('ul');
-    headings.forEach((heading, index) => {
-        const id = heading.id || `section-${index}`;
-        heading.id = id;
-        const li = document.createElement('li');
-        const a = document.createElement('a');
-        a.href = `#${id}`;
-        a.textContent = heading.textContent;
-        li.appendChild(a);
-        tocList.appendChild(li);
-    });
-
-    content.insertBefore(toc, content.firstChild);
-});
-
-// 2. Botón de copiar código en bloques <pre>
+// Botón de copiar código en bloques <pre>
 document.addEventListener('DOMContentLoaded', () => {
     const preBlocks = document.querySelectorAll('pre');
     preBlocks.forEach((pre, index) => {
@@ -88,23 +61,58 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// 3. Resaltado de enlaces en el sidebar según la sección visible
-window.addEventListener('scroll', () => {
-    const sidebarLinks = document.querySelectorAll('.sidebar a');
+// Botones de navegación entre secciones
+document.addEventListener('DOMContentLoaded', () => {
     const sections = document.querySelectorAll('.content section');
-    let currentSectionId = '';
+    sections.forEach((section, index) => {
+        const navDiv = document.createElement('div');
+        navDiv.className = 'section-nav';
+        navDiv.style.display = 'flex';
+        navDiv.style.justifyContent = 'space-between';
+        navDiv.style.marginTop = '20px';
 
-    sections.forEach((section) => {
-        const sectionTop = section.offsetTop - 100; // Ajuste para el header
-        if (window.scrollY >= sectionTop) {
-            currentSectionId = section.id;
+        if (index > 0) {
+            const prevButton = document.createElement('button');
+            prevButton.textContent = '← Anterior';
+            prevButton.className = 'nav-button';
+            prevButton.style.padding = '5px 10px';
+            prevButton.style.backgroundColor = '#007bff';
+            prevButton.style.color = '#fff';
+            prevButton.style.border = 'none';
+            prevButton.style.borderRadius = '3px';
+            prevButton.style.cursor = 'pointer';
+            prevButton.addEventListener('click', () => {
+                const prevSection = sections[index - 1];
+                window.scrollTo({
+                    top: prevSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            });
+            navDiv.appendChild(prevButton);
+        } else {
+            navDiv.appendChild(document.createElement('span')); // Espacio vacío
         }
-    });
 
-    sidebarLinks.forEach((link) => {
-        link.classList.remove('active');
-        if (link.getAttribute('href') === `#${currentSectionId}`) {
-            link.classList.add('active');
+        if (index < sections.length - 1) {
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Siguiente →';
+            nextButton.className = 'nav-button';
+            nextButton.style.padding = '5px 10px';
+            nextButton.style.backgroundColor = '#007bff';
+            nextButton.style.color = '#fff';
+            nextButton.style.border = 'none';
+            nextButton.style.borderRadius = '3px';
+            nextButton.style.cursor = 'pointer';
+            nextButton.addEventListener('click', () => {
+                const nextSection = sections[index + 1];
+                window.scrollTo({
+                    top: nextSection.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            });
+            navDiv.appendChild(nextButton);
         }
+
+        section.appendChild(navDiv);
     });
 });
