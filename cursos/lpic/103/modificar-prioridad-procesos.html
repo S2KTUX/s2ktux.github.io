@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 103.6 Modificar la prioridad de ejecución de los procesos (LPIC-1 103) en SysRiser. Aprende a gestionar prioridades en Linux.">
+    <meta name="keywords" content="LPIC-1, prioridades, nice, Linux, procesos, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 103.6 Modificar la prioridad de ejecución de los procesos (LPIC-1 103)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>103.6 Modificar la prioridad de ejecución de los procesos</h1>
+            <p>Aprende a gestionar las prioridades de procesos en Linux.</p>
+        </div>
+        <a href="/cursos/lpic/103/103.html" class="back-link">← Volver a Comandos GNU y Unix</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#planificador-linux">El planificador de Linux</a></li>
+                    <li><a href="#prioridades-lectura">Prioridades de ejecución</a></li>
+                    <li><a href="#niceness-procesos">Niceness de procesos</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="planificador-linux">
+                    <h2>El planificador de Linux</h2>
+                    <p>Linux es un sistema multitarea que organiza el uso de la CPU según las prioridades de los procesos. Cada proceso tiene dos atributos principales:</p>
+                    <ul>
+                        <li><strong>Prioridad de ejecución</strong>: Un valor numérico (valor <em>nice</em>) que indica cuánto se favorece a un proceso para recibir tiempo de CPU. Va de -20 (máxima prioridad) a 19 (mínima prioridad). Por defecto, los procesos comienzan con 0.</li>
+                        <li><strong>Política de programación</strong>: Reglas que el kernel usa para decidir qué procesos ejecutan y cuándo. Hay dos tipos: <em>tiempo real</em> (mayor prioridad) y <em>normales</em> (menor prioridad).</li>
+                    </ul>
+                </section>
+                <section id="prioridades-lectura">
+                    <h2>Prioridades de ejecución</h2>
+                    <p>Las prioridades se dividen en dos rangos:</p>
+                    <ul>
+                        <li><strong>Procesos en tiempo real</strong>: Prioridades de 0 a 99 (más alta prioridad).</li>
+                        <li><strong>Procesos normales</strong>: Prioridades de 100 a 139, donde 120 es el valor estándar (equivalente a un <em>nice</em> de 0).</li>
+                    </ul>
+                    <p>Para verificar prioridades:</p>
+                    <ul>
+                        <li><strong><code>/proc/[pid]/sched</code></strong>: Muestra la prioridad de un proceso.<br>
+                            <em>Ejemplo:</em> <code>grep ^prio /proc/1234/sched</code> podría mostrar <code>prio: 120</code>.</li>
+                        <li><strong><code>ps -el</code></strong>: Muestra prioridades en la columna <code>PRI</code>. Un valor de 120 indica un <em>nice</em> de 0.<br>
+                            <em>Ejemplo:</em> <code>ps -el | grep bash</code> muestra procesos con su prioridad.</li>
+                        <li><strong><code>top</code></strong>: Muestra prioridades ajustadas. Los procesos en tiempo real tienen valores de 0 a 99 (a veces marcados como <code>rt</code>), y los normales van de 0 a 39 (resta 100 al valor real).<br>
+                            <em>Ejemplo:</em> En <code>top</code>, un proceso con prioridad 20 tiene un <em>nice</em> de 0 (120 - 100).</li>
+                    </ul>
+                </section>
+                <section id="niceness-procesos">
+                    <h2>Niceness de procesos</h2>
+                    <p>El valor <em>nice</em> afecta la prioridad de los procesos normales. Va de -20 (alta prioridad) a 19 (baja prioridad). Por defecto, los procesos inician con <em>nice</em> 0.</p>
+                    <ul>
+                        <li><strong><code>nice</code></strong>: Inicia un proceso con un valor <em>nice</em> específico.<br>
+                            <em>Ejemplo:</em> <code>nice -n 10 sleep 100</code> inicia <code>sleep</code> con un <em>nice</em> de 10 (baja prioridad).</li>
+                        <li><strong><code>renice</code></strong>: Cambia el <em>nice</em> de un proceso en ejecución.<br>
+                            <em>Ejemplo:</em> <code>renice 15 1234</code> cambia el <em>nice</em> del proceso con PID 1234 a 15. Solo <code>root</code> puede usar valores negativos.<br>
+                            <em>Ejemplo:</em> <code>renice -5 -u usuario</code> cambia el <em>nice</em> de todos los procesos del usuario a -5 (requiere permisos).</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
