@@ -98,7 +98,7 @@
                             Muestra el PID del proceso que más CPU usa.</li>
                         <li><strong><code>xargs</code></strong>: Pasa la salida como argumento a otro comando.<br>
                             <em>Ejemplo:</em> <code>find . -type f -name "*.log" | xargs rm</code><br>
-                            Elimina todos los archivos <code>.log</code><br>.
+                            Elimina todos los archivos <code>.log</code><br>
                             <em>Ejemplo 2:</em> <code>dpkg -l | grep "^rc" | awk '{print $2}' | xargs apt purge -y</code><br>
                             Explicación: <code>dpkg -l</code> lista paquetes instalados, <code>grep "^rc"</code> filtra los paquetes residuales, <code>awk '{print $2}'</code> extrae los nombres y <code>xargs apt purge -y</code> los elimina sin pedir confirmación.</li>
                     </ul>
