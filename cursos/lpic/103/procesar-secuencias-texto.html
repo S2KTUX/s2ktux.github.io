@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 103.2 Procesar secuencias de texto usando filtros (LPIC-1 103) en SysRiser. Aprende a manejar texto en Linux con comandos.">
+    <meta name="keywords" content="LPIC-1, procesar texto, Linux, filtros, terminal, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 103.2 Procesar secuencias de texto usando filtros (LPIC-1 103)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>103.2 Procesar secuencias de texto usando filtros</h1>
+            <p>Aprende a manejar texto en Linux usando comandos y filtros.</p>
+        </div>
+        <a href="/cursos/lpic/103/103.html" class="back-link">← Volver a Comandos GNU y Unix</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#redirecciones">Redirecciones y tuberías</a></li>
+                    <li><a href="#leer-comprimido">Leer un archivo comprimido</a></li>
+                    <li><a href="#ver-paginado">Ver un archivo paginado</a></li>
+                    <li><a href="#parte-texto">Obtener una parte del texto</a></li>
+                    <li><a href="#sed-fundamentos">Fundamentos de sed</a></li>
+                    <li><a href="#integridad-datos">Garantizar la integridad de los datos</a></li>
+                    <li><a href="#buscar-archivos">Buscar más en los archivos</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="redirecciones">
+                    <h2>Redirecciones y tuberías (pipes)</h2>
+                    <p>Los comandos de texto usan <code>stdin</code> (entrada), <code>stdout</code> (salida) y <code>stderr</code> (errores). Podemos redirigir estas salidas.</p>
+                    <ul>
+                        <li><strong><code>></code></strong>: Redirige la salida a un archivo (sobrescribe).<br>
+                            <em>Ejemplo:</em> <code>echo "Hola" > saludo.txt</code> crea <code>saludo.txt</code> con "Hola".</li>
+                        <li><strong><code>>></code></strong>: Añade la salida a un archivo (sin sobrescribir).<br>
+                            <em>Ejemplo:</em> <code>echo "Adiós" >> saludo.txt</code> añade "Adiós" al final de <code>saludo.txt</code>.</li>
+                        <li><strong><code>|</code></strong> (pipe): Envía la salida de un comando a otro.<br>
+                            <em>Ejemplo:</em> <code>ls | grep ".txt"</code> filtra archivos con ".txt".</li>
+                        <li><strong><code>diff</code></strong>: Compara dos archivos.<br>
+                            <em>Ejemplo:</em> <code>diff archivo1.txt archivo2.txt</code> muestra las diferencias.</li>
+                        <li><strong><code>grep</code></strong>: Filtra texto. Con <code>-i</code> ignora mayúsculas/minúsculas.<br>
+                            <em>Ejemplo:</em> <code>grep -i "hola" saludo.txt</code> busca "hola" sin importar mayúsculas.</li>
+                    </ul>
+                </section>
+                <section id="leer-comprimido">
+                    <h2>Leer un archivo comprimido</h2>
+                    <p>Puedes comprimir, descomprimir y ver archivos comprimidos con estos comandos.</p>
+                    <ul>
+                        <li><strong><code>bzip2</code></strong> / <strong><code>bunzip2</code></strong>: Comprime y descomprime.<br>
+                            <em>Ejemplo:</em> <code>bzip2 archivo.txt</code> crea <code>archivo.txt.bz2</code>. Usa <code>bunzip2 archivo.txt.bz2</code> para descomprimir.</li>
+                        <li><strong><code>gzip</code></strong> / <strong><code>gunzip</code></strong>: Comprime y descomprime.<br>
+                            <em>Ejemplo:</em> <code>gzip archivo.txt</code> crea <code>archivo.txt.gz</code>. Usa <code>gunzip archivo.txt.gz</code> para descomprimir.</li>
+                        <li><strong><code>xz</code></strong> / <strong><code>unxz</code></strong>: Comprime y descomprime.<br>
+                            <em>Ejemplo:</em> <code>xz archivo.txt</code> crea <code>archivo.txt.xz</code>. Usa <code>unxz archivo.txt.xz</code> para descomprimir.</li>
+                        <li><strong><code>bzcat</code></strong>, <strong><code>zcat</code></strong>, <strong><code>xzcat</code></strong>: Muestra el contenido sin descomprimir.<br>
+                            <em>Ejemplo:</em> <code>zcat archivo.txt.gz</code> muestra el contenido de <code>archivo.txt.gz</code>.</li>
+                    </ul>
+                </section>
+                <section id="ver-paginado">
+                    <h2>Ver un archivo paginado</h2>
+                    <p>Estos comandos te permiten leer archivos página por página o contar líneas.</p>
+                    <ul>
+                        <li><strong><code>less</code></strong>: Muestra el archivo con navegación (arriba/abajo).<br>
+                            <em>Ejemplo:</em> <code>less archivo.txt</code> te deja navegar por <code>archivo.txt</code>.</li>
+                        <li><strong><code>more</code></strong>: Muestra el archivo página por página (solo hacia adelante).<br>
+                            <em>Ejemplo:</em> <code>more archivo.txt</code> muestra <code>archivo.txt</code> página por página.</li>
+                        <li><strong><code>nl</code></strong>: Numera las líneas del archivo.<br>
+                            <em>Ejemplo:</em> <code>nl archivo.txt</code> muestra <code>1 Hola  2 Adiós</code>.</li>
+                        <li><strong><code>wc</code></strong>: Cuenta líneas, palabras o caracteres. Con <code>-l</code> solo cuenta líneas.<br>
+                            <em>Ejemplo:</em> <code>wc -l archivo.txt</code> podría mostrar <code>2 archivo.txt</code> (2 líneas).</li>
+                    </ul>
+                </section>
+                <section id="parte-texto">
+                    <h2>Obtener una parte del texto</h2>
+                    <p>Estos comandos extraen partes específicas de un archivo.</p>
+                    <ul>
+                        <li><strong><code>head</code></strong>: Muestra las primeras líneas. Usa <code>-n</code> para elegir cuántas.<br>
+                            <em>Ejemplo:</em> <code>head -n 3 archivo.txt</code> muestra las primeras 3 líneas.</li>
+                        <li><strong><code>tail</code></strong>: Muestra las últimas líneas. Usa <code>-n</code> para elegir cuántas.<br>
+                            <em>Ejemplo:</em> <code>tail -n 2 archivo.txt</code> muestra las últimas 2 líneas.</li>
+                    </ul>
+                </section>
+                <section id="sed-fundamentos">
+                    <h2>Fundamentos de sed</h2>
+                    <p><code>sed</code> filtra y transforma texto. Otros comandos también ayudan.</p>
+                    <ul>
+                        <li><strong><code>sed</code></strong> (borrar): Elimina líneas que coincidan.<br>
+                            <em>Ejemplo:</em> <code>sed '/cat/d' nombres.txt</code> elimina líneas con "cat".</li>
+                        <li><strong><code>sed</code></strong> (reemplazar): Sustituye texto.<br>
+                            <em>Ejemplo:</em> <code>sed 's/cat/dog/' nombres.txt</code> cambia "cat" por "dog".</li>
+                        <li><strong><code>sed</code></strong> (con backup): Reemplaza y crea un respaldo.<br>
+                            <em>Ejemplo:</em> <code>sed -i.backup 's/cat/dog/' nombres.txt</code> cambia y crea <code>nombres.txt.backup</code>.</li>
+                        <li><strong><code>cut</code></strong>: Extrae partes de cada línea.<br>
+                            <em>Ejemplo:</em> <code>cut -d' ' -f1 nombres.txt</code> extrae la primera palabra de cada línea (separador espacio).</li>
+                        <li><strong><code>sort</code></strong>: Ordena líneas. Con <code>-n</code> ordena numéricamente.<br>
+                            <em>Ejemplo:</em> <code>sort -n numeros.txt</code> ordena <code>2 5 10</code> en orden numérico.</li>
+                        <li><strong><code>tr</code></strong>: Sustituye caracteres.<br>
+                            <em>Ejemplo:</em> <code>echo "hola" | tr 'a' 'A'</code> muestra <code>holA</code>.</li>
+                    </ul>
+                </section>
+                <section id="integridad-datos">
+                    <h2>Garantizar la integridad de los datos</h2>
+                    <p>Verifica que los archivos no hayan sido alterados.</p>
+                    <ul>
+                        <li><strong><code>sha256sum</code></strong>: Genera o verifica un hash.<br>
+                            <em>Ejemplo:</em>
+                            <ul>
+                                <li><code>sha256sum archivo.txt</code> genera un hash.</li>
+                                <li><code>sha256sum archivo.txt > hash.txt</code> guarda el hash.</li>
+                                <li><code>sha256sum -c hash.txt</code> verifica si <code>archivo.txt</code> coincide.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="buscar-archivos">
+                    <h2>Buscar más en los archivos</h2>
+                    <p>Explora archivos en diferentes formatos (octal, ASCII, etc.).</p>
+                    <ul>
+                        <li><strong><code>od</code></strong>: Muestra el contenido en formatos como octal o ASCII.<br>
+                            <em>Ejemplo:</em> <code>od -c archivo.txt</code> muestra los caracteres en ASCII: <code>0000000   H   o   l   a  \n</code>.</li>
+                    </ul>
+                    <p>Alternativas: <code>xxd</code> o <code>hexdump</code>.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
