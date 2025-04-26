@@ -29,7 +29,7 @@
     <main id="contenido">
         <div class="hero">
             <h1>102.5 Gestión de paquetes RPM y YUM</h1>
-            <p>Aprendamos juntos a gestionar paquetes en sistemas Red Hat, Fedora y SUSE con herramientas como RPM, YUM, DNF y Zypper.</p>
+            <p>Descubre cómo gestionar paquetes en sistemas Red Hat, Fedora y SUSE con herramientas como RPM, YUM, DNF y Zypper.</p>
         </div>
         <a href="instalacion-paquetes.html" class="back-link">← Volver a Instalación de Linux y gestión de paquetes</a>
         <div class="course-page">
@@ -43,105 +43,183 @@
             <div class="content">
                 <section id="gestion-rpm-yum">
                     <h2>Gestión con RPM, YUM, DNF y Zypper</h2>
-                    <p><strong>RPM</strong> es nuestra herramienta de bajo nivel para gestionar paquetes <code>.rpm</code> en sistemas Red Hat. Nos permite instalar, actualizar o eliminar paquetes, pero no resuelve dependencias ni accede a repositorios. <strong>YUM</strong> y <strong>DNF</strong> son herramientas de alto nivel para Red Hat y Fedora, respectivamente, y sí gestionan dependencias y repositorios. <strong>Zypper</strong> es la herramienta equivalente en SUSE, similar a YUM o APT.</p>
+                    <p>En sistemas Red Hat, Fedora y SUSE se utilizan diferentes herramientas para gestionar paquetes. <strong>RPM</strong> es de bajo nivel y trabaja con archivos <code>.rpm</code>, pero no resuelve dependencias. <strong>YUM</strong> y <strong>DNF</strong> son de alto nivel, perfectos para Red Hat y Fedora, mientras que <strong>Zypper</strong> es la opción en SUSE. Aquí tienes los comandos principales para cada una.</p>
+                    <h3>Comandos con RPM</h3>
                     <table>
                         <thead>
                             <tr>
                                 <th>Acción</th>
-                                <th>Comando con RPM</th>
-                                <th>Comando con YUM</th>
-                                <th>Comando con DNF</th>
-                                <th>Comando con Zypper</th>
+                                <th>Comando</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Instalar un paquete</td>
                                 <td><code>rpm -i paquete.rpm</code> (o <code>rpm -ivh</code>)</td>
-                                <td><code>yum install paquete</code></td>
-                                <td><code>dnf install paquete</code></td>
-                                <td><code>zypper in paquete</code></td>
                             </tr>
                             <tr>
                                 <td>Actualizar un paquete</td>
                                 <td><code>rpm -U paquete.rpm</code> (instala/actualiza)<br><code>rpm -F paquete.rpm</code> (solo actualiza)</td>
-                                <td><code>yum update paquete</code></td>
-                                <td><code>dnf upgrade paquete</code></td>
-                                <td><code>zypper update paquete</code></td>
                             </tr>
                             <tr>
                                 <td>Eliminar un paquete</td>
                                 <td><code>rpm -e paquete</code></td>
-                                <td><code>yum remove paquete</code></td>
-                                <td><code>dnf remove paquete</code></td>
-                                <td><code>zypper rm paquete</code></td>
                             </tr>
                             <tr>
-                                <td>Lista de paquetes instalados</td>
+                                <td>Listar paquetes instalados</td>
                                 <td><code>rpm -qa</code></td>
-                                <td>-</td>
-                                <td><code>dnf list --installed</code></td>
-                                <td>-</td>
                             </tr>
                             <tr>
-                                <td>Información de un paquete</td>
+                                <td>Ver información de un paquete</td>
                                 <td><code>rpm -qi paquete</code> (instalado)<br><code>rpm -qip paquete.rpm</code> (no instalado)</td>
-                                <td><code>yum info paquete</code></td>
-                                <td><code>dnf info paquete</code></td>
-                                <td><code>zypper info paquete</code></td>
                             </tr>
                             <tr>
-                                <td>Lista de archivos de un paquete</td>
+                                <td>Listar archivos de un paquete</td>
                                 <td><code>rpm -ql paquete</code> (instalado)<br><code>rpm -qlp paquete.rpm</code> (no instalado)</td>
-                                <td>-</td>
-                                <td><code>dnf repoquery -l paquete</code></td>
-                                <td>-</td>
                             </tr>
                             <tr>
                                 <td>Buscar a qué paquete pertenece un archivo</td>
                                 <td><code>rpm -qf /ruta/archivo</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3>Comandos con YUM</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Acción</th>
+                                <th>Comando</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Instalar un paquete</td>
+                                <td><code>yum install paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Actualizar un paquete</td>
+                                <td><code>yum update paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Eliminar un paquete</td>
+                                <td><code>yum remove paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Ver información de un paquete</td>
+                                <td><code>yum info paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Buscar a qué paquete pertenece un archivo</td>
                                 <td><code>yum whatprovides archivo</code></td>
+                            </tr>
+                            <tr>
+                                <td>Buscar un paquete</td>
+                                <td><code>yum search paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Actualizar el índice de paquetes</td>
+                                <td><code>yum check-update</code></td>
+                            </tr>
+                            <tr>
+                                <td>Limpiar caché de paquetes</td>
+                                <td><code>yum clean all</code> (en <code>/var/cache/yum</code>)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3>Comandos con DNF</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Acción</th>
+                                <th>Comando</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Instalar un paquete</td>
+                                <td><code>dnf install paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Actualizar un paquete</td>
+                                <td><code>dnf upgrade paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Eliminar un paquete</td>
+                                <td><code>dnf remove paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Listar paquetes instalados</td>
+                                <td><code>dnf list --installed</code></td>
+                            </tr>
+                            <tr>
+                                <td>Ver información de un paquete</td>
+                                <td><code>dnf info paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Listar archivos de un paquete</td>
+                                <td><code>dnf repoquery -l paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Buscar a qué paquete pertenece un archivo</td>
                                 <td><code>dnf provides archivo</code></td>
+                            </tr>
+                            <tr>
+                                <td>Buscar un paquete</td>
+                                <td><code>dnf search paquete</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3>Comandos con Zypper</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Acción</th>
+                                <th>Comando</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Instalar un paquete</td>
+                                <td><code>zypper in paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Actualizar un paquete</td>
+                                <td><code>zypper update paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Eliminar un paquete</td>
+                                <td><code>zypper rm paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Ver información de un paquete</td>
+                                <td><code>zypper info paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Buscar a qué paquete pertenece un archivo</td>
                                 <td><code>zypper se --provides archivo</code></td>
                             </tr>
                             <tr>
                                 <td>Buscar un paquete</td>
-                                <td>-</td>
-                                <td><code>yum search paquete</code></td>
-                                <td><code>dnf search paquete</code></td>
                                 <td><code>zypper se paquete</code></td>
                             </tr>
                             <tr>
                                 <td>Actualizar el índice de paquetes</td>
-                                <td>-</td>
-                                <td><code>yum check-update</code></td>
-                                <td>-</td>
                                 <td><code>zypper ref</code></td>
                             </tr>
                             <tr>
                                 <td>Listar actualizaciones disponibles</td>
-                                <td>-</td>
-                                <td>-</td>
-                                <td>-</td>
                                 <td><code>zypper list-updates</code></td>
-                            </tr>
-                            <tr>
-                                <td>Limpiar caché de paquetes</td>
-                                <td>-</td>
-                                <td><code>yum clean all</code> (en <code>/var/cache/yum</code>)</td>
-                                <td>-</td>
-                                <td>-</td>
                             </tr>
                         </tbody>
                     </table>
                 </section>
                 <section id="configuracion-repositorios">
                     <h2>Configuración de repositorios</h2>
-                    <p>Nosotros gestionamos los repositorios en <code>/etc/yum.repos.d/</code> para YUM, DNF y Zypper. Podemos añadir, habilitar o deshabilitar repositorios con comandos específicos:</p>
+                    <p>Cuando trabajo con repositorios, suelo gestionarlos en <code>/etc/yum.repos.d/</code> para YUM, DNF y Zypper. Aquí están los comandos que utilizo para cada herramienta:</p>
                     <ul>
-                        <li><strong>YUM:</strong> <code>yum repolist all</code> (listar), <code>yum-config-manager --add-repo URL.repo</code> (añadir), <code>yum-config-manager --enable/--disable</code> (habilitar/deshabilitar).</li>
-                        <li><strong>DNF:</strong> <code>dnf repolist</code> (listar), <code>dnf config-manager --add-repo URL.repo</code> (añadir), <code>dnf config-manager --set-enabled/--set-disabled ID_REPO</code> (habilitar/deshabilitar).</li>
-                        <li><strong>Zypper:</strong> <code>zypper repos</code> (listar), <code>zypper addrepo URL ID_REPO</code> (añadir), <code>zypper modifyrepo -e/-d ID_REPO</code> (habilitar/deshabilitar), <code>zypper modifyrepo -F/-f ID_REPO</code> (activar/desactivar autorefresh), <code>zypper removerepo ID_REPO</code> (eliminar).</li>
+                        <li><strong>YUM:</strong> Listo todos los repositorios con <code>yum repolist all</code>, añado uno nuevo con <code>yum-config-manager --add-repo URL.repo</code>, y habilito o deshabilito con <code>yum-config-manager --enable/--disable</code>.</li>
+                        <li><strong>DNF:</strong> Muestro los repositorios con <code>dnf repolist</code>, añado uno con <code>dnf config-manager --add-repo URL.repo</code>, y habilito o deshabilito con <code>dnf config-manager --set-enabled/--set-disabled ID_REPO</code>.</li>
+                        <li><strong>Zypper:</strong> Listo los repositorios con <code>zypper repos</code>, añado uno con <code>zypper addrepo URL ID_REPO</code>, habilito o deshabilito con <code>zypper modifyrepo -e/-d ID_REPO</code>, activo o desactivo autorefresh con <code>zypper modifyrepo -F/-f ID_REPO</code>, y elimino con <code>zypper removerepo ID_REPO</code>.</li>
                     </ul>
                 </section>
             </div>
