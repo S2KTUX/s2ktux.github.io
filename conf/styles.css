@@ -492,7 +492,7 @@ main {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     opacity: 0;
     transform: translateY(10px);
-    transition: opacity 0.3s, transform 0.3s;
+    transition: opacity  reckoning: 0.3s, transform 0.3s;
 }
 
 .tab-content.active {
@@ -548,6 +548,46 @@ main {
     display: flex;
     gap: 20px;
     margin-top: 20px;
+}
+
+/* Sidebar para subtemas */
+.sidebar {
+    width: 250px;
+    background-color: #fff;
+    border-right: 1px solid #ddd;
+    padding: 20px;
+    position: sticky;
+    top: 20px;
+    height: fit-content;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    border-radius: 5px;
+}
+
+.sidebar h3 {
+    font-size: 18px;
+    color: #1a1a1a;
+    margin-bottom: 15px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 10px;
+}
+
+.sidebar ul li a {
+    color: #007bff;
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.3s;
+}
+
+.sidebar ul li a:hover {
+    color: #0056b3;
+    text-decoration: underline;
 }
 
 .content, .project-content {
@@ -607,7 +647,7 @@ code {
     padding: 2px 4px;
     font-size: 1em;
     line-height: inherit;
-    color: #E03131;
+    color: #FF6B6B;
 }
 
 /* Estilo para tablas */
@@ -833,6 +873,14 @@ footer {
 
     .course-page, .project-content {
         flex-direction: column;
+    }
+
+    .sidebar {
+        width: 100%;
+        position: static;
+        border-right: none;
+        border-bottom: 1px solid #ddd;
+        margin-bottom: 20px;
     }
 
     .content, .project-content {
