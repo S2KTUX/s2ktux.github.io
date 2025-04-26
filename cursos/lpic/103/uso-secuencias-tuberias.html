@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 103.4 Uso de secuencias de texto, tuberías y redirecciones (LPIC-1 103) en SysRiser. Aprende a manejar entradas y salidas en Linux.">
+    <meta name="keywords" content="LPIC-1, tuberías, redirecciones, Linux, comandos, terminal, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 103.4 Uso de secuencias de texto, tuberías y redirecciones (LPIC-1 103)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>103.4 Uso de secuencias de texto, tuberías y redirecciones</h1>
+            <p>Aprende a manejar entradas, salidas y tuberías en Linux.</p>
+        </div>
+        <a href="/cursos/lpic/103/103.html" class="back-link">← Volver a Comandos GNU y Unix</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#redirecciones">Redirecciones</a></li>
+                    <li><a href="#here-document">Here Document y Here String</a></li>
+                    <li><a href="#tuberias">Tuberías (Pipes)</a></li>
+                    <li><a href="#sustitucion-comando">Sustitución de comando</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="redirecciones">
+                    <h2>Redirecciones</h2>
+                    <p>Las redirecciones permiten cambiar el origen de la entrada (<code>stdin</code>) o el destino de la salida (<code>stdout</code>) y errores (<code>stderr</code>) de un comando.</p>
+                    <ul>
+                        <li><strong><code><</code></strong>: Usa un archivo como entrada.<br>
+                            <em>Ejemplo:</em> <code>wc -l < archivo.txt</code> cuenta las líneas de <code>archivo.txt</code>.</li>
+                        <li><strong><code>></code></strong>: Guarda la salida en un archivo (sobrescribe).<br>
+                            <em>Ejemplo:</em> <code>ls > lista.txt</code> guarda la salida en <code>lista.txt</code>.</li>
+                        <li><strong><code>>></code></strong>: Añade la salida a un archivo (sin sobrescribir).<br>
+                            <em>Ejemplo:</em> <code>echo "Nueva línea" >> lista.txt</code> añade al final de <code>lista.txt</code>.</li>
+                        <li><strong><code>2></code></strong>: Guarda errores en un archivo (sobrescribe).<br>
+                            <em>Ejemplo:</em> <code>ls archivo_que_no_existe 2> errores.txt</code> guarda el error en <code>errores.txt</code>.</li>
+                        <li><strong><code>2>></code></strong>: Añade errores a un archivo.<br>
+                            <em>Ejemplo:</em> <code>ls otro_inexistente 2>> errores.txt</code> añade el error a <code>errores.txt</code>.</li>
+                        <li><strong><code>&></code></strong> o <strong><code>2>&1</code></strong>: Guarda salida y errores juntos.<br>
+                            <em>Ejemplo:</em> <code>ls archivo_que_no_existe &> salida.txt</code> guarda salida y errores en <code>salida.txt</code>.</li>
+                    </ul>
+                </section>
+                <section id="here-document">
+                    <h2>Here Document y Here String</h2>
+                    <p>Permiten pasar texto directamente a un comando.</p>
+                    <ul>
+                        <li><strong>Here Document</strong>: Redirige varias líneas a un comando hasta un delimitador (como <code>EOF</code>).<br>
+                            <em>Ejemplo:</em><br>
+                            <code>wc -c << EOF<br>esto es una línea<br>esto es otra línea<br>EOF</code><br>
+                            Cuenta los caracteres (salida: <code>31</code>).</li>
+                        <li><strong>Here String</strong>: Pasa una sola línea como entrada.<br>
+                            <em>Ejemplo:</em> <code>wc -c <<< "Esto se hace en una misma línea"</code><br>
+                            Cuenta los caracteres (salida: <code>29</code>).</li>
+                    </ul>
+                </section>
+                <section id="tuberias">
+                    <h2>Tuberías (Pipes)</h2>
+                    <p>El operador <code>|</code> toma la salida (<code>stdout</code>) de un comando y la pasa como entrada al siguiente.</p>
+                    <ul>
+                        <li><strong>Ejemplo 1</strong>: Filtra información de la CPU.<br>
+                            <code>cat /proc/cpuinfo | grep "model name" | uniq | cut -d ":" -f 2</code><br>
+                            Muestra el nombre del modelo de CPU, eliminando duplicados.</li>
+                        <li><strong>Ejemplo 2</strong>: Cuenta archivos de texto.<br>
+                            <code>ls *.txt | wc -l</code><br>
+                            Cuenta cuántos archivos <code>.txt</code> hay en el directorio.</li>
+                        <li><strong>Ejemplo 3</strong>: Filtra y ordena procesos.<br>
+                            <code>ps aux | grep "python" | sort -k 3 -r | head -n 3 | awk '{print $2, $11}'</code><br>
+                            Busca procesos de Python, los ordena por uso de CPU (descendente), toma los 3 primeros y muestra el PID y el comando.</li>
+                    </ul>
+                </section>
+                <section id="sustitucion-comando">
+                    <h2>Sustitución de comando</h2>
+                    <p>Permite usar la salida de un comando dentro de otro.</p>
+                    <ul>
+                        <li><strong>Comillas invertidas <code>` `</code></strong>: Ejecuta un comando y usa su salida.<br>
+                            <em>Ejemplo:</em> <code>archivos=`find . -type f | wc -l`; echo "Encontré $archivos archivos en total"</code><br>
+                            Cuenta archivos y muestra el total.</li>
+                        <li><strong><code>$( )</code></strong>: Similar a las comillas invertidas, más moderno.<br>
+                            <em>Ejemplo:</em> <code>echo "El proceso con más CPU es $(ps -aux --sort=%cpu | sed -n '2p' | awk '{print $2}')"</code><br>
+                            Muestra el PID del proceso que más CPU usa.</li>
+                        <li><strong><code>xargs</code></strong>: Pasa la salida como argumento a otro comando.<br>
+                            <em>Ejemplo:</em> <code>find . -type f -name "*.log" | xargs rm</code><br>
+                            Elimina todos los archivos <code>.log</code>.
+                            <em>Ejemplo 2:</em> <code>dpkg -l | grep "^rc" | awk '{print $2}' | xargs apt purge -y</code><br>
+                            Explicación: <code>dpkg -l</code> lista paquetes instalados, <code>grep "^rc"</code> filtra los paquetes residuales, <code>awk '{print $2}'</code> extrae los nombres y <code>xargs apt purge -y</code> los elimina sin pedir confirmación.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
