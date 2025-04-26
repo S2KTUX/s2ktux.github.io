@@ -38,6 +38,7 @@
                     <li><a href="#ver-paginado">Ver un archivo paginado</a></li>
                     <li><a href="#parte-texto">Obtener una parte del texto</a></li>
                     <li><a href="#sed-fundamentos">Fundamentos de sed</a></li>
+                    <li><a href="#otros-comandos">Otros comandos útiles</a></li>
                     <li><a href="#integridad-datos">Garantizar la integridad de los datos</a></li>
                     <li><a href="#buscar-archivos">Buscar más en los archivos</a></li>
                 </ul>
@@ -75,16 +76,12 @@
                 </section>
                 <section id="ver-paginado">
                     <h2>Ver un archivo paginado</h2>
-                    <p>Estos comandos te permiten leer archivos página por página o contar líneas.</p>
+                    <p>Estos comandos te permiten leer archivos página por página.</p>
                     <ul>
                         <li><strong><code>less</code></strong>: Muestra el archivo con navegación (arriba/abajo).<br>
                             <em>Ejemplo:</em> <code>less archivo.txt</code> te deja navegar por <code>archivo.txt</code>.</li>
                         <li><strong><code>more</code></strong>: Muestra el archivo página por página (solo hacia adelante).<br>
                             <em>Ejemplo:</em> <code>more archivo.txt</code> muestra <code>archivo.txt</code> página por página.</li>
-                        <li><strong><code>nl</code></strong>: Numera las líneas del archivo.<br>
-                            <em>Ejemplo:</em> <code>nl archivo.txt</code> muestra <code>1 Hola  2 Adiós</code>.</li>
-                        <li><strong><code>wc</code></strong>: Cuenta líneas, palabras o caracteres. Con <code>-l</code> solo cuenta líneas.<br>
-                            <em>Ejemplo:</em> <code>wc -l archivo.txt</code> podría mostrar <code>2 archivo.txt</code> (2 líneas).</li>
                     </ul>
                 </section>
                 <section id="parte-texto">
@@ -99,7 +96,7 @@
                 </section>
                 <section id="sed-fundamentos">
                     <h2>Fundamentos de sed</h2>
-                    <p><code>sed</code> filtra y transforma texto. Otros comandos también ayudan.</p>
+                    <p><code>sed</code> filtra y transforma texto.</p>
                     <ul>
                         <li><strong><code>sed</code></strong> (borrar): Elimina líneas que coincidan.<br>
                             <em>Ejemplo:</em> <code>sed '/cat/d' nombres.txt</code> elimina líneas con "cat".</li>
@@ -109,6 +106,16 @@
                             <em>Ejemplo:</em> <code>sed 's/cat/dog/' nombres.txt</code> cambia "cat" por "dog".</li>
                         <li><strong><code>sed</code></strong> (con backup): Reemplaza y crea un respaldo.<br>
                             <em>Ejemplo:</em> <code>sed -i.backup 's/cat/dog/' nombres.txt</code> cambia y crea <code>nombres.txt.backup</code>.</li>
+                    </ul>
+                </section>
+                <section id="otros-comandos">
+                    <h2>Otros comandos útiles</h2>
+                    <p>Estos comandos también son útiles para manejar texto.</p>
+                    <ul>
+                        <li><strong><code>nl</code></strong>: Numera las líneas del archivo.<br>
+                            <em>Ejemplo:</em> <code>nl archivo.txt</code> muestra <code>1 Hola  2 Adiós</code>.</li>
+                        <li><strong><code>wc</code></strong>: Cuenta líneas, palabras o caracteres. Con <code>-l</code> solo cuenta líneas.<br>
+                            <em>Ejemplo:</em> <code>wc -l archivo.txt</code> podría mostrar <code>2 archivo.txt</code> (2 líneas).</li>
                         <li><strong><code>cut</code></strong>: Extrae partes de cada línea.<br>
                             <em>Ejemplo:</em> <code>cut -d' ' -f1 nombres.txt</code> extrae la primera palabra de cada línea (separador espacio).</li>
                         <li><strong><code>sort</code></strong>: Ordena líneas. Con <code>-n</code> ordena numéricamente.<br>
