@@ -492,7 +492,7 @@ main {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     opacity: 0;
     transform: translateY(10px);
-    transition: opacity  reckoning: 0.3s, transform 0.3s;
+    transition: opacity 0.3s, transform 0.3s;
 }
 
 .tab-content.active {
@@ -647,7 +647,7 @@ code {
     padding: 2px 4px;
     font-size: 1em;
     line-height: inherit;
-    color: #db251f;
+    color: #D32F2F;
 }
 
 /* Estilo para tablas */
