@@ -550,47 +550,6 @@ main {
     margin-top: 20px;
 }
 
-.sidebar {
-    width: 250px;
-    background-color: #f0f4f8;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.sidebar h3 {
-    font-size: 18px;
-    margin-bottom: 15px;
-    color: #1a1a1a;
-}
-
-.sidebar ul {
-    list-style: none;
-    padding: 0;
-}
-
-.sidebar ul li {
-    margin-bottom: 10px;
-}
-
-.sidebar ul li a {
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 600;
-    font-size: 16px;
-}
-
-.sidebar ul li a:hover {
-    text-decoration: underline;
-}
-
-.sidebar ul li a.active {
-    color: #0056b3;
-    font-weight: bold;
-    border-left: 3px solid #007bff;
-    padding-left: 5px;
-}
-
 .content, .project-content {
     flex: 1;
     padding: 20px;
@@ -645,21 +604,10 @@ main {
 /* Estilo para la etiqueta <code> */
 code {
     font-family: 'Courier New', Courier, monospace;
-    background-color: #ffebee;
     padding: 2px 4px;
-    border-radius: 3px;
-    border: 1px solid #ef5350;
     font-size: 1em;
     line-height: inherit;
-    color: #b71c1c;
-}
-
-.back-link {
-    display: inline-block;
-    margin: 20px 0;
-    color: #007bff;
-    text-decoration: none;
-    font-weight: 600;
+    color: #E03131;
 }
 
 /* Estilo para tablas */
@@ -779,69 +727,6 @@ footer {
     background-color: #0056b3;
 }
 
-/* Estilo para el modo oscuro */
-body.dark-mode {
-    background-color: #1a1a1a;
-    color: #e0e0e0;
-}
-
-body.dark-mode .gradient-bg {
-    background: linear-gradient(45deg, #2c3e50, #1a1a1a);
-}
-
-body.dark-mode header {
-    background-color: #003087;
-    border-bottom: 1px solid #001f5b;
-}
-
-body.dark-mode .sidebar {
-    background-color: #2c3e50;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-body.dark-mode .content pre {
-    background-color: #2c3e50;
-}
-
-body.dark-mode .course-card,
-body.dark-mode .step-card,
-body.dark-mode .testimonial-card,
-body.dark-mode .parallax-content,
-body.dark-mode .tab-content {
-    background-color: #2c3e50;
-    border-color: #455a64;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-body.dark-mode footer {
-    background-color: #003087;
-    border-top: 1px solid #001f5b;
-}
-
-body.dark-mode .content h2,
-body.dark-mode .content h3,
-body.dark-mode .sidebar h3,
-body.dark-mode .course-card h3,
-body.dark-mode .parallax-content h3,
-body.dark-mode .step-card h3,
-body.dark-mode .testimonial-card h4 {
-    color: #e0e0e0;
-}
-
-body.dark-mode .content p,
-body.dark-mode .content ul li,
-body.dark-mode .content ol li,
-body.dark-mode .testimonial-card p,
-body.dark-mode .parallax-content p,
-body.dark-mode .step-card p {
-    color: #b0bec5;
-}
-
-body.dark-mode th {
-    background-color: #2c3e50;
-    color: #e0e0e0;
-}
-
 /* Estilo para los botones de navegación entre secciones */
 .nav-button:hover {
     background-color: #0056b3;
@@ -861,10 +746,6 @@ body.dark-mode th {
     nav {
         flex-direction: column;
         gap: 10px;
-    }
-
-    .theme-toggle {
-        margin-left: 0;
     }
 
     .welcome-section {
@@ -952,11 +833,6 @@ body.dark-mode th {
 
     .course-page, .project-content {
         flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        display: none;
     }
 
     .content, .project-content {
