@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Subtema 102.4 (LPIC-1 102) en SysRiser. Aprende a gestionar paquetes en Debian con dpkg y apt: instalación, eliminación y configuración de repositorios.">
-    <meta name="keywords" content="LPIC-1, paquetes Debian, dpkg, apt, apt-get, apt-cache, repositorios, curso, tecnología">
+    <meta name="description" content="Subtema 102.4 (LPIC-1 102) en SysRiser. Aprende a gestionar paquetes en Debian con dpkg y apt.">
+    <meta name="keywords" content="LPIC-1, paquetes Debian, dpkg, apt, repositorios, curso, tecnología">
     <meta name="author" content="SysRiser">
-    <title>SysRiser - 102.4 Gestor de paquetes Debian</title>
+    <title>SysRiser - 102.4 Gestión de paquetes Debian</title>
     <link rel="stylesheet" href="/conf/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/images/favicon.png">
@@ -28,8 +28,8 @@
     </header>
     <main id="contenido">
         <div class="hero">
-            <h1>102.4 Gestor de paquetes Debian</h1>
-            <p>Aprende a gestionar paquetes en Debian con dpkg y apt: instalación, eliminación y configuración de repositorios.</p>
+            <h1>102.4 Gestión de paquetes Debian</h1>
+            <p>Explora cómo gestionar paquetes en Debian con las herramientas dpkg y apt.</p>
         </div>
         <a href="instalacion-paquetes.html" class="back-link">← Volver a Instalación de Linux y gestión de paquetes</a>
         <div class="course-page">
@@ -37,99 +37,112 @@
                 <h3>Contenido del Subtema</h3>
                 <ul>
                     <li><a href="#gestion-dpkg-apt">Gestión con dpkg y apt</a></li>
-                    <li><a href="#configuracion-repositorios">Configuración de repositorios</a></li>
+                    <li><a href="#config-repositorios-debian">Configuración de repositorios</a></li>
                 </ul>
             </div>
             <div class="content">
                 <section id="gestion-dpkg-apt">
                     <h2>Gestión con dpkg y apt</h2>
-                    <p><strong>dpkg</strong> es la herramienta de bajo nivel para gestionar paquetes .deb en Debian. Permite instalar, eliminar y consultar paquetes, pero no resuelve dependencias automáticamente ni actualiza paquetes desde repositorios. <strong>apt</strong> es una herramienta de alto nivel que combina <code>apt-get</code> y <code>apt-cache</code>, gestionando dependencias y repositorios. También existe <strong>aptitude</strong>, una alternativa a <code>apt</code> con interfaz interactiva.</p>
-                    <p><strong>Nota:</strong> Con <code>dpkg</code> no puedes actualizar paquetes directamente, ya que no accede a repositorios. Para actualizar, debes descargar manualmente el nuevo archivo <code>.deb</code> e instalarlo con <code>dpkg -i</code>. En cambio, <code>apt</code> automatiza este proceso consultando los repositorios.</p>
+                    <p>Para gestionar paquetes en Debian, suelo usar dos herramientas principales: <strong>dpkg</strong>, que es de bajo nivel y trabaja directamente con archivos <code>.deb</code>, y <strong>apt</strong>, que es de alto nivel, resuelve dependencias y accede a repositorios. Aquí tienes los comandos clave para cada una.</p>
+                    <h3>Comandos con dpkg</h3>
                     <table>
                         <thead>
                             <tr>
                                 <th>Acción</th>
-                                <th>Comando con dpkg</th>
-                                <th>Comando con apt</th>
+                                <th>Comando</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>Instalar un paquete</td>
                                 <td><code>dpkg -i paquete.deb</code></td>
-                                <td><code>apt install paquete</code></td>
                             </tr>
                             <tr>
-                                <td>Eliminar un paquete (deja configuraciones)</td>
+                                <td>Eliminar un paquete</td>
                                 <td><code>dpkg -r paquete</code></td>
-                                <td><code>apt remove paquete</code></td>
                             </tr>
                             <tr>
-                                <td>Purgar un paquete (elimina configuraciones)</td>
-                                <td><code>dpkg -P paquete</code></td>
-                                <td><code>apt purge paquete</code></td>
+                                <td>Purgar un paquete (incluye configuración)</td>
+                                <td><code>dpkg --purge paquete</code></td>
                             </tr>
                             <tr>
-                                <td>Lista de paquetes instalados</td>
+                                <td>Listar paquetes instalados</td>
                                 <td><code>dpkg -l</code></td>
-                                <td><code>apt list --installed</code></td>
                             </tr>
                             <tr>
-                                <td>Información de un paquete</td>
-                                <td><code>dpkg -s paquete</code> (instalado)<br><code>dpkg -I paquete.deb</code> (no instalado)</td>
-                                <td><code>apt show paquete</code></td>
+                                <td>Ver información de un paquete</td>
+                                <td><code>dpkg -s paquete</code></td>
                             </tr>
                             <tr>
-                                <td>Lista de archivos de un paquete</td>
-                                <td><code>dpkg -L paquete</code> (instalado)<br><code>dpkg -c paquete.deb</code> (no instalado)</td>
-                                <td><code>apt-file list paquete</code> (instalado o no)</td>
+                                <td>Listar archivos de un paquete</td>
+                                <td><code>dpkg -L paquete</code></td>
                             </tr>
                             <tr>
                                 <td>Buscar a qué paquete pertenece un archivo</td>
-                                <td><code>dpkg -S /ruta/archivo</code> (solo paquetes instalados)</td>
-                                <td><code>apt-file search archivo</code> (incluye paquetes no instalados)</td>
+                                <td><code>dpkg -S /ruta/archivo</code></td>
                             </tr>
                             <tr>
-                                <td>Buscar un paquete</td>
-                                <td>-</td>
-                                <td><code>apt search paquete</code></td>
+                                <td>Configurar paquetes pendientes</td>
+                                <td><code>dpkg --configure -a</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <h3>Comandos con apt</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Acción</th>
+                                <th>Comando</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Instalar un paquete</td>
+                                <td><code>apt install paquete</code></td>
                             </tr>
                             <tr>
                                 <td>Actualizar el índice de paquetes</td>
-                                <td>-</td>
                                 <td><code>apt update</code></td>
                             </tr>
                             <tr>
-                                <td>Actualizar paquetes</td>
-                                <td>-</td>
-                                <td><code>apt upgrade</code> (paquetes)<br><code>apt dist-upgrade</code> (sistema completo)</td>
+                                <td>Actualizar todos los paquetes</td>
+                                <td><code>apt upgrade</code></td>
                             </tr>
                             <tr>
-                                <td>Limpiar dependencias no necesarias</td>
-                                <td>-</td>
+                                <td>Eliminar un paquete</td>
+                                <td><code>apt remove paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Purgar un paquete</td>
+                                <td><code>apt purge paquete</code></td>
+                            </tr>
+                            <tr>
+                                <td>Limpiar paquetes descargados</td>
+                                <td><code>apt autoclean</code></td>
+                            </tr>
+                            <tr>
+                                <td>Eliminar dependencias no usadas</td>
                                 <td><code>apt autoremove</code></td>
                             </tr>
                             <tr>
-                                <td>Limpiar caché de paquetes</td>
-                                <td>-</td>
-                                <td><code>apt clean</code> (en <code>/var/cache/apt/archives</code>)</td>
+                                <td>Buscar un paquete</td>
+                                <td><code>apt search paquete</code></td>
                             </tr>
                             <tr>
-                                <td>Reparar dependencias rotas</td>
-                                <td>-</td>
-                                <td><code>apt -f install</code></td>
-                            </tr>
-                            <tr>
-                                <td>Reconfigurar un paquete</td>
-                                <td><code>dpkg-reconfigure paquete</code></td>
-                                <td>-</td>
+                                <td>Ver información de un paquete</td>
+                                <td><code>apt show paquete</code></td>
                             </tr>
                         </tbody>
                     </table>
                 </section>
-                <section id="configuracion-repositorios">
+                <section id="config-repositorios-debian">
                     <h2>Configuración de repositorios</h2>
-                    <p>Los repositorios se configuran en <code>/etc/apt/sources.list</code> y en el directorio <code>/etc/apt/sources.list.d/</code>. Un ejemplo de línea en <code>sources.list</code> sería: <code>deb http://deb.debian.org/debian stable main contrib non-free</code>. Después de modificar los repositorios, debes ejecutar <code>apt update</code> para actualizar el índice de paquetes.</p>
+                    <p>En Debian, configuro los repositorios en <code>/etc/apt/sources.list</code> y en el directorio <code>/etc/apt/sources.list.d/</code>. Cada línea en estos archivos sigue un formato específico: <code>deb [opciones] URL distribucion componentes</code>. Por ejemplo:</p>
+                    <ul>
+                        <li><code>deb http://deb.debian.org/debian bullseye main contrib non-free</code> (para paquetes binarios).</li>
+                        <li><code>deb-src http://deb.debian.org/debian bullseye main contrib non-free</code> (para código fuente).</li>
+                    </ul>
+                    <p>Después de editar, siempre actualizo el índice con <code>apt update</code>. Si quiero añadir un repositorio, puedo crear un archivo en <code>/etc/apt/sources.list.d/</code>, como <code>mi-repo.list</code>, y luego ejecutar <code>apt update</code>.</p>
                 </section>
             </div>
         </div>
