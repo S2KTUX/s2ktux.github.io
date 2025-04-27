@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 104.7 Encontrar archivos de sistema y ubicar archivos en el lugar correspondiente (LPIC-1 104) en SysRiser. Aprende a buscar archivos y entender el FHS en Linux.">
+    <meta name="keywords" content="LPIC-1, FHS, find, locate, which, Linux, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 104.7 Encontrar archivos de sistema y ubicar archivos en el lugar correspondiente (LPIC-1 104)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>104.7 Encontrar archivos de sistema y ubicar archivos en el lugar correspondiente</h1>
+            <p>Aprende a buscar archivos y a entender la estructura de directorios en Linux.</p>
+        </div>
+        <a href="/cursos/lpic/104/104.html" class="back-link">← Volver a Dispositivos y sistemas de archivos</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#fhs">El estándar de jerarquía del sistema de archivos</a></li>
+                    <li><a href="#buscar-archivos">Buscar archivos</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="fhs">
+                    <h2>El estándar de jerarquía del sistema de archivos</h2>
+                    <p>El estándar FHS organiza la estructura de directorios en Linux, y la mayoría de las distribuciones lo siguen. Define dónde se almacenan los diferentes tipos de archivos.</p>
+                    <ul>
+                        <li><strong>/</strong>: Raíz, el directorio principal.</li>
+                        <li><strong>/bin</strong>: Binarios esenciales.</li>
+                        <li><strong>/boot</strong>: Archivos necesarios para el arranque.</li>
+                        <li><strong>/dev</strong>: Archivos de dispositivos físicos y virtuales.</li>
+                        <li><strong>/etc</strong>: Archivos de configuración específicos del sistema.</li>
+                        <li><strong>/home</strong>: Perfiles de usuario.</li>
+                        <li><strong>/lib</strong>: Librerías compartidas.</li>
+                        <li><strong>/media</strong>: Medios extraíbles montados por el usuario.</li>
+                        <li><strong>/mnt</strong>: Punto de montaje temporal para sistemas de archivos.</li>
+                        <li><strong>/opt</strong>: Paquetes de software de aplicaciones.</li>
+                        <li><strong>/root</strong>: Directorio de inicio del usuario root.</li>
+                        <li><strong>/run</strong>: Datos temporales que se borran tras reinicio.</li>
+                        <li><strong>/sbin</strong>: Binarios del sistema.</li>
+                        <li><strong>/usr</strong>: Datos de usuario de solo lectura.</li>
+                        <li><strong>/proc</strong>: Sistema de archivos virtual con datos de procesos en ejecución.</li>
+                        <li><strong>/var</strong>: Datos variables como logs y servicios.</li>
+                    </ul>
+                    <p><strong>Ubicaciones para archivos temporales:</strong></p>
+                    <ul>
+                        <li><strong>/tmp</strong>: Archivos temporales que se eliminan tras reinicio.</li>
+                        <li><strong>/var/tmp</strong>: Archivos temporales que persisten tras reinicio (no deben borrarse manualmente).</li>
+                        <li><strong>/run</strong>: Archivos temporales que se eliminan tras reinicio (como archivos PID).</li>
+                    </ul>
+                </section>
+                <section id="buscar-archivos">
+                    <h2>Buscar archivos</h2>
+                    <p>Existen varios comandos para buscar archivos en Linux, cada uno con un propósito específico.</p>
+                    <ul>
+                        <li><strong><code>find</code> (buscar por atributos y tiempo):</strong><br>
+                            Busca archivos en tiempo real según criterios específicos.<br>
+                            - <strong>Por atributos:</strong><br>
+                              &nbsp;&nbsp;- <code>-user usuario</code>: Archivos de un usuario.<br>
+                              &nbsp;&nbsp;- <code>-group grupo</code>: Archivos de un grupo.<br>
+                              &nbsp;&nbsp;- <code>-readable</code>, <code>-writable</code>, <code>-executable</code>: Archivos legibles, escribibles o ejecutables.<br>
+                              &nbsp;&nbsp;- <code>-empty</code>: Archivos o directorios vacíos.<br>
+                              &nbsp;&nbsp;- <code>-perm NNN</code>: Archivos con permisos específicos (ej. <code>-perm 644</code>).<br>
+                              &nbsp;&nbsp;- <code>-size N</code>: Archivos por tamaño (ej. <code>+100M</code> para mayores de 100 MB).<br>
+                            - <strong>Por tiempo:</strong><br>
+                              &nbsp;&nbsp;- <code>-amin N</code>, <code>-cmin N</code>, <code>-mmin N</code>: Acceso, cambio o modificación hace N minutos.<br>
+                              &nbsp;&nbsp;- <code>-atime N</code>, <code>-ctime N</code>, <code>-mtime N</code>: Lo mismo, pero hace N días (N x 24 horas).<br>
+                            <em>Ejemplo:</em> Buscar archivos de un usuario mayores de 100 MB: <code>find / -user usuario -size +100M</code>.</li>
+                        <li><strong><code>locate</code> (búsqueda rápida usando una base de datos):</strong><br>
+                            Usa una base de datos (<code>/var/lib/mlocate.db</code>) que se actualiza con <code>updatedb</code>.<br>
+                            - <code>-i</code>: Ignora mayúsculas/minúsculas.<br>
+                            - <code>-A</code>: Busca varios patrones a la vez.<br>
+                            - <code>-c</code>: Cuenta las coincidencias.<br>
+                            <strong>Configuración:</strong> El archivo <code>/etc/updatedb.conf</code> controla qué se excluye:<br>
+                            &nbsp;&nbsp;- <code>PRUNEFS</code>: Sistemas de archivos excluidos.<br>
+                            &nbsp;&nbsp;- <code>PRUNENAMES</code>: Directorios excluidos.<br>
+                            &nbsp;&nbsp;- <code>PRUNEPATH</code>: Rutas excluidas.<br>
+                            &nbsp;&nbsp;- <code>PRUNE_BIND_MOUNTS</code>: Sí/no, para excluir puntos de montaje.</li>
+                        <li><strong>Buscar binarios:</strong><br>
+                            - <code>which</code>: Muestra la ruta completa de un binario (con <code>-a</code> muestra todas las rutas).<br>
+                            - <code>type</code>: Muestra información sobre un comando (con <code>-t</code> muestra solo el tipo).<br>
+                            - <code>whereis</code>: Muestra la ruta del binario, su manual y, si existe, su código fuente (con <code>-b</code> solo el binario, con <code>-m</code> solo el manual).<br>
+                            <em>Ejemplo:</em> <code>whereis ls</code> muestra: <code>ls: /bin/ls /usr/share/man/man1/ls.1.gz</code>.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
