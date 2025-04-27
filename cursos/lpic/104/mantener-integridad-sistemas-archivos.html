@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 104.2 Mantener la integridad de los sistemas de archivos (LPIC-1 104) en SysRiser. Aprende a comprobar y mantener sistemas de archivos en Linux.">
+    <meta name="keywords" content="LPIC-1, sistemas de archivos, fsck, xfs, Linux, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 104.2 Mantener la integridad de los sistemas de archivos (LPIC-1 104)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>104.2 Mantener la integridad de los sistemas de archivos</h1>
+            <p>Aprende a comprobar el uso del disco y mantener sistemas de archivos en Linux.</p>
+        </div>
+        <a href="/cursos/lpic/104/104.html" class="back-link">← Volver a Dispositivos y sistemas de archivos</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#uso-disco">Comprobación del uso del disco</a></li>
+                    <li><a href="#espacio-libre">Comprobación de espacio libre</a></li>
+                    <li><a href="#mantenimiento-ext">Mantenimiento de ext2, ext3, ext4</a></li>
+                    <li><a href="#mantenimiento-xfs">Mantenimiento de XFS</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="uso-disco">
+                    <h2>Comprobación del uso del disco</h2>
+                    <p>El comando <code>du</code> (disk usage) muestra el tamaño de archivos y directorios.</p>
+                    <ul>
+                        <li><strong>Opciones de <code>du</code>:</strong><br>
+                            - <code>-h</code>: Formato legible (KB, MB, etc.).<br>
+                            - <code>-a</code>: Incluye todos los archivos.<br>
+                            - <code>-S</code>: Excluye subdirectorios del total.<br>
+                            - <code>-c</code>: Muestra el total.<br>
+                            - <code>-dX</code>: Limita la profundidad a X niveles.<br>
+                            - <code>--exclude="patrón"</code>: Excluye archivos o directorios.</li>
+                            <pre>
+                                root@zero:~# du -hc
+                                4,0K    ./.ssh
+                                4,0K    ./.local/share/nano
+                                8,0K    ./.local/share
+                                12K     ./.local
+                                76K     .
+                                76K     total
+                            </pre>
+                    </ul>
+                </section>
+                <section id="espacio-libre">
+                    <h2>Comprobación de espacio libre</h2>
+                    <p>El comando <code>df</code> (disk free) muestra el espacio libre en los sistemas de archivos.</p>
+                    <ul>
+                        <li><strong>Opciones de <code>df</code>:</strong><br>
+                            - <code>-h</code>: Formato legible (KB, MB, etc.).<br>
+                            - <code>-x tipo</code>: Excluye un tipo de sistema de archivos.<br>
+                            - <code>-t tipo</code>: Muestra solo un tipo de sistema de archivos.<br>
+                            - <code>-T</code>: Incluye el tipo de sistema de archivos.<br>
+                            - <code>--output=campo</code>: Muestra campos específicos (ej. <code>source</code>, <code>fstype</code>, <code>size</code>, <code>used</code>, <code>avail</code>).<br></li>
+                            <pre>
+                                root@zero:~# df -hT
+                                S.ficheros                Tipo     Tamaño Usados  Disp Uso% Montado en
+                                udev                      devtmpfs   1,9G      0  1,9G   0% /dev
+                                tmpfs                     tmpfs      389M   844K  388M   1% /run
+                                /dev/mapper/zero--vg-root ext4        48G   3,4G   42G   8% /
+                                /dev/sdb1                 ext2       455M   101M  330M  24% /boot
+                                /dev/sda1                 ext2      1007M    24K  956M   1% /mnt/disco
+
+                            </pre>
+                    </ul>
+                </section>
+                <section id="mantenimiento-ext">
+                    <h2>Mantenimiento de ext2, ext3, ext4</h2>
+                    <p><strong>Comprobación con <code>fsck</code> (o <code>e2fsck</code>) :</strong> Verifica y repara sistemas de archivos ext. Siempre desmonta el sistema de archivos primero.</p>
+                    <ul>
+                        <li><strong>Opciones de <code>fsck</code>:</strong><br>
+                            - <code>-A</code>: Comprueba todos los sistemas de archivos en <code>/etc/fstab</code>.<br>
+                            - <code>-R</code>: Con <code>-A</code>, ignora la partición raíz.<br>
+                            - <code>-p</code>: Repara errores automáticamente.<br>
+                            - <code>-y</code>: Responde "sí" a todas las preguntas.<br>
+                            - <code>-C</code>: Muestra una barra de progreso.<br>
+                            - <code>-N</code>: Simula la comprobación.</li>
+                    </ul>
+                    <p><strong>Ajustes con <code>tune2fs</code>:</strong> Modifica parámetros de sistemas de archivos ext.</p>
+                    <ul>
+                        <li><strong>Opciones de <code>tune2fs</code>:</strong><br>
+                            - <code>-l</code>: Muestra los parámetros actuales.<br>
+                            - <code>-c N</code>: Máximo de montajes antes de una comprobación.<br>
+                            - <code>-i N</code>: Intervalo de tiempo entre comprobaciones (ej. <code>1m</code> para 1 mes).<br>
+                            - <code>-L etiqueta</code>: Asigna una etiqueta.<br>
+                            - <code>-j</code>: Añade un journal (convierte ext2 a ext3).<br>
+                            - <code>-e comportamiento</code>: Define la acción ante errores (opciones: <code>continue</code>, <code>remount-ro</code>, <code>panic</code>).<br>
+                            <em>Ejemplo:</em> <code>tune2fs -c 10 /dev/sda1</code> establece 10 montajes antes de comprobar.</li>
+                    </ul>
+                </section>
+                <section id="mantenimiento-xfs">
+                    <h2>Mantenimiento de XFS</h2>
+                    <p><strong>Reparación con <code>xfs_repair</code>:</strong> Equivalente a <code>fsck</code> para XFS.</p>
+                    <ul>
+                        <li><strong>Opciones de <code>xfs_repair</code>:</strong><br>
+                            - <code>-n</code>: Simula la reparación.<br>
+                            - <code>-l dispositivo</code>: Usa un dispositivo externo para el journal.<br>
+                            - <code>-d</code>: Repara un sistema montado en modo solo lectura (peligroso).</li>
+                    </ul>
+                    <p><strong>Otras herramientas:</strong></p>
+                    <ul>
+                        <li><code>xfs_db</code>: Depura y analiza sistemas de archivos XFS.</li>
+                        <li><code>xfs_fsr</code>: Desfragmenta sistemas de archivos XFS.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
