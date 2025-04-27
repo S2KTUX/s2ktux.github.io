@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 104.5 Administrar permisos y propietarios de archivos (LPIC-1 104) en SysRiser. Aprende a gestionar permisos y propietarios en Linux.">
+    <meta name="keywords" content="LPIC-1, permisos, propietarios, chmod, chown, umask, Linux, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 104.5 Administrar permisos y propietarios de archivos (LPIC-1 104)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>104.5 Administrar permisos y propietarios de archivos</h1>
+            <p>Aprende a gestionar permisos y propietarios de archivos en Linux.</p>
+        </div>
+        <a href="/cursos/lpic/104/104.html" class="back-link">← Volver a Dispositivos y sistemas de archivos</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#consultar-info">Consultar información sobre archivos y directorios</a></li>
+                    <li><a href="#tipos-archivos">Tipos de archivos</a></li>
+                    <li><a href="#comprension-permisos">Comprensión de los permisos</a></li>
+                    <li><a href="#propietarios-grupos">Propietarios y grupos</a></li>
+                    <li><a href="#permisos-predeterminados">Permisos predeterminados</a></li>
+                    <li><a href="#permisos-especiales">Permisos especiales</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="consultar-info">
+                    <h2>Consultar información sobre archivos y directorios</h2>
+                    <p>Para ver información sobre archivos y directorios, como permisos, propietario y grupo, usamos <code>ls -l</code>. Para directorios, usamos <code>ls -ld</code> (evita listar el contenido). Los archivos ocultos (que empiezan con un punto, ej. <code>.bashrc</code>) se ven con <code>ls -a</code> o <code>ls -la</code>.</p>
+                    <ul>
+                        <li>Información que muestra <code>ls -l</code>: tipo de archivo, permisos, número de enlaces, propietario, grupo, tamaño, fecha de modificación y nombre.</li>
+                        <li>Permisos de directorios: controlan quién puede listar contenido (<code>r</code>), crear/borrar archivos dentro (<code>w</code>) o entrar al directorio (<code>x</code>).</li>
+                        <li><em>Ejemplo:</em> <code>ls -l archivo.txt</code> muestra: <code>-rw-r--r-- 1 usuario grupo 1024 Apr 27 12:00 archivo.txt</code>.</li>
+                    </ul>
+                </section>
+                <section id="tipos-archivos">
+                    <h2>Tipos de archivos</h2>
+                    <p>En Linux, hay varios tipos de archivos, visibles en la primera columna de <code>ls -l</code>:</p>
+                    <ul>
+                        <li><code>-</code>: Archivo regular (texto, binario).</li>
+                        <li><code>d</code>: Directorio.</li>
+                        <li><code>l</code>: Enlace simbólico.</li>
+                        <li><code>b</code>: Dispositivo de bloques (discos).</li>
+                        <li><code>c</code>: Dispositivo de caracteres (terminales).</li>
+                        <li><code>s</code>: Socket.</li>
+                    </ul>
+                </section>
+                <section id="comprension-permisos">
+                    <h2>Comprensión de los permisos</h2>
+                    <p>Los permisos controlan quién puede acceder a un archivo o directorio. Se dividen en tres categorías: usuario (propietario), grupo y otros.</p>
+                    <ul>
+                        <li><strong>Tipos:</strong><br>
+                            - <code>r</code> (lectura, valor 4): Permite leer.<br>
+                            - <code>w</code> (escritura, valor 2): Permite modificar.<br>
+                            - <code>x</code> (ejecución, valor 1): Permite ejecutar o entrar (en directorios).</li>
+                        <li>Ejemplo: <code>rw-r--r--</code> significa lectura/escritura para el usuario, y solo lectura para grupo y otros.</li>
+                    </ul>
+                    <p>Para cambiar permisos usamos <code>chmod</code> (recursivo con <code>-R</code>).</p>
+                    <ul>
+                        <li><strong>Modo numérico:</strong> Usa valores (ej. 644 para rw-r--r--). Ejemplo: <code>chmod 644 archivo</code>.</li>
+                        <li><strong>Modo simbólico:</strong> Usa letras (u, g, o) y operadores (+, -, =). Ejemplo: <code>chmod u+x script.sh</code>.</li>
+                    </ul>
+                </section>
+                <section id="propietarios-grupos">
+                    <h2>Propietarios y grupos</h2>
+                    <p>Los archivos tienen un propietario y un grupo, que podemos ver con <code>ls -l</code>. Para ver los grupos de un usuario, podemos usar <code>groups</code>.</p>
+                    <ul>
+                        <li><strong>Cambiar propietario con <code>chown</code> (recursivo con <code>-R</code>):</strong><br>
+                            Ejemplo: <code>chown usuario archivo</code>.<br>
+                            También puede cambiar propietario y grupo: <code>chown usuario:grupo archivo</code>.</li>
+                        <li><strong>Cambiar grupo con <code>chgrp</code> (recursivo con <code>-R</code>):</strong><br>
+                            Ejemplo: <code>chgrp grupo archivo</code>.</li>
+                        <li><strong>Consultar grupos:</strong> Usa <code>groups usuario</code> para ver los grupos de un usuario.</li>
+                    </ul>
+                </section>
+                <section id="permisos-predeterminados">
+                    <h2>Permisos predeterminados</h2>
+                    <p><code>Umask</code> establece los permisos predeterminados para nuevos archivos y directorios, restando su valor de los permisos base (666 para archivos, 777 para directorios).</p>
+                    <ul>
+                        <li> Podemos usar <code>umask</code> para ver su valor y así conocer los permisos predeterminados del sistema y <code>umask valor</code> para cambiarlos.</li>
+                        <li> Para ver los permisos predeterminados en modo simbolico podemos usar <code>umask -S</code> que nos devolvería algo como <code>u=rwx,g=rx,o=rx</code>, por ejemplo</li> 
+                        <li><em>Ejemplo:</em> Con <code>umask 022</code>, un nuevo archivo tendrá permisos 644 (666 - 022), y un directorio 755 (777 - 022).</li>
+                    </ul>
+                </section>
+                <section id="permisos-especiales">
+                    <h2>Permisos especiales</h2>
+                    <p>Los permisos especiales cambian el comportamiento de archivos y directorios.</p>
+                    <ul>
+                        <li><strong>SUID (valor 4):</strong> Hace que un archivo ejecutable se ejecute con los permisos del propietario, no del usuario que lo ejecuta. Por ejemplo, el comando <code>passwd</code> usa SUID para que cualquier usuario pueda cambiar su contraseña (necesita permisos de root). Se muestra como <code>s</code> en el permiso de ejecución del usuario (ej. <code>rwsr-xr-x</code>). Para asignarlo: <code>chmod 4755 archivo</code>.</li>
+                        <li><strong>SGID (valor 2):</strong> Hace que un archivo ejecutable se ejecute con los permisos del grupo propietario, útil para programas compartidos por un grupo. En directorios, los nuevos archivos heredan el grupo del directorio, ideal para carpetas compartidas. Se muestra como <code>s</code> en el permiso de ejecución del grupo (ej. <code>rwxr-sr-x</code>). Para asignarlo: <code>chmod 2755 archivo</code>.</li>
+                        <li><strong>Sticky bit (valor 1):</strong> En directorios, evita que usuarios borren o muevan archivos de otros, aunque tengan permisos de escritura. Es común en <code>/tmp</code>, donde todos pueden escribir pero solo borrar sus propios archivos. Se muestra como <code>t</code> en el permiso de ejecución de otros (ej. <code>rwxrwxrwt</code>). Para asignarlo: <code>chmod 1755 directorio</code>.<br>
+                            <em>Ejemplo:</em> <code>ls -ld /tmp</code> muestra: <code>drwxrwxrwt 10 root root 4096 Apr 27 12:00 /tmp</code> (la <code>t</code> indica el sticky bit).</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
