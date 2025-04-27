@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 104.3 Controlar el montaje y desmontaje de sistemas de archivos (LPIC-1 104) en SysRiser. Aprende a gestionar montajes en Linux.">
+    <meta name="keywords" content="LPIC-1, montaje, desmontaje, fstab, systemd, Linux, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 104.3 Controlar el montaje y desmontaje de sistemas de archivos (LPIC-1 104)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>104.3 Controlar el montaje y desmontaje de sistemas de archivos</h1>
+            <p>Aprende a montar, desmontar y configurar sistemas de archivos en Linux.</p>
+        </div>
+        <a href="/cursos/lpic/104/104.html" class="back-link">← Volver a Dispositivos y sistemas de archivos</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#montar-desmontar">Montar y desmontar</a></li>
+                    <li><a href="#montaje-arranque">Montaje en el arranque</a></li>
+                    <li><a href="#uuid-etiquetas">Uso de UUID y etiquetas</a></li>
+                    <li><a href="#montaje-systemd">Montaje con systemd</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="montar-desmontar">
+                    <h2>Montar y desmontar</h2>
+                    <p><strong>Montar con <code>mount</code>:</strong> Asigna un sistema de archivos a un punto de montaje.</p>
+                    <ul>
+                        <li><strong>Sintaxis:</strong> <code>mount -t tipo dispositivo punto_montaje</code>.</li>
+                        <li><strong>Opciones:</strong><br>
+                            - <code>-t tipo</code>: Especifica el tipo (ej. <code>xfs</code>, <code>ext4</code>).<br>
+                            - <code>-a</code>: Monta todos los sistemas de archivos de <code>/etc/fstab</code>.<br>
+                            - <code>-o opciones</code>: Opciones adicionales (ej. <code>ro</code> para solo lectura, <code>rw</code> para lectura/escritura).</li>
+                    </ul>
+                    <p><strong>Desmontar con <code>umount</code>:</strong> Libera un sistema de archivos. No debe estar en uso.</p>
+                    <ul>
+                        <li><strong>Sintaxis:</strong> <code>umount punto_montaje</code> o <code>umount dispositivo</code>.</li>
+                        <li><strong>Opciones:</strong><br>
+                            - <code>-a</code>: Desmonta todos los sistemas de archivos de <code>/etc/fstab</code>.<br>
+                            - <code>-f</code>: Fuerza el desmontaje.<br>
+                            - <code>-r</code>: Convierte a modo solo lectura si no puede desmontar.</li>
+                            * <code>lsof</code>: Permite comprobar si hay archivos abiertos (<code>lsof /dev/sda1</code>)
+                    </ul>
+                   <p>Se puede montar los filesystem donde queramos pero hay buenas practicas :</p>
+                   <ul>
+                       <li><strong><code>/mnt</code></strong> para montajes manuales.</li>
+                       <li><strong><code>/media</code></strong> para dispositivos externos automáticos.</li>
+                   
+                </section>
+                <section id="montaje-arranque">
+                    <h2>Montaje en el arranque</h2>
+                    <p>El archivo <code>/etc/fstab</code> define los sistemas de archivos que se montan al iniciar el sistema. Cada línea tiene 6 campos:</p>
+                    <ul>
+                        <li><strong>Campos:</strong><br>
+                            1. Dispositivo (ej. <code>/dev/sda1</code>, UUID, o etiqueta).<br>
+                            2. Punto de montaje (ej. <code>/mnt/datos</code>).<br>
+                            3. Tipo (ej. <code>ext4</code>).<br>
+                            4. Opciones (ej. <code>defaults</code>).<br>
+                            5. Volcado (0 o 1, normalmente 0 para deshabilitar backups).<br>
+                            6. Orden de comprobación con <code>fsck</code> (0 para ignorar, 1 para raíz, 2 para otros).</li>
+                        <li><strong>Opciones comunes:</strong><br>
+                            - <code>defaults</code>: Incluye <code>rw</code>, <code>suid</code>, <code>dev</code>, <code>exec</code>, <code>auto</code>, <code>nouser</code>, <code>async</code>.<br>
+                            - <code>atime</code>/<code>noatime</code>: Actualiza o no el tiempo de acceso.<br>
+                            - <code>auto</code>/<code>noauto</code>: Monta o no automáticamente con <code>mount -a</code>.<br>
+                            - <code>dev</code>/<code>nodev</code>: Permite o no interpretar particiones de dispositivos.<br>
+                            - <code>exec</code>/<code>noexec</code>: Permite o no ejecutar binarios en la partición.<br>
+                            - <code>user</code>/<code>nouser</code>: Permite o no que usuarios puedan montar el filesystem.<br>
+                            - <code>suid</code>/<code>nosuid</code>: Habilita o no permisos especiales.<br>
+                            - <code>sync</code>/<code>async</code>: Operaciones síncronas o asíncronas.</li>
+                        <li><em>Ejemplo:</em> <code>UUID=1234-5678 /mnt/datos xfs defaults 0 2</code>.</li>
+                    </ul>
+                </section>
+                <section id="uuid-etiquetas">
+                    <h2>Uso de UUID y etiquetas</h2>
+                    <p>Usar UUID o etiquetas en lugar de nombres de dispositivos puede evitar problemas si los dispositivos cambian de nombre.</p>
+                    <ul>
+                        <li><strong>Para ver el UUID:</strong> Podemos usar <code>lsblk -f /dev/sda1</code> para ver el UUID y tipo de sistema de archivos.</li>
+                        <li><strong>En <code>/etc/fstab</code>:</strong><br>
+                            - Podríamos configurar con <code>UUID=1234-5678</code> o <code>LABEL=etiqueta</code> en el primer campo.</li>
+                    </ul>
+                </section>
+                <section id="montaje-systemd">
+                    <h2>Montaje con systemd</h2>
+                    <p>Se pueden montar sistemas de archivos usando unidades <code>.mount</code> y <code>.automount</code> en <code>/etc/systemd/system</code>.</p>
+                    <ul>
+                        <li><strong>Unidad <code>.mount</code>:</strong> Define un montaje. El nombre del archivo debe coincidir con el punto de montaje (ej. <code>mnt-disco.mount</code>).<br>
+                            <em>Ejemplo:</em><br>
+                            <pre>
+[Unit]
+Description=Montaje de prueba
+[Mount]
+What=/dev/disk/by-uuid/1234-5678
+Where=/mnt/disco
+Type=xfs
+Options=defaults
+[Install]
+WantedBy=multi-user.target
+                            </pre>
+                            Activa con <code>systemctl daemon-reload</code> y <code>systemctl start mnt-disco.mount</code>. Para que persista: <code>systemctl enable mnt-disco.mount</code>.</li>
+                        <li><strong>Unidad <code>.automount</code>:</strong> Automatiza el montaje. Usa el mismo nombre que el archivo <code>.mount</code> (ej. <code>mnt-disco.automount</code>).<br>
+                            <em>Ejemplo:</em><br>
+                            <pre>
+[Unit]
+Description=Automount for the external data disk
+[Automount]
+Where=/mnt/disco
+[Install]
+WantedBy=multi-user.target
+                            </pre>
+                            Activa con <code>systemctl daemon-reload</code> y <code>systemctl start mnt-disco.automount</code>.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
