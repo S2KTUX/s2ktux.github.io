@@ -58,16 +58,14 @@
                             - <code>F</code>: Muestra el espacio sin particionar.<br>
                             - <code>d</code>: Elimina una partición.<br>
                             - <code>t</code>: Cambia el tipo de partición.<br>
-                            <em>Ejemplo:</em> <code>fdisk -l</code> lista discos y particiones.</li>
                         <li><strong>gdisk (para GPT):</strong> Usa <code>gdisk /dev/sda</code>. Incluye opciones adicionales:<br>
                             - <code>s</code>: Reorganiza el número de particiones.<br>
                             - <code>r</code>: Accede al menú de recuperación (ej. convertir MBR a GPT).<br>
-                            <em>Ejemplo:</em> <code>gdisk /dev/sda</code> para gestionar un disco GPT.</li>
                     </ul>
                 </section>
                 <section id="sistemas-archivos">
                     <h2>Creación de sistemas de archivos</h2>
-                    <p>Después de crear una partición, debes formatearla con un sistema de archivos. Estos son los más comunes:</p>
+                    <p>Después de crear una partición, se debe formatear con un filesystem :</p>
                     <ul>
                         <li><strong>ext (ext2, ext3, ext4):</strong> Usa <code>mkfs.ext4 /dev/sda1</code> o <code>mke2fs -t ext4 /dev/sda1</code>. Opciones:<br>
                             - <code>-t</code>: Indica el tipo de partición.<br>
@@ -75,19 +73,15 @@
                             - <code>-L etiqueta</code>: Asigna una etiqueta.<br>
                             - <code>-v</code>: Modo detallado.<br>
                             - <code>-n</code>: Simula la creación.<br>
-                            <em>Ejemplo:</em> <code>mkfs.ext4 -L datos /dev/sda1</code> crea un sistema ext4 con etiqueta "datos".</li>
                         <li><strong>xfs:</strong> Usa <code>mkfs.xfs /dev/sda1</code>. Necesita el paquete <code>xfsprogs</code>. Opciones:<br>
                             - <code>-N</code>: Simula la creación.<br>
                             - <code>-l logdev=/dev/sda2</code>: Usa una partición para el journal.<br>
-                            <em>Ejemplo:</em> <code>mkfs.xfs -N /dev/sda1</code> simula la creación.</li>
                         <li><strong>FAT/vFAT:</strong> Para USBs. Usa <code>mkfs.vfat -F 32 /dev/sda1</code>.<br>
-                            <em>Ejemplo:</em> <code>mkfs.vfat /dev/sda1</code> formatea un USB.</li>
                         <li><strong>btrfs:</strong> Sistema moderno (copy-on-write). Usa <code>mkfs.btrfs /dev/sda1</code> y el paquete <code>btrfs-progs</code>.<br>
                             - Crear con múltiples discos: <code>mkfs.btrfs -d single -m single /dev/sda /dev/sdb</code>.<br>
                             - Subvolúmenes: <code>btrfs subvolume create /mnt/disco/BKUP</code>.<br>
-                            - Montar subvolúmenes: <code>mount -t btrfs -o subvol=BKUP /dev/sda1 /mnt/backup</code>.<br>
+                            - Montar subvolúmenes: <code>mount -t btrfs -o subvol=BKUP /dev/sda1 /mnt/backup (donde BKUP es el subvolumen que hemos creado y /mnt/backup es el destino).</code>.<br>
                             - Snapshots: <code>btrfs subvolume snapshot /mnt/BKUP /home/sysriser</code>. Usa <code>-r</code> para hacerlos de solo lectura.<br>
-                            <em>Ejemplo:</em> <code>btrfs subvolume create /mnt/disco/BKUP</code> crea un subvolumen.</li>
                     </ul>
                 </section>
                 <section id="parted">
@@ -113,11 +107,11 @@
                     <ul>
                         <li><strong>Crear partición SWAP. Para crear una partición SWAP :</strong><br>
                             1. Usamos <code>mkswap /dev/sda2</code> para formatear.<br>
-                            2. Activamos con <code>swapon /dev/sda2</code> (podemos desactivar con <code>swapoff) <br>
+                            2. Activamos con <code>swapon /dev/sda2</code> (podemos desactivar con <code>swapoff</code>) <br>
                         <li><strong>Para crear archivo SWAP:</strong><br>
                             1. Crea un archivo con dd : <code>dd if=/dev/zero of=/swapfile bs=1M count=1024</code> (1GB).<br>
                             2. Formateamos el archivo con <code>mkswap /swapfile</code>.<br>
-                            3. Activamos el archivo con <code>swapon /swapfile</code>.<br>
+                            3. Activamos el archivo con <code>swapon /swapfile</code>.
                     </ul>
                     <p>Podriamos ver las particiones o fichero que tenemos con swapon, por ejemplo : </p>
                     <pre>
