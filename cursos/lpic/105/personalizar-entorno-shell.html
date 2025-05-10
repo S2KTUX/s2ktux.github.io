@@ -57,7 +57,7 @@
                                 <li><strong><code>~/.bash_login</code>:</strong> Se ejecuta si no existe <code>.bash_profile</code>. Contiene comandos de inicio de sesión.</li>
                                 <li><strong><code>~/.profile</code>:</strong> Se usa si no hay <code>.bash_profile</code> ni <code>.bash_login</code>. Verifica si el shell es bash y carga <code>.bashrc</code>.</li>
                                 <li><strong><code>~/.bashrc</code>:</strong> Similar a <code>/etc/bash.bashrc</code>. Almacena alias y funciones específicas del usuario.</li>
-                                <li><strong><code>~/.bash_logout</code>:</strong> Ejecuta tareas de limpieza al cerrar una sesión de login (ej. <code>clear</code>).</li>
+                                <li><strong><code>~/.bash_logout</code>:</strong> Ejecuta tareas de limpieza al cerrar una sesión de login.</li>
                             </ul>
                         </li>
                         <li><strong>Ejecutar archivos:</strong>
@@ -67,7 +67,7 @@
                                 <li><strong><code>source</code>:</strong> Similar al operador <code>.</code>. Ejemplo: <code>source ~/.bashrc</code>.</li>
                             </ul>
                         </li>
-                        <li><strong>SKEL:</strong> Variable definida en <code>/etc/adduser.conf</code>. Apunta a un directorio plantilla para nuevos usuarios (ej. <code>/etc/skel</code>).</li>
+                        <li><strong>SKEL:</strong> Variable definida en <code>/etc/adduser.conf</code>. Apunta a un directorio plantilla para nuevos usuarios.</li>
                     </ul>
                 </section>
                 <section id="variables">
@@ -92,7 +92,7 @@
                             <ul>
                                 <li><strong><code>set</code>:</strong> Muestra todas las variables y funciones asignadas.</li>
                                 <li><strong><code>unset</code>:</strong> Elimina una variable. Ejemplo: <code>unset distro</code>.</li>
-                                <li><strong><code>export</code>:</strong> Convierte una variable local en global. Ejemplo: <code>export animal</code>.</li>
+                                <li><strong><code>export</code>:</strong> Convierte una variable local en global.</li>
                                 <li><strong><code>env</code> y <code>printenv</code>:</strong> Lista variables de entorno. <code>env</code> también modifica el entorno al ejecutar un programa.</li>
                             </ul>
                         </li>
@@ -105,7 +105,7 @@
                                 <li><strong><code>LD_LIBRARY_PATH</code>:</strong> Directorios para bibliotecas compartidas (echo $LD_LIBRARY_PATH : /usr/local/lib).</li>
                                 <li><strong><code>MAIL</code>:</strong> Archivo donde bash revisa el correo (echo $MAIL : /var/mail/sysriser).</li>
                                 <li><strong><code>PATH</code>:</strong> Directorios donde bash busca ejecutables (echo $PATH : /usr/local/bin:/usr/bin:/bin).</li>
-                                <li><strong><code>PS1</code>:</strong> Define el prompt de bash (echo $PS1 : \u@\h:\w\$).</li>
+                                <li><strong><code>PS1</code>:</strong> Define el prompt de bash .</li>
                                 <li><strong><code>SHELL</code>:</strong> Ruta del shell actual (echo $SHELL : /bin/bash).</li>
                                 <li><strong><code>USER</code>:</strong> Nombre del usuario (echo $USER : sysriser).</li>
                             </ul>
@@ -116,11 +116,10 @@
                     <h2>Alias y funciones</h2>
                     <p>Los alias y funciones simplifican comandos repetitivos en el shell.</p>
                     <ul>
-                        <li><strong>Alias:</strong> Sustituto de un comando. Usa comillas si contiene parámetros o espacios.<br>
+                        <li><strong>Alias:</strong> Sustituto de un comando. Usamos comillas si contiene parámetros o espacios. Podemos eliminarlos con unalias<br>
                             - Ejemplo: <code>alias ll="ls -la"</code>.<br>
                             - Dinámico (comillas simples): <code>alias where?='echo $PWD'</code> (cambia con el directorio).<br>
                             - Estático (comillas dobles): <code>alias where?="echo $PWD"</code> (valor fijo).<br>
-                            - Eliminar alias: <code>unalias where?</code>.</li>
                         <li><strong>Funciones:</strong> Más flexibles que los alias.<br>
                             - Podemos definirlos de dos maneras :<br>
                                 <pre>
