@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 105.1 Personalizar y usar el entorno de shell (LPIC-1 105) en SysRiser. Aprende a configurar y optimizar tu shell en Linux.">
+    <meta name="keywords" content="LPIC-1, shell, personalización, bash, variables, Linux, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 105.1 Personalizar y usar el entorno de shell (LPIC-1 105)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>105.1 Personalizar y usar el entorno de shell</h1>
+            <p>Aprende a configurar y optimizar tu shell en Linux.</p>
+        </div>
+        <a href="/cursos/lpic/105/105.html" class="back-link">← Volver a Shells y Scripts</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#archivos-config">Archivos de configuración de la shell</a></li>
+                    <li><a href="#variables">Variables</a></li>
+                    <li><a href="#alias-funciones">Alias y funciones</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <p>La shell es una interfaz poderosa entre el usuario y el kernel en Linux. Personalizarla te ayuda a trabajar de forma más eficiente.</p>
+                <section id="archivos-config">
+                    <h2>Archivos de configuración de la shell</h2>
+                    <p>Los archivos de configuración globales están en <code>/etc</code>, mientras que los locales están en el directorio personal del usuario.</p>
+                    <ul>
+                        <li><strong>Configuración global:</strong>
+                            <ul>
+                                <li><strong><code>/etc/profile</code>:</strong> Define variables globales como <code>PATH</code> o <code>PS1</code> para sesiones de login.</li>
+                                <li><strong><code>/etc/profile.d/</code>:</strong> Directorio con scripts ejecutados por <code>/etc/profile</code>.</li>
+                                <li><strong><code>/etc/bash.bashrc</code>:</strong> Configuración para shells interactivos no-login. Establece variables, verifica el tamaño de la ventana, etc.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Configuración local:</strong>
+                            <ul>
+                                <li><strong><code>~/.bash_profile</code>:</strong> Configura el entorno del usuario al iniciar una sesión de login.</li>
+                                <li><strong><code>~/.bash_login</code>:</strong> Se ejecuta si no existe <code>.bash_profile</code>. Contiene comandos de inicio de sesión.</li>
+                                <li><strong><code>~/.profile</code>:</strong> Se usa si no hay <code>.bash_profile</code> ni <code>.bash_login</code>. Verifica si el shell es bash y carga <code>.bashrc</code>.</li>
+                                <li><strong><code>~/.bashrc</code>:</strong> Similar a <code>/etc/bash.bashrc</code>. Almacena alias y funciones específicas del usuario.</li>
+                                <li><strong><code>~/.bash_logout</code>:</strong> Ejecuta tareas de limpieza al cerrar una sesión de login (ej. <code>clear</code>).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Ejecutar archivos:</strong>
+                            <ul>
+                                <li><strong><code>.</code> (punto):</strong> Ejecuta un archivo en el entorno actual. Ejemplo:<br>
+                                    <code>if [ -f "$HOME/.bashrc" ]; then . "$HOME/.bashrc"; fi</code></li>
+                                <li><strong><code>source</code>:</strong> Similar al operador <code>.</code>. Ejemplo: <code>source ~/.bashrc</code>.</li>
+                            </ul>
+                        </li>
+                        <li><strong>SKEL:</strong> Variable definida en <code>/etc/adduser.conf</code>. Apunta a un directorio plantilla para nuevos usuarios (ej. <code>/etc/skel</code>).</li>
+                    </ul>
+                </section>
+                <section id="variables">
+                    <h2>Variables</h2>
+                    <p>Las variables son nombres que contienen valores. Pueden incluir letras, números y guiones, pero no empezar por números ni contener espacios.</p>
+                    <ul>
+                        <li><strong>Definir y mostrar:</strong>
+                            <ul>
+                                <li>Ejemplo: <code>distro=zorinos</code>, verifica con <code>echo $distro</code>.</li>
+                                <li>Con espacios: <code>distro="zorin 12.4"</code>.</li>
+                                <li>Comillas simples (literales): <code>animal='My $lizard'</code> → <code>My $lizard</code>.</li>
+                                <li>Comillas dobles (sustitución): <code>animal="My $lizard"</code> → <code>My uromastyx</code> (si <code>lizard=uromastyx</code>).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Tipos de variables:</strong>
+                            <ul>
+                                <li><strong>Locales:</strong> Solo en el shell actual, en minúsculas.</li>
+                                <li><strong>Globales (entorno):</strong> Persisten en la sesión, en mayúsculas.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Comandos relacionados:</strong>
+                            <ul>
+                                <li><strong><code>set</code>:</strong> Muestra todas las variables y funciones asignadas.</li>
+                                <li><strong><code>unset</code>:</strong> Elimina una variable. Ejemplo: <code>unset distro</code>.</li>
+                                <li><strong><code>export</code>:</strong> Convierte una variable local en global. Ejemplo: <code>export animal</code>.</li>
+                                <li><strong><code>env</code> y <code>printenv</code>:</strong> Lista variables de entorno. <code>env</code> también modifica el entorno al ejecutar un programa.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Variables comunes:</strong>
+                            <ul>
+                                <li><strong><code>DISPLAY</code>:</strong> Almacena el hostname y pantalla (ej. <code>:0</code> para localhost) (echo $DISPLAY : :0).</li>
+                                <li><strong><code>HOME</code>:</strong> Directorio personal del usuario (echo $HOME : /home/sysriser).</li>
+                                <li><strong><code>HOSTNAME</code>:</strong> Nombre del equipo en la red (echo $HOSTNAME : debian).</li>
+                                <li><strong><code>LANG</code>:</strong> Configuración de localización del sistema (echo $LANG : es_ES.UTF-8).</li>
+                                <li><strong><code>LD_LIBRARY_PATH</code>:</strong> Directorios para bibliotecas compartidas (echo $LD_LIBRARY_PATH : /usr/local/lib).</li>
+                                <li><strong><code>MAIL</code>:</strong> Archivo donde bash revisa el correo (echo $MAIL : /var/mail/sysriser).</li>
+                                <li><strong><code>PATH</code>:</strong> Directorios donde bash busca ejecutables (echo $PATH : /usr/local/bin:/usr/bin:/bin).</li>
+                                <li><strong><code>PS1</code>:</strong> Define el prompt de bash (echo $PS1 : \u@\h:\w\$).</li>
+                                <li><strong><code>SHELL</code>:</strong> Ruta del shell actual (echo $SHELL : /bin/bash).</li>
+                                <li><strong><code>USER</code>:</strong> Nombre del usuario (echo $USER : sysriser).</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="alias-funciones">
+                    <h2>Alias y funciones</h2>
+                    <p>Los alias y funciones simplifican comandos repetitivos en el shell.</p>
+                    <ul>
+                        <li><strong>Alias:</strong> Sustituto de un comando. Usa comillas si contiene parámetros o espacios.<br>
+                            - Ejemplo: <code>alias ll="ls -la"</code>.<br>
+                            - Dinámico (comillas simples): <code>alias where?='echo $PWD'</code> (cambia con el directorio).<br>
+                            - Estático (comillas dobles): <code>alias where?="echo $PWD"</code> (valor fijo).<br>
+                            - Eliminar alias: <code>unalias where?</code>.</li>
+                        <li><strong>Funciones:</strong> Más flexibles que los alias.<br>
+                            - Podemos definirlos de dos maneras :<br>
+                                <pre>
+#1. Mediante la palabra function
+function miFuncion() {
+    echo "Hola $1"
+}
+#2. Mediante los simbolos ()
+miFuncion() {
+    echo "Hola $1"
+}
+                                </pre>
+</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
