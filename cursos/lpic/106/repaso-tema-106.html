@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Repaso del Tema 106 Interfaces gráficas y accesibilidad (LPIC-1 106) en SysRiser. Resumen rápido para el examen.">
+    <meta name="keywords" content="LPIC-1, X11, escritorios gráficos, accesibilidad, Linux, repaso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - Repaso Tema 106: Interfaces gráficas y accesibilidad (LPIC-1)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>Repaso Tema 106: Interfaces gráficas y accesibilidad</h1>
+        </div>
+        <a href="/cursos/lpic/106/106.html" class="back-link">← Volver a Tema 106</a>
+        <div class="course-page">
+            <div class="content">
+                <p>Repaso esencial del Tema 106 (4 preguntas en el examen).</p>
+                <section id="106-1">
+                    <h2>106.1 Instalar y configurar X11 (2 preguntas)</h2>
+                    <ul>
+                        <li><strong>X11</strong>: Base gráfica en Linux (eventos de entrada, copiar/pegar, dibujar elementos).</li>
+                        <li><strong>Cliente/Servidor</strong>: Cliente (aplicación); Servidor (pantalla, teclado, ratón).</li>
+                        <li><strong>Configuración</strong>: 
+                            <ul>
+                                <li><code>/etc/X11/xorg.conf</code>: Archivo principal (opcional hoy).</li>
+                                <li><code>/etc/X11/xorg.conf.d/</code>: Configuraciones adicionales (ej. teclado).</li>
+                                <li>Generar: <code>sudo Xorg -configure</code>.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Conceptos clave</strong>:
+                            <ul>
+                                <li><code>~/.xsession-errors</code>: Log de errores.</li>
+                                <li><code>xhost</code>: Controla acceso (ej. <code>xhost +</code>).</li>
+                                <li><code>xauth</code>: Autenticación remota.</li>
+                                <li><code>DISPLAY</code>: Pantalla activa (ej. <code>:0</code>).</li>
+                                <li><code>X</code>: Inicia/configura servidor.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="106-2">
+                    <h2>106.2 Escritorios gráficos (1 pregunta)</h2>
+                    <ul>
+                        <li><strong>Entornos</strong>:
+                            <ul>
+                                <li><strong>Gnome</strong>: Gnome Shell (pantalla completa), usado en Fedora, Ubuntu.</li>
+                                <li><strong>KDE</strong>: KDE Plasma, usa Qt, en Kubuntu, openSUSE.</li>
+                                <li><strong>Xfce</strong>: Ligero, modular, para equipos con pocos recursos.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Componentes</strong>: Gestor de ventanas (controla ventanas), widgets (botones, campos), apps básicas (terminal, navegador).</li>
+                        <li><strong>Acceso remoto</strong>:
+                            <ul>
+                                <li><strong>XDMCP</strong>: Pantallas remotas, inseguro, alto ancho de banda.</li>
+                                <li><strong>VNC</strong>: Usa RFB, puertos 5900+, sin cifrado (usar SSH).</li>
+                                <li><strong>RDP</strong>: Acceso a Windows, puerto 3389.</li>
+                                <li><strong>Spice</strong>: Para sistemas virtualizados, integra dispositivos.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="106-3">
+                    <h2>106.3 Accesibilidad (1 pregunta)</h2>
+                    <ul>
+                        <li><strong>Ajustes</strong>: Gnome (Acceso universal), KDE (Configuración → Accesibilidad), Xfce (menos opciones).</li>
+                        <li><strong>Teclado/Mouse</strong>:
+                            <ul>
+                                <li><strong>Teclas pegajosas</strong>: Atajos uno a uno (ej. Ctrl, luego C).</li>
+                                <li><strong>Teclas lentas</strong>: Mantener tecla para aceptar.</li>
+                                <li><strong>Teclas de rebote</strong>: Retardo para evitar pulsaciones accidentales.</li>
+                                <li><strong>Teclas de ratón</strong>: Mover puntero con teclado numérico.</li>
+                                <li><strong>Teclado en pantalla</strong>: Escribir con ratón (Gnome: nativo; KDE: <code>onboard</code>).</li>
+                                <li><strong>Gestos</strong>: Activar funciones (ej. Shift 5 veces).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Visión</strong>:
+                            <ul>
+                                <li><strong>Temas de alto contraste/impresión grande</strong>: Mejora visibilidad.</li>
+                                <li><strong>Lupa de pantalla</strong>: Zoom (Gnome: Zoom; KDE: KMagnifier).</li>
+                                <li><strong>Lector de pantalla</strong>: Orca (voz sintetizada).</li>
+                                <li><strong>Pantalla braille</strong>: Orca soporta dispositivos braille.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
