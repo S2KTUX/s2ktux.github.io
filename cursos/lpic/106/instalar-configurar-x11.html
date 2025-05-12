@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 106.1 Instalar y configurar X11 (LPIC-1 106) en SysRiser. Aprende la arquitectura y configuración de X11 en Linux.">
+    <meta name="keywords" content="LPIC-1, X11, xorg, configuración, Linux, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 106.1 Instalar y configurar X11 (LPIC-1 106)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>106.1 Instalar y configurar X11 (LPIC-1 106)</h1>
+            <p>Aprende cómo funciona y se configura el sistema X Window en Linux.</p>
+        </div>
+        <a href="/cursos/lpic/106.html" class="back-link">← Volver a Tema 106</a>
+        <div class="course-page">
+            <div class="content">
+                <section id="introduccion">
+                    <h2>Descripción</h2>
+                    <p>El subtema 106.1 de LPIC-1 te enseña a instalar y configurar X11, el sistema base para interfaces gráficas en Linux. Entenderás su arquitectura, cómo funciona en red, y cómo personalizarlo con archivos de configuración. Es clave para gestionar entornos gráficos de manera efectiva.</p>
+                </section>
+                <section id="conceptos">
+                    <h2>Conceptos que aprenderás</h2>
+                    <p>Exploraremos los fundamentos y la configuración de X11 de forma sencilla:</p>
+                    <ul>
+                        <li><strong>Arquitectura de sistema X Window</strong>: X11 permite dibujar formas 2D (y 3D con extensiones) en la pantalla. Se divide en un **cliente** (aplicaciones como navegadores o terminales) y un **servidor** (que muestra el contenido). Normalmente, ambos están en el mismo equipo, pero pueden funcionar en red.</li>
+                        <li><strong>Estructura básica de X Window</strong>: Es modular y soporta redes. Clientes de diferentes computadoras pueden usar un servidor remoto. Nuevas funciones se añaden como **extensiones** (ej. `libXrandr`, `libX11`) sin cambiar el núcleo de X11.</li>
+                        <li><strong>Administradores de pantalla</strong>: Inician el servidor X tras el arranque. Ejemplos incluyen **GDM**, **SDDM** y **LightDM**. Mantienen el servidor activo y gestionan sesiones.</li>
+                        <li><strong>Nombres de pantalla</strong>: Identifican sesiones X con el formato <code>hostname:displaynumber.screennumber</code>. Ejemplo: <code>:0</code> (local, primera pantalla). Si no hay hostname, es el equipo local.</li>
+                        <li><strong>Variable de entorno DISPLAY</strong>: Almacena el nombre de la pantalla actual (ej. <code>echo $DISPLAY</code> → <code>:0</code>). Permite iniciar apps en pantallas específicas (ej. <code>DISPLAY=:0.1 firefox &</code>).</li>
+                        <li><strong>Configuración de un servidor X</strong>: Tradicionalmente usa el archivo **/etc/X11/xorg.conf**, pero en distribuciones modernas, X se configura solo al iniciarse.</li>
+                        <li><strong>Secciones de xorg.conf</strong>: Incluyen **InputDevice** (teclados, ratones), **InputClass** (clases de dispositivos), **Monitor** (configuración de monitores), **Device** (tarjetas gráficas), **Screen** (une Monitor y Device), y **ServerLayout** (agrupa todo).</li>
+                        <li><strong>Creación de xorg.conf</strong>: Usa <code>sudo Xorg -configure</code> para generar <code>xorg.conf.new</code>, que luego mueves a **/etc/X11/xorg.conf**.</li>
+                        <li><strong>Wayland</strong>: Nuevo protocolo que reemplaza X11, más ligero. Usa un **compositor** en lugar de un servidor y la variable **WAYLAND_DISPLAY** (ej. <code>wayland-0</code>).</li>
+                        <li><strong>Herramientas de diagnóstico</strong>: El comando <code>xdpyinfo</code> muestra detalles del servidor X (versión, extensiones, resolución).</li>
+                    </ul>
+                </section>
+                <section id="conceptos-principales">
+                    <h2>Conceptos principales destacados</h2>
+                    <p>Estos son los elementos clave que debes dominar:</p>
+                    <ul>
+                        <li><strong>**/etc/X11/xorg.conf**</strong>: Archivo principal de configuración de X11 (si existe). Define secciones como InputDevice, Monitor, etc.</li>
+                        <li><strong>**/etc/X11/xorg.conf.d/**</strong>: Directorio para archivos de configuración adicionales, como <code>00-keyboard.conf</code> para teclados.</li>
+                        <li><strong>~/.xsession-errors</strong>: Archivo de log donde se guardan errores de sesiones X, útil para depurar problemas.</li>
+                        <li><strong>xhost</strong>: Comando para controlar el acceso a un servidor X (ej. <code>xhost +</code> permite conexiones desde cualquier host).</li>
+                        <li><strong>xauth</strong>: Gestiona la autenticación para conexiones X remotas, usando claves en archivos <code>.Xauthority</code>.</li>
+                        <li><strong>DISPLAY</strong>: Variable de entorno que indica la pantalla en uso (ej. <code>:0</code> o <code>:0.1</code>).</li>
+                        <li><strong>X</strong>: Comando o enlace a <code>Xorg</code> para iniciar o configurar el servidor X.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
