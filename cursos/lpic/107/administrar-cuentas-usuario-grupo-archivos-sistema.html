@@ -41,7 +41,6 @@
                 </ul>
             </div>
             <div class="content">
-                <p>La administración de cuentas de usuario y grupo en Linux es esencial para gestionar permisos y acceso al sistema.</p>
                 <section id="gestion-usuarios-grupos">
                     <h2>Gestión de usuarios y grupos</h2>
                     <p>En Linux, los comandos principales para administrar usuarios son:</p>
@@ -58,8 +57,6 @@
                             <ul>
                                 <li><code>-d</code>: Cambia el directorio de inicio.</li>
                                 <li><code>-e</code>: Establece una fecha de expiración.</li>
-                                <li><code>-g</code>: Cambia el grupo primario.</li>
-                                <li><code>-G</code>: Añade o modifica grupos secundarios.</li>
                                 <li><code>-L</code>: Bloquea la cuenta.</li>
                                 <li><code>-U</code>: Desbloquea la cuenta.</li>
                             </ul>
@@ -109,21 +106,25 @@
                         <li><strong>/etc/passwd</strong>: Legible por todos, contiene 7 campos separados por <code>:</code>:
                             <ul>
                                 <li>Nombre de usuario : Contraseña (x) : UID : GID : Descripción : Directorio de inicio : Shell</li>
+                                <li> Ejemplo : sysriser:x:1001:1001:Usuario Sysriser:/home/sysriser:/bin/bash</li>
                             </ul>
                         </li>
                         <li><strong>/etc/group</strong>: Legible por todos, contiene 4 campos:
                             <ul>
                                 <li>Nombre del grupo : Contraseña (x) : GID : Lista de miembros</li>
+                                <li> Ejemplo : developers:x:1001:sysriser,user2</li>
                             </ul>
                         </li>
                         <li><strong>/etc/shadow</strong>: Solo legible por root, contiene 9 campos:
                             <ul>
                                 <li>Nombre de usuario : Contraseña cifrada : Último cambio : Edad mínima : Edad máxima : Alerta : Inactividad : Expiración : Reservado</li>
+                                <li> Ejemplo : sysriser:$6$...:18659:0:99999:7:::</li>
                             </ul>
                         </li>
                         <li><strong>/etc/gshadow</strong>: Solo legible por root, contiene 4 campos:
                             <ul>
                                 <li>Nombre del grupo : Contraseña cifrada : Administradores : Miembros</li>
+                                <li> Ejemplo : developers:!::sysriser,user2</li>
                             </ul>
                         </li>
                     </ul>
@@ -132,6 +133,7 @@
                     <h2>Comando getent</h2>
                     <p>El comando <code>getent</code> consulta bases de datos del sistema (usuarios, grupos, hosts, etc.). Ejemplo:</p>
                     <p><code>getent passwd sysriser</code>: Muestra la línea correspondiente a <code>sysriser</code> en <code>/etc/passwd</code>.</p>
+                    <p>Salida: sysriser:x:1001:1001:Usuario Sysriser:/home/sysriser:/bin/bash</p>
                 </section>
             </div>
         </div>
