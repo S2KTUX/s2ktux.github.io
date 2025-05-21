@@ -42,10 +42,10 @@
                 <p>La localización e internacionalización permiten adaptar Linux a diferentes idiomas, formatos y zonas horarias.</p>
                 <section id="zonas-horarias">
                     <h2>Zonas horarias</h2>
-                    <p>Zonas horarias son regiones con la misma hora, relativas a UTC (GMT+0). Se nombran por ciudades (ej. <code>America/Sao_Paulo</code>) o desfases (ej. <code>Etc/GMT+3</code>).</p>
+                    <p>Zonas horarias son regiones con la misma hora, relativas a UTC (GMT+0). Se nombran por ciudades o desfases (Etc/GMT+3).</p>
                     <p><strong>Configuración</strong>:</p>
                     <ul>
-                        <li><code>/etc/timezone</code>: Define la zona horaria del sistema. Ejemplo: <code>echo "America/Sao_Paulo" | sudo tee /etc/timezone</code></li>
+                        <li><code>/etc/timezone</code>: Define la zona horaria del sistema.</li>
                         <li><code>/etc/localtime</code>: Enlace simbólico a un archivo en <code>/usr/share/zoneinfo/</code> para ajustes como horario de verano. Ejemplo: <code>sudo ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime</code></li>
                         <li><code>TZ</code>: Variable de entorno para la zona horaria de la sesión. Ejemplo: <code>export TZ="Africa/Cairo"; date</code></li>
                     </ul>
