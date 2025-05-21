@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 107.2 Automatizar tareas en Linux (LPIC-1 107). Programación con cron, systemd timers, at y systemd-run.">
+    <meta name="keywords" content="LPIC-1, cron, systemd, at, automatización, Linux, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 107.2 Automatizar tareas (LPIC-1 107)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>107.2 Automatizar tareas</h1>
+            <p>Programa trabajos en Linux con cron, systemd timers, at y systemd-run.</p>
+        </div>
+        <a href="/cursos/lpic/107/107.html" class="back-link">← Volver a Tema 107</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#cron">Cron</a></li>
+                    <li><a href="#systemd-timers">Systemd timers</a></li>
+                    <li><a href="#at">at</a></li>
+                    <li><a href="#systemd-run">systemd-run</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <p>Automatiza tareas en Linux para ejecutar comandos o scripts en momentos específicos.</p>
+                <section id="cron">
+                    <h2>Cron</h2>
+                    <p><strong>Cron</strong> ejecuta tareas programadas (cron jobs) definidas en <em>crontabs</em>, revisadas cada minuto.</p>
+                    <p><strong>Crontabs de usuario</strong>: 6 campos: <code>minuto (0-59) hora (0-23) día-mes (1-31) mes (1-12) día-semana (0-7) comando</code>.</p>
+                    <p>Valores: <code>*</code> (cualquier), <code>,</code> (lista, ej. <code>1,3</code>), <code>-</code> (rango, ej. <code>1-5</code>), <code>/</code> (intervalos, ej. <code>*/15</code>).</p>
+                    <p>Ejemplo: Ejecutar <code>backup.sh</code> diario a las 2:00 AM:</p>
+                    <p><code>0 2 * * * /home/sysriser/backup.sh</code></p>
+                    <p>Editar: <code>crontab -e</code>. Ver: <code>crontab -l</code>.</p>
+                    <p><strong>Crontabs de sistema</strong>: Editables por root en <code>/etc/crontab</code> o <code>/etc/cron.d/</code>, con campo de usuario adicional.</p>
+                    <p>Ejemplo: Ejecutar <code>log-cleanup.sh</code> como root cada lunes a las 3:00 AM:</p>
+                    <p><code>0 3 * * 1 root /usr/sbin/log-cleanup.sh</code></p>
+                    <p><strong>Restricciones</strong>: <code>/etc/cron.allow</code> permite solo a usuarios listados; <code>/etc/cron.deny</code> prohíbe a los listados. Sin ambos, solo root (según distribución).</p>
+                    <p>Ejemplo: Permitir a <code>sysriser</code>:</p>
+                    <p><code>echo "sysriser" | sudo tee /etc/cron.allow</code></p>
+                </section>
+                <section id="systemd-timers">
+                    <h2>Systemd timers</h2>
+                    <p>Alternativa a cron, definidos en archivos <code>.timer</code>.</p>
+                    <p>Ejemplo: <code>backup.timer</code> para ejecutar <code>backup.service</code> primer lunes del mes a las 5:30 AM:</p>
+                    <pre>
+[Unit]
+Description=Run backup service
+[Timer]
+OnCalendar=Mon *-*-1..7 05:30:00
+Persistent=true
+[Install]
+WantedBy=timers.target
+                    </pre>
+                    <p>Activar: <code>sudo systemctl enable backup.timer</code>, <code>sudo systemctl start backup.timer</code>.</p>
+                    <p><code>OnCalendar</code>: <code>DíaSemana Año-Mes-Día Hora:Minuto:Segundo</code>.</p>
+                    <p>Ejemplo: Ejecutar diario a medianoche:</p>
+                    <p><code>OnCalendar=*-*-* 00:00:00</code></p>
+                </section>
+                <section id="at">
+                    <h2>at</h2>
+                    <p><strong>at</strong> programa tareas de ejecución única.</p>
+                    <p>Opciones: <code>-c</code> (muestra comandos), <code>-l</code> (lista tareas, <code>atq</code>), <code>-m</code> (envía correo al finalizar).</p>
+                    <p>Ejemplo: Ejecutar <code>date</code> en 5 minutos:</p>
+                    <p><code>at now +5 minutes</code></p>
+                    <pre>
+at> date
+at> <Ctrl+D>
+                    </pre>
+                    <p>Listar: <code>atq</code>. Eliminar (ID 3): <code>atrm 3</code>.</p>
+                    <p><strong>Restricciones</strong>: <code>/etc/at.allow</code> y <code>/etc/at.deny</code> funcionan como en cron.</p>
+                    <p>Ejemplo: Denegar a <code>sysriser</code>:</p>
+                    <p><code>echo "sysriser" | sudo tee /etc/at.deny</code></p>
+                </section>
+                <section id="systemd-run">
+                    <h2>systemd-run</h2>
+                    <p>Programa tareas únicas con unidades transitorias.</p>
+                    <p>Ejemplo: Ejecutar <code>date</code> el 6 de octubre de 2019 a las 11:30 AM:</p>
+                    <p><code>sudo systemd-run --on-calendar="2019-10-06 11:30" date</code></p>
+                    <p>Ejemplo: Ejecutar <code>script.sh</code> en 10 minutos:</p>
+                    <p><code>sudo systemd-run --on-active=600 /home/sysriser/script.sh</code></p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
