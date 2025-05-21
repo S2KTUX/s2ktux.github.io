@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 107.1 Administrar cuentas de usuario y grupo en Linux (LPIC-1 107). Aprende a gestionar usuarios, grupos y archivos de sistema relacionados.">
+    <meta name="keywords" content="LPIC-1, usuarios, grupos, Linux, passwd, shadow, group, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 107.1 Administrar cuentas de usuario y grupo (LPIC-1 107)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>107.1 Administrar cuentas de usuario y grupo</h1>
+            <p>Aprende a gestionar usuarios, grupos y los archivos de sistema relacionados en Linux.</p>
+        </div>
+        <a href="/cursos/lpic/107/107.html" class="back-link">← Volver a Tema 107</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del Subtema</h3>
+                <ul>
+                    <li><a href="#gestion-usuarios-grupos">Gestión de usuarios y grupos</a></li>
+                    <li><a href="#skel-nologin">Directorio skel y archivo login.defs</a></li>
+                    <li><a href="#passwd-chage">Comandos passwd y chage</a></li>
+                    <li><a href="#archivos-sistema">Archivos passwd, group, shadow y gshadow</a></li>
+                    <li><a href="#getent">Comando getent</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <p>La administración de cuentas de usuario y grupo en Linux es esencial para gestionar permisos y acceso al sistema.</p>
+                <section id="gestion-usuarios-grupos">
+                    <h2>Gestión de usuarios y grupos</h2>
+                    <p>En Linux, los comandos principales para administrar usuarios son:</p>
+                    <ul>
+                        <li><strong>useradd</strong>: Crea un nuevo usuario. Requiere establecer la contraseña con <code>passwd</code>. Opciones clave:
+                            <ul>
+                                <li><code>-d</code>: Especifica el directorio de inicio.</li>
+                                <li><code>-m</code>: Crea el directorio de inicio si no existe.</li>
+                                <li><code>-G</code>: Añade el usuario a grupos secundarios.</li>
+                                <li><code>-s</code>: Define el shell de acceso (ej. <code>/bin/bash</code>).</li>
+                            </ul>
+                        </li>
+                        <li><strong>usermod</strong>: Modifica un usuario existente (requiere privilegios de root). Opciones clave:
+                            <ul>
+                                <li><code>-d</code>: Cambia el directorio de inicio.</li>
+                                <li><code>-e</code>: Establece una fecha de expiración.</li>
+                                <li><code>-g</code>: Cambia el grupo primario.</li>
+                                <li><code>-G</code>: Añade o modifica grupos secundarios.</li>
+                                <li><code>-L</code>: Bloquea la cuenta.</li>
+                                <li><code>-U</code>: Desbloquea la cuenta.</li>
+                            </ul>
+                        </li>
+                        <li><strong>userdel</strong>: Elimina un usuario. Con <code>-r</code>, elimina también el directorio de inicio y su contenido.</li>
+                    </ul>
+                    <p>Para grupos, se utilizan:</p>
+                    <ul>
+                        <li><strong>groupadd</strong>: Crea un grupo. Con <code>-g</code>, asigna un GID específico.</li>
+                        <li><strong>groupmod</strong>: Modifica un grupo existente (ej. cambiar nombre o GID).</li>
+                        <li><strong>groupdel</strong>: Elimina un grupo. No se puede eliminar si es el grupo primario de un usuario.</li>
+                    </ul>
+                    <p>Nota: Los comandos de gestión de grupos requieren privilegios de root.</p>
+                </section>
+                <section id="skel-nologin">
+                    <h2>Directorio skel y archivo login.defs</h2>
+                    <p><strong>/etc/skel</strong>: Contiene archivos y directorios que se copian al directorio de inicio de un nuevo usuario creado con <code>useradd -m</code>. Permite estandarizar configuraciones iniciales.</p>
+                    <p><strong>/etc/login.defs</strong>: Define parámetros para la creación de usuarios y grupos, como:
+                        <ul>
+                            <li><code>CREATE_HOME</code>: Habilita la creación del directorio de inicio por defecto.</li>
+                            <li><code>MAIL_DIR</code>: Especifica el directorio de la cola de correo.</li>
+                        </ul>
+                    </p>
+                </section>
+                <section id="passwd-chage">
+                    <h2>Comandos passwd y chage</h2>
+                    <p><strong>passwd</strong>: Cambia la contraseña de un usuario. Solo root puede modificar contraseñas de otros usuarios. Opciones:
+                        <ul>
+                            <li><code>-d</code>: Elimina la contraseña (deshabilita la cuenta).</li>
+                            <li><code>-e</code>: Fuerza el cambio de contraseña en el próximo inicio de sesión.</li>
+                            <li><code>-l</code>: Bloquea la cuenta.</li>
+                            <li><code>-S</code>: Muestra el estado de la contraseña.</li>
+                            <li><code>-u</code>: Desbloquea la cuenta.</li>
+                        </ul>
+                    </p>
+                    <p><strong>chage</strong>: Gestiona la caducidad de contraseñas (solo root, excepto <code>-l</code>). Opciones:
+                        <ul>
+                            <li><code>-d</code>: Establece la fecha del último cambio de contraseña.</li>
+                            <li><code>-l</code>: Lista la información de caducidad de la contraseña.</li>
+                        </ul>
+                    </p>
+                </section>
+                <section id="archivos-sistema">
+                    <h2>Archivos passwd, group, shadow y gshadow</h2>
+                    <p>Estos archivos, ubicados en <code>/etc/</code>, almacenan información de usuarios y grupos:</p>
+                    <ul>
+                        <li><strong>/etc/passwd</strong>: Legible por todos, contiene 7 campos separados por <code>:</code>:
+                            <ul>
+                                <li>Nombre de usuario : Contraseña (x) : UID : GID : Descripción : Directorio de inicio : Shell</li>
+                            </ul>
+                        </li>
+                        <li><strong>/etc/group</strong>: Legible por todos, contiene 4 campos:
+                            <ul>
+                                <li>Nombre del grupo : Contraseña (x) : GID : Lista de miembros</li>
+                            </ul>
+                        </li>
+                        <li><strong>/etc/shadow</strong>: Solo legible por root, contiene 9 campos:
+                            <ul>
+                                <li>Nombre de usuario : Contraseña cifrada : Último cambio : Edad mínima : Edad máxima : Alerta : Inactividad : Expiración : Reservado</li>
+                            </ul>
+                        </li>
+                        <li><strong>/etc/gshadow</strong>: Solo legible por root, contiene 4 campos:
+                            <ul>
+                                <li>Nombre del grupo : Contraseña cifrada : Administradores : Miembros</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+                <section id="getent">
+                    <h2>Comando getent</h2>
+                    <p>El comando <code>getent</code> consulta bases de datos del sistema (usuarios, grupos, hosts, etc.). Ejemplo:</p>
+                    <p><code>getent passwd sysriser</code>: Muestra la línea correspondiente a <code>sysriser</code> en <code>/etc/passwd</code>.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
