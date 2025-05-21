@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Subtema 107.3 Localización e internacionalización en Linux (LPIC-1 107). Configura zonas horarias y localización.">
+    <meta name="keywords" content="LPIC-1, localización, internacionalización, zona horaria, locale, Linux, curso">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 107.3 Localización e internacionalización (LPIC-1 107)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>107.3 Localización e internacionalización</h1>
+            <p>Configura zonas horarias y localización en Linux para adaptarlo a diferentes regiones y idiomas.</p>
+        </div>
+        <a href="/cursos/lpic/107/107.html" class="back-link">← Volver a Tema 107</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#zonas-horarias">Zonas horarias</a></li>
+                    <li><a href="#localizacion">Localización</a></li>
+                    <li><a href="#codificacion">Conversión de codificación</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <p>La localización e internacionalización permiten adaptar Linux a diferentes idiomas, formatos y zonas horarias.</p>
+                <section id="zonas-horarias">
+                    <h2>Zonas horarias</h2>
+                    <p>Zonas horarias son regiones con la misma hora, relativas a UTC (GMT+0). Se nombran por ciudades (ej. <code>America/Sao_Paulo</code>) o desfases (ej. <code>Etc/GMT+3</code>).</p>
+                    <p><strong>Configuración</strong>:</p>
+                    <ul>
+                        <li><code>/etc/timezone</code>: Define la zona horaria del sistema. Ejemplo: <code>echo "America/Sao_Paulo" | sudo tee /etc/timezone</code></li>
+                        <li><code>/etc/localtime</code>: Enlace simbólico a un archivo en <code>/usr/share/zoneinfo/</code> para ajustes como horario de verano. Ejemplo: <code>sudo ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime</code></li>
+                        <li><code>TZ</code>: Variable de entorno para la zona horaria de la sesión. Ejemplo: <code>export TZ="Africa/Cairo"; date</code></li>
+                    </ul>
+                    <p><strong>Comandos</strong>:</p>
+                    <ul>
+                        <li><code>date</code>: Muestra hora y zona. Tambien puede Ajustar la fecha y hora del sistema</li>
+                        <li><code>timedatectl</code>: Muestra/configura hora (systemd). Ejemplo: <code>timedatectl set-timezone America/Sao_Paulo</code></li>
+                        <li><code>tzselect</code>: Selecciona zona horaria interactivamente. Ejemplo: <code>tzselect</code> → Seleccionar Brazil → Southeast → <code>America/Sao_Paulo</code></li>
+                    </ul>
+                    <p>Nota: Mantén <code>/usr/share/zoneinfo/</code> actualizado para horarios de verano.</p>
+                </section>
+                <section id="localizacion">
+                    <h2>Localización</h2>
+                    <p>La localización configura idioma y formatos (moneda, números, etc.) mediante variables de entorno.</p>
+                    <p><strong>Algunas varibles a tener en cuenta son :</strong>:</p>
+                    <ul>
+                        <li><code>LANG</code>: Define idioma y codificación. Ejemplo: <code>export LANG=es_ES.UTF-8</code></li>
+                        <li><code>LC_MESSAGES</code>: Idioma de mensajes. Ejemplo : export LC_MESSAGES="es"</li>
+                        <li><code>LC_TIME</code>: Formato de hora/fecha.</li>
+                        <li><code>LC_ALL</code>: Anula todas las variables.</li>
+                    </ul>
+                    <p><strong>Configuración</strong>:</p>
+                    <ul>
+                        <li><code>/etc/locale.conf</code>: Define localización del sistema.</li>
+                        <li><code>locale</code>: Muestra variables de localización.</li>
+                        <li><code>localectl</code>: Configura locale (systemd). Ejemplo: <code>localectl set-locale LANG=es_US.UTF-8</code></li>
+                    </ul>
+                </section>
+                <section id="codificacion">
+                    <h2>Conversión de codificación</h2>
+                    <p><strong>iconv</strong>: Es un comando que convierte codificaciones de caracteres, es decir, convierte archivos de un juego de caracteres a otro</p>
+                    <p>Podemos listar codificaciones: <code>iconv -l</code></p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
