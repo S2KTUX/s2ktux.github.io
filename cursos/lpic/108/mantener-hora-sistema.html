@@ -73,7 +73,7 @@
                 <section id="chrony">
                     <h2>Chrony</h2>
                     <p><code>chrony</code> es una alternativa moderna a <code>ntpd</code>, con mejor precisión y soporte para sincronización intermitente.</p>
-                    <p>El archivo de configuración es <code>/etc/chrony.conf</code>.
+                    <p>El archivo de configuración es <code>/etc/chrony.conf</code>. Hay que tener en cuenta que las opciones del archivo de configuración de chrony que definen las fuentes de tiempo remotas son pool y server </p>
                     <p><strong>Ejemplo de configuración en /etc/chrony.conf:</strong></p>
                     <pre><code>pool pool.ntp.org iburst</code></pre>
                     <p>La opción <code>iburst</code> acelera la sincronización inicial enviando múltiples paquetes al servidor NTP.</p>
