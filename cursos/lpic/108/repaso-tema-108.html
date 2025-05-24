@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Repaso Tema 108 LPIC-1: Tiempo, sistema, correo e impresión.">
+    <meta name="keywords" content="LPIC-1, 108, repaso, examen, Linux, tiempo, sistema, correo, impresión">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - Repaso Tema 108 (LPIC-1)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>Repaso Tema 108 (LPIC-1)</h1>
+            <p>Resumen rápido de tiempo, sistema, correo e impresión para el examen.</p>
+        </div>
+        <a href="/cursos/lpic/108/108.html" class="back-link">← Volver a Tema 108</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#108-1">108.1 Configuración del tiempo</a></li>
+                    <li><a href="#108-2">108.2 Gestión del sistema</a></li>
+                    <li><a href="#108-3">108.3 Agente de transferencia de correo</a></li>
+                    <li><a href="#108-4">108.4 Gestión de impresión</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="108-1">
+                    <h2>108.1 Configuración del tiempo</h2>
+                    <p>Configura y sincroniza la hora en el sistema.</p>
+                    <ul>
+                        <li><strong>Comandos</strong>:
+                            <ul>
+                                <li><code>timedatectl</code>: Ajusta zona horaria (ej. <code>timedatectl set-timezone Europe/Madrid</code>) y hora (ej. <code>timedatectl set-time YYYY-MM-DD</code>).</li>
+                                <li><code>hwclock</code>: Sincroniza reloj hardware (ej. <code>hwclock --systohc</code>).</li>
+                                <li><code>date</code>: Muestra o ajusta la hora actual (ej. <code>date +%T</code>).</li>
+                                <li><code>chronyd</code> o <code>ntpd</code>: Sincroniza con NTP (ej. <code>sudo systemctl enable chronyd</code>).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Archivos</strong>:
+                            <ul>
+                                <li><code>/etc/timezone</code>: Define la zona horaria.</li>
+                                <li><code>/etc/localtime</code>: Enlace a la zona horaria activa.</li>
+                                <li><code>/etc/chrony.conf</code> o <code>/etc/ntp.conf</code>: Configura servidores NTP.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+
+                <section id="108-2">
+                    <h2>108.2 Gestión del sistema</h2>
+                    <p>Administra servicios, logs y recursos del sistema.</p>
+                    <ul>
+                        <li><strong>Comandos</strong>:
+                            <ul>
+                                <li><code>systemctl</code>: Controla servicios (ej. <code>systemctl start nombre-servicio</code>, <code>systemctl enable nombre-servicio</code>).</li>
+                                <li><code>journalctl</code>: Revisa logs (ej. <code>journalctl -u nombre-servicio</code>, <code>journalctl -b</code>).</li>
+                                <li><code>df -h</code>: Muestra uso de disco.</li>
+                                <li><code>du -sh /ruta</code>: Calcula tamaño de directorios.</li>
+                                <li><code>top</code> o <code>htop</code>: Monitorea procesos.</li>
+                                <li><code>kill PID</code> o <code>pkill nombre</code>: Termina procesos (ej. <code>kill 1234</code>).</li>
+                                <li><code>dmesg</code>: Muestra mensajes del kernel.</li>
+                                <li><code>last</code>: Historial de inicios de sesión.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </section>
+
+                <section id="108-3">
+                    <h2>108.3 Agente de transferencia de correo</h2>
+                    <p>Gestiona el envío y recepción de correos con MTAs.</p>
+                    <ul>
+                        <li><strong>Comandos</strong>:
+                            <ul>
+                                <li><code>sendmail</code>: Comando compatible con MTAs (ej. <code>sendmail -q</code> reintenta envíos).</li>
+                                <li><code>mailq</code>: Muestra la cola de correos pendientes.</li>
+                                <li><code>newaliases</code>: Actualiza alias tras modificar <code>/etc/aliases</code>.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Archivos</strong>:
+                            <ul>
+                                <li><code>/etc/aliases</code>: Define alias de correo (ej. <code>postmaster: admin</code>).</li>
+                                <li><code>~/.forward</code>: Redirige correos del usuario (ej. <code>usuario@dominio.com</code>).</li>
+                                <li><code>/var/spool/mail/</code>: Almacena correos de usuarios.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Conceptos</strong>: MTAs (sendmail, Postfix, Exim) usan SMTP (puerto 25) y DNS MX.</li>
+                    </ul>
+                </section>
+
+                <section id="108-4">
+                    <h2>108.4 Gestión de impresión</h2>
+                    <p>Configura e imprime con CUPS y herramientas legacy.</p>
+                    <ul>
+                        <li><strong>Comandos</strong>:
+                            <ul>
+                                <li><code>sudo apt install cups</code> o <code>sudo dnf install cups</code>: Instala CUPS.</li>
+                                <li><code>sudo systemctl start cups.service</code>: Inicia el servicio.</li>
+                                <li><code>lpr archivo</code>: Envía archivo a imprimir.</li>
+                                <li><code>lpq -a</code>: Muestra colas de impresión.</li>
+                                <li><code>lpstat -p</code>: Verifica estado de impresoras.</li>
+                                <li><code>lprm ID</code>: Cancela trabajo (ej. <code>lprm 20</code>).</li>
+                            </ul>
+                        </li>
+                        <li><strong>Archivos</strong>:
+                            <ul>
+                                <li><code>/etc/cups/</code>: Directorio de configuración (incluye <code>cupsd.conf</code>).</li>
+                                <li><code>/etc/cups/printers.conf</code>: Configura impresoras específicas.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Interfaz</strong>: Gestiona desde http://localhost:631 (si habilitada).</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
