@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tema 109.4 Configuración DNS en el lado del cliente (LPIC-1 109). Aprende a configurar y depurar resolución de nombres.">
+    <meta name="keywords" content="LPIC-1, 109, DNS, cliente, resolución, /etc/hosts, /etc/resolv.conf, /etc/nsswitch.conf, host, dig, getent">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 109.4 Configuración DNS en el lado del cliente (LPIC-1)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>109.4 Configuración DNS en el lado del cliente</h1>
+            <p>Aprende cómo hacer que tu computadora encuentre direcciones de internet fácilmente.</p>
+        </div>
+        <a href="/cursos/lpic/109/109.html" class="back-link">← Volver a Tema 109</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#introduccion">Introducción</a></li>
+                    <li><a href="#proceso">Cómo se buscan los nombres</a></li>
+                    <li><a href="#archivos">Archivos importantes</a></li>
+                    <li><a href="#herramientas">Herramientas útiles</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="introduccion">
+                    <h2>Introducción</h2>
+                    <p>Cuando usas internet, escribes nombres como "google.com" en lugar de números complicados como 142.250.190.14. La resolución de nombres es el proceso que convierte esos nombres en números para que tu equipo pueda conectarse.</p>
+                </section>
+
+                <section id="proceso">
+                    <h2>Cómo se buscan los nombres</h2>
+                    <p>Tu equipo sigue un orden para buscar nombres. Primero mira un archivo que le dice cómo hacerlo, que se llama `/etc/nsswitch.conf`. Este archivo decide si busca en un archivo local o en un servidor DNS en internet.</p>
+                    <ul>
+                        <li><strong>Tipos de DNS</strong>: DNS tiene diferentes tipos o "clases". La más común es IN, que usamos para internet normal con direcciones como las de las páginas web. Hay otros tipos, como CH y HS, son muy viejos o poco usados. </li>
+                        <li><strong>Orden de búsqueda</strong>: En `/etc/nsswitch.conf`, una línea como `hosts: files dns` significa que primero busca en un archivo local y, si no lo encuentra, pregunta a un servidor DNS. Puedes cambiar este orden si quieres, por ejemplo, a `hosts: dns files`.</li>
+                    </ul>
+                </section>
+
+                <section id="archivos">
+                    <h2>Archivos importantes</h2>
+                    <p>Hay tres archivos principales que tu equipo usa para encontrar nombres de páginas web.</p>
+                    <ul>
+                        <li><strong>/etc/hosts</strong>: Aquí mapeas nombres y sus direcciones IP directamente, por ejemplo, `127.0.0.1 localhost`. Sirve para cosas locales, como pruebas, y también puede incluir direcciones IPv6, como `::1 localhost`.</li>
+                        <li><strong>/etc/resolv.conf</strong>: Este archivo le dice a tu equipo a qué servidores DNS preguntar si no encuentra un nombre localmente. Por ejemplo, `nameserver 8.8.8.8` usa el servidor de Google, y `search lpi.org` añade ese dominio a nombres cortos, como convertir "aprendizaje" en "aprendizaje.lpi.org". Puedes poner hasta tres servidores.</li>
+                        <li><strong>/etc/nsswitch.conf</strong>: Define el orden y métodos de resolución. Por ejemplo, una línea como `hosts: files dns` le dice que mire primero en `/etc/hosts` y luego en DNS. También puede tener reglas especiales para manejar errores.</li>
+                    </ul>
+                </section>
+
+                <section id="herramientas">
+                    <h2>Herramientas útiles</h2>
+                    <p>Estas herramientas te ayudan a buscar nombres o solucionar problemas cuando no puedes conectarte a una página.</p>
+                    <ul>
+                        <li><strong>host</strong>: Es una herramienta sencilla para preguntar por un nombre. Por ejemplo, si escribes `host google.com`, te dice la dirección IP, como `142.250.190.14`, y otros datos, como los servidores de correo.</li>
+                        <li><strong>dig</strong>: Es como `host`, pero te da mucha más información, perfecta para encontrar problemas. Si escribes `dig google.com`, te muestra la dirección IP, cuánto tiempo es válida esa información y los servidores DNS que usó.</li>
+                        <li><strong>getent</strong>: Esta herramienta busca nombres siguiendo las reglas de `/etc/nsswitch.conf`. Por ejemplo, `getent hosts google.com` te muestra la dirección IP que tu computadora encuentra, ya sea en `/etc/hosts` o preguntando a un servidor DNS. Puedes decirle dónde buscar con `-s`, como `getent -s files hosts google.com` para mirar solo en `/etc/hosts`.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
