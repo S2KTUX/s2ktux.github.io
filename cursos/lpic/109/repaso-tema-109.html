@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Repaso rápido del Tema 109 (LPIC-1). Fundamentos, configuración, resolución y seguridad de red.">
+    <meta name="keywords" content="LPIC-1, 109, redes, repaso, protocolos, configuración, problemas, seguridad">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - Repaso Tema 109 (LPIC-1)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>Repaso Tema 109 (LPIC-1)</h1>
+            <p>Resumen clave de 5-10 minutos para el examen.</p>
+        </div>
+        <a href="/cursos/lpic/109/109.html" class="back-link">← Volver a Tema 109</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#109-1">109.1 - Fundamentos</a></li>
+                    <li><a href="#109-2">109.2 - Configuración persistente</a></li>
+                    <li><a href="#109-3">109.3 - Resolución de problemas</a></li>
+                    <li><a href="#109-4">109.4 - Seguridad</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="109-1">
+                    <h2>109.1 - Fundamentos de protocolos de internet</h2>
+                    <ul>
+                        <li>TCP (confiable, 3-way handshake) y UDP (rápido).</li>
+                        <li>Capas: Red (IP), Transporte (TCP/UDP), Aplicación (HTTP, FTP).</li>
+                        <li>IPs: IPv4 (ej. 192.168.1.1), IPv6 (ej. 2001:db8::1), máscara /24.</li>
+                        <li>Puertos: 80 (HTTP), 443 (HTTPS), 22 (SSH), 21 (FTP).</li>
+                        <li>Subredes: ej. 203.0.113.64/28, hosts 203.0.113.65-78.</li>
+                    </ul>
+                </section>
+
+                <section id="109-2">
+                    <h2>109.2 - Configuración de red persistente</h2>
+                    <ul>
+                        <li><code>/etc/hostname</code>: Nombre (cambia con <code>hostnamectl set-hostname</code>).</li>
+                        <li><code>/etc/hosts</code>: IPs a nombres (ej. <code>127.0.0.1 localhost</code>).</li>
+                        <li><code>/etc/nsswitch.conf</code>: Orden (ej. <code>hosts: files dns</code>).</li>
+                        <li><code>/etc/resolv.conf</code>: DNS (ej. <code>nameserver 8.8.8.8</code>).</li>
+                        <li>Interfaces: <code>/etc/network/interfaces</code>, DHCP (<code>iface enp3s5 inet dhcp</code>), estático (<code>address 192.168.1.2/24</code>).</li>
+                        <li><code>ifup enp3s5</code> activa, <code>ifdown enp3s5</code> desactiva.</li>
+                        <li><code>nmcli</code>: <code>connection</code> (ej. <code>show</code>), <code>device</code> (ej. <code>wifi connect</code>).</li>
+                        <li><code>nmtui</code>: Ajustes interactivos.</li>
+                    </ul>
+                </section>
+
+                <section id="109-3">
+                    <h2>109.3 - Resolución de problemas básicos de red</h2>
+                    <ul>
+                        <li><code>ping</code>: ICMP Echo Request/Response (ej. <code>ping 8.8.8.8</code>).</li>
+                        <li><code>traceroute</code>: Rutas (ej. <code>traceroute google.com</code>).</li>
+                        <li><code>netstat</code>: Conexiones (<code>-t</code>), rutas (<code>-r</code>), estadísticas (<code>-i</code>).</li>
+                        <li><code>ss</code>: TCP (<code>-t</code>), UDP (<code>-u</code>).</li>
+                        <li>Bytes en <code>eth0</code>: <code>ip -s link show eth0</code> o <code>ifconfig eth0</code>.</li>
+                        <li><code>ip addr</code>: Configura (ej. <code>ip addr add 192.168.1.10/24</code>).</li>
+                        <li><code>nmtui</code>: Ajusta NetworkManager.</li>
+                        <li><code>ip route</code>: Verifica rutas.</li>
+                    </ul>
+                </section>
+
+                <section id="109-4">
+                    <h2>109.4 - Conceptos de seguridad de red</h2>
+                    <ul>
+                        <li>Puertos: Cierra los innecesarios (443 HTTPS, 22 SSH).</li>
+                        <li>Firewall: <code>iptables</code> o <code>ufw allow ssh</code>.</li>
+                        <li>SSH: <code>ssh user@host</code>, usa claves.</li>
+                        <li><code>nmap</code>: Escanea puertos (ej. <code>nmap 192.168.1.1</code>).</li>
+                        <li>Seguridad: Cifrado (SSL/TLS), autenticación, evita accesos no autorizados.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
