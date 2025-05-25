@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Repaso rápido del Tema 109 (LPIC-1). Fundamentos, configuración, resolución y seguridad de red.">
-    <meta name="keywords" content="LPIC-1, 109, redes, repaso, protocolos, configuración, problemas, seguridad">
+    <meta name="description" content="Repaso rápido del Tema 109 (LPIC-1). Fundamentos, configuración, resolución y DNS.">
+    <meta name="keywords" content="LPIC-1, 109, redes, repaso, IPv4, IPv6, configuración, problemas, DNS">
     <meta name="author" content="SysRiser">
     <title>SysRiser - Repaso Tema 109 (LPIC-1)</title>
     <link rel="stylesheet" href="/conf/styles.css">
@@ -36,18 +36,17 @@
                     <li><a href="#109-1">109.1 - Fundamentos</a></li>
                     <li><a href="#109-2">109.2 - Configuración persistente</a></li>
                     <li><a href="#109-3">109.3 - Resolución de problemas</a></li>
-                    <li><a href="#109-4">109.4 - Seguridad</a></li>
+                    <li><a href="#109-4">109.4 - Configuración DNS</a></li>
                 </ul>
             </div>
             <div class="content">
                 <section id="109-1">
-                    <h2>109.1 - Fundamentos de protocolos de internet</h2>
+                    <h2>109.1 - Fundamentos de protocolos de Internet</h2>
                     <ul>
-                        <li>TCP (confiable, 3-way handshake) y UDP (rápido).</li>
-                        <li>Capas: Red (IP), Transporte (TCP/UDP), Aplicación (HTTP, FTP).</li>
-                        <li>IPs: IPv4 (ej. 192.168.1.1), IPv6 (ej. 2001:db8::1), máscara /24.</li>
-                        <li>Puertos: 80 (HTTP), 443 (HTTPS), 22 (SSH), 21 (FTP).</li>
-                        <li>Subredes: ej. 203.0.113.64/28, hosts 203.0.113.65-78.</li>
+                        <li>IPv4: 32 bits (ej. 192.168.1.1), clases A-C, rangos privados (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16).</li>
+                        <li>IPv6: 128 bits (ej. 2001:db8:3241::1), unicast, multicast (ff02::1), sin broadcast.</li>
+                        <li>TCP: Conexión (3-way handshake), UDP: Sin conexión, ICMP: Para <code>ping</code>.</li>
+                        <li>Puertos: 80 (HTTP), 443 (HTTPS), 53 (DNS).</li>
                     </ul>
                 </section>
 
@@ -55,12 +54,11 @@
                     <h2>109.2 - Configuración de red persistente</h2>
                     <ul>
                         <li><code>/etc/hostname</code>: Nombre (cambia con <code>hostnamectl set-hostname</code>).</li>
-                        <li><code>/etc/hosts</code>: IPs a nombres (ej. <code>127.0.0.1 localhost</code>).</li>
+                        <li><code>/etc/hosts</code>: IPs locales (ej. <code>127.0.0.1 localhost</code>).</li>
                         <li><code>/etc/nsswitch.conf</code>: Orden (ej. <code>hosts: files dns</code>).</li>
                         <li><code>/etc/resolv.conf</code>: DNS (ej. <code>nameserver 8.8.8.8</code>).</li>
-                        <li>Interfaces: <code>/etc/network/interfaces</code>, DHCP (<code>iface enp3s5 inet dhcp</code>), estático (<code>address 192.168.1.2/24</code>).</li>
-                        <li><code>ifup enp3s5</code> activa, <code>ifdown enp3s5</code> desactiva.</li>
-                        <li><code>nmcli</code>: <code>connection</code> (ej. <code>show</code>), <code>device</code> (ej. <code>wifi connect</code>).</li>
+                        <li>Interfaces: DHCP (<code>iface enp3s5 inet dhcp</code>, <code>ifup enp3s5</code>), estático (<code>address 192.168.1.2/24</code>, <code>ifdown enp3s5</code>).</li>
+                        <li><code>nmcli</code>: <code>connection show</code>, <code>device wifi connect</code>.</li>
                         <li><code>nmtui</code>: Ajustes interactivos.</li>
                     </ul>
                 </section>
@@ -68,25 +66,25 @@
                 <section id="109-3">
                     <h2>109.3 - Resolución de problemas básicos de red</h2>
                     <ul>
-                        <li><code>ping</code>: ICMP Echo Request/Response (ej. <code>ping 8.8.8.8</code>).</li>
+                        <li><code>ping</code>: ICMP Echo (ej. <code>ping 8.8.8.8</code>).</li>
                         <li><code>traceroute</code>: Rutas (ej. <code>traceroute google.com</code>).</li>
-                        <li><code>netstat</code>: Conexiones (<code>-t</code>), rutas (<code>-r</code>), estadísticas (<code>-i</code>).</li>
+                        <li><code>netstat</code>: Conexiones (<code>-t</code>), rutas (<code>-r</code>).</li>
                         <li><code>ss</code>: TCP (<code>-t</code>), UDP (<code>-u</code>).</li>
-                        <li>Bytes en <code>eth0</code>: <code>ip -s link show eth0</code> o <code>ifconfig eth0</code>.</li>
+                        <li>Bytes en <code>eth0</code>: <code>ip -s link show eth0</code>.</li>
                         <li><code>ip addr</code>: Configura (ej. <code>ip addr add 192.168.1.10/24</code>).</li>
-                        <li><code>nmtui</code>: Ajusta NetworkManager.</li>
-                        <li><code>ip route</code>: Verifica rutas.</li>
+                        <li><code>ip route</code>: Rutas (ej. <code>default via 192.168.1.1</code>).</li>
                     </ul>
                 </section>
 
                 <section id="109-4">
-                    <h2>109.4 - Conceptos de seguridad de red</h2>
+                    <h2>109.4 - Configuración DNS en el lado del cliente</h2>
                     <ul>
-                        <li>Puertos: Cierra los innecesarios (443 HTTPS, 22 SSH).</li>
-                        <li>Firewall: <code>iptables</code> o <code>ufw allow ssh</code>.</li>
-                        <li>SSH: <code>ssh user@host</code>, usa claves.</li>
-                        <li><code>nmap</code>: Escanea puertos (ej. <code>nmap 192.168.1.1</code>).</li>
-                        <li>Seguridad: Cifrado (SSL/TLS), autenticación, evita accesos no autorizados.</li>
+                        <li><code>/etc/nsswitch.conf</code>: Orden (ej. <code>hosts: files dns</code>).</li>
+                        <li><code>/etc/hosts</code>: Mapeo (ej. <code>127.0.0.1 localhost</code>).</li>
+                        <li><code>/etc/resolv.conf</code>: DNS (ej. <code>nameserver 8.8.8.8</code>, <code>search lpi.org</code>).</li>
+                        <li><code>host</code>: Resuelve (ej. <code>host google.com</code>).</li>
+                        <li><code>dig</code>: Detalles DNS (ej. <code>dig google.com</code>).</li>
+                        <li><code>getent</code>: Busca (ej. <code>getent hosts google.com</code>).</li>
                     </ul>
                 </section>
             </div>
