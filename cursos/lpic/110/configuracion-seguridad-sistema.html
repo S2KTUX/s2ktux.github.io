@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tema 110.2 Configuración de la seguridad del sistema (LPIC-1 102). Aprende sobre shadow passwords, superdemonios, servicios de red y TCP Wrappers.">
+    <meta name="keywords" content="LPIC-1, 102, shadow, passwd, xinetd, systemd.socket, hosts.allow, hosts.deny, TCP Wrappers, seguridad, Linux">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 110.2 Configuración de la seguridad del sistema (LPIC-1)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>110.2 Configuración de la seguridad del sistema</h1>
+            <p>Explora cómo mejorar la seguridad en Linux mediante shadow passwords, superdemonios como xinetd, gestión de servicios de red y TCP Wrappers.</p>
+        </div>
+        <a href="/cursos/lpic/102/102.html" class="back-link">← Volver a Tema 102</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#introduccion">Introducción</a></li>
+                    <li><a href="#shadow-passwords">Shadow Passwords</a></li>
+                    <li><a href="#superdemonios">Superdemonios</a></li>
+                    <li><a href="#servicios-red">Comprobación de servicios de red</a></li>
+                    <li><a href="#tcp-wrappers">TCP Wrappers</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="introduccion">
+                    <h2>Introducción</h2>
+                    <p>La seguridad del sistema es fundamental en Linux. Este tema cubre cuatro aspectos clave: autenticación con shadow passwords, uso de superdemonios para gestionar conexiones de red, comprobación de servicios innecesarios y uso de TCP Wrappers como firewall simple.</p>
+                </section>
+
+                <section id="shadow-passwords">
+                    <h2>Shadow Passwords</h2>
+                    <p>La autenticación segura en Linux utiliza el archivo <code>/etc/shadow</code> para almacenar contraseñas hasheadas, mientras que <code>/etc/passwd</code> contiene información básica de las cuentas de usuario, como nombre de inicio de sesión, UID, GID, directorio de inicio y shell predeterminado.</p>
+                    <ul>
+                        <li><strong>/etc/passwd</strong>: Contiene siete campos, con una <code>x</code> en el campo de contraseña para indicar que el hash está en <code>/etc/shadow</code>.</li>
+                        <li><strong>/etc/shadow</strong>: Almacena contraseñas hasheadas y datos de caducidad. No es legible por usuarios regulares.</li>
+                        <li><strong>passwd</strong>: Cambia contraseñas (<code>sudo passwd emma</code>) o bloquea cuentas (<code>passwd -l emma</code>).</li>
+                        <li><strong>chage</strong>: Gestiona caducidad de contraseñas (<code>chage -l emma</code> para listar, <code>chage -E 2020-03-26 emma</code> para expirar).</li>
+                        <li><strong>/etc/nologin</strong>: Si existe, impide el inicio de sesión de todos los usuarios excepto root, mostrando un mensaje opcional.</li>
+                        <li><strong>nologin</strong>: Configurado como shell predeterminado (<code>usermod -s /sbin/nologin emma</code>) para bloquear inicios de sesión de un usuario.</li>
+                    </ul>
+                    <p>El carácter <code>x</code> en <code>/etc/passwd</code> indica que la contraseña hasheada está en <code>/etc/shadow</code>, que también almacena la fecha del último cambio de contraseña. <code>chage</code> ajusta la caducidad de contraseñas, y los usuarios regulares no tienen acceso a los hashes en <code>/etc/shadow</code>. La presencia de <code>/etc/nologin</code> bloquea inicios de sesión de todos los usuarios excepto root.</p>
+                </section>
+
+                <section id="superdemonios">
+                    <h2>Superdemonios</h2>
+                    <p>Los superdemonios, como <code>xinetd</code> y <code>systemd.socket</code>, escuchan conexiones de red entrantes e inician servicios bajo demanda, optimizando recursos.</p>
+                    <ul>
+                        <li><strong>xinetd</strong>: Configurado en <code>/etc/xinetd.conf</code> y <code>/etc/xinetd.d/</code>. Ejemplo: <code>/etc/xinetd.d/ssh</code> gestiona conexiones SSH (<code>service ssh { disable = no; socket_type = stream; ... }</code>).</li>
+                        <li><strong>systemd.socket</strong>: Unidades de socket que reemplazan a <code>xinetd</code>. Ejemplo: <code>systemctl start ssh.socket</code> activa el puerto 22.</li>
+                        <li><strong>Comprobación</strong>: Usa <code>lsof -i :22</code> para verificar qué servicio escucha un puerto.</li>
+                    </ul>
+                    <p>El directorio <code>/etc/xinetd.d/</code> contiene archivos de configuración para servicios gestionados por <code>xinetd</code>, como <code>/etc/xinetd.d/ssh</code>.</p>
+                </section>
+
+                <section id="servicios-red">
+                    <h2>Comprobación de servicios de red</h2>
+                    <p>Identificar y deshabilitar servicios innecesarios mejora la seguridad y optimiza recursos. Usa herramientas como <code>systemctl</code>, <code>netstat</code> y <code>ss</code>.</p>
+                    <ul>
+                        <li><strong>SysV-init</strong>: Lista servicios con <code>service --status-all</code>. Deshabilita con <code>update-rc.d SERVICE-NAME remove</code> (Debian) o <code>chkconfig SERVICE-NAME off</code> (Red Hat).</li>
+                        <li><strong>systemd</strong>: Lista servicios activos con <code>systemctl list-units --state active --type service</code>. Deshabilita con <code>systemctl disable UNIT --now</code>.</li>
+                        <li><strong>Red</strong>: Verifica puertos en escucha con <code>netstat -ltu</code> o <code>ss -ltu</code>.</li>
+                    </ul>
+                </section>
+
+                <section id="tcp-wrappers">
+                    <h2>TCP Wrappers</h2>
+                    <p>TCP Wrappers controla el acceso a servicios de red mediante <code>/etc/hosts.allow</code> y <code>/etc/hosts.deny</code>, actuando como un firewall simple.</p>
+                    <ul>
+                        <li><strong>/etc/hosts.deny</strong>: Bloquea accesos (<code>sshd: ALL</code> deniega SSH a todos).</li>
+                        <li><strong>/etc/hosts.allow</strong>: Permite excepciones (<code>sshd: LOCAL</code> permite SSH desde la red local).</li>
+                        <li><strong>Comprobación</strong>: Verifica soporte con <code>ldd /usr/sbin/sshd | grep libwrap</code>.</li>
+                    </ul>
+                    <p>Los cambios en <code>/etc/hosts.allow</code> y <code>/etc/hosts.deny</code> son efectivos inmediatamente sin reiniciar servicios.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
