@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tema 109.2 Configuración de red persistente (LPIC-1 109). Aprende a configurar redes de forma persistente en Linux.">
+    <meta name="keywords" content="LPIC-1, 109, redes, configuración, persistente, hostname, hosts, resolv.conf, nmcli, nmtui">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 109.2 Configuración de red persistente (LPIC-1)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>109.2 Configuración de red persistente</h1>
+            <p>Aprende a configurar redes en Linux para que funcionen al arrancar el sistema.</p>
+        </div>
+        <a href="/cursos/lpic/109/109.html" class="back-link">← Volver a Tema 109</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#introduccion">Introducción</a></li>
+                    <li><a href="#interfaces">Interfaces de red</a></li>
+                    <li><a href="#gestion">Gestionar interfaces</a></li>
+                    <li><a href="#nombres">Nombres y resolución</a></li>
+                    <li><a href="#networkmanager">NetworkManager y systemd</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="introduccion">
+                    <h2>Introducción</h2>
+                    <p>En Linux, las configuraciones de red se guardan en archivos en `/etc` para que se apliquen al arrancar. Esto incluye interfaces, nombres de host y resolución de nombres, asegurando comunicación continua.</p>
+                </section>
+
+                <section id="interfaces">
+                    <h2>Interfaces de red</h2>
+                    <p>Las interfaces de red (como `enp3s5` para Ethernet o `wlo1` para Wi-Fi) conectan el sistema a la red. La interfaz `lo` (loopback) sirve para conexiones internas. Usa `ip link show` para listarlas, mostrando nombres como `enp3s5`.</p>
+                    <p>Los nombres modernos usan prefijos: `en` (Ethernet), `wl` (Wi-Fi), basados en su ubicación en el hardware, como `enp3s5` (bus 3, ranura 5).</p>
+                </section>
+
+                <section id="gestion">
+                    <h2>Gestionar interfaces</h2>
+                    <p>Configura interfaces para que sean persistentes al arrancar.</p>
+                    <ul>
+                        <li><strong>ifup e ifdown:</strong> Activan o desactivan interfaces según `/etc/network/interfaces`. Por ejemplo, con `auto enp3s5` e `iface enp3s5 inet dhcp`, usa `ifup enp3s5` para activarla y `ifdown enp3s5` para desactivarla.</li>
+                        <li><strong>Método estático:</strong> En `/etc/network/interfaces`, usa `iface enp3s5 inet static`, `address 192.168.1.2/24`, `gateway 192.168.1.1` para una IP fija.</li>
+                    </ul>
+                </section>
+
+                <section id="nombres">
+                    <h2>Nombres y resolución</h2>
+                    <p>Configura el nombre del sistema y la resolución de nombres.</p>
+                    <ul>
+                        <li><strong>Nombre del host:</strong> El archivo `/etc/hostname` define el nombre estático. Cámbialo con `hostnamectl set-hostname storage`, que actualiza `/etc/hostname`.</li>
+                        <li><strong>Mapeo local:</strong> Usa `/etc/hosts` para asociar IPs con nombres, como `127.0.0.1 localhost` o `192.168.1.10 foo.mydomain.org`.</li>
+                        <li><strong>Resolución de nombres:</strong> `/etc/nsswitch.conf` define el orden de búsqueda, como `hosts: files dns` (primero archivos, luego DNS). `/etc/resolv.conf` configura servidores DNS, como `nameserver 8.8.8.8`.</li>
+                    </ul>
+                </section>
+
+                <section id="networkmanager">
+                    <h2>NetworkManager y systemd</h2>
+                    <p>NetworkManager automatiza la configuración de red.</p>
+                    <ul>
+                        <li><strong>nmcli:</strong> Gestiona conexiones desde la línea de comandos. Algunos subcomandos son <code>nmcli connection</code> (para mostrar o gestionar conexiones) y <code>nmcli device</code> (para controlar dispositivos).</li>
+                        <li><strong>nmtui:</strong> Ofrece una interfaz curses para gestionar conexiones de NetworkManager de forma interactiva, útil para ajustes manuales.</li>
+                        <li><strong>systemd-networkd:</strong> Usa archivos `.network` en `/etc/systemd/network` para configuraciones avanzadas, como `Address=192.168.0.100/24` o `DHCP=yes`.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
