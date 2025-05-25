@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tema 109.3 Resolución de problemas básicos de red (LPIC-1 109). Aprende a diagnosticar y solucionar problemas de red.">
+    <meta name="keywords" content="LPIC-1, 109, redes, resolución, problemas, ip, ping, traceroute, netstat, ifconfig">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 109.3 Resolución de problemas básicos de red (LPIC-1)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>109.3 Resolución de problemas básicos de red</h1>
+            <p>Aprende a encontrar y solucionar problemas en tu red con herramientas simples.</p>
+        </div>
+        <a href="/cursos/lpic/109/109.html" class="back-link">← Volver a Tema 109</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#introduccion">Introducción</a></li>
+                    <li><a href="#configuracion">Configurar tu red</a></li>
+                    <li><a href="#herramientas">Herramientas para buscar problemas</a></li>
+                    <li><a href="#rutas">Ver y entender las rutas</a></li>
+                    <li><a href="#conexiones">Ver conexiones con netstat y ss</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="introduccion">
+                    <h2>Introducción</h2>
+                    <p>Las redes en Linux son muy potentes y se usan en muchos equipos, incluso los más grandes. Aquí aprenderás a usar herramientas fáciles para encontrar problemas en tu red y arreglarlos, ya sea con direcciones IPv4 o IPv6.</p>
+                </section>
+
+                <section id="configuracion">
+                    <h2>Configurar tu red</h2>
+                    <p>Antes de buscar problemas, necesitas saber cómo está configurada tu red. Puedes usar comandos como `ifconfig` o `ip` para ajustar cosas, como asignar direcciones o ver las conexiones.</p>
+                    <ul>
+                        <li><strong>Ver interfaces</strong>: Usa `ip link` para ver las conexiones de red disponibles. Por ejemplo, `ip link` podría mostrar `enp0s3` (una interfaz de red) y `lo` (la interfaz local).</li>
+                        <li><strong>Asignar direcciones</strong>: Con `ip addr add 192.168.5.5/24 dev enp0s8` le das una dirección a tu interfaz. Para IPv6, usas lo mismo, como `ip addr add 2001:db8::10/64 dev enp0s8`.</li>
+                        <li><strong>Activar o desactivar</strong>: Con `ip link set dev enp0s8 down` apagas una interfaz, y con `ip link set dev enp0s8 up` la enciendes. Por ejemplo, después de encenderla, podrías ver `state UP` al usar `ip link show dev enp0s8`.</li>
+                        <li><strong>Cambiar nombre del equipo</strong>: Usa `hostname nuevo-nombre` para cambiar el nombre temporalmente, como `hostname mi-servidor`. Para que el cambio sea permanente, usa `hostnamectl set-hostname mi-servidor`.</li>
+                    </ul>
+                </section>
+
+                <section id="herramientas">
+                    <h2>Herramientas para buscar problemas</h2>
+                    <p>Estas herramientas te ayudan a ver si tu red funciona bien o a encontrar dónde está el problema.</p>
+                    <ul>
+                        <li><strong>ping / ping6</strong>: Sirven para probar si puedes llegar a otro equipo. `ping` envía un mensaje (ICMP Echo Request) y espera una respuesta (ICMP Echo Response). Por ejemplo, `ping 8.8.8.8` podría mostrar: `64 bytes from 8.8.8.8: icmp_seq=1 ttl=117 time=15.2 ms`. Para IPv6, usa `ping6`, como `ping6 2001:db8::1`.</li>
+                        <li><strong>traceroute / traceroute6</strong>: Muestran el camino que siguen tus datos para llegar a un destino. Por ejemplo, `traceroute google.com` podría mostrar: `1 192.168.1.1 2ms`, `2 10.0.0.1 5ms`, indicando los servidores por los que pasa. Para IPv6, usa `traceroute6`.</li>
+                        <li><strong>netcat</strong>: Sirve para probar puertos o enviar datos, como `nc -zv 192.168.1.1 80`, que te dirá si el puerto 80 está abierto, mostrando algo como `192.168.1.1 80 (http) open`.</li>
+                    </ul>
+                </section>
+
+                <section id="rutas">
+                    <h2>Ver y entender las rutas</h2>
+                    <p>La tabla de enrutamiento te muestra cómo tu equipo decide enviar datos a otros lugares. Puedes verla con `ip route`. Por ejemplo:</p>
+                    <ul>
+                        <li><strong>Ejemplo:</strong> Si ejecutas `ip route`, podrías ver: `default via 10.0.2.2 dev enp0s3 proto dhcp metric 100`. Esto significa que los datos que no tienen una ruta específica se envían a 10.0.2.2 a través de la interfaz `enp0s3`.</li>
+                        <li><strong>Para IPv6:</strong> Usa `ip -6 route`. Podrías ver: `2001:db8::/64 dev enp0s8`, indicando que las direcciones que empiezan con `2001:db8::` usan esa interfaz.</li>
+                        <li><strong>Uso:</strong> Si no puedes conectar a una página, revisa la tabla para ver si la ruta está bien configurada. Si falta una ruta, puedes añadirla con `ip route add`, como `ip route add 192.168.10.0/24 via 192.168.1.1`.</li>
+                    </ul>
+                </section>
+
+                <section id="conexiones">
+                    <h2>Ver conexiones con netstat y ss</h2>
+                    <p>`netstat` y `ss` te ayudan a ver qué conexiones están activas en tu red. `ss` es más moderno y rápido, pero `netstat` sigue siendo útil. Aquí están las opciones más comunes:</p>
+                    <ul>
+                        <li><strong>-t</strong>: Muestra conexiones TCP. Por ejemplo, `ss -t` podría mostrar: `ESTAB 0 0 192.168.1.100:22 203.0.113.1:54321`, indicando una conexión SSH activa.</li>
+                        <li><strong>-u</strong>: Muestra conexiones UDP. Con `netstat -u`, podrías ver: `udp 0 0 0.0.0.0:68 0.0.0.0:*`, que es un servicio DHCP.</li>
+                        <li><strong>-l</strong>: Muestra puertos que están escuchando. Por ejemplo, `ss -l` podría mostrar: `tcp LISTEN 0 128 127.0.0.1:22`, indicando que el puerto 22 (SSH) está listo para conexiones.</li>
+                        <li><strong>-p</strong>: Muestra el programa que usa la conexión. Con `netstat -p`, podrías ver: `tcp 0 0 127.0.0.1:22 0.0.0.0:* LISTEN 1234/sshd`, donde `sshd` es el programa.</li>
+                        <li><strong>-n</strong>: Muestra direcciones y puertos como números, sin traducirlos. Por ejemplo, `ss -tn` podría mostrar: `ESTAB 0 0 192.168.1.100:22 203.0.113.1:54321` en lugar de nombres como `ssh`.</li>
+                        <li><strong>Combinar opciones:</strong> Usa `netstat -tulnp` para ver todas las conexiones TCP y UDP que están escuchando, con números y programas. Podrías ver: `tcp 0 0 0.0.0.0:80 0.0.0.0:* LISTEN 4321/nginx`.</li>
+                    </ul>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
