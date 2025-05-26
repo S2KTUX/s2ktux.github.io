@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Tema 110.3 Protección de datos mediante cifrado (LPIC-1 102). Aprende sobre SSH, túneles de puertos, y GPG para cifrado y autenticación segura.">
+    <meta name="keywords" content="LPIC-1, 102, SSH, ssh-keygen, ssh-agent, authorized_keys, known_hosts, GPG, gpg-agent, cifrado, Linux">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - 110.3 Protección de datos mediante cifrado (LPIC-1)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>110.3 Protección de datos mediante cifrado</h1>
+            <p>Explora cómo proteger datos en Linux con SSH para conexiones seguras y GPG para cifrado y firma de archivos.</p>
+        </div>
+        <a href="/cursos/lpic/102/102.html" class="back-link">← Volver a Tema 102</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#introduccion">Introducción</a></li>
+                    <li><a href="#openssh-cliente">Configuración del cliente OpenSSH</a></li>
+                    <li><a href="#openssh-servidor">Claves del servidor OpenSSH</a></li>
+                    <li><a href="#tuneles-ssh">Túneles SSH</a></li>
+                    <li><a href="#gpg">Uso de GPG</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="introduccion">
+                    <h2>Introducción</h2>
+                    <p>La protección de datos es crucial en la administración de sistemas. Este tema cubre el uso de SSH (Secure Shell) para conexiones seguras y túneles de puertos, y GPG (GNU Privacy Guard) para cifrado y firma de archivos, ambos basados en criptografía de clave pública.</p>
+                </section>
+
+                <section id="openssh-cliente">
+                    <h2>Configuración del cliente OpenSSH</h2>
+                    <p>OpenSSH proporciona una implementación segura del protocolo SSH 2.0 para conexiones remotas, autenticación y transferencia de datos.</p>
+                    <ul>
+                        <li><strong>ssh</strong>: Establece sesiones remotas (<code>ssh ina@192.168.1.77</code>). La primera conexión solicita confirmar la huella digital del servidor, almacenada en <code>~/.ssh/known_hosts</code>.</li>
+                        <li><strong>ssh-keygen</strong>: Genera pares de claves (<code>ssh-keygen -t ecdsa</code>). Crea claves privadas (<code>~/.ssh/id_ecdsa</code>) y públicas (<code>~/.ssh/id_ecdsa.pub</code>). Usa <code>-b</code> para especificar el tamaño (ej. 521 bits).</li>
+                        <li><strong>authorized_keys</strong>: Almacena claves públicas en <code>~/.ssh/authorized_keys</code> en el servidor para autenticación sin contraseña.</li>
+                        <li><strong>ssh-agent</strong>: Gestiona claves privadas en memoria (<code>ssh-agent /bin/bash</code>). Usa <code>ssh-add</code> para añadir claves (<code>ssh-add ~/.ssh/id_ecdsa</code>).</li>
+                        <li><strong>Tipos de claves</strong>: RSA (2048 bits por defecto), DSA (inseguro, obsoleto), ECDSA (256, 384, 521 bits), Ed25519 (256 bits, más seguro).</li>
+                    </ul>
+                    <p>Si no se especifica <code>-t</code>, <code>ssh-keygen</code> genera claves RSA. Las claves públicas de hosts remotos se almacenan en <code>~/.ssh/known_hosts</code>. Las claves públicas para autenticación se guardan en <code>~/.ssh/authorized_keys</code>. <code>ssh-agent</code> permite añadir claves privadas a la memoria para conexiones sin introducir frases de contraseña repetidamente. Por ejemplo, <code>ssh-keygen -t ecdsa -b 521</code> genera un par de claves ECDSA de 521 bits.</p>
+                </section>
+
+                <section id="openssh-servidor">
+                    <h2>Claves del servidor OpenSSH</h2>
+                    <p>El servidor OpenSSH utiliza claves para identificarse ante los clientes, almacenadas en <code>/etc/ssh/</code>.</p>
+                    <ul>
+                        <li><strong>Claves privadas</strong>: <code>ssh_host_[rsa|dsa|ecdsa|ed25519]_key</code> (permisos 0600, solo root).</li>
+                        <li><strong>Claves públicas</strong>: <code>ssh_host_[rsa|dsa|ecdsa|ed25519]_key.pub</code> (permisos 0644).</li>
+                        <li><strong>Verificación</strong>: Usa <code>ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key.pub</code> para mostrar huellas digitales.</li>
+                    </ul>
+                    <p>La huella digital de la clave ECDSA del servidor se obtiene con <code>ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key.pub</code>.</p>
+                </section>
+
+                <section id="tuneles-ssh">
+                    <h2>Túneles SSH</h2>
+                    <p>Los túneles SSH permiten reenviar tráfico cifrado a través de conexiones seguras, soportando reenvío local, remoto y X11.</p>
+                    <ul>
+                        <li><strong>Túnel local</strong>: Reenvía un puerto local a un destino remoto (<code>ssh -L 8585:www.gnu.org:80 localhost</code>). Usa <code>-N</code> (sin sesión) y <code>-f</code> (en segundo plano).</li>
+                        <li><strong>Túnel remoto</strong>: Reenvía un puerto remoto a un destino local (<code>ssh -R 8585:localhost:80 ina@192.168.1.77</code>).</li>
+                        <li><strong>Túnel X11</strong>: Reenvía aplicaciones gráficas (<code>ssh -X ina@halof</code>). Usa <code>-x</code> para desactivar.</li>
+                    </ul>
+                </section>
+
+                <section id="gpg">
+                    <h2>Uso de GPG</h2>
+                    <p>GPG (GNU Privacy Guard) implementa el estándar OpenPGP para cifrado, firma y verificación de archivos, usando criptografía de clave pública.</p>
+                    <ul>
+                        <li><strong>Configuración</strong>: Genera claves con <code>gpg --gen-key</code>, creando <code>~/.gnupg/</code> (con <code>pubring.kbx</code>, <code>private-keys-v1.d</code>, <code>openpgp-revocs.d</code>, <code>trustdb.gpg</code>).</li>
+                        <li><strong>Cifrado</strong>: Cifra archivos con <code>gpg --output archivo.gpg --recipient usuario --armor --encrypt archivo</code>.</li>
+                        <li><strong>Descifrado</strong>: Descifra con <code>gpg --output archivo --decrypt archivo.gpg</code>.</li>
+                        <li><strong>Firma</strong>: Firma archivos con <code>gpg --output archivo.sig --sign archivo</code>. Verifica con <code>gpg --verify archivo.sig</code>.</li>
+                        <li><strong>Exportación</strong>: Exporta claves públicas con <code>gpg --export usuario > clave.pub</code>.</li>
+                        <li><strong>Revocación</strong>: Genera certificados de revocación con <code>gpg --output rev.asc --gen-revoke usuario</code>.</li>
+                        <li><strong>gpg-agent</strong>: Gestiona claves privadas, iniciado automáticamente por <code>gpg</code>.</li>
+                    </ul>
+                    <p>El directorio <code>~/.gnupg/</code> almacena la configuración y claves de GPG, incluyendo llaveros y certificados de revocación.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
