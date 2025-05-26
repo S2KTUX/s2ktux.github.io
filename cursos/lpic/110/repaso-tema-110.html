@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Resumen rápido del Tema 110 (LPIC-1 102): Tareas de administración de seguridad, configuración de seguridad del sistema y protección de datos mediante cifrado. Ideal para repasar antes del examen.">
+    <meta name="keywords" content="LPIC-1, 102, seguridad, SUID, shadow, xinetd, TCP Wrappers, SSH, GPG, cifrado, Linux">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - Repaso Tema 110 (LPIC-1 102)</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+    <main id="contenido">
+        <div class="hero">
+            <h1>Repaso Tema 110: Seguridad (LPIC-1 102)</h1>
+            <p>Resumen esencial de los temas 110.1, 110.2 y 110.3 para repasar en 5-10 minutos antes del examen.</p>
+        </div>
+        <a href="/cursos/lpic/102/102.html" class="back-link">← Volver a Tema 102</a>
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido</h3>
+                <ul>
+                    <li><a href="#tema-110-1">110.1 Tareas de administración</a></li>
+                    <li><a href="#tema-110-2">110.2 Configuración del sistema</a></li>
+                    <li><a href="#tema-110-3">110.3 Cifrado de datos</a></li>
+                </ul>
+            </div>
+            <div class="content">
+                <section id="tema-110-1">
+                    <h2>110.1 Tareas de administración de seguridad</h2>
+                    <p><strong>Permisos SUID/SGID</strong>: SUID (4000) ejecuta archivos con permisos del propietario; SGID (2000) con permisos del grupo o hereda grupo en directorios. Busca con <code>find / -user root -perm -4000</code>.</p>
+                    <p><strong>Contraseñas</strong>: <code>/etc/shadow</code> almacena contraseñas hasheadas, inaccesibles para usuarios regulares. Usa <code>passwd</code> para cambiar (<code>passwd emma</code>), bloquear (<code>-l</code>) o desbloquear (<code>-u</code>). <code>chage</code> gestiona caducidad (<code>chage -l emma</code>, <code>chage -M 30 emma</code>).</p>
+                    <p><strong>Puertos</strong>: Identifica procesos en puertos con <code>lsof -i :80</code>, <code>fuser -vn tcp 80</code>, <code>netstat -lt</code>, o <code>nmap localhost</code>.</p>
+                    <p><strong>Límites</strong>: <code>ulimit</code> controla recursos (<code>ulimit -a</code>). Limita memoria (<code>ulimit -m</code>) o archivos core (<code>ulimit -c 0</code>). Configura en <code>/etc/security/limits.conf</code>.</p>
+                    <p><strong>Usuarios conectados</strong>: <code>who</code>, <code>w</code>, o <code>last</code> muestran sesiones activas o pasadas.</p>
+                    <p><strong>Sudo</strong>: Configura en <code>/etc/sudoers</code> con <code>visudo</code>. Ejemplo: <code>jane ALL=NOPASSWD: /bin/kill</code> permite ejecutar sin contraseña.</p>
+                </section>
+
+                <section id="tema-110-2">
+                    <h2>110.2 Configuración de la seguridad del sistema</h2>
+                    <p><strong>Shadow Passwords</strong>: <code>/etc/passwd</code> usa <code>x</code> para indicar contraseñas en <code>/etc/shadow</code>, que almacena hashes y fechas de cambio. Usa <code>passwd -l emma</code> o <code>chage -E 2020-03-26 emma</code> para bloquear cuentas. <code>/etc/nologin</code> impide inicios de sesión (excepto root).</p>
+                    <p><strong>Superdemonios</strong>: <code>xinetd</code> gestiona servicios en <code>/etc/xinetd.conf</code> y <code>/etc/xinetd.d/</code> (ej. <code>/etc/xinetd.d/ssh</code>). <code>systemd.socket</code> activa puertos (<code>systemctl start ssh.socket</code>). Verifica con <code>lsof -i :22</code>.</p>
+                    <p><strong>Servicios de red</strong>: Lista servicios con <code>systemctl list-units --state active --type service</code> o <code>service --status-all</code>. Deshabilita con <code>systemctl disable UNIT --now</code> o <code>update-rc.d SERVICE remove</code>. Puertos en escucha: <code>ss -ltu</code> o <code>netstat -ltu</code>.</p>
+                    <p><strong>TCP Wrappers</strong>: <code>/etc/hosts.deny</code> bloquea (<code>sshd: ALL</code>); <code>/etc/hosts.allow</code> permite excepciones (<code>sshd: LOCAL</code>). Cambios efectivos inmediatamente. Verifica soporte con <code>ldd /usr/sbin/sshd | grep libwrap</code>.</p>
+                </section>
+
+                <section id="tema-110-3">
+                    <h2>110.3 Protección de datos mediante cifrado</h2>
+                    <p><strong>OpenSSH Cliente</strong>: Usa <code>ssh ina@192.168.1.77</code> para conexiones. <code>ssh-keygen -t ecdsa -b 521</code> genera claves (<code>~/.ssh/id_ecdsa</code>, <code>.pub</code>). Copia la clave pública a <code>~/.ssh/authorized_keys</code> en el servidor. <code>ssh-agent</code> y <code>ssh-add</code> gestionan claves en memoria. Claves públicas de servidores en <code>~/.ssh/known_hosts</code>. RSA es predeterminado si no se especifica <code>-t</code>.</p>
+                    <p><strong>OpenSSH Servidor</strong>: Claves en <code>/etc/ssh/ssh_host_[rsa|ecdsa|ed25519]_key[.pub]</code>. Verifica huellas con <code>ssh-keygen -l -f /etc/ssh/ssh_host_ecdsa_key.pub</code>.</p>
+                    <p><strong>Túneles SSH</strong>: Local: <code>ssh -L 8585:www.gnu.org:80 localhost</code>. Remoto: <code>ssh -R 8585:localhost:80 ina@192.168.1.77</code>. X11: <code>ssh -X ina@halof</code>. Usa <code>-N</code> (sin sesión) y <code>-f</code> (segundo plano).</p>
+                    <p><strong>GPG</strong>: Genera claves con <code>gpg --gen-key</code> en <code>~/.gnupg/</code>. Cifra: <code>gpg --output archivo.gpg --recipient usuario --armor --encrypt archivo</code>. Descifra: <code>gpg --output archivo --decrypt archivo.gpg</code>. Firma: <code>gpg --output archivo.sig --sign archivo</code>. Verifica: <code>gpg --verify archivo.sig</code>. Exporta: <code>gpg --export usuario > clave.pub</code>. Revoca: <code>gpg --output rev.asc --gen-revoke usuario</code>. <code>gpg-agent</code> gestiona claves privadas.</p>
+                </section>
+            </div>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+            </div>
+        </div>
+    </footer>
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
