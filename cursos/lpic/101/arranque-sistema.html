@@ -53,6 +53,7 @@
                     <p>UEFI es también un firmware y, a diferencia de BIOS, no se basa en MBR, sino que tiene en cuenta la configuración en su memoria no volátil y que puede ser un gestor de arranque, herramientas de reparación, etc.</p>
                     <p>La partición EFI (ESP) contiene las aplicaciones EFI y no debe compartirse con otros filesystems.</p>
                     <p>UEFI admite Secure Boot y los filesystems compatibles son FAT12, FAT16, FAT32 para dispositivos como USB.</p>
+                    <p>UEFI está almacenado en un área especial dentro de los metadatos de la tabla de particiones GPT.</p>
                     
                     <table style="margin: 0 auto; border-collapse: collapse; width: 80%; text-align: left;">
                         <thead>
@@ -96,13 +97,16 @@
                     </ul>
                     <p>Para que los datos sean persistentes se debe modificar el archivo <code>/etc/default/grub</code> en la línea <code>GRUB_CMDLINE_LINUX</code> y para confirmarlo usaremos el comando <code>grub-mkconfig</code> o <code>update-grub</code>.</p>
                     <p>Los parámetros actuales se pueden ver en <code>/proc/cmdline</code>.</p>
+                    <p>En una instalación estándar de GRUB 2, se encuentran archivos como <code>/boot/grub/grub.cfg</code> (configuración principal) y <code>/boot/grub/i386-pc/lvm.mod</code> (módulo para soporte LVM). Para instalar GRUB 2 en el registro de arranque maestro de un disco, como <code>/dev/sda</code> o <code>/dev/sdc</code>, se usa el comando <code>grub-install /dev/sdX</code>.</p>
+                    <p>Para establecer el objetivo de arranque predeterminado en systemd, como el modo multiusuario, se usa el comando <code>systemctl set-default multi-user.target</code>.</p>
                 </section>
                 <section id="inicializacion">
                     <h2>Inicialización del sistema</h2>
                     <p>El sistema operativo depende de otros componentes durante el proceso de inicialización, desde scripts hasta servicios (daemon) que pueden estar siempre activos.</p>
                     <p>El inicio comienza cuando el gestor de arranque carga el kernel en la RAM. Pasará a hacerse cargo de la CPU y por último comenzará a detectar el sistema operativo y sus configuraciones.</p>
-                    <p>El <strong>kernel</strong> abrirá <strong>initramfs</strong> (archivo que contiene un filesystem utilizado como filesystem raíz temporal). El kernel pasará a montar los archivos configurados en <code>/etc/fstab</code> y ejecutará el primer programa (init), que es el encargado de ejecutar todos los scripts y demonios del sistema operativo.</p>
+                    <p>El <strong>kernel</strong> abrirá <strong>initramfs</strong>, un archivo comprimido que contiene un sistema de archivos raíz temporal, el cual se puede descomprimir para examinar su contenido y cuyos datos están disponibles en <code>/run/initramfs/</code> tras un arranque exitoso. El kernel montará los sistemas de archivos configurados en <code>/etc/fstab</code> y ejecutará el primer programa (init), que gestiona los scripts y demonios del sistema operativo.</p>
                     <p>Una vez se ha cargado <strong>init</strong>, initramfs se elimina de la RAM. Init puede ser SysVinit, Systemd o Upstart (obsoleto).</p>
+                    <p>En sistemas SysV init, el primer programa ejecutado por el kernel es <code>/sbin/init</code>, que tiene el ID de proceso 1. El nivel de ejecución predeterminado se configura en <code>/etc/inittab</code>. Los scripts de arranque en directorios como <code>/etc/rcX.d/</code> controlan los servicios, donde los enlaces con prefijo <code>S</code> (por ejemplo, <code>S02apache2</code>) se ejecutan al entrar en un nivel de ejecución, y los con prefijo <code>K</code> (por ejemplo, <code>K01apache2</code>) indican servicios desactivados que no se ejecutan.</p>
                 </section>
                 <section id="inspeccion">
                     <h2>Inspección de inicialización</h2>
