@@ -54,9 +54,9 @@
                 </section>
                 <section id="subtema-1022">
                     <h2>102.2 Instalación de un gestor de arranque</h2>
-                    <p> GRUB para arrancar Linux:</p>
+                    <p>GRUB para arrancar Linux:</p>
                     <ul>
-                        <li><strong>GRUB 2:</strong> Instalamos con <code>grub-install</code>. Configuramos en <code>/etc/default/grub</code> y generamos <code>/boot/grub/grub.cfg</code> con <code>grub-mkconfig</code>.</li>
+                        <li><strong>GRUB 2:</strong> Instalamos con <code>grub-install</code>. Configuramos en <code>/etc/default/grub</code> y generamos <code>/boot/grub/grub.cfg</code> con <code>grub-mkconfig</code>. Incluye archivos como <code>/boot/grub/i386-pc/lvm.mod</code> (para soporte LVM) y <code>/boot/grub/grub.cfg</code> (configuración principal).</li>
                         <li><strong>GRUB Legacy:</strong> Configuramos en <code>/boot/grub/menu.lst</code>. Discos/particiones se numeran desde 0 (ej. <code>hd0,0</code>).</li>
                         <li>La partición <code>/boot</code> contiene el kernel, disco RAM (<code>initrd.img</code>), y archivos de GRUB.</li>
                     </ul>
@@ -72,10 +72,10 @@
                 </section>
                 <section id="subtema-1024">
                     <h2>102.4 Gestión de paquetes Debian</h2>
-                    <p> Gestion de paquetes en Debian con estas herramientas:</p>
+                    <p>Gestion de paquetes en Debian con estas herramientas:</p>
                     <ul>
                         <li><strong>dpkg</strong> (bajo nivel): <code>dpkg -i paquete.deb</code> (instalar), <code>dpkg -r/--purge paquete</code> (eliminar/purgar), <code>dpkg -l</code> (listar).</li>
-                        <li><strong>apt</strong> (alto nivel): <code>apt install paquete</code>, <code>apt update</code>, <code>apt upgrade</code>, <code>apt remove/purge paquete</code>.</li>
+                        <li><strong>apt</strong> (alto nivel): <code>apt install paquete</code>, <code>apt update</code>, <code>apt upgrade</code>, <code>apt remove/purge paquete</code>. Alternativamente, <code>apt-get remove paquete</code> elimina un paquete dejando archivos de configuración.</li>
                         <li>Repositorios en <code>/etc/apt/sources.list</code> y <code>/etc/apt/sources.list.d/</code>. Actualizamos con <code>apt update</code>.</li>
                     </ul>
                 </section>
@@ -84,7 +84,7 @@
                     <p>El uso de varias herramientas de gestion de paquetes en sistemas Red Hat, Fedora y SUSE:</p>
                     <ul>
                         <li><strong>rpm</strong> (bajo nivel): <code>rpm -i/-U paquete.rpm</code> (instalar/actualizar), <code>rpm -e paquete</code> (eliminar), <code>rpm -qa</code> (listar).</li>
-                        <li><strong>yum/dnf</strong> (Red Hat/Fedora): <code>yum/dnf install paquete</code>, <code>yum/dnf update/upgrade paquete</code>, <code>yum/dnf remove paquete</code>.</li>
+                        <li><strong>yum/dnf</strong> (Red Hat/Fedora): <code>yum/dnf install paquete</code>, <code>yum/dnf update/upgrade paquete</code>, <code>yum/dnf remove paquete</code>. Nota: <code>yum update</code> también actualiza la lista de paquetes disponibles desde los repositorios.</li>
                         <li><strong>zypper</strong> (SUSE): <code>zypper in paquete</code>, <code>zypper update</code>, <code>zypper rm paquete</code>.</li>
                         <li>Repositorios en <code>/etc/yum.repos.d/</code>. Gestionamos con <code>yum-config-manager</code>, <code>dnf config-manager</code>, o <code>zypper addrepo</code>.</li>
                     </ul>
@@ -93,7 +93,7 @@
                     <h2>102.6 Linux como sistema virtualizado</h2>
                     <p>Uso de Linux en entornos virtualizados:</p>
                     <ul>
-                        <li><strong>Virtualización:</strong> Se pueden usar hipervisores como Xen (Tipo 1), KVM (Tipo 1/2), VirtualBox (Tipo 2). Tipos de máquinas: totalmente virtualizadas, paravirtualizadas, híbridas.</li>
+                        <li><strong>Virtualización:</strong> Se pueden usar hipervisores como Xen (Tipo 1), KVM (Tipo 2, hospedado en el núcleo Linux), VirtualBox (Tipo 2). Tipos de máquinas: totalmente virtualizadas, paravirtualizadas, híbridas.</li>
                         <li><strong>Plantillas:</strong> Nos ayudan a crear máquinas virtuales rápido. Revisamos que el D-Bus Machine ID sea único.</li>
                         <li><strong>Nube:</strong> Hay IaaS (AWS, Azure). Gestionamos instancias, almacenamiento y redes. Accedemos con OpenSSH y configuramos con <code>cloud-init</code>.</li>
                     </ul>
