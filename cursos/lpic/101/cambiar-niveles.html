@@ -63,6 +63,7 @@
                     </ul>
                     <p>Para recargar los cambios en <code>/etc/inittab</code>, usaremos el comando <code>telinit q</code>. El comando <code>runlevel</code> muestra el nivel de ejecución anterior (N) y el actual.</p>
                     <p>Podemos cambiar el nivel de ejecución con el comando <code>telinit N</code>.</p>
+                    <p>En SysVinit, los scripts de arranque en directorios como <code>/etc/rcX.d/</code> controlan los servicios, donde los enlaces con prefijo <code>S</code> (por ejemplo, <code>S02apache2</code>) se ejecutan al entrar en un nivel de ejecución, y los con prefijo <code>K</code> (por ejemplo, <code>K01apache2</code>) indican servicios desactivados que no se ejecutan.</p>
                 </section>
                 <section id="systemd">
                     <h2>Systemd</h2>
@@ -114,7 +115,7 @@
                         <li><code>+m</code>: Cuántos minutos esperar</li>
                         <li><code>now</code> o <code>+0</code>: Inmediato</li>
                     </ul>
-                    <p>Systemctl tiene por su parte los comandos <code>poweroff</code> (apagado) y <code>reboot</code> (reinicio).</p>
+                    <p>Systemctl tiene por su parte los comandos <code>poweroff</code> y <code>reboot</code> (reinicio).</p>
                     <p>Por último, el comando <code>wall</code> sirve para enviar un mensaje a las sesiones de terminal de todos los usuarios conectados.</p>
                 </section>
             </div>
@@ -124,7 +125,7 @@
         <div class="footer-content">
             <p>SysRiser | Un lugar para aprender sistemas y redes</p>
             <div class="footer-links">
-                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                <a href="https://github шеш/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
                 <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
                 <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
                 <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
