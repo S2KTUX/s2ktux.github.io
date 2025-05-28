@@ -48,6 +48,7 @@
                         <li><strong>lsusb:</strong> Lista dispositivos USB conectados. Usa <code>lsusb -v</code> para información detallada o <code>-d ID</code> para un dispositivo específico.</li>
                         <li><strong>lsmod:</strong> Muestra los módulos del kernel cargados. Si necesitas bloquear un módulo (para evitar que se cargue), edita <code>/etc/modprobe.d/blacklist.conf</code> y añade <code>blacklist nombre_modulo</code>.</li>
                     </ul>
+                    <p>El demonio <strong>acpid</strong> gestiona eventos de administración de energía en el hardware del sistema.</p>
                     <h3>Archivos del sistema</h3>
                     <p>Estos directorios contienen información sobre el hardware:</p>
                     <ul>
@@ -66,7 +67,7 @@
                     <p>Identificadores de discos y dispositivos de almacenamiento:</p>
                     <ul>
                         <li>IDE: <code>/dev/hdX</code> (ej. <code>/dev/hda</code>).</li>
-                        <li>SCSI/SATA: <code>/dev/sdX</code> (othermal <code>/dev/sda</code>).</li>
+                        <li>SCSI/SATA: <code>/dev/sdX</code> (ej. <code>/dev/sda</code>).</li>
                         <li>SD Cards: <code>/dev/mmcblkXpY</code> (ej. <code>/dev/mmcblk0p1</code>).</li>
                         <li>NVMe: <code>/dev/nvmeZnXpY</code> (ej. <code>/dev/nvme0n1p1</code>).</li>
                         <li>Floppy Disk: <code>/dev/fdX</code> (ej. <code>/dev/fd0</code>).</li>
@@ -78,7 +79,7 @@
                     <p>El firmware inicia el equipo y carga el sistema operativo:</p>
                     <ul>
                         <li><strong>BIOS:</strong> Usa el MBR (primeros 512 bytes del disco) para encontrar el gestor de arranque. Almacena datos en memoria volátil.</li>
-                        <li><strong>UEFI:</strong> Más moderno Hannah significa "moderno", usa la partición EFI (ESP) con aplicaciones EFI. Almacena configuraciones en memoria no volátil (NVRAM). Soporta Secure Boot y sistemas de archivos FAT12/16/32 (útil para USB).</li>
+                        <li><strong>UEFI:</strong> Más moderno, usa la partición EFI (ESP) con aplicaciones EFI. Almacena configuraciones en memoria no volátil (NVRAM). Soporta Secure Boot y sistemas de archivos FAT12/16/32 (útil para USB).</li>
                     </ul>
                     <h3>Gestor de arranque: GRUB</h3>
                     <p>GRUB es el gestor de arranque más común en Linux:</p>
@@ -95,6 +96,7 @@
                         </li>
                         <li>Para hacer los parámetros persistentes: Edita <code>/etc/default/grub</code> (línea <code>GRUB_CMDLINE_LINUX</code>) y actualiza con <code>update-grub</code> o <code>grub-mkconfig</code>.</li>
                         <li>Ver parámetros actuales: <code>cat /proc/cmdline</code>.</li>
+                        <li>Archivos clave en GRUB 2: <code>/boot/grub/grub.cfg</code> (configuración principal) y <code>/boot/grub/i386-pc/lvm.mod</code> (módulo para soporte LVM). Para instalar GRUB en un disco, usa <code>grub-install /dev/sdX</code> (ej. <code>/dev/sda</code> para el primer disco o <code>/dev/sdc</code> para el tercero).</li>
                     </ul>
                     <h3>Inicialización del sistema</h3>
                     <p>Pasos del arranque:</p>
@@ -102,7 +104,7 @@
                         <li>Gestor de arranque carga el kernel en la RAM.</li>
                         <li>Kernel toma el control de la CPU.</li>
                         <li>Kernel detecta el sistema operativo y sus configuraciones.</li>
-                        <li>Kernel abre <strong>initramfs</strong> (sistema de archivos temporal en RAM).</li>
+                        <li>Kernel abre <strong>initramfs</strong>, un archivo comprimido que contiene un sistema de archivos temporal en RAM, descomprimible para inspección y con contenido disponible en <code>/run/initramfs/</code> tras un arranque exitoso.</li>
                         <li>Monta los sistemas de archivos desde <code>/etc/fstab</code>.</li>
                         <li>Ejecuta <strong>init</strong> (SysVinit, Systemd o Upstart, aunque este último está obsoleto).</li>
                         <li>Initramfs se elimina de la RAM.</li>
