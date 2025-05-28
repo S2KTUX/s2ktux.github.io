@@ -84,18 +84,19 @@
                             Udev es un demonio que gestiona los dispositivos durante el arranque del sistema operativo (coldplugs) y los que se conectan una vez el sistema ya está iniciado (hotplug). Cuando se detectan nuevos, udev busca reglas en <strong>/etc/udev/rules.d/.</strong>
                         </li>
                     </ul>
+                    <p>Para la gestión de eventos de energía, el demonio <strong>acpid</strong> maneja las interacciones relacionadas con la administración de energía en el hardware del sistema.</p>
                 </section>
                 <section id="almacenamiento">
                     <h2>Dispositivos de almacenamiento</h2>
-                    <p>En Linux, los dispositivos de almacenamiento se llaman dispositivos de bloques y cada dispositivo se identifica con un archivo, de la siguiente manera:</p>
+                    <p>En Linux, los dispositivos de almacenamiento se denominan dispositivos de bloques y cada dispositivo se identifica con un archivo, de la siguiente manera:</p>
                     <ul>
                         <li>Canales IDE: <code>/dev/hdX</code></li>
-                        <li>Floppy Disk: <code>/dev/dfX</code></li>
-                        <li>Canales SCSI: <code>/dev/sdX</code></li>
-                        <li>Canales SD Cards: <code>/dev/mmcblkXpY</code></li>
-                        <li>Canales NVME: <code>/dev/nvmeZnXpY</code></li>
+                        <li>Disquetes (Floppy Disk): <code>/dev/fdX</code></li>
+                        <li>Canales SCSI/SATA: <code>/dev/sdX</code></li>
+                        <li>Tarjetas SD: <code>/dev/mmcblkXpy</code></li>
+                        <li>Canales NVMe: <code>/dev/nvmeZnXpY</code></li>
                     </ul>
-                    <p><strong>Z</strong> representa el puerto PCI Express, <strong>X</strong> representa el disco e <strong>Y</strong> la partición.</p>
+                    <p>En los nombres de dispositivos, <strong>Z</strong> representa el controlador NVMe, <strong>X</strong> identifica el disco y <strong>Y</strong> indica la partición.</p>
                 </section>
             </div>
         </div>
