@@ -51,7 +51,7 @@
                 </section>
                 <section id="ubicacion-cargador-arranque">
                     <h2>¿Dónde se ubica el cargador de arranque?</h2>
-                    <p>Historicamente se particionaba con MBR. El <strong>MBR</strong> es el primer sector de 512 bytes del disco. Tiene limitaciones como máximo 4 particiones primarias y discos de hasta 2TB. Contiene una tabla con las particiones del disco y el código de arranque. Este código de arranque se carga, ejecuta y pasa a un cargador de arranque secundario ubicado en un espacio de 32 KB entre el MBR y la primera partición.</p>
+                    <p>Históricamente se particionaba con MBR. El <strong>MBR</strong> es el primer sector de 512 bytes del disco. Tiene limitaciones como máximo 4 particiones primarias y discos de hasta 2TB. Contiene una tabla con las particiones del disco y el código de arranque. Este código de arranque se carga, ejecuta y pasa a un cargador de arranque secundario ubicado en un espacio de 32 KB entre el MBR y la primera partición.</p>
                     <p>Por otro lado, los discos con particiones <strong>GPT</strong> solucionan las limitaciones de MBR y se pueden usar en BIOS o UEFI:</p>
                     <ul>
                         <li><strong>BIOS:</strong> La segunda parte de GRUB se almacena en una partición especial de arranque BIOS.</li>
@@ -66,7 +66,7 @@
                         <li><strong>Mapa del sistema:</strong> <code>system.map-version</code>. Tabla que asocia nombres de símbolos (como variables) con sus posiciones en memoria.</li>
                         <li><strong>Kernel de Linux:</strong> <code>linux-version</code> (o <code>linuz</code> si está comprimido). Núcleo del sistema operativo.</li>
                         <li><strong>Disco RAM inicial:</strong> <code>initrd.img-version</code>. Sistema de archivos raíz mínimo cargado en RAM, con utilidades y módulos para montar el sistema de archivos raíz real.</li>
-                        <li><strong>Archivos del cargador de arranque:</strong> En <code>/boot/grub</code> que incluye: <code>menu.lst</code> (GRUB Legacy) o <code>grub.cfg</code> (GRUB 2), módulos <code>i386-pc</code>, etc...</li>
+                        <li><strong>Archivos del cargador de arranque:</strong> En <code>/boot/grub</code>, que incluye: <code>menu.lst</code> (GRUB Legacy), <code>grub.cfg</code> (GRUB 2), y módulos como <code>/boot/grub/i386-pc/lvm.mod</code> para soporte de LVM.</li>
                     </ul>
                 </section>
                 <section id="grub2">
