@@ -37,19 +37,18 @@
                     <li><a href="#sistemas-archivos">Creación de sistemas de archivos</a></li>
                     <li><a href="#parted">Administrar particiones con Parted</a></li>
                     <li><a href="#swap">Particiones y archivos de intercambio (SWAP)</a></li>
-                    <li><a href="#preguntas-examen">Preguntas de Examen</a></li>
                 </ul>
             </div>
             <div class="content">
-                <p>Antes de usar un disco en Linux, debes estar particionado. Una partición es una división lógica del disco físico, y la información sobre estas se guarda en una tabla de particiones. En Linux, las particiones se identifican como <code>/dev/sda1</code>, <code>/dev/sda2</code>, etc., a diferencia de Windows que usa letras como C: o D:.</p>
+                <p>Antes de usar un disco en Linux, debe estar particionado. Una partición es una división lógica del disco físico, y la información sobre estas se guarda en una tabla de particiones. En Linux, las particiones se identifican como <code>/dev/sda1</code>, <code>/dev/sda2</code>, etc., a diferencia de Windows que usa letras como C: o D:.</p>
                 <section id="mbr-gpt">
                     <h2>MBR y GPT</h2>
                     <p>Existen dos tipos principales de tablas de particiones:</p>
                     <ul>
                         <li><strong>MBR (Master Boot Record):</strong> Almacena la tabla en el primer sector del disco (sector de arranque), donde Linux instala GRUB. Tiene limitaciones:<br>
-                            - Máximo 2TB por partición.<br>
+                            - Máximo 2.2 TB por partición debido a su direccionamiento de 32 bits.<br>
                             - Máximo 4 particiones primarias.</li>
-                        <li><strong>GPT (GUID Partition Table):</strong> Soluciona las limitaciones de MBR y es común en sistemas modernos. Soporta discos más grandes y más particiones.</li>
+                        <li><strong>GPT (GUID Partition Table):</strong> Soluciona las limitaciones de MBR y es común en sistemas modernos. Soporta discos más grandes, con tamaños de partición de hasta 9.4 zettabytes gracias a su direccionamiento de 64 bits, y permite hasta 128 particiones por defecto (ampliable con configuración).</li>
                     </ul>
                     <p><strong>Herramientas para gestionar particiones:</strong></p>
                     <ul>
@@ -63,10 +62,11 @@
                             - <code>s</code>: Reorganiza el número de particiones.<br>
                             - <code>r</code>: Accede al menú de recuperación (ej. convertir MBR a GPT).<br>
                     </ul>
+                    <p>En <code>/etc/fstab</code>, las particiones se pueden identificar usando <code>LABEL</code> (un nombre legible asignado con herramientas como <code>e2label</code>) o <code>UUID</code> (un identificador único asignado al sistema de archivos). Estos métodos son más confiables que los nombres de dispositivos (por ejemplo, <code>/dev/sda1</code>) porque los nombres de dispositivos pueden cambiar entre reinicios.</p>
                 </section>
                 <section id="sistemas-archivos">
                     <h2>Creación de sistemas de archivos</h2>
-                    <p>Después de crear una partición, se debe formatear con un filesystem :</p>
+                    <p>Después de crear una partición, se debe formatear con un sistema de archivos. Cuando se ejecuta <code>mkfs</code> con solo el nombre del dispositivo de bloque (por ejemplo, <code>mkfs /dev/sda1</code>), se crea por defecto un sistema de archivos <code>ext2</code>, ya que es el tipo predeterminado en la mayoría de las distribuciones de Linux, a menos que se especifique otro tipo con la opción <code>-t</code> (por ejemplo, <code>mkfs -t ext4</code>).</p>
                     <ul>
                         <li><strong>ext (ext2, ext3, ext4):</strong> Usa <code>mkfs.ext4 /dev/sda1</code> o <code>mke2fs -t ext4 /dev/sda1</code>. Opciones:<br>
                             - <code>-t</code>: Indica el tipo de partición.<br>
@@ -74,20 +74,22 @@
                             - <code>-L etiqueta</code>: Asigna una etiqueta.<br>
                             - <code>-v</code>: Modo detallado.<br>
                             - <code>-n</code>: Simula la creación.<br>
+                            Por defecto, los sistemas de archivos ext4 reservan el 5% del espacio del disco para el usuario root, lo que evita que el sistema de archivos se llene por completo y cause inestabilidad. Este espacio reservado se puede modificar usando <code>tune2fs -m</code> (por ejemplo, <code>tune2fs -m 2 /dev/sda1</code> para establecerlo en 2%). Además, el comando <code>tune2fs -i 200 /dev/sda1</code> configura un intervalo de 200 días entre verificaciones forzadas del sistema de archivos ext3 durante el arranque. Los sistemas de archivos <code>ext2</code> y <code>ext3</code> preasignan un número fijo de inodos al crear el sistema de archivos, lo que puede limitar la cantidad de archivos que se pueden almacenar, a diferencia de <code>ext4</code> y <code>XFS</code>, que asignan inodos dinámicamente.</li>
                         <li><strong>xfs:</strong> Usa <code>mkfs.xfs /dev/sda1</code>. Necesita el paquete <code>xfsprogs</code>. Opciones:<br>
                             - <code>-N</code>: Simula la creación.<br>
                             - <code>-l logdev=/dev/sda2</code>: Usa una partición para el journal.<br>
+                            Para corregir inconsistencias en un sistema de archivos XFS, como las causadas por un corte de energía, se utiliza <code>xfs_repair /dev/sda3</code>. Este comando escanea y repara errores, pero el sistema de archivos debe estar desmontado.</li>
                         <li><strong>FAT/vFAT:</strong> Para USBs. Usa <code>mkfs.vfat -F 32 /dev/sda1</code>.<br>
                         <li><strong>btrfs:</strong> Sistema moderno (copy-on-write). Usa <code>mkfs.btrfs /dev/sda1</code> y el paquete <code>btrfs-progs</code>.<br>
                             - Crear con múltiples discos: <code>mkfs.btrfs -d single -m single /dev/sda /dev/sdb</code>.<br>
                             - Subvolúmenes: <code>btrfs subvolume create /mnt/disco/BKUP</code>.<br>
-                            - Montar subvolúmenes: <code>mount -t btrfs -o subvol=BKUP /dev/sda1 /mnt/backup (donde BKUP es el subvolumen que hemos creado y /mnt/backup es el destino).</code>.<br>
+                            - Montar subvolúmenes: <code>mount -t btrfs -o subvol=BKUP /dev/sda1 /mnt/backup</code> (donde BKUP es el subvolumen creado y <code>/mnt/backup</code> es el destino).<br>
                             - Snapshots: <code>btrfs subvolume snapshot /mnt/BKUP /home/sysriser</code>. Usa <code>-r</code> para hacerlos de solo lectura.<br>
                     </ul>
                 </section>
                 <section id="parted">
                     <h2>Administrar particiones con Parted</h2>
-                    <p><code>parted</code> es una herramienta para gestionar particiones (crear, eliminar, redimensionar, etc.). Se entra con <code>parted</code>. Algunos comandos son : </p>
+                    <p><code>parted</code> es una herramienta para gestionar particiones (crear, eliminar, redimensionar, etc.). Se entra con <code>parted</code>. Algunos comandos son:</p>
                     <ul>
                         <li><code>select /dev/sda</code>: Elige un disco.</li>
                         <li><code>print</code>: Muestra la tabla de particiones.</li>
@@ -104,17 +106,17 @@
                 </section>
                 <section id="swap">
                     <h2>Particiones y archivos de intercambio (SWAP)</h2>
-                    <p>El espacio de intercambio (SWAP) permite a Linux mover páginas de la RAM al disco cuando es necesario.</p>
+                    <p>El espacio de intercambio (SWAP) permite a Linux mover páginas de la RAM al disco cuando es necesario. El tipo de partición para espacios de intercambio se identifica con el código <code>82</code> (Linux swap) en la tabla de particiones, que se puede establecer usando herramientas como <code>fdisk</code> o <code>gdisk</code>.</p>
                     <ul>
-                        <li><strong>Crear partición SWAP. Para crear una partición SWAP :</strong><br>
+                        <li><strong>Crear partición SWAP:</strong><br>
                             1. Usamos <code>mkswap /dev/sda2</code> para formatear.<br>
-                            2. Activamos con <code>swapon /dev/sda2</code> (podemos desactivar con <code>swapoff</code>) <br>
+                            2. Activamos con <code>swapon /dev/sda2</code> (podemos desactivar con <code>swapoff</code>).<br>
                         <li><strong>Para crear archivo SWAP:</strong><br>
-                            1. Crea un archivo con dd : <code>dd if=/dev/zero of=/swapfile bs=1M count=1024</code> (1GB).<br>
+                            1. Crea un archivo con <code>dd</code>: <code>dd if=/dev/zero of=/swapfile bs=1M count=1024</code> (1GB).<br>
                             2. Formateamos el archivo con <code>mkswap /swapfile</code>.<br>
                             3. Activamos el archivo con <code>swapon /swapfile</code>.
                     </ul>
-                    <p>Podriamos ver las particiones o fichero que tenemos con swapon, por ejemplo : </p>
+                    <p>Podemos ver las particiones o ficheros de intercambio con <code>swapon</code>, por ejemplo:</p>
                     <pre>
                             root@zero:~# swapon
                             NAME      TYPE       SIZE USED PRIO
@@ -122,105 +124,6 @@
                             /myswap   file      1024M   0B   -3
                             root@zero:~#
                     </pre>
-                </section>
-                <section id="preguntas-examen">
-                    <h2>Preguntas de Examen</h2>
-                    <p>A continuación, se presentan preguntas de examen relacionadas con la creación de particiones y sistemas de archivos, junto con sus respuestas y explicaciones:</p>
-                    <h3>Pregunta 1</h3>
-                    <p><strong>¿Qué tipo de sistema de archivos se crea al ejecutar <code>mkfs</code> con solo el nombre del dispositivo de bloque y sin parámetros adicionales?</strong></p>
-                    <ul>
-                        <li>A. XFS</li>
-                        <li>B. VFAT</li>
-                        <li>C. ext2</li>
-                        <li>D. ext3</li>
-                        <li>E. ext4</li>
-                    </ul>
-                    <p><strong>Respuesta Correcta:</strong> C. ext2</p>
-                    <p><strong>Explicación:</strong> Cuando se ejecuta <code>mkfs</code> con solo el nombre del dispositivo de bloque (por ejemplo, <code>mkfs /dev/sda1</code>), se crea por defecto un sistema de archivos <code>ext2</code>. Esto ocurre porque <code>ext2</code> es el tipo de sistema de archivos predeterminado en la mayoría de las distribuciones de Linux, a menos que se especifique otro tipo con la opción <code>-t</code> (por ejemplo, <code>mkfs -t ext4</code>).</p>
-
-                    <h3>Pregunta 3</h3>
-                    <p><strong>¿Cuál de los siguientes comandos cambia el número de días antes de que el sistema de archivos ext3 en <code>/dev/sda1</code> deba realizar una verificación completa del sistema de archivos durante el arranque?</strong></p>
-                    <ul>
-                        <li>A. tune2fs -d 200 /dev/sda1</li>
-                        <li>B. tune2fs -i 200 /dev/sda1</li>
-                        <li>C. tune2fs -c 200 /dev/sda1</li>
-                        <li>D. tune2fs -n 200 /dev/sda1</li>
-                        <li>E. tune2fs --days 200 /dev/sda1</li>
-                    </ul>
-                    <p><strong>Respuesta Correcta:</strong> B. tune2fs -i 200 /dev/sda1</p>
-                    <p><strong>Explicación:</strong> El comando <code>tune2fs</code> se utiliza para ajustar parámetros de sistemas de archivos ext2/ext3/ext4. La opción <code>-i</code> establece el intervalo máximo de tiempo (en días) entre verificaciones forzadas del sistema de archivos. Por ejemplo, <code>tune2fs -i 200 /dev/sda1</code> configura un intervalo de 200 días para el sistema de archivos en <code>/dev/sda1</code>.</p>
-
-                    <h3>Pregunta 4</h3>
-                    <p><strong>¿Cuál es el porcentaje predeterminado de espacio reservado para el usuario root en los nuevos sistemas de archivos ext4?</strong></p>
-                    <ul>
-                        <li>A. 10%</li>
-                        <li>B. 3%</li>
-                        <li>C. 15%</li>
-                        <li>D. 0%</li>
-                        <li>E. 5%</li>
-                    </ul>
-                    <p><strong>Respuesta Correcta:</strong> E. 5%</p>
-                    <p><strong>Explicación:</strong> Por defecto, los sistemas de archivos ext4 reservan el 5% del espacio del disco para el usuario root. Esto evita que el sistema de archivos se llene por completo, lo que podría causar inestabilidad en el sistema. Este espacio reservado se puede modificar usando <code>tune2fs -m</code> (por ejemplo, <code>tune2fs -m 2 /dev/sda1</code> para establecerlo en 2%).</p>
-
-                    <h3>Pregunta 30</h3>
-                    <p><strong>¿Cuál de los siguientes tipos de partición se utiliza para los espacios de intercambio (swap) de Linux al particionar discos duros?</strong></p>
-                    <ul>
-                        <li>A. 7</li>
-                        <li>B. 82</li>
-                        <li>C. 83</li>
-                        <li>D. 8e</li>
-                        <li>E. fd</li>
-                    </ul>
-                    <p><strong>Respuesta Correcta:</strong> B. 82</p>
-                    <p><strong>Explicación:</strong> En Linux, el tipo de partición para espacios de intercambio (swap) se identifica con el código de tipo <code>82</code> (Linux swap) en la tabla de particiones. Este tipo se puede establecer usando herramientas como <code>fdisk</code> o <code>gdisk</code> al crear una partición de intercambio, que luego se formatea con <code>mkswap</code>.</p>
-
-                    <h3>Pregunta 61</h3>
-                    <p><strong>En lugar de especificar un dispositivo explícito en <code>/etc/fstab</code> para montar, ¿qué otras opciones se pueden usar para identificar la partición deseada?</strong></p>
-                    <ul>
-                        <li>A. LABEL</li>
-                        <li>B. ID</li>
-                        <li>C. FIND</li>
-                        <li>D. NAME</li>
-                        <li>E. UUID</li>
-                    </ul>
-                    <p><strong>Respuesta Correcta:</strong> A. LABEL, E. UUID</p>
-                    <p><strong>Explicación:</strong> En <code>/etc/fstab</code>, las particiones se pueden identificar usando <code>LABEL</code> (un nombre legible asignado con herramientas como <code>e2label</code>) o <code>UUID</code> (un identificador único asignado al sistema de archivos). Estos métodos son más confiables que los nombres de dispositivos (por ejemplo, <code>/dev/sda1</code>) porque los nombres de dispositivos pueden cambiar entre reinicios.</p>
-
-                    <h3>Pregunta 74</h3>
-                    <p><strong>¿Cuáles son las principales diferencias entre las tablas de particiones GPT y MBR en cuanto al número máximo y el tamaño de las particiones?</strong></p>
-                    <ul>
-                        <li>A. MBR puede manejar tamaños de partición de hasta 4 TB, mientras que GPT soporta tamaños de hasta 128 ZB.</li>
-                        <li>B. Por defecto, GPT puede gestionar hasta 128 particiones, mientras que MBR solo soporta cuatro particiones primarias.</li>
-                        <li>C. Por defecto, GPT puede gestionar hasta 64 particiones, mientras que MBR solo soporta 16 particiones primarias.</li>
-                        <li>D. MBR puede manejar tamaños de partición de hasta 2.2 TB, mientras que GPT soporta tamaños de hasta 9.4 ZB.</li>
-                        <li>E. Tanto GPT como MBR soportan hasta cuatro particiones primarias, cada una con hasta 4096 TB.</li>
-                    </ul>
-                    <p><strong>Respuesta Correcta:</strong> B, D</p>
-                    <p><strong>Explicación:</strong> MBR está limitado a 4 particiones primarias y un tamaño máximo de partición de 2.2 terabytes debido a su direccionamiento de 32 bits. GPT, que usa direccionamiento de 64 bits, soporta hasta 128 particiones por defecto (ampliable con configuración) y tamaños de partición de hasta 9.4 zettabytes, lo que lo hace adecuado para discos de gran capacidad modernos.</p>
-
-                    <h3>Pregunta 79</h3>
-                    <p><strong>¿Cuáles de los siguientes sistemas de archivos de Linux preasignan un número fijo de inodos al crear un nuevo sistema de archivos en lugar de generarlos según sea necesario?</strong></p>
-                    <ul>
-                        <li>A. JFS</li>
-                        <li>B. ext3</li>
-                        <li>C. XFS</li>
-                        <li>D. ext2</li>
-                        <li>E. procfs</li>
-                    </ul>
-                    <p><strong>Respuesta Correcta:</strong> B. ext3, D. ext2</p>
-                    <p><strong>Explicación:</strong> Los sistemas de archivos <code>ext2</code> y <code>ext3</code> preasignan un número fijo de inodos al crear el sistema de archivos, lo que puede limitar la cantidad de archivos que se pueden almacenar. En cambio, sistemas de archivos modernos como <code>ext4</code> y <code>XFS</code> asignan inodos dinámicamente según sea necesario, ofreciendo mayor flexibilidad.</p>
-
-                    <h3>Pregunta 83</h3>
-                    <p><strong>Tras un corte de energía, el sistema de archivos XFS de <code>/dev/sda3</code> está inconsistente. ¿Cómo se pueden corregir los errores existentes en el sistema de archivos?</strong></p>
-                    <ul>
-                        <li>A. Usando <code>mount -f</code> para forzar el montaje del sistema de archivos.</li>
-                        <li>B. Ejecutando <code>xfsck</code> en el sistema de archivos.</li>
-                        <li>C. Montando el sistema de archivos con la opción <code>xfs_repair</code>.</li>
-                        <li>D. Ejecutando <code>xfsadmin repair</code> en el sistema de archivos.</li>
-                        <li>E. Ejecutando <code>xfs_repair</code> en el sistema de archivos.</li>
-                    </ul>
-                    <p><strong>Respuesta Correcta:</strong> E. xfs_repair /dev/sda3</p>
-                    <p><strong>Explicación:</strong> El comando <code>xfs_repair</code> se utiliza para verificar y reparar inconsistencias en un sistema de archivos XFS. Ejecutar <code>xfs_repair /dev/sda3</code> escanea el sistema de archivos en <code>/dev/sda3</code> y corrige errores, como los causados por un corte de energía. El sistema de archivos debe estar desmontado antes de ejecutar este comando.</p>
                 </section>
             </div>
         </div>
