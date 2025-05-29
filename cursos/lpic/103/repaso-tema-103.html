@@ -203,8 +203,8 @@
                         </li>
                         <li><strong>Multiplexores</strong>:
                             <ul>
-                                <li><code>Screen (Control + A) </code></li>
-                                <li><code>Tmux (Control + B)</code></li>
+                                <li><code>screen -S sesion</code>: Crea una sesión de <code>screen</code> (usa <code>Ctrl+a d</code> para desconectar).</li>
+                                <li><code>tmux new -s sesion</code>: Crea una sesión de <code>tmux</code> (usa <code>Ctrl+b d</code> para desconectar).</li>
                             </ul>
                         </li>
                     </ul>
@@ -232,12 +232,12 @@
                                 <li><strong><code>$</code></strong>: Final de línea.</li>
                             </ul>
                         </li>
-                        <li><strong>Corchetes</strong>: <code>[a-z]</code>, <code>[[:digit:]]</code>.</li>
+                        <li><strong>Corchetes</strong>: <code>[a-z]</code>, <strong><code>[[:digit:]]</code></strong>.</li>
                         <li><strong>Cuantificadores</strong>: <code>*</code> (0 o más), <code>+</code> (1 o más, con <code>egrep</code>).</li>
                         <li><strong>grep</strong>:
                             <ul>
                                 <li><code>grep -i "hola" file.txt</code>: Ignora mayúsculas.</li>
-                                <li><code>egrep "Hola|Adios"</code>: Ramas.</li>
+                                <li><code>egrep "Hola|Adios" file.txt</code>: Ramas.</li>
                             </ul>
                         </li>
                         <li><strong>find</strong>: <code>find / -regex ".*/\..*"</code>.</li>
@@ -247,12 +247,28 @@
                 <section id="103-8">
                     <h2>103.8 Edición básica de archivos</h2>
                     <ul>
-                        <li><strong>vi</strong>: Modos: normal, inserción (<code>i</code> para entrar, <code>Esc</code> para salir).</li>
+                        <li><strong>vi</strong>:
+                            <ul>
+                                <li><code>vi archivo.txt</code>: Abre un archivo en vi.</li>
+                                <li>Modos:
+                                    <ul>
+                                        <li>Normal: Navegación y comandos.</li>
+                                        <li>Inserción: Escribir texto (<code>i</code> para entrar, <code>Esc</code> para salir).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </li>
                         <li><strong>Comandos vi</strong>:
                             <ul>
                                 <li><code>h j k l</code>: Moverse.</li>
                                 <li><code>yy</code>, <code>p</code>: Copiar y pegar.</li>
                                 <li><code>:w</code>, <code>:q</code>: Guardar y salir.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Editores alternativos</strong>:
+                            <ul>
+                                <li><code>nano archivo.txt</code>: Editor simple (<code>Ctrl+O</code> guardar, <code>Ctrl+X</code> salir).</li>
+                                <li><code>emacs archivo.txt</code>: Editor avanzado (<code>Ctrl+X Ctrl+S</code> guardar, <code>Ctrl+X Ctrl+C</code> salir).</li>
                             </ul>
                         </li>
                     </ul>
