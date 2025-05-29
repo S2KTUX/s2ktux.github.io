@@ -106,6 +106,8 @@
                             - <code>-e comportamiento</code>: Define la acción ante errores (opciones: <code>continue</code>, <code>remount-ro</code>, <code>panic</code>).<br>
                             <em>Ejemplo:</em> <code>tune2fs -c 10 /dev/sda1</code> establece 10 montajes antes de comprobar.</li>
                     </ul>
+                    <p>El porcentaje predeterminado de espacio reservado para el usuario root en nuevos sistemas de archivos ext4 es del 5%.</p>
+                    <p>Para cambiar el número de días antes de que un sistema de archivos ext3 tenga que pasar por una verificación completa durante el arranque, se usa el comando <code>tune2fs -c 200 /dev/sda1</code>.</p>
                 </section>
                 <section id="mantenimiento-xfs">
                     <h2>Mantenimiento de XFS</h2>
@@ -121,6 +123,7 @@
                         <li><code>xfs_db</code>: Depura y analiza sistemas de archivos XFS.</li>
                         <li><code>xfs_fsr</code>: Desfragmenta sistemas de archivos XFS.</li>
                     </ul>
+                    <p>Para reparar un sistema de archivos XFS inconsistente después de un corte de energía, se debe ejecutar <code>xfs_repair</code> en el sistema de archivos.</p>
                 </section>
             </div>
         </div>
