@@ -45,12 +45,15 @@
                         <li><strong>Enlaces duros:</strong><br>
                             - Apuntan al mismo inodo (identificador único de los datos en el disco).<br>
                             - Si se borra el archivo original, el enlace duro sigue funcionando porque los datos permanecen.<br>
-                            - Solo se pueden crear dentro del mismo sistema de archivos.</li>
+                            - Solo se pueden crear dentro del mismo sistema de archivos.<br>
+                            - Incrementan el contador de enlaces del inodo original.</li>
                         <li><strong>Enlaces simbólicos (o blandos):</strong><br>
                             - Son como un "atajo" que apunta a la ruta de otro archivo o directorio.<br>
                             - Si se borra el archivo original, el enlace se rompe.<br>
-                            - Pueden crearse entre diferentes sistemas de archivos.</li>
+                            - Pueden crearse entre diferentes sistemas de archivos.<br>
+                            - No afectan al contador de enlaces del archivo original.</li>
                     </ul>
+                    <p>Una limitación importante de los enlaces duros es que no pueden apuntar a archivos en diferentes sistemas de archivos, ya que dependen del mismo inodo que solo existe dentro de un único sistema de archivos.</p>
                 </section>
                 <section id="gestion-enlaces">
                     <h2>Gestión de enlaces</h2>
@@ -59,6 +62,7 @@
                         <li><strong>Enlaces duros:</strong><br>
                             - Crear: <code>ln archivo enlace</code>.<br>
                             - Verificar: Usa <code>ls -li</code> para ver el inodo (el primer número debe ser el mismo para los enlaces duros).<br>
+                            - Para crear un nuevo archivo con el mismo inodo que otro: <code>ln archivo_origen archivo_destino</code>.<br>
                             <em>Ejemplo:</em><br>
                             <pre>
 $ ls -li
@@ -77,6 +81,7 @@ lrwxrwxrwx 1 user user   10 Apr 27 12:00 enlace_simbolico.txt -> archivo.txt
                             </pre>
                             El enlace simbólico apunta a <code>archivo.txt</code>.</li>
                     </ul>
+                    <p>Cuando se crea un enlace duro, el único cambio en las propiedades del archivo original es que aumenta su contador de enlaces (visible en la segunda columna de <code>ls -l</code>). Los permisos, propietario y otras propiedades permanecen iguales en todos los enlaces duros.</p>
                 </section>
             </div>
         </div>
