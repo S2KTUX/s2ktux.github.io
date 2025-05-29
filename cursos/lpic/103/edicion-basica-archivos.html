@@ -41,10 +41,10 @@
             <div class="content">
                 <section id="modos-comandos-vi">
                     <h2>Modos y comandos básicos de vi</h2>
-                    <p><code>vi</code> es un editor de texto estándar en Linux, preinstalado en la mayoría de las distribuciones y permite editar archivos desde la terminal usando atajos de teclado. Tiene dos modos principales:</p>
+                    <p><code>vi</code> es un editor de texto estándar en Linux, preinstalado en la mayoría de las distribuciones. Para abrir un archivo, usa <code>vi archivo.txt</code>. Permite editar archivos desde la terminal usando atajos de teclado y tiene dos modos principales:</p>
                     <ul>
-                        <li><strong>Modo normal</strong>: Modo predeterminado para navegar y ejecutar comandos. Las teclas tienen funciones específicas.</li>
-                        <li><strong>Modo inserción</strong>: Para escribir texto. Presiona <code>Esc</code> para volver al modo normal.</li>
+                        <li><strong>Modo normal</strong> Modo predeterminado para navegar y ejecutar comandos. Las teclas tienen funciones específicas.</li>
+                        <li><strong>Modo inserción</strong> Para escribir texto. Presiona <code>Esc</code> para volver al modo normal.</li>
                     </ul>
                     <p><strong>Comandos en modo normal:</strong></p>
                     <ul>
@@ -84,7 +84,24 @@
                 </section>
                 <section id="editores-alternativos">
                     <h2>Editores alternativos</h2>
-                    <p>Existen editores alternativos mas sencillos que vi, como son nano y emans. Nano tiene un menú en su zona inferior con los comandos a utilizar, simplificando la edición de ficheros</p>
+                    <p>Existen editores más sencillos o alternativos a <code>vi</code>, como <code>nano</code> y <code>emacs</code>, que son comunes en Linux.</p>
+                    <ul>
+                        <li><strong><code>nano</code></strong>: Un editor simple con un menú de comandos en la parte inferior. Para abrir un archivo, usa <code>nano archivo.txt</code>.<br>
+                            <em>Comandos principales:</em>
+                            <ul>
+                                <li><code>Ctrl+O</code>: Guardar el archivo.</li>
+                                <li><code>Ctrl+X</code>: Salir del editor.</li>
+                                <li><code>Ctrl+G</code>: Mostrar ayuda.</li>
+                            </ul>
+                            <em>Ejemplo:</em> Abre un archivo con <code>nano archivo.txt</code>, edita, presiona <code>Ctrl+O</code> para guardar y <code>Ctrl+X</code> para salir.</li>
+                        <li><strong><code>emacs</code></strong>: Un editor potente y personalizable. Para abrir un archivo, usa <code>emacs archivo.txt</code>.<br>
+                            <em>Comandos principales:</em>
+                            <ul>
+                                <li><code>Ctrl+X Ctrl+S</code>: Guardar el archivo.</li>
+                                <li><code>Ctrl+X Ctrl+C</code>: Salir del editor.</li>
+                            </ul>
+                            <em>Ejemplo:</em> Abre un archivo con <code>emacs archivo.txt</code>, edita, presiona <code>Ctrl+X Ctrl+S</code> para guardar y <code>Ctrl+X Ctrl+C</code> para salir.</li>
+                    </ul>
                 </section>
             </div>
         </div>
