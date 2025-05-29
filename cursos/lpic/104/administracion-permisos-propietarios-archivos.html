@@ -50,6 +50,7 @@
                         <li>Permisos de directorios: controlan quién puede listar contenido (<code>r</code>), crear/borrar archivos dentro (<code>w</code>) o entrar al directorio (<code>x</code>).</li>
                         <li><em>Ejemplo:</em> <code>ls -l archivo.txt</code> muestra: <code>-rw-r--r-- 1 usuario grupo 1024 Apr 27 12:00 archivo.txt</code>.</li>
                     </ul>
+                    <p>El comando <code>stat</code> muestra información detallada sobre un archivo, incluyendo su número de inodo, lo que es útil para identificar archivos de forma única en el sistema.</p>
                 </section>
                 <section id="tipos-archivos">
                     <h2>Tipos de archivos</h2>
@@ -78,6 +79,7 @@
                         <li><strong>Modo numérico:</strong> Usa valores (ej. 644 para rw-r--r--). Ejemplo: <code>chmod 644 archivo</code>.</li>
                         <li><strong>Modo simbólico:</strong> Usa letras (u, g, o) y operadores (+, -, =). Ejemplo: <code>chmod u+x script.sh</code>.</li>
                     </ul>
+                    <p>El valor umask <code>0027</code> asegura que nuevos directorios puedan ser leídos, escritos y listados por su usuario propietario, leídos y listados por su grupo propietario, y no sean accesibles para los demás.</p>
                 </section>
                 <section id="propietarios-grupos">
                     <h2>Propietarios y grupos</h2>
@@ -90,6 +92,7 @@
                             Ejemplo: <code>chgrp grupo archivo</code>.</li>
                         <li><strong>Consultar grupos:</strong> Usa <code>groups usuario</code> para ver los grupos de un usuario.</li>
                     </ul>
+                    <p>Para cambiar el propietario a "dave" y el grupo a "staff" en un archivo llamado data.txt, el comando correcto es <code>chown dave:staff data.txt</code>.</p>
                 </section>
                 <section id="permisos-predeterminados">
                     <h2>Permisos predeterminados</h2>
@@ -99,6 +102,7 @@
                         <li> Para ver los permisos predeterminados en modo simbolico podemos usar <code>umask -S</code> que nos devolvería algo como <code>u=rwx,g=rx,o=rx</code>, por ejemplo</li> 
                         <li><em>Ejemplo:</em> Con <code>umask 022</code>, un nuevo archivo tendrá permisos 644 (666 - 022), y un directorio 755 (777 - 022).</li>
                     </ul>
+                    <p>El valor umask <code>0027</code> establece permisos predeterminados de <code>-rw-r-----</code> para nuevos archivos, lo que significa que el propietario tiene lectura/escritura, el grupo solo lectura, y otros ningún permiso.</p>
                 </section>
                 <section id="permisos-especiales">
                     <h2>Permisos especiales</h2>
@@ -109,6 +113,7 @@
                         <li><strong><code>Sticky bit</code> :</strong> En directorios, evita que usuarios borren o muevan archivos de otros, aunque tengan permisos de escritura. Es común en <code>/tmp</code>, donde todos pueden escribir pero solo borrar sus propios archivos. Tiene un valor octal de 1. Se muestra como <code>t</code> en el permiso de ejecución de otros (ej. <code>rwxrwxrwt</code>). Para asignarlo: <code>chmod 1755 directorio</code>.<br>
                             <em>Ejemplo:</em> <code>ls -ld /tmp</code> muestra: <code>drwxrwxrwt 10 root root 4096 Apr 27 12:00 /tmp</code> (la <code>t</code> indica el sticky bit).</li>
                     </ul>
+                    <p>Para asegurar que nuevos archivos creados en un directorio sean propiedad del grupo "sales", se debe configurar el bit SGID en el directorio con <code>chmod g+s sales</code> o <code>chmod 2775 sales</code>.</p>
                 </section>
             </div>
         </div>
