@@ -104,6 +104,8 @@
                             <em>Ejemplo:</em> <code>sed -n '/cat/p' ftu.txt</code> muestra solo las líneas de <code>ftu.txt</code> que contienen "cat".</li>    
                         <li><strong><code>sed</code></strong> (reemplazar): Sustituye texto.<br>
                             <em>Ejemplo:</em> <code>sed 's/cat/dog/' nombres.txt</code> cambia "cat" por "dog".</li>
+                        <li><strong><code>sed</code></strong> (reemplazar todas las apariciones): Sustituye todas las apariciones en el archivo.<br>
+                            <em>Ejemplo:</em> <code>sed -i 's/cat/dog/g' nombres.txt</code> reemplaza todas las apariciones de "cat" por "dog" en <code>nombres.txt</code>.</li>
                         <li><strong><code>sed</code></strong> (con backup): Reemplaza y crea un respaldo.<br>
                             <em>Ejemplo:</em> <code>sed -i.backup 's/cat/dog/' nombres.txt</code> cambia y crea <code>nombres.txt.backup</code>.</li>
                     </ul>
