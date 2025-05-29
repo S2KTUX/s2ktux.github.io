@@ -87,6 +87,8 @@
                             - <code>sync</code>/<code>async</code>: Operaciones síncronas o asíncronas.</li>
                         <li><em>Ejemplo:</em> <code>UUID=1234-5678 /mnt/datos xfs defaults 0 2</code>.</li>
                     </ul>
+                    <p>Cuando un sistema de archivos no está listado en <code>/etc/fstab</code> ni es conocido por el sistema, y se monta manualmente, systemd puede crear automáticamente una unidad de montaje basada en el montaje existente usando el comando <code>systemctl mountsync</code>.</p>
+                    <p>Para identificar particiones en <code>/etc/fstab</code> sin usar nombres de dispositivo explícitos, se pueden utilizar UUID o etiquetas (LABEL).</p>
                 </section>
                 <section id="uuid-etiquetas">
                     <h2>Uso de UUID y etiquetas</h2>
@@ -96,6 +98,7 @@
                         <li><strong>En <code>/etc/fstab</code>:</strong><br>
                             - Podríamos configurar con <code>UUID=1234-5678</code> o <code>LABEL=etiqueta</code> en el primer campo.</li>
                     </ul>
+                    <p>El comando <code>blkid</code> muestra información detallada sobre dispositivos de bloque, incluyendo UUID y etiquetas, lo que es útil para configurar <code>/etc/fstab</code>.</p>
                 </section>
                 <section id="montaje-systemd">
                     <h2>Montaje con systemd</h2>
@@ -127,6 +130,7 @@ WantedBy=multi-user.target
                             </pre>
                             Activa con <code>systemctl daemon-reload</code> y <code>systemctl start mnt-disco.automount</code>.</li>
                     </ul>
+                    <p>Para cambiar el objetivo de arranque predeterminado de systemd a multi-usuario, se utiliza el comando <code>systemctl set-default multi-user.target</code>.</p>
                 </section>
             </div>
         </div>
@@ -136,7 +140,7 @@ WantedBy=multi-user.target
             <p>SysRiser | Un lugar para aprender sistemas y redes</p>
             <div class="footer-links">
                 <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
-                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="mailto="contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
                 <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
                 <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
             </div>
