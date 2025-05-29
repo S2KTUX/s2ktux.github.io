@@ -70,29 +70,29 @@
                         <li><code>[:alpha:]</code>: Letras (a-z, A-Z).</li>
                         <li><code>[:digit:]</code>: Números (0-9).</li>
                         <li><code>[:lower:]</code>: Minúsculas (a-z).</li>
-                        <li><code>[:upper:]</code>: Mayúsculas (A-Z).</li>
-                        <li><code>[:blank:]</code>: Espacios o tabuladores.</li>
+                        <li><code>[:upper:]</code></code>: Mayúsculas (A-Z).</li>
+                        <li><code>[:blank:]</code></strong>: Espacios o tabuladores.</li>
                     </ul>
-                    <p><em>Ejemplo:</em> <code>grep "[[:digit:]]" archivo.txt</code> encuentra líneas con números.</p>
+                    <p><em>Ejemplo:</em> <code>grep -c "[[:digit:]]" archivo.txt</code> cuenta las líneas que contienen al menos un número.</p>
                 </section>
                 <section id="cuantificadores-limites">
                     <h2>Cuantificadores y límites</h2>
                     <p>Los cuantificadores indican cuántas veces se repite un carácter o patrón:</p>
                     <ul>
-                        <li><code>*</code>: 0 o más veces.<br>
+                        <li><strong><code>*</code></strong>: 0 o más veces.<br>
                             <em>Ejemplo:</em> <code>grep "ho*" archivo.txt</code> encuentra "h", "ho", "hoo", etc.</li>
-                        <li><code>+</code>: 1 o más veces (usa <code>egrep</code> o <code>grep -E</code>).<br>
+                        <li><strong><code>+</code></strong>: 1 o más veces (usa <code>egrep</code> o <code>grep -E</code>).<br>
                             <em>Ejemplo:</em> <code>egrep "ho+" archivo.txt</code> encuentra "ho", "hoo", etc.</li>
-                        <li><code>?</code>: 0 o 1 vez (usa <code>egrep</code>).<br>
+                        <li><strong><code>?</code></strong>: 0 o 1 vez (usa <code>egrep</code>).<br>
                             <em>Ejemplo:</em> <code>egrep "ho?" archivo.txt</code> encuentra "h" o "ho".</li>
                     </ul>
                     <p>Los límites especifican repeticiones exactas (usa <code>egrep</code>):</p>
                     <ul>
-                        <li><code>{N}</code>: Exactamente N veces.<br>
+                        <li><strong><code>{N}</code></strong>: Exactamente N veces.<br>
                             <em>Ejemplo:</em> <code>egrep "a{2}" archivo.txt</code> encuentra "aa".</li>
-                        <li><code>{N,}</code>: Al menos N veces.<br>
+                        <li><strong><code>{N,}</code></strong>: Al menos N veces.<br>
                             <em>Ejemplo:</em> <code>egrep "a{2,}" archivo.txt</code> encuentra "aa", "aaa", etc.</li>
-                        <li><code>{N,M}</code>: Entre N y M veces.<br>
+                        <li><strong><code>{N,M}</code></strong>: Entre N y M veces.<br>
                             <em>Ejemplo:</em> <code>egrep "a{2,3}" archivo.txt</code> encuentra "aa" o "aaa".</li>
                     </ul>
                     <p><strong>Ramas</strong> (<code>|</code>) buscan varias opciones (usa <code>egrep</code>):<br>
@@ -108,30 +108,30 @@
                             <em>Ejemplo:</em> <code>find / -regex ".*/\..*" -size +100M</code> busca archivos ocultos mayores a 100MB.</li>
                         <li><strong>Extendida (<code>-regextype posix-extended</code>)</strong>: Usa expresiones extendidas.<br>
                             <em>Ejemplo:</em> <code>find / -regextype posix-extended -iregex ".*(dejavu|liberation).*sans.*(italic|oblique).*" -type f</code> busca archivos con "dejavu" o "liberation", "sans", e "italic" u "oblique", ignorando mayúsculas/minúsculas.</li>
-                    </l>
+                    </ul>
                 </section>
                 <section id="busqueda-grep">
                     <h2>Búsqueda con grep</h2>
                     <p><code>grep</code> busca patrones en archivos de texto. Opciones útiles:</p>
                     <ul>
-                        <li><code>-c</code>: Cuenta las coincidencias.<br>
+                        <li><strong><code>-c</code></strong>: Cuenta las coincidencias.<br>
                             <em>Ejemplo:</em> <code>grep -c "Hola" archivo.txt</code> muestra el número de líneas con "Hola".</li>
-                        <li><code>-i</code>: Ignora mayúsculas/minúsculas.<br>
+                        <li><strong><code>-i</code></strong>: Ignora mayúsculas/minúsculas.<br>
                             <em>Ejemplo:</em> <code>grep -i "hola" archivo.txt</code> encuentra "Hola", "HOLA", etc.</li>
-                        <li><code>-n</code>: Muestra el número de línea.<br>
+                        <li><strong><code>-n</code></strong>: Muestra el número de línea.<br>
                             <em>Ejemplo:</em> <code>grep -n "Hola" archivo.txt</code> muestra las líneas con su número.</li>
-                        <li><code>-v</code>: Muestra líneas que NO coinciden.<br>
+                        <li><strong><code>-v</code></strong>: Muestra líneas que NO coinciden.<br>
                             <em>Ejemplo:</em> <code>grep -v "Hola" archivo.txt</code> muestra líneas sin "Hola".</li>
-                        <li><code>-H</code>: Muestra el nombre del archivo.<br>
+                        <li><strong><code>-H</code></strong>: Muestra el nombre del archivo.<br>
                             <em>Ejemplo:</em> <code>grep -H "Hola" *.txt</code> muestra el archivo donde se encontró "Hola".</li>
-                        <li><code>-r</code>: Busca recursivamente.<br>
+                        <li><strong><code>-r</code></strong>: Busca recursivamente.<br>
                             <em>Ejemplo:</em> <code>grep -r "Hola" /dir</code> busca "Hola" en todos los archivos de /dir.</li>
                     </ul>
                     <p><strong>Variantes de grep:</strong></p>
                     <ul>
-                        <li><code>egrep</code> o <code>grep -E</code>: Usa expresiones extendidas.<br>
+                        <li><strong><code>egrep</code></strong> o <code>grep -E</code>: Usa expresiones extendidas.<br>
                             <em>Ejemplo:</em> <code>egrep "Hola|Adios" archivo.txt</code>.</li>
-                        <li><code>fgrep</code> o <code>grep -F</code>: Busca texto literal, sin interpretar RE.<br>
+                        <li><strong><code>fgrep</code></strong> o <code>grep -F</code>: Busca texto literal, sin interpretar RE.<br>
                             <em>Ejemplo:</em> <code>fgrep "a.b" archivo.txt</code> busca "a.b" literalmente.</li>
                     </ul>
                 </section>
