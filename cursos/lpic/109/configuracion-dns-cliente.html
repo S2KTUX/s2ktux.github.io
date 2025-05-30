@@ -49,7 +49,7 @@
                     <h2>Cómo se buscan los nombres</h2>
                     <p>Tu equipo sigue un orden para buscar nombres. Primero mira un archivo que le dice cómo hacerlo, que se llama `/etc/nsswitch.conf`. Este archivo decide si busca en un archivo local o en un servidor DNS en internet.</p>
                     <ul>
-                        <li><strong>Tipos de DNS</strong>: DNS tiene diferentes tipos o "clases". La más común es IN, que usamos para internet normal con direcciones como las de las páginas web. Hay otros tipos, como CH y HS, son muy viejos o poco usados. </li>
+                        <li><strong>Tipos de DNS</strong>: DNS tiene diferentes tipos o "clases". La más común es IN, que usamos para internet normal con direcciones como las de las páginas web. Hay otros tipos, como CH y HS, son muy viejos o poco usados.</li>
                         <li><strong>Orden de búsqueda</strong>: En `/etc/nsswitch.conf`, una línea como `hosts: files dns` significa que primero busca en un archivo local y, si no lo encuentra, pregunta a un servidor DNS. Puedes cambiar este orden si quieres, por ejemplo, a `hosts: dns files`.</li>
                     </ul>
                 </section>
@@ -59,7 +59,7 @@
                     <p>Hay tres archivos principales que tu equipo usa para encontrar nombres de páginas web.</p>
                     <ul>
                         <li><strong>/etc/hosts</strong>: Aquí mapeas nombres y sus direcciones IP directamente, por ejemplo, `127.0.0.1 localhost`. Sirve para cosas locales, como pruebas, y también puede incluir direcciones IPv6, como `::1 localhost`.</li>
-                        <li><strong>/etc/resolv.conf</strong>: Este archivo le dice a tu equipo a qué servidores DNS preguntar si no encuentra un nombre localmente. Por ejemplo, `nameserver 8.8.8.8` usa el servidor de Google, y `search lpi.org` añade ese dominio a nombres cortos, como convertir "aprendizaje" en "aprendizaje.lpi.org". Puedes poner hasta tres servidores.</li>
+                        <li><strong>/etc/resolv.conf</strong>: Especifica los servidores DNS (ej. `nameserver 8.8.8.8` para Google) y dominios de búsqueda (ej. `search lpi.org`) para resolver nombres. Puede listar hasta tres servidores para consultas DNS.</li>
                         <li><strong>/etc/nsswitch.conf</strong>: Define el orden y métodos de resolución. Por ejemplo, una línea como `hosts: files dns` le dice que mire primero en `/etc/hosts` y luego en DNS. También puede tener reglas especiales para manejar errores.</li>
                     </ul>
                 </section>
@@ -68,9 +68,9 @@
                     <h2>Herramientas útiles</h2>
                     <p>Estas herramientas te ayudan a buscar nombres o solucionar problemas cuando no puedes conectarte a una página.</p>
                     <ul>
-                        <li><strong>host</strong>: Es una herramienta sencilla para preguntar por un nombre. Por ejemplo, si escribes `host google.com`, te dice la dirección IP, como `142.250.190.14`, y otros datos, como los servidores de correo.</li>
-                        <li><strong>dig</strong>: Es como `host`, pero te da mucha más información, perfecta para encontrar problemas. Si escribes `dig google.com`, te muestra la dirección IP, cuánto tiempo es válida esa información y los servidores DNS que usó.</li>
-                        <li><strong>getent</strong>: Esta herramienta busca nombres siguiendo las reglas de `/etc/nsswitch.conf`. Por ejemplo, `getent hosts google.com` te muestra la dirección IP que tu computadora encuentra, ya sea en `/etc/hosts` o preguntando a un servidor DNS. Puedes decirle dónde buscar con `-s`, como `getent -s files hosts google.com` para mirar solo en `/etc/hosts`.</li>
+                        <li><strong>host</strong>: Realiza consultas DNS simples, devolviendo direcciones IP y registros como servidores de correo. Por ejemplo, `host google.com` muestra `142.250.190.14`.</li>
+                        <li><strong>dig</strong>: Consulta servidores DNS y proporciona información detallada, incluyendo IP, TTL y servidores utilizados, ideal para depuración. Ejemplo: `dig google.com`.</li>
+                        <li><strong>getent</strong>: Busca nombres siguiendo las reglas de `/etc/nsswitch.conf`. Por ejemplo, `getent hosts google.com` muestra la dirección IP encontrada, ya sea en `/etc/hosts` o vía DNS. Usa `-s` para especificar la fuente, como `getent -s files hosts google.com`.</li>
                     </ul>
                 </section>
             </div>
