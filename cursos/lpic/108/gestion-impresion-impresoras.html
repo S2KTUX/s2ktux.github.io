@@ -43,7 +43,7 @@
                 <section id="cups-servicio">
                     <h2>Servicio CUPS y su configuración</h2>
                     <p>CUPS es un sistema de impresión común en Linux, y se puede instalar fácilmente en distribuciones como Debian con `sudo apt install cups` o en Fedora con `sudo dnf install cups` seguido de `sudo systemctl start cups.service`. Para verificar que funciona, usa `systemctl status cups.service`.</p>
-                    <p>La configuración principal se encuentra en el directorio `/etc/cups/`, que incluye archivos clave como:</p>
+                    <p>La configuración principal se encuentra en el directorio `/etc/cups/`, que centraliza los archivos de configuración del sistema de impresión, incluyendo archivos clave como:</p>
                     <ul>
                         <li><strong>/etc/cups/cupsd.conf</strong>: Configura el servicio, como el acceso a colas o si la interfaz web está activa (ejemplo: `WebInterface Yes`).</li>
                         <li><strong>/etc/cups/printers.conf</strong>: Almacena las configuraciones de las impresoras gestionadas por CUPS, con secciones `<Printer></Printer>` para cada una (no edites mientras CUPS está activo).</li>
@@ -59,8 +59,8 @@
                     <p>Las herramientas legacy de lpd, compatibles con CUPS, permiten gestionar impresiones de forma básica:</p>
                     <ul>
                         <li><strong>lpr</strong>: Envía archivos a la impresora predeterminada. Ejemplo: `lpr documento.txt` imprime en la impresora por defecto.</li>
-                        <li><strong>lprm</strong>: Cancela trabajos de impresión en curso. Ejemplo: `lprm 20` elimina el trabajo con ID 20.</li>
-                        <li><strong>lpq</strong>: Muestra una lista de trabajos en la cola de impresión. Ejemplo: `lpq -a` lista colas de todas las impresoras.</li>
+                        <li><strong>lprm</strong>: Cancela trabajos de impresión en curso, eliminando tareas específicas de la cola. Ejemplo: `lprm 20` elimina el trabajo con ID 20.</li>
+                        <li><strong>lpq</strong>: Muestra una lista de trabajos en la cola de impresión, incluyendo detalles como IDs y estados. Ejemplo: `lpq -a` lista colas de todas las impresoras.</li>
                         <li><strong>lpstat</strong>: Ofrece detalles sobre el estado de las impresoras y trabajos en cola. Ejemplo: `lpstat -p` muestra impresoras disponibles.</li>
                     </ul>
                     <p>Estas herramientas son útiles en sistemas sin entorno gráfico para enviar, consultar o cancelar trabajos de impresión.</p>
