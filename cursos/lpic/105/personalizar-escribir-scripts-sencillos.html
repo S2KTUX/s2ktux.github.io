@@ -41,37 +41,57 @@
             </div>
             <div class="content">
                 <p>Un script es una lista de comandos que un programa, como el intérprete de comandos bash, ejecuta en un orden específico. Personalizarlos te permite automatizar tareas de manera eficiente en Linux.</p>
+                
                 <section id="estructura-ejecucion">
                     <h2>Estructura y ejecución del script</h2>
                     <p>Un script es una secuencia de comandos que un intérprete, como bash, ejecuta paso a paso. La primera línea, conocida como shebang (por ejemplo, <code>#!/bin/bash</code>), indica qué intérprete debe usarse. Este archivo debe ser ejecutable con <code>chmod +x nombre_script.sh</code> para funcionar correctamente.</p>
+                    
+                    <div class="important-note">
+                        <p>El comando <code>seq</code> puede generar secuencias numéricas con diferentes incrementos. Por ejemplo, <code>seq 1 5 20</code> produce los números 1, 6, 11 y 16, mostrando un número por línea.</p>
+                    </div>
+                    
                     <ul>
                         <li><strong>Uso de <code>echo</code>:</strong> Muestra texto en la pantalla. Por defecto, añade un salto de línea al final, pero con la opción <code>-n</code> lo evita.<br>
                             - Ejemplo: <code>echo -n "Hola, "; echo "mundo"</code> → Nos mostraría <code>Hola, mundo</code> en una sola línea.</li>
+                            
                         <li><strong>Múltiples comandos en una línea:</strong> Puedes combinar comandos usando el separador <code>;</code>, ejecutándose uno tras otro.<br>
                             - Ejemplo: <code>echo "La hora es: "; date +%H:%M</code> → Veríamos algo como <code>La hora es: 14:30</code>.</li>
+                            
                         <li><strong>Comando <code>read</code>:</strong> Permite al script pausarse y recoger datos ingresados por el usuario, almacenándolos en una variable.<br>
                             - Ejemplo: <code>read nombre; echo "Hola $nombre"</code> → (si escribes "Sysriser", el resultado será <code>Hola Sysriser</code>).</li>
-                        <li><strong>Comando <code>seq</code>:</strong> Genera una secuencia de números que puede usarse en bucles o para crear listas numéricas, es decir, coge un valor inicial, un incremento opcional y un valor final, produciendo una serie de números. <br>
-                            - Ejemplo: <code>seq 1 3</code> → genera <code>1 2 3</code>.</li>
-                        <li><strong>Algunas variables a destacar:</strong> Estas variables especiales pueden ser útiles para mostrar algunos comportamientos en nuestros scripts:
+                            
+                        <li><strong>Comando <code>seq</code>:</strong> Genera una secuencia de números que puede usarse en bucles o para crear listas numéricas, es decir, coge un valor inicial, un incremento opcional y un valor final, produciendo una serie de números.<br>
+                            - Ejemplo básico: <code>seq 10</code> → genera los números del 1 al 10, uno por línea.<br>
+                            - Ejemplo con incremento: <code>seq 1 5 20</code> → genera 1, 6, 11, 16.</li>
+                            
+                        <li><strong>Variables especiales:</strong> Estas variables son útiles para mostrar algunos comportamientos en nuestros scripts:
                             <ul>
-                                <li><code>$*</code>: Representa todos los argumentos pasados al script como una sola cadena.</li>
-                                <li><code>$@</code>: Lista todos los argumentos como elementos individuales.</li>
+                                <li><code>$*</code> y <code>$@</code>: Representan todos los argumentos pasados al script.</li>
                                 <li><code>$#</code>: Indica la cantidad total de argumentos pasados.</li>
                                 <li><code>$0</code>: Contiene el nombre del script en ejecución.</li>
-                                <li><code>$!</code>: Devuelve el ID del último proceso ejecutado en segundo plano.</li>
                                 <li><code>$$</code>: Muestra el ID del proceso actual del script.</li>
-                                <li><code>$_</code>: Almacena el último argumento del comando anterior.</li>
+                                <li><code>$?</code>: Almacena el código de salida del último comando ejecutado (0 para éxito, otro valor para error).</li>
                             </ul>
                         </li>
-                        <li><strong>Expresiones aritméticas:</strong> Se pueden calcular usando el comando <code>expr</code> o la sintaxis <code>$(( ))</code>. El primero requiere comillas invertidas (`), mientras que el segundo es más moderno y directo.<br>
-                            - Ejemplo con <code>expr</code>: <code>SUM=`expr 5 + 3`</code> → asigna <code>8</code> a <code>SUM</code>.<br>
-                            - Ejemplo con <code>$(( ))</code>: <code>FREE=$((1000 * `sed -nre '2s/[^[:digit:]]//gp' < /proc/meminfo`))</code> → multiplica por 1000 la memoria libre en kilobytes (segunda línea de <code>/proc/meminfo</code>) para obtener bytes.</li>
+                        
+                        <li><strong>Expresiones aritméticas:</strong> Se pueden calcular usando el comando <code>expr</code> o la sintaxis <code>$(( ))</code>.
+                            <ul>
+                                <li>Ejemplo con <code>expr</code>: <code>SUM=`expr 5 + 3`</code> → asigna <code>8</code> a <code>SUM</code>.</li>
+                                <li>Ejemplo con <code>$(( ))</code>: <code>result=$((5 * 3))</code> → asigna <code>15</code> a <code>result</code>.</li>
+                                <li>Para comparaciones numéricas: <code>-eq</code> (igual), <code>-ne</code> (no igual), <code>-lt</code> (menor que), <code>-gt</code> (mayor que).</li>
+                            </ul>
+                        </li>
                     </ul>
                 </section>
+
                 <section id="ejecucion-condicional">
                     <h2>Ejecución condicional</h2>
                     <p>Muchos scripts no ejecutan todos sus comandos, sino solo aquellos que cumplen con una condición específica, basada en el código de estado de los comandos (0 para éxito, diferente de 0 para error).</p>
+                    
+                    <div class="important-note">
+                        <p>Los operadores de prueba para elementos del sistema de archivos incluyen <code>-f</code> (para verificar si es un archivo regular) y <code>-d</code> (para verificar si es un directorio).</p>
+                    </div>
+                    
                     <ul>
                         <li><strong>Operadores lógicos:</strong>
                             <ul>
@@ -81,117 +101,90 @@
                                     - Ejemplo: <code>[ ! -f archivo ] || echo "El archivo no existe"</code>.</li>
                             </ul>
                         </li>
-                        <li><strong>Estructura <code>if</code>:</strong> Ejecuta un bloque de comandos si la condición devuelve un código de estado 0. El comando <code>test</code> puede ser usado para evaluar muchos criterios especiales y se suele utilizar con <code>if</code>, que puede utilizarse poniendo <code>test</code> o <code>[ ]</code>.<br>
-                            - Ejemplo con <code>test</code>:
-                                <pre>
-if test -x /bin/bash; then
-    echo "El archivo /bin/bash es ejecutable"
+                        
+                        <li><strong>Estructura <code>if</code>:</strong> Ejecuta un bloque de comandos si la condición devuelve un código de estado 0.
+                            <pre>
+if [ -f "/etc/passwd" ]; then
+    echo "El archivo de contraseñas existe"
 fi
-                                </pre>
-                            - Ejemplo con <code>[ ]</code>:
-                                <pre>
-if [ -x /bin/bash ]; then
-    echo "El archivo /bin/bash es ejecutable"
-fi
-                                </pre>
-                             * La opción <code>-x</code> hace que el comando test verifique si el archivo es ejecutable.</li>
-                        <li><strong>Estructura <code>else</code>:</strong> Permite definir qué hacer si la condición no se cumple.<br>
-                            - Ejemplo:
-                                <pre>
-if [ -x /bin/bash ]; then
-    echo "El archivo /bin/bash es ejecutable"
-else
-    echo "El archivo /bin/bash no es ejecutable"
-fi
-                                </pre>
+                            </pre>
                         </li>
-                        <li><strong>Mensajes con <code>echo -e</code>:</strong> Permite usar secuencias de escape como <code>\t</code> (tabulación) o <code>\n</code> (nueva línea) para formatear la salida. Las comillas son obligatorias con esta opción.<br>
-                            - Ejemplo:
-                                <pre>
-OS=$(uname -o)
-FREE=$((1000 * `sed -nre '2s/[^[:digit:]]//gp' < /proc/meminfo`))
-echo -e "Sistema operativo:\t$OS\nMemoria libre:\t$(( $FREE / 1024**2 )) MB"
-
-RESULTADO :
-Sistema operativo:      GNU/Linux
-Memoria libre:          1491 MB
-                                </pre>
-                    </ul>
-                    <h3>Alternativa a <code>if</code>: Estructura <code>case</code></h3>
-                    <p>La estructura <code>case</code> es una alternativa a <code>if</code> que evalúa una variable contra varios patrones y ejecuta el bloque correspondiente. Termina con <code>esac</code>, y cada patrón se cierra con <code>;;</code>.</p>
-                    <ul>
-                        <li>Ejemplo:
+                        
+                        <li><strong>Estructura <code>case</code>:</strong> Alternativa a múltiples condiciones <code>if</code>.
                             <pre>
 case $1 in
-    "a") echo "Opción seleccionada: a" ;;
-    "b") echo "Opción seleccionada: b" ;;
-    *) echo "Opción no reconocida" ;;
+    start) echo "Iniciando servicio..." ;;
+    stop) echo "Deteniendo servicio..." ;;
+    *) echo "Uso: $0 {start|stop}" ;;
 esac
                             </pre>
                         </li>
                     </ul>
                 </section>
+
                 <section id="pruebas-ampliadas">
                     <h2>Pruebas ampliadas</h2>
-                    <p>Estas pruebas permiten comparar valores en scripts para tomar decisiones basadas en condiciones. Son útiles para verificar texto o números, aunque no son un objetivo principal del examen LPIC-1.</p>
+                    <p>Estas pruebas permiten comparar valores en scripts para tomar decisiones basadas en condiciones.</p>
+                    
                     <ul>
                         <li><strong>Comparaciones de texto:</strong>
                             <ul>
-                                <li><code>"$TXT1" = "$TXT2"</code> o <code>"$TXT1" == "$TXT2"</code>: Verifica si dos cadenas de texto son iguales.</li>
-                                <li><code>"$TXT1" != "$TXT2"</code>: Comprueba si dos cadenas son diferentes.</li>
-                                <li><code>"$TXT1" < "$TXT2"</code>: Determina si una cadena es alfabéticamente menor que otra.</li>
-                                <li><code>"$TXT1" > "$TXT2"</code>: Evalúa si una cadena es alfabéticamente mayor que otra.</li>
+                                <li><code>=</code> o <code>==</code>: Igualdad</li>
+                                <li><code>!=</code>: Desigualdad</li>
+                                <li><code>-z</code>: Cadena vacía</li>
                             </ul>
                         </li>
+                        
                         <li><strong>Comparaciones numéricas:</strong>
                             <ul>
-                                <li><code>$NUM1 -lt $NUM2</code>: Comprueba si el primer número es menor que el segundo.</li>
-                                <li><code>$NUM1 -gt $NUM2</code>: Verifica si el primer número es mayor que el segundo.</li>
-                                <li><code>$NUM1 -le $NUM2</code>: Evalúa si el primer número es menor o igual que el segundo.</li>
-                                <li><code>$NUM1 -ge $NUM2</code>: Determina si el primer número es mayor o igual que el segundo.</li>
-                                <li><code>$NUM1 -eq $NUM2</code>: Comprueba si los números son iguales.</li>
-                                <li><code>$NUM1 -ne $NUM2</code>: Verifica si los números son diferentes.</li>
-                                <li><code>! EXPR</code>: Niega el resultado de una expresión, invirtiendo su valor lógico.</li>
+                                <li><code>-eq</code>: Igual (equal)</li>
+                                <li><code>-ne</code>: No igual (not equal)</li>
+                                <li><code>-lt</code>: Menor que (less than)</li>
+                                <li><code>-gt</code>: Mayor que (greater than)</li>
+                                <li><code>-le</code>: Menor o igual (less or equal)</li>
+                                <li><code>-ge</code>: Mayor o igual (greater or equal)</li>
                             </ul>
                         </li>
                     </ul>
                 </section>
+
                 <section id="construcciones-bucle">
                     <h2>Construcciones de bucle</h2>
-                    <p>Los bucles son herramientas clave en los scripts para automatizar tareas repetitivas. Bash ofrece tres tipos principales: <code>for</code>, <code>until</code> y <code>while</code>.</p>
+                    <p>Los bucles son herramientas clave en los scripts para automatizar tareas repetitivas.</p>
+                    
                     <ul>
-                        <li><strong><code>for</code>:</strong> Itera sobre una lista de elementos, asignando cada uno a una variable para ejecutar comandos.<br>
-                            - Ejemplo:
-                                <pre>
-for i in 1 2 3
-do
-    echo "Número: $i"
+                        <li><strong>Bucle <code>for</code>:</strong>
+                            <pre>
+for i in $(seq 1 5); do
+    echo "Iteración $i"
 done
-                                </pre>
-                            Salida: <code>Número: 1 Número: 2 Número: 3</code>.</li>
-                        <li><strong><code>until</code>:</strong> Repite un bloque de comandos hasta que una condición deje de cumplirse (es decir, hasta que el comando de prueba falle con un código distinto de 0).<br>
-                            - Ejemplo:
-                                <pre>
-i=1
-until [ $i -gt 3 ]
-do
-    echo "Contador: $i"
-    i=$((i+1))
+                            </pre>
+                        </li>
+                        
+                        <li><strong>Bucle <code>while</code>:</strong>
+                            <pre>
+counter=1
+while [ $counter -le 5 ]; do
+    echo "Contador: $counter"
+    counter=$((counter+1))
 done
-                                </pre>
-                            Salida: <code>Contador: 1 Contador: 2 Contador: 3</code>.</li>
-                        <li><strong><code>while</code>:</strong> Repite un bloque de comandos mientras una condición sea verdadera (el comando de prueba devuelve 0).<br>
-                            - Ejemplo:
-                                <pre>
-i=1
-while [ $i -le 3 ]
-do
-    echo "Contador: $i"
-    i=$((i+1))
+                            </pre>
+                        </li>
+                        
+                        <li><strong>Bucle <code>until</code>:</strong>
+                            <pre>
+counter=1
+until [ $counter -gt 5 ]; do
+    echo "Contador: $counter"
+    counter=$((counter+1))
 done
-                                </pre>
-                            Salida: <code>Contador: 1 Contador: 2 Contador: 3</code>.</li>
+                            </pre>
+                        </li>
                     </ul>
+                    
+                    <div class="important-note">
+                        <p>En bash, puedes capturar la salida de un comando en una variable usando la sintaxis <code>$(comando)</code>. Por ejemplo: <code>fecha=$(date)</code> almacena la fecha actual en la variable <code>fecha</code>.</p>
+                    </div>
                 </section>
             </div>
         </div>
@@ -201,7 +194,7 @@ done
             <p>SysRiser | Un lugar para aprender sistemas y redes</p>
             <div class="footer-links">
                 <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
-                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                <a href="mailto="contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
                 <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
                 <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
             </div>
