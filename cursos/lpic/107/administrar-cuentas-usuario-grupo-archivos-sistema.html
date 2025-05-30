@@ -45,7 +45,7 @@
                     <h2>Gestión de usuarios y grupos</h2>
                     <p>En Linux, los comandos principales para administrar usuarios son:</p>
                     <ul>
-                        <li><strong>useradd</strong>: Crea un nuevo usuario. Requiere establecer la contraseña con <code>passwd</code>. Opciones clave:
+                        <li><strong>useradd</strong>: Crea una nueva cuenta de usuario, requiriendo establecer la contraseña con <code>passwd</code>. Opciones clave:
                             <ul>
                                 <li><code>-d</code>: Especifica el directorio de inicio.</li>
                                 <li><code>-m</code>: Crea el directorio de inicio si no existe.</li>
@@ -53,7 +53,7 @@
                                 <li><code>-s</code>: Define el shell de acceso (ej. <code>/bin/bash</code>).</li>
                             </ul>
                         </li>
-                        <li><strong>usermod</strong>: Modifica un usuario existente (requiere privilegios de root). Opciones clave:
+                        <li><strong>usermod</strong>: Modifica los parámetros de una cuenta de usuario existente (requiere privilegios de root). Opciones clave:
                             <ul>
                                 <li><code>-d</code>: Cambia el directorio de inicio.</li>
                                 <li><code>-e</code>: Establece una fecha de expiración.</li>
@@ -65,7 +65,7 @@
                     </ul>
                     <p>Para grupos, se utilizan:</p>
                     <ul>
-                        <li><strong>groupadd</strong>: Crea un grupo. Con <code>-g</code>, asigna un GID específico.</li>
+                        <li><strong>groupadd</strong>: Crea un nuevo grupo en el sistema. Con <code>-g</code>, asigna un GID específico.</li>
                         <li><strong>groupmod</strong>: Modifica un grupo existente (ej. cambiar nombre o GID).</li>
                         <li><strong>groupdel</strong>: Elimina un grupo. No se puede eliminar si es el grupo primario de un usuario.</li>
                     </ul>
@@ -83,7 +83,7 @@
                 </section>
                 <section id="passwd-chage">
                     <h2>Comandos passwd y chage</h2>
-                    <p><strong>passwd</strong>: Cambia la contraseña de un usuario. Solo root puede modificar contraseñas de otros usuarios. Opciones:
+                    <p><strong>passwd</strong>: Cambia la contraseña de un usuario. Solo root puede modificar contraseñas de otros usuarios, mientras que los usuarios regulares cambian la propia. Opciones:
                         <ul>
                             <li><code>-d</code>: Elimina la contraseña (deshabilita la cuenta).</li>
                             <li><code>-e</code>: Fuerza el cambio de contraseña en el próximo inicio de sesión.</li>
@@ -103,37 +103,17 @@
                     <h2>Archivos passwd, group, shadow y gshadow</h2>
                     <p>Estos archivos, ubicados en <code>/etc/</code>, almacenan información de usuarios y grupos:</p>
                     <ul>
-                        <li><strong>/etc/passwd</strong>: Legible por todos, contiene 7 campos separados por <code>:</code>:
-                            <ul>
-                                <li>Nombre de usuario : Contraseña (x) : UID : GID : Descripción : Directorio de inicio : Shell</li>
-                                <li> Ejemplo : sysriser:x:1001:1001:Usuario Sysriser:/home/sysriser:/bin/bash</li>
-                            </ul>
-                        </li>
-                        <li><strong>/etc/group</strong>: Legible por todos, contiene 4 campos:
-                            <ul>
-                                <li>Nombre del grupo : Contraseña (x) : GID : Lista de miembros</li>
-                                <li> Ejemplo : developers:x:1001:sysriser,user2</li>
-                            </ul>
-                        </li>
-                        <li><strong>/etc/shadow</strong>: Solo legible por root, contiene 9 campos:
-                            <ul>
-                                <li>Nombre de usuario : Contraseña cifrada : Último cambio : Edad mínima : Edad máxima : Alerta : Inactividad : Expiración : Reservado</li>
-                                <li> Ejemplo : sysriser:$6$...:18659:0:99999:7:::</li>
-                            </ul>
-                        </li>
-                        <li><strong>/etc/gshadow</strong>: Solo legible por root, contiene 4 campos:
-                            <ul>
-                                <li>Nombre del grupo : Contraseña cifrada : Administradores : Miembros</li>
-                                <li> Ejemplo : developers:!::sysriser,user2</li>
-                            </ul>
-                        </li>
+                        <li><strong>/etc/passwd</strong>: Legible por todos, contiene siete campos separados por <code>:</code> (nombre de usuario, contraseña (x), UID, GID, descripción, directorio de inicio, shell). Almacena la información principal de cuentas de usuario. Ejemplo: <code>sysriser:x:1001:1001:Usuario Sysriser:/home/sysriser:/bin/bash</code>.</li>
+                        <li><strong>/etc/group</strong>: Legible por todos, contiene cuatro campos (nombre del grupo, contraseña (x), GID, lista de miembros). Almacena la información de grupos. Ejemplo: <code>developers:x:1001:sysriser,user2</code>.</li>
+                        <li><strong>/etc/shadow</strong>: Solo legible por root, contiene nueve campos, incluyendo la contraseña cifrada de los usuarios para mayor seguridad. Ejemplo: <code>sysriser:$6$...:18659:0:99999:7:::</code>.</li>
+                        <li><strong>/etc/gshadow</strong>: Solo legible por root, contiene cuatro campos, incluyendo la contraseña cifrada de los grupos. Ejemplo: <code>developers:!::sysriser,user2</code>.</li>
                     </ul>
                 </section>
                 <section id="getent">
                     <h2>Comando getent</h2>
-                    <p>El comando <code>getent</code> consulta bases de datos del sistema (usuarios, grupos, hosts, etc.). Ejemplo:</p>
+                    <p>El comando <code>getent</code> consulta bases de datos del sistema (usuarios, grupos, hosts, etc.), mostrando información específica de archivos como <code>/etc/passwd</code> o <code>/etc/group</code>. Ejemplo:</p>
                     <p><code>getent passwd sysriser</code>: Muestra la línea correspondiente a <code>sysriser</code> en <code>/etc/passwd</code>.</p>
-                    <p>Salida: sysriser:x:1001:1001:Usuario Sysriser:/home/sysriser:/bin/bash</p>
+                    <p>Salida: <code>sysriser:x:1001:1001:Usuario Sysriser:/home/sysriser:/bin/bash</code></p>
                 </section>
             </div>
         </div>
