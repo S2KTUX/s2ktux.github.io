@@ -44,20 +44,26 @@
                     <ul>
                         <li><strong>/</strong>: Raíz, el directorio principal.</li>
                         <li><strong>/bin</strong>: Binarios esenciales.</li>
-                        <li><strong>/boot</strong>: Archivos necesarios para el arranque.</li>
+                        <li><strong>/boot</strong>: Archivos necesarios para el arranque (incluyendo imágenes del kernel y configuraciones del gestor de arranque).</li>
                         <li><strong>/dev</strong>: Archivos de dispositivos físicos y virtuales.</li>
                         <li><strong>/etc</strong>: Archivos de configuración específicos del sistema.</li>
                         <li><strong>/home</strong>: Perfiles de usuario.</li>
-                        <li><strong>/lib</strong>: Librerías compartidas.</li>
+                        <li><strong>/lib</strong>: Librerías compartidas esenciales para los binarios en /bin y /sbin.</li>
                         <li><strong>/media</strong>: Medios extraíbles montados por el usuario.</li>
                         <li><strong>/mnt</strong>: Punto de montaje temporal para sistemas de archivos.</li>
                         <li><strong>/opt</strong>: Paquetes de software de aplicaciones.</li>
                         <li><strong>/root</strong>: Directorio de inicio del usuario root.</li>
                         <li><strong>/run</strong>: Datos temporales que se borran tras reinicio.</li>
-                        <li><strong>/sbin</strong>: Binarios del sistema.</li>
-                        <li><strong>/usr</strong>: Datos de usuario de solo lectura.</li>
+                        <li><strong>/sbin</strong>: Binarios del sistema esenciales para el administrador.</li>
+                        <li><strong>/usr</strong>: Datos de usuario de solo lectura (incluye /usr/bin, /usr/sbin, /usr/lib).</li>
                         <li><strong>/proc</strong>: Sistema de archivos virtual con datos de procesos en ejecución.</li>
                         <li><strong>/var</strong>: Datos variables como logs y servicios.</li>
+                    </ul>
+                    <p><strong>Ubicaciones importantes según FHS:</strong></p>
+                    <ul>
+                        <li>Las páginas de manual se encuentran en <code>/usr/share/man/</code></li>
+                        <li>Los binarios compilados por el administrador deben colocarse en <code>/usr/local/bin/</code></li>
+                        <li>El archivo <code>/proc/cmdline</code> contiene los parámetros pasados al kernel durante el arranque</li>
                     </ul>
                     <p><strong>Ubicaciones para archivos temporales:</strong></p>
                     <ul>
@@ -79,9 +85,11 @@
                               &nbsp;&nbsp;- <code>-empty</code>: Archivos o directorios vacíos.<br>
                               &nbsp;&nbsp;- <code>-perm NNN</code>: Archivos con permisos específicos (ej. <code>-perm 644</code>).<br>
                               &nbsp;&nbsp;- <code>-size N</code>: Archivos por tamaño (ej. <code>+100M</code> para mayores de 100 MB).<br>
+                              &nbsp;&nbsp;- <code>-maxdepth N</code>: Limita la búsqueda a N niveles de subdirectorios.<br>
                             - <strong>Por tiempo:</strong><br>
                               &nbsp;&nbsp;- <code>-amin N</code>, <code>-cmin N</code>, <code>-mmin N</code>: Acceso, cambio o modificación hace N minutos.<br>
                               &nbsp;&nbsp;- <code>-atime N</code>, <code>-ctime N</code>, <code>-mtime N</code>: Lo mismo, pero hace N días (N x 24 horas).<br>
+                            - <strong>Para usar con xargs:</strong> <code>-print0</code> para manejar nombres con espacios.<br>
                             <em>Ejemplo:</em> Buscar archivos de un usuario mayores de 100 MB: <code>find / -user usuario -size +100M</code>.</li>
                         <li><strong><code>locate</code> (búsqueda rápida usando una base de datos):</strong><br>
                             Usa una base de datos (<code>/var/lib/mlocate.db</code>) que se actualiza con <code>updatedb</code>.<br>
@@ -98,6 +106,9 @@
                             - <code>type</code>: Muestra información sobre un comando (con <code>-t</code> muestra solo el tipo).<br>
                             - <code>whereis</code>: Muestra la ruta del binario, su manual y, si existe, su código fuente (con <code>-b</code> solo el binario, con <code>-m</code> solo el manual).<br>
                             <em>Ejemplo:</em> <code>whereis ls</code> muestra: <code>ls: /bin/ls /usr/share/man/man1/ls.1.gz</code>.</li>
+                        <li><strong>Otros comandos útiles:</strong><br>
+                            - <code>file</code>: Determina el tipo de archivo usando una base de datos de definiciones.<br>
+                            - <code>watch</code>: Ejecuta un comando periódicamente y muestra su salida actualizada.</li>
                     </ul>
                 </section>
             </div>
