@@ -43,7 +43,7 @@
 
                 <section id="gestion-rsyslog">
                     <h2>Gestión con rsyslog</h2>
-                    <p>rsyslog es el servicio estándar para gestionar registros, usando un modelo cliente-servidor que procesa mensajes según reglas definidas. En el archivo de configuración `/etc/ntp.conf`, la opción `server` se utiliza para especificar una fuente NTP externa que proporciona información horaria, mientras que otros sistemas pueden usar `pool` como alternativa. Los registros se almacenan en `/var/log/`, un directorio que contiene archivos como `/var/log/syslog` para mensajes generales y `/var/log/auth.log` para eventos de autenticación. En sistemas con systemd-journald, comandos como `logger Howdy` o `systemd-cat echo Howdy` permiten añadir mensajes al registro.</p>
+                    <p>rsyslog es el servicio estándar para gestionar registros, usando un modelo cliente-servidor que procesa mensajes según reglas definidas en el archivo de configuración principal `/etc/rsyslog.conf`. Los registros se almacenan en `/var/log/`, un directorio que contiene archivos como `/var/log/syslog` para mensajes generales y `/var/log/auth.log` para eventos de autenticación. Comandos como `logger "Mensaje de prueba"` permiten añadir mensajes manualmente al registro, típicamente en `/var/log/syslog`.</p>
                     <ul>
                         <li><strong>/etc/rsyslog.conf</strong>: Archivo principal de configuración. Define módulos (ej. imuxsock, imklog), directivas globales (permisos, rutas) y reglas (formato `<facilidad>.<prioridad> <acción>`, ej. `auth.* /var/log/auth.log`).</li>
                         <li><strong>/var/log/</strong>: Directorio de registros, algunos son:
@@ -54,7 +54,7 @@
                                 <li><code>/var/log/messages</code>: Mensajes diversos (destino por defecto remoto).</li>
                             </ul>
                         </li>
-                        <li><strong>logger</strong>: Comando para añadir mensajes manualmente, normalmente a `/var/log/syslog`. Ejemplo: `logger "Mensaje de prueba"`.</li>
+                        <li><strong>logger</strong>: Comando para añadir mensajes manualmente al sistema de registros, normalmente a `/var/log/syslog`, útil para depuración o scripts. Ejemplo: `logger "Mensaje de prueba"`.</li>
                     </ul>
                 </section>
 
@@ -70,9 +70,9 @@
 
                 <section id="gestion-journald">
                     <h2>Gestión con systemd-journald</h2>
-                    <p>systemd-journald centraliza registros en formato binario estructurado. El diario de systemd se almacena en `/run/log/journal/` o `/var/log/journal/`, dependiendo de la configuración de almacenamiento persistente. Este servicio es compatible con syslog y puede coexistir en sistemas que lo utilicen, soportando facilidades como kern, user y auth, manteniendo metadatos como UID o PID por mensaje y permitiendo pasar mensajes a syslog para procesamiento posterior. No se limita a procesar solo mensajes de systemd, sino que también maneja mensajes de otras herramientas. El comando `journalctl` permite consultar el journal, usando parámetros como `--since` y `--until` para limitar el período de tiempo de la salida.</p>
+                    <p>systemd-journald centraliza registros en formato binario estructurado. El diario de systemd se almacena en `/run/log/journal/` (volátil) o `/var/log/journal/` (persistente), dependiendo de la configuración. Este servicio es compatible con syslog, soporta facilidades como kern, user y auth, y mantiene metadatos como UID o PID. El comando `journalctl` permite consultar el journal, mostrando entradas con filtros como `--since`, `--until`, o por servicio.</p>
                     <ul>
-                        <li><strong>journalctl</strong>: Comando para consultar el journal, con filtros como `--since` y `--until`, prioridad (`-p`), unidad (`-u`) o arranque (`-b`). Ejemplo: `journalctl -u ssh.service`.</li>
+                        <li><strong>journalctl</strong>: Comando para consultar el journal, mostrando entradas con filtros como `--since`, `--until`, prioridad (`-p`), unidad (`-u`) o arranque (`-b`). Ejemplo: `journalctl -u ssh.service`.</li>
                         <li><strong>systemd-cat</strong>: Envía mensajes al journal desde comandos o scripts. Ejemplo: `echo "Mensaje" | systemd-cat`.</li>
                         <li><strong>/etc/systemd/journald.conf</strong>: Configura ubicación (`Storage=`, valores: volatile, persistent, auto, none) y límites de espacio (`SystemMaxUse=`).</li>
                         <li><strong>/var/log/journal/</strong>: Almacena registros persistentes si `Storage=persistent`. Si no, usa `/run/log/journal/` (volátil), con archivos `.journal`.</li>
