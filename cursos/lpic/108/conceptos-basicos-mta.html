@@ -57,9 +57,9 @@
                     <p>Estas herramientas y comandos ayudan a gestionar el correo:</p>
                     <ul>
                         <li><strong>sendmail emulation layer commands</strong>: Comandos compatibles con sendmail, como `sendmail -bp` o `sendmail -q` para reintentar envíos en cola. Ejemplo: `sendmail dave@lab2.campus` permite escribir un correo desde la terminal.</li>
-                        <li><strong>mailq</strong>: Muestra la cola de correos pendientes en todos los MTAs compatibles con sendmail. Ejemplo: `mailq` puede mostrar un mensaje no entregado si el MTA remoto no responde, indicando el motivo (ej. "Connection refused").</li>
-                        <li><strong>mail</strong>: Cliente de correo en consola para leer o enviar correos. Tiene dos modos: lectura (ej. `mail` para listar mensajes) y envío (ej. `mail -s "Asunto" henry@lab3.campus <<< "Mensaje"`). Usa comandos como `p` (print) o `q` (quit) en modo interactivo.</li>
-                        <li><strong>newaliases</strong>: Actualiza la base de datos de alias tras modificar `/etc/aliases`. Equivalente a `sendmail -bi`. Es necesario ejecutarlo para aplicar cambios en los alias.</li>
+                        <li><strong>mailq</strong>: Muestra la cola de correos pendientes en todos los MTAs compatibles con sendmail, incluyendo detalles como el motivo del retraso (ej. "Connection refused" si el servidor remoto no responde).</li>
+                        <li><strong>mail</strong>: Cliente de correo en consola para leer o enviar correos. Tiene dos modos: lectura (ej. `mail` para listar mensajes) and envío (ej. `mail -s "Asunto" henry@lab3.campus <<< "Mensaje"`). Usa comandos como `p` (print) o `q` (quit) en modo interactivo.</li>
+                        <li><strong>newaliases</strong>: Actualiza la base de datos de alias tras modificar `/etc/aliases`, regenerando los alias del sistema para que los cambios surtan efecto. Equivalente a `sendmail -bi`.</li>
                     </ul>
                 </section>
 
@@ -68,7 +68,7 @@
                     <p>Los usuarios y administradores pueden personalizar cómo se entregan los correos, utilizando herramientas como alias del shell Bash para automatización:</p>
                     <ul>
                         <li><strong>~/.forward</strong>: Archivo en el directorio personal del usuario para reenviar correos. Si se configura correctamente, puede redirigir cada correo entrante a uno o varios destinatarios. Ejemplo: un usuario puede crear `~/.forward` con `emma@lab1.campus` para reenviar todos sus correos a esa dirección. No necesita `newaliases` y debe ser escribible solo por el propietario.</li>
-                        <li><strong>/etc/aliases</strong>: Archivo del sistema para definir alias de correo. Ejemplo: agregar `postmaster: carol` redirige correos de `postmaster@lab2.campus` a `carol@lab2.campus`. Requiere ejecutar `newaliases` tras modificarlo.</li>
+                        <li><strong>/etc/aliases</strong>: Archivo del sistema que define alias de correo, redirigiendo correos a usuarios, archivos, comandos, o direcciones externas. Ejemplo: agregar `postmaster: carol` redirige correos de `postmaster@lab2.campus` a `carol@lab2.campus`. Requiere ejecutar `newaliases` tras modificarlo.</li>
                     </ul>
                     <p>Los alias pueden redirigir a buzones locales, archivos, comandos, direcciones externas o incluso otros alias, ofreciendo flexibilidad en la gestión del correo. El comando `alias` en Bash permite listar y gestionar alias definidos para simplificar tareas repetitivas.</p>
                 </section>
