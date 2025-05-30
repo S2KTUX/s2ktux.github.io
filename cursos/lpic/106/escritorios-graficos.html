@@ -49,7 +49,7 @@
                         <li>Copiar y pegar entre aplicaciones.</li>
                         <li>Interfaz para dibujar elementos gráficos.</li>
                     </ul>
-                    <p>No crea efectos visuales complejos; las aplicaciones lo hacen. Esto permite personalización, pero puede generar inconsistencias.</p>
+                    <p>No crea efectos visuales complejos; las aplicaciones lo hacen. Esto permite personalización, pero puede generar inconsistencias. La variable de entorno <code>DISPLAY</code> indica a las aplicaciones qué servidor X11 usar (por ejemplo, <code>:0</code> para el local o <code>localhost:10.0</code> para uno remoto), configurándose automáticamente en sesiones SSH con X11 forwarding. En sistemas con múltiples servidores X11, cada instancia se identifica con un nombre de pantalla como <code>:0</code> o <code>:1</code>, usado por las aplicaciones para conectarse al servidor correcto. El archivo de configuración <code>xorg.conf</code> organiza sus ajustes en secciones, comenzando con <code>Section "NombreSección"</code> y terminando con <code>EndSection</code>, definiendo configuraciones como monitores o dispositivos de entrada.</p>
                 </section>
                 <section id="ambientes-escritorio">
                     <h2>Ambientes de escritorio</h2>
@@ -78,7 +78,7 @@
                         <li><strong>X11</strong>: Base del sistema gráfico.</li>
                         <li><strong>XDMCP</strong>: Protocolo para pantallas remotas, poco usado por ancho de banda y seguridad.</li>
                         <li><strong>VNC</strong>: Usa RFB, puertos 5900+, sin cifrado nativo (requiere VPN/SSH).</li>
-                        <li><strong>Spice</strong>: Para sistemas virtualizados, integra dispositivos locales.</li>
+                        <li><strong>Spice</strong>: Para sistemas virtualizados, integra dispositivos locales. Permite conectar dispositivos USB locales, como memorias o cámaras, a aplicaciones en máquinas virtuales remotas y proporciona acceso a interfaces gráficas, optimizando la experiencia en entornos virtualizados. Está diseñado para acceder a la salida de video de máquinas virtuales, ofreciendo una experiencia gráfica fluida.</li>
                         <li><strong>RDP</strong>: Acceso a Windows, soportado en Linux con clientes abiertos.</li>
                     </ul>
                     <p>Herramienta: Remmina (soporta XDMCP, VNC, RDP, Spice).</p>
