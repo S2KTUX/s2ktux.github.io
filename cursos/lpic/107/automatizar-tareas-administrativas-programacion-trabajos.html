@@ -44,15 +44,15 @@
                 <section id="cron">
                     <h2>Cron</h2>
                     <p><strong>Cron</strong> ejecuta tareas programadas (cron jobs) definidas en <em>crontabs</em>, revisadas cada minuto.</p>
-                    <p><strong>Crontabs de usuario</strong>: 6 campos: <code>minuto (0-59) hora (0-23) día-mes (1-31) mes (1-12) día-semana (0-7) comando</code>.</p>
+                    <p><strong>Crontabs de usuario</strong>: Almacenados en <code>/var/spool/cron/</code> (o <code>/var/spool/cron/crontabs/</code>), con un archivo por usuario. Constan de seis campos: minuto (0-59), hora (0-23), día del mes (1-31), mes (1-12), día de la semana (0-7), y el comando a ejecutar.</p>
                     <p>Valores: <code>*</code> (cualquier), <code>,</code> (lista, ej. <code>1,3</code>), <code>-</code> (rango, ej. <code>1-5</code>), <code>/</code> (intervalos, ej. <code>*/15</code>).</p>
                     <p>Ejemplo: Ejecutar <code>backup.sh</code> diario a las 2:00 AM:</p>
                     <p><code>0 2 * * * /home/sysriser/backup.sh</code></p>
                     <p>Editar: <code>crontab -e</code>. Ver: <code>crontab -l</code>.</p>
-                    <p><strong>Crontabs de sistema</strong>: Editables por root en <code>/etc/crontab</code> o <code>/etc/cron.d/</code>, con campo de usuario adicional.</p>
+                    <p><strong>Crontabs de sistema</strong>: Editables por root en <code>/etc/crontab</code> o archivos en <code>/etc/cron.d/</code>, con un campo adicional para especificar el usuario que ejecuta la tarea.</p>
                     <p>Ejemplo: Ejecutar <code>log-cleanup.sh</code> como root cada lunes a las 3:00 AM:</p>
                     <p><code>0 3 * * 1 root /usr/sbin/log-cleanup.sh</code></p>
-                    <p><strong>Restricciones</strong>: <code>/etc/cron.allow</code> permite solo a usuarios listados; <code>/etc/cron.deny</code> prohíbe a los listados. Sin ambos, solo root (según distribución).</p>
+                    <p><strong>Restricciones</strong>: Los archivos <code>/etc/cron.allow</code> y <code>/etc/cron.deny</code> controlan el acceso. Si existe <code>/etc/cron.allow</code>, solo los usuarios listados pueden usar <code>cron</code>; si existe <code>/etc/cron.deny</code>, los usuarios listados están prohibidos. Sin ambos, solo root (según distribución).</p>
                     <p>Ejemplo: Permitir a <code>sysriser</code>:</p>
                     <p><code>echo "sysriser" | sudo tee /etc/cron.allow</code></p>
                 </section>
@@ -76,7 +76,7 @@ WantedBy=timers.target
                 </section>
                 <section id="at">
                     <h2>at</h2>
-                    <p><strong>at</strong> programa tareas de ejecución única.</p>
+                    <p><strong>at</strong> programa tareas de ejecución única en un momento específico.</p>
                     <p>Opciones: <code>-c</code> (muestra comandos), <code>-l</code> (lista tareas, <code>atq</code>), <code>-m</code> (envía correo al finalizar).</p>
                     <p>Ejemplo: Ejecutar <code>date</code> en 5 minutos:</p>
                     <p><code>at now +5 minutes</code></p>
