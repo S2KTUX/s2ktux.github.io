@@ -46,17 +46,17 @@
                     <ul>
                         <li><strong>Comandos</strong>:
                             <ul>
-                                <li><code>timedatectl</code>: Ajusta zona horaria (ej. <code>timedatectl set-timezone Europe/Madrid</code>) y hora (ej. <code>timedatectl set-time YYYY-MM-DD</code>).</li>
-                                <li><code>hwclock</code>: Sincroniza reloj hardware (ej. <code>hwclock --systohc</code>).</li>
+                                <li><code>timedatectl</code>: Muestra y ajusta la hora, fecha y zona horaria, incluyendo el estado de sincronización (ej. <code>timedatectl set-timezone Europe/Madrid</code>, <code>timedatectl set-time "2025-05-30 12:00:00"</code>).</li>
+                                <li><code>hwclock</code>: Gestiona el reloj de hardware (RTC), permitiendo leer, establecer o sincronizar con el sistema (ej. <code>hwclock --systohc</code>).</li>
                                 <li><code>date</code>: Muestra o ajusta la hora actual (ej. <code>date +%T</code>).</li>
-                                <li><code>chronyd</code> o <code>ntpd</code>: Sincroniza con NTP (ej. <code>sudo systemctl enable chronyd</code>).</li>
+                                <li><code>chronyd</code> o <code>ntpd</code>: Sincroniza con servidores NTP (ej. <code>sudo systemctl enable chronyd</code>).</li>
                             </ul>
                         </li>
                         <li><strong>Archivos</strong>:
                             <ul>
-                                <li><code>/etc/timezone</code>: Define la zona horaria.</li>
-                                <li><code>/etc/localtime</code>: Enlace a la zona horaria activa.</li>
-                                <li><code>/etc/chrony.conf</code> o <code>/etc/ntp.conf</code>: Configura servidores NTP.</li>
+                                <li><code>/etc/timezone</code>: Define la zona horaria del sistema.</li>
+                                <li><code>/etc/localtime</code>: Enlace simbólico a un archivo de zona horaria en <code>/usr/share/zoneinfo/</code>, que contiene datos de zonas horarias.</li>
+                                <li><code>/etc/chrony.conf</code> o <code>/etc/ntp.conf</code>: Configura servidores NTP para sincronización.</li>
                             </ul>
                         </li>
                     </ul>
@@ -69,13 +69,20 @@
                         <li><strong>Comandos</strong>:
                             <ul>
                                 <li><code>systemctl</code>: Controla servicios (ej. <code>systemctl start nombre-servicio</code>, <code>systemctl enable nombre-servicio</code>).</li>
-                                <li><code>journalctl</code>: Revisa logs (ej. <code>journalctl -u nombre-servicio</code>, <code>journalctl -b</code>).</li>
+                                <li><code>journalctl</code>: Consulta entradas del journal de systemd, con filtros por servicio o tiempo (ej. <code>journalctl -u nombre-servicio</code>, <code>journalctl -b</code>).</li>
+                                <li><code>logger</code>: Añade mensajes manuales al registro del sistema, normalmente a <code>/var/log/syslog</code> (ej. <code>logger "Mensaje de prueba"</code>).</li>
                                 <li><code>df -h</code>: Muestra uso de disco.</li>
                                 <li><code>du -sh /ruta</code>: Calcula tamaño de directorios.</li>
                                 <li><code>top</code> o <code>htop</code>: Monitorea procesos.</li>
                                 <li><code>kill PID</code> o <code>pkill nombre</code>: Termina procesos (ej. <code>kill 1234</code>).</li>
                                 <li><code>dmesg</code>: Muestra mensajes del kernel.</li>
                                 <li><code>last</code>: Historial de inicios de sesión.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Archivos</strong>:
+                            <ul>
+                                <li><code>/etc/rsyslog.conf</code>: Configuración principal de rsyslog, define reglas de registro.</li>
+                                <li><code>/var/log/</code>: Almacena registros como <code>syslog</code>, <code>auth.log</code>.</li>
                             </ul>
                         </li>
                     </ul>
@@ -88,13 +95,13 @@
                         <li><strong>Comandos</strong>:
                             <ul>
                                 <li><code>sendmail</code>: Comando compatible con MTAs (ej. <code>sendmail -q</code> reintenta envíos).</li>
-                                <li><code>mailq</code>: Muestra la cola de correos pendientes.</li>
-                                <li><code>newaliases</code>: Actualiza alias tras modificar <code>/etc/aliases</code>.</li>
+                                <li><code>mailq</code>: Muestra la cola de correos pendientes, con detalles de retrasos (ej. "Connection refused").</li>
+                                <li><code>newaliases</code>: Actualiza la base de datos de alias tras modificar <code>/etc/aliases</code>.</li>
                             </ul>
                         </li>
                         <li><strong>Archivos</strong>:
                             <ul>
-                                <li><code>/etc/aliases</code>: Define alias de correo (ej. <code>postmaster: admin</code>).</li>
+                                <li><code>/etc/aliases</code>: Define alias de correo a nivel de sistema, redirigiendo correos (ej. <code>postmaster: admin</code>).</li>
                                 <li><code>~/.forward</code>: Redirige correos del usuario (ej. <code>usuario@dominio.com</code>).</li>
                                 <li><code>/var/spool/mail/</code>: Almacena correos de usuarios.</li>
                             </ul>
@@ -112,14 +119,14 @@
                                 <li><code>sudo apt install cups</code> o <code>sudo dnf install cups</code>: Instala CUPS.</li>
                                 <li><code>sudo systemctl start cups.service</code>: Inicia el servicio.</li>
                                 <li><code>lpr archivo</code>: Envía archivo a imprimir.</li>
-                                <li><code>lpq -a</code>: Muestra colas de impresión.</li>
+                                <li><code>lpq -a</code>: Muestra colas de impresión, listando trabajos con IDs y estados.</li>
                                 <li><code>lpstat -p</code>: Verifica estado de impresoras.</li>
-                                <li><code>lprm ID</code>: Cancela trabajo (ej. <code>lprm 20</code>).</li>
+                                <li><code>lprm ID</code>: Cancela trabajo de impresión (ej. <code>lprm 20</code>).</li>
                             </ul>
                         </li>
                         <li><strong>Archivos</strong>:
                             <ul>
-                                <li><code>/etc/cups/</code>: Directorio de configuración (incluye <code>cupsd.conf</code>).</li>
+                                <li><code>/etc/cups/</code>: Directorio de configuración de CUPS, incluye <code>cupsd.conf</code> y <code>printers.conf</code>.</li>
                                 <li><code>/etc/cups/printers.conf</code>: Configura impresoras específicas.</li>
                             </ul>
                         </li>
