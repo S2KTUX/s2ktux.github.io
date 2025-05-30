@@ -39,7 +39,7 @@
                 </ul>
             </div>
             <div class="content">
-                <p> TCP/IP es una pila de protocolos que permite la comunicación entre dispositivos mediante protocolos como IP, TCP, UDP, DNS y SMTP. </p>
+                <p>TCP/IP es una pila de protocolos que permite la comunicación entre dispositivos mediante protocolos como IP, TCP, UDP, DNS y SMTP.</p>
 
                 <section id="ipv4">
                     <h2>IPv4: Direccionamiento y máscaras</h2>
@@ -56,11 +56,11 @@
                         <li><strong>Máscara de red</strong>: Define la parte de red y hosts (ej. 255.255.0.0: 16 bits para red, 16 para hosts), permitiendo hasta 62 hosts utilizables en subredes como 192.168.2.128/26.</li>
                         <li><strong>Direcciones reservadas</strong>: 
                             <ul>
-                                <li>Dirección de red: Identifica la red (primera del rango. ej. 192.168.1.0).</li>
-                                <li>Dirección de broadcast: Envía a todos los hosts (última del rango. ej. 192.168.1.255).</li>
+                                <li>Dirección de red: Identifica la red (primera del rango, ej. 192.168.1.0).</li>
+                                <li>Dirección de broadcast: Envía a todos los hosts (última del rango, ej. 192.168.1.255).</li>
                             </ul>
                         </li>
-                        <li><strong>Rangos privados</strong>: Reservados por IANA para redes internas, no enrutables en Internet.
+                        <li><strong>Rangos privados</strong>: Reservados por IANA para redes internas, no enrutables en Internet. Incluyen 192.168.0.0/16 (192.168.0.0 a 192.168.255.255) para redes pequeñas.
                             <ul>
                                 <li>10.0.0.0/8: 10.0.0.0 a 10.255.255.255 (redes grandes).</li>
                                 <li>172.16.0.0/12: 172.16.0.0 a 172.31.255.255 (redes medianas).</li>
@@ -80,9 +80,9 @@
                                 <li>1024-65535: Puertos no privilegiados (clientes).</li>
                             </ul>
                         </li>
-                        <li><strong>TCP</strong>: Orientado a conexión, garantiza entrega ordenada y retransmite paquetes perdidos(correo).</li>
-                        <li><strong>UDP</strong>: Sin conexión, más rápido, pero sin control de errores (ideal para streaming).</li>
-                        <li><strong>ICMP</strong>: Analiza y controla la red, usado por <code>ping</code>, que envía Echo Requests y espera Echo Responses.</li>
+                        <li><strong>TCP</strong>: Orientado a conexión, garantiza entrega ordenada y retransmite paquetes perdidos, ideal para correo. Diferencia clave: es más lento que UDP por su fiabilidad.</li>
+                        <li><strong>UDP</strong>: Sin conexión, más rápido, pero sin control de errores, ideal para streaming. Diferencia clave: no establece conexión previa, sacrificando fiabilidad por velocidad.</li>
+                        <li><strong>ICMP</strong>: Analiza y controla la red, usado por <code>ping</code>, que envía Echo Request y espera Echo Reply para verificar conectividad.</li>
                     </ul>
                 </section>
 
@@ -101,7 +101,7 @@
                         <li><strong>Diferencias con IPv4</strong>:
                             <ul>
                                 <li>Puertos: IPv6 usa corchetes (ej. [2001:0db8::1]:443).</li>
-                                <li>IPv6 no admite broadcast(difusión), usa multicast como alternativa.</li>
+                                <li>IPv6 no admite broadcast, usa multicast como alternativa.</li>
                                 <li>Hop Limit: Reemplaza el TTL de IPv4. Indica el número máximo de enrutadores que un paquete puede atravesar; decrece en 1 por cada enrutador que lo reenvía, evitando bucles infinitos.</li>
                             </ul>
                         </li>
