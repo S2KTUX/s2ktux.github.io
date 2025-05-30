@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Repaso del Tema 106 Interfaces gráficas y accesibilidad (LPIC-1 106) en SysRiser. Resumen rápido para el examen.">
-    <meta name="keywords" content="LPIC-1, X11, escritorios gráficos, accesibilidad, Linux, repaso">
+    <meta name="description" content="Subtema 106.1 Instalar y configurar X11 (LPIC-1 106) en SysRiser. Aprende sobre el Sistema X Window en Linux.">
+    <meta name="keywords" content="LPIC-1, X11, Xorg, configuración, Linux, curso">
     <meta name="author" content="SysRiser">
-    <title>SysRiser - Repaso Tema 106: Interfaces gráficas y accesibilidad (LPIC-1)</title>
+    <title>SysRiser - 106.1 Instalar y configurar X11 (LPIC-1 106)</title>
     <link rel="stylesheet" href="/conf/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/images/favicon.png">
@@ -25,86 +25,64 @@
     </header>
     <main id="contenido">
         <div class="hero">
-            <h1>Repaso Tema 106: Interfaces gráficas y accesibilidad</h1>
+            <h1>106.1 Instalar y configurar X11</h1>
+            <p>Aprende sobre el Sistema X Window y su configuración en Linux.</p>
         </div>
         <a href="/cursos/lpic/106/106.html" class="back-link">← Volver a Tema 106</a>
         <div class="course-page">
             <div class="sidebar">
-                <h3>Contenido del Repaso</h3>
+                <h3>Contenido del Subtema</h3>
                 <ul>
-                    <li><a href="#106-1">106.1 Instalar y configurar X11</a></li>
-                    <li><a href="#106-2">106.2 Escritorios gráficos</a></li>
-                    <li><a href="#106-3">106.3 Accesibilidad</a></li>
+                    <li><a href="#arquitectura-x11">Arquitectura de X11</a></li>
+                    <li><a href="#configuracion-servidor">Configuración del servidor X</a></li>
+                    <li><a href="#herramientas-archivos">Herramientas y archivos clave</a></li>
+                    <li><a href="#wayland">Wayland</a></li>
                 </ul>
             </div>
             <div class="content">
-                <section id="106-1">
-                    <h2>106.1 Instalar y configurar X11</h2>
+                <p>El Sistema X Window (X11) es la base para interfaces gráficas en Linux, proporcionando una arquitectura cliente-servidor para mostrar texto y gráficos.</p>
+                <section id="arquitectura-x11">
+                    <h2>Arquitectura de X11</h2>
+                    <p>X11 utiliza una arquitectura cliente-servidor, donde:</p>
                     <ul>
-                        <li><strong>X11</strong>: Base gráfica en Linux (eventos de entrada, copiar/pegar, dibujar elementos).</li>
-                        <li><strong>Cliente/Servidor</strong>: Cliente (aplicación); Servidor (pantalla, teclado, ratón).</li>
-                        <li><strong>Configuración</strong>: 
-                            <ul>
-                                <li><code>/etc/X11/xorg.conf</code>: Archivo principal (opcional hoy).</li>
-                                <li><code>/etc/X11/xorg.conf.d/</code>: Configuraciones adicionales (ej. teclado).</li>
-                                <li>Generar: <code>sudo Xorg -configure</code>.</li>
-                            </ul>
-                        </li>
-                        <li><strong>Conceptos clave</strong>:
-                            <ul>
-                                <li><code>~/.xsession-errors</code>: Log de errores.</li>
-                                <li><code>xhost</code>: Controla acceso (ej. <code>xhost +</code>).</li>
-                                <li><code>xauth</code>: Autenticación remota.</li>
-                                <li><code>DISPLAY</code>: Pantalla activa (ej. <code>:0</code>).</li>
-                                <li><code>X</code>: Inicia/configura servidor.</li>
-                            </ul>
-                        </li>
+                        <li><strong>Clientes X</strong>: Aplicaciones como terminales, juegos o navegadores, que solicitan al servidor dibujar sus ventanas.</li>
+                        <li><strong>Servidor X</strong>: Gestiona la pantalla, colocando los dibujos solicitados y manejando entradas (ratón, teclado).</li>
                     </ul>
+                    <p>X11 permite configuraciones en red, donde clientes de distintos equipos se conectan a un servidor X remoto. Cada servidor X tiene un nombre de pantalla (<code>hostname:displaynumber.screennumber</code>), almacenado en la variable de entorno <code>DISPLAY</code> (por ejemplo, <code>:0</code> para el host local). La variable <code>DISPLAY</code> indica a las aplicaciones qué servidor X usar, configurándose automáticamente en sesiones SSH con X11 forwarding (por ejemplo, <code>localhost:10.0</code> para conexiones remotas). En sistemas con múltiples servidores X, cada instancia se identifica con un nombre de pantalla como <code>:0</code> o <code>:1</code>. Gestores de pantalla como GDM, SDDM o LightDM inician sesiones X y autentican usuarios.</p>
+                    <p>Extensiones como <code>libXrandr</code>, <code>libXcursor</code> o <code>libX11</code> añaden funcionalidades, manteniendo el núcleo de X11 intacto.</p>
                 </section>
-                <section id="106-2">
-                    <h2>106.2 Escritorios gráficos</h2>
+                <section id="configuracion-servidor">
+                    <h2>Configuración del servidor X</h2>
+                    <p>El archivo principal de configuración es <code>/etc/X11/xorg.conf</code>, aunque en distribuciones modernas el servidor X se autoconfigura al inicio. El archivo <code>xorg.conf</code> se divide en secciones, cada una comenzando con <code>Section "NombreSección"</code> y terminando con <code>EndSection</code>, definiendo componentes como monitores o dispositivos de entrada. Archivos adicionales residen en <code>/etc/X11/xorg.conf.d/</code> (usuario) y <code>/usr/share/X11/xorg.conf.d/</code> (distribución), con prioridad para <code>/etc/X11/xorg.conf.d/</code>.</p>
+                    <p>Secciones comunes:</p>
                     <ul>
-                        <li><strong>Entornos</strong>:
-                            <ul>
-                                <li><strong>Gnome</strong>: Gnome Shell (pantalla completa), usado en Fedora, Ubuntu.</li>
-                                <li><strong>KDE</strong>: KDE Plasma, usa Qt, en Kubuntu, openSUSE.</li>
-                                <li><strong>Xfce</strong>: Ligero, modular, para equipos con pocos recursos.</li>
-                            </ul>
-                        </li>
-                        <li><strong>Componentes</strong>: Gestor de ventanas (controla ventanas), widgets (botones, campos), apps básicas (terminal, navegador).</li>
-                        <li><strong>Acceso remoto</strong>:
-                            <ul>
-                                <li><strong>XDMCP</strong>: Pantallas remotas, inseguro, alto ancho de banda.</li>
-                                <li><strong>VNC</strong>: Usa RFB, puertos 5900+, sin cifrado (usar SSH).</li>
-                                <li><strong>RDP</strong>: Acceso a Windows, puerto 3389.</li>
-                                <li><strong>Spice</strong>: Para sistemas virtualizados, integra dispositivos.</li>
-                            </ul>
-                        </li>
+                        <li><strong>InputDevice/InputClass</strong>: Configura teclados o ratones. Ejemplo: <code>/etc/X11/xorg.conf.d/00-keyboard.conf</code> define el diseño del teclado (<code>XkbLayout</code>, como <code>gr(polytonic)</code>).</li>
+                        <li><strong>Monitor</strong>: Especifica monitores físicos (por ejemplo, <code>DP2</code> como primario).</li>
+                        <li><strong>Device</strong>: Describe la tarjeta gráfica y su controlador.</li>
+                        <li><strong>Screen</strong>: Vincula monitor y dispositivo.</li>
+                        <li><strong>ServerLayout</strong>: Agrupa todos los componentes.</li>
                     </ul>
+                    <p>Para generar un archivo <code>xorg.conf</code>, usa <code>sudo Xorg -configure</code>, que crea <code>xorg.conf.new</code> en el directorio actual. Muévelo a <code>/etc/X11/xorg.conf</code> para activarlo. Si hay una sesión X activa, especifica un <code>DISPLAY</code> diferente (por ejemplo, <code>sudo Xorg :1 -configure</code>).</p>
+                    <p>El comando <code>setxkbmap</code> ajusta temporalmente el diseño del teclado (por ejemplo, <code>setxkbmap -model chromebook -layout "gr(polytonic)"</code>), mientras que <code>localectl --no-convert set-x11-keymap "gr(polytonic)" chromebook</code> crea configuraciones permanentes en <code>/etc/X11/xorg.conf.d/00-keyboard.conf</code>.</p>
                 </section>
-                <section id="106-3">
-                    <h2>106.3 Accesibilidad</h2>
+                <section id="herramientas-archivos">
+                    <h2>Herramientas y archivos clave</h2>
+                    <p>Herramientas y archivos esenciales para administrar X11:</p>
                     <ul>
-                        <li><strong>Ajustes</strong>: Gnome (Acceso universal), KDE (Configuración → Accesibilidad), Xfce (menos opciones).</li>
-                        <li><strong>Teclado/Mouse</strong>:
-                            <ul>
-                                <li><strong>Teclas pegajosas</strong>: Atajos uno a uno (ej. Ctrl, luego C).</li>
-                                <li><strong>Teclas lentas</strong>: Mantener tecla para aceptar.</li>
-                                <li><strong>Teclas de rebote</strong>: Retardo para evitar pulsaciones accidentales.</li>
-                                <li><strong>Teclas de ratón</strong>: Mover puntero con teclado numérico.</li>
-                                <li><strong>Teclado en pantalla</strong>: Escribir con ratón (Gnome: nativo; KDE: <code>onboard</code>).</li>
-                                <li><strong>Gestos</strong>: Activar funciones (ej. Shift 5 veces).</li>
-                            </ul>
-                        </li>
-                        <li><strong>Visión</strong>:
-                            <ul>
-                                <li><strong>Temas de alto contraste/impresión grande</strong>: Mejora visibilidad.</li>
-                                <li><strong>Lupa de pantalla</strong>: Zoom (Gnome: Zoom; KDE: KMagnifier).</li>
-                                <li><strong>Lector de pantalla</strong>: Orca (voz sintetizada).</li>
-                                <li><strong>Pantalla braille</strong>: Orca soporta dispositivos braille.</li>
-                            </ul>
-                        </li>
+                        <li><strong>/etc/X11/xorg.conf</strong>: Archivo principal de configuración del servidor X.</li>
+                        <li><strong>/etc/X11/xorg.conf.d/</strong>: Directorio para configuraciones adicionales, como <code>00-keyboard.conf</code>.</li>
+                        <li><strong>~/.xsession-errors</strong>: Registra errores de sesiones X del usuario, útil para depuración.</li>
+                        <li><strong>xhost</strong>: Controla el acceso al servidor X. Ejemplo: <code>xhost +local:</code> permite conexiones locales.</li>
+                        <li><strong>xauth</strong>: Gestiona autenticación para conexiones X, usando cookies almacenadas en <code>~/.Xauthority</code>.</li>
+                        <li><strong>DISPLAY</strong>: Variable de entorno que define el servidor X a usar.</li>
+                        <li><strong>X</strong>: Enlace simbólico a <code>Xorg</code>, inicia el servidor X.</li>
+                        <li><strong>xdpyinfo</strong>: Muestra información del servidor X, como nombre de pantalla, versión, extensiones y resolución.</li>
                     </ul>
+                    <p>Los errores de sesiones X se registran en <code>~/.xsession-errors</code>, ayudando a diagnosticar problemas con aplicaciones o configuraciones.</p>
+                </section>
+                <section id="wayland">
+                    <h2>Wayland</h2>
+                    <p>Wayland es un protocolo moderno diseñado para reemplazar X11, usado por defecto en muchas distribuciones. Es más ligero y ocupa menos espacio. A diferencia de X11, no usa un servidor intermedio; los clientes renderizan directamente mediante toolkits (GTK+, Qt) y un compositor Wayland gestiona la entrada y salida. La variable <code>WAYLAND_DISPLAY</code> (por ejemplo, <code>wayland-0</code>) controla las pantallas en Wayland. Aplicaciones que solo soportan X11 pueden ejecutarse en <code>XWayland</code>, un servidor X dentro de Wayland.</p>
                 </section>
             </div>
         </div>
