@@ -65,9 +65,9 @@
                     <h2>Nombres y resolución</h2>
                     <p>Configura el nombre del sistema y la resolución de nombres.</p>
                     <ul>
-                        <li><strong>Nombre del host:</strong> El archivo `/etc/hostname` define el nombre estático. Cámbialo con `hostnamectl set-hostname storage`, que actualiza `/etc/hostname`.</li>
+                        <li><strong>Nombre del host:</strong> El archivo `/etc/hostname` define el nombre estático del sistema, configurable con `hostnamectl set-hostname storage` para cambios persistentes.</li>
                         <li><strong>Mapeo local:</strong> Usa `/etc/hosts` para asociar IPs con nombres, como `127.0.0.1 localhost` o `192.168.1.10 foo.mydomain.org`.</li>
-                        <li><strong>Resolución de nombres:</strong> `/etc/nsswitch.conf` define el orden de búsqueda, como `hosts: files dns` (primero archivos, luego DNS). `/etc/resolv.conf` configura servidores DNS, como `nameserver 8.8.8.8`.</li>
+                        <li><strong>Resolución de nombres:</strong> `/etc/nsswitch.conf` define el orden de búsqueda, como `hosts: files dns` (primero archivos, luego DNS). `/etc/resolv.conf` especifica servidores DNS (ej. `nameserver 8.8.8.8`) y dominios de búsqueda para resolución de nombres.</li>
                     </ul>
                 </section>
 
@@ -75,7 +75,7 @@
                     <h2>NetworkManager y systemd</h2>
                     <p>NetworkManager automatiza la configuración de red.</p>
                     <ul>
-                        <li><strong>nmcli:</strong> Gestiona conexiones desde la línea de comandos. Algunos subcomandos son <code>nmcli connection</code> (para mostrar o gestionar conexiones) y <code>nmcli device</code> (para controlar dispositivos).</li>
+                        <li><strong>nmcli:</strong> Herramienta de línea de comandos para gestionar conexiones de NetworkManager, permite crear y modificar configuraciones. Subcomandos como <code>nmcli connection</code> gestionan conexiones y <code>nmcli device</code> controlan dispositivos.</li>
                         <li><strong>nmtui:</strong> Ofrece una interfaz curses para gestionar conexiones de NetworkManager de forma interactiva, útil para ajustes manuales.</li>
                         <li><strong>systemd-networkd:</strong> Usa archivos `.network` en `/etc/systemd/network` para configuraciones avanzadas, como `Address=192.168.0.100/24` o `DHCP=yes`.</li>
                     </ul>
