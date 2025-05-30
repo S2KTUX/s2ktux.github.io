@@ -40,24 +40,23 @@
                 </ul>
             </div>
             <div class="content">
-                
-                    <p>El comando <code>date</code>, como comentamos en la anterior unidad,  muestra la hora y fecha actual del sistema. También permite ajustarla manualmente con el formato adecuado.</p>
+                <p>El comando <code>date</code>, como comentamos en la anterior unidad, muestra la hora y fecha actual del sistema. También permite ajustarla manualmente con el formato adecuado.</p>
 
                 <section id="reloj-hardware">
                     <h2>Reloj de hardware</h2>
-                    <p>El comando <code>hwclock</code> interactúa con el reloj en tiempo real (RTC) del hardware, que mantiene la hora incluso cuando el sistema está apagado. Este comando se utiliza para sincronizar el reloj del hardware con el reloj del sistema</p>
-                    <p><code>timedatectl</code> ofrece una alternativa para verificar y configurar la hora, mostrando el estado de sincronización con la red.</p>
+                    <p>El comando <code>hwclock</code> interactúa con el reloj en tiempo real (RTC) del hardware, que mantiene la hora incluso cuando el sistema está apagado. Se utiliza para leer, establecer o sincronizar el reloj del hardware con el reloj del sistema.</p>
+                    <p><code>timedatectl</code> ofrece una alternativa para verificar y configurar la hora, mostrando el estado de sincronización con la red, además de permitir establecer la fecha, hora o zona horaria.</p>
                     <p><strong>Ejemplos:</strong></p>
                     <ul>
                         <li>Listar zonas: <code>timedatectl list-timezones</code></li>
-                        <li>Ajustar hora: <code> timedatectl set-time "2025-05-24 12:30:00"</code></li>
+                        <li>Ajustar hora: <code>timedatectl set-time "2025-05-24 12:30:00"</code></li>
                     </ul>
                 </section>
 
                 <section id="zona-horaria">
                     <h2>Zona horaria</h2>
-                    <p>La zona horaria define el desfase respecto a UTC y ajustes como el horario de verano. Los datos de zonas horarias están en <code>/usr/share/zoneinfo/</code>.</p>
-                    <p><strong>Ejemplo de una configuración manual:</strong></p>
+                    <p>La zona horaria define el desfase respecto a UTC y ajustes como el horario de verano. Los datos de zonas horarias están en <code>/usr/share/zoneinfo/</code>, organizados por regiones (ej. <code>Canada/Eastern</code>), y <code>/etc/localtime</code> suele ser un enlace simbólico a uno de estos archivos.</p>
+                    <p><strong>Ejemplo de configuración manual:</strong></p>
                     <p><code>sudo ln -sf /usr/share/zoneinfo/Canada/Eastern /etc/localtime</code></p>
                     <p>El archivo <code>/etc/timezone</code> también puede especificar la zona horaria.</p>
                     <p>Una zona horaria correcta es esencial para convertir marcas de tiempo Unix a hora local, especialmente en regiones con horario de verano.</p>
@@ -73,7 +72,7 @@
                 <section id="chrony">
                     <h2>Chrony</h2>
                     <p><code>chrony</code> es una alternativa moderna a <code>ntpd</code>, con mejor precisión y soporte para sincronización intermitente.</p>
-                    <p>El archivo de configuración es <code>/etc/chrony.conf</code>. Hay que tener en cuenta que las opciones del archivo de configuración de chrony que definen las fuentes de tiempo remotas son pool y server </p>
+                    <p>El archivo de configuración es <code>/etc/chrony.conf</code>. Las opciones que definen fuentes de tiempo remotas son <code>pool</code> y <code>server</code>.</p>
                     <p><strong>Ejemplo de configuración en /etc/chrony.conf:</strong></p>
                     <pre><code>pool pool.ntp.org iburst</code></pre>
                     <p>La opción <code>iburst</code> acelera la sincronización inicial enviando múltiples paquetes al servidor NTP.</p>
