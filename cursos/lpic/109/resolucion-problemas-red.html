@@ -53,7 +53,7 @@
                         <li><strong>Ver interfaces</strong>: Usa `ip link` para ver las conexiones de red disponibles. Por ejemplo, `ip link` podría mostrar `enp0s3` (una interfaz de red) y `lo` (la interfaz local).</li>
                         <li><strong>Asignar direcciones</strong>: Con `ip addr add 192.168.5.5/24 dev enp0s8` le das una dirección a tu interfaz. Para IPv6, usas lo mismo, como `ip addr add 2001:db8::10/64 dev enp0s8`.</li>
                         <li><strong>Activar o desactivar</strong>: Con `ip link set dev enp0s8 down` apagas una interfaz, y con `ip link set dev enp0s8 up` la enciendes. Por ejemplo, después de encenderla, podrías ver `state UP` al usar `ip link show dev enp0s8`.</li>
-                        <li><strong>Cambiar nombre del equipo</strong>: Usa `hostname nuevo-nombre` para cambiar el nombre temporalmente, como `hostname mi-servidor`. Para que el cambio sea permanente, usa `hostnamectl set-hostname mi-servidor`.</li>
+                        <li><strong>Cambiar nombre del equipo</strong>: Usa `hostname nuevo-nombre` for cambiar el nombre temporalmente, como `hostname mi-servidor`. Para que el cambio sea permanente, usa `hostnamectl set-hostname mi-servidor`.</li>
                     </ul>
                 </section>
 
@@ -61,9 +61,9 @@
                     <h2>Herramientas para buscar problemas</h2>
                     <p>Estas herramientas te ayudan a ver si tu red funciona bien o a encontrar dónde está el problema.</p>
                     <ul>
-                        <li><strong>ping / ping6</strong>: Sirven para probar si puedes llegar a otro equipo. `ping` envía un mensaje (ICMP Echo Request) y espera una respuesta (ICMP Echo Response). Por ejemplo, `ping 8.8.8.8` podría mostrar: `64 bytes from 8.8.8.8: icmp_seq=1 ttl=117 time=15.2 ms`. Para IPv6, usa `ping6`, como `ping6 2001:db8::1`.</li>
-                        <li><strong>traceroute / traceroute6</strong>: Muestran el camino que siguen tus datos para llegar a un destino. Por ejemplo, `traceroute google.com` podría mostrar: `1 192.168.1.1 2ms`, `2 10.0.0.1 5ms`, indicando los servidores por los que pasa. Para IPv6, usa `traceroute6`.</li>
-                        <li><strong>netcat</strong>: Sirve para probar puertos o enviar datos, como `nc -zv 192.168.1.1 80`, que te dirá si el puerto 80 está abierto, mostrando algo como `192.168.1.1 80 (http) open`.</li>
+                        <li><strong>ping / ping6</strong>: Prueban la conectividad enviando mensajes ICMP Echo Request y esperando Echo Reply. Por ejemplo, `ping 8.8.8.8` muestra `64 bytes from 8.8.8.8: icmp_seq=1 ttl=117 time=15.2 ms`. Para IPv6, usa `ping6`, como `ping6 2001:db8::1`.</li>
+                        <li><strong>traceroute / traceroute6</strong>: Rastrean la ruta de los paquetes hacia un destino, mostrando cada salto (router) con latencia. Por ejemplo, `traceroute google.com` podría mostrar `1 192.168.1.1 2ms`, `2 10.0.0.1 5ms`. Para IPv6, usa `traceroute6`.</li>
+                        <li><strong>netcat</strong>: Prueba puertos o envía datos, como `nc -zv 192.168.1.1 80`, que indica si el puerto 80 está abierto, mostrando `192.168.1.1 80 (http) open`.</li>
                     </ul>
                 </section>
 
@@ -79,12 +79,12 @@
 
                 <section id="conexiones">
                     <h2>Ver conexiones con netstat y ss</h2>
-                    <p>`netstat` y `ss` te ayudan a ver qué conexiones están activas en tu red. `ss` es más moderno y rápido, pero `netstat` sigue siendo útil. Aquí están las opciones más comunes:</p>
+                    <p>`netstat` muestra conexiones de red activas, como TCP, UDP, y puertos en escucha, útil para diagnosticar problemas. `ss` es más moderno y rápido. Opciones comunes:</p>
                     <ul>
                         <li><strong>-t</strong>: Muestra conexiones TCP. Por ejemplo, `ss -t` podría mostrar: `ESTAB 0 0 192.168.1.100:22 203.0.113.1:54321`, indicando una conexión SSH activa.</li>
                         <li><strong>-u</strong>: Muestra conexiones UDP. Con `netstat -u`, podrías ver: `udp 0 0 0.0.0.0:68 0.0.0.0:*`, que es un servicio DHCP.</li>
                         <li><strong>-l</strong>: Muestra puertos que están escuchando. Por ejemplo, `ss -l` podría mostrar: `tcp LISTEN 0 128 127.0.0.1:22`, indicando que el puerto 22 (SSH) está listo para conexiones.</li>
-                        <li><strong>-p</strong>: Muestra el programa que usa la conexión. Con `netstat -p`, podrías ver: `tcp 0 0 127.0.0.1:22 0.0.0.0:* LISTEN 1234/sshd`, donde `sshd` es el programa.</li>
+                        <li><strong>-p</strong>: Muestra el programa que usa la conexión. Con `netstat -p`, podrías see: `tcp 0 0 127.0.0.1:22 0.0.0.0:* LISTEN 1234/sshd`, donde `sshd` es el programa.</li>
                         <li><strong>-n</strong>: Muestra direcciones y puertos como números, sin traducirlos. Por ejemplo, `ss -tn` podría mostrar: `ESTAB 0 0 192.168.1.100:22 203.0.113.1:54321` en lugar de nombres como `ssh`.</li>
                         <li><strong>Combinar opciones:</strong> Usa `netstat -tulnp` para ver todas las conexiones TCP y UDP que están escuchando, con números y programas. Podrías ver: `tcp 0 0 0.0.0.0:80 0.0.0.0:* LISTEN 4321/nginx`.</li>
                     </ul>
