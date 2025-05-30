@@ -90,10 +90,16 @@
                         </li>
                         <li><strong>Comandos relacionados:</strong>
                             <ul>
-                                <li><strong><code>set</code>:</strong> Muestra todas las variables y funciones asignadas.</li>
+                                <li><strong><code>set</code>:</strong> Muestra todas las variables y funciones asignadas, incluyendo tanto locales como de entorno.</li>
                                 <li><strong><code>unset</code>:</strong> Elimina una variable. Ejemplo: <code>unset distro</code>.</li>
-                                <li><strong><code>export</code>:</strong> Convierte una variable local en global.</li>
-                                <li><strong><code>env</code> y <code>printenv</code>:</strong> Lista variables de entorno. <code>env</code> también modifica el entorno al ejecutar un programa.</li>
+                                <li><strong><code>export</code>:</strong> Convierte una variable local en global, haciéndola visible en subshells. Ejemplo: <code>export VARIABLE</code>.</li>
+                                <li><strong><code>env</code> y <code>printenv</code>:</strong> Listan exclusivamente las variables de entorno. <code>env</code> también puede modificar el entorno al ejecutar un programa.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Variables especiales:</strong>
+                            <ul>
+                                <li><strong><code>$$</code>:</strong> Contiene el PID del shell actual.</li>
+                                <li><strong><code>$?</code>:</strong> Almacena el código de salida del último comando ejecutado.</li>
                             </ul>
                         </li>
                         <li><strong>Variables comunes:</strong>
@@ -105,7 +111,7 @@
                                 <li><strong><code>LD_LIBRARY_PATH</code>:</strong> Directorios para bibliotecas compartidas (echo $LD_LIBRARY_PATH : /usr/local/lib).</li>
                                 <li><strong><code>MAIL</code>:</strong> Archivo donde bash revisa el correo (echo $MAIL : /var/mail/sysriser).</li>
                                 <li><strong><code>PATH</code>:</strong> Directorios donde bash busca ejecutables (echo $PATH : /usr/local/bin:/usr/bin:/bin).</li>
-                                <li><strong><code>PS1</code>:</strong> Define el prompt de bash .</li>
+                                <li><strong><code>PS1</code>:</strong> Define el prompt de bash.</li>
                                 <li><strong><code>SHELL</code>:</strong> Ruta del shell actual (echo $SHELL : /bin/bash).</li>
                                 <li><strong><code>USER</code>:</strong> Nombre del usuario (echo $USER : sysriser).</li>
                             </ul>
@@ -120,8 +126,11 @@
                             - Ejemplo: <code>alias ll="ls -la"</code>.<br>
                             - Dinámico (comillas simples): <code>alias where?='echo $PWD'</code> (cambia con el directorio).<br>
                             - Estático (comillas dobles): <code>alias where?="echo $PWD"</code> (valor fijo).<br>
+                            - Para listar todos los alias definidos: <code>alias</code> sin parámetros.<br>
+                            - Para modificar un alias existente: <code>alias nombre='nuevo_comando'</code>.
+                        </li>
                         <li><strong>Funciones:</strong> Más flexibles que los alias.<br>
-                            - Podemos definirlos de dos maneras :<br>
+                            - Podemos definirlos de dos maneras:<br>
                                 <pre>
 #1. Mediante la palabra function
 function miFuncion() {
@@ -132,7 +141,7 @@ miFuncion() {
     echo "Hola $1"
 }
                                 </pre>
-</li>
+                        </li>
                     </ul>
                 </section>
             </div>
