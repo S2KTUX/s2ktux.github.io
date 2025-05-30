@@ -43,9 +43,10 @@
                 <section id="109-1">
                     <h2>109.1 - Fundamentos de protocolos de Internet</h2>
                     <ul>
-                        <li>IPv4: 32 bits (ej. 192.168.1.1), clases A-C, rangos privados (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16).</li>
+                        <li>IPv4: 32 bits (ej. 192.168.1.1), clases A-C, rangos privados (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, usado para redes internas no enrutables).</li>
                         <li>IPv6: 128 bits (ej. 2001:db8:3241::1), unicast, multicast (ff02::1), sin broadcast.</li>
-                        <li>TCP: Conexión (3-way handshake), UDP: Sin conexión, ICMP: Para <code>ping</code>.</li>
+                        <li>TCP: Conexión (3-way handshake), fiable, ideal para correo. UDP: Sin conexión, rápido, para streaming.</li>
+                        <li>ICMP: Usado por <code>ping</code> para enviar Echo Request y recibir Echo Reply, probando conectividad.</li>
                         <li>Puertos: 80 (HTTP), 443 (HTTPS), 53 (DNS).</li>
                     </ul>
                 </section>
@@ -53,12 +54,12 @@
                 <section id="109-2">
                     <h2>109.2 - Configuración de red persistente</h2>
                     <ul>
-                        <li><code>/etc/hostname</code>: Nombre (cambia con <code>hostnamectl set-hostname</code>).</li>
+                        <li><code>/etc/hostname</code>: Define el nombre estático (cambia con <code>hostnamectl set-hostname</code>).</li>
                         <li><code>/etc/hosts</code>: IPs locales (ej. <code>127.0.0.1 localhost</code>).</li>
-                        <li><code>/etc/nsswitch.conf</code>: Orden (ej. <code>hosts: files dns</code>).</li>
-                        <li><code>/etc/resolv.conf</code>: DNS (ej. <code>nameserver 8.8.8.8</code>).</li>
+                        <li><code>/etc/nsswitch.conf</code>: Orden de resolución (ej. <code>hosts: files dns</code>).</li>
+                        <li><code>/etc/resolv.conf</code>: Especifica servidores DNS (ej. <code>nameserver 8.8.8.8</code>) y dominios de búsqueda.</li>
                         <li>Interfaces: DHCP (<code>iface enp3s5 inet dhcp</code>, <code>ifup enp3s5</code>), estático (<code>address 192.168.1.2/24</code>, <code>ifdown enp3s5</code>).</li>
-                        <li><code>nmcli</code>: <code>connection show</code>, <code>device wifi connect</code>.</li>
+                        <li><code>nmcli</code>: Gestiona conexiones de NetworkManager (ej. <code>connection show</code>, <code>device wifi connect</code>).</li>
                         <li><code>nmtui</code>: Ajustes interactivos.</li>
                     </ul>
                 </section>
@@ -66,25 +67,25 @@
                 <section id="109-3">
                     <h2>109.3 - Resolución de problemas básicos de red</h2>
                     <ul>
-                        <li><code>ping</code>: ICMP Echo (ej. <code>ping 8.8.8.8</code>).</li>
-                        <li><code>traceroute</code>: Rutas (ej. <code>traceroute google.com</code>).</li>
-                        <li><code>netstat</code>: Conexiones (<code>-t</code>), rutas (<code>-r</code>).</li>
-                        <li><code>ss</code>: TCP (<code>-t</code>), UDP (<code>-u</code>).</li>
-                        <li>Bytes en <code>eth0</code>: <code>ip -s link show eth0</code>.</li>
-                        <li><code>ip addr</code>: Configura (ej. <code>ip addr add 192.168.1.10/24</code>).</li>
-                        <li><code>ip route</code>: Rutas (ej. <code>default via 192.168.1.1</code>).</li>
+                        <li><code>ping</code>: Usa ICMP Echo Request/Reply para probar conectividad (ej. <code>ping 8.8.8.8</code>).</li>
+                        <li><code>traceroute</code>: Muestra la ruta de paquetes a un destino, con saltos y latencia (ej. <code>traceroute google.com</code>).</li>
+                        <li><code>netstat</code>: Muestra conexiones activas, puertos, rutas (<code>-t</code> para TCP, <code>-r</code> para rutas).</li>
+                        <li><code>ss</code>: TCP (<code>-t</code>), UDP (<code>-u</code>), más rápido que <code>netstat</code>.</li>
+                        <li>Bytes en <code>eth0</code>: <code>ip -s link show eth0</code> muestra estadísticas.</li>
+                        <li><code>ip addr</code>: Configura interfaces (ej. <code>ip addr add 192.168.1.10/24</code>).</li>
+                        <li><code>ip route</code>: Gestiona rutas (ej. <code>default via 192.168.1.1</code>).</li>
                     </ul>
                 </section>
 
                 <section id="109-4">
                     <h2>109.4 - Configuración DNS en el lado del cliente</h2>
                     <ul>
-                        <li><code>/etc/nsswitch.conf</code>: Orden (ej. <code>hosts: files dns</code>).</li>
-                        <li><code>/etc/hosts</code>: Mapeo (ej. <code>127.0.0.1 localhost</code>).</li>
-                        <li><code>/etc/resolv.conf</code>: DNS (ej. <code>nameserver 8.8.8.8</code>, <code>search lpi.org</code>).</li>
-                        <li><code>host</code>: Resuelve (ej. <code>host google.com</code>).</li>
-                        <li><code>dig</code>: Detalles DNS (ej. <code>dig google.com</code>).</li>
-                        <li><code>getent</code>: Busca (ej. <code>getent hosts google.com</code>).</li>
+                        <li><code>/etc/nsswitch.conf</code>: Orden de resolución (ej. <code>hosts: files dns</code>).</li>
+                        <li><code>/etc/hosts</code>: Mapeo local (ej. <code>127.0.0.1 localhost</code>).</li>
+                        <li><code>/etc/resolv.conf</code>: Servidores DNS (ej. <code>nameserver 8.8.8.8</code>, <code>search lpi.org</code>).</li>
+                        <li><code>host</code>: Consultas DNS simples, devuelve IPs y registros (ej. <code>host google.com</code>).</li>
+                        <li><code>dig</code>: Consultas DNS detalladas, muestra IPs, TTL, servidores (ej. <code>dig google.com</code>).</li>
+                        <li><code>getent</code>: Busca según <code>/etc/nsswitch.conf</code> (ej. <code>getent hosts google.com</code>).</li>
                     </ul>
                 </section>
             </div>
