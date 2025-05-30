@@ -45,66 +45,69 @@
                     <ul>
                         <li><strong>Comandos</strong>:
                             <ul>
-                                <li><code>useradd</code>: Crea usuario (ej. con <code>-m</code> para directorio de inicio, <code>-s</code> para shell).</li>
-                                <li><code>usermod</code>: Modifica usuario (ej. <code>-G</code> para grupos, <code>-L</code> para bloquear).</li>
+                                <li><code>useradd</code>: Crea una nueva cuenta de usuario (ej. con <code>-m</code> para directorio de inicio, <code>-s</code> para shell).</li>
+                                <li><code>usermod</code>: Modifica parámetros de una cuenta existente, como grupos (<code>-G</code>) o estado de bloqueo (<code>-L</code>).</li>
                                 <li><code>userdel</code>: Elimina usuario (<code>-r</code> borra directorio de inicio).</li>
-                                <li><code>groupadd</code>, <code>groupmod</code>, <code>groupdel</code>: Gestiona grupos.</li>
-                                <li><code>passwd</code>: Cambia contraseñas.</li>
+                                <li><code>groupadd</code>: Crea un nuevo grupo, con opción para asignar un GID específico.</li>
+                                <li><code>groupmod</code>, <code>groupdel</code>: Modifica o elimina grupos.</li>
+                                <li><code>passwd</code>: Cambia contraseñas, usado por root para otros usuarios o por usuarios regulares para la propia.</li>
                                 <li><code>chage</code>: Gestiona caducidad de contraseñas.</li>
-                                <li><code>getent</code>: Consulta bases de datos (ej. <code>getent passwd sysriser</code> muestra entrada de usuario).</li>
+                                <li><code>getent</code>: Consulta bases de datos del sistema, mostrando entradas como la de un usuario en <code>/etc/passwd</code> (ej. <code>getent passwd sysriser</code>).</li>
                             </ul>
                         </li>
                         <li><strong>Archivos</strong>:
                             <ul>
-                                <li><code>/etc/passwd</code>: Info de usuarios (nombre, UID, GID, shell).</li>
-                                <li><code>/etc/group</code>: Info de grupos (nombre, GID, miembros).</li>
-                                <li><code>/etc/shadow</code>: Contraseñas cifradas, caducidad.</li>
-                                <li><code>/etc/gshadow</code>: Contraseñas de grupos, admins.</li>
-                                <li><code>/etc/skel</code>: Plantilla para directorios de inicio.</li>
-                                <li><code>/etc/login.defs</code>: Configuración de usuarios (ej. <code>CREATE_HOME</code>).</li>
+                                <li><code>/etc/passwd</code>: Información de usuarios, con siete campos separados por <code>,</code>: nombre, contraseña (x), UID, GID, descripción, directorio de inicio, shell.</li>
+                                <li><code>group</code>: Información de grupos, con cuatro campos: nombre, contraseña (x), GID, miembros.</li>
+<li><code>/etc/shadow</code>: Contraseñas cifradas de usuarios, legible solo por seguridad, con detalles de caducidad.</li>
+                                <li><code>/etc/gshadow</code>: Contraseñas cifradas de grupos, con administradores y miembros.</li>
+                                <li><code>/etc/skel</code>: Plantilla para directorios de inicio de nuevos usuarios.</li>
+                                <li><code>/etc/login.defs</code>: Configuración de usuarios (ej. <code>CREATE_HOME</code> para crear directorios de inicio).</li>
                             </ul>
                         </li>
                     </ul>
                 </section>
                 <section id="107-2">
                     <h2>107.2 Automatización de tareas</h2>
-                    <p>Programa tareas con cron, systemd, at y systemd-run.</p>
+                    <p>Programas tareas con cron, systemd, at y systemd-run.</p>
                     <ul>
                         <li><strong>Cron</strong>: Ejecuta tareas periódicas.
                             <ul>
-                                <li>Crontab: <code>min hora día-mes mes día-semana comando</code>.</li>
-                                <li>Usuario: <code>crontab -e</code> (editar), <code>crontab -l</code> (ver).</li>
-                                <li>Sistema: <code>/etc/crontab</code>, <code>/etc/cron.d/</code> (con usuario).</li>
-                                <li>Restricciones: <code>/etc/cron.allow</code>, <code>/etc/cron.deny</code>.</li>
+                                <li><strong>Crontab</strong>: Consta de seis campos: minuto, hora, día del mes, mes, día de la semana, y comando. Archivos de usuario en <code>/var/spool/cron/</code>.</li>
+                                <li><strong>Usuario</strong>: Editar con <code>crontab -e</code>, ver con <code>crontab -l</code>.</li>
+                                <li><strong>Sistema</strong>: Archivos en <code>/etc/crontab</code> y <code>/etc/cron.d/</code>, con campo adicional para usuario.</li>
+                                <li><strong>Restricciones</strong>: <code>/etc/cron.allow</code> permite solo a usuarios listados; <code>/etc/cron.deny</code> prohíbe a los listados.</li>
                             </ul>
-                        </li>
-                        <li><strong>Systemd timers</strong>: Alternativa a cron, usa <code>.timer</code> con <code>OnCalendar</code>.</li>
-                        <li><strong>at</strong>: Tareas únicas, usa <code>atq</code> (listar), <code>atrm</code> (eliminar).</li>
-                        <li><strong>systemd-run</strong>: Tareas únicas con <code>--on-calendar</code> o <code>--on-active</code>.</li>
-                    </ul>
+                            </li>
+                            <li><strong>Systemd timers</strong>: Alternativa a cron, usa archivos <code>.timer</code> con <code>OnCalendar</code>.</li>
+                            <li><strong>at</strong>: Programa tareas de ejecución única. Usa <code>atq</code> (listar) y <code>atrm</code> (eliminar).</li>
+                            <li><li><strong>systemd-run</strong>: Tareas únicas con <code>--on-calendar</code> o <code>--on-active</code>.</li>
+                        </ul>
+                    </li>
                 </section>
                 <section id="107-3">
-                    <h2>107.3 Localización e internacionalización</h2>
+                    <h2>107.3 Localización de internacionalización</h2>
                     <p>Configura zonas horarias y localización.</p>
-                    <ul>
-                        <li><strong>Zonas horarias</strong>:
-                            <ul>
-                                <li><code>/etc/timezone</code>, <code>/etc/localtime</code>: Definen zona horaria.</li>
-                                <li><code>/usr/share/zoneinfo/</code>: Archivos de zonas horarias.</li>
-                                <li><code>TZ</code>: Zona horaria de sesión.</li>
-                                <li>Comandos: <code>date</code>, <code>timedatectl</code>, <code>tzselect</code>.</li>
-                            </ul>
-                        </li>
-                        <li><strong>Localización</strong>:
-                            <ul>
-                                <li><code>LANG</code>: Idioma/codificación (ej. <code>es_ES.UTF-8</code>).</li>
-                                <li><code>LC_*</code>: Formatos específicos (ej. <code>LC_TIME</code>, <code>LC_MONETARY</code>).</li>
-                                <li><code>LC_ALL</code>: Anula todas las variables.</li>
-                                <li><code>/etc/locale.conf</code>: Configuración del sistema.</li>
-                                <li>Comandos: <code>locale</code>, <code>localectl</code>.</li>
-                            </ul>
-                        </li>
-                        <li><strong>iconv</strong>: Convierte codificaciones (ej. <code>iconv -l</code> lista codificaciones).</li>
+                    <p>ul>
+                        <ul>
+                            <li><strong>Zonas horarias</strong>:
+                                <ul>
+                                    <li><code>/etc/timezone</code>, <code>/etc/localtime</code>: Define la zona horaria, con <code>/etc/localtime</code> como enlace a un archivo en <code>/usr/share/zoneinfo/</code> (archivos de datos de zonas).</li>
+                                    <li><code>TZ</code>: Variable para la zona horaria de la sesión.</li>
+                                    <li><strong>Comandos</strong>: <code>date</code> muestra hora, <code>timedatectl</code> configura, <code>tzselect</code> selecciona zona interactivamente.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Localización</strong>:
+                                <ul>
+                                    <li><code>LANG</code>: Define idioma/codificación (ej. <code>es_ES.UTF-8</code>).</li>
+                                    <li><code>LC_*</code>: Formatos específicos (por ejemplo <code>. ej. LC_TIME</code>, <code>LC_MONETARY</code>).</li>
+                                    <li><code>LC_ALL</code>: Anula todas las variables de localización de.</li>
+                                    <li><code>/etc/locale.conf</code>: Configuración del sistema.</li>
+                                    <li><strong>Comandos</strong>: <code>locale</code> muestra configuraciones de localización actuales, <code>localectl</code> las configura.</li>
+                                </ul>
+                            </li>
+                            <li><strong>liconv</strong>: Convierte codificaciones (ej. <code>iconv -l</code> lista codificaciones).</li>
+                        </ul>
                     </ul>
                 </section>
             </div>
@@ -114,10 +117,12 @@
         <div class="footer-content">
             <p>SysRiser | Un lugar para aprender sistemas y redes</p>
             <div class="footer-links">
-                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
-                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
-                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
-                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
+                <div class="footer-links">
+                    <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
+                    <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
+                    <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
+                    <a href="https://www.youtube.com/@youtube" data-tooltip="Mira nuestros videos">YouTube</a>
+                </div>
             </div>
         </div>
     </footer>
