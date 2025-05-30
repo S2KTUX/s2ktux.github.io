@@ -46,36 +46,36 @@
                     <p><strong>Configuración</strong>:</p>
                     <ul>
                         <li><code>/etc/timezone</code>: Define la zona horaria del sistema.</li>
-                        <li><code>/etc/localtime</code>: Enlace simbólico a un archivo en <code>/usr/share/zoneinfo/</code> para ajustes como horario de verano. Ejemplo: <code>sudo ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime</code></li>
+                        <li><code>/etc/localtime</code>: Enlace simbólico a un archivo en <code>/usr/share/zoneinfo/</code>, que contiene los datos de zonas horarias organizados por regiones (por ejemplo, <code>America/Sao_Paulo</code>). Ejemplo: <code>sudo ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime</code></li>
                         <li><code>TZ</code>: Variable de entorno para la zona horaria de la sesión. Ejemplo: <code>export TZ="Africa/Cairo"; date</code></li>
                     </ul>
                     <p><strong>Comandos</strong>:</p>
                     <ul>
-                        <li><code>date</code>: Muestra hora y zona. Tambien puede Ajustar la fecha y hora del sistema</li>
+                        <li><code>date</code>: Muestra hora y zona. También puede ajustar la fecha y hora del sistema.</li>
                         <li><code>timedatectl</code>: Muestra/configura hora (systemd).</li>
-                        <li><code>tzselect</code>: Selecciona zona horaria interactivamente. </li>
+                        <li><code>tzselect</code>: Selecciona una zona horaria interactivamente, guiando al usuario a través de un menú por continente y ciudad.</li>
                     </ul>
                 </section>
                 <section id="localizacion">
                     <h2>Localización</h2>
                     <p>La localización configura idioma y formatos (moneda, números, etc.) mediante variables de entorno.</p>
-                    <p><strong>Algunas varibles a tener en cuenta son :</strong>:</p>
+                    <p><strong>Algunas variables a tener en cuenta son:</strong></p>
                     <ul>
                         <li><code>LANG</code>: Define idioma y codificación. Ejemplo: <code>export LANG=es_ES.UTF-8</code></li>
-                        <li><code>LC_MESSAGES</code>: Idioma de mensajes. Ejemplo : export LC_MESSAGES="es"</li>
+                        <li><code>LC_MESSAGES</code>: Idioma de mensajes. Ejemplo: <code>export LC_MESSAGES="es"</code></li>
                         <li><code>LC_TIME</code>: Formato de hora/fecha.</li>
-                        <li><code>LC_ALL</code>: Anula todas las variables.</li>
+                        <li><code>LC_ALL</code>: Anula todas las demás variables de localización, forzando una configuración específica.</li>
                     </ul>
                     <p><strong>Configuración</strong>:</p>
                     <ul>
                         <li><code>/etc/locale.conf</code>: Define localización del sistema.</li>
-                        <li><code>locale</code>: Muestra variables de localización.</li>
+                        <li><code>locale</code>: Muestra las configuraciones de localización actuales, como <code>LANG</code> y <code>LC_*</code>, que determinan idioma, formatos, y codificación.</li>
                         <li><code>localectl</code>: Configura locale (systemd). Ejemplo: <code>localectl set-locale LANG=es_US.UTF-8</code></li>
                     </ul>
                 </section>
                 <section id="codificacion">
                     <h2>Conversión de codificación</h2>
-                    <p><strong>iconv</strong>: Es un comando que convierte codificaciones de caracteres, es decir, convierte archivos de un juego de caracteres a otro</p>
+                    <p><strong>iconv</strong>: Es un comando que convierte codificaciones de caracteres, es decir, convierte archivos de un juego de caracteres a otro.</p>
                     <p>Podemos listar codificaciones: <code>iconv -l</code></p>
                 </section>
             </div>
