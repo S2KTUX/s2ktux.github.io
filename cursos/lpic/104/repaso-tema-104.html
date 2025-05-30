@@ -62,6 +62,7 @@
                             - Partición: <code>mkswap /dev/sda2</code>, <code>swapon /dev/sda2</code>.<br>
                             - Archivo: <code>dd</code> para crear, <code>mkswap /swapfile</code>, <code>swapon /swapfile</code>.</li>
                     </ul>
+                    <p>El tipo de partición para swap en discos MBR es <code>82</code> (Linux Swap).</p>
                 </section>
                 <section id="104-2">
                     <h2>104.2 Mantener la integridad de los sistemas de archivos</h2>
@@ -76,6 +77,7 @@
                             - <code>xfs_repair</code>: <code>-n</code> (simula), <code>-d</code> (repara montado, peligroso).<br>
                             - Otras: <code>xfs_db</code> (depurar), <code>xfs_fsr</code> (desfragmentar).</li>
                     </ul>
+                    <p>El porcentaje predeterminado de espacio reservado para root en sistemas de archivos ext4 es del 5%.</p>
                 </section>
                 <section id="104-3">
                     <h2>104.3 Controlar el montaje y desmontaje</h2>
@@ -88,6 +90,7 @@
                         <li><strong>UUID/Etiquetas:</strong> Usa <code>lsblk -f</code> para ver UUID, configúralos en <code>/etc/fstab</code> (ej. <code>UUID=1234-5678</code>).</li>
                         <li><strong>systemd:</strong> Unidades <code>.mount</code> y <code>.automount</code> para montaje automático, activa con <code>systemctl enable</code>.</li>
                     </ul>
+                    <p>Para montajes manuales no listados en fstab, systemd puede generar unidades de montaje con <code>systemctl mountsync</code>.</p>
                 </section>
                 <section id="104-5">
                     <h2>104.5 Administrar permisos y propietarios de archivos</h2>
@@ -104,6 +107,7 @@
                             - <strong>SGID (2):</strong> Ejecuta con permisos del grupo, en directorios hereda grupo, <code>s</code> en grupo, <code>chmod 2755 archivo</code>.<br>
                             - <strong>Sticky bit (1):</strong> En directorios, evita borrar archivos de otros, <code>t</code> en otros, <code>chmod 1755 directorio</code>.</li>
                     </ul>
+                    <p>El valor umask <code>0027</code> establece permisos <code>-rw-r-----</code> para nuevos archivos.</p>
                 </section>
                 <section id="104-6">
                     <h2>104.6 Crear y cambiar enlaces duros y simbólicos</h2>
@@ -113,6 +117,7 @@
                         <li><strong>Enlaces simbólicos:</strong> Apuntan a la ruta, se rompen si se borra el original, funcionan entre sistemas de archivos; crea con <code>ln -s archivo enlace</code>.</li>
                         <li><strong>Verificar:</strong> <code>ls -li</code> (inodo para duros), <code>ls -lh</code> (flecha para simbólicos).</li>
                     </ul>
+                    <p>Los enlaces duros no pueden apuntar a archivos en diferentes sistemas de archivos porque dependen del mismo inodo.</p>
                 </section>
                 <section id="104-7">
                     <h2>104.7 Encontrar y ubicar archivos</h2>
@@ -123,11 +128,13 @@
                             - <code>/etc</code>: Configuración.<br>
                             - <code>/home</code>: Perfiles de usuario.<br>
                             - <code>/lib</code>: Librerías.<br>
-                            - <code>/tmp</code>, <code>/var/tmp</code>, <code>/run</code>: Archivos temporales.</li>
-                        <li><strong><code>find</code> (por atributos y tiempo):</strong> <code>-user</code>, <code>-group</code>, <code>-perm</code>, <code>-size</code>, <code>-mtime N</code>, <code>-executable</code>.</li>
+                            - <code>/tmp</code>, <code>/var/tmp</code>, <code>/run</code>: Archivos temporales.<br>
+                            - <code>/usr/share/man</code>: Páginas de manual.</li>
+                        <li><strong><code>find</code> (por atributos y tiempo):</strong> <code>-user</code>, <code>-group</code>, <code>-perm</code>, <code>-size</code>, <code>-mtime N</code>, <code>-executable</code>, <code>-maxdepth N</code>.</li>
                         <li><strong><code>locate</code> (base de datos):</strong> Actualiza con <code>updatedb</code>, <code>-i</code> (ignora mayúsculas), configura en <code>/etc/updatedb.conf</code>.</li>
                         <li><strong>Binarios:</strong> <code>which</code> (ruta), <code>type</code> (tipo), <code>whereis</code> (binario, manual, fuente).</li>
                     </ul>
+                    <p>El comando <code>file</code> determina el tipo de archivo usando una base de datos de definiciones.</p>
                 </section>
             </div>
         </div>
