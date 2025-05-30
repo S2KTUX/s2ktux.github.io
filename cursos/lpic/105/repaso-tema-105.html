@@ -39,10 +39,21 @@
                 </ul>
             </div>
             <div class="content">
-                <p>Un repaso de 5 minutos con lo esencial de los subtemas 105.1 y 105.2 para el examen LPIC-1.</p>
+                
                 <section id="subtema-1051">
                     <h2>105.1 Personalizar y usar el entorno de shell</h2>
                     <p>El entorno de shell es la interfaz entre el usuario y el kernel de Linux, y personalizarlo mejora la productividad. Aquí están los aspectos principales:</p>
+                    
+                    <div class="exam-tip">
+                        <h3>Consejos clave</h3>
+                        <ul>
+                            <li>Para listar todos los alias: <code>alias</code> sin parámetros</li>
+                            <li>Para ver variables de entorno: <code>env</code> o <code>printenv</code></li>
+                            <li>Para hacer una variable global: <code>export VARIABLE</code></li>
+                            <li>El código de salida del último comando está en <code>$?</code></li>
+                        </ul>
+                    </div>
+                    
                     <ul>
                         <li><strong>Archivos de configuración:</strong>
                             <ul>
@@ -58,7 +69,7 @@
                                         <li><code>~/.bash_profile</code>: Configura el entorno al iniciar una sesión de login.</li>
                                         <li><code>~/.bash_login</code>: Se usa si no existe <code>.bash_profile</code>.</li>
                                         <li><code>~/.profile</code>: Alternativa para shells Bourne, carga <code>.bashrc</code> si es bash.</li>
-                                        <li><code>~/.bashrc</code>: Almacena alias y funciones personales.</li>
+                                        <li><code>~/.bashrc</code>: Almacena alias y funciones personales. <strong>No se lee en shells de login</strong>.</li>
                                         <li><code>~/.bash_logout</code>: Tareas de limpieza al cerrar sesión.</li>
                                     </ul>
                                 </li>
@@ -68,7 +79,12 @@
                         <li><strong>Variables:</strong>
                             <ul>
                                 <li>Almacenan valores (ej. <code>distro=zorinos</code>). No pueden empezar por números ni tener espacios.</li>
-                                <li><strong>Tipos:</strong> Locales (minúsculas, solo en el shell actual) y globales (mayúsculas, para toda la sesión).</li>
+                                <li><strong>Tipos:</strong> 
+                                    <ul>
+                                        <li>Locales (minúsculas, solo en el shell actual)</li>
+                                        <li>Globales (mayúsculas, para toda la sesión)</li>
+                                    </ul>
+                                </li>
                                 <li><strong>Comandos:</strong>
                                     <ul>
                                         <li><code>export</code>: Convierte variables locales en globales (ej. <code>export VAR=valor</code>).</li>
@@ -77,20 +93,43 @@
                                         <li><code>env</code>/<code>printenv</code>: Lista variables de entorno.</li>
                                     </ul>
                                 </li>
-                                <li><strong>Comunes:</strong> <code>DISPLAY</code> (pantalla), <code>HOME</code> (directorio personal), <code>HOSTNAME</code> (nombre del equipo), <code>LANG</code> (localización), <code>LD_LIBRARY_PATH</code> (bibliotecas), <code>MAIL</code> (correo), <code>PATH</code> (rutas de ejecutables), <code>PS1</code> (prompt), <code>SHELL</code> (ruta del shell), <code>USER</code> (nombre del usuario).</li>
+                                <li><strong>Variables especiales:</strong>
+                                    <ul>
+                                        <li><code>DISPLAY</code>: Configuración de pantalla X11</li>
+                                        <li><code>$$</code>: PID del shell actual</li>
+                                        <li><code>$?</code>: Código de salida del último comando</li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                         <li><strong>Alias y funciones:</strong>
                             <ul>
-                                <li><strong>Alias:</strong> Atajos para comandos (ej. <code>alias ll="ls -la"</code>). Elimina con <code>unalias</code>.</li>
+                                <li><strong>Alias:</strong> Atajos para comandos (ej. <code>alias ll="ls -la"</code>). 
+                                    <ul>
+                                        <li>Para listar: <code>alias</code></li>
+                                        <li>Para eliminar: <code>unalias nombre</code></li>
+                                    </ul>
+                                </li>
                                 <li><strong>Funciones:</strong> Bloques reutilizables (ej. <code>miFuncion() { echo "Hola $1"; }</code>).</li>
                             </ul>
                         </li>
                     </ul>
                 </section>
+
                 <section id="subtema-1052">
                     <h2>105.2 Personalizar y escribir scripts sencillos</h2>
                     <p>Los scripts automatizan tareas con comandos ejecutados por un intérprete como bash. Aquí los puntos clave:</p>
+                    
+                    <div class="exam-tip">
+                        <h3>Consejos clave</h3>
+                        <ul>
+                            <li>Para verificar si es un archivo: <code>-f</code></li>
+                            <li>Para verificar si es un directorio: <code>-d</code></li>
+                            <li>Para comparar números: <code>-eq</code>, <code>-lt</code>, etc.</li>
+                            <li>Para capturar salida de comandos: <code>$(comando)</code></li>
+                        </ul>
+                    </div>
+                    
                     <ul>
                         <li><strong>Estructura y ejecución:</strong>
                             <ul>
@@ -103,35 +142,100 @@
                                     </ul>
                                 </li>
                                 <li><strong>Múltiples comandos:</strong> Separa con <code>;</code> (ej. <code>echo "Hora: "; date +%H:%M</code>).</li>
-                                <li><strong>Variables:</strong> <code>$*</code> (argumentos como cadena), <code>$@</code> (argumentos como lista), <code>$#</code> (cantidad), <code>$0</code> (nombre script), <code>$!</code> (ID último proceso en segundo plano), <code>$$</code> (ID proceso actual), <code>$_</code> (último argumento).</li>
-                                <li><strong>Aritmética:</strong> Usa <code>expr</code> (ej. <code>SUM=`expr 5 + 3`</code>) o <code>$(( ))</code> (ej. <code>FREE=$((1000 * valor))</code>).</li>
+                                <li><strong>Variables especiales:</strong>
+                                    <ul>
+                                        <li><code>$*</code> y <code>$@</code>: Todos los argumentos</li>
+                                        <li><code>$#</code>: Cantidad de argumentos</li>
+                                        <li><code>$0</code>: Nombre del script</li>
+                                        <li><code>$$</code>: PID del proceso actual</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Aritmética:</strong>
+                                    <ul>
+                                        <li>Con <code>expr</code>: <code>SUM=`expr 5 + 3`</code></li>
+                                        <li>Con <code>$(( ))</code>: <code>result=$((5 * 3))</code></li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
                         <li><strong>Ejecución condicional:</strong>
                             <ul>
-                                <li><strong>Operadores:</strong> <code>&&</code> (ejecuta si el anterior tiene éxito), <code>||</code> (ejecuta si falla).</li>
-                                <li><strong>if:</strong> Ejecuta si la condición devuelve 0.<br>
-                                    - Con <code>test</code>: <code>if test -x /bin/bash; then echo "Ejecutable"; fi</code>.<br>
-                                    - Con <code>[]</code>: <code>if [ -x /bin/bash ]; then echo "Ejecutable"; fi</code>.</li>
-                                <li><strong>else:</strong> Acción si la condición falla (ej. <code>if [ -x /bin/bash ]; then echo "Sí"; else echo "No"; fi</code>).</li>
-                                <li><strong>echo -e:</strong> Formatea salida con <code>\t</code> (tabulación) y <code>\n</code> (nueva línea) (ej. <code>echo -e "SO:\tLinux\nMemoria: 1491 MB"</code>).</li>
-                                <li><strong>Alternativa a if: case:</strong> Evalúa patrones (ej. <code>case $1 in "a") echo "Opción a" ;; *) echo "Otra" ;; esac</code>).</li>
+                                <li><strong>Operadores:</strong>
+                                    <ul>
+                                        <li><code>&&</code>: Ejecuta si el anterior tiene éxito</li>
+                                        <li><code>||</code>: Ejecuta si falla</li>
+                                    </ul>
+                                </li>
+                                <li><strong>if:</strong> Ejecuta si la condición devuelve 0.
+                                    <pre>
+if [ -f "/etc/passwd" ]; then
+    echo "El archivo existe"
+fi
+                                    </pre>
+                                </li>
+                                <li><strong>case:</strong> Alternativa a múltiples if
+                                    <pre>
+case $1 in
+    start) echo "Iniciando..." ;;
+    stop) echo "Deteniendo..." ;;
+    *) echo "Opción no válida" ;;
+esac
+                                    </pre>
+                                </li>
                             </ul>
                         </li>
-                        <li><strong>Pruebas ampliadas:</strong>
+                        <li><strong>Pruebas:</strong>
                             <ul>
-                                <li><strong>Texto:</strong> <code>=</code>/<code>==</code>, <code>!=</code>, <code>&lt;</code>, <code>&gt;</code> (ej. igualdad, diferencia, orden alfabético).</li>
-                                <li><strong>Números:</strong> <code>-lt</code> (menor que), <code>-gt</code> (mayor que), <code>-le</code> (menor o igual), <code>-ge</code> (mayor o igual), <code>-eq</code> (igual), <code>-ne</code> (diferente), <code>!</code> (niega).</li>
+                                <li><strong>Archivos:</strong>
+                                    <ul>
+                                        <li><code>-f</code>: Es un archivo regular</li>
+                                        <li><code>-d</code>: Es un directorio</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Números:</strong>
+                                    <ul>
+                                        <li><code>-eq</code>: Igual</li>
+                                        <li><code>-lt</code>: Menor que</li>
+                                        <li><code>-gt</code>: Mayor que</li>
+                                    </ul>
+                                </li>
                             </ul>
                         </li>
-                        <li><strong>Construcciones de bucle:</strong>
+                        <li><strong>Bucles:</strong>
                             <ul>
-                                <li><strong>for:</strong> Itera sobre una lista (ej. <code>for i in 1 2 3; do echo $i; done</code>).</li>
-                                <li><strong>until:</strong> Repite hasta que falle (ej. <code>until [ $i -gt 3 ]; do echo $i; i=$((i+1)); done</code>).</li>
-                                <li><strong>while:</strong> Repite mientras sea verdadero (ej. <code>while [ $i -le 3 ]; do echo $i; i=$((i+1)); done</code>).</li>
+                                <li><strong>for:</strong>
+                                    <pre>
+for i in 1 2 3; do
+    echo "Número $i"
+done
+                                    </pre>
+                                </li>
+                                <li><strong>while:</strong>
+                                    <pre>
+count=1
+while [ $count -le 3 ]; do
+    echo "Contador: $count"
+    count=$((count+1))
+done
+                                    </pre>
+                                </li>
                             </ul>
                         </li>
                     </ul>
+                </section>
+
+                <section id="notas-finales">
+                    <h2>Notas finales</h2>
+                    <div class="key-points">
+                        <h3>Lo más importante para el examen:</h3>
+                        <ul>
+                            <li>Saber diferenciar entre archivos de configuración globales y locales</li>
+                            <li>Entender cómo funcionan las variables de entorno y cómo exportarlas</li>
+                            <li>Conocer los operadores de prueba para archivos y números</li>
+                            <li>Dominar las estructuras básicas de control (if, case, for, while)</li>
+                            <li>Recordar que <code>$?</code> contiene el código de salida del último comando</li>
+                        </ul>
+                    </div>
                 </section>
             </div>
         </div>
