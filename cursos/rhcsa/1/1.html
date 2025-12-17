@@ -1,1 +1,231 @@
-.
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RHCSA - Conocimiento sobre las herramientas principales y su uso">
+    <meta name="keywords" content="RHCSA, Linux, shell, redirecciones, grep, permisos, tar, ssh">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - RHCSA | Herramientas principales</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
+    <div class="gradient-bg"></div>
+
+    <header>
+        <div class="header-left">
+            <a href="/index.html" class="header-logo">SysRiser</a>
+        </div>
+        <nav>
+            <a href="/index.html">Inicio</a>
+            <a href="/cursos/cursos.html">Cursos</a>
+            <a href="/proyectos/proyectos.html">Proyectos</a>
+        </nav>
+    </header>
+
+    <main id="contenido">
+        <div class="hero">
+            <h1>Herramientas principales y su uso</h1>
+            <p>Objetivo RHCSA: uso correcto de la shell y comandos fundamentales.</p>
+        </div>
+
+        <a href="/cursos/rhcsa/rhcsa.html" class="back-link">← Volver al curso RHCSA</a>
+
+        <div class="course-page">
+            <div class="sidebar">
+                <h3>Contenido del bloque</h3>
+                <ul>
+                    <li><a href="#shell">Acceso a la shell</a></li>
+                    <li><a href="#redirecciones">Redirecciones</a></li>
+                    <li><a href="#grep">grep y regex</a></li>
+                    <li><a href="#ssh">SSH</a></li>
+                    <li><a href="#usuarios">Cambio de usuario</a></li>
+                    <li><a href="#tar">Tar y compresión</a></li>
+                    <li><a href="#texto">Edición de texto</a></li>
+                    <li><a href="#archivos">Archivos y directorios</a></li>
+                    <li><a href="#enlaces">Enlaces</a></li>
+                    <li><a href="#permisos">Permisos y ACLs</a></li>
+                    <li><a href="#documentacion">Documentación</a></li>
+                </ul>
+            </div>
+
+            <div class="content">
+
+                <section id="shell">
+                    <h2>Acceder a una solicitud de shell y sintaxis correcta</h2>
+                    <p>Podemos acceder a una consola local usando <strong>Ctrl + Alt + F1</strong> hasta <strong>F6</strong> e iniciar sesión con usuario y contraseña.</p>
+                    <p>También podemos acceder mediante SSH:</p>
+                    <pre><code>ssh usuario@192.168.23.5</code></pre>
+
+                    <p>La sintaxis correcta de los comandos es:</p>
+                    <pre><code>comando + opciones + argumentos
+ls -l /ruta</code></pre>
+
+                    <ul>
+                        <li>Usar comillas cuando hay espacios: <code>mkdir "Mi carpeta"</code></li>
+                        <li>Variables en mayúsculas: <code>VAR=hola; echo $VAR</code></li>
+                        <li>Linux distingue mayúsculas y minúsculas</li>
+                    </ul>
+                </section>
+
+                <section id="redirecciones">
+                    <h2>Redirección de entrada y salida</h2>
+                    <p>Cada proceso tiene tres descriptores:</p>
+                    <ul>
+                        <li>0 → STDIN</li>
+                        <li>1 → STDOUT</li>
+                        <li>2 → STDERR</li>
+                    </ul>
+
+                    <pre><code>cat /etc/passwd > archivo.txt
+cat /etc/passwd >> archivo.txt
+ls /ruta-inexistente 2> error.txt
+ls /noexiste /etc > salida.txt 2>&1
+comando &> salida.txt</code></pre>
+
+                    <p>Redirección de entrada:</p>
+                    <pre><code>wc -l < archivo.txt</code></pre>
+
+                    <p>Here Document:</p>
+                    <pre><code>cat << EOF > archivo.txt
+contenido
+EOF</code></pre>
+
+                    <p>Uso de pipe:</p>
+                    <pre><code>ls -l /tmp | grep ".conf"</code></pre>
+                </section>
+
+                <section id="grep">
+                    <h2>Uso de grep y expresiones regulares</h2>
+                    <pre><code>grep root /etc/passwd</code></pre>
+
+                    <ul>
+                        <li>-i → ignora mayúsculas</li>
+                        <li>-v → excluye coincidencias</li>
+                        <li>-n → número de línea</li>
+                        <li>-c → cuenta coincidencias</li>
+                        <li>-r → búsqueda recursiva</li>
+                        <li>-o → solo coincidencia</li>
+                    </ul>
+
+                    <p>Expresiones regulares básicas:</p>
+                    <ul>
+                        <li><code>^root</code> → comienza por</li>
+                        <li><code>bash$</code> → termina en</li>
+                        <li><code>r..t</code> → cualquier carácter</li>
+                        <li><code>roo*t</code> → cero o más repeticiones</li>
+                        <li><code>r[ao]t</code> → rango</li>
+                        <li><code>[0-9]</code> → números</li>
+                    </ul>
+                </section>
+
+                <section id="ssh">
+                    <h2>Acceder a sistemas remotos con SSH</h2>
+                    <pre><code>ssh usuario@servidor
+ssh -l usuario servidor
+ssh -p 2222 usuario@servidor</code></pre>
+                </section>
+
+                <section id="usuarios">
+                    <h2>Iniciar sesión y cambiar de usuario</h2>
+                    <pre><code>su usuario
+su - usuario
+sudo -u usuario comando
+sudo -i</code></pre>
+
+                    <p>Comprobar usuario actual:</p>
+                    <pre><code>whoami
+id
+who
+w</code></pre>
+                </section>
+
+                <section id="tar">
+                    <h2>Archivar y comprimir archivos</h2>
+                    <pre><code>tar -cvf archivo.tar archivo
+tar -xvf archivo.tar
+tar -czvf archivo.tar.gz carpeta/
+tar -cjvf archivo.tar.bz2 carpeta/</code></pre>
+
+                    <p>Compresión individual:</p>
+                    <pre><code>gzip archivo.txt
+gunzip archivo.txt.gz
+bzip2 -k archivo.txt</code></pre>
+                </section>
+
+                <section id="texto">
+                    <h2>Crear y editar archivos de texto</h2>
+                    <pre><code>touch archivo.txt
+echo "hola" > archivo.txt</code></pre>
+
+                    <ul>
+                        <li>nano</li>
+                        <li>vi / vim</li>
+                        <li>sed</li>
+                        <li>awk</li>
+                    </ul>
+                </section>
+
+                <section id="archivos">
+                    <h2>Copiar, mover y borrar archivos</h2>
+                    <pre><code>mkdir -p proyecto/clase1
+rm -rf proyecto
+cp archivo.txt destino/
+mv archivo.txt nuevo.txt</code></pre>
+                </section>
+
+                <section id="enlaces">
+                    <h2>Enlaces físicos y simbólicos</h2>
+                    <pre><code>ln /etc/passwd /root/passwd_hard
+ln -s /tmp /root/tmp_link</code></pre>
+
+                    <pre><code>ls -li
+stat archivo</code></pre>
+                </section>
+
+                <section id="permisos">
+                    <h2>Permisos estándar y ACLs</h2>
+                    <pre><code>chmod 755 archivo
+chown usuario:grupo archivo</code></pre>
+
+                    <ul>
+                        <li>SUID → 4</li>
+                        <li>SGID → 2</li>
+                        <li>Sticky Bit → 1</li>
+                    </ul>
+
+                    <pre><code>setfacl -m u:ana:rw proyecto
+getfacl proyecto</code></pre>
+                </section>
+
+                <section id="documentacion">
+                    <h2>Documentación del sistema</h2>
+                    <pre><code>man ls
+info ln
+apropos passwd
+whatis mv</code></pre>
+
+                    <p>Documentación adicional en <code>/usr/share/doc</code>.</p>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+            <div class="footer-links">
+                <a href="https://github.com/sysriser">GitHub</a>
+                <a href="mailto:contact@sysriser.com">Contacto</a>
+                <a href="https://www.youtube.com/@sysriser">YouTube</a>
+            </div>
+        </div>
+    </footer>
+
+    <a href="#" id="back-to-top">↑ Volver arriba</a>
+    <script src="/conf/scripts.js"></script>
+</body>
+</html>
