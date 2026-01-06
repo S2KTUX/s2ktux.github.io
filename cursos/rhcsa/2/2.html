@@ -31,7 +31,7 @@
     <div class="hero">
         <h1>Administrar el software en Linux</h1>
         <p>Gestión de paquetes y repositorios (RPM y Flatpak)</p>
-        <p><a href="#" target="_blank">VER VIDEO YOUTUBE - CLASE 2</a></p>
+        <p><a href="https://youtu.be/GM_9D8zNOag" target="_blank">VER VIDEO YOUTUBE - CLASE 2</a></p>
     </div>
 
     <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
@@ -41,7 +41,7 @@
         <div class="sidebar">
             <h3>Objetivos del bloque</h3>
             <ul>
-                <li><a href="#obj1">Repositorios RPM</a></li>
+                <li><a href="#obj1">Configurar el acceso a los repositorios RPM</a></li>
                 <li><a href="#obj2">Gestión de paquetes RPM</a></li>
                 <li><a href="#obj3">Repositorios Flatpak</a></li>
                 <li><a href="#obj4">Gestión de paquetes Flatpak</a></li>
@@ -50,81 +50,102 @@
 
         <div class="content">
 
-            <!-- OBJETIVO 1 -->
             <section id="obj1">
                 <h3>Configurar el acceso a los repositorios de RPM</h3>
-                <p>
-                    Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes
-                    mediante gestores como <strong>dnf</strong>.  
-                    En sistemas RHEL, Rocky o AlmaLinux, los repositorios se definen mediante archivos
-                    <code>.repo</code> ubicados en <code>/etc/yum.repos.d/</code>.
-                </p>
-
-                <p>Comandos básicos para trabajar con repositorios:</p>
+                <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes mediante gestores como <strong>dnf</strong>.En sistemas RHEL, los repositorios se definen mediante archivos <strong>.repo</strong> ubicados en <code>/etc/yum.repos.d/</code>. </p>
+                <p>El contenido principal de un .repo, por ejemplo, es:</p>
+                <pre><code>
+                [google-chrome]
+                name=google-chrome
+                baseurl=dl.google.com
+                enabled=1
+                gpgcheck=1
+                gpgkey=dl.google.com
+                </code></pre>
+                <p> Donde cada campo significa : </p>
                 <ul>
-                    <li><strong>dnf repolist</strong> → Lista los repositorios habilitados</li>
-                    <li><strong>dnf config-manager</strong> → Habilitar o deshabilitar repositorios</li>
-                    <li><strong>subscription-manager</strong> → Gestión de repositorios en RHEL</li>
+                    <li><strong>[id-del-repo]</strong> → Identificador del repositorio .</li>
+                    <li><strong>name</strong> → Nombre descriptivo .</li>
+                    <li><strong>baseurl</strong> → Enlace directo al servidor donde se encuentran los paquetes RPM. Si es local : baseurl=file:///RUTA-MONTAJE</li>
+                    <li><strong>enabled</strong> → Define si el repositorio está activo (1) o ignorado (0).</li>
+                    <li><strong>gpgcheck</strong> → Indica si el sistema debe validar la firma de seguridad de los paquetes (1) o no (0).</li>
+                    <li><strong>gpgkey</strong> → URL de la clave pública del proveedor para verificar la autenticidad del software.</li>
                 </ul>
-
-                <img src="/images/repos-rpm.png" alt="Ejemplo de repositorios RPM" width="600">
+                <p> Como nota, probablemente para el examen nos pidan gpgcheck a 0, pudiendo omitir gpgkey en nuestro .repo . Debemos tener en cuenta que nos podrían solicitar crear un repo local (donde pondriamos gpgcheck=0) el cual tendremos que tener montado previamente (mount -o loop /RUTA-iso /RUTA-montaje)</p>
+                <p> Siempre que añadamos un repositorio, debemos realizar un <code>dnf clean all</code> para limpiar, un <code>dnf makecache</code> para regenerar el caché y <code>dnf repolist</code> para comprobar. </p>
+                <p> Por ultimo, podriamos añadir, eliminar, habilitar o deshabilitar a traves de comandos : </p>
+                <ul>
+                    <li><strong>dnf config-manager --add-repo=URL</strong> → Añade un nuevo repositorio desde una URL específica.</li>
+                    <li><strong>dnf config-manager --set-enabled [id-del-repo]</strong> → Habilita un repositorio que estaba desactivado.</li>
+                    <li><strong>dnf config-manager --set-disabled [id-del-repo]</strong> → Deshabilita un repositorio existente (Lo mismo que poner `enabled=0` en el archivo).</li>
+                    <li><strong>sudo rm /etc/yum.repos.d/[nombre-archivo].repo</strong> → Elimina el repositorio borrando su archivo de configuración.</li>
+                </ul>
             </section>
-
-            <!-- OBJETIVO 2 -->
+            
             <section id="obj2">
                 <h3>Instalar y eliminar paquetes de software RPM</h3>
-                <p>
-                    El gestor de paquetes principal en sistemas modernos basados en RPM es <strong>dnf</strong>.
-                    Permite resolver dependencias automáticamente y mantener el sistema actualizado.
-                </p>
-
+                <p> Los gestores de paquetes principal en sistemas modernos basados en RPM son <strong>RPM y DNF</strong>. RPM permite instalar y desinstalar paquetes, actualizar, hacer consultas... pero no resuelve dependencias automaticamente, mientras que DNF si resuelve dependencias automaticamente. Yum está obsoleto y no se usa.</p>
+                <p> Los comandos más utilizados de RPM serían :</p>
+                <ul>
+                    <li><strong>rpm -ivh paquete.rpm</strong> → Instalar un paquete RPM localmente</li>
+                    <li><strong>rpm -Uvh paquete.rpm</strong> → Actualiza ( o instala ) un paquete rpm</li>
+                    <li><strong>rpm -e nombre_paquete</strong> → Eliminar un paquete instalado</li>
+                    <li><strong>rpm -V nombre_paquete</strong> → Verificar la integridad de los archivos de un paquete</li>
+                    <li><strong>rpm -qa</strong> (query all) → Listar todos los paquetes instalados</li>
+                    <li><strong>rpm -qf</strong> (query file) → Consulta a que paquete pertenece un comando o un archivo(</li>
+                    <li><strong>rpm -qi nombre_paquete</strong> (query info) → Mostrar información detallada de un paquete instalado</li>
+                    <li><strong>rpm -ql paquete</strong> (query list) → Lista los archivos que existen en un paquete</li>
+                </ul>
+                <p> Los comandos más utilizados de DNF serían</p>
                 <ul>
                     <li><strong>dnf install paquete</strong> → Instalar un paquete</li>
+                    <li><strong>dnf download paquete</strong> → Descargar un paquete .rpm </li>
                     <li><strong>dnf remove paquete</strong> → Eliminar un paquete</li>
-                    <li><strong>dnf update</strong> → Actualizar el sistema</li>
-                    <li><strong>dnf search nombre</strong> → Buscar paquetes</li>
-                    <li><strong>rpm -qa</strong> → Listar paquetes instalados</li>
+                    <li><strong>dnf upgrade paquete</strong> → Actualizar el paquete</li>
+                    <li><strong>dnf search paquete</strong> → Buscar paquetes</li>
+                    <li><strong>dnf list (installed)</strong> → Lista todos los paquetes (instalados)</li>
+                    <li><strong>dnf repoquery paquete</strong> → Busca los paquetes disponibles </li>
+                    <li><strong>dnf info paquete</strong> → Similar a qi, nos da información de un paquete</li>
+                    <li><strong>dnf provides </strong> → Similar a qf, nos indica que paquete pertenece a un comando o un archivo</li>
                 </ul>
-
-                <img src="/images/dnf-basic.png" alt="Ejemplo de uso de dnf" width="600">
+                <p> Podemos mencionar tambien que dentro de dnf podemos ver su historial con <code>dnf history </code> y hacer o deshacer una acción con <code>dnf history undo Nº</code>.</p>
+                <img src="/images/history-rpm.png" alt="Instalación Flatpak" width="600">
+                <p>Por último, para extraer uno o varios archivos concretos de un paquete RPM podemos usar <code>rpm2cpio</code> junto con <code>cpio -idv</code> (i = extraer, d = crear directorios si es necesario, v = modo verbose), indicando la ruta del archivo a recuperar; por ejemplo:</p>
+                <img src="/images/recuperar-archivo-rpm.png" alt="Uso de rpm2cpio" width="1200">
             </section>
 
-            <!-- OBJETIVO 3 -->
             <section id="obj3">
                 <h3>Configurar el acceso a los repositorios de Flatpak</h3>
-                <p>
-                    Flatpak es un sistema de distribución de software independiente de la distribución,
-                    diseñado para aplicaciones de escritorio con dependencias aisladas.
-                </p>
-
-                <p>
-                    El repositorio más común es <strong>Flathub</strong>, que puede añadirse mediante:
-                </p>
-
+                <p> Flatpak es un sistema de distribución de software independiente de la distribución, diseñado para aplicaciones de escritorio con dependencias aisladas. Podemos añadir +oci cuando use un formato OCI en lugar del clasico de Flatpak y el repositorio más común es <strong>Flathub</strong>. Los repositorios pueden añadirse mediante: </p>
                 <ul>
                     <li><strong>flatpak remote-add</strong> → Añadir repositorios</li>
                     <li><strong>flatpak remotes</strong> → Listar repositorios configurados</li>
+                    <li><strong>flatpak remote-delete</strong> → Eliminar repositorios</li>
                 </ul>
-
-                <img src="/images/flatpak-repo.png" alt="Repositorio Flatpak" width="600">
+                    <p> Por ejemplo, añadimos varios repositorios, comprobamos y borramos : </p>
+                <img src="/images/flatpak-repo.png" alt="Instalación Flatpak" width="600">
+                <p> Mencionar que esto solo se creará para el usuario actual, si queremos que se añada para todos los usuarios añadiremos <code>--system</code></p>+
+                <p> En el examen RHCSA nos podrían pedir añadir un repositorio oficial de RED HAT. Para ello lo hariamos de la siguiente manera :</p>
+                <img src="/images/flatpak-redhat.png" alt="Instalación repo Flatpak redhat " width="600">
+                p>En caso de que <code>--auth-file</code> no funcione, realizamos la configuración manual copiando el archivo de autenticación: <code>cp $XDG_RUNTIME_DIR/containers/auth.json /etc/flatpak/oci-auth.json</code> y ajustandomos permissos <code>chmod 644 /etc/flatpak/oci-auth.json</code> y ya podriamos añadir el repositorio.</p>
             </section>
-
-            <!-- OBJETIVO 4 -->
+            
             <section id="obj4">
                 <h3>Instalar y eliminar paquetes de software Flatpak</h3>
-                <p>
-                    Una vez configurado un repositorio Flatpak, podemos gestionar aplicaciones de forma
-                    sencilla y segura.
-                </p>
+                <p> Una vez configurado un repositorio Flatpak, podemos gestionar aplicaciones de forma sencilla y segura. Las aplicaciones se instalan con un nombre completo, por ejemplo, <code>org.mozilla.firefox</code>Los comandos más usados serían :</p>
 
                 <ul>
                     <li><strong>flatpak install app</strong> → Instalar una aplicación</li>
-                    <li><strong>flatpak uninstall app</strong> → Eliminar una aplicación</li>
+                    <li><strong>flatpak update app</strong> → Actualizar una aplicación</li>
+                    <li><strong>flatpak info app</strong> → Información de una aplicación</li>
                     <li><strong>flatpak list</strong> → Listar aplicaciones instaladas</li>
-                    <li><strong>flatpak update</strong> → Actualizar aplicaciones Flatpak</li>
+                    <li><strong>flatpak run app</strong> →  Lanzar una aplicación</li>
+                    <li><strong>flatpak ps app</strong> → Ver las aplicaciones que están corriendo</li>
+                    <li><strong>flatpak uninstall app</strong> → Eliminar una aplicación</li>
+                    <li><strong>flatpak search app</strong> → Buscar una aplicación</li>
                 </ul>
 
-                <img src="/images/flatpak-install.png" alt="Instalación Flatpak" width="600">
+                <img src="/images/flatpak-install.png" alt="Instalación Flatpak" width="1300">
             </section>
 
         </div>
