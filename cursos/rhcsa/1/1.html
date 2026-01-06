@@ -31,7 +31,7 @@
     <div class="hero">
         <h1>Comprender y usar herramientas esenciales</h1>
         <p>Objetivos oficiales del examen RHCSA</p>
-        <p><a href="https://youtu.be/enwp35IHCic" target="_blank"> VIDEO YOUTUBE - CLASE 1 </a></p>
+        <p><a href="https://youtu.be/enwp35IHCic" target="_blank"> VER VIDEO YOUTUBE - CLASE 1 </a></p>
     </div>
 
     <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
@@ -94,7 +94,6 @@
                     <li><strong>-v</strong> -> Muestra todas las líneas que no coinciden con el patrón (inversión). Ejemplo: <code>grep -v "completado" tareas.txt</code></li>
                     <li><strong>-i</strong> -> Ignora la diferencia entre mayúsculas y minúsculas. Ejemplo: <code>grep -i "linux" manual.txt</code></li>
                 </ul>
-                <pre><code>grep root /etc/passwd</code></pre>
                 <p>Expresiones regulares básicas cuando usamos grep -E :</p>
                  <ul>
                     <li><strong><code>^</code></strong> -> Indica que la línea debe empezar por ese texto.</li>
@@ -117,7 +116,7 @@
                     <li><strong>-i</strong> -> Indica la ruta de la clave privada (Identity file).</li>
                 </ul>
                 <p> Por ejemplo, en la imagen vemos comos hacemos ssh desde la máquina de la derecha hacia la de la izquierda </p>
-                    <img src="/images/ssh.png" alt="Ejemplo de SSH" width="1000">
+                    <img src="/images/ssh.png" alt="Ejemplo de SSH" width="1200">
             </section>
 
             <section id="obj5">
@@ -165,7 +164,7 @@
                     <li><strong>Deshacer</strong> -> En modo comando, pulsar u para deshacer la última acción.</li>
                 </ul>
                 <p> Por ultimo mencionar la herramienta sed, que nos permite hacer transformaciones en ficheros. Por ejemplo :</p>
-                <img src="/images/sed.png" alt="Ejemplo de tar / gzip / bzip2" width="600">
+                <img src="/images/sed.png" alt="Ejemplo de sed" width="600">
             </section>
 
             <section id="obj8">
@@ -179,6 +178,7 @@
                     <li><strong>mv</strong> -> Mueve o renombra archivos y directorios. Ejemplo: <code>mv viejo_nombre.txt nuevo_nombre.txt</code></li>
                     <li><strong>rm</strong> -> Elimina archivos o directorios. Ejemplo: <code>rm -rf /tmp/directorio_inservible</code> (la flag -r borra directorios y -f evita confirmaciones).</li>
                 </ul>
+                <img src="/images/crear-borrar.png" alt="Ejemplo de tar / gzip / bzip2" width="600">
             </section>
 
             <section id="obj9">
@@ -188,29 +188,27 @@
                     <li><strong>ln</strong> -> Crea un enlace físico (hard link) al archivo original. Ejemplo: <code>ln archivo.txt link_fisico</code></li>
                     <li><strong>ln -s</strong> -> Crea un enlace simbólico (soft link) o acceso directo al archivo original. Ejemplo: <code>ln -s archivo.txt link_simbolico</code></li>
                 </ul>
-                <p> Las diferencias son que el enlace duro se mantiene la información en el enlace aunque borremos el archivo original y en el simbolico se pierde la información cuando borramos el original.</p>
+                <p> Las diferencias son que el enlace duro se mantiene la información en el enlace aunque borremos el archivo original y en el simbolico se pierde la información cuando borramos el original ( como vemos en la imagen, se rompe el enlace)</p>
+                <img src="/images/links.png" alt="Ejemplo de links" width="600">
             </section>
 
             <section id="obj10">
                 <h3>Enumerar, configurar y cambiar permisos estándar ugo/rwx</h3>
-                <p>Los permisos controlan el acceso a archivos y directorios. Estos están divididos en 3 "bloques" : PROPIETARIO - GRUPO - OTROS</p>
-                <ul>
-                    <li><strong>Propietario</strong> -> Define los permisos para el usuario dueño del archivo o directorio.</li>
-                    <li><strong>Grupo</strong> -> Define los permisos para los usuarios que pertenecen al grupo propietario del archivo o directorio.</li>
-                    <li><strong>Otros</strong> -> Define los permisos para cualquier otro usuario del sistema que no sea el propietario ni pertenezca al grupo.</li>
-                </ul>
-                <p>Cada bloque utiliza tres permisos básicos que se pueden representar con letras (simbólico) o números (octal):</p>
+                <p>Los permisos controlan el acceso a archivos y directorios. Estos están divididos en 3 "bloques" : PROPIETARIO - GRUPO - OTROS. Cada bloque utiliza tres permisos básicos que se pueden representar con letras (simbólico) o números (octal):</p>
                 <ul>
                     <li><strong>Lectura (r)</strong> -> Permite leer el contenido del archivo o listar el contenido del directorio. Valor numérico: <strong>4</strong>.</li>
                     <li><strong>Escritura (w)</strong> -> Permite modificar o eliminar el archivo, o crear/eliminar archivos dentro de un directorio. Valor numérico: <strong>2</strong>.</li>
                     <li><strong>Ejecución (x)</strong> -> Permite ejecutar un archivo (si es un script o programa) o entrar en un directorio. Valor numérico: <strong>1</strong>.</li>
                 </ul>
+                <img src="/images/permisos-basic.png" alt="Ejemplo de ver permisos" width="600">
                 <p> Para comprobar los permisos de un directorio o un archivo, utilizaremos <code>ls -l</code> donde podremos listar los diferentes archivos y/o carpetas que existan en esa ruta. Una vez definidos, los podemos modificar usando los siguientes comandos :</p>
                 <ul>
                     <li><strong>chmod</strong> -> Cambia los permisos de un archivo o directorio (el "modo").Ejemplo numérico:<code>chmod 750 archivo.txt</code> (rwx para propietario, r-x para grupo, --- para otros). Ejemplo simbólico: <code>chmod u+x,g-w,o=r archivo.txt</code></li>
                     <li><strong>chown</strong> -> Cambia el propietario (usuario y/o grupo) de un archivo o directorio. Ejemplo solo usuario: <code>chown juan archivo.txt</code>. Ejemplo usuario y grupo: <code>chown juan:sales archivo.txt</code></li>
                     <li><strong>-R</strong> -> Flag común para ambos comandos que aplica los cambios de forma recursiva a todos los subdirectorios y archivos dentro de una ruta. Ejemplo: <code>chmod -R 644 /var/www/html</code></li>
-                </ul>    
+                </ul>  
+                <img src="/images/cambiar-permisos-basic.png" alt="Ejemplo de cambiar permisos" width="600">
+
             </section>
 
             <section id="obj11">
