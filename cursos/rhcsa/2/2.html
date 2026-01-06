@@ -52,14 +52,14 @@
 
             <section id="obj1">
                 <h3>Configurar el acceso a los repositorios de RPM</h3>
-                <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes usando gestores como <strong>dnf</strong>.En RHEL, los repositorios se definen mediante archivos <strong>.repo</strong> en <code>/etc/yum.repos.d/</code>. </p>
+                <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes usando gestores como <strong>dnf</strong>. En RHEL, los repositorios se definen mediante archivos <strong>.repo</strong> en <code>/etc/yum.repos.d/</code>. </p>
                 <p>El contenido principal de un .repo, por ejemplo, es:</p>
                 <img src="/images/repo-rpm.png" alt="Uso de rpm2cpio" width="700">
                 <p> Donde cada campo significa : </p>
                 <ul>
                     <li><strong>[id-del-repo]</strong> → Identificador del repositorio .</li>
-                    <li><strong>name</strong> → Nombre descriptivo .</li>
-                    <li><strong>baseurl</strong> → Enlace directo al servidor donde se encuentran los paquetes RPM. Si es local : baseurl=file:///RUTA-MONTAJE</li>
+                    <li><strong>name</strong> → Nombre descriptivo.</li>
+                    <li><strong>baseurl</strong> → Enlace directo al servidor donde se encuentran los paquetes RPM (Si es local : baseurl=file:///RUTA-MONTAJE).</li>
                     <li><strong>enabled</strong> → Define si el repositorio está activo (1) o ignorado (0).</li>
                     <li><strong>gpgcheck</strong> → Indica si el sistema debe validar la firma de seguridad de los paquetes (1) o no (0).</li>
                     <li><strong>gpgkey</strong> → URL de la clave pública del proveedor para verificar la autenticidad del software.</li>
