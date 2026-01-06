@@ -1,1 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RHCSA - Administración del software en sistemas Linux">
+    <meta name="keywords" content="RHCSA, Linux, dnf, rpm, repositorios, flatpak">
+    <meta name="author" content="SysRiser">
+    <title>SysRiser - RHCSA | Administración del software</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
 
+<div class="gradient-bg"></div>
+
+<header>
+    <div class="header-left">
+        <a href="/index.html" class="header-logo">SysRiser</a>
+    </div>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/cursos/cursos.html">Cursos</a>
+        <a href="/proyectos/proyectos.html">Proyectos</a>
+    </nav>
+</header>
+
+<main id="contenido">
+
+    <div class="hero">
+        <h1>Administrar el software en Linux</h1>
+        <p>Gestión de paquetes y repositorios (RPM y Flatpak)</p>
+        <p><a href="#" target="_blank">VER VIDEO YOUTUBE - CLASE 2</a></p>
+    </div>
+
+    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+
+    <div class="course-page">
+
+        <div class="sidebar">
+            <h3>Objetivos del bloque</h3>
+            <ul>
+                <li><a href="#obj1">Repositorios RPM</a></li>
+                <li><a href="#obj2">Gestión de paquetes RPM</a></li>
+                <li><a href="#obj3">Repositorios Flatpak</a></li>
+                <li><a href="#obj4">Gestión de paquetes Flatpak</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+
+            <!-- OBJETIVO 1 -->
+            <section id="obj1">
+                <h3>Configurar el acceso a los repositorios de RPM</h3>
+                <p>
+                    Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes
+                    mediante gestores como <strong>dnf</strong>.  
+                    En sistemas RHEL, Rocky o AlmaLinux, los repositorios se definen mediante archivos
+                    <code>.repo</code> ubicados en <code>/etc/yum.repos.d/</code>.
+                </p>
+
+                <p>Comandos básicos para trabajar con repositorios:</p>
+                <ul>
+                    <li><strong>dnf repolist</strong> → Lista los repositorios habilitados</li>
+                    <li><strong>dnf config-manager</strong> → Habilitar o deshabilitar repositorios</li>
+                    <li><strong>subscription-manager</strong> → Gestión de repositorios en RHEL</li>
+                </ul>
+
+                <img src="/images/repos-rpm.png" alt="Ejemplo de repositorios RPM" width="600">
+            </section>
+
+            <!-- OBJETIVO 2 -->
+            <section id="obj2">
+                <h3>Instalar y eliminar paquetes de software RPM</h3>
+                <p>
+                    El gestor de paquetes principal en sistemas modernos basados en RPM es <strong>dnf</strong>.
+                    Permite resolver dependencias automáticamente y mantener el sistema actualizado.
+                </p>
+
+                <ul>
+                    <li><strong>dnf install paquete</strong> → Instalar un paquete</li>
+                    <li><strong>dnf remove paquete</strong> → Eliminar un paquete</li>
+                    <li><strong>dnf update</strong> → Actualizar el sistema</li>
+                    <li><strong>dnf search nombre</strong> → Buscar paquetes</li>
+                    <li><strong>rpm -qa</strong> → Listar paquetes instalados</li>
+                </ul>
+
+                <img src="/images/dnf-basic.png" alt="Ejemplo de uso de dnf" width="600">
+            </section>
+
+            <!-- OBJETIVO 3 -->
+            <section id="obj3">
+                <h3>Configurar el acceso a los repositorios de Flatpak</h3>
+                <p>
+                    Flatpak es un sistema de distribución de software independiente de la distribución,
+                    diseñado para aplicaciones de escritorio con dependencias aisladas.
+                </p>
+
+                <p>
+                    El repositorio más común es <strong>Flathub</strong>, que puede añadirse mediante:
+                </p>
+
+                <ul>
+                    <li><strong>flatpak remote-add</strong> → Añadir repositorios</li>
+                    <li><strong>flatpak remotes</strong> → Listar repositorios configurados</li>
+                </ul>
+
+                <img src="/images/flatpak-repo.png" alt="Repositorio Flatpak" width="600">
+            </section>
+
+            <!-- OBJETIVO 4 -->
+            <section id="obj4">
+                <h3>Instalar y eliminar paquetes de software Flatpak</h3>
+                <p>
+                    Una vez configurado un repositorio Flatpak, podemos gestionar aplicaciones de forma
+                    sencilla y segura.
+                </p>
+
+                <ul>
+                    <li><strong>flatpak install app</strong> → Instalar una aplicación</li>
+                    <li><strong>flatpak uninstall app</strong> → Eliminar una aplicación</li>
+                    <li><strong>flatpak list</strong> → Listar aplicaciones instaladas</li>
+                    <li><strong>flatpak update</strong> → Actualizar aplicaciones Flatpak</li>
+                </ul>
+
+                <img src="/images/flatpak-install.png" alt="Instalación Flatpak" width="600">
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>SysRiser | Un lugar para aprender sistemas y redes</p>
+        <div class="footer-links">
+            <a href="https://github.com/sysriser">GitHub</a>
+            <a href="mailto:contact@sysriser.com">Contacto</a>
+            <a href="https://www.youtube.com/@sysriser">YouTube</a>
+        </div>
+    </div>
+</footer>
+
+<a href="#" id="back-to-top">↑ Volver arriba</a>
+<script src="/conf/scripts.js"></script>
+
+</body>
+</html>
