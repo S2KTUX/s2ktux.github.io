@@ -29,11 +29,12 @@
 <main id="contenido">
 
     <div class="hero">
-        <h1>Conocimiento sobre las herramientas principales y su uso</h1>
+        <h1>Comprender y usar herramientas esenciales</h1>
         <p>Objetivos oficiales del examen RHCSA</p>
+        <p><a href="https://youtu.be/enwp35IHCic"> VIDEO YOUTUBE - CLASE 1 </a></p>
     </div>
 
-    <a href="/cursos/rhcsa/rhcsa.html" class="back-link">← Volver al curso RHCSA</a>
+    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
 
     <div class="course-page">
 
@@ -42,7 +43,7 @@
             <ul>
                 <li><a href="#obj1">Acceder a una solicitud de shell</a></li>
                 <li><a href="#obj2">Redirección de entrada y salida</a></li>
-                <li><a href="#obj3">grep y expresiones regulares</a></li>
+                <li><a href="#obj3">Grep y expresiones regulares</a></li>
                 <li><a href="#obj4">Acceso remoto con SSH</a></li>
                 <li><a href="#obj5">Inicio y cambio de usuario</a></li>
                 <li><a href="#obj6">Tar y compresión</a></li>
@@ -57,101 +58,171 @@
         <div class="content">
 
             <section id="obj1">
-                <h2>Acceder a una solicitud de shell y emitir comandos con la sintaxis correcta</h2>
-                <p>El acceso a una shell puede realizarse desde consola local usando <strong>Ctrl + Alt + F1–F6</strong> o de forma remota mediante SSH.</p>
-                <p>La sintaxis general de los comandos en Linux es:</p>
-                <pre><code>comando [opciones] [argumentos]</code></pre>
-                <p>Ejemplo:</p>
-                <pre><code>ls -l /ruta</code></pre>
+                <h3>Acceder a un prompt de shell y ejecutar comandos con la sintaxis correcta</h3>
+                <p>Un prompt de shell, tecnicamente hablando, es una interfaz de texto dinámica que actúa como un resumen del estado actual del entorno de trabajo.
+                 El prompt indica tu identidad y ubicación mediante el formato usuario@máquina:ruta, cerrando con $ para usuarios normales o # para privilegios de root.</p>
+                    <img src="/images/Shell.png" alt="Ejemplo de prompt de shell" width="600">
+                   
+                <p>El acceso a una shell puede realizarse desde consola local usando <strong>Ctrl + Alt + F1–F6</strong>, de forma remota mediante SSH o abriendo la app Terminal si estamos en interfaz gráfica, etc....</p>
+                <p>Cuando nos piden ejecutar con la sintaxis correcta se refieren a escribir correctamente los comandos, teniendo muy en cuenta que Linux es <em>"Case Sensitive"</em> (distingue entre mayusculas y minusculas). La sintaxis estándar es:</p>
+                <p><code>comando [opciones] [argumentos]</code></p>
+            
             </section>
 
             <section id="obj2">
-                <h2>Utilizar la redirección de entrada y salida (>, >>, |, 2>, etc.)</h2>
+                <h3>Usar la redirección de entrada y salida (>, >>, |, 2>, etc.)</h3>
                 <p>En Linux todo es un archivo y cada proceso utiliza descriptores estándar:</p>
-                <ul>
-                    <li>0 → STDIN</li>
-                    <li>1 → STDOUT</li>
-                    <li>2 → STDERR</li>
+               <ul>
+                    <li><strong>0</strong> -> STDIN (Entrada - Lo que escribimos por pantalla)</li>
+                    <li><strong>1</strong> -> STDOUT (Salida - Lo que nos devuelve un comando)</li>
+                    <li><strong>2</strong> -> STDERR (Errores - Nos imprime los posibles errores de un comando, en caso de que los haya)</li>
                 </ul>
-                <pre><code>cat /etc/passwd > archivo.txt
-ls /ruta 2> error.txt
-ls /noexiste /etc > salida.txt 2>&1
-ls -l | grep ".conf"</code></pre>
-            </section>
+                <p> Podemos utilizar la redirección para controlar hacia dónde fluye la información : </p>
+                <ul>
+                    <li><strong><code>&lt;</code> , <code>&lt;&lt;</code> , <code>&lt;&lt;&lt;</code></strong> -> Entrada desde archivo, bloque de texto o cadena.</li>
+                    <li><strong><code>&gt;</code> , <code>&gt;&gt;</code></strong> -> Salida a archivo (sobrescribir o añadir).</li>
+                    <li><strong><code>2&gt;</code></strong> -> Captura exclusiva de errores.</li>
+                    <li><strong><code>&amp;&gt;</code></strong> -> Redirección completa (salida + errores).</li>
+                    <li><strong><code>|</code></strong> -> Tubería para conectar la salida de un comando con la entrada de otro.</li>
+                </ul>
 
             <section id="obj3">
-                <h2>Usar grep y expresiones regulares para analizar texto</h2>
-                <p><strong>grep</strong> permite buscar patrones dentro de archivos o salidas de comandos.</p>
+                <h3>Usar grep y expresiones regulares para analizar texto</h3>
+                <p><strong>grep</strong> sirve para analizar y buscar patrones dentro de archivos o salidas de comandos. Podemos utilizar grep tanto directamente o a traves de la redirección con pipe (|). Las  opciones (flags) más importantes son :</p>
+                 <ul>
+                    <li><strong>-E</strong> -> Permite usar expresiones regulares extendidas. Ejemplo: <code>grep -E "error|fallo" log.txt</code></li>
+                    <li><strong>-v</strong> -> Muestra todas las líneas que no coinciden con el patrón (inversión). Ejemplo: <code>grep -v "completado" tareas.txt</code></li>
+                    <li><strong>-i</strong> -> Ignora la diferencia entre mayúsculas y minúsculas. Ejemplo: <code>grep -i "linux" manual.txt</code></li>
+                </ul>
                 <pre><code>grep root /etc/passwd</code></pre>
-                <p>Expresiones regulares básicas:</p>
-                <pre><code>^root
-bash$
-r..t
-[0-9]</code></pre>
+                <p>Expresiones regulares básicas cuando usamos grep -E :</p>
+                 <ul>
+                    <li><strong><code>^</code></strong> -> Indica que la línea debe empezar por ese texto.</li>
+                    <li><strong><code>$</code></strong> -> Indica que la línea debe terminar por ese texto.</li>
+                    <li><strong><code>.</code></strong> -> Representa cualquier carácter.</li>
+                    <li><strong><code>*</code></strong> -> Lo anterior puede aparecer muchas veces o ninguna.</li>
+                    <li><strong><code>[]</code></strong> -> Busca cualquiera de los caracteres que haya dentro.</li>
+                     <li><strong><code>|</code></strong> -> Busca una opción u otra ( grep -E "error|fallo")</li>
+                    <li><strong><code>\</code></strong> -> Sirve para buscar símbolos especiales como si fueran texto normal( grep \.archivo nos buscará .archivo) </li>
+                </ul>
             </section>
-
-            <section id="obj4">
-                <h2>Acceder a sistemas remotos mediante SSH</h2>
-                <p>SSH permite conectarse de forma segura a sistemas remotos.</p>
-                <pre><code>ssh usuario@servidor
-ssh -p 2222 usuario@servidor</code></pre>
+                
+                <section id="obj4">
+                <h3>Acceder a sistemas remotos mediante SSH</h3>
+                <p> SSH es un protocolo de red diseñado para establecer conexiones seguras entre dos maquinas. El puerto por defecto es el 22 y su archivo de configuración es <strong>/etc/ssh/sshd_config ( a nivel global ) o ~/.ssh/config ( a nivel local)</strong> . Las flags más importante serían : </p>
+                <ul>
+                    <li><strong>-p</strong> -> Permite especificar un puerto.</li>
+                    <li><strong>-l</strong> -> Especifica el nombre de usuario con el que se desea iniciar sesión en la máquina remota.</li>
+                    <li><strong>-v</strong> -> Verbose, nos muestra más información sobre el proceso de conexión.</li>
+                    <li><strong>-i</strong> -> Indica la ruta de la clave privada (Identity file).</li>
+                </ul>
+                <p> Por ejemplo, en la imagen vemos comos hacemos ssh desde la máquina de la derecha hacia la de la izquierda </p>
+                    <img src="/images/ssh.png" alt="Ejemplo de SSH" width="600">
             </section>
 
             <section id="obj5">
-                <h2>Iniciar sesión y cambiar de usuario en destinos multiusuario</h2>
-                <p>Para cambiar de usuario se utilizan los comandos <code>su</code> y <code>sudo</code>.</p>
-                <pre><code>su usuario
-su - usuario
-sudo -i</code></pre>
+                <h3>Iniciar sesión y cambiar de usuario en destinos multiusuario</h3>
+                <p> Root es la cuenta de superusuario o administrador del sistema, teniendo privilegios totales. Para cambiar de usuario se utilizan el comando su. Podemos usarlo con guión o sin guión, aunque generalmente lo querremos usar siempre con guión para cargar el entorno completo (variables de entorno, PATH, etc.)  </p>
+                <img src="/images/inicio-su.png" alt="Ejemplo de su -" width="600">
+                <p> Podemos utilizar además el comando sudo -i, que a diferencia de su, usaremos la contraseña del usuario actual (Deberemos tener permisos sudo). Por otro lado, podemos utilizar sudo -u user COMANDO para lanzar un comando desde root. </p>
+                  <img src="/images/inicio-sudo.png" alt="Ejemplo de sudo -i" width="600">
+                <p> Por ultimo, para comprobar que usuario somos podemos utlizar <code>id</code> o <code>whoami</code>.</p>
+
             </section>
 
             <section id="obj6">
-                <h2>Archivar, comprimir, desempaquetar y descomprimir archivos utilizando tar, gzip y bzip2</h2>
-                <p><code>tar</code> se utiliza para empaquetar archivos, mientras que gzip y bzip2 comprimen.</p>
-                <pre><code>tar -cvf archivo.tar archivo
-tar -czvf archivo.tar.gz carpeta/
-tar -xvf archivo.tar</code></pre>
+                <h3>Archivar, comprimir, desempaquetar y descomprimir archivos utilizando tar, gzip y bzip2</h3>
+                <p><code>tar</code> se utiliza para empaquetar archivos (sin reducir espacio), mientras que gzip y bzip2 comprimen (reduciendo el espacio). Las flags de tar son :</p>
+                <ul>
+                    <li><strong>-c</strong> -> Create: Crea un nuevo archivo de empaquetado.</li>
+                    <li><strong>-x</strong> -> Extract: Extrae el contenido de un archivo empaquetado existente.</li>
+                    <li><strong>-v</strong> -> Verbose: Muestra el listado de archivos procesados por pantalla.</li>
+                    <li><strong>-f</strong> -> File: Indica el nombre del archivo resultante o el archivo a extraer (siempre debe ser la última flag).</li>
+                </ul>
+                <p>Comprimir o descomprimir con gzip o bzip directamente desde tar utilizando las flags : </p>
+                <ul>
+                    <li><strong>-z</strong> -> Gzip: Comprime o descomprime el archivo usando gzip (.tar.gz).</li>
+                    <li><strong>-j</strong> -> Bzip2: Comprime o descomprime el archivo usando bzip2 (.tar.bz2).</li>
+                </ul>
+                <p>Por otro lado, también podemos comprimir directamente con gzip o bzip2 o descomprimir con gunzip o bunzip2:</p>
+                <ul>
+                    <li><strong>gzip / gunzip</strong> Comprimir / Descomprimir en el algoritmo gzip. Ejemplo: <code>gzip file.txt</code> / <code>gunzip file.txt.gz</code></li>
+                    <li><strong>bzip2 / bunzip2</strong> Comprimir / Descomprimir en el algoritmo bzip2. Ejemplo:<code>bzip2 file.txt</code> / <code>bunzip2 file.txt.bz2</code></li>
+                </ul>
+                <img src="/images/tar-gz-bz2.png" alt="Ejemplo de tar / gzip / bzip2" width="600">
             </section>
 
             <section id="obj7">
-                <h2>Crear y editar archivos de texto</h2>
-                <p>Los archivos pueden crearse y editarse con distintas herramientas.</p>
-                <pre><code>touch archivo.txt
-nano archivo.txt
-vi archivo.txt</code></pre>
+                <h3>Crear y editar archivos de texto</h3>
+                <p> Los archivos pueden crearse y editarse con distintas herramientas. Las más utilizadas son nano y vi, siendo esta ultima la que mayor curva de aprendizaje tiene. </p>
+                <p>Lo que debemos de tener en cuenta con VI principalmente son sus modos y comandos básicos:</p>
+                <ul>
+                    <li><strong>Modo inserción</strong> -> Permite escribir texto. Entramos presionando i (inserta antes del cursor) o a (inserta después del cursor). Con Esc salimos al modo comando</li>
+                    <li><strong>Borrar una línea</strong> -> En modo comando, pulsar dd para eliminar la línea actual.</li>
+                    <li><strong>Buscar</strong> -> En modo comando, pulsar / seguido del texto a buscar.</li>
+                    <li><strong>Guardar y salir</strong> -> En modo comando, escribiremos :wq!.</li>
+                    <li><strong>Salir sin guardar</strong> -> En modo comando, escribir :q! para descartar todos los cambios.</li>
+                    <li><strong>Deshacer</strong> -> En modo comando, pulsar u para deshacer la última acción.</li>
+                </ul>
+                <p> Por ultimo mencionar la herramienta sed, que nos permite hacer transformaciones en ficheros. Por ejemplo :</p>
+                <img src="/images/sed.png" alt="Ejemplo de tar / gzip / bzip2" width="600">
             </section>
 
             <section id="obj8">
-                <h2>Crear, eliminar, copiar y mover archivos y directorios</h2>
-                <p>Linux dispone de comandos básicos para la gestión de archivos.</p>
-                <pre><code>mkdir carpeta
-rm archivo.txt
-cp origen destino
-mv archivo nuevo</code></pre>
+                <h3>Crear, eliminar, copiar y mover archivos y directorios</h3>
+                <p>Linux dispone de comandos básicos para la gestión de archivos:</p>
+                <ul>
+                    <li><strong>mkdir</strong> -> Crea uno o varios directorios. Ejemplo: <code>mkdir -p /tmp/ruta/nueva</code>.</li>
+                    <li><strong>rmdir</strong> -> Elimina directorios, pero solo si están vacíos. Ejemplo: <code>rmdir carpeta_vacia</code></li>
+                    <li><strong>touch</strong> -> Crea un archivo vacío o actualiza la fecha de acceso/modificación de uno existente. Ejemplo:<code>touch archivo.txt</code></li>
+                    <li><strong>cp</strong> -> Copia archivos o directorios. Ejemplo: <code>cp -r /home/user/documentos /tmp/backup</code> (la flag -r es obligatoria para directorios).</li>
+                    <li><strong>mv</strong> -> Mueve o renombra archivos y directorios. Ejemplo: <code>mv viejo_nombre.txt nuevo_nombre.txt</code></li>
+                    <li><strong>rm</strong> -> Elimina archivos o directorios. Ejemplo: <code>rm -rf /tmp/directorio_inservible</code> (la flag -r borra directorios y -f evita confirmaciones).</li>
+                </ul>
             </section>
 
             <section id="obj9">
-                <h2>Crear enlaces físicos y simbólicos</h2>
-                <p>Los enlaces permiten referenciar archivos y directorios.</p>
-                <pre><code>ln archivo enlace_fisico
-ln -s archivo enlace_simbolico</code></pre>
+                <h3>Crear enlaces físicos y simbólicos</h3>
+                <p>Un enlace físico es simplemente un nombre adicional para los mismos datos en el disco (mismo inodo), mientras que un enlace simbólico es un acceso directo que apunta a la ruta del archivo original (acceso directo en Windows). La sintaxis es ln (-s) /ruta/al/original /ruta/al/enlace</p>
+                <ul>
+                    <li><strong>ln</strong> -> Crea un enlace físico (hard link) al archivo original. Ejemplo: <code>ln archivo.txt link_fisico</code></li>
+                    <li><strong>ln -s</strong> -> Crea un enlace simbólico (soft link) o acceso directo al archivo original. Ejemplo: <code>ln -s archivo.txt link_simbolico</code></li>
+                </ul>
+                <p> Las diferencias son que el enlace duro se mantiene la información en el enlace aunque borremos el archivo original y en el simbolico se pierde la información cuando borramos el original.</p>
             </section>
 
             <section id="obj10">
-                <h2>Enumerar, configurar y cambiar permisos estándar ugo/rwx</h2>
-                <p>Los permisos controlan el acceso a archivos y directorios.</p>
-                <pre><code>ls -l
-chmod 755 archivo
-chown usuario:grupo archivo</code></pre>
+                <h3>Enumerar, configurar y cambiar permisos estándar ugo/rwx</h3>
+                <p>Los permisos controlan el acceso a archivos y directorios. Estos están divididos en 3 "bloques" : PROPIETARIO - GRUPO - OTROS</p>
+                <ul>
+                    <li><strong>Propietario</strong> -> Define los permisos para el usuario dueño del archivo o directorio.</li>
+                    <li><strong>Grupo</strong> -> Define los permisos para los usuarios que pertenecen al grupo propietario del archivo o directorio.</li>
+                    <li><strong>Otros</strong> -> Define los permisos para cualquier otro usuario del sistema que no sea el propietario ni pertenezca al grupo.</li>
+                </ul>
+                <p>Cada bloque utiliza tres permisos básicos que se pueden representar con letras (simbólico) o números (octal):</p>
+                <ul>
+                    <li><strong>Lectura (r)</strong> -> Permite leer el contenido del archivo o listar el contenido del directorio. Valor numérico: <strong>4</strong>.</li>
+                    <li><strong>Escritura (w)</strong> -> Permite modificar o eliminar el archivo, o crear/eliminar archivos dentro de un directorio. Valor numérico: <strong>2</strong>.</li>
+                    <li><strong>Ejecución (x)</strong> -> Permite ejecutar un archivo (si es un script o programa) o entrar en un directorio. Valor numérico: <strong>1</strong>.</li>
+                </ul>
+                <p> Para comprobar los permisos de un directorio o un archivo, utilizaremos <code>ls -l</code> donde podremos listar los diferentes archivos y/o carpetas que existan en esa ruta. Una vez definidos, los podemos modificar usando los siguientes comandos :</p>
+                <ul>
+                    <li><strong>chmod</strong> -> Cambia los permisos de un archivo o directorio (el "modo").Ejemplo numérico:<code>chmod 750 archivo.txt</code> (rwx para propietario, r-x para grupo, --- para otros). Ejemplo simbólico: <code>chmod u+x,g-w,o=r archivo.txt</code></li>
+                    <li><strong>chown</strong> -> Cambia el propietario (usuario y/o grupo) de un archivo o directorio. Ejemplo solo usuario: <code>chown juan archivo.txt</code>. Ejemplo usuario y grupo: <code>chown juan:sales archivo.txt</code></li>
+                    <li><strong>-R</strong> -> Flag común para ambos comandos que aplica los cambios de forma recursiva a todos los subdirectorios y archivos dentro de una ruta. Ejemplo: <code>chmod -R 644 /var/www/html</code></li>
+                </ul>    
             </section>
 
             <section id="obj11">
-                <h2>Localizar, leer y utilizar la documentación del sistema, incluyendo man, info y archivos en /usr/share/doc</h2>
-                <p>Linux dispone de documentación integrada para casi todos los comandos.</p>
-                <pre><code>man ls
-info ln
-apropos passwd
-whatis mv</code></pre>
+                <h3>Localizar, leer y utilizar la documentación del sistema, incluyendo man, info y archivos en /usr/share/doc</h3>
+                <p>Linux dispone de documentación integrada para casi todos los comandos. Tenemos diferentes opciones : </p>
+                <ul>
+                    <li><strong>man (manual pages)</strong> -> Proporciona la documentación estándar y concisa de un comando. Es la herramienta principal.</li>
+                    <li><strong>info</strong> -> Ofrece documentación más detallada e hiperenlazada que man.</li>
+                    <li><strong>/usr/share/doc</strong> -> Directorio que contiene documentación extendida, ejemplos, READMEs ...</li>
+                    <li><strong>--help</strong> -> Un parámetro rápido que casi todos los comandos soportan para ver rápidamente sus opciones básicas.</li>
+                    <li><strong>whatis</strong> -> Pequeña explicación de lo que hace el comando</li>
+                </ul>
             </section>
 
         </div>
