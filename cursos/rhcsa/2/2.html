@@ -54,14 +54,7 @@
                 <h3>Configurar el acceso a los repositorios de RPM</h3>
                 <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes mediante gestores como <strong>dnf</strong>.En sistemas RHEL, los repositorios se definen mediante archivos <strong>.repo</strong> ubicados en <code>/etc/yum.repos.d/</code>. </p>
                 <p>El contenido principal de un .repo, por ejemplo, es:</p>
-                <pre><code>
-                [google-chrome]
-                name=google-chrome
-                baseurl=dl.google.com
-                enabled=1
-                gpgcheck=1
-                gpgkey=dl.google.com
-                </code></pre>
+                <img src="/images/repo-rpm.png" alt="Uso de rpm2cpio" width="600">
                 <p> Donde cada campo significa : </p>
                 <ul>
                     <li><strong>[id-del-repo]</strong> → Identificador del repositorio .</li>
@@ -73,6 +66,7 @@
                 </ul>
                 <p> Como nota, probablemente para el examen nos pidan gpgcheck a 0, pudiendo omitir gpgkey en nuestro .repo . Debemos tener en cuenta que nos podrían solicitar crear un repo local (donde pondriamos gpgcheck=0) el cual tendremos que tener montado previamente (mount -o loop /RUTA-iso /RUTA-montaje)</p>
                 <p> Siempre que añadamos un repositorio, debemos realizar un <code>dnf clean all</code> para limpiar, un <code>dnf makecache</code> para regenerar el caché y <code>dnf repolist</code> para comprobar. </p>
+                <img src="/images/recargar-repo-rpm.png" alt="Uso de rpm2cpio" width="600">
                 <p> Por ultimo, podriamos añadir, eliminar, habilitar o deshabilitar a traves de comandos : </p>
                 <ul>
                     <li><strong>dnf config-manager --add-repo=URL</strong> → Añade un nuevo repositorio desde una URL específica.</li>
@@ -144,7 +138,7 @@
                     <li><strong>flatpak uninstall app</strong> → Eliminar una aplicación</li>
                     <li><strong>flatpak search app</strong> → Buscar una aplicación</li>
                 </ul>
-
+                <p> Por ejemplo :</p>
                 <img src="/images/flatpak-install.png" alt="Instalación Flatpak" width="1300">
             </section>
 
