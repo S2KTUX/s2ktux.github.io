@@ -52,7 +52,7 @@
 
             <section id="obj1">
                 <h3>Configurar el acceso a los repositorios de RPM</h3>
-                <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes mediante gestores como <strong>dnf</strong>.En sistemas RHEL, los repositorios se definen mediante archivos <strong>.repo</strong> ubicados en <code>/etc/yum.repos.d/</code>. </p>
+                <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes mediante gestores como <strong>dnf</strong>.En sistemas RHEL, los repositorios se definen mediante archivos <strong>.repo</strong> en <code>/etc/yum.repos.d/</code>. </p>
                 <p>El contenido principal de un .repo, por ejemplo, es:</p>
                 <img src="/images/repo-rpm.png" alt="Uso de rpm2cpio" width="700">
                 <p> Donde cada campo significa : </p>
@@ -118,10 +118,10 @@
                 </ul>
                     <p> Por ejemplo, añadimos varios repositorios, comprobamos y borramos : </p>
                 <img src="/images/flatpak-repo.png" alt="Instalación Flatpak" width="600">
-                <p> Mencionar que esto solo se creará para el usuario actual, si queremos que se añada para todos los usuarios añadiremos <code>--system</code></p>+
+                <p> Mencionar que esto solo se creará para el usuario actual, si queremos que se añada para todos los usuarios añadiremos <code>--system</code></p>
                 <p> En el examen RHCSA nos podrían pedir añadir un repositorio oficial de RED HAT. Para ello lo hariamos de la siguiente manera :</p>
                 <img src="/images/flatpak-redhat.png" alt="Instalación repo Flatpak redhat " width="600">
-                p>En caso de que <code>--auth-file</code> no funcione, realizamos la configuración manual copiando el archivo de autenticación: <code>cp $XDG_RUNTIME_DIR/containers/auth.json /etc/flatpak/oci-auth.json</code> y ajustandomos permissos <code>chmod 644 /etc/flatpak/oci-auth.json</code> y ya podriamos añadir el repositorio.</p>
+                <p>En caso de que <code>--auth-file</code> no funcione, realizamos la configuración manual copiando el archivo de autenticación: <code>cp $XDG_RUNTIME_DIR/containers/auth.json /etc/flatpak/oci-auth.json</code> y ajustandomos permissos <code>chmod 644 /etc/flatpak/oci-auth.json</code> y ya podriamos añadir el repositorio.</p>
             </section>
             
             <section id="obj4">
