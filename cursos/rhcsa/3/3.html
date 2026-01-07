@@ -31,7 +31,7 @@
     <div class="hero">
         <h1>Crear scripts de shell simples</h1>
         <p>Automatización básica con Bash</p>
-        <p><a href="#" target="_blank">VER VIDEO YOUTUBE - CLASE X</a></p>
+        <p><a href="https://youtu.be/CRaP1XjdS4A" target="_blank">VER VIDEO YOUTUBE - CLASE 3</a></p>
     </div>
 
     <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
@@ -51,63 +51,68 @@
         <div class="content">
 
             <section id="obj1">
-                <h3>Ejecutar código condicionalmente</h3>
-                <p>Los scripts de shell permiten ejecutar comandos de forma automática. El control condicional se realiza principalmente con <strong>if</strong>, <strong>test</strong> y <strong>[]</strong>.</p>
-
-                <p>Estructura básica de un script:</p>
-                <pre><code>#!/bin/bash
-# Comentarios
-echo "Hola mundo"</code></pre>
-
-                <p>Ejemplo de uso de <strong>if</strong> con <strong>test</strong>:</p>
-                <pre><code>#!/bin/bash
-
-if test -f /etc/passwd; then
-    echo "El archivo existe"
-else
-    echo "El archivo no existe"
-fi</code></pre>
-
-                <p>Forma equivalente usando <strong>[]</strong> (la más común):</p>
-                <pre><code>if [ -f /etc/passwd ]; then
-    echo "Existe"
-fi</code></pre>
-
-                <p>Operadores comunes:</p>
+                <h3>Ejecutar código condicionalmente (if,test,[]...)</h3>
+                <p>Los scripts de shell permiten ejecutar comandos de forma automática. El control condicional se realiza principalmente con <strong>if</strong>, <strong>test</strong> ...</p>
+                <p>Todo script debe comenzar con el <code>#!</code> (shebang(/bin/bash,/bin/sh..) seguido del intérprete, usando luego comandos como <code>read</code> para guardar datos y <code>echo</code> para mostrar resultados.</p>
+                <p> De apartir de esto podemos hacer scripts muy sencillos, como por ejemplo :</p>
+                <img src="/images/script1.sh" alt="Script basico" width="600">
+                <p>Debemos recordar que siempre que editemos un archivo para crear un script habrá que darle permisos de ejecución con <code>chmod +x nombres-script</code>. </p>
+                <img src="/images/script2.sh" alt="resultado script basico" width="600">
+                <p> Los operadores logicos más comunes :</p>
                 <ul>
+                    <li><strong>-e</strong> → Existe y es un archivo o directorio</li>
                     <li><strong>-f</strong> → Archivo existe y es regular</li>
                     <li><strong>-d</strong> → Directorio existe</li>
-                    <li><strong>-eq, -ne, -gt, -lt</strong> → Comparaciones numéricas</li>
-                    <li><strong>=, !=</strong> → Comparaciones de cadenas</li>
+                    <li><strong>-r</strong> → Existe y tiene permisos de lectura</li>
+                    <li><strong>-w</strong> → Existe y tiene permisos de escritura</li>
+                    <li><strong>-x</strong> → Existe y tiene permisos de ejecución</li>
                 </ul>
-
-                <p>⚠️ En el examen RHCSA es habitual comprobar la existencia de archivos, directorios o el valor de variables.</p>
+                <p> Para las cadenas de texto utilizamos principalmente:</p>
+                <ul>
+                    <li><strong>-z "$cadena"</strong> → La cadena está vacía</li>
+                    <li><strong>-n "$cadena"</strong> → La cadena no está vacía</li>
+                    <li><strong>"$cad1" = "$cad2"</strong> → Las cadenas son iguales</li>
+                    <li><strong>"$cad1" != "$cad2"</strong> → Las cadenas son distintas</li>
+                </ul>
+                <p> Para los numeros utilizaremos : </p>
+                <ul>
+                    <li><strong>$num1 -eq $num2</strong> → Existe y es un archivo o directorio</li>
+                    <li><strong>$num1 -ne $num2</strong> → Archivo existe y es regular</li>
+                    <li><strong>$num1 -lt $num2</strong> → Directorio existe</li>
+                    <li><strong>$num1 -gt $num2</strong> → Existe y tiene permisos de lectura</li>
+                    <li><strong>$num1 -ge $num2</strong> → Existe y tiene permisos de escritura</li>
+                </ul>
+                <p>Estos operadores funcionan con <code>test</code> o su equivalente <code>[ ]</code>. Se utilizan junto al condicional <code>if</code>, que siempre debe cerrarse con <code>fi</code>. Por ejemplo:</p>
+                <img src="/images/script3.sh" alt="Script basico operadores" width="600">
+                <p> En Bash, los espacios dentro de <code>[ ]</code> son obligatorios: <code>[ "$num" -eq 5 ]</code> es correcto, mientras que <code>["$num"-eq5]</code> es incorrecto.</p>
+                <img src="/images/script4.sh" alt="resultado ejemplos operadores" width="600">
+                <p> Por ultimo, tenemos las condiciones compuestas, que mencionaré 5 básicos : </p>
+                <ul>
+                    <li><strong> && </strong> → Operador lógico AND. Se cumple cuando todas las condiciones individuales son verdaderas. </li>
+                    <li><strong>|| </strong> → Operador lógico OR. Se cumple cuando al menos una de las condiciones es verdadera.</li>
+                    <li><strong>! </strong> → Operador lógico NOT. Se utiliza para negar una condición, devolviendo el valor opuesto al original.</li>
+                    <li><strong>==</strong> → Operador de igualdad. Comprueba si los valores de dos expresiones son idénticos.</li>
+                    <li><strong>!=</strong> → Operador de desigualdad. Se cumple solo si los valores comparados son diferentes entre sí.</li>
+                </ul>
+                <p>En el scripting moderno se utilizan los dobles corchetes [[ ]] por ser más potentes y seguros. Evitan errores con variables vacías, soportan los operadores lógicos estándar (&&, ||) y no requieren obligatoriamente el uso de comillas. Si usas condiciones compuestas con [ ], fallará.:</p>
+                <img src="/images/script5.sh" alt="Script condicional compuesto" width="600">
+                <img src="/images/script6.sh" alt="resultado condicional compuesto" width="600">
+                <p> Por otro lado, tenemos <code>case</code>, que es otra forma de ejecutar codigo condicionalemente : </p>
+                <img src="/images/script7.sh" alt=" sintaxis case" width="600">
+                <p> Con esto, podremos crear dobles condicionales, un case dentro de un if, diferentes condiciones elif dentro de if.. Posibilidades infinitas</p>
             </section>
 
+            
             <section id="obj2">
                 <h3>Uso de bucles para procesar archivos y entradas</h3>
-                <p>Los bucles permiten repetir acciones automáticamente. El más usado es <strong>for</strong>.</p>
-
-                <p>Ejemplo: recorrer una lista de archivos:</p>
-                <pre><code>#!/bin/bash
-
-for archivo in /etc/*.conf; do
-    echo "Procesando $archivo"
-done</code></pre>
-
-                <p>Ejemplo: procesar argumentos de línea de comandos:</p>
-                <pre><code>for usuario in "$@"; do
-    echo "Usuario: $usuario"
-done</code></pre>
-
-                <p>Ejemplo con <strong>while</strong> leyendo entrada estándar:</p>
-                <pre><code>while read linea; do
-    echo "Línea: $linea"
-done &lt; archivo.txt</code></pre>
-
-                <p>Estos bucles son muy útiles para tareas típicas de administración: crear usuarios, revisar permisos o procesar logs.</p>
+                <p>Los bucles automatizan tareas repetitivas. El bucle <code>for</code> recorre una lista definida de elementos (archivos, usuarios o comandos), mientras que <code>while</code> se ejecuta continuamente mientras se cumpla una condición específica.</p>
+                <p>En un bucle <code>for</code>, podemos iterar sobre una lista manual, el contenido de un archivo o la salida de un comando:</p>
+                <img src="/images/script8.sh" alt="Ejemplo bucle for" width="600">
+                <p>Ejemplo con <code>while</code> (ideal para lecturas línea a línea o contadores):</p>
+                <img src="/images/script9.sh" alt="Ejemplo bucle while" width="600">
+                <p>Estas estructuras son esenciales en administración de sistemas para procesar logs, gestionar usuarios de forma masiva o monitorizar servicios.</p>
+                
             </section>
-
             <section id="obj3">
                 <h3>Procesar entradas de scripts</h3>
                 <p>Los scripts pueden recibir argumentos desde la línea de comandos:</p>
