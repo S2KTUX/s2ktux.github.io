@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="RHCSA - Operar sistemas en funcionamiento">
-    <meta name="keywords" content="RHCSA, Linux, systemctl, systemd, procesos, journalctl, ssh, scp">
+    <meta name="keywords" content="RHCSA, Linux, systemctl, systemd, procesos, journalctl, ssh">
     <meta name="author" content="SysRiser">
     <title>S2KTUX - RHCSA | Operar sistemas</title>
     <link rel="stylesheet" href="/conf/styles.css">
@@ -30,7 +30,7 @@
 
     <div class="hero">
         <h1>Operar sistemas en funcionamiento</h1>
-        <p>Arranque, procesos, servicios y diagnóstico</p>
+        <p>Gestión de arranque, procesos, servicios y diagnóstico</p>
         <p><a href="#" target="_blank">VER VIDEO YOUTUBE - CLASE 4</a></p>
     </div>
 
@@ -41,106 +41,134 @@
         <div class="sidebar">
             <h3>Objetivos del bloque</h3>
             <ul>
-                <li><a href="#obj1">Arranque, reinicio y apagado del sistema</a></li>
-                <li><a href="#obj2">Objetivos de arranque y recuperación</a></li>
-                <li><a href="#obj3">Gestión y control de procesos</a></li>
-                <li><a href="#obj4">Servicios, logs y transferencia de archivos</a></li>
+                <li><a href="#obj1">Arrancar, reiniciar y apagar sistemas</a></li>
+                <li><a href="#obj2">Arrancar en diferentes objetivos</a></li>
+                <li><a href="#obj3">Interrumpir el arranque</a></li>
+                <li><a href="#obj4">Identificar y eliminar procesos</a></li>
+                <li><a href="#obj5">Ajustar la programación de procesos</a></li>
+                <li><a href="#obj6">Administrar perfiles de sintonización</a></li>
+                <li><a href="#obj7">Localizar e interpretar logs</a></li>
+                <li><a href="#obj8">Preservar journals del sistema</a></li>
+                <li><a href="#obj9">Gestionar servicios de red</a></li>
+                <li><a href="#obj10">Transferir archivos de forma segura</a></li>
             </ul>
         </div>
 
         <div class="content">
 
             <section id="obj1">
-                <h3>Arrancar, reiniciar y apagar un sistema</h3>
-                <p>En sistemas modernos basados en <strong>systemd</strong>, la gestión del estado del sistema se realiza principalmente con <code>systemctl</code>. Estos comandos permiten apagar o reiniciar el sistema de forma segura.</p>
-
+                <h3>Arrancar, reiniciar y apagar un sistema normalmente</h3>
+                <p>En sistemas Linux modernos, el control del estado del sistema se realiza mediante <code>systemctl</code>. Estos comandos aseguran un apagado limpio y evitan la corrupción de datos.</p>
                 <ul>
-                    <li><strong>systemctl poweroff</strong> → Apaga el sistema</li>
                     <li><strong>systemctl reboot</strong> → Reinicia el sistema</li>
+                    <li><strong>systemctl poweroff</strong> → Apaga el sistema</li>
                     <li><strong>shutdown -h now</strong> → Apagado inmediato</li>
                     <li><strong>shutdown -r +5</strong> → Reinicia en 5 minutos</li>
                 </ul>
-
-                <p>En el examen RHCSA es importante usar métodos correctos de apagado para evitar corrupción del sistema de archivos.</p>
             </section>
 
             <section id="obj2">
-                <h3>Arrancar en diferentes objetivos y recuperación</h3>
-                <p>Systemd reemplaza los antiguos runlevels por <strong>targets</strong>. Cada target representa un estado del sistema.</p>
-
+                <h3>Arrancar sistemas en diferentes objetivos manualmente</h3>
+                <p>Systemd utiliza <strong>targets</strong> en lugar de runlevels. Cada target define un estado operativo del sistema.</p>
                 <ul>
-                    <li><strong>multi-user.target</strong> → Sistema en modo texto</li>
-                    <li><strong>graphical.target</strong> → Sistema con entorno gráfico</li>
+                    <li><strong>multi-user.target</strong> → Modo texto multiusuario</li>
+                    <li><strong>graphical.target</strong> → Modo gráfico</li>
                     <li><strong>rescue.target</strong> → Modo rescate</li>
-                    <li><strong>emergency.target</strong> → Modo mínimo de recuperación</li>
+                    <li><strong>emergency.target</strong> → Modo mínimo</li>
                 </ul>
-
-                <p>Consultar y cambiar el objetivo por defecto:</p>
+                <p>Comandos clave:</p>
                 <ul>
+                    <li><strong>systemctl isolate rescue.target</strong></li>
                     <li><strong>systemctl get-default</strong></li>
                     <li><strong>systemctl set-default multi-user.target</strong></li>
                 </ul>
-
-                <p>Durante el arranque, podemos interrumpir GRUB y añadir <code>systemd.unit=rescue.target</code> para obtener acceso al sistema, algo muy habitual en tareas de recuperación.</p>
             </section>
 
             <section id="obj3">
-                <h3>Identificar, priorizar y eliminar procesos</h3>
-                <p>Linux es un sistema multitarea. Cada programa en ejecución es un proceso con su propio PID.</p>
-
-                <p>Herramientas principales:</p>
-                <ul>
-                    <li><strong>ps aux</strong> → Lista procesos</li>
-                    <li><strong>top / htop</strong> → Monitorización en tiempo real</li>
-                    <li><strong>free -h</strong> → Uso de memoria</li>
-                </ul>
-
-                <p>Finalizar procesos:</p>
-                <ul>
-                    <li><strong>kill PID</strong> → Señal SIGTERM</li>
-                    <li><strong>kill -9 PID</strong> → Fuerza el cierre</li>
-                    <li><strong>pkill nombre</strong> → Mata por nombre</li>
-                </ul>
-
-                <p>La prioridad de procesos se gestiona con <strong>nice</strong> y <strong>renice</strong>:</p>
-                <ul>
-                    <li><strong>nice -n 10 comando</strong> → Menor prioridad</li>
-                    <li><strong>renice -5 PID</strong> → Cambiar prioridad</li>
-                </ul>
-
-                <p>Valores de nice van de <strong>-20 (más prioridad)</strong> a <strong>19 (menos prioridad)</strong>.</p>
+                <h3>Interrumpir el proceso de arranque para obtener acceso</h3>
+                <p>Durante el arranque, es posible interrumpir GRUB para acceder a un modo de recuperación.</p>
+                <p>Pasos habituales:</p>
+                <ol>
+                    <li>Editar la entrada de GRUB</li>
+                    <li>Añadir <code>systemd.unit=rescue.target</code></li>
+                    <li>Arrancar con <code>Ctrl + X</code></li>
+                </ol>
+                <p>Esto permite recuperar sistemas con errores de arranque o contraseñas.</p>
             </section>
 
             <section id="obj4">
-                <h3>Servicios, logs y transferencia de archivos</h3>
-                <p>Los servicios de red se controlan con <code>systemctl</code>:</p>
-
+                <h3>Identificar procesos intensivos en CPU/memoria y eliminarlos</h3>
+                <p>Linux ofrece múltiples herramientas para monitorizar procesos en tiempo real.</p>
                 <ul>
-                    <li><strong>systemctl start servicio</strong></li>
-                    <li><strong>systemctl stop servicio</strong></li>
-                    <li><strong>systemctl restart servicio</strong></li>
-                    <li><strong>systemctl status servicio</strong></li>
-                    <li><strong>systemctl enable servicio</strong></li>
+                    <li><strong>top</strong> / <strong>htop</strong></li>
+                    <li><strong>ps aux</strong></li>
+                    <li><strong>free -h</strong></li>
                 </ul>
-
-                <p>Los logs del sistema se gestionan con <strong>journalctl</strong>:</p>
+                <p>Para finalizar procesos:</p>
                 <ul>
-                    <li><strong>journalctl</strong> → Todos los logs</li>
-                    <li><strong>journalctl -u sshd</strong> → Logs de un servicio</li>
-                    <li><strong>journalctl -b</strong> → Logs del último arranque</li>
+                    <li><strong>kill PID</strong></li>
+                    <li><strong>kill -9 PID</strong></li>
+                    <li><strong>pkill nombre</strong></li>
                 </ul>
+            </section>
 
-                <p>Para preservar los logs tras reinicios:</p>
+            <section id="obj5">
+                <h3>Ajustar la programación de procesos</h3>
+                <p>La prioridad de ejecución se controla con <strong>nice</strong> y <strong>renice</strong>.</p>
+                <ul>
+                    <li><strong>nice -n 10 comando</strong></li>
+                    <li><strong>renice -5 PID</strong></li>
+                </ul>
+                <p>Los valores van de <strong>-20</strong> (más prioridad) a <strong>19</strong> (menos prioridad).</p>
+            </section>
+
+            <section id="obj6">
+                <h3>Administrar perfiles de sintonización</h3>
+                <p>El servicio <strong>tuned</strong> permite optimizar el sistema según el uso.</p>
+                <ul>
+                    <li><strong>tuned-adm list</strong></li>
+                    <li><strong>tuned-adm active</strong></li>
+                    <li><strong>tuned-adm profile throughput-performance</strong></li>
+                </ul>
+            </section>
+
+            <section id="obj7">
+                <h3>Localizar e interpretar archivos de registro y journals</h3>
+                <p>Los logs tradicionales se encuentran en <code>/var/log</code>. Systemd utiliza <strong>journalctl</strong>.</p>
+                <ul>
+                    <li><strong>journalctl</strong></li>
+                    <li><strong>journalctl -u sshd</strong></li>
+                    <li><strong>journalctl -b</strong></li>
+                </ul>
+            </section>
+
+            <section id="obj8">
+                <h3>Preservar journals del sistema</h3>
+                <p>Por defecto, los journals pueden ser volátiles. Para hacerlos persistentes:</p>
                 <pre><code>mkdir /var/log/journal</code></pre>
+                <p>Esto asegura la conservación de logs tras reinicios.</p>
+            </section>
 
-                <p>La transferencia segura de archivos se realiza mediante <strong>SSH</strong>:</p>
+            <section id="obj9">
+                <h3>Iniciar, detener y comprobar el estado de servicios de red</h3>
+                <p>Los servicios se gestionan mediante <code>systemctl</code>.</p>
+                <ul>
+                    <li><strong>systemctl start sshd</strong></li>
+                    <li><strong>systemctl stop sshd</strong></li>
+                    <li><strong>systemctl restart sshd</strong></li>
+                    <li><strong>systemctl status sshd</strong></li>
+                    <li><strong>systemctl enable sshd</strong></li>
+                </ul>
+            </section>
+
+            <section id="obj10">
+                <h3>Transferir archivos de forma segura entre sistemas</h3>
+                <p>La transferencia segura se realiza mediante SSH.</p>
                 <ul>
                     <li><strong>scp archivo usuario@host:/ruta</strong></li>
                     <li><strong>scp usuario@host:/ruta/archivo .</strong></li>
                     <li><strong>rsync -av archivo usuario@host:/ruta</strong></li>
                 </ul>
-
-                <p>Estas herramientas son fundamentales para la administración remota y aparecen frecuentemente en el examen RHCSA.</p>
             </section>
 
         </div>
