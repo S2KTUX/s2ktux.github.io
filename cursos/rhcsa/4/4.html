@@ -1,1 +1,165 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RHCSA - Operar sistemas en funcionamiento">
+    <meta name="keywords" content="RHCSA, Linux, systemctl, systemd, procesos, journalctl, ssh, scp">
+    <meta name="author" content="SysRiser">
+    <title>S2KTUX - RHCSA | Operar sistemas</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
 
+<div class="gradient-bg"></div>
+
+<header>
+    <div class="header-left">
+        <a href="/index.html" class="header-logo">S2KTUX</a>
+    </div>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/cursos/cursos.html">Cursos</a>
+        <a href="/proyectos/proyectos.html">Proyectos</a>
+    </nav>
+</header>
+
+<main id="contenido">
+
+    <div class="hero">
+        <h1>Operar sistemas en funcionamiento</h1>
+        <p>Arranque, procesos, servicios y diagnóstico</p>
+        <p><a href="#" target="_blank">VER VIDEO YOUTUBE - CLASE 4</a></p>
+    </div>
+
+    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+
+    <div class="course-page">
+
+        <div class="sidebar">
+            <h3>Objetivos del bloque</h3>
+            <ul>
+                <li><a href="#obj1">Arranque, reinicio y apagado del sistema</a></li>
+                <li><a href="#obj2">Objetivos de arranque y recuperación</a></li>
+                <li><a href="#obj3">Gestión y control de procesos</a></li>
+                <li><a href="#obj4">Servicios, logs y transferencia de archivos</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+
+            <section id="obj1">
+                <h3>Arrancar, reiniciar y apagar un sistema</h3>
+                <p>En sistemas modernos basados en <strong>systemd</strong>, la gestión del estado del sistema se realiza principalmente con <code>systemctl</code>. Estos comandos permiten apagar o reiniciar el sistema de forma segura.</p>
+
+                <ul>
+                    <li><strong>systemctl poweroff</strong> → Apaga el sistema</li>
+                    <li><strong>systemctl reboot</strong> → Reinicia el sistema</li>
+                    <li><strong>shutdown -h now</strong> → Apagado inmediato</li>
+                    <li><strong>shutdown -r +5</strong> → Reinicia en 5 minutos</li>
+                </ul>
+
+                <p>En el examen RHCSA es importante usar métodos correctos de apagado para evitar corrupción del sistema de archivos.</p>
+            </section>
+
+            <section id="obj2">
+                <h3>Arrancar en diferentes objetivos y recuperación</h3>
+                <p>Systemd reemplaza los antiguos runlevels por <strong>targets</strong>. Cada target representa un estado del sistema.</p>
+
+                <ul>
+                    <li><strong>multi-user.target</strong> → Sistema en modo texto</li>
+                    <li><strong>graphical.target</strong> → Sistema con entorno gráfico</li>
+                    <li><strong>rescue.target</strong> → Modo rescate</li>
+                    <li><strong>emergency.target</strong> → Modo mínimo de recuperación</li>
+                </ul>
+
+                <p>Consultar y cambiar el objetivo por defecto:</p>
+                <ul>
+                    <li><strong>systemctl get-default</strong></li>
+                    <li><strong>systemctl set-default multi-user.target</strong></li>
+                </ul>
+
+                <p>Durante el arranque, podemos interrumpir GRUB y añadir <code>systemd.unit=rescue.target</code> para obtener acceso al sistema, algo muy habitual en tareas de recuperación.</p>
+            </section>
+
+            <section id="obj3">
+                <h3>Identificar, priorizar y eliminar procesos</h3>
+                <p>Linux es un sistema multitarea. Cada programa en ejecución es un proceso con su propio PID.</p>
+
+                <p>Herramientas principales:</p>
+                <ul>
+                    <li><strong>ps aux</strong> → Lista procesos</li>
+                    <li><strong>top / htop</strong> → Monitorización en tiempo real</li>
+                    <li><strong>free -h</strong> → Uso de memoria</li>
+                </ul>
+
+                <p>Finalizar procesos:</p>
+                <ul>
+                    <li><strong>kill PID</strong> → Señal SIGTERM</li>
+                    <li><strong>kill -9 PID</strong> → Fuerza el cierre</li>
+                    <li><strong>pkill nombre</strong> → Mata por nombre</li>
+                </ul>
+
+                <p>La prioridad de procesos se gestiona con <strong>nice</strong> y <strong>renice</strong>:</p>
+                <ul>
+                    <li><strong>nice -n 10 comando</strong> → Menor prioridad</li>
+                    <li><strong>renice -5 PID</strong> → Cambiar prioridad</li>
+                </ul>
+
+                <p>Valores de nice van de <strong>-20 (más prioridad)</strong> a <strong>19 (menos prioridad)</strong>.</p>
+            </section>
+
+            <section id="obj4">
+                <h3>Servicios, logs y transferencia de archivos</h3>
+                <p>Los servicios de red se controlan con <code>systemctl</code>:</p>
+
+                <ul>
+                    <li><strong>systemctl start servicio</strong></li>
+                    <li><strong>systemctl stop servicio</strong></li>
+                    <li><strong>systemctl restart servicio</strong></li>
+                    <li><strong>systemctl status servicio</strong></li>
+                    <li><strong>systemctl enable servicio</strong></li>
+                </ul>
+
+                <p>Los logs del sistema se gestionan con <strong>journalctl</strong>:</p>
+                <ul>
+                    <li><strong>journalctl</strong> → Todos los logs</li>
+                    <li><strong>journalctl -u sshd</strong> → Logs de un servicio</li>
+                    <li><strong>journalctl -b</strong> → Logs del último arranque</li>
+                </ul>
+
+                <p>Para preservar los logs tras reinicios:</p>
+                <pre><code>mkdir /var/log/journal</code></pre>
+
+                <p>La transferencia segura de archivos se realiza mediante <strong>SSH</strong>:</p>
+                <ul>
+                    <li><strong>scp archivo usuario@host:/ruta</strong></li>
+                    <li><strong>scp usuario@host:/ruta/archivo .</strong></li>
+                    <li><strong>rsync -av archivo usuario@host:/ruta</strong></li>
+                </ul>
+
+                <p>Estas herramientas son fundamentales para la administración remota y aparecen frecuentemente en el examen RHCSA.</p>
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
+        <div class="footer-links">
+            <a href="https://github.com/s2ktux">GitHub</a>
+            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
+            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
+        </div>
+    </div>
+</footer>
+
+<a href="#" id="back-to-top">↑ Volver arriba</a>
+<script src="/conf/scripts.js"></script>
+
+</body>
+</html>
