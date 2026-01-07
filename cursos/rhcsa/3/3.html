@@ -99,67 +99,47 @@
                 <img src="/images/script6.png" alt="resultado condicional compuesto" width="600">
                 <p> Por otro lado, tenemos <code>case</code>, que es otra forma de ejecutar codigo condicionalemente : </p>
                 <img src="/images/script7.png" alt=" sintaxis case" width="600">
-                <p> Con esto, podremos crear dobles condicionales, un case dentro de un if, diferentes condiciones elif dentro de if.. Posibilidades infinitas</p>
+                <p> Con esto, podremos crear dobles condicionales, un case dentro de un if, diferentes condiciones con elif ... Posibilidades infinitas</p>
             </section>
 
             
             <section id="obj2">
                 <h3>Uso de bucles para procesar archivos y entradas</h3>
                 <p>Los bucles automatizan tareas repetitivas. El bucle <code>for</code> recorre una lista definida de elementos (archivos, usuarios o comandos), mientras que <code>while</code> se ejecuta continuamente mientras se cumpla una condición específica.</p>
-                <p>En un bucle <code>for</code>, podemos iterar sobre una lista manual, el contenido de un archivo o la salida de un comando:</p>
+                <p>En un bucle <code>for</code>, podemos iterar sobre una lista manual, el contenido de un archivo o la salida de un comando. Cuando usamos una lista, nosotros indicamos los valores. Tambien podemos hacer una sustitución de comandos... Ejemplos:</p>
                 <img src="/images/script8.png" alt="Ejemplo bucle for" width="600">
-                <p>Ejemplo con <code>while</code> (ideal para lecturas línea a línea o contadores):</p>
-                <img src="/images/script9.png" alt="Ejemplo bucle while" width="600">
-                <p>Estas estructuras son esenciales en administración de sistemas para procesar logs, gestionar usuarios de forma masiva o monitorizar servicios.</p>
-                
+                <img src="/images/script9.png" alt="resultado bucle for" width="600">
+               <p>El bucle <code>while</code> ejecuta acciones mientras una condición sea verdadera. Es la herramienta ideal para lecturas línea a línea (usando <code>read</code>) o para crear contadores. También podemos usar la variable <code>IFS</code> para definir el separador de campos al procesar archivos complejos (como CSV).</p>
+                <img src="/images/script10.png" alt="ejemplo de while" width="600">
+                <img src="/images/script11.png" alt="Resultado while" width="600">
+
+<p>En definitiva: usamos <strong>for</strong> cuando conocemos el número de elementos, y <strong>while</strong> cuando no sepamos cuanto durará la tarea. Ambos sirven para procesar logs, gestionar usuarios de forma masiva, monitorizar servicios...</p>
+                <p>En definitiva, usaremos <strong>for</strong> cuando sabemos exactamente cuantos elementos hay y <strong>while</strong> cuando no sabemos cuanto durará la tarea.</p>
+                <p> Por ultimo, <strong>until</strong> es lo mismo que while pero funciona de forma opuesta, aunque no he visto usarlo mucho. </p>
             </section>
+            
             <section id="obj3">
                 <h3>Procesar entradas de scripts</h3>
-                <p>Los scripts pueden recibir argumentos desde la línea de comandos:</p>
-
+                <p>Los scripts pueden recibir argumentos desde la línea de comandos al lanzar el script. Existen diferentes tipos de argumentos :</p>
                 <ul>
                     <li><strong>$0</strong> → Nombre del script</li>
                     <li><strong>$1, $2, $3…</strong> → Argumentos individuales</li>
                     <li><strong>$#</strong> → Número total de argumentos</li>
                     <li><strong>$@</strong> → Todos los argumentos</li>
+                    <li><strong>$?</strong> → Estado del script</li>
                 </ul>
-
-                <p>Ejemplo básico:</p>
-                <pre><code>#!/bin/bash
-
-echo "Primer argumento: $1"
-echo "Segundo argumento: $2"
-echo "Total: $#"</code></pre>
-
-                <p>Ejemplo validando argumentos:</p>
-                <pre><code>if [ $# -ne 1 ]; then
-    echo "Uso: $0 archivo"
-    exit 1
-fi</code></pre>
-
-                <p>Este tipo de validación es muy común en el examen RHCSA.</p>
+                <img src="/images/script12.png" alt="args" width="600">
+                <img src="/images/script13.png" alt="Resultado args" width="600">
+                <p> Mencionar que podemos forzar la salida de un script por lo que fuera usando un exit 1 </p>
             </section>
-
             <section id="obj4">
                 <h3>Procesar la salida de comandos dentro de un script</h3>
-                <p>La salida de comandos puede almacenarse en variables usando <strong>$(comando)</strong> o comillas invertidas.</p>
-
-                <p>Ejemplo:</p>
-                <pre><code>#!/bin/bash
-
-USUARIOS=$(wc -l /etc/passwd | awk '{print $1}')
-echo "Usuarios en el sistema: $USUARIOS"</code></pre>
-
-                <p>Otro ejemplo comprobando servicios:</p>
-                <pre><code>ESTADO=$(systemctl is-active sshd)
-
-if [ "$ESTADO" = "active" ]; then
-    echo "SSHD está activo"
-else
-    echo "SSHD no está activo"
-fi</code></pre>
-
-                <p>Esta técnica permite tomar decisiones basadas en el estado real del sistema, algo clave para automatización.</p>
+                <p>La salida de comandos puede almacenarse en variables usando <strong>$(comando)</strong> o comillas invertidas. </p>
+                <p>Básicamente, lo que hacemos es guardar el resultado de un comando dentro de una variable usando $( ). Esto nos permite usar esa información más tarde en el script para procesarla o mandarla a otro sitio, combinándolo con las redirecciones que aprendimos en la Clase 1.</p>
+                <p> Por ejemplo :</p>
+                <img src="/images/script14.png" alt="procesando y redirigiendo script" width="600">
+                <img src="/images/script15.png" alt="Resultado redirección" width="600">
+                <p> Por ultimo, es importante recordar que la mayoría de errores suelen venir de fallos tontos, como no espaciar bien los corchetes, no dar permisos de ejecución, usar rutas relativas, etc...</p>
             </section>
 
         </div>
@@ -171,7 +151,7 @@ fi</code></pre>
         <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
         <div class="footer-links">
             <a href="https://github.com/s2ktux">GitHub</a>
-            <a href="mailto:alaisysadma@gmail.com">Contacto</a>
+            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
             <a href="https://www.youtube.com/@s2ktux">YouTube</a>
         </div>
     </div>
