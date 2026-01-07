@@ -1,1 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RHCSA - Crear scripts de shell simples">
+    <meta name="keywords" content="RHCSA, Linux, bash, scripts, if, for, variables">
+    <meta name="author" content="SysRiser">
+    <title>S2KTUX - RHCSA | Scripts de shell</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
 
+<div class="gradient-bg"></div>
+
+<header>
+    <div class="header-left">
+        <a href="/index.html" class="header-logo">S2KTUX</a>
+    </div>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/cursos/cursos.html">Cursos</a>
+        <a href="/proyectos/proyectos.html">Proyectos</a>
+    </nav>
+</header>
+
+<main id="contenido">
+
+    <div class="hero">
+        <h1>Crear scripts de shell simples</h1>
+        <p>Automatización básica con Bash</p>
+        <p><a href="#" target="_blank">VER VIDEO YOUTUBE - CLASE X</a></p>
+    </div>
+
+    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+
+    <div class="course-page">
+
+        <div class="sidebar">
+            <h3>Objetivos del bloque</h3>
+            <ul>
+                <li><a href="#obj1">Ejecutar código condicionalmente</a></li>
+                <li><a href="#obj2">Uso de bucles para procesar datos</a></li>
+                <li><a href="#obj3">Procesar entradas de scripts</a></li>
+                <li><a href="#obj4">Procesar salida de comandos</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+
+            <section id="obj1">
+                <h3>Ejecutar código condicionalmente</h3>
+                <p>Los scripts de shell permiten ejecutar comandos de forma automática. El control condicional se realiza principalmente con <strong>if</strong>, <strong>test</strong> y <strong>[]</strong>.</p>
+
+                <p>Estructura básica de un script:</p>
+                <pre><code>#!/bin/bash
+# Comentarios
+echo "Hola mundo"</code></pre>
+
+                <p>Ejemplo de uso de <strong>if</strong> con <strong>test</strong>:</p>
+                <pre><code>#!/bin/bash
+
+if test -f /etc/passwd; then
+    echo "El archivo existe"
+else
+    echo "El archivo no existe"
+fi</code></pre>
+
+                <p>Forma equivalente usando <strong>[]</strong> (la más común):</p>
+                <pre><code>if [ -f /etc/passwd ]; then
+    echo "Existe"
+fi</code></pre>
+
+                <p>Operadores comunes:</p>
+                <ul>
+                    <li><strong>-f</strong> → Archivo existe y es regular</li>
+                    <li><strong>-d</strong> → Directorio existe</li>
+                    <li><strong>-eq, -ne, -gt, -lt</strong> → Comparaciones numéricas</li>
+                    <li><strong>=, !=</strong> → Comparaciones de cadenas</li>
+                </ul>
+
+                <p>⚠️ En el examen RHCSA es habitual comprobar la existencia de archivos, directorios o el valor de variables.</p>
+            </section>
+
+            <section id="obj2">
+                <h3>Uso de bucles para procesar archivos y entradas</h3>
+                <p>Los bucles permiten repetir acciones automáticamente. El más usado es <strong>for</strong>.</p>
+
+                <p>Ejemplo: recorrer una lista de archivos:</p>
+                <pre><code>#!/bin/bash
+
+for archivo in /etc/*.conf; do
+    echo "Procesando $archivo"
+done</code></pre>
+
+                <p>Ejemplo: procesar argumentos de línea de comandos:</p>
+                <pre><code>for usuario in "$@"; do
+    echo "Usuario: $usuario"
+done</code></pre>
+
+                <p>Ejemplo con <strong>while</strong> leyendo entrada estándar:</p>
+                <pre><code>while read linea; do
+    echo "Línea: $linea"
+done &lt; archivo.txt</code></pre>
+
+                <p>Estos bucles son muy útiles para tareas típicas de administración: crear usuarios, revisar permisos o procesar logs.</p>
+            </section>
+
+            <section id="obj3">
+                <h3>Procesar entradas de scripts</h3>
+                <p>Los scripts pueden recibir argumentos desde la línea de comandos:</p>
+
+                <ul>
+                    <li><strong>$0</strong> → Nombre del script</li>
+                    <li><strong>$1, $2, $3…</strong> → Argumentos individuales</li>
+                    <li><strong>$#</strong> → Número total de argumentos</li>
+                    <li><strong>$@</strong> → Todos los argumentos</li>
+                </ul>
+
+                <p>Ejemplo básico:</p>
+                <pre><code>#!/bin/bash
+
+echo "Primer argumento: $1"
+echo "Segundo argumento: $2"
+echo "Total: $#"</code></pre>
+
+                <p>Ejemplo validando argumentos:</p>
+                <pre><code>if [ $# -ne 1 ]; then
+    echo "Uso: $0 archivo"
+    exit 1
+fi</code></pre>
+
+                <p>Este tipo de validación es muy común en el examen RHCSA.</p>
+            </section>
+
+            <section id="obj4">
+                <h3>Procesar la salida de comandos dentro de un script</h3>
+                <p>La salida de comandos puede almacenarse en variables usando <strong>$(comando)</strong> o comillas invertidas.</p>
+
+                <p>Ejemplo:</p>
+                <pre><code>#!/bin/bash
+
+USUARIOS=$(wc -l /etc/passwd | awk '{print $1}')
+echo "Usuarios en el sistema: $USUARIOS"</code></pre>
+
+                <p>Otro ejemplo comprobando servicios:</p>
+                <pre><code>ESTADO=$(systemctl is-active sshd)
+
+if [ "$ESTADO" = "active" ]; then
+    echo "SSHD está activo"
+else
+    echo "SSHD no está activo"
+fi</code></pre>
+
+                <p>Esta técnica permite tomar decisiones basadas en el estado real del sistema, algo clave para automatización.</p>
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
+        <div class="footer-links">
+            <a href="https://github.com/s2ktux">GitHub</a>
+            <a href="mailto:alaisysadma@gmail.com">Contacto</a>
+            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
+        </div>
+    </div>
+</footer>
+
+<a href="#" id="back-to-top">↑ Volver arriba</a>
+<script src="/conf/scripts.js"></script>
+
+</body>
+</html>
