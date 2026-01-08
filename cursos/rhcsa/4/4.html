@@ -88,10 +88,9 @@
             <section id="obj2">
                 <h3>Arrancar sistemas en diferentes objetivos manualmente</h3>
                 <p>Systemd utiliza <strong>targets</strong> en lugar de runlevels. Cada target define un estado operativo del sistema. Como hemos visto en el punto anterior, tenemos diferentes target y podemos iniciar el sistema manualmente ya sea temporalmente o de forma persistente</p>
-                <p> Para hacerlo de forma temporal, podemos usar el comando <code>systemctl isolate "TARGET"</code> o bien cambiarlo directamete desde GRUB editando la linea de linux y añadiendo <code>systemd.unit=TARGET</code> </p>
-                <img src="/images/X" alt="temporal ejemplo" width="600">  
+                <p> Para hacerlo de forma temporal, podemos usar el comando <code>systemctl isolate "TARGET"</code> o bien cambiarlo directamete desde GRUB editando la linea de linux y añadiendo <code>systemd.unit=TARGET</code> </p> 
                 <p> Cuando lo queremos hacer permanente, deberemos usar el comando <code>systemctl set-default TARGET</code>. Podremos ver cual tenemos por defecto con <code>systemctl get-default</code></p>
-                <img src="/images/X" alt="permanente ejemplo" width="600">  
+                <img src="/images/per-target.png" alt="permanente ejemplo" width="600">  
             </section>
 
             <section id="obj3">
@@ -99,25 +98,25 @@
                 <p>Durante el arranque, es posible interrumpir GRUB para acceder modificar parametros Esto lo podemos hacer ya sea para encender el sistema con un target especifico, recuperar la contraseña o entrar como modo emergencia para revisar posibles errores </p>
                 <p>Uno de los puntos mas importantes del examen es resetear la contraseña de root para poder realizar el examen. Para ello lo primero que haremos será entrar en GRUB y editar la entrada presionando <strong>e</strong>.</p>
                 <p>Una vez dentro, modificamos la linea de linux, añadiendo al final <strong>rd.break</strong> (si no funciona podriamos poner como alternativa init=/bin/bash) y arrancaremos con Ctrl + X.</p>
-                <img src="/images/X" alt="grub line" width="600">  
+                <img src="/images/root-rec1.png" alt="grub line" width="600">  
                 
                 <p> Una vez arrancado, tendremos que seguir los siguientes pasos :</p>
-                <img src="/images/X" alt="grub line" width="600">
+                <img src="/images/root-rec2.png" alt="grub line" width="600">
             </section>
 
             <section id="obj4">
                 <h3>Identificar procesos intensivos en CPU/memoria y eliminarlos</h3>
                 <p>Linux ofrece varias herramientas para ver qué procesos están usando más recursos. Podemos hacerlo de forma <strong>estática</strong> con <code>ps</code> o de forma <strong>interactiva</strong> con <code>top</code>.</p>
                 <p>El comando <code>top</code> muestra los procesos en tiempo real y permite ver el consumo de CPU y memoria. Desde <code>top</code> también podemos matar procesos pulsando <strong>k</strong></p>
-                <img src="/images/X" alt="top line" width="600">
+                <img src="/images/top.png" alt="top line" width="600">
                 <p>Los flags más importantes de ps serían :</p>
                 <ul>
                     <li><strong>ps aux</strong> → Muestra todos los procesos del sistema</li>
                     <li><strong>ps -ef</strong> → Vista completa de los procesos en formato extendido</li>
                 </ul>
-                <img src="/images/X" alt="ps" width="600">
+                <img src="/images/ps.png" alt="ps" width="600">
                 <p> Para comprobar el uso de memoria del sistema utilizamos el comando <code>free -h</code>, que muestra la memoria total, usada y libre de forma legible.</p> 
-                <img src="/images/X" alt="free pic" width="600">
+                <img src="/images/free.png" alt="free pic" width="600">
                 <p>Para finalizar procesos utilizamos el comando <code>kill</code> que tiene diferentes flags, siendo -9 la más usada que mata el proceso forzosamente:</p>
                 <ul>
                     <li><strong>kill PID</strong></li>
@@ -133,14 +132,15 @@
                     <li><strong>nice -n 10 comando</strong> → Ejecuta un comando con menor prioridad</li>
                     <li><strong>renice -5 PID</strong> → Cambia la prioridad de un proceso en ejecución</li>
                 </ul>
-                <img src="/images/X" alt="grub line" width="600">
+                <img src="/images/nice-re.png" alt="nice example" width="600">
                 <p> Por otro lado tenemos los procesos real time, que son procesos que tienen prioridad ante todos y va con valores de 0 a 99, siendo 99 el mas alto. Podemos ver su información, cambiar su prioridad o lanzar un proceso con un rt especifico :  </p>
                 <ul>
                     <li><strong>chrt -p PID</strong> → Muestra la política y prioridad real time de un proceso</li>
                     <li><strong>chrt -r -p PRIORIDAD PID</strong> → Cambia la prioridad real time de un proceso existente</li>
                     <li><strong>chrt -r PRIORIDAD comando</strong> → Ejecuta un comando con prioridad real time</li>
                 </ul>
-                <img src="/images/X" alt="grub line" width="600">
+                <img src="/images/chrt.png
+                    " alt="grub line" width="600">
             </section>
 
             <section id="obj6">
@@ -163,13 +163,14 @@
                     <li><strong>-k</strong> → Muestra los mensajes del kernel</li>
                 </ul>
                 <p> Una vez sabemos los filtros, podemos usarlos para comprobar los logs :</p>
-                <img src="/images/X" alt="logs ejemplo" width="600">
+                <img src="/images/logs-ex.png" alt="logs ejemplo" width="600">
             </section>
 
             <section id="obj8">
                 <h3>Preservar journals del sistema</h3>
-                <p>Por defecto, los journals pueden ser volátiles. Para hacerlos persistentes debemos crear la carpeta <code>/var/log/journal</code> y le damos los permisos <code>chown root:systemd-journal /var/log/journal</code> y <code>chmod 2755 /var/log/journal</code>. Por ultimo, en el archivo de configuración ubicado en <code>/etc/systemd/journald.conf</code> pondremos el valor de Storage en persistent</p>
-                <img src="/images/X" alt="logs persistent conf" width="600">
+                <p>Por defecto, los journals pueden ser volátiles. Para hacerlos persistentes debemos crear la carpeta <code>/var/log/journal</code> y le damos los permisos <code>chown root:systemd-journal /var/log/journal</code> y <code>chmod 2755 /var/log/journal</code>. Por ultimo, en el archivo de configuración ubicado en <code>/etc/systemd/journald.conf</code> pondremos el valor de Storage en persistent. Si no existe el archivo lo copiamos:</p>
+                <img src="/images/log-pers.png" alt="logs persistent conf" width="600">
+                <img src="/images/log-pers2.png" alt="logs persistent conf" width="600">
                 <p> Preferiblemente, siempre que hagamos un cambio a un archivo de configuración de un servicio, reiniciaremos este servicio <code>systemctl restart systemd-journald</code>.</p>
                 <p>No hemos mencionado la rotación de logs, para ello podemos usar</p>
                 <ul>
@@ -179,6 +180,7 @@
                     <li><strong>--disk-usage</strong> → Muestra cuánto espacio ocupan los logs</li>
                     <li><strong>--list-boots</strong> → Muestra los arranques registrados en el sistema</li>
                 </ul>
+                <img src="/images/logs-rotated.png" alt="logs persistent conf" width
             </section>
 
             <section id="obj9">
@@ -191,19 +193,21 @@
                     <li><strong>systemctl restart NetworkManager</strong> → Reiniciar</li>
                     <li><strong>systemctl status NetworkManager</strong> → Comprobar el estado</li>
                 </ul>
+                <img src="/images/networkmanager.png" alt="nm ejemplo" width="600">
                 <p> Tambien podemos usar nmcli para gestionar los servicios de red :</p>
                 <ul>
                     <li><strong>nmcli connection up "interfaz" </strong> → Levantar</li>
                     <li><strong>nmcli connection down "interfaz"</strong> → Parar</li>
                     <li><strong>nmcli connection show</strong> → Comprobar</li>
                 </ul>
+                <img src="/images/nmcli-basic.png" alt="nmcli basic ejemplo" width="600">
                 <p> Por ultimo, podemos usar ip ( aunque este no es recomendable ya que solo hace cambios temporales ) : </p>
                 <ul>
                     <li><strong>ip link set "interfaz" up</strong> → Levantar</li>
                     <li><strong>ip link set "interfaz" down</strong> → Parar</li>
                     <li><strong>ip a</strong> → Comprobar</li>
                 </ul>
-
+                <img src="/images/ip-basic.png" alt="ip basic ejemplo" width="600">
                 <p> Por ultimo, podemos comprobar la conectividad con el comando <code>ping</code> </p>
             </section>
 
@@ -217,15 +221,16 @@
                 </ul>   
                 <p>Las opciones más usadas son : </p>
                 <ul>
-                    <li><strong>-r</strong> →  </li>
+                    <li><strong>-r</strong> →  Realizar copias recursivas. </li>
                     <li><strong>-P</strong> → Indicar puerto</li>
                     <li><strong>-p </strong> → Conservar permisos y otros datos</li>
                 </ul>
-                <img src="/images/X" alt="scp ejemplo" width="600">
+                <img src="/images/scp.png" alt="scp ejemplo" width="600">
+                <img src="/images/scp-remoto.png" alt="scp-remoto ejemplo" width="600">
                 <p> Por otro lado, tenemos sftp que tiene un menú interactivo donde podemos lanzar comandos. Para conectarnos usaremos <code>sftp user@IP</code>.</p>
                 <p> Si queremos lanzar comandos en local lanzariamos los comandos con una l delante, por ejemplo lcd, lpwd...</p>
                 <p> Los más a tener en cuenta serían : <code>put</code>( Subir un archivo) y <code>get</code>( Descargarlo)</p>
-                <img src="/images/X" alt="sftp ejemplo" width="600">
+                
             </section>
 
         </div>
