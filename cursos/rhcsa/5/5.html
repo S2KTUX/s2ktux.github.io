@@ -1,1 +1,176 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RHCSA - Configurar el almacenamiento local">
+    <meta name="keywords" content="RHCSA, Linux, almacenamiento, particiones, LVM, mount, UUID">
+    <meta name="author" content="SysRiser">
+    <title>S2KTUX - RHCSA | Almacenamiento local</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
 
+<div class="gradient-bg"></div>
+
+<header>
+    <div class="header-left">
+        <a href="/index.html" class="header-logo">S2KTUX</a>
+    </div>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/cursos/cursos.html">Cursos</a>
+        <a href="/proyectos/proyectos.html">Proyectos</a>
+    </nav>
+</header>
+
+<main id="contenido">
+
+    <div class="hero">
+        <h1>Configurar el almacenamiento local</h1>
+        <p>Particiones, LVM y montaje de sistemas de archivos</p>
+        <p><a href="#" target="_blank">VER VIDEO YOUTUBE - CLASE 5</a></p>
+    </div>
+
+    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+
+    <div class="course-page">
+
+        <div class="sidebar">
+            <h3>Objetivos del bloque</h3>
+            <ul>
+                <li><a href="#obj1">Gestionar particiones GPT</a></li>
+                <li><a href="#obj2">Crear volúmenes físicos</a></li>
+                <li><a href="#obj3">Grupos de volúmenes</a></li>
+                <li><a href="#obj4">Volúmenes lógicos</a></li>
+                <li><a href="#obj5">Montaje automático con UUID o etiqueta</a></li>
+                <li><a href="#obj6">Cambios no destructivos</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+
+            <section id="obj1">
+                <h3>Listar, crear y eliminar particiones en discos GPT</h3>
+                <p>
+                Antes de usar un disco, debemos crear particiones. En sistemas modernos se utiliza
+                el esquema <strong>GPT</strong>.
+                </p>
+
+                <p>Comandos más usados:</p>
+                <ul>
+                    <li><strong>lsblk</strong> → Muestra discos y particiones</li>
+                    <li><strong>blkid</strong> → Muestra UUID y tipo de sistema de archivos</li>
+                    <li><strong>parted /dev/sdX</strong> → Gestionar particiones GPT</li>
+                </ul>
+
+                <p>
+                Dentro de <code>parted</code> podemos crear y borrar particiones sin reiniciar el sistema.
+                </p>
+            </section>
+
+            <section id="obj2">
+                <h3>Crear y eliminar volúmenes físicos</h3>
+                <p>
+                LVM permite gestionar el almacenamiento de forma flexible.
+                El primer paso es crear un <strong>volumen físico</strong> (PV).
+                </p>
+
+                <ul>
+                    <li><strong>pvcreate /dev/sdX1</strong> → Crear un volumen físico</li>
+                    <li><strong>pvdisplay</strong> → Ver información de los PV</li>
+                    <li><strong>pvremove /dev/sdX1</strong> → Eliminar un volumen físico</li>
+                </ul>
+            </section>
+
+            <section id="obj3">
+                <h3>Asignar volúmenes físicos a grupos de volúmenes</h3>
+                <p>
+                Un <strong>grupo de volúmenes</strong> (VG) agrupa uno o más volúmenes físicos
+                para crear un espacio común.
+                </p>
+
+                <ul>
+                    <li><strong>vgcreate vg_datos /dev/sdX1</strong> → Crear un VG</li>
+                    <li><strong>vgextend vg_datos /dev/sdX2</strong> → Añadir un PV al VG</li>
+                    <li><strong>vgdisplay</strong> → Ver información del VG</li>
+                    <li><strong>vgremove vg_datos</strong> → Eliminar un VG</li>
+                </ul>
+            </section>
+
+            <section id="obj4">
+                <h3>Crear y eliminar volúmenes lógicos</h3>
+                <p>
+                Los <strong>volúmenes lógicos</strong> (LV) son los que finalmente se formatean
+                y montan en el sistema.
+                </p>
+
+                <ul>
+                    <li><strong>lvcreate -L 5G -n lv_datos vg_datos</strong> → Crear un LV</li>
+                    <li><strong>lvdisplay</strong> → Ver información de los LV</li>
+                    <li><strong>lvremove /dev/vg_datos/lv_datos</strong> → Eliminar un LV</li>
+                </ul>
+
+                <p>
+                Tras crear el LV, debemos formatearlo con <code>mkfs</code>.
+                </p>
+            </section>
+
+            <section id="obj5">
+                <h3>Montar sistemas de archivos usando UUID o etiqueta</h3>
+                <p>
+                Para montar sistemas de archivos de forma permanente se usa el archivo
+                <code>/etc/fstab</code>.
+                Es recomendable usar <strong>UUID</strong> o <strong>LABEL</strong>.
+                </p>
+
+                <ul>
+                    <li><strong>blkid</strong> → Obtener UUID y etiquetas</li>
+                    <li><strong>mount /dev/vg_datos/lv_datos /mnt</strong> → Montaje manual</li>
+                    <li><strong>mount -a</strong> → Probar /etc/fstab</li>
+                </ul>
+
+                <p>
+                Usar UUID evita problemas si cambia el nombre del dispositivo.
+                </p>
+            </section>
+
+            <section id="obj6">
+                <h3>Añadir particiones y volúmenes de forma no destructiva</h3>
+                <p>
+                Una de las ventajas de LVM es poder ampliar el almacenamiento sin perder datos.
+                </p>
+
+                <ul>
+                    <li><strong>lvextend -L +2G /dev/vg_datos/lv_datos</strong> → Ampliar un LV</li>
+                    <li><strong>resize2fs /dev/vg_datos/lv_datos</strong> → Ajustar el sistema de archivos</li>
+                </ul>
+
+                <p>
+                Este proceso permite aumentar el espacio disponible sin desmontar el sistema
+                ni perder información.
+                </p>
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
+        <div class="footer-links">
+            <a href="https://github.com/s2ktux">GitHub</a>
+            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
+            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
+        </div>
+    </div>
+</footer>
+
+<a href="#" id="back-to-top">↑ Volver arriba</a>
+<script src="/conf/scripts.js"></script>
+
+</body>
+</html>
