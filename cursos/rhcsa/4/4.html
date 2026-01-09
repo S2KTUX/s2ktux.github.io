@@ -148,7 +148,7 @@
                 <p>El servicio <strong>tuned</strong> permite optimizar el sistema según el uso. Usaremos tuned-adm para gestionar el perfil que queramos poner. Para ver los perfiles que hay y su descripción usariamos <code>tuned-adm list</code>.</p>
                 <p> Los perfiles más interesantes podrían ser : balanced, virtual-guest, throughput-performance, network-latency... </p>
                 <p> Podemos ver el perfil actual con el comando <code>tuned-adm active</code>, cambiarlo con <code>tuned-adm profile nombre-perfil</code> o apagar este servicio con <code>tuned-adm off</code></p>
-                <img src="/images/tuned.png" alt="tuned-adm ejemplo" width="600">
+                <img src="/images/tuned.png" alt="tuned-adm ejemplo" width="900">
             </section>
 
             <section id="obj7">
@@ -163,7 +163,7 @@
                     <li><strong>-k</strong> → Muestra los mensajes del kernel</li>
                 </ul>
                 <p> Una vez sabemos los filtros, podemos usarlos para comprobar los logs :</p>
-                <img src="/images/logs-ex.png" alt="logs ejemplo" width="600">
+                <img src="/images/logs-ex.png" alt="logs ejemplo" width="900">
             </section>
 
             <section id="obj8">
@@ -193,21 +193,21 @@
                     <li><strong>systemctl restart NetworkManager</strong> → Reiniciar</li>
                     <li><strong>systemctl status NetworkManager</strong> → Comprobar el estado</li>
                 </ul>
-                <img src="/images/networkmanager.png" alt="nm ejemplo" width="600">
+                <img src="/images/networkmanager.png" alt="nm ejemplo" width="900">
                 <p> Tambien podemos usar nmcli para gestionar los servicios de red :</p>
                 <ul>
                     <li><strong>nmcli connection up "interfaz" </strong> → Levantar</li>
                     <li><strong>nmcli connection down "interfaz"</strong> → Parar</li>
                     <li><strong>nmcli connection show</strong> → Comprobar</li>
                 </ul>
-                <img src="/images/nmcli-basic.png" alt="nmcli basic ejemplo" width="600">
+                <img src="/images/nmcli-basic.png" alt="nmcli basic ejemplo" width="900">
                 <p> Por ultimo, podemos usar ip ( aunque este no es recomendable ya que solo hace cambios temporales ) : </p>
                 <ul>
                     <li><strong>ip link set "interfaz" up</strong> → Levantar</li>
                     <li><strong>ip link set "interfaz" down</strong> → Parar</li>
                     <li><strong>ip a</strong> → Comprobar</li>
                 </ul>
-                <img src="/images/ip-basic.png" alt="ip basic ejemplo" width="600">
+                <img src="/images/ip-basic.png" alt="ip basic ejemplo" width="900">
                 <p> Por ultimo, podemos comprobar la conectividad con el comando <code>ping</code> </p>
             </section>
 
