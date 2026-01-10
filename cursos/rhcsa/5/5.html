@@ -64,60 +64,50 @@
                     <li><strong>fdisk -l</strong> → Da un informe técnico detallado de todos los discos.</li>
                     <li><strong>df -h </strong> → Informa cuánto espacio libre queda y dónde se usan.</li>
                 </ul>
+                <p> Ejemplos de como se podría un sistema con dos discos y varias particiones en cada uno :</p>
                 <img src="/images/listado-part.png" alt="Particiones" width="1100">
-                <p>Una vez listados los discos, podemos crear o eliminar particiones usando <code>fdisk</code>, <code>gdisk</code> o <code>parted</code>, siendo este último el recomendado por Red Hat.</p>
+                <p>Una vez listados los discos, podemos crear o eliminar particiones usando <code>fdisk</code>, <code>gdisk</code> o <code>parted</code>. Tened en cuenta que  gdisk funciona practicamente igual que fdisk.</p>
                 <p>Para usar <code>fdisk</code> ejecutamos <code>fdisk /dev/sdX</code> (el disco se obtiene con <code>fdisk -l</code>) y desde el menú interactivo podemos crear o borrar particiones.</p>
-                <img src="/images/part-fdisk.png" alt="Creación de particiones con fdisk" width="1100">
+                <img src="/images/part-fdisk.png" alt="Creación de particiones con fdisk" width="1000">
                 <p>Con <code>n</code> creamos particiones, con <code>d</code> las eliminamos y con <code>t</code> cambiamos su tipo, por ejemplo a <strong>LVM</strong> (listamos los tipos con <code>l</code>.)</p>
-                <img src="/images/mod-tipo-part-fdisk.png" alt="Cambio de tipo de partición a LVM" width="1100">
+                <img src="/images/mod-tipo-part-fdisk.png" alt="Cambio de tipo de partición a LVM" width="900">
+                <p> Por otro lado, podemos utilizar parted que es el recomendado a usar en el examen debido a que es el estandar de Red Hat. Escribiendo help vemos todas las opciones. Por ejemplo vamos a crear varias particiones : </p>
+                <img src="/images/parted-all.png" alt="Crear parted particiones ejemplo" width="900">
+                <p>Primero creamos la tabla de particiones GPT, después la partición y, si es necesario, le asignamos el tipo. Recuerda que el inicio de la primera partición es <strong>1MiB</strong>.</p>
+                <p>Al salir de <code>parted</code> es necesario ejecutar <code>partprobe -s</code> para que el sistema detecte los cambios. Luego podemos comprobar las particiones con comandos como <code>lsblk</code>. </p>
+
 
             </section>
 
             <section id="obj2">
                 <h3>Crear y eliminar volúmenes físicos</h3>
-                <p>
-                LVM permite gestionar el almacenamiento de forma flexible.
-                El primer paso es crear un <strong>volumen físico</strong> (PV).
-                </p>
-
-                <ul>
-                    <li><strong>pvcreate /dev/sdX1</strong> → Crear un volumen físico</li>
-                    <li><strong>pvdisplay</strong> → Ver información de los PV</li>
-                    <li><strong>pvremove /dev/sdX1</strong> → Eliminar un volumen físico</li>
-                </ul>
+                <p> LVM permite gestionar el almacenamiento de forma flexible: primero se crea un volumen físico (PV), luego un grupo de volúmenes (VG) y finalmente los volúmenes lógicos (LV) que son los que usará el sistema. </p>
+                <p> Por ejemplo, vamos a crear dos PV, borrar uno y comprobar(pvs o pvdisplay para más información) :</p>
+                <img src="/images/pv-ex.png" alt="pv ejemplo" width="700">
+                <p> Además, mencionar que es muy importante que el tipo de la partición sea LVM. Por ultimo, tenemos el comando <code>pvmove</code> para mover datos entre PVs o <code>pvscan</code> para hacer un escaneo profundo del PV</p>
             </section>
 
             <section id="obj3">
                 <h3>Asignar volúmenes físicos a grupos de volúmenes</h3>
-                <p>
-                Un <strong>grupo de volúmenes</strong> (VG) agrupa uno o más volúmenes físicos
-                para crear un espacio común.
-                </p>
-
-                <ul>
-                    <li><strong>vgcreate vg_datos /dev/sdX1</strong> → Crear un VG</li>
-                    <li><strong>vgextend vg_datos /dev/sdX2</strong> → Añadir un PV al VG</li>
-                    <li><strong>vgdisplay</strong> → Ver información del VG</li>
-                    <li><strong>vgremove vg_datos</strong> → Eliminar un VG</li>
-                </ul>
+                <p> Un <strong>grupo de volúmenes</strong> (VG) agrupa uno o más volúmenes físicos para crear un espacio común. Una vez creado, podemos extender, reducir y activar/desactivarlos. </p>
+                <p> En los VG entra el concepto de PE que es la unidad basica de almacenamiento en LVM. Nosotros asignamos X tamaño pero internamente LVM utilizará los PE. Por defecto son 4MB, entonces si por ejemplo tenemos 10GB, LVM usará 2560PE (10GIB / 4MB)
+                <p> Vamos a crear un nuevo PV ( antes asegurate de que tenga el tipo LVM), y haremos un ejemplo con todas las opciones :</p>
+                <img src="/images/vg-ex.png" alt="vg ejemplo" width="700">
+                <p> Vemos com hemos creado, extendido, reducido y borrado VG, así como comprobado con vgs o vgdisplay. Por ultimo, podriamos activar o desactivar con <code>vgchange -ay/-an nombre-VG</code>, siendo -ay para activar y -an para desactivar</p>
+        
             </section>
 
             <section id="obj4">
                 <h3>Crear y eliminar volúmenes lógicos</h3>
-                <p>
-                Los <strong>volúmenes lógicos</strong> (LV) son los que finalmente se formatean
-                y montan en el sistema.
-                </p>
-
-                <ul>
-                    <li><strong>lvcreate -L 5G -n lv_datos vg_datos</strong> → Crear un LV</li>
-                    <li><strong>lvdisplay</strong> → Ver información de los LV</li>
-                    <li><strong>lvremove /dev/vg_datos/lv_datos</strong> → Eliminar un LV</li>
-                </ul>
-
-                <p>
-                Tras crear el LV, debemos formatearlo con <code>mkfs</code>.
-                </p>
+                <p> Los <strong>volúmenes lógicos</strong> (LV) son los que finalmente se formatean y montan en el sistema. Podemos hacer las mismas acciones que en los VG ( extender, reducir, ver info...)</p>
+                <p> Para crear un volumen lógico (LV) podemos indicar el tamaño en gigabytes con <code>-L</code> o usando extensiones físicas (PE) con <code>-l</code> y le daremos un nombre con <code>-n</code>. Por ejemplo:</p>
+                <img src="/images/lv-primera.png" alt="lv ejemplo" width="700">
+                <p> Una vez creados, podemos extender, reducir, borrar... Pero primeramente vamos a darle un formato y montandolos en el sistema para identificarlos. Recordar comprobar con lsblk, df -Th, lvs ...</p>
+                <img src="/images/vg-segunda.png" alt="lv-formatear y montar ejemplo" width="700">
+                <p> Una vez formateados y montados, ya podriamos extender y reducir, aunque para reducir deben estan DESMONTADOS. Al extender, si añadimos <code>-r</code> se extenderá automaticamente. En caso de que no lo añadamos, tendriamos que ejecutar resize2fs (para ext4) o xfs_growfs (para XFS)  </p>
+                <img src="/images/vg-tercera.png" alt="lv extend ejemplo" width="700">
+                <img src="/images/vg-cuarta.png" alt="lv extend ejemplo" width="700">
+                <p> Importante mencionar que extender podemos con todos los filesystem pero REDUCIR no es posible con algunos como xfs y cuando reducimos indicamos el tamaño final que queremos. Tambien podemos extender usando % de espacio libre con <code>lvextend -r -l +50%FREE particion</code>. </p>
             </section>
 
             <section id="obj5">
