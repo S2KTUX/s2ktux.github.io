@@ -54,21 +54,23 @@
 
             <section id="obj1">
                 <h3>Listar, crear y eliminar particiones en discos GPT</h3>
-                <p>
-                Antes de usar un disco, debemos crear particiones. En sistemas modernos se utiliza
-                el esquema <strong>GPT</strong>.
-                </p>
-
-                <p>Comandos más usados:</p>
+                <p> Antes de usar un disco, debemos crear particiones. En sistemas modernos se utiliza el esquema <strong>GPT</strong>. Cuando grabé el video de Youtube mencionaban en los objetivos MBR, pero ahora lo han quitado. Aún así, me parece muy importante como administrador de sistemas que conozcas MBR. </p>
+                <p> Las diferencias entre MBR y GPT son que MBR es el estándar antiguo limitado a 2TB y 4 particiones, mientras que GPT es el sistema moderno que permite discos más grandes, particiones casi ilimitadas y mayor recuperación de datos.</p>
+                <p> Para listar los discos o particiones que tenemos podemos usar los siguientes comandos, que cualquiera es valido para hacer comprobaciones : </p>
                 <ul>
-                    <li><strong>lsblk</strong> → Muestra discos y particiones</li>
+                    <li><strong>lsblk</strong> → Muestra de forma visual los discos y sus divisiones. Es el más recomendado</li>
                     <li><strong>blkid</strong> → Muestra UUID y tipo de sistema de archivos</li>
-                    <li><strong>parted /dev/sdX</strong> → Gestionar particiones GPT</li>
+                    <li><strong>parted -l</strong> → Indica si el disco es MBR o GPT y su tamaño.</li>
+                    <li><strong>fdisk -l</strong> → Da un informe técnico detallado de todos los discos.</li>
+                    <li><strong>df -h </strong> → Informa cuánto espacio libre queda y dónde se usan.</li>
                 </ul>
+                <img src="/images/listado-part.png" alt="Particiones" width="1100">
+                <p>Una vez listados los discos, podemos crear o eliminar particiones usando <code>fdisk</code>, <code>gdisk</code> o <code>parted</code>, siendo este último el recomendado por Red Hat.</p>
+                <p>Para usar <code>fdisk</code> ejecutamos <code>fdisk /dev/sdX</code> (el disco se obtiene con <code>fdisk -l</code>) y desde el menú interactivo podemos crear o borrar particiones.</p>
+                <img src="/images/part-fdisk.png" alt="Creación de particiones con fdisk" width="1100">
+                <p>Con <code>n</code> creamos particiones, con <code>d</code> las eliminamos y con <code>t</code> cambiamos su tipo, por ejemplo a <strong>LVM</strong> (listamos los tipos con <code>l</code>.)</p>
+                <img src="/images/mod-tipo-part-fdisk.png" alt="Cambio de tipo de partición a LVM" width="1100">
 
-                <p>
-                Dentro de <code>parted</code> podemos crear y borrar particiones sin reiniciar el sistema.
-                </p>
             </section>
 
             <section id="obj2">
