@@ -75,6 +75,7 @@
                 <img src="/images/parted-all.png" alt="Crear parted particiones ejemplo" width="900">
                 <p>Primero creamos la tabla de particiones GPT, después la partición y, si es necesario, le asignamos el tipo. Recuerda que el inicio de la primera partición es <strong>1MiB</strong>.</p>
                 <p>Al salir de <code>parted</code> es necesario ejecutar <code>partprobe -s</code> para que el sistema detecte los cambios. Luego podemos comprobar las particiones con comandos como <code>lsblk</code>. </p>
+                <p> Por ultimo, aunque no muy relevante pero si podría salir en el examen, existen unas etiquetas INTERNAS de las tablas de GPT. Podemos asignarlas con el comando <code>parted disco name 1(partición) "NOMBRE"</code. No confundir estas etiquetas con las etiquetas de las particiones que veremos despues.</p>
 
 
             </section>
@@ -103,47 +104,46 @@
                 <p> Para crear un volumen lógico (LV) podemos indicar el tamaño en gigabytes con <code>-L</code> o usando extensiones físicas (PE) con <code>-l</code> y le daremos un nombre con <code>-n</code>. Por ejemplo:</p>
                 <img src="/images/lv-primera.png" alt="lv ejemplo" width="700">
                 <p> Una vez creados, podemos extender, reducir, borrar... Pero primeramente vamos a darle un formato y montandolos en el sistema para identificarlos. Recordar comprobar con lsblk, df -Th, lvs ...</p>
-                <img src="/images/vg-segunda.png" alt="lv-formatear y montar ejemplo" width="700">
+                <img src="/images/lv-segunda.png" alt="lv-formatear y montar ejemplo" width="700">
                 <p> Una vez formateados y montados, ya podriamos extender y reducir, aunque para reducir deben estan DESMONTADOS. Al extender, si añadimos <code>-r</code> se extenderá automaticamente. En caso de que no lo añadamos, tendriamos que ejecutar resize2fs (para ext4) o xfs_growfs (para XFS)  </p>
-                <img src="/images/vg-tercera.png" alt="lv extend ejemplo" width="700">
-                <img src="/images/vg-cuarta.png" alt="lv extend ejemplo" width="700">
-                <p> Importante mencionar que extender podemos con todos los filesystem pero REDUCIR no es posible con algunos como xfs y cuando reducimos indicamos el tamaño final que queremos. Tambien podemos extender usando % de espacio libre con <code>lvextend -r -l +50%FREE particion</code>. </p>
+                <img src="/images/lv-tercera.png" alt="lv extend ejemplo" width="700">
+                <img src="/images/lv-cuarta.png" alt="lv reduce ejemplo" width="700">
+                <p> Importante mencionar que extender podemos con todos los filesystem pero REDUCIR no es posible con algunos como xfs y cuando reducimos indicamos el tamaño final que queremos. Tambien podriamos  extender usando % de espacio libre con <code>lvextend -r -l +50%FREE particion</code>. </p>
             </section>
 
             <section id="obj5">
                 <h3>Montar sistemas de archivos usando UUID o etiqueta</h3>
-                <p>
-                Para montar sistemas de archivos de forma permanente se usa el archivo
-                <code>/etc/fstab</code>.
-                Es recomendable usar <strong>UUID</strong> o <strong>LABEL</strong>.
-                </p>
-
+                <p> Para montar sistemas de archivos de forma permanente se usa el archivo <code>/etc/fstab</code>. Es recomendable usar <strong>UUID</strong> o <strong>LABEL</strong>. Como sabemos, el UUID podemos obtenerlo del comando <code>blkid</code>.</p>
+                <p> En cuanto las LABEL(etiquetas) podemos asignarlas al formatear la partición con <code> mkfs.ext4 -L "ETIQUETA" /dev/sdbX</code> o una vez creada ( A pesar de comentar en el video una manera, no funciona en XFS), que dependerá si es ext o vfat, aunque lo más optimo es crearla cuando estás formateando la partición</p>
                 <ul>
-                    <li><strong>blkid</strong> → Obtener UUID y etiquetas</li>
-                    <li><strong>mount /dev/vg_datos/lv_datos /mnt</strong> → Montaje manual</li>
-                    <li><strong>mount -a</strong> → Probar /etc/fstab</li>
+                    <li><strong> tune2fs -L "ETIQUETA" /dev/sdbX</strong> → Asignar etiquetas en particiones EXT (e2label ha quedado deprecado aunque si funciona)</li>
+                    <li><strong>swaplabel -L</strong> → Asignar etiquetas en SWAP</li>
+                    <li><strong>mkfs.vfat -n "ETIQUETA" /dev/sdb1</strong> → Al formatear, asignar etiqueta a partición VFAT</li>
                 </ul>
-
-                <p>
-                Usar UUID evita problemas si cambia el nombre del dispositivo.
-                </p>
+                <p> Podemos usar UUID para evitar problemas si cambia el nombre del dispositivo o LABEL si NUNCA se va a cambiar ( si se hace tenerlo en cuenta para modificar <code>/etc/fstab</code>).</p>
+                <p> La sintaxis para montar un sistema de archivos de forma automatica al arrancar el sistema es : [dispositivo] [punto_montaje] [tipo_fs] [opciones] [dump] [pass] (donde dump es siempre 0 y pass(verificar un filesystem al arrancar) suele ser 0 (no verificar) o 2 (verificar en segundo lugar). Las opciones, si no dicen lo contrario, usar defaults</p>
+                <img src="/images/fstab.png" alt="lv reduce ejemplo" width="700">
+                <p> En el ejemplo lo hacemos a traves de LABEL pero lo podemos hacer con UUID=..., utilizaremos mount -a para comprobar que todo esté OK y systemctl daemon-reload para recargar. </p>
             </section>
 
             <section id="obj6">
                 <h3>Añadir particiones y volúmenes de forma no destructiva</h3>
-                <p>
-                Una de las ventajas de LVM es poder ampliar el almacenamiento sin perder datos.
-                </p>
-
-                <ul>
-                    <li><strong>lvextend -L +2G /dev/vg_datos/lv_datos</strong> → Ampliar un LV</li>
-                    <li><strong>resize2fs /dev/vg_datos/lv_datos</strong> → Ajustar el sistema de archivos</li>
-                </ul>
-
-                <p>
-                Este proceso permite aumentar el espacio disponible sin desmontar el sistema
-                ni perder información.
-                </p>
+                <p> Cuando nos indican añadir de forma no destructiva es simplemente añadirlos sin perder los datos que ya existan. Con esto se refieren a utilizar los comandos <code>lvextend</code> y <code>vgextend</code>. Muy importante usarlo con -r por si se nos olvida hacer el segundo paso. </p>
+                <p> Por otro lado, cuando usamos reduce tenemos que tener en cuenta que si le damos menos tamaño del espacio ocupado los datos que se queden fuera se eliminarían.</p>
+                <p> Uno de los mayores errores que hace que sea destructivo es una vez hemos extendido o reducido, formatear el disco <code>mkfs</code>, ya que borraría todos los datos. El otro error sería borrar la tabla de particiones o la partición con <code>fdisk</code> o <code>parted</code>.</p>
+                <p> Por ultimo, vamos a mencionar SWAP. El SWAP es una zona del disco duro que el sistema utiliza como "memoria RAM de emergencia" cuando la principal se queda sin espacio. Teniamos creada la primera partición como swap en el punto 1. Para formatearla deberiamos de :  </p>
+                <img src="/images/swap.png" alt="lv reduce ejemplo" width="700">
+                <p> Hemos creado la partición SWAP, le hemos dado formato y la hemos activo. Por ultimo, añadiendola a <code>/etc/fstab</code> la hacemos persistente. Tambien podríamos crear SWAP a traves de archivo aunque dudo mucho que salga en el examen. En caso de sería :</p>
+                <pre>
+                    # Podemos crear el archivo con fallocate ( forma rapida) o dd ( forma lenta pero más compatible ), la que prefieras : 
+                    # dd if=/dev/zero of=/swapfile bs=1M count=1024
+                    fallocate -l 1G /swapfile 
+                    chmod 600 /swapfile
+                    mkswap /swapfile
+                    swapon /swapfile
+                    echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+                    swapon --show
+                </pre>
             </section>
 
         </div>
