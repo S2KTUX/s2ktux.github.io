@@ -106,8 +106,8 @@
                 <p> Una vez creados, podemos extender, reducir, borrar... Pero primeramente vamos a darle un formato y montandolos en el sistema para identificarlos. Recordar comprobar con lsblk, df -Th, lvs ...</p>
                 <img src="/images/lv_segunda.png" alt="lv-formatear y montar ejemplo" width="700">
                 <p> Una vez formateados y montados, ya podriamos extender y reducir, aunque para reducir deben estan DESMONTADOS. Al extender, si añadimos <code>-r</code> se extenderá automaticamente. En caso de que no lo añadamos, tendriamos que ejecutar resize2fs (para ext4) o xfs_growfs (para XFS)  </p>
-                <img src="/images/lv_tercera.png" alt="lv extend ejemplo" width="700">
-                <img src="/images/lv_cuarta.png" alt="lv reduce ejemplo" width="700">
+                <img src="/images/lv_tercera.png" alt="lv extend ejemplo" width="900">
+                <img src="/images/lv_cuarta.png" alt="lv reduce ejemplo" width="900">
                 <p> Importante mencionar que extender podemos con todos los filesystem pero REDUCIR no es posible con algunos como xfs y cuando reducimos indicamos el tamaño final que queremos. Tambien podriamos  extender usando % de espacio libre con <code>lvextend -r -l +50%FREE particion</code>. </p>
             </section>
 
