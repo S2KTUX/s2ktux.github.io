@@ -75,7 +75,7 @@
                 <img src="/images/parted-all.png" alt="Crear parted particiones ejemplo" width="900">
                 <p>Primero creamos la tabla de particiones GPT, después la partición y, si es necesario, le asignamos el tipo. Recuerda que el inicio de la primera partición es <strong>1MiB</strong>.</p>
                 <p>Al salir de <code>parted</code> es necesario ejecutar <code>partprobe -s</code> para que el sistema detecte los cambios. Luego podemos comprobar las particiones con comandos como <code>lsblk</code>. </p>
-                <p> Por ultimo, aunque no muy relevante pero si podría salir en el examen, existen unas etiquetas INTERNAS de las tablas de GPT. Podemos asignarlas con el comando <code>parted disco name 1(partición) "NOMBRE"</code. No confundir estas etiquetas con las etiquetas de las particiones que veremos despues.</p>
+                <p> Por ultimo, aunque no muy relevante pero si podría salir en el examen, existen unas etiquetas INTERNAS de las tablas de GPT. Podemos asignarlas con el comando <code>parted disco name 1(partición) "NOMBRE"</code>. No confundir estas etiquetas con las etiquetas de las particiones que veremos despues.</p>
 
 
             </section>
@@ -91,7 +91,7 @@
             <section id="obj3">
                 <h3>Asignar volúmenes físicos a grupos de volúmenes</h3>
                 <p> Un <strong>grupo de volúmenes</strong> (VG) agrupa uno o más volúmenes físicos para crear un espacio común. Una vez creado, podemos extender, reducir y activar/desactivarlos. </p>
-                <p> En los VG entra el concepto de PE que es la unidad basica de almacenamiento en LVM. Nosotros asignamos X tamaño pero internamente LVM utilizará los PE. Por defecto son 4MB, entonces si por ejemplo tenemos 10GB, LVM usará 2560PE (10GIB / 4MB)
+                <p> En los VG entra el concepto de PE que es la unidad basica de almacenamiento en LVM. Nosotros asignamos X tamaño pero internamente LVM utilizará los PE. Por defecto son 4MB, entonces si por ejemplo tenemos 10GB, LVM usará 2560PE (10GIB / 4MB)</p>
                 <p> Vamos a crear un nuevo PV ( antes asegurate de que tenga el tipo LVM), y haremos un ejemplo con todas las opciones :</p>
                 <img src="/images/vg-ex.png" alt="vg ejemplo" width="700">
                 <p> Vemos com hemos creado, extendido, reducido y borrado VG, así como comprobado con vgs o vgdisplay. Por ultimo, podriamos activar o desactivar con <code>vgchange -ay/-an nombre-VG</code>, siendo -ay para activar y -an para desactivar</p>
@@ -134,16 +134,19 @@
                 <p> Por ultimo, vamos a mencionar SWAP. El SWAP es una zona del disco duro que el sistema utiliza como "memoria RAM de emergencia" cuando la principal se queda sin espacio. Teniamos creada la primera partición como swap en el punto 1. Para formatearla deberiamos de :  </p>
                 <img src="/images/swap.png" alt="lv reduce ejemplo" width="700">
                 <p> Hemos creado la partición SWAP, le hemos dado formato y la hemos activo. Por ultimo, añadiendola a <code>/etc/fstab</code> la hacemos persistente. Tambien podríamos crear SWAP a traves de archivo aunque dudo mucho que salga en el examen. En caso de sería :</p>
-                <pre>
-                    # Podemos crear el archivo con fallocate ( forma rapida) o dd ( forma lenta pero más compatible ), la que prefieras : 
-                    # dd if=/dev/zero of=/swapfile bs=1M count=1024
-                    fallocate -l 1G /swapfile 
-                    chmod 600 /swapfile
-                    mkswap /swapfile
-                    swapon /swapfile
-                    echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
-                    swapon --show
-                </pre>
+                <pre><code>
+# Podemos crear el archivo con fallocate ( forma rapida) o dd ( forma lenta pero más compatible ), la que prefieras : 
+                    
+# dd if=/dev/zero of=/swapfile bs=1M count=1024
+                    
+# fallocate -l 1G /swapfile 
+                    
+chmod 600 /swapfile
+mkswap /swapfile
+swapon /swapfile
+echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
+swapon --show
+                </code></pre>
             </section>
 
         </div>
