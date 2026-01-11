@@ -74,7 +74,7 @@
                 <img src="/images/nfs-client.png" alt="mount nfs client" width="700">
                 <p>Por otro lado, podrían pedirnos hacerlo exclusivamente de forma local, para ello, y desde <strong>CLIENTE</strong> haremos : </p>
                 <img src="/images/nfs-local.png" alt="mount nfs local" width="700">
-                <p> Por ultimo , el error que vemos al final de esta ultima imagen se debe a un cambio que he hecho en el nfs remoto. Cuando veiais este error hay dos soluciones :</p>
+                <p> Por ultimo , el error que vemos al final de esta ultima imagen (/mnt/nfs: 'handle ' de fichero en desuso) se debe a un cambio que he hecho en el nfs remoto sin desmontar previamente. Cuando veiais este error o uno similar hay dos soluciones :</p>
                     <li><strong>exportfs -au  </strong> → Desexportar todo y volver a exportar luego con <code>exportfs -ar</code></li>
                     <li><strong>umount -f /mnt/nfs</strong> → Desde el cliente, desmontar de forma forzada</li>
                 </ul>           
@@ -82,15 +82,17 @@
 
             <section id="obj3">
                 <h3>Configurar autofs</h3>
-                <p><strong>autofs</strong> monta sistemas de archivos automáticamente cuando se accede a ellos, y los desmonta cuando no se usan.</p>
-                <p>Es útil para evitar montajes permanentes de recursos de red.</p>
-                <p>La configuración básica se hace en:</p>
-                <ul>
-                    <li><strong>/etc/auto.master</strong></li>
-                    <li><strong>/etc/auto.*</strong></li>
-                </ul>
-                <img src="/images/autofs.png" alt="autofs ejemplo" width="700">
-                <p>Tras configurar autofs, reiniciamos el servicio con <code>systemctl restart autofs</code>.</p>
+                <p><strong>autofs</strong> monta sistemas de archivos automáticamente cuando se accede a ellos, y los desmonta cuando no se usan. Esto nos permite ahorrar recursos del sistema .</p>
+                <p>En autofs existen varios archivos de configuración : El archivo de configuración principal y el mapa, que hay dos tipos : directo y el mapa indirecto . Nos podrian pedirlo hacerlo en local pero es raro, asi que lo haremos cliente-servidor</p>
+                <p>Las diferencias entre los mapas son : El <strong>mapa indirecto</strong> usa una ruta base en auto.master y nombres relativos en el mapa, mientras que el <strong>mapa directo</strong> usa /- en auto.master y rutas absolutas en el mapa. El recomendado es el mapa INDIRECTO</p>
+                <p>Vamos a configurar desde 0 la configuración de autofs, instalando el servicio (dnf install autofs) y configurando el auto.master :</p>
+                <img src="/images/auto-master.png" alt="autofs ejemplo" width="700">
+                <p>Una vez tenemos el auto.master configurado (Repito, generalmente usaremos solo mapa indirecto aunque haremos ambos para la demostración), configuramos los mapas. <strong>>(MUY IMPORTANTE QUE LAS RUTAS  ESTEN AÑADIDAS PREVIAMENTE EN /etc/exports)</strong </p>
+                <img src="/images/auto-indirecto.png" alt="autofs ejemplo" width="700">
+                <p>Como sería en un mapa indirecto y vemos el resultado final donde vemos dos rutas montadas en autofs con el mapa indirecto y una en autofs-directo con el mapa directo :</p>
+                <img src="/images/auto-direct.png" alt="autofs ejemplo" width="700">
+                <img src="/images/auto-ejemplo.png" alt="autofs ejemplo" width="700">
+                <p>Tras configurar autofs, recordad reiniciar  el servicio con <code>systemctl restart autofs</code> porque sino fallará. Por otro lado, evitar montar mapas indirectos - directos en la misma ruta, es muy posible que falle. Lo más recomendable es que os suene el directo pero que domineis el indirecto</p>
             </section>
 
             <section id="obj4">
@@ -102,21 +104,24 @@
 
             <section id="obj5">
                 <h3>Diagnosticar y corregir problemas de permisos de archivos</h3>
-                <p>Los problemas de permisos son muy comunes. Para analizarlos usamos <code>ls -l</code>.</p>
-                <p>Los permisos se dividen en lectura (r), escritura (w) y ejecución (x) para:</p>
-                <ul>
-                    <li>Usuario (owner)</li>
-                    <li>Grupo</li>
-                    <li>Otros</li>
-                </ul>
-                <p>Para corregir permisos usamos:</p>
+                <p>Los problemas de permisos son muy comunes. Para analizarlos podemos usar <code>ls -l</code>.</p>
+                <p> Ya sabemos que los permisos se dividen en lectura (r), escritura (w) y ejecución (x) para usuario - grupo - otros</p>
+                <p>Para corregir permisos, como hemos estado viendo, usariamos :</p>
                 <ul>
                     <li><strong>chmod</strong> → Cambiar permisos</li>
                     <li><strong>chown</strong> → Cambiar propietario</li>
                     <li><strong>chgrp</strong> → Cambiar grupo</li>
                 </ul>
-                <img src="/images/permisos.png" alt="permisos ejemplo" width="700">
-                <p>Un error común es olvidar el bit de ejecución en scripts o directorios.</p>
+                <p> Por otro lado, tenemos los permisos especiales :</p>
+                <ul>
+                    <li><strong>SUID (4)</strong> → El usuario ejecuta el archivo con los privilegios del dueño (Por ejemplo: el comando passwd).</li>
+                    <li><strong>SGID (2)</strong> → El usuario ejecuta el archivo (o crea archivos en una carpeta) con los privilegios del grupo (Por ejemplo: /var/log/journal)</li>
+                    <li><strong>Sticky Bit (1)</strong> → Solo el dueño del archivo (o root) puede borrarlo (común en /tmp).</li>
+                </ul>
+                <p> Para saber quje tenemos los permisos especiales activos, simplemente veremos una s en SUID o SGID y una t en sticky bit</p>
+                <img src="/images/permisos-spe.png" alt="permisos ejemplo" width="800">
+                <p> Por ultimo, los ACLs (que menciono en el video de Youtube) practicamente no se usan, aunque los podeis revisar. Simplemente son una extensión de los permisos tradicionales. Lo más básico sería :</p>
+                <img src="/images/acls.png" alt="acls ejemplo" width="1000">
             </section>
 
         </div>
