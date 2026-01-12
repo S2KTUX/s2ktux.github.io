@@ -54,38 +54,48 @@
 
             <section id="obj1">
                 <h3>Programar tareas con cron y temporizadores systemd</h3>
-                <p>En Linux podemos automatizar tareas para que se ejecuten a una hora o intervalo concreto.</p>
-                <p>La forma clásica es <strong>cron</strong>, usando <code>crontab -e</code>. Cada línea indica cuándo y qué comando se ejecuta.</p>
+                <p>En Linux podemos automatizar tareas para que se ejecuten a una hora o intervalo concreto. Para ello podemos usar at, cron o .timer. Como at es sencillo y poco usado lo ignoraremos, aunque está explicado en el video.</p>
+                <p>La forma clásica es <strong>cron</strong>, usando <code>crontab -e</code>. Cada línea indica cuándo y qué comando se ejecuta. Sigue siendo el más usado y su sintaxis es : <strong>min hora dia mes dia-semana user comando</strong>.</p>
+                <p>Para programar tareas podemos editar el archivo <code>/etc/crontab</code> (añadiendo el campo de usuario) o usar el comando <code>crontab -e -u USUARIO</code> (sin campo de usuario) donde editaremos directamente el cron de ese user, que se crean en <code>/var/spool/cron</code>. En la imagen veremos diferentes ejemplo con intervales, listas, rangos y redirecciones :</p>
                 <img src="/images/cron.png" alt="cron ejemplo" width="700">
-                <p>Systemd también permite programar tareas mediante <strong>timers</strong>, que son más modernos y fáciles de controlar.</p>
+                <p> Una vez creado nuestro cron, podemos comprobar con crontab -l -u user ( si hemos usado crontab -e -u user ) o cat /etc/crontab si lo hemos editado directamente ahi. Recordad que este levantado el demonio <code>crond</code>, comprobando con <code>systemctl status crond</code>. El log se encuentra en <code>/var/log/cron</code></p>
+                <p> Por otro lado, con Systemd también podemos programar tareas mediante <strong>timers</strong>, que son más modernos y fáciles de controlar. Están ubicados en <code>/etc/systemd/system</code> y los propios de las aplicaciones y/o sistema estan en <code>/usr/lib/systemd/system</code>.</p>
                 <img src="/images/systemd-timer.png" alt="systemd timer ejemplo" width="700">
+                <p> Una vez configurado, recordad realizar el systemctl daemon-reload. Para asegurarnos, podemos hacer tanto un <code>systemctl status "nombre".timer</code> o tambien un <code>systemctl list-timers</code>. En mi ejemplo llamado app.timer buscará un app.service en la misma ruta y será lo que ejecute como lo hayamos programado</p>
+                <img src="/images/systemd-timer-status.png" alt="systemd timer ejemplo" width="700">
+                <p> Deberá estar creado el .service con el mismo nombre y activo para poder levantar el .timer</p>
             </section>
 
             <section id="obj2">
                 <h3>Iniciar, detener y habilitar servicios</h3>
-                <p>Los servicios en sistemas modernos se gestionan con <code>systemctl</code>.</p>
+                <p>Los servicios en sistemas modernos se gestionan con <code>systemctl</code>. Los principales comandos usados por systemctl son : </p>
                 <ul>
                     <li><strong>systemctl start servicio</strong> → Inicia el servicio</li>
                     <li><strong>systemctl stop servicio</strong> → Detiene el servicio</li>
                     <li><strong>systemctl restart servicio</strong> → Reinicia el servicio</li>
-                    <li><strong>systemctl status servicio</strong> → Muestra su estado</li>
-                    <li><strong>systemctl enable servicio</strong> → Arranca automáticamente</li>
-                    <li><strong>systemctl disable servicio</strong> → No arranca al iniciar</li>
+                    <li><strong>systemctl status servicio</strong> → Muestra su estado y unas lineas de log.</li>
+                    <li><strong>systemctl enable servicio</strong> → Arranca automáticamente al levantar el sistema(Con --now habilitamos e iniciamos al mismo tiempo)</li>
+                    <li><strong>systemctl disable servicio</strong> → No arranca al iniciar el sistema</li>
                 </ul>
-                <img src="/images/systemctl.png" alt="systemctl ejemplo" width="700">
+                <p> Por otro lado, nos podrían pedir crear un servicio. Los servicios del sistema están en <code>/usr/bin/systemd/system</code>, pero donde nosotros lo creariamos sería en <code>/etc/systemd/system</code></p>
+                <img src="/images/service-sctl.png" alt="systemctl ejemplo" width="700">
+                <p> Tened cuidado con las mayusculas/minusculas como en ExecStart, systemd se pone tonto y tarda un rato para saltar un error haciendonos perder bastante tiempo por una tontería. Nos sale como dead ya que ya se habría ejecutado, de ahí que usemos un .timer</p>
+                <img src="/images/service-sctl-status.png" alt="systemctl status" width="700">
             </section>
 
             <section id="obj3">
                 <h3>Configurar el sistema para iniciar en un objetivo específico</h3>
-                <p>Systemd utiliza <strong>targets</strong> para definir cómo arranca el sistema.</p>
+                <p>Systemd utiliza <strong>targets</strong> para definir cómo arranca el sistema. Recordabamos los más importantes a tener en cuenta : </p>
                 <ul>
                     <li><strong>graphical.target</strong> → Modo gráfico</li>
                     <li><strong>multi-user.target</strong> → Modo texto con red</li>
                     <li><strong>rescue.target</strong> → Modo rescate</li>
                     <li><strong>emergency.target</strong> → Modo mínimo</li>
                 </ul>
-                <p>Para cambiar el objetivo por defecto usamos:</p>
+                <p> Como ya vimos, podemos comprobar el que tenemos por defecto y cambiarlo si es necesario. Recordad que con <code>systemctl isolate TARGET</code> podemos iniciar un objetivo especifico pero solo temporalmente, util para hacer pruebas en modo grafico, por ejemplo.</p>
                 <img src="/images/set-default-target.png" alt="set-default target" width="700">
+                <p> En el video indico que si falla el set-default hagamos un enlace, pero no funciona bien. Es debido a que está mal lanzado. Los pasos correctos y simples serían : </p>
+                <img src="/images/default-alt.png" alt="set-default alternative" width="700">
             </section>
 
             <section id="obj4">
@@ -102,21 +112,18 @@
 
             <section id="obj5">
                 <h3>Instalar y actualizar paquetes de software</h3>
-                <p>Red Hat utiliza <code>dnf</code> como gestor de paquetes.</p>
-                <ul>
-                    <li><strong>dnf install paquete</strong> → Instalar</li>
-                    <li><strong>dnf remove paquete</strong> → Eliminar</li>
-                    <li><strong>dnf update</strong> → Actualizar sistema</li>
-                    <li><strong>dnf search paquete</strong> → Buscar</li>
-                </ul>
-                <p>Los paquetes pueden instalarse desde repositorios remotos, CDN de Red Hat o desde archivos locales <code>.rpm</code>.</p>
-                <img src="/images/dnf.png" alt="dnf ejemplo" width="700">
+                <p>Red Hat utiliza <code>dnf</code> como gestor de paquetes por defecto, el cual ha sustituido a YUM. Lo llevamos usando durante varias clases y ya vimos sus comandos basicos en la CLASE 2 .</p>
+                <p>Lo que nos piden en este objetivo es basicamente conocer dnf, saber crear un repositorio ( Recordad los repositorios están ubicados en <code>/etc/yum.repos.d/</code>) que pedirán probablemente con URL o con un ISO y CDN que es el metodo oficial de REDHAT. </p>
+                <p>Los comandos basicos de dnf ya los conocemos y crear un .repo tambien, aunque si es un ISO puede cambiar. Deberíamos crear un punto de montaje con <code>mkdir -p /mnt/repo-iso</code>, montamos el iso con <code>mount -o loop /ruta/imagen.iso /mnt/repo</code> (muy importante el -o loop) y configuramos el .repo :</p>
+                <img src="/images/repo-iso.png" alt="iso repo ejemplo" width="700">
+                <p> Además, y como siempre que creemos / editemos un .repo, limpiamos <code>(dnf clean all)</code>, usamos makecache siempre que queramos verificar una URL de baseurl <code>(dnf makecache)</code> y listamos para comprobar <code>(dnf repolist)</code> </p>
+                <p> Por otro lado, y MUY SEGURAMENTE nos lo pidan, acceso a los repos de REDHAT. Si el sistema es mayor a 8.8 usaremos la forma de <code>rhc</code>, si es inferior usaremos <code>subscription-manager</code>.</p>
+                <img src="/images/repo-iso.png" alt=" repo Redhat ejemplo" width="700">
             </section>
 
             <section id="obj6">
                 <h3>Modificar el gestor de arranque del sistema</h3>
-                <p>El gestor de arranque en Red Hat es <strong>GRUB2</strong>.</p>
-                <p>La configuración principal se encuentra en <code>/etc/default/grub</code>.</p>
+                <p>El gestor de arranque en Red Hat es <strong>GRUB2</strong>. La configuración principal de este se encuentra en <code>/etc/default/grub</code></p>
                 <p>Tras hacer cambios, es obligatorio regenerar la configuración:</p>
                 <img src="/images/grub-mkconfig.png" alt="grub ejemplo" width="700">
                 <p>Desde GRUB también podemos arrancar temporalmente en otro target o modificar parámetros del kernel.</p>
