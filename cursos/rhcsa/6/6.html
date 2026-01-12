@@ -69,11 +69,11 @@
                 <h3>Montar y desmontar sistemas de archivos de red usando NFS</h3>
                 <p>NFS permite montar directorios remotos como si fueran locales. Es muy usado en entornos empresariales y es una de las preguntas en el examen seguramente. Pueden pedirlo de dos maneras diferente : utilizar cliente-servidor o realizar todo de forma local</p>
                 <p>Primero lo vamos a hacer cliente-servidor. Para ello, en el <strong>SERVER</strong> instalamos el cliente NFS, creamos la carpeta a compartir y le damos permisos, comprobamos servicios y configuramos el archivo <code>/etc/exports</code> y el firewall : </p>
-                <img src="/images/nfs-remote.png" alt="nfs remote ejemplo" width="700">
+                <img src="/images/nfs-remote.png" alt="nfs remote ejemplo" width="1000">
                 <p>Después configuramos el <strong>CLIENTE</strong>, donde instalamos el cliente nfs, creamos la carpeta donde montaremos NFS y montaremos ( de forma temporal o persistente en /etc/fstab). Recordad que si nos pidieran montarlo con opciones sería en mount usar <code>-o "OPCION"</code> :</p>
-                <img src="/images/nfs-client.png" alt="mount nfs client" width="700">
+                <img src="/images/nfs-client.png" alt="mount nfs client" width="1200">
                 <p>Por otro lado, podrían pedirnos hacerlo exclusivamente de forma local, para ello, y desde <strong>CLIENTE</strong> haremos : </p>
-                <img src="/images/nfs-local.png" alt="mount nfs local" width="700">
+                <img src="/images/nfs-local.png" alt="mount nfs local" width="1200">
                 <p> Por ultimo , el error que vemos al final de esta ultima imagen (/mnt/nfs: 'handle ' de fichero en desuso) se debe a un cambio que he hecho en el nfs remoto sin desmontar previamente. Cuando veiais este error o uno similar hay dos soluciones :</p>
                     <li><strong>exportfs -au  </strong> → Desexportar todo y volver a exportar luego con <code>exportfs -ar</code></li>
                     <li><strong>umount -f /mnt/nfs</strong> → Desde el cliente, desmontar de forma forzada</li>
@@ -98,20 +98,15 @@
             <section id="obj4">
                 <h3>Ampliar volúmenes lógicos existentes</h3>
                 <p> Este punto ya lo hemos visto en la clase 5. Para no repetir, id a la clase 5 para revisarlo.</p>
-                <p> Lo unico a mencionar es tened cuidado para no borrar datos o que no se os olvide el segundo comando (xfs_growfs) o (resize2fs). Para evitar esto, usar -r cuando lanceis el comando <code>lvextend</code> </p>
+                <p> Lo unico a mencionar es tened cuidado para no borrar datos o que no se os olvide el segundo comando (xfs_growfs) o (resize2fs) al lanzar <code>lvextend</code> . Para evitar esto, usar <strong>-r</strong>.</p>
                 <p> Tambien recordad que xfs NO permite reducir, solo ampliar. Para reducir tendremos que hacer ext4 u otros que si lo permiten</p>
             </section>
 
             <section id="obj5">
                 <h3>Diagnosticar y corregir problemas de permisos de archivos</h3>
-                <p>Los problemas de permisos son muy comunes. Para analizarlos podemos usar <code>ls -l</code>.</p>
+                <p>Los problemas de permisos pueden ser comunes o que nos falle algo y sea debido a los permisos. Para analizarlos podemos usar <code>ls -l</code>.</p>
                 <p> Ya sabemos que los permisos se dividen en lectura (r), escritura (w) y ejecución (x) para usuario - grupo - otros</p>
-                <p>Para corregir permisos, como hemos estado viendo, usariamos :</p>
-                <ul>
-                    <li><strong>chmod</strong> → Cambiar permisos</li>
-                    <li><strong>chown</strong> → Cambiar propietario</li>
-                    <li><strong>chgrp</strong> → Cambiar grupo</li>
-                </ul>
+                <p>Para corregir permisos, como hemos estado viendo, usariamos chmod (cambiar permisos), chown (cambiar propietario y/o grupo) y chgrp (cambiar grupo)</p>
                 <p> Por otro lado, tenemos los permisos especiales :</p>
                 <ul>
                     <li><strong>SUID (4)</strong> → El usuario ejecuta el archivo con los privilegios del dueño (Por ejemplo: el comando passwd).</li>
