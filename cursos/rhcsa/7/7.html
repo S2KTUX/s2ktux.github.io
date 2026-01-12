@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RHCSA - Crear y configurar sistemas de archivos">
-    <meta name="keywords" content="RHCSA, Linux, sistemas de archivos, mount, NFS, autofs, permisos">
+    <meta name="description" content="RHCSA - Implementar, configurar y mantener sistemas">
+    <meta name="keywords" content="RHCSA, Linux, cron, systemd, servicios, paquetes, grub">
     <meta name="author" content="SysRiser">
-    <title>S2KTUX - RHCSA | Sistemas de archivos</title>
+    <title>S2KTUX - RHCSA | Implementar y mantener sistemas</title>
     <link rel="stylesheet" href="/conf/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <link rel="icon" type="image/png" href="/images/favicon.png">
@@ -29,9 +29,9 @@
 <main id="contenido">
 
     <div class="hero">
-        <h1>Crear y configurar sistemas de archivos</h1>
-        <p>Formateo, montaje, expansión y permisos</p>
-        <p><a href="#" target="_blank">VER VIDEO YOUTUBE - CLASE 6</a></p>
+        <h1>Implementar, configurar y mantener sistemas</h1>
+        <p>Tareas programadas, servicios, paquetes y arranque</p>
+        <p><a href="#" target="_blank">VER VIDEO YOUTUBE - CLASE 7</a></p>
     </div>
 
     <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
@@ -41,78 +41,85 @@
         <div class="sidebar">
             <h3>Objetivos del bloque</h3>
             <ul>
-                <li><a href="#obj1">Sistemas de archivos locales</a></li>
-                <li><a href="#obj2">Montaje de sistemas de archivos de red (NFS)</a></li>
-                <li><a href="#obj3">Configurar autofs</a></li>
-                <li><a href="#obj4">Ampliar volúmenes lógicos</a></li>
-                <li><a href="#obj5">Diagnosticar problemas de permisos</a></li>
+                <li><a href="#obj1">Programar tareas</a></li>
+                <li><a href="#obj2">Gestionar servicios</a></li>
+                <li><a href="#obj3">Configurar objetivo de arranque</a></li>
+                <li><a href="#obj4">Configurar cliente de tiempo</a></li>
+                <li><a href="#obj5">Instalar y actualizar paquetes</a></li>
+                <li><a href="#obj6">Modificar el gestor de arranque</a></li>
             </ul>
         </div>
 
         <div class="content">
 
             <section id="obj1">
-                <h3>Crear, montar y desmontar sistemas de archivos locales</h3>
-                <p>Linux soporta distintos sistemas de archivos. En RHCSA trabajaremos principalmente con <strong>ext4</strong>, <strong>xfs</strong> y <strong>vfat</strong>.</p>
-                <ul>
-                    <li><strong>ext4</strong> → Sistema estándar en Linux</li>
-                    <li><strong>xfs</strong> → Optimizado para grandes volúmenes (no se puede reducir)</li>
-                    <li><strong>vfat</strong> → Compatible con otros sistemas</li>
-                </ul>
-                <p>Para crear un sistema de archivos usamos <code>mkfs</code> según el tipo:</p>
-                <img src="/images/mkfs.png" alt="mkfs ejemplos" width="700">
-                <p>Una vez formateado, montamos el sistema de archivos con <code>mount</code> y lo desmontamos con <code>umount</code>. Para hacerlo permanente se usa <code>/etc/fstab</code>.</p>
-                <img src="/images/mount.png" alt="mount ejemplo" width="700">
+                <h3>Programar tareas con cron y temporizadores systemd</h3>
+                <p>En Linux podemos automatizar tareas para que se ejecuten a una hora o intervalo concreto.</p>
+                <p>La forma clásica es <strong>cron</strong>, usando <code>crontab -e</code>. Cada línea indica cuándo y qué comando se ejecuta.</p>
+                <img src="/images/cron.png" alt="cron ejemplo" width="700">
+                <p>Systemd también permite programar tareas mediante <strong>timers</strong>, que son más modernos y fáciles de controlar.</p>
+                <img src="/images/systemd-timer.png" alt="systemd timer ejemplo" width="700">
             </section>
 
             <section id="obj2">
-                <h3>Montar y desmontar sistemas de archivos de red usando NFS</h3>
-                <p>NFS permite montar directorios remotos como si fueran locales. Es muy usado en entornos empresariales.</p>
-                <p>Primero instalamos el cliente NFS y comprobamos los recursos disponibles:</p>
-                <img src="/images/nfs-showmount.png" alt="showmount" width="700">
-                <p>Después montamos el recurso remoto:</p>
-                <img src="/images/nfs-mount.png" alt="mount nfs" width="700">
-                <p>Para hacerlo persistente, añadimos la entrada correspondiente en <code>/etc/fstab</code>.</p>
+                <h3>Iniciar, detener y habilitar servicios</h3>
+                <p>Los servicios en sistemas modernos se gestionan con <code>systemctl</code>.</p>
+                <ul>
+                    <li><strong>systemctl start servicio</strong> → Inicia el servicio</li>
+                    <li><strong>systemctl stop servicio</strong> → Detiene el servicio</li>
+                    <li><strong>systemctl restart servicio</strong> → Reinicia el servicio</li>
+                    <li><strong>systemctl status servicio</strong> → Muestra su estado</li>
+                    <li><strong>systemctl enable servicio</strong> → Arranca automáticamente</li>
+                    <li><strong>systemctl disable servicio</strong> → No arranca al iniciar</li>
+                </ul>
+                <img src="/images/systemctl.png" alt="systemctl ejemplo" width="700">
             </section>
 
             <section id="obj3">
-                <h3>Configurar autofs</h3>
-                <p><strong>autofs</strong> monta sistemas de archivos automáticamente cuando se accede a ellos, y los desmonta cuando no se usan.</p>
-                <p>Es útil para evitar montajes permanentes de recursos de red.</p>
-                <p>La configuración básica se hace en:</p>
+                <h3>Configurar el sistema para iniciar en un objetivo específico</h3>
+                <p>Systemd utiliza <strong>targets</strong> para definir cómo arranca el sistema.</p>
                 <ul>
-                    <li><strong>/etc/auto.master</strong></li>
-                    <li><strong>/etc/auto.*</strong></li>
+                    <li><strong>graphical.target</strong> → Modo gráfico</li>
+                    <li><strong>multi-user.target</strong> → Modo texto con red</li>
+                    <li><strong>rescue.target</strong> → Modo rescate</li>
+                    <li><strong>emergency.target</strong> → Modo mínimo</li>
                 </ul>
-                <img src="/images/autofs.png" alt="autofs ejemplo" width="700">
-                <p>Tras configurar autofs, reiniciamos el servicio con <code>systemctl restart autofs</code>.</p>
+                <p>Para cambiar el objetivo por defecto usamos:</p>
+                <img src="/images/set-default-target.png" alt="set-default target" width="700">
             </section>
 
             <section id="obj4">
-                <h3>Ampliar volúmenes lógicos existentes</h3>
-                <p>Los volúmenes lógicos pueden ampliarse sin perder datos, siempre que haya espacio libre en el VG.</p>
-                <p>Para extender un LV usamos <code>lvextend</code> junto con la opción <code>-r</code> para redimensionar automáticamente el sistema de archivos.</p>
-                <img src="/images/lvextend.png" alt="lvextend ejemplo" width="700">
-                <p>Recordar que <strong>XFS no se puede reducir</strong>, solo ampliar.</p>
+                <h3>Configurar clientes de servicio de tiempo</h3>
+                <p>La sincronización horaria es clave en servidores. En Red Hat se usa <strong>chrony</strong>.</p>
+                <p>El servicio principal es <code>chronyd</code> y su configuración está en <code>/etc/chrony.conf</code>.</p>
+                <ul>
+                    <li><strong>systemctl enable --now chronyd</strong></li>
+                    <li><strong>chronyc sources</strong></li>
+                    <li><strong>chronyc tracking</strong></li>
+                </ul>
+                <img src="/images/chrony.png" alt="chrony ejemplo" width="700">
             </section>
 
             <section id="obj5">
-                <h3>Diagnosticar y corregir problemas de permisos de archivos</h3>
-                <p>Los problemas de permisos son muy comunes. Para analizarlos usamos <code>ls -l</code>.</p>
-                <p>Los permisos se dividen en lectura (r), escritura (w) y ejecución (x) para:</p>
+                <h3>Instalar y actualizar paquetes de software</h3>
+                <p>Red Hat utiliza <code>dnf</code> como gestor de paquetes.</p>
                 <ul>
-                    <li>Usuario (owner)</li>
-                    <li>Grupo</li>
-                    <li>Otros</li>
+                    <li><strong>dnf install paquete</strong> → Instalar</li>
+                    <li><strong>dnf remove paquete</strong> → Eliminar</li>
+                    <li><strong>dnf update</strong> → Actualizar sistema</li>
+                    <li><strong>dnf search paquete</strong> → Buscar</li>
                 </ul>
-                <p>Para corregir permisos usamos:</p>
-                <ul>
-                    <li><strong>chmod</strong> → Cambiar permisos</li>
-                    <li><strong>chown</strong> → Cambiar propietario</li>
-                    <li><strong>chgrp</strong> → Cambiar grupo</li>
-                </ul>
-                <img src="/images/permisos.png" alt="permisos ejemplo" width="700">
-                <p>Un error común es olvidar el bit de ejecución en scripts o directorios.</p>
+                <p>Los paquetes pueden instalarse desde repositorios remotos, CDN de Red Hat o desde archivos locales <code>.rpm</code>.</p>
+                <img src="/images/dnf.png" alt="dnf ejemplo" width="700">
+            </section>
+
+            <section id="obj6">
+                <h3>Modificar el gestor de arranque del sistema</h3>
+                <p>El gestor de arranque en Red Hat es <strong>GRUB2</strong>.</p>
+                <p>La configuración principal se encuentra en <code>/etc/default/grub</code>.</p>
+                <p>Tras hacer cambios, es obligatorio regenerar la configuración:</p>
+                <img src="/images/grub-mkconfig.png" alt="grub ejemplo" width="700">
+                <p>Desde GRUB también podemos arrancar temporalmente en otro target o modificar parámetros del kernel.</p>
             </section>
 
         </div>
