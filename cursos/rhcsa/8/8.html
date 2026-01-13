@@ -52,14 +52,8 @@
 
             <section id="obj1">
                 <h3>Configurar direcciones IPv4 e IPv6</h3>
-                <p>En RHEL, la gestión de red se realiza principalmente a través de <strong>NetworkManager</strong> utilizando la herramienta de línea de comandos <code>nmcli</code>. Los cambios son persistentes y se guardan en los archivos de configuración del sistema.</p>
-                
-                <p>Para configurar una IP estática, modificamos la conexión existente. Es vital recordar que tras modificar los parámetros, la conexión debe reiniciarse con <code>up</code>.</p>
-                <ul>
-                    <li><strong>nmcli connection show</strong> → Lista las conexiones disponibles.</li>
-                    <li><strong>Configuración IPv4:</strong> <code>nmcli con mod "ID" ipv4.addresses 192.168.1.10/24 ipv4.gateway 192.168.1.1 ipv4.method manual</code></li>
-                    <li><strong>Configuración IPv6:</strong> <code>nmcli con mod "ID" ipv6.addresses 2001:db8::10/64 ipv6.method manual</code></li>
-                </ul>
+                <p>En RHEL, la gestión de red se realiza principalmente a través de <strong>NetworkManager</strong> utilizando la herramienta de línea de comandos <code>nmcli</code>. Tambien podemos usar el comando <code>nmtui</code> para modificar con interfaz grafica o hacer cambios temporales con el comando <code>ip</code>.</p>
+                <p> Con <strong>nmcli</strong>, que es el que principalmente usaremos, podemos crear una red, modificar, eliminar y gestionar el estado de las interfaces de forma dinámica.s el que principalmente usaremos, podemos crear una red, modificar, eliminar </p>
                 <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="900">
                 <p>Una vez aplicados los comandos, usamos <code>nmcli con up "ID"</code> para activar la nueva configuración. Podemos verificar los cambios con <code>ip addr show</code>.</p>
             </section>
