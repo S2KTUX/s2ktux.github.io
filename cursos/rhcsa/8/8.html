@@ -1,1 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RHCSA - Administrar redes básicas y seguridad">
+    <meta name="keywords" content="RHCSA, Linux, nmcli, IPv4, IPv6, hostname, firewalld, firewall-cmd">
+    <meta name="author" content="S2KTUX">
+    <title>S2KTUX - RHCSA | Administrar redes básicas</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
 
+<div class="gradient-bg"></div>
+
+<header>
+    <div class="header-left">
+        <a href="/index.html" class="header-logo">S2KTUX</a>
+    </div>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/cursos/cursos.html">Cursos</a>
+        <a href="/proyectos/proyectos.html">Proyectos</a>
+    </nav>
+</header>
+
+<main id="contenido">
+
+    <div class="hero">
+        <h1>Administrar redes básicas</h1>
+        <p>Configuración de IP, Hostname y Firewall</p>
+        <p><a href="https://youtu.be/cjx4DZ7tJI0" target="_blank">VER VIDEO YOUTUBE - CLASE 8</a></p>
+    </div>
+
+    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+
+    <div class="course-page">
+
+        <div class="sidebar">
+            <h3>Objetivos del bloque</h3>
+            <ul>
+                <li><a href="#obj1">IPv4 e IPv6</a></li>
+                <li><a href="#obj2">Nombre de Host</a></li>
+                <li><a href="#obj3">Servicios en el arranque</a></li>
+                <li><a href="#obj4">Firewall y Seguridad</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+
+            <section id="obj1">
+                <h3>Configurar direcciones IPv4 e IPv6</h3>
+                <p>En RHEL, la gestión de red se realiza principalmente a través de <strong>NetworkManager</strong> utilizando la herramienta de línea de comandos <code>nmcli</code>. Los cambios son persistentes y se guardan en los archivos de configuración del sistema.</p>
+                
+                <p>Para configurar una IP estática, modificamos la conexión existente. Es vital recordar que tras modificar los parámetros, la conexión debe reiniciarse con <code>up</code>.</p>
+                <ul>
+                    <li><strong>nmcli connection show</strong> → Lista las conexiones disponibles.</li>
+                    <li><strong>Configuración IPv4:</strong> <code>nmcli con mod "ID" ipv4.addresses 192.168.1.10/24 ipv4.gateway 192.168.1.1 ipv4.method manual</code></li>
+                    <li><strong>Configuración IPv6:</strong> <code>nmcli con mod "ID" ipv6.addresses 2001:db8::10/64 ipv6.method manual</code></li>
+                </ul>
+                <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="900">
+                <p>Una vez aplicados los comandos, usamos <code>nmcli con up "ID"</code> para activar la nueva configuración. Podemos verificar los cambios con <code>ip addr show</code>.</p>
+            </section>
+
+            <section id="obj2">
+                <h3>Configurar la resolución del nombre de host</h3>
+                <p>El nombre de host (hostname) identifica al equipo en la red. Para que el cambio sea permanente en RHEL, utilizamos <code>hostnamectl</code>.</p>
+                <p>Además, para la resolución local sin DNS, editamos el archivo <code>/etc/hosts</code>.</p>
+                <ul>
+                    <li><strong>Cambiar hostname:</strong> <code>hostnamectl set-hostname nodo1.ejemplo.com</code></li>
+                    <li><strong>Verificar:</strong> <code>hostnamectl status</code></li>
+                </ul>
+                <img src="/images/hostname-config.png" alt="hostnamectl ejemplo" width="700">
+                <p>Para añadir servidores DNS a una conexión específica: <code>nmcli con mod "ID" ipv4.dns "8.8.8.8 1.1.1.1"</code>. Esto actualizará automáticamente el archivo <code>/etc/resolv.conf</code> al levantar la conexión.</p>
+            </section>
+
+            <section id="obj3">
+                <h3>Servicios de red al inicio del sistema</h3>
+                <p>Para asegurar que nuestra configuración de red sea efectiva desde el arranque, el servicio <strong>NetworkManager</strong> debe estar habilitado.</p>
+                <p>Utilizamos los comandos de <code>systemctl</code> que ya conocemos para gestionar el demonio de red:</p>
+                <ul>
+                    <li><strong>Habilitar inicio automático:</strong> <code>systemctl enable NetworkManager</code></li>
+                    <li><strong>Verificar estado:</strong> <code>systemctl is-enabled NetworkManager</code></li>
+                </ul>
+                <p>Si creamos servicios personalizados que dependen de la red, debemos usar la directiva <code>After=network-online.target</code> en la sección [Unit] del archivo del servicio.</p>
+            </section>
+
+            <section id="obj4">
+                <h3>Restringir acceso con firewalld y firewall-cmd</h3>
+                <p>La seguridad en RHEL se gestiona mediante <strong>firewalld</strong>, que organiza las reglas en "zonas". La zona por defecto suele ser <code>public</code>.</p>
+                <p>Para que los cambios sobrevivan a un reinicio, siempre debemos usar el flag <code>--permanent</code> y posteriormente recargar el servicio.</p>
+                <img src="/images/firewall-config.png" alt="firewall-cmd ejemplo" width="900">
+                <ul>
+                    <li><strong>Listar reglas actuales:</strong> <code>firewall-cmd --list-all</code></li>
+                    <li><strong>Permitir servicio:</strong> <code>firewall-cmd --permanent --add-service=http</code></li>
+                    <li><strong>Permitir puerto:</strong> <code>firewall-cmd --permanent --add-port=8080/tcp</code></li>
+                    <li><strong>Recargar configuración:</strong> <code>firewall-cmd --reload</code></li>
+                </ul>
+                <p>Si nos piden restringir el acceso, podemos eliminar servicios con <code>--remove-service</code> o usar reglas enriquecidas (rich rules) para filtrar por IPs específicas.</p>
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
+        <div class="footer-links">
+            <a href="https://github.com/s2ktux">GitHub</a>
+            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
+            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
+        </div>
+    </div>
+</footer>
+
+<a href="#" id="back-to-top">↑ Volver arriba</a>
+<script src="/conf/scripts.js"></script>
+
+</body>
+</html>
