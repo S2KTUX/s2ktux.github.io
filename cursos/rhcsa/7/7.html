@@ -100,14 +100,14 @@
 
             <section id="obj4">
                 <h3>Configurar clientes de servicio de tiempo</h3>
-                <p>La sincronización horaria es clave en servidores. En Red Hat se usa <strong>chrony</strong>.</p>
-                <p>El servicio principal es <code>chronyd</code> y su configuración está en <code>/etc/chrony.conf</code>.</p>
-                <ul>
-                    <li><strong>systemctl enable --now chronyd</strong></li>
-                    <li><strong>chronyc sources</strong></li>
-                    <li><strong>chronyc tracking</strong></li>
-                </ul>
+                <p>La sincronización horaria es clave en servidores. En Red Hat se usa <strong>chrony</strong>, sustituido por el antiguo ntpd. Su configuración está en <code>/etc/chrony.conf</code>. En la configuración podemos poner <code>server IP iburst</code> o <code>server NOMBRE-COMPLETO iburst</code>.</p>
                 <img src="/images/chrony.png" alt="chrony ejemplo" width="700">
+                <p> Una vez hemos añadido la linea que nos indiquen, reiniciaremos el servicio, forzamos la sincronización y comprobamos (Recordamos que si sale * en la linea al hacer <code>chronyc sources -v</code> esta OK, si sale ? es que estaría mal). </p>
+                <img src="/images/chrony-check.png" alt="chrony ejemplo" width="700">
+                <p> Importante que añadais el servicio de ntp al firewall con <code>firewall-cmd --permanent --add-service=ntp</code>, aunque esto lo veremos más a fondo en la clase de firewall </p>
+                <p> Por otro lado, nos pueden pedir hacer un cambio de zona horaria, el idioma o  el teclado </p>
+                <img src="/images/idioma-teclado.png" alt="teclado-idioma-zona" width="700">
+                
             </section>
 
             <section id="obj5">
@@ -118,16 +118,21 @@
                 <img src="/images/repo-iso.png" alt="iso repo ejemplo" width="700">
                 <p> Además, y como siempre que creemos / editemos un .repo, limpiamos <code>(dnf clean all)</code>, usamos makecache siempre que queramos verificar una URL de baseurl <code>(dnf makecache)</code> y listamos para comprobar <code>(dnf repolist)</code> </p>
                 <p> Por otro lado, y MUY SEGURAMENTE nos lo pidan, acceso a los repos de REDHAT. Si el sistema es mayor a 8.8 usaremos la forma de <code>rhc</code>, si es inferior usaremos <code>subscription-manager</code>.</p>
+                <p>Independientemente de la herramienta, gestionamos tres contenidos: <strong>Content</strong> (acceso a repositorios), <strong>Analytics</strong> (vulnerabilidades vía Insights) y <strong>Remote-management</strong> (solo disponible en <code>rhc</code>, permite ejecutar soluciones remotas de forma automatizada).</p>
                 <img src="/images/repo-rh.png" alt=" repo Redhat ejemplo rhc" width="700">
+                <p> <code>rhc</code> es más sencillo, en cambio , <code>subscription-manager</code> tiene más pasos, es más antiguo... En ambos podemos usar <code>-h</code> para ver más información.</p>
                 <img src="/images/repo-sm.png" alt=" repo Redhat ejemplo subscription-manager" width="700">
+                <img src="/images/repo-sm2.png" alt=" repo Redhat ejemplo subscription-manager 2" width="700">
             </section>
 
             <section id="obj6">
                 <h3>Modificar el gestor de arranque del sistema</h3>
-                <p>El gestor de arranque en Red Hat es <strong>GRUB2</strong>. La configuración principal de este se encuentra en <code>/etc/default/grub</code></p>
-                <p>Tras hacer cambios, es obligatorio regenerar la configuración:</p>
-                <img src="/images/grub-mkconfig.png" alt="grub ejemplo" width="700">
-                <p>Desde GRUB también podemos arrancar temporalmente en otro target o modificar parámetros del kernel.</p>
+                <p>El gestor de arranque es <strong>GRUB2</strong>; su configuración base se edita en <code>/etc/default/grub</code>, pero para que los cambios sean efectivos se debe generar el archivo <code>grub.cfg</code> en <code>/boot/grub2/</code> (BIOS) o <code>/boot/efi/EFI/redhat/</code> (UEFI)</p>
+                <p>Podemos bien editar el archivo <code>/etc/default/grub</code>, o utilizar el comando <code>grubby</code>, siendo esta favorita para hacer las modificaciones de GRUB2</p>
+                <img src="/images/grubby.png" alt="grub ejemplo" width="700">
+                <p>Recordad que desde grubby no es necesario recargar el grub, pero si editamos /etc/default/grub DEBEREMOS regenerar la configuración : <code>grub2-mkconfig -o /boot/grtub2/grub.cfg</code> para BIOS o <code>grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg</code> para UEFI.</p>
+                <p> Por ultimo, y para saber si usamos UEFI o BIOS podemos comprobar cual de las dos rutas está vacía o hacer un <code>ls /sys/firmware/efi</code> y si no lo encuentra, seguramente estemos en BIOS. Igualmente y si tienes dudas, utiliza grubby para evitar regenerar la configuración</p>
+            
             </section>
 
         </div>
