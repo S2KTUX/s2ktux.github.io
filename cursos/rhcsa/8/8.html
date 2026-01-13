@@ -53,7 +53,7 @@
             <section id="obj1">
                 <h3>Configurar direcciones IPv4 e IPv6</h3>
                 <p>En RHEL, la gestión de red se realiza principalmente a través de <strong>NetworkManager</strong> utilizando la herramienta de línea de comandos <code>nmcli</code>. Tambien podemos usar el comando <code>nmtui</code> para modificar con interfaz grafica o hacer cambios temporales con el comando <code>ip</code>.</p>
-                <p> Con <strong>nmcli</strong>, que es el que principalmente usaremos, podemos crear una red, modificar, eliminar y gestionar el estado de las interfaces de forma dinámica.s el que principalmente usaremos, podemos crear una red, modificar, eliminar </p>
+                <p> Con <strong>nmcli</strong>, que es el que principalmente usaremos, podemos crear una red, modificar, eliminar y gestionar el estado de las interfaces de forma dinámicas. </p>
                 <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="900">
                 <p>Una vez aplicados los comandos, usamos <code>nmcli con up "ID"</code> para activar la nueva configuración. Podemos verificar los cambios con <code>ip addr show</code>.</p>
             </section>
@@ -72,27 +72,29 @@
 
             <section id="obj3">
                 <h3>Servicios de red al inicio del sistema</h3>
-                <p>Para asegurar que nuestra configuración de red sea efectiva desde el arranque, el servicio <strong>NetworkManager</strong> debe estar habilitado.</p>
-                <p>Utilizamos los comandos de <code>systemctl</code> que ya conocemos para gestionar el demonio de red:</p>
-                <ul>
-                    <li><strong>Habilitar inicio automático:</strong> <code>systemctl enable NetworkManager</code></li>
-                    <li><strong>Verificar estado:</strong> <code>systemctl is-enabled NetworkManager</code></li>
-                </ul>
-                <p>Si creamos servicios personalizados que dependen de la red, debemos usar la directiva <code>After=network-online.target</code> en la sección [Unit] del archivo del servicio.</p>
+                <p>Para asegurar que nuestra configuración de red sea efectiva desde el arranque, el servicio <strong>NetworkManager</strong> debe estar habilitado y activo : <code>systemctl enable --now NetworkManager</code>.</p>
+                <p>Si utilizamos el nmcli, recordad usar el <code>nmcli con mod INTERFAZ connection.autoconnect yes</code> para que se inicie automaticamente.</p>
+                <p> Las comprobaciones que podemos hacer son : ip a, nm-online, nmcli device status, systemctl status NetworkManager... En la imagen vemos diferentes formas de comprobar que tenemos red </p>
+                <img src="/images/check-net.png" alt="check net ejemplo" width="700">
+                <p> Como extra, si creamos servicios personalizados que dependen de la red, debemos usar la directiva <code>After=network-online.target</code> en la sección [Unit] (<code>/etc/systemd/system</code>) y Wants=network-online.target. del archivo del servicio para que no se quede el sistema bloqueado.</p>
             </section>
 
             <section id="obj4">
                 <h3>Restringir acceso con firewalld y firewall-cmd</h3>
-                <p>La seguridad en RHEL se gestiona mediante <strong>firewalld</strong>, que organiza las reglas en "zonas". La zona por defecto suele ser <code>public</code>.</p>
-                <p>Para que los cambios sobrevivan a un reinicio, siempre debemos usar el flag <code>--permanent</code> y posteriormente recargar el servicio.</p>
-                <img src="/images/firewall-config.png" alt="firewall-cmd ejemplo" width="900">
+                <p>La seguridad en RHEL se gestiona mediante <strong>firewalld</strong>, que organiza las reglas en "zonas". Para comprobar el estado del servicio podemos usar <code>systemctl status firewalld</code> o <code>firewall-cmd --state</code>.</p>
+                <p>Las zonas son un conjunto de reglas que determinan qué tráfico se permite o se deniega. Las zonas más comunes son : </p>
                 <ul>
-                    <li><strong>Listar reglas actuales:</strong> <code>firewall-cmd --list-all</code></li>
-                    <li><strong>Permitir servicio:</strong> <code>firewall-cmd --permanent --add-service=http</code></li>
-                    <li><strong>Permitir puerto:</strong> <code>firewall-cmd --permanent --add-port=8080/tcp</code></li>
-                    <li><strong>Recargar configuración:</strong> <code>firewall-cmd --reload</code></li>
+                    <li><strong>public:</strong> Zona estándar de confianza baja. Solo se permite el tráfico entrante de servicios específicos (como SSH) y el resto se descarta.</li>
+                    <li><strong>drop:</strong> Nivel de seguridad máximo. El sistema descarta los paquetes entrantes sin enviar ninguna respuesta al emisor (silencio total).</li>
+                    <li><strong>block:</strong> El sistema rechaza las conexiones entrantes enviando un mensaje de "ICMP host prohibited", informando que el acceso está denegado.</li>
+                    <li><strong>internal:</strong> Orientada a redes locales seguras. Permite de forma predefinida más servicios para facilitar la comunicación entre equipos conocidos.</li>
+                    <li><strong>trusted:</strong> Confianza absoluta. Se aceptan todas las conexiones entrantes sin aplicar ningún filtro de seguridad.</li>
                 </ul>
-                <p>Si nos piden restringir el acceso, podemos eliminar servicios con <code>--remove-service</code> o usar reglas enriquecidas (rich rules) para filtrar por IPs específicas.</p>
+                <p> Cada interfaz puede tener una zona, y podemos cambiarla, poner una por defecto, comprobar el estado actual...  </p>
+                <img src="/images/firewall-basic.png" alt="firewall-cmd ejemplo" width="900">
+                <p> Además de cambiar la zona, podemos agregarle diferentes reglas, listar las reglas actualews ( Recordad el <code>--permanent</code> para que sea persistente a reinicios y el <code>firewall-cmd --reload</code> para recargar la configuración) :</p>
+                <img src="/images/firewall-basic2.png" alt="firewall-cmd ejemplo" width="900">
+                <p>Las rich rules permiten crear reglas más detalladas que las reglas normales. Igualmente, y a pesar de explicarlo detalladamente en el video, lo dejamos para la clase 10.</p>
             </section>
 
         </div>
