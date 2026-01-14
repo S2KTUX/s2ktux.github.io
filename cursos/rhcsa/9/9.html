@@ -86,26 +86,32 @@
                 <p>Por otro lado, y para cumplir con normativas de seguridad, debemos forzar a los usuarios a cambiar sus credenciales periódicamente. La herramienta principal para esto es <code>chage</code>.</p>
                 <p>Lo mejor para entender este comando es con esta imagen.:</p>
                 <img src="/images/chage.png" alt="Chage exp imagen" width="700">
-                <img src="/images/chage-example.png" alt="Uso de chage para envejecimiento" width="700">
-                <p>Por ultimo, en el archivo <code>/etc/login.defs</code> indica los valores por defecto de las diferentes normativas de seguridad</p>
+                <img src="/images/chage-comm.png" alt="Uso de chage para envejecimiento" width="1200">
+                <img src="/images/chage-ex.png" alt="Ejemplo chage" width="1200">
+                <p>Por ultimo, en el archivo <code>/etc/login.defs</code> se nos indica diferentes valores por defecto de las diferentes normativas de seguridad</p>
             </section>
 
             <section id="obj3">
                 <h3>Crear, eliminar y modificar grupos locales</h3>
                 <p>Los grupos permiten asignar permisos a varios usuarios simultáneamente. Un usuario puede pertenecer a un <strong>grupo primario</strong> (GID en /etc/passwd) y a múltiples <strong>grupos secundarios</strong>.</p>
-                <p>Podemos crear un grupo con <code>groupadd</code>, hacer modificaciones con <code>groupmod</code>, eliminar el grupo con <code>groupdel</code>, etc... Recordar lo más importante que es -aG</p>
-                <img src="/images/group-admin.png" alt="Gestión de grupos y membresías" width="900">
-                <p> Podemos comprobar de diferentes maneras : id user, groups user, getent group grupo... </p>
-                <img src="/images/group-check.png" alt="Check de grupos" width="900">
+                <p>Podemos crear un grupo con <code>groupadd</code>, hacer modificaciones con <code>groupmod</code>, eliminar el grupo con <code>groupdel</code>, etc... Recordar la importancia del usermod -aG</p>
+                <img src="/images/group-admin.png" alt="Gestión de grupos y membresías" width="800">
+                <p> Podemos comprobar de diferentes maneras : id user, groups user, getent group grupo... o simplemente mirar el archivo <code>/etc/group</code>. Si borramos un grupo que tiene archivos, sus archivos se quedarán con el GID del grupo pero huerfanos y sin realmente un grupo. Podemos buscar estos archivos con find / -nouser o -nogroup </p>
+                <img src="/images/group-check.png" alt="Check de grupos" width="800">
                 <p> Por ultimo, podemos asignarle una contraseña a un grupo con el comando <code>gpasswd GRUPO</code>, y con este comando añadir usuarios a ese grupo <code>gpasswd -a USER grupo</code>, borrarlo con <code>-d</code>, eliminar la contraseña con <code>-r</code>...</p>
+                <img src="/images/gpasswd.png" alt="pass de grupos" width="800">          
             </section>
 
             <section id="obj4">
                 <h3>Configurar el acceso privilegiado</h3>
                 <p>En lugar de compartir la contraseña de <strong>root</strong>, utilizamos <code>sudo</code> para delegar privilegios de forma controlada. La configuración reside en <code>/etc/sudoers</code> y en el directorio <code>/etc/sudoers.d/</code>.</p>
-                <p>Para editar estos archivos de forma segura, usamos <code>visudo</code>, que verifica la sintaxis antes de guardar para evitar que perdamos el acceso al sistema.</p>
-                <p> WHEEL - SUDOERS</p>
-                <img src="/images/sudoers-config.png" alt="Configuración de sudoers" width="900">
+                <p>Para editar estos archivos de forma segura, usamos <code>visudo</code>, que verifica la sintaxis antes de guardar para evitar que perdamos el acceso al sistema. Podemos editar tanto el archivo principal como crear uno exclusivo, que lo editariamos con <code>visudo -f /etc/sudoers.d/ARCHIVO</code></p>
+                <p>La sintaxis de sudoers es USUARIO/GRUPO MAQUINA=(USUARIO_A_SUPLANTAR) COMANDOS (los grupos van entre %). Tened en cuenta que si nos pidieran ejecutar algo sin interactividad o para ser usado en scripts se refieren al uso de <strong>NOPASSWD: X<strong>, siempre con un espacio entre : y los comandos</p>
+                <img src="/images/sudoers.png" alt="Configuración de sudoers" width="800">
+                <p>Otra opción de tener acceso privilegiado es añadir un usuario al grupo wheel : </p>
+                <img src="/images/wheel.png" alt="grupo wheel privilegios" width="700">
+                <p>Por ultimo, tenemos el comando <code>sudo -i</code> que carga el entorno completo de root y <code>sudo -s </code> que abre una shell de root manteniendo nuestro entorno. Estos comandos se usan cuando ya tenemos privilegios, pero son maneras de acceder usando la contraseña de nuestro usuario</p>
+                
             </section>
 
         </div>
