@@ -55,11 +55,10 @@
                 <p>En RHEL, la gestión de red se realiza principalmente a través de <strong>NetworkManager</strong> utilizando la herramienta de línea de comandos <code>nmcli</code>. Tambien podemos usar el comando <code>nmtui</code> para modificar con interfaz grafica o hacer cambios temporales con el comando <code>ip</code>.</p>
                 <p>Con <strong>nmcli</strong>, que es el que principalmente usaremos, podemos crear una red, modificar, eliminar y gestionar el estado de las interfaces de forma dinámicas. </p>
                 <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="1200">
-                <p> Para configuraciones wifi la interfaz sería algo como : <code>nmcli connection add type wifi ifname [INTERFAZ] con-name [NOMBRE] ssid [NOMBRE_RED] -- wifi-sec.key-mgmt wpa-psk wifi-sec.psk [CONTRASEÑA]</code> y luego el resto de comandos como en ethernet</p>
+                <p> Para configuraciones wifi la interfaz sería algo como : <code>nmcli connection add type wifi ifname [INTERFAZ] con-name [NOMBRE] ssid [NOMBRE_RED] -- wifi-sec.key-mgmt wpa-psk wifi-sec.psk [CONTRASEÑA]</code> y luego el resto de comandos como en Ethernet</p>
                 <p>IPV6 sería completamente igual pero usando <code>ipv6.X</code>. Recordad que es muy importante el <code>connection.autoconnect yes</code> para que se active al arrancar.Una vez aplicados los comandos, usamos <code>nmcli con up "ID"</code> para activar la nueva configuración. Podemos verificar los cambios con <code>ip addr show</code>. </p>
                 <p>Por otro lado, nos podrían pedir una ruta estatica especifica para llegar a una red que no es la determinada. Aquí entra las routes. Nosotros añadimos una ruta por defecto cuando la creamos con <code>ipv4.gateway IP</code>, pero podemos tener rutas estaticas. El + es para que añada y no sustituya lo que ya existe. </p>
-                <img src="/images/nmcli-route.png" alt="nmcli ejemplo configuración" width="1000">
-                <p>Por ultimo, al crear la interfaz podríamos añadir 2 DNSs : <code>ipv4.dns "8.8.8.8 1.1.1.1"</code> </p>
+                <img src="/images/nmcli-route.png" alt="nmcli ejemplo configuración" width="1200">
             </section>
                 <h3>Configurar la resolución del nombre de host</h3>
 
@@ -69,7 +68,7 @@
                 <p>Además, para la resolución local sin DNS, editamos el archivo <code>/etc/hosts</code>. Con esta configuración conseguimos que el sistema se reconozca a sí mismo rápidamente Su sintaxis es : IP_HOST NOMBRE_COMPLETO NOMBRE_CORTO(ALIAS)</p>
                 <img src="/images/etc-host.png" alt="archivo ejemplo /etc/hosts" width="900">
                 <p> Recordad no tocar el archivo /etc/resolv.conf porque una vez reinicies el servicio o la maquina, Network Manager sobreescribirá el contenido.</p>
-                <p> La forma correcta para una configuración de DNS persistente es con <code>nmcli</code>, <code>nmtui</code> o los archivos <code>.nmconnection</code> y <code>nmcli con up NOMBRE-RED</code> para aplicar el cambio. </p>
+                <p> La forma correcta para una configuración de DNS persistente es con <code>nmcli</code>, <code>nmtui</code> o los archivos <code>.nmconnection</code> ubicados en <strong>/etc/NetworkManager/system-connections/</strong> y <code>nmcli con up NOMBRE-RED</code> para aplicar el cambio. </p>
             </section>
 
             <section id="obj3">
@@ -77,7 +76,7 @@
                 <p>Para asegurar que nuestra configuración de red sea efectiva desde el arranque, el servicio <strong>NetworkManager</strong> debe estar habilitado y activo : <code>systemctl enable --now NetworkManager</code>.</p>
                 <p>Si utilizamos el nmcli, recordad usar el <code>nmcli con mod INTERFAZ connection.autoconnect yes</code> para que se inicie automaticamente.</p>
                 <p> Las comprobaciones que podemos hacer son : ip a, nm-online, nmcli device status, systemctl status NetworkManager... En la imagen vemos diferentes formas de comprobar que tenemos red </p>
-                <img src="/images/check-net.png" alt="check net ejemplo" width="700">
+                <img src="/images/check-net.png" alt="check net ejemplo" width="900">
                 <p> Como extra, si creamos servicios personalizados que dependen de la red, debemos usar la directiva <code>After=network-online.target</code> en la sección [Unit] (<code>/etc/systemd/system</code>) y Wants=network-online.target. del archivo del servicio para que no se quede el sistema bloqueado.</p>
             </section>
 
