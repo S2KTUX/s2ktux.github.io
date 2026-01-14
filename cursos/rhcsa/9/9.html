@@ -31,7 +31,7 @@
     <div class="hero">
         <h1>Administrar usuarios y grupos</h1>
         <p>Gestión de cuentas locales, políticas de contraseñas y privilegios sudo</p>
-        <p><a href="https://youtu.be/ENLACE_A_TU_VIDEO" target="_blank">VER VIDEO YOUTUBE - CLASE 9</a></p>
+        <p><a href="https://youtu.be/3N-B_vGKTYQ" target="_blank">VER VIDEO YOUTUBE - CLASE 9</a></p>
     </div>
 
     <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
@@ -53,50 +53,59 @@
             <section id="obj1">
                 <h3>Crear, eliminar y modificar cuentas de usuario locales</h3>
                 <p>En RHEL, la administración de usuarios es crítica para la seguridad. Los archivos principales involucrados son <code>/etc/passwd</code> (datos del usuario) y <code>/etc/shadow</code> (contraseñas cifradas).</p>
-                <p>Utilizamos comandos estándar para gestionar el ciclo de vida de las cuentas:</p>
+                <p>Los parametros mas importantes a la hora de crear un usuario son : </p>
                 <ul>
-                    <li><strong>Crear:</strong> <code>useradd -c "Nombre Real" -s /bin/bash usuario</code>. El flag <code>-m</code> crea el home automáticamente.</li>
-                    <li><strong>Modificar:</strong> <code>usermod</code> permite cambiar el nombre, el shell o bloquear la cuenta (<code>-L</code>).</li>
-                    <li><strong>Eliminar:</strong> <code>userdel -r usuario</code>. El flag <code>-r</code> es fundamental para borrar también su directorio personal y buzón de correo.</li>
+                    <li><code>-u [UID]</code>: Define un ID de usuario específico (ej: 2000).</li>
+                    <li><code>-g [GRUPO]</code>: Asigna el grupo primario (debe existir previamente).</li>
+                    <li><code>-G [GRUPOS]</code>: Añade grupos secundarios separados por comas.</li>
+                    <li><code>-c "[TEXTO]"</code>: Añade un comentario.</li>
+                    <li><code>-s [SHELL]</code>: Define una shell ( /bin/bash, /bin/zsh, /sbin/nologin (shell para cuentas de servicio)...).</li>
+                    <li><code>-d [RUTA]</code>: Define un directorio Home en una ubicación personalizada.</li>
+                    <li><code>-m</code>: Crea automáticamente el directorio Home si no existe.</li>
                 </ul>
-                <img src="/images/user-admin.png" alt="Ejemplo de gestión de usuarios" width="1200">
+                <p> Una vez creada la cuenta o siempre que queramos, usamos el comando <code>passwd</code> para asignar o cambiar la contraseña a ese usuario </p>
+                <img src="/images/user-admin.png" alt="Ejemplo de gestión de usuarios" width="800">
+                <p>Por otro lado, tenemos otros parametros para modificar cuentas de usuario : </p>
+                <ul>
+                    <li><code>-aG [GRUPO]</code>: Este es uno de los mas importantes. Añade el usuario a un grupo secundario sin borrar los anteriores.</li>
+                    <li><code>-L</code>: Bloquea la cuenta (impide el inicio de sesión).</li>
+                    <li><code>-U</code>: Desbloquea una cuenta previamente bloqueada.</li>
+                    <li><code>-l [NUEVO_LOGIN]</code>: Cambia el nombre de usuario (login).</li>
+                    <li><code>-s [NUEVA_SHELL]</code>: Cambia la shell asignada (ej: pasar de bash a nologin).</li>
+                    <li><code>-u [NUEVO_UID]</code>: Modifica el ID de usuario de una cuenta existente.</li>
+                </ul>
+                <img src="/images/user-admin2.png" alt="Ejemplo de gestión de usuarios 2" width="800">
+                <p> Por ultimo, para borrar un usuario tenemos dos parametros : -f para forzar y -r que borra su home y su buzón de correo </p>
+                
             </section>
 
             <section id="obj2">
-                <h3>Ajustar el envejecimiento (aging) de la contraseña</h3>
-                <p>Para cumplir con normativas de seguridad, debemos forzar a los usuarios a cambiar sus credenciales periódicamente. La herramienta principal para esto es <code>chage</code>.</p>
-                <p>Podemos configurar parámetros como la expiración, el aviso previo y la inactividad:</p>
-                <img src="/images/chage-example.png" alt="Uso de chage para envejecimiento" width="900">
-                <p>Comandos comunes:</p>
-                <ul>
-                    <li><code>chage -l usuario</code>: Lista los detalles actuales de expiración.</li>
-                    <li><code>chage -M 90 usuario</code>: Establece un máximo de 90 días para cambiar la clave.</li>
-                    <li><code>chage -d 0 usuario</code>: Obliga al usuario a cambiar la contraseña en su próximo inicio de sesión.</li>
-                </ul>
+                <h3>Cambiar contraseñas y ajustar el envejecimiento de la contraseña para las cuentas de usuario locales</h3>
+                <p>Como ya hemos visto, para cambiar la contraseña utilizamos el comando <code>passwd</code>. Pero este comando tiene otras opciones interesantes (podemos ver todas con -h):</p>
+                <img src="/images/passwd.png" alt="Uso de passwd" width="800">
+                <p>Por otro lado, y para cumplir con normativas de seguridad, debemos forzar a los usuarios a cambiar sus credenciales periódicamente. La herramienta principal para esto es <code>chage</code>.</p>
+                <p>Lo mejor para entender este comando es con esta imagen.:</p>
+                <img src="/images/chage.png" alt="Chage exp imagen" width="700">
+                <img src="/images/chage-example.png" alt="Uso de chage para envejecimiento" width="700">
+                <p>Por ultimo, en el archivo <code>/etc/login.defs</code> indica los valores por defecto de las diferentes normativas de seguridad</p>
             </section>
 
             <section id="obj3">
                 <h3>Crear, eliminar y modificar grupos locales</h3>
                 <p>Los grupos permiten asignar permisos a varios usuarios simultáneamente. Un usuario puede pertenecer a un <strong>grupo primario</strong> (GID en /etc/passwd) y a múltiples <strong>grupos secundarios</strong>.</p>
-                <p>Operaciones principales:</p>
-                <ul>
-                    <li><strong>Crear grupo:</strong> <code>groupadd nombre_grupo</code>.</li>
-                    <li><strong>Añadir usuario a grupo:</strong> <code>usermod -aG grupo usuario</code>. <strong>¡OJO!</strong> El <code>-a</code> (append) es vital; si lo olvidas, sacarás al usuario de todos sus otros grupos.</li>
-                    <li><strong>Eliminar grupo:</strong> <code>groupdel nombre_grupo</code>.</li>
-                </ul>
+                <p>Podemos crear un grupo con <code>groupadd</code>, hacer modificaciones con <code>groupmod</code>, eliminar el grupo con <code>groupdel</code>, etc... Recordar lo más importante que es -aG</p>
                 <img src="/images/group-admin.png" alt="Gestión de grupos y membresías" width="900">
+                <p> Podemos comprobar de diferentes maneras : id user, groups user, getent group grupo... </p>
+                <img src="/images/group-check.png" alt="Check de grupos" width="900">
+                <p> Por ultimo, podemos asignarle una contraseña a un grupo con el comando <code>gpasswd GRUPO</code>, y con este comando añadir usuarios a ese grupo <code>gpasswd -a USER grupo</code>, borrarlo con <code>-d</code>, eliminar la contraseña con <code>-r</code>...</p>
             </section>
 
             <section id="obj4">
                 <h3>Configurar el acceso privilegiado</h3>
                 <p>En lugar de compartir la contraseña de <strong>root</strong>, utilizamos <code>sudo</code> para delegar privilegios de forma controlada. La configuración reside en <code>/etc/sudoers</code> y en el directorio <code>/etc/sudoers.d/</code>.</p>
                 <p>Para editar estos archivos de forma segura, usamos <code>visudo</code>, que verifica la sintaxis antes de guardar para evitar que perdamos el acceso al sistema.</p>
-                <ul>
-                    <li><strong>El grupo wheel:</strong> Por defecto en RHEL, cualquier usuario en el grupo <code>wheel</code> tiene permisos de administrador.</li>
-                    <li><strong>Configuración personalizada:</strong> <code>usuario ALL=(ALL) NOPASSWD: ALL</code> permite ejecutar cualquier comando sin pedir contraseña (común en automatizaciones).</li>
-                </ul>
+                <p> WHEEL - SUDOERS</p>
                 <img src="/images/sudoers-config.png" alt="Configuración de sudoers" width="900">
-                <p>Como buena práctica, siempre es mejor crear un archivo pequeño dentro de <code>/etc/sudoers.d/nombre_usuario</code> que editar el archivo principal.</p>
             </section>
 
         </div>
