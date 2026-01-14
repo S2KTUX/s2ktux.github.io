@@ -53,21 +53,23 @@
             <section id="obj1">
                 <h3>Configurar direcciones IPv4 e IPv6</h3>
                 <p>En RHEL, la gestión de red se realiza principalmente a través de <strong>NetworkManager</strong> utilizando la herramienta de línea de comandos <code>nmcli</code>. Tambien podemos usar el comando <code>nmtui</code> para modificar con interfaz grafica o hacer cambios temporales con el comando <code>ip</code>.</p>
-                <p> Con <strong>nmcli</strong>, que es el que principalmente usaremos, podemos crear una red, modificar, eliminar y gestionar el estado de las interfaces de forma dinámicas. </p>
-                <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="900">
-                <p>Una vez aplicados los comandos, usamos <code>nmcli con up "ID"</code> para activar la nueva configuración. Podemos verificar los cambios con <code>ip addr show</code>.</p>
+                <p>Con <strong>nmcli</strong>, que es el que principalmente usaremos, podemos crear una red, modificar, eliminar y gestionar el estado de las interfaces de forma dinámicas. </p>
+                <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="1200">
+                <p> Para configuraciones wifi la interfaz sería algo como : <code>nmcli connection add type wifi ifname [INTERFAZ] con-name [NOMBRE] ssid [NOMBRE_RED] -- wifi-sec.key-mgmt wpa-psk wifi-sec.psk [CONTRASEÑA]</code> y luego el resto de comandos como en ethernet</p>
+                <p>IPV6 sería completamente igual pero usando <code>ipv6.X</code>. Recordad que es muy importante el <code>connection.autoconnect yes</code> para que se active al arrancar.Una vez aplicados los comandos, usamos <code>nmcli con up "ID"</code> para activar la nueva configuración. Podemos verificar los cambios con <code>ip addr show</code>. </p>
+                <p>Por otro lado, nos podrían pedir una ruta estatica especifica para llegar a una red que no es la determinada. Aquí entra las routes. Nosotros añadimos una ruta por defecto cuando la creamos con <code>ipv4.gateway IP</code>, pero podemos tener rutas estaticas. El + es para que añada y no sustituya lo que ya existe. </p>
+                <img src="/images/nmcli-route.png" alt="nmcli ejemplo configuración" width="1000">
+                <p>Por ultimo, al crear la interfaz podríamos añadir 2 DNSs : <code>ipv4.dns "8.8.8.8 1.1.1.1"</code> </p>
             </section>
+                <h3>Configurar la resolución del nombre de host</h3>
 
             <section id="obj2">
-                <h3>Configurar la resolución del nombre de host</h3>
-                <p>El nombre de host (hostname) identifica al equipo en la red. Para que el cambio sea permanente en RHEL, utilizamos <code>hostnamectl</code>.</p>
-                <p>Además, para la resolución local sin DNS, editamos el archivo <code>/etc/hosts</code>.</p>
-                <ul>
-                    <li><strong>Cambiar hostname:</strong> <code>hostnamectl set-hostname nodo1.ejemplo.com</code></li>
-                    <li><strong>Verificar:</strong> <code>hostnamectl status</code></li>
-                </ul>
-                <img src="/images/hostname-config.png" alt="hostnamectl ejemplo" width="700">
-                <p>Para añadir servidores DNS a una conexión específica: <code>nmcli con mod "ID" ipv4.dns "8.8.8.8 1.1.1.1"</code>. Esto actualizará automáticamente el archivo <code>/etc/resolv.conf</code> al levantar la conexión.</p>
+                <p>El nombre de host (hostname) identifica al equipo en la red. Para que el cambio sea permanente en RHEL, utilizamos <code>hostnamectl</code>. Tambien podríamos editar el archivo <code>/etc/hostname</code> pero este requiere reinicio para que se aplique</p>
+                <img src="/images/hostname.png" alt="hostname ejemplo configuración" width="900">
+                <p>Además, para la resolución local sin DNS, editamos el archivo <code>/etc/hosts</code>. Con esta configuración conseguimos que el sistema se reconozca a sí mismo rápidamente Su sintaxis es : IP_HOST NOMBRE_COMPLETO NOMBRE_CORTO(ALIAS)</p>
+                <img src="/images/etc-host.png" alt="archivo ejemplo /etc/hosts" width="900">
+                <p> Recordad no tocar el archivo /etc/resolv.conf porque una vez reinicies el servicio o la maquina, Network Manager sobreescribirá el contenido.</p>
+                <p> La forma correcta para una configuración de DNS persistente es con <code>nmcli</code>, <code>nmtui</code> o los archivos <code>.nmconnection</code> y <code>nmcli con up NOMBRE-RED</code> para aplicar el cambio. </p>
             </section>
 
             <section id="obj3">
