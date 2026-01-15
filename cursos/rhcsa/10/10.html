@@ -31,7 +31,7 @@
     <div class="hero">
         <h1>Administrar la seguridad</h1>
         <p>Firewall, Permisos de archivo, SSH y Hardening con SELinux</p>
-        <p><a href="https://youtu.be/ENLACE_A_TU_VIDEO" target="_blank">VER VIDEO YOUTUBE - CLASE 10</a></p>
+        <p><a href="https://youtu.be/mDqQq9ZGehA" target="_blank">VER VIDEO YOUTUBE - CLASE 10</a></p>
     </div>
 
     <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
@@ -56,21 +56,27 @@
 
             <section id="obj1">
                 <h3>1. Configure la configuración del firewall usando firewall-cmd/firewalld</h3>
-                <p>En RHEL el firewall se gestiona a través del servicio <code>firewalld</code>. La herramienta principal es <code>firewall-cmd</code>, que organiza las reglas en <strong>zonas</strong>.</p>
+                <p> Lo básico lo dimos en la CLASE 8. Aqui profudizaremos con las app personalizadas, rich rules, NAT y las ipset. Es muy interesante conocer la ruta <code>/etc/firewalld/zones/"Z0NA".xml</code> donde está la configuración que hemos añadido a la zona. .</p>
+                <p> Lo primero, las app personalizadas. Tenemos las del sistema en <code>/usr/lib/firewalld/services/</code> y podemos copiar cualquiera de ahi en <code>/etc/firewalld/services/</code> y modificarla con los datos que nos dijeran. Muy importante darle los contextos de SELinux (<code>restorecon -v /etc/firewalld/services/archivo.xml</code>).</p>
+                <img src="/images/firewall-app.png" alt="app perso de firewall" width="1000">
+                <p> Despues tenemos las rich rules, que al final simplemente son reglas mas detalladas y especificas hacia algun servicio, puerto ,ip y pueden ser todo lo simples o complejas que te puedas imaginar. Pongo varios ejemplos aunque CREO que en el examen con que sepamos de forma básica ( los 3 primeros ejemplos) es suficiente.</p>
+                <img src="/images/firewall-rich.png" alt="richrules de firewall" width="1200">
+                <p> NAT es esencial cuando nuestro server actual como gateway o necesitamos redirigir el trafico hacia otras maquinas. Tenemos tres maneras de hacerlo ( mencionar que en el video no comento que son formas diferentes e independientes de hacerlo) :</p>
                 <ul>
-                    <li><code>firewall-cmd --get-default-zone</code>: Muestra la zona activa por defecto.</li>
-                    <li><code>firewall-cmd --add-service=http --permanent</code>: Añade un servicio permanentemente.</li>
-                    <li><code>firewall-cmd --add-port=8080/tcp --permanent</code>: Abre un puerto específico.</li>
-                    <li><code>firewall-cmd --reload</code>: Imprescindible para aplicar cambios realizados con <code>--permanent</code>.</li>
+                    <li><code>Masquerade</code>: Sirve para que los equipos de una red interna tengan internet a través del servidor.</li>
+                    <li><code>Port Forwarding</code>: Envía el tráfico que llega a un puerto hacia otro puerto o IP.</li>
+                    <li><code>NAT vía RICH RULE</code>: Hace un reenvío de puertos solo para una IP o red específica.</li>
                 </ul>
-                <img src="/images/firewall-config.png" alt="Configuración de firewall" width="800">
+                <img src="/images/firewall-nat.png" alt="nat de firewall" width="1200">
+                <p>Por ultimo tenemos las IPSET, que simplemente lista de IPs que el firewall consulta de un solo golpe, lo que nos permite una gran eficiencia a la hora de crear reglas : </p>
+                <img src="/images/firewall-ipset.png" alt="ipset de firewall" width="1200">
             </section>
 
             <section id="obj2">
                 <h3>2. Administrar los permisos de archivo predeterminados</h3>
-                <p>El comando <code>umask</code> controla los permisos que se le <strong>quitan</strong> a un archivo o directorio recién creado.</p>
-                <p>El valor máximo es 666 para archivos y 777 para directorios. Si el umask es 022, el archivo se crea con 644 (666-022) y el directorio con 755 (777-022).</p>
-                <img src="/images/umask-example.png" alt="Ejemplo de umask" width="800">
+                <p>El comando <code>umask</code> controla los permisos que se le <strong>"quitan"</strong> a un archivo o directorio recién creado.</p>
+                <p>El valor máximo es 666 para archivos y 777 para directorios (ya que x no se aplica por seguridad).Es decir, la regla o la suma es  Permisos totales - UMASK = Permisos reales. Si el umask es 022, el archivo se crea con 644 (666-022) y el directorio con 755 (777-022).</p>
+                <p>Para aplicar un umask temporalmente hariamos <code>umask valor</code> y para aplicarlos de forma persistente añadimos umask valor al archivo <code>/etc/profile</code> de forma global o <code> ~/.bashrc</code> para un usuario especifico</p>
             </section>
 
             <section id="obj3">
