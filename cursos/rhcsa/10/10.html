@@ -1,1 +1,158 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RHCSA - Administrar la seguridad">
+    <meta name="keywords" content="RHCSA, Linux, firewall-cmd, firewalld, umask, SSH, SELinux, contextos, booleanos">
+    <meta name="author" content="S2KTUX">
+    <title>S2KTUX - RHCSA | Administrar la seguridad</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
 
+<div class="gradient-bg"></div>
+
+<header>
+    <div class="header-left">
+        <a href="/index.html" class="header-logo">S2KTUX</a>
+    </div>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/cursos/cursos.html">Cursos</a>
+        <a href="/proyectos/proyectos.html">Proyectos</a>
+    </nav>
+</header>
+
+<main id="contenido">
+
+    <div class="hero">
+        <h1>Administrar la seguridad</h1>
+        <p>Firewall, Permisos de archivo, SSH y Hardening con SELinux</p>
+        <p><a href="https://youtu.be/ENLACE_A_TU_VIDEO" target="_blank">VER VIDEO YOUTUBE - CLASE 10</a></p>
+    </div>
+
+    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+
+    <div class="course-page">
+
+        <div class="sidebar">
+            <h3>Objetivos del bloque</h3>
+            <ul>
+                <li><a href="#obj1">Firewall-cmd</a></li>
+                <li><a href="#obj2">Permisos (umask)</a></li>
+                <li><a href="#obj3">Claves SSH</a></li>
+                <li><a href="#obj4">Modos SELinux</a></li>
+                <li><a href="#obj5">Contextos SELinux</a></li>
+                <li><a href="#obj6">Restaurar Contextos</a></li>
+                <li><a href="#obj7">Etiquetas de Puerto</a></li>
+                <li><a href="#obj8">Booleanos SELinux</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+
+            <section id="obj1">
+                <h3>1. Configure la configuración del firewall usando firewall-cmd/firewalld</h3>
+                <p>En RHEL el firewall se gestiona a través del servicio <code>firewalld</code>. La herramienta principal es <code>firewall-cmd</code>, que organiza las reglas en <strong>zonas</strong>.</p>
+                <ul>
+                    <li><code>firewall-cmd --get-default-zone</code>: Muestra la zona activa por defecto.</li>
+                    <li><code>firewall-cmd --add-service=http --permanent</code>: Añade un servicio permanentemente.</li>
+                    <li><code>firewall-cmd --add-port=8080/tcp --permanent</code>: Abre un puerto específico.</li>
+                    <li><code>firewall-cmd --reload</code>: Imprescindible para aplicar cambios realizados con <code>--permanent</code>.</li>
+                </ul>
+                <img src="/images/firewall-config.png" alt="Configuración de firewall" width="800">
+            </section>
+
+            <section id="obj2">
+                <h3>2. Administrar los permisos de archivo predeterminados</h3>
+                <p>El comando <code>umask</code> controla los permisos que se le <strong>quitan</strong> a un archivo o directorio recién creado.</p>
+                <p>El valor máximo es 666 para archivos y 777 para directorios. Si el umask es 022, el archivo se crea con 644 (666-022) y el directorio con 755 (777-022).</p>
+                <img src="/images/umask-example.png" alt="Ejemplo de umask" width="800">
+            </section>
+
+            <section id="obj3">
+                <h3>3. Configurar la autenticación basada en claves para SSH</h3>
+                <p>Permite el acceso a servidores sin introducir contraseña, utilizando criptografía de clave pública/privada.</p>
+                <ul>
+                    <li><code>ssh-keygen</code>: Genera el par de claves en <code>~/.ssh/</code>.</li>
+                    <li><code>ssh-copy-id usuario@servidor</code>: Copia nuestra clave pública al servidor remoto para autorizarnos.</li>
+                </ul>
+                <img src="/images/ssh-auth.png" alt="Autenticación SSH" width="800">
+            </section>
+
+            <section id="obj4">
+                <h3>4. Configurar modos de aplicación y permisivos para SELinux</h3>
+                <p>SELinux puede estar en tres estados:</p>
+                <ul>
+                    <li><strong>Enforcing:</strong> La política se aplica y se bloquean los accesos no permitidos.</li>
+                    <li><strong>Permissive:</strong> No se bloquea nada, pero se registran los avisos en los logs.</li>
+                    <li><strong>Disabled:</strong> El sistema está totalmente desactivado.</li>
+                </ul>
+                <p>Usamos <code>getenforce</code> para ver el modo y <code>setenforce [0|1]</code> para alternar entre Permissive (0) y Enforcing (1).</p>
+                <img src="/images/selinux-modes.png" alt="Modos SELinux" width="800">
+            </section>
+
+            <section id="obj5">
+                <h3>5. Enumere e identifique el contexto del archivo y proceso de SELinux</h3>
+                <p>SELinux etiqueta cada recurso con un contexto (usuario:rol:tipo:nivel). El elemento más importante suele ser el <strong>tipo</strong> (type).</p>
+                <ul>
+                    <li><code>ls -Z</code>: Muestra el contexto de archivos y directorios.</li>
+                    <li><code>ps -eZ</code>: Muestra el contexto de los procesos en ejecución.</li>
+                </ul>
+                <img src="/images/selinux-context.png" alt="Contextos SELinux" width="800">
+            </section>
+
+            <section id="obj6">
+                <h3>6. Restaurar contextos de archivo predeterminados</h3>
+                <p>Si movemos archivos o cambiamos etiquetas manualmente, podemos causar errores. <code>restorecon</code> devuelve las etiquetas originales según la política del sistema.</p>
+                <ul>
+                    <li><code>restorecon -v archivo</code>: Restaura el contexto del archivo mostrando el cambio.</li>
+                    <li><code>restorecon -Rv /directorio</code>: Restaura contextos de forma recursiva en toda una ruta.</li>
+                </ul>
+                <img src="/images/restorecon.png" alt="Uso de restorecon" width="800">
+            </section>
+
+            <section id="obj7">
+                <h3>7. Administrar etiquetas de puerto SELinux</h3>
+                <p>Si un servicio (ej. Apache) debe escuchar en un puerto no estándar, debemos etiquetar ese puerto en SELinux.</p>
+                <ul>
+                    <li><code>semanage port -l | grep http</code>: Lista los puertos permitidos para http.</li>
+                    <li><code>semanage port -a -t http_port_t -p tcp 8081</code>: Añade el puerto 8081 al tipo permitido por Apache.</li>
+                </ul>
+                <img src="/images/selinux-ports.png" alt="Puertos SELinux" width="800">
+            </section>
+
+            <section id="obj8">
+                <h3>8. Utilice la configuración booleana para modificar la configuración del sistema SELinux</h3>
+                <p>Los booleanos son interruptores (on/off) que permiten cambiar reglas de SELinux en tiempo real sin modificar la política completa.</p>
+                <ul>
+                    <li><code>getsebool -a</code>: Lista todos los booleanos disponibles.</li>
+                    <li><code>setsebool nombre_booleano on/off</code>: Cambia el valor temporalmente.</li>
+                    <li><code>setsebool -P nombre_booleano on</code>: Cambia el valor de forma <strong>Persistente</strong> tras reinicio.</li>
+                </ul>
+                <img src="/images/selinux-booleans.png" alt="Booleanos SELinux" width="800">
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
+        <div class="footer-links">
+            <a href="https://github.com/s2ktux">GitHub</a>
+            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
+            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
+        </div>
+    </div>
+</footer>
+
+<a href="#" id="back-to-top">↑ Volver arriba</a>
+<script src="/conf/scripts.js"></script>
+
+</body>
+</html>
