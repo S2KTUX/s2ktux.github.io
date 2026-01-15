@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="RHCSA - Clase Extra: Tips técnicos y metodología">
+    <meta name="keywords" content="RHCSA, Linux, Podman, Find, Root Password, SSH, Red Hat">
+    <meta name="author" content="S2KTUX">
+    <title>S2KTUX - RHCSA | Clase Extra</title>
+    <link rel="stylesheet" href="/conf/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/images/favicon.png">
+</head>
+<body>
 
+<div class="gradient-bg"></div>
+
+<header>
+    <div class="header-left">
+        <a href="/index.html" class="header-logo">S2KTUX</a>
+    </div>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/cursos/cursos.html">Cursos</a>
+        <a href="/proyectos/proyectos.html">Proyectos</a>
+    </nav>
+</header>
+
+<main id="contenido">
+
+    <div class="hero">
+        <h1>Clase Extra</h1>
+        <p>Dominio de herramientas críticas, gestión de accesos y entorno de certificación</p>
+    </div>
+
+    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+
+    <div class="course-page">
+
+        <div class="sidebar">
+            <h3>Objetivos Extra</h3>
+            <ul>
+                <li><a href="#obj1">Podman</a></li>
+                <li><a href="#obj2">Comando Find</a></li>
+                <li><a href="#obj3">Reset Contraseña Root</a></li>
+                <li><a href="#obj4">Inside Red Hat</a></li>
+                <li><a href="#obj5">SSH y Copy-Paste</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+
+            <section id="obj1">
+                <h3>1. Podman</h3>
+                <p>Podman es el motor de contenedores por defecto en RHEL. A diferencia de Docker, no requiere un demonio (daemonless) y permite ejecución segura.</p>
+                <ul>
+                    <li><strong>Rootless:</strong> Ejecuta contenedores como usuario normal para mejorar la seguridad.</li>
+                    <li><strong>Persistencia:</strong> Es vital saber generar archivos de unidad para <code>systemd</code> con <code>podman generate systemd</code> para que los contenedores arranquen tras un reboot.</li>
+                    <li><strong>Imágenes:</strong> Familiarízate con el registro local y la gestión de volúmenes para persistencia de datos.</li>
+                </ul>
+                
+            </section>
+
+            <section id="obj2">
+                <h3>2. Find</h3>
+                <p>El comando <code>find</code> es esencial para localizar archivos bajo criterios de búsqueda complejos que suelen pedirse en los enunciados.</p>
+                <ul>
+                    <li><code>find / -user [nombre]</code>: Buscar archivos por propietario.</li>
+                    <li><code>find / -size +10M -size -50M</code>: Filtrar por un rango de tamaño específico.</li>
+                    <li><code>find / -perm -4000</code>: Localizar archivos con el bit <strong>SUID</strong> activo.</li>
+                    <li><code>find / -mmin -120</code>: Buscar archivos modificados en los últimos 120 minutos.</li>
+                </ul>
+            </section>
+
+            <section id="obj3">
+                <h3>3. Reset contraseña root</h3>
+                <p>Si pierdes el acceso o necesitas resetear la clave al inicio, el procedimiento de <code>rd.break</code> es el estándar en RHEL:</p>
+                <ol>
+                    <li>Reinicia y edita el arranque en GRUB (tecla <code>e</code>).</li>
+                    <li>Añade <code>rd.break</code> al final de la línea <code>linux</code>.</li>
+                    <li>Monta el sistema: <code>mount -o remount,rw /sysroot</code>.</li>
+                    <li>Accede al entorno: <code>chroot /sysroot</code>.</li>
+                    <li>Cambia la clave: <code>passwd root</code>.</li>
+                    <li>Etiquetado SELinux: <code>touch /.autorelabel</code>.</li>
+                    <li>Finaliza con <code>exit</code> dos veces.</li>
+                </ol>
+                
+            </section>
+
+            <section id="obj4">
+                <h3>4. Video Inside REDHAT</h3>
+                <p>Es fundamental visualizar el video oficial "Inside a Red Hat Certification" para conocer el entorno real del examen.</p>
+                <ul>
+                    <li>El entorno es una interfaz basada en web que simula un escritorio con terminales.</li>
+                    <li>Las instrucciones no siempre detallan cómo abrir la consola de cada máquina; debes familiarizarte con el selector de VMs del panel lateral.</li>
+                    <li>Practica la navegación entre las diferentes máquinas virtuales asignadas (node1, node2, etc.).</li>
+                </ul>
+            </section>
+
+            <section id="obj5">
+                <h3>5. Crear user y meterle en wheel para hacer ssh y poder copy paste mejor</h3>
+                <p>Acceder directamente como root por SSH suele fallar. La mejor técnica para ganar velocidad es:</p>
+                <ul>
+                    <li>Crea un usuario de gestión: <code>useradd admin-exam</code>.</li>
+                    <li>Añádelo al grupo <code>wheel</code>: <code>usermod -aG wheel admin-exam</code>.</li>
+                    <li>Opcional: Configura <code>NOPASSWD:ALL</code> en visudo para este usuario.</li>
+                    <li>Accede desde la máquina principal por SSH. Esto te permitirá **copiar y pegar** directamente desde el navegador de instrucciones (URLs, nombres largos de archivos, etc.) hacia tu terminal, evitando errores de escritura.</li>
+                </ul>
+                
+            </section>
+
+        </div>
+    </div>
+</main>
+
+<footer>
+    <div class="footer-content">
+        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
+        <div class="footer-links">
+            <a href="https://github.com/s2ktux">GitHub</a>
+            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
+            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
+        </div>
+    </div>
+</footer>
+
+<a href="#" id="back-to-top">↑ Volver arriba</a>
+<script src="/conf/scripts.js"></script>
+
+</body>
+</html>
