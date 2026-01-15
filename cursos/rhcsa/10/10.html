@@ -55,7 +55,7 @@
         <div class="content">
 
             <section id="obj1">
-                <h3>1. Configure la configuración del firewall usando firewall-cmd/firewalld</h3>
+                <h3>Configure la configuración del firewall usando firewall-cmd/firewalld</h3>
                 <p> Lo básico lo dimos en la CLASE 8. Aqui profudizaremos con las app personalizadas, rich rules, NAT y las ipset. Es muy interesante conocer la ruta <code>/etc/firewalld/zones/"Z0NA".xml</code> donde está la configuración que hemos añadido a la zona. .</p>
                 <p> Lo primero, las app personalizadas. Tenemos las del sistema en <code>/usr/lib/firewalld/services/</code> y podemos copiar cualquiera de ahi en <code>/etc/firewalld/services/</code> y modificarla con los datos que nos dijeran. Muy importante darle los contextos de SELinux (<code>restorecon -v /etc/firewalld/services/archivo.xml</code>).</p>
                 <img src="/images/firewall-app.png" alt="app perso de firewall" width="1000">
@@ -73,56 +73,60 @@
             </section>
 
             <section id="obj2">
-                <h3>2. Administrar los permisos de archivo predeterminados</h3>
+                <h3>Administrar los permisos de archivo predeterminados</h3>
                 <p>El comando <code>umask</code> controla los permisos que se le <strong>"quitan"</strong> a un archivo o directorio recién creado.</p>
                 <p>El valor máximo es 666 para archivos y 777 para directorios (ya que x no se aplica por seguridad).Es decir, la regla o la suma es  Permisos totales - UMASK = Permisos reales. Si el umask es 022, el archivo se crea con 644 (666-022) y el directorio con 755 (777-022).</p>
-                <p>Para aplicar un umask temporalmente hariamos <code>umask valor</code> y para aplicarlos de forma persistente añadimos umask valor al archivo <code>/etc/profile</code> de forma global o <code> ~/.bashrc</code> para un usuario especifico</p>
+                <p>Para aplicar un umask temporalmente hariamos <code>umask valor</code> y para aplicarlos de forma persistente añadimos umask valor al archivo <code>/etc/profile</code> de forma global o <code> ~/.bashrc</code> para un usuario especifico. Recargamos con <code>source ARCHIVO</code></p>
             </section>
 
             <section id="obj3">
-                <h3>3. Configurar la autenticación basada en claves para SSH</h3>
-                <p>Permite el acceso a servidores sin introducir contraseña, utilizando criptografía de clave pública/privada.</p>
-                <ul>
-                    <li><code>ssh-keygen</code>: Genera el par de claves en <code>~/.ssh/</code>.</li>
-                    <li><code>ssh-copy-id usuario@servidor</code>: Copia nuestra clave pública al servidor remoto para autorizarnos.</li>
-                </ul>
-                <img src="/images/ssh-auth.png" alt="Autenticación SSH" width="800">
+                <h3>Configurar la autenticación basada en claves para SSH</h3>
+                <p>Permite el acceso a servidores sin introducir contraseña, utilizando criptografía de clave pública/privada. Esto es algo clave que se utiliza en todas las empresas del mundo en el día a día, por lo que debemos conocerlo bien.</p>
+                <p>Lo que tenemos que tener más claro es que la clave publica es la que compartiremos con el servidor pero la privada NUNCA la compartiremos. Practicad el hecho de que <code>ssh-copy-id</code> podría fallar, el examen está hecho para ponernos trampas en todo momento</p>
+                <img src="/images/ssh-key.png" alt="Autenticación SSH" width="800">
+                <p> Una vez lo tenemos copiado, deberemos de fijarnos en el archivo : <code>/etc/ssh/sshd_config</code>(y no ssh_config como menciono en el video) que tenga <code>PubkeyAuthentication yes</code> y <code>AuthorizezdKeysFile .ssh/authorized_keys</code> sin comentar. No olvideis hacer un <code>systemctl restart sshd</code></p>
             </section>
 
             <section id="obj4">
-                <h3>4. Configurar modos de aplicación y permisivos para SELinux</h3>
+                <h3>Configurar modos de aplicación y permisivos para SELinux</h3>
                 <p>SELinux puede estar en tres estados:</p>
                 <ul>
                     <li><strong>Enforcing:</strong> La política se aplica y se bloquean los accesos no permitidos.</li>
                     <li><strong>Permissive:</strong> No se bloquea nada, pero se registran los avisos en los logs.</li>
                     <li><strong>Disabled:</strong> El sistema está totalmente desactivado.</li>
                 </ul>
-                <p>Usamos <code>getenforce</code> para ver el modo y <code>setenforce [0|1]</code> para alternar entre Permissive (0) y Enforcing (1).</p>
+                <p>Usamos <code>getenforce</code> para ver el modo y <code>setenforce </code> para alternar entre estados. Este comando realizaría un cambio temporal, para que sea persistente deberemos modificarlo en <code>/etc/selinux/config</code>.</p>
                 <img src="/images/selinux-modes.png" alt="Modos SELinux" width="800">
             </section>
 
             <section id="obj5">
-                <h3>5. Enumere e identifique el contexto del archivo y proceso de SELinux</h3>
-                <p>SELinux etiqueta cada recurso con un contexto (usuario:rol:tipo:nivel). El elemento más importante suele ser el <strong>tipo</strong> (type).</p>
+                <h3>Enumere e identifique el contexto del archivo y proceso de SELinux</h3>
+                <p>SELinux etiqueta cada recurso con un contexto (usuario:rol:tipo:nivel). El elemento más importante y el que debemos fijarnos es el <strong>tipo</strong>.</p>
                 <ul>
                     <li><code>ls -Z</code>: Muestra el contexto de archivos y directorios.</li>
                     <li><code>ps -eZ</code>: Muestra el contexto de los procesos en ejecución.</li>
                 </ul>
+                <p> El proceso siempre va a acabar en t ( httpd_t , sshd_t, mysqld_t...) y representa el servicio que quiere hacer la acción. Por otro lado tenemos el recurso o el archivo, donde hay más variedad y no siempre es igual pero suele seguir unos parametros :   </p>
+                <ul>
+                    <li><code>_sys_content_t</code>: Contenido estático del sistema.</li>
+                    <li><code>_config_t</code>: Archivos de configuración.</li>
+                    <li><code>_log_t</code>: Archivos de registro(logs)</li>
+                    <li><code>_rw_content_t</code>: Contenido donde el servicio tiene permiso para escribir</li>
+                </ul>
+                <p> Es importante mencionar que los dejo anotados para que os suenen cuando los veais, ni mucho menos hay que saberselos. Al ejecutar el comando <code>semanage fcontext -l | grep servicio</code> nos indicará una lista de carpetas y etiquetas que deben de llevar, donde buscamos la que más necesitemos .o el comando <code>matchpathcon /ruta/archivo</code>, que nos dice qué etiqueta debería tener un archivo según la política, a diferencia de ls -Z, que nos dice la etiqueta que realmente tiene en ese momento.</p>
                 <img src="/images/selinux-context.png" alt="Contextos SELinux" width="800">
             </section>
 
             <section id="obj6">
-                <h3>6. Restaurar contextos de archivo predeterminados</h3>
+                <h3>Restaurar contextos de archivo predeterminados</h3>
                 <p>Si movemos archivos o cambiamos etiquetas manualmente, podemos causar errores. <code>restorecon</code> devuelve las etiquetas originales según la política del sistema.</p>
-                <ul>
-                    <li><code>restorecon -v archivo</code>: Restaura el contexto del archivo mostrando el cambio.</li>
-                    <li><code>restorecon -Rv /directorio</code>: Restaura contextos de forma recursiva en toda una ruta.</li>
-                </ul>
+                <p>El ejemplo más sencillo es el servicio httpd. Este servicio se encuentra en <code>/var/www/html/</code> y necesita un contexto para funcionar. Si importamos un archivo desde otra ubicación y no nos aseguramos de que tenga un contexto correcto, no funcionará.</p>
+
                 <img src="/images/restorecon.png" alt="Uso de restorecon" width="800">
             </section>
 
             <section id="obj7">
-                <h3>7. Administrar etiquetas de puerto SELinux</h3>
+                <h3>Administrar etiquetas de puerto SELinux</h3>
                 <p>Si un servicio (ej. Apache) debe escuchar en un puerto no estándar, debemos etiquetar ese puerto en SELinux.</p>
                 <ul>
                     <li><code>semanage port -l | grep http</code>: Lista los puertos permitidos para http.</li>
@@ -132,7 +136,7 @@
             </section>
 
             <section id="obj8">
-                <h3>8. Utilice la configuración booleana para modificar la configuración del sistema SELinux</h3>
+                <h3>Utilice la configuración booleana para modificar la configuración del sistema SELinux</h3>
                 <p>Los booleanos son interruptores (on/off) que permiten cambiar reglas de SELinux en tiempo real sin modificar la política completa.</p>
                 <ul>
                     <li><code>getsebool -a</code>: Lista todos los booleanos disponibles.</li>
