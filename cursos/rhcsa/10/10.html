@@ -113,37 +113,53 @@
                     <li><code>_log_t</code>: Archivos de registro(logs)</li>
                     <li><code>_rw_content_t</code>: Contenido donde el servicio tiene permiso para escribir</li>
                 </ul>
-                <p> Es importante mencionar que los dejo anotados para que os suenen cuando los veais, ni mucho menos hay que saberselos. Al ejecutar el comando <code>semanage fcontext -l | grep servicio</code> nos indicará una lista de carpetas y etiquetas que deben de llevar, donde buscamos la que más necesitemos .o el comando <code>matchpathcon /ruta/archivo</code>, que nos dice qué etiqueta debería tener un archivo según la política, a diferencia de ls -Z, que nos dice la etiqueta que realmente tiene en ese momento.</p>
+                <p> Es importante mencionar que los dejo anotados para que os suenen cuando los veais, ni mucho menos hay que saberselos. Al ejecutar el comando <code>semanage fcontext -l | grep servicio</code> nos indicará una lista de carpetas y etiquetas que deben de llevar, donde buscamos la que más necesitemos o el comando <code>matchpathcon /ruta/archivo</code>, que nos dice qué etiqueta debería tener un archivo según la política, a diferencia de <code>ls -Z</code>, que nos dice la etiqueta que realmente tiene en ese momento.</p>
                 <img src="/images/selinux-context.png" alt="Contextos SELinux" width="800">
+                <p> Por ultimo, cuando sospechamos que un servicio falla debido a SELinux, podemos usar dos comandos para investigar el motivo del bloqueo :<code>ausearch</code>,que en terminos simples, se podría decir que es el rastreador y <code>audit2why</code> sería el traductor, es decir, recibe la información y te la explica</p>
+                <p> Se pueden utilizar de forma individual, aunque hoy en día lo más común es utilizarlos juntos. ausearch solemos usarlo con <code>-m avc -ts recent</code> ya que la mayoría de bloqueos se registran bajo AVC </p>
+                <img src="/images/selinux-audit.png" alt="AUSEARCH -AUDIT- SELinux" width="800">
             </section>
 
             <section id="obj6">
                 <h3>Restaurar contextos de archivo predeterminados</h3>
-                <p>Si movemos archivos o cambiamos etiquetas manualmente, podemos causar errores. <code>restorecon</code> devuelve las etiquetas originales según la política del sistema.</p>
-                <p>El ejemplo más sencillo es el servicio httpd. Este servicio se encuentra en <code>/var/www/html/</code> y necesita un contexto para funcionar. Si importamos un archivo desde otra ubicación y no nos aseguramos de que tenga un contexto correcto, no funcionará.</p>
-
+                <p>Si movemos archivos o cambiamos etiquetas manualmente, podemos causar errores. <code>restorecon</code> devuelve las etiquetas originales según la política del sistema. Tenemos que tener claro que al mover ficheros el comando <code>mv</code> puede causar bloqueos, en cambio <code>cp</code> suele funcionar bien. Igualmente es buena practica usar siempre <code>restorecon</code></p>
+                <p>El ejemplo más sencillo es el servicio httpd. Este servicio se encuentra en <code>/var/www/html/</code> y necesita un contexto para funcionar. Si importamos un archivo desde otra ubicación y no nos aseguramos de que tenga un contexto correcto, no funcionará. Tal y como hemos visto en la imagen de <code>ausearch -m avc -ts recent | audit2why</code></p>
                 <img src="/images/restorecon.png" alt="Uso de restorecon" width="800">
+                <p> Por otro lado, cuando la carpeta es nueva SELinux no la reconoce, tenemos que "enseñarle" que etiqueta debe llevar. Para ello podemos usar el comando <code>semanage fcontext -a -t TIPO "/RUTA(/.*)?"</code> y aplicamos con <code>restorecon -Rv /ruta</code>. Podemos usar <code>-n</code> en restorecon -Rv para comprobar lo que haría</p>
+                <img src="/images/restorecon-add.png" alt="Uso de restorecon" width="800">
+                <p> De la misma manera que agregamos con <code>-a</code>, podemos eliminar una regla que hayamos creado exactamente igual pero con <code>-d</code> o modificarla con <code>-m</code>. Recordad lanzar siempre el comando <code>restorecon -Rv</code> para aplicar esos cambios. En el video menciono <code>chcon</code> pero este haría un cambio temporal y se perdería al reiniciar, por lo que mejor usar semanage fcontext. </p>
+                
             </section>
 
             <section id="obj7">
                 <h3>Administrar etiquetas de puerto SELinux</h3>
-                <p>Si un servicio (ej. Apache) debe escuchar en un puerto no estándar, debemos etiquetar ese puerto en SELinux.</p>
-                <ul>
-                    <li><code>semanage port -l | grep http</code>: Lista los puertos permitidos para http.</li>
-                    <li><code>semanage port -a -t http_port_t -p tcp 8081</code>: Añade el puerto 8081 al tipo permitido por Apache.</li>
-                </ul>
-                <img src="/images/selinux-ports.png" alt="Puertos SELinux" width="800">
+                <p>Si un servicio (ej. Apache) debe escuchar en un puerto no estándar, debemos etiquetar ese puerto en SELinux. Podemos comprobar el contexto de los puertos de la misma manera que la de los servicios : <code>semanage port -l | grep servicio</code></p>
+                <p>Una vez tenemos situado el puerto</p>
+                <img src="/images/semanage-ports.png" alt="Puertos SELinux" width="800">
+                <p>Si un servicio necesita usar un puerto diferente, debemos añadirlo con <code>semanage</code>. Por ejemplo, permitir que <strong>httpd</strong> use el puerto 8080:</p>
+                <img src="/images/semanage-ports2.png" alt="Puertos SELinux change" width="800">
+                <p>Si el puerto ya existe y queremos modificarlo usamos <code>-m</code>, y para eliminarlo usamos <code>-d</code>.</p>
             </section>
-
             <section id="obj8">
-                <h3>Utilice la configuración booleana para modificar la configuración del sistema SELinux</h3>
-                <p>Los booleanos son interruptores (on/off) que permiten cambiar reglas de SELinux en tiempo real sin modificar la política completa.</p>
-                <ul>
-                    <li><code>getsebool -a</code>: Lista todos los booleanos disponibles.</li>
-                    <li><code>setsebool nombre_booleano on/off</code>: Cambia el valor temporalmente.</li>
-                    <li><code>setsebool -P nombre_booleano on</code>: Cambia el valor de forma <strong>Persistente</strong> tras reinicio.</li>
-                </ul>
+                 <h3>Utilice la configuración booleana para modificar la configuración del sistema SELinux</h3>
+                <p>Los booleanos son interruptores (on/off) que permiten cambiar reglas de SELinux en tiempo real sin modificar la política completa. Tenemos que tener en cuenta que si un servicio funciona pero SELinux lo bloquea lo primero que revisaremos será los booleanos</p>
+                <p> Con el comando <code>getsebool -a</code> podemos listar todos los booleanos disponibles y podemos filtrar con grep servicio. Tambien podemos filtrar con <code>semanage boolean -l | grep X</code>. </p>
                 <img src="/images/selinux-booleans.png" alt="Booleanos SELinux" width="800">
+                <p> Una vez identificado, podemos cambiar el estado del boolean con el comando <code>setbool nombre on/off</code>. Si quisieramos que sea permanente y sobreviva a un reinicio, deberemos usar el parametro -P </p>
+                <img src="/images/selinux-booleans2.png" alt="Booleanos SELinux" width="800">
+                <p>No es necesario memorizar booleanos concretos, sino saber identificarlos con <code>getsebool</code> o <code>getsebool -a</code> y activarlos correctamente usando <code>setsebool</code> o <code>setsebool -P</code> cuando SELinux bloquea un servicio.</p
+                <p>Igualmente, y por tener unos cuantos que nos suenen, dejo una pequeña lista :</p>
+                <strong>Ejemplos comunes de Booleanos en SELinux</strong>
+                <ul>
+                    <li><code>httpd_can_network_connect</code>: Permite que el servicio web se conecte a redes externas, APIs o bases de datos (Apache / Nginx).</li>
+                    <li><code>httpd_can_sendmail</code>: Permite al servidor web enviar correos electrónicos (Apache).</li>
+                    <li><code>httpd_read_user_content</code>: Permite al servidor web leer archivos dentro de los directorios <code>/home</code> (Apache).</li>
+                    <li><code>ftp_home_dir</code>: Permite al servicio <code>vsftpd</code> acceder a los directorios home de los usuarios.</li>
+                    <li><code>ssh_sysadm_login</code>: Permite a los administradores del sistema loguearse vía SSH con privilegios de sudo.</li>
+                    <li><code>container_manage_cgroup</code>: Permite que los contenedores gestionen sus propios cgroups (Podman).</li>
+                    <li><code>httpd_can_network_connect on</code>: Necesario cuando Apache requiere conexión a una base de datos externa.</li>
+                    <li><code>httpd_enable_homedirs on</code>: Necesario para que Apache sirva contenido web desde <code>/home/user/public_html</code>.</li>
+                </ul>        
             </section>
 
         </div>
