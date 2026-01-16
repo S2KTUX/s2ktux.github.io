@@ -149,7 +149,6 @@
                 <img src="/images/selinux-booleans2.png" alt="Booleanos SELinux" width="800">
                 <p>No es necesario memorizar booleanos concretos, sino saber identificarlos con <code>getsebool</code> o <code>getsebool -a</code> y activarlos correctamente usando <code>setsebool</code> o <code>setsebool -P</code> cuando SELinux bloquea un servicio.</p
                 <p>Igualmente, y por tener unos cuantos que nos suenen, dejo una pequeña lista :</p>
-                <strong>Ejemplos comunes de Booleanos en SELinux</strong>
                 <ul>
                     <li><code>httpd_can_network_connect</code>: Permite que el servicio web se conecte a redes externas, APIs o bases de datos (Apache / Nginx).</li>
                     <li><code>httpd_can_sendmail</code>: Permite al servidor web enviar correos electrónicos (Apache).</li>
