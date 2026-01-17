@@ -52,49 +52,47 @@
 
             <section id="obj1">
                 <h3>1. Podman</h3>
-                <p>Podman es el motor de contenedores por defecto en RHEL. A diferencia de Docker, no requiere un demonio (daemonless) y permite ejecución segura.</p>
+                <p>Podman es una herramienta para ejecutar contenedores. Una de las cosas que muy posiblemente entre en el examen sería el tema de registro a traves de podman y crear un contenedor como servicio.</p>
+                <p> A diferencia de dnf, con podman descargamos una imagen que se almacena en contenedores. Debemos registrarnos ya que algunas de estas imagenes están protegidas y para registrarnos lanzamos <code>podman login registry.redhat.io</code> y posteriormente pondremos el user y la pass</p>
+                <p>Podemos buscar imagenes <code>podman search httpd </code>y descargarlas, como por ejemplo : <code>podman pull docker.io/library/httpd </code>. Una vez descargada, podemos comprobar con <code>podman images</code> y en caso de necesitar borrar una lanzamos <code>podman rmi ID-IMAGEN</code>. </p>
+                <p>Una vez tenemos la imagen podemos lanzar el contenedor con <code>podman run -d --name NOMBRE -p PUERTO_HOST:PUERTO_CONTENEDOR ID-IMAGEN</code>. Comprobamos con <code>podman ps</code> y podemos tanto pararlos <code>podman stop</code> o eliminarlo <code>podman rm</code>.  </p>
+                <p> Pero en caso que queramos levantar la imagen de forma interactiva sería con <code>podman run -it ID-IMAGEN /bin/bash</code>. Si quisieramos buscar donde se aloja el contenido de la pagina deberíamos buscar el index : <code>find / -name index</code>. Podrían pedirnos mapear el contenedor a un directorio local : <code>podman run -d --name NOMBRE -p 8080:80 -v /RUTA-LOCAL:/RUTA/index.html:Z ID-IMAGEN</code> </p>
+                <p>Por ultimo, nos podrían pedir (Y ES MUY MUY PROBABLE) lanzar un contenedor como servicio como root o como usuario normal. En ambos casos debemos de hacer los mismos pasos, lo unico que cambia sería la ubicación de los archivos finales y como levantamos el contenedor. </p>
+                <p> Para los pasos previos haríamos : Descargamos la imagen <code>podman pull IMAGEN</code>, creamos el contenedor <code>podman run -d --name mi-web -p 8080:80 ID-IMAGEN</code> y podríamos comprobar con <code>podman ps</code>. Una vez generado el contenedor y extraemos la configuración con <code>podman generate systemd --name NOMBRE --files --new</code> que nos generará un fichero .service. Debemos borrar el contenedor ( Solo si usamos --new, que es lo recomendable) una vez generado el .service con <code>podman rm -f NOMBRE</code> para evitar fallos. Seguimos según usuario : </p>
                 <ul>
-                    <li><strong>Rootless:</strong> Ejecuta contenedores como usuario normal para mejorar la seguridad.</li>
-                    <li><strong>Persistencia:</strong> Es vital saber generar archivos de unidad para <code>systemd</code> con <code>podman generate systemd</code> para que los contenedores arranquen tras un reboot.</li>
-                    <li><strong>Imágenes:</strong> Familiarízate con el registro local y la gestión de volúmenes para persistencia de datos.</li>
+                    <li><strong>ROOT</strong> -> Movemos el fichero .service a <code>/etc/systemd/system/</code>, reiniciamos systemd<code>systemctl daemon-reload</code> y levantamos <code>systemctl enable --now NOMBRE.service</code>. Recordad comprobar con <code>systemctl status NOMBRE.service</code>.</li>
+                    <li><strong>USER</strong> -> Por ejemplo, usuario : test.  Preferiblemente entrar con ssh <code>ssh test@localhost</code>, creamos la carpeta de destino si no existiese <code>mkdir -p ~/.config/systemd/user/</code> y movemos a esta ruta el .service. Podemos editar este fichero en la ultima fila cambiando el <code>WantedBy=multi-user.target</code> por <code>WantedBy=default.target</code>. Reinicamos <code>systemctl --user daemon reload</code> y levantamos <code>systemctl --user enable --now NOMBRE.service</code>. Por ultimo, lanzamos <code>loginctl enable-linger test</code> para que levante los servicios de este usuario cuando levantemos la maquina. </li>
                 </ul>
-                
-            </section>
+                </section>
 
             <section id="obj2">
                 <h3>2. Find</h3>
-                <p>El comando <code>find</code> es esencial para localizar archivos bajo criterios de búsqueda complejos que suelen pedirse en los enunciados.</p>
+                <p>El comando <code>find</code> es esencial para buscar archivos.</p>
+                <p>Tenemos una serie de parámetros que son los que más se pueden llegar a utilizar. La sintaxis es <code>find RUTA Parámetros</code>. </p>
                 <ul>
-                    <li><code>find / -user [nombre]</code>: Buscar archivos por propietario.</li>
-                    <li><code>find / -size +10M -size -50M</code>: Filtrar por un rango de tamaño específico.</li>
-                    <li><code>find / -perm -4000</code>: Localizar archivos con el bit <strong>SUID</strong> activo.</li>
-                    <li><code>find / -mmin -120</code>: Buscar archivos modificados en los últimos 120 minutos.</li>
+                    <li><code>-type [f/d/l]</code>: Buscar por tipo: <strong>f</strong> (archivo), <strong>d</strong> (directorio) o <strong>l</strong> (enlace simbólico).</li>
+                    <li><code>-name o -iname</code>: Buscar por nombre. <code>-iname</code> ignora mayúsculas/minúsculas.</li>
+                    <li><code>-size [+/-]TAM</code>: Filtrar por tamaño (ej: <code>-size +10M</code> para más de 10 megas).</li>
+                    <li><code>-user [nombre]</code>: Buscar archivos que pertenecen a un usuario específico.</li>
+                    <li><code>-perm [modo]</code>: Buscar por permisos. Ejemplo: <code>-perm /4000</code> busca archivos con el bit <strong>SUID</strong> activo.</li>
+                    <li><code>-mmin [minutos]</code>: Buscar archivos modificados hace <strong>X</strong> minutos (ej: <code>-mmin -120</code> para los últimos 120 min).</li>
+                    <li><code>-mtime [días]</code>: Buscar archivos modificados hace <strong>X</strong> días.</li>
+                    <li><code>-exec COMANDO {} \;</code>: Ejecuta una acción sobre cada archivo encontrado. Imprescindible para copiar o mover resultados.</li>
                 </ul>
             </section>
 
             <section id="obj3">
                 <h3>3. Reset contraseña root</h3>
-                <p>Si pierdes el acceso o necesitas resetear la clave al inicio, el procedimiento de <code>rd.break</code> es el estándar en RHEL:</p>
-                <ol>
-                    <li>Reinicia y edita el arranque en GRUB (tecla <code>e</code>).</li>
-                    <li>Añade <code>rd.break</code> al final de la línea <code>linux</code>.</li>
-                    <li>Monta el sistema: <code>mount -o remount,rw /sysroot</code>.</li>
-                    <li>Accede al entorno: <code>chroot /sysroot</code>.</li>
-                    <li>Cambia la clave: <code>passwd root</code>.</li>
-                    <li>Etiquetado SELinux: <code>touch /.autorelabel</code>.</li>
-                    <li>Finaliza con <code>exit</code> dos veces.</li>
-                </ol>
-                
+                <p> Recordemos que esto es uno de los puntos esenciales del examen, siendo el primero o de los primeros. Si no sabemos hacer esto, no podremos hacer nada más. </p>
+                <p> Entrabamos en GRUB, editamos la linea de LINUX (al final de la misma) y ponemos <code>rd.break</code> y CTRL + X. </p>
+                <p> Una vez carga el sistema, montamos el sistema con permisos de escritura <code>mount -o remount,rw /sysroot</code> y accedemos al entorno real con <code>chroot /sysroot</code> (NO debería de fallar, pero si falla buscar con <code>find / -type f -name chroot</code>). </p>
+                <p> Modificamos la password con <code>passwd root</code> y, para que SELinux no nos bloquee el acceso al reiniciar, creamos el archivo de reetiquetado <code>touch /.autorelabel</code>. </p>
+                <p> Por último, salimos del entorno con <code>exit</code> y repetimos <code>exit</code> para que el sistema reinicie y aplique los cambios (puede tardar unos minutos). </p>    
             </section>
 
             <section id="obj4">
                 <h3>4. Video Inside REDHAT</h3>
-                <p>Es fundamental visualizar el video oficial "Inside a Red Hat Certification" para conocer el entorno real del examen.</p>
-                <ul>
-                    <li>El entorno es una interfaz basada en web que simula un escritorio con terminales.</li>
-                    <li>Las instrucciones no siempre detallan cómo abrir la consola de cada máquina; debes familiarizarte con el selector de VMs del panel lateral.</li>
-                    <li>Practica la navegación entre las diferentes máquinas virtuales asignadas (node1, node2, etc.).</li>
-                </ul>
+                <p>Es fundamental visualizar el video oficial "Inside a Red Hat Certification" para conocer el entorno real del examen e ir preparados de lo que nos vamos a encontrar mas o menos y no perder tiempo. A pesar de que sean 3 horas y parezca mucho tiempo, NO lo es.</p>
             </section>
 
             <section id="obj5">
