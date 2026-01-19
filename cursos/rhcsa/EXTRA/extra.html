@@ -43,8 +43,8 @@
                 <li><a href="#obj1">Podman</a></li>
                 <li><a href="#obj2">Comando Find</a></li>
                 <li><a href="#obj3">Reset Contraseña Root</a></li>
-                <li><a href="#obj4">Inside Red Hat</a></li>
-                <li><a href="#obj5">SSH y Copy-Paste</a></li>
+                <li><a href="#obj4">SSH y Copy-Paste</a></li>
+                <li><a href="#obj5">Inside Red Hat y SIMULACRO</a></li>
             </ul>
         </div>
 
@@ -91,20 +91,21 @@
             </section>
 
             <section id="obj4">
-                <h3>4. Video Inside REDHAT</h3>
-                <p>Es fundamental visualizar el video oficial "Inside a Red Hat Certification" para conocer el entorno real del examen e ir preparados de lo que nos vamos a encontrar mas o menos y no perder tiempo. A pesar de que sean 3 horas y parezca mucho tiempo, NO lo es.</p>
+                <h3>4. Crear user y meterle en wheel para hacer ssh y poder copy paste mejor</h3>
+                <p>Acceder directamente como root por SSH suele fallar. La mejor técnica para ganar velocidad es tener un usuario configurado que nos permita usar ssh para permitir hacer un copy-paste y ganar tiempo.</p>
+                <p>Una vez creado el usuario con useradd usuario, tenemos dos opciones :</p>
+                <ul>
+                    <li>1 - Añadirlo al grupo <code>wheel</code>: <code>usermod -aG wheel usuario</code>.</li>
+                    <li>2 - Configurar el archivo <code>sudoers</code>:hacemos <code>sudo visudo</code> y añadimos practicamente al final la linea <code>usuario ALL=(ALL) ALL</code></li>
+                </ul>
+                <p>Ambas maneras son validas, aunque usad preferiblemente la primera ya que la segunda es más cuando no quieres dar sudo completo. Una vez realizado, fijaros en que todo esté OK para hacer ssh : Archivo de configuración, SELinux, firerwall, servicio activo... </p>
             </section>
 
             <section id="obj5">
-                <h3>5. Crear user y meterle en wheel para hacer ssh y poder copy paste mejor</h3>
-                <p>Acceder directamente como root por SSH suele fallar. La mejor técnica para ganar velocidad es:</p>
-                <ul>
-                    <li>Crea un usuario de gestión: <code>useradd admin-exam</code>.</li>
-                    <li>Añádelo al grupo <code>wheel</code>: <code>usermod -aG wheel admin-exam</code>.</li>
-                    <li>Opcional: Configura <code>NOPASSWD:ALL</code> en visudo para este usuario.</li>
-                    <li>Accede desde la máquina principal por SSH. Esto te permitirá **copiar y pegar** directamente desde el navegador de instrucciones (URLs, nombres largos de archivos, etc.) hacia tu terminal, evitando errores de escritura.</li>
-                </ul>
-                
+
+                <h3>5. Video Inside REDHAT y SIMULACRO</h3>
+                <p>Es fundamental visualizar el video oficial "Inside a Red Hat Certification" para conocer el entorno real del examen e ir preparados de lo que nos vamos a encontrar mas o menos y no perder tiempo. A pesar de que sean 3 horas y parezca mucho tiempo, NO lo es.</p>
+                <p> Por otro lado, y como simulacro, me he encontrado el siguiente repositorio de GITHUB que está increible : https://github.com/AustinNicely/rhcsa-simulator. Aunque está en ingles, es muy muy buen recurso que te puede ayudar a practica. Para su uso, he descargado un Alma Linux versión 9 con interfaz gráfica.</p>
             </section>
 
         </div>
