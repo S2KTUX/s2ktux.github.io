@@ -2,10 +2,10 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Terminal Demo</title>
+<title>Terminal Pro</title>
 <style>
 body {
-  background: #f3f3f3;
+  background: #f4f4f4;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -14,10 +14,13 @@ body {
 }
 
 .terminal-window {
-  width: 700px;
+  width: 750px;
+  height: 420px;
   background: #1e1e1e;
-  border-radius: 12px;
-  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  border-radius: 14px;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.2);
+  display: flex;
+  flex-direction: column;
   overflow: hidden;
 }
 
@@ -40,25 +43,48 @@ body {
 .green { background: #27c93f; }
 
 .terminal-body {
+  flex: 1;
   padding: 20px;
-  color: #00ff9c;
+  color: #e6e6e6;
   font-family: monospace;
-  font-size: 15px;
-  line-height: 1.6;
-  min-height: 300px;
+  font-size: 14px;
+  overflow-y: auto;
+}
+
+.line {
+  white-space: pre-wrap;
+}
+
+.prompt {
+  color: #00ff9c;
+}
+
+.command {
+  color: #ffffff;
+}
+
+.output {
+  color: #9cdcfe;
+}
+
+.error {
+  color: #ff6b6b;
+}
+
+.input-line {
+  display: flex;
 }
 
 .cursor {
-  display: inline-block;
   width: 8px;
-  background: #00ff9c;
+  background: #ffffff;
+  margin-left: 2px;
   animation: blink 1s infinite;
-  margin-left: 4px;
 }
 
 @keyframes blink {
-  0%, 50%, 100% { opacity: 1; }
-  25%, 75% { opacity: 0; }
+  0%,50%,100% { opacity: 1; }
+  25%,75% { opacity: 0; }
 }
 </style>
 </head>
@@ -74,43 +100,104 @@ body {
 </div>
 
 <script>
-const lines = [
-  "$ curl -sL tuweb.com/install | bash",
-  "Cloning repository...",
-  "remote: Counting objects: 100% (120/120), done.",
-  "$ cd MiProyecto",
-  "$ ./install.sh",
-  "[SYSTEM] Installing dependencies...",
-  "[CONFIG] Setting up components...",
-  "Installation complete! 🚀",
-  "$ help",
-  "Available commands:",
-  "  help        - Show this help",
-  "  sysinfo     - Display system information"
-];
-
 const terminal = document.getElementById("terminal");
-let lineIndex = 0;
-let charIndex = 0;
 
-function type() {
-  if (lineIndex < lines.length) {
-    if (charIndex < lines[lineIndex].length) {
-      terminal.innerHTML += lines[lineIndex][charIndex];
-      charIndex++;
-      setTimeout(type, 20);
-    } else {
-      terminal.innerHTML += "<br>";
-      lineIndex++;
-      charIndex = 0;
-      setTimeout(type, 400);
-    }
-  } else {
-    terminal.innerHTML += '<span class="cursor"></span>';
+const commands = {
+  help: () => `
+Available commands:
+  help       Show this help
+  about      About me
+  skills     Technical skills
+  projects   Show projects
+  clear      Clear terminal
+`,
+  about: () => "Linux Systems Administrator focused on automation and infrastructure.",
+  skills: () => "Linux | Bash | Networking | RHCSA | LPIC-1",
+  projects: () => "1. Infra automation\n2. Server hardening\n3. Container labs"
+};
+
+let history = [];
+let historyIndex = 0;
+let currentInput = "";
+
+function print(text, className="output") {
+  const line = document.createElement("div");
+  line.className = "line " + className;
+  line.textContent = text;
+  terminal.appendChild(line);
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+function newPrompt() {
+  const inputLine = document.createElement("div");
+  inputLine.className = "input-line";
+
+  const prompt = document.createElement("span");
+  prompt.className = "prompt";
+  prompt.textContent = "user@web:~$ ";
+
+  const command = document.createElement("span");
+  command.className = "command";
+  command.id = "current-command";
+
+  const cursor = document.createElement("span");
+  cursor.className = "cursor";
+
+  inputLine.appendChild(prompt);
+  inputLine.appendChild(command);
+  inputLine.appendChild(cursor);
+
+  terminal.appendChild(inputLine);
+  terminal.scrollTop = terminal.scrollHeight;
+}
+
+function handleCommand(cmd) {
+  if (cmd === "clear") {
+    terminal.innerHTML = "";
+    return;
+  }
+
+  if (commands[cmd]) {
+    print(commands[cmd]());
+  } else if (cmd.trim() !== "") {
+    print("Command not found: " + cmd, "error");
   }
 }
 
-type();
+document.addEventListener("keydown", function(e) {
+  const commandSpan = document.getElementById("current-command");
+  if (!commandSpan) return;
+
+  if (e.key === "Backspace") {
+    currentInput = currentInput.slice(0, -1);
+  } else if (e.key === "Enter") {
+    print("user@web:~$ " + currentInput, "prompt");
+    history.push(currentInput);
+    historyIndex = history.length;
+    handleCommand(currentInput.trim());
+    currentInput = "";
+    newPrompt();
+    return;
+  } else if (e.key === "ArrowUp") {
+    if (historyIndex > 0) {
+      historyIndex--;
+      currentInput = history[historyIndex];
+    }
+  } else if (e.key === "ArrowDown") {
+    if (historyIndex < history.length - 1) {
+      historyIndex++;
+      currentInput = history[historyIndex];
+    } else {
+      currentInput = "";
+    }
+  } else if (e.key.length === 1) {
+    currentInput += e.key;
+  }
+
+  commandSpan.textContent = currentInput;
+});
+
+newPrompt();
 </script>
 
 </body>
