@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Terminal Demo</title>
+<style>
+body {
+  background: #f3f3f3;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.terminal-window {
+  width: 700px;
+  background: #1e1e1e;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+
+.terminal-header {
+  background: #2d2d2d;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.dot {
+  height: 12px;
+  width: 12px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.red { background: #ff5f56; }
+.yellow { background: #ffbd2e; }
+.green { background: #27c93f; }
+
+.terminal-body {
+  padding: 20px;
+  color: #00ff9c;
+  font-family: monospace;
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 300px;
+}
+
+.cursor {
+  display: inline-block;
+  width: 8px;
+  background: #00ff9c;
+  animation: blink 1s infinite;
+  margin-left: 4px;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="terminal-window">
+  <div class="terminal-header">
+    <div class="dot red"></div>
+    <div class="dot yellow"></div>
+    <div class="dot green"></div>
+  </div>
+  <div class="terminal-body" id="terminal"></div>
+</div>
+
+<script>
+const lines = [
+  "$ curl -sL tuweb.com/install | bash",
+  "Cloning repository...",
+  "remote: Counting objects: 100% (120/120), done.",
+  "$ cd MiProyecto",
+  "$ ./install.sh",
+  "[SYSTEM] Installing dependencies...",
+  "[CONFIG] Setting up components...",
+  "Installation complete! 🚀",
+  "$ help",
+  "Available commands:",
+  "  help        - Show this help",
+  "  sysinfo     - Display system information"
+];
+
+const terminal = document.getElementById("terminal");
+let lineIndex = 0;
+let charIndex = 0;
+
+function type() {
+  if (lineIndex < lines.length) {
+    if (charIndex < lines[lineIndex].length) {
+      terminal.innerHTML += lines[lineIndex][charIndex];
+      charIndex++;
+      setTimeout(type, 20);
+    } else {
+      terminal.innerHTML += "<br>";
+      lineIndex++;
+      charIndex = 0;
+      setTimeout(type, 400);
+    }
+  } else {
+    terminal.innerHTML += '<span class="cursor"></span>';
+  }
+}
+
+type();
+</script>
+
+</body>
+</html>
