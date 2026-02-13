@@ -2,8 +2,6 @@
 window.addEventListener('scroll', () => {
 
     const progressBar = document.querySelector('.reading-progress');
-
-    // si no existe, no hacemos nada
     if(!progressBar) return;
 
     const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
@@ -13,36 +11,43 @@ window.addEventListener('scroll', () => {
     progressBar.style.width = scrolled + '%';
 });
 
+
 // Botón de volver arriba
 const backToTopButton = document.getElementById('back-to-top');
-window.addEventListener('scroll', () => {
-    if (window.scrollY > 300) {
-        backToTopButton.style.display = 'block';
-    } else {
-        backToTopButton.style.display = 'none';
-    }
-});
 
-backToTopButton.addEventListener('click', (e) => {
-    e.preventDefault();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-});
+if(backToTopButton){
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            backToTopButton.style.display = 'block';
+        } else {
+            backToTopButton.style.display = 'none';
+        }
+    });
+
+    backToTopButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+}
+
 
 // Manejo de pestañas
 document.addEventListener('DOMContentLoaded', () => {
+
     const tabButtons = document.querySelectorAll('.tab-button');
     const tabContents = document.querySelectorAll('.tab-content');
 
     tabButtons.forEach(button => {
         button.addEventListener('click', () => {
-            // Remover clase active de todos los botones y contenidos
+
             tabButtons.forEach(btn => btn.classList.remove('active'));
             tabContents.forEach(content => content.classList.remove('active'));
 
-            // Añadir clase active al botón clicado y al contenido correspondiente
             button.classList.add('active');
             const tabId = button.getAttribute('data-tab');
-            document.getElementById(tabId).classList.add('active');
+
+            const tab = document.getElementById(tabId);
+            if(tab) tab.classList.add('active');
         });
     });
 });
@@ -54,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.addEventListener("DOMContentLoaded", function(){
 
 const terminal = document.getElementById("terminal-body");
-if(!terminal) return; // evita errores si no existe
+if(!terminal) return;
 
 function print(text, type="output"){
     const line = document.createElement("div");
@@ -62,8 +67,6 @@ function print(text, type="output"){
     line.textContent = text;
     terminal.appendChild(line);
 }
-
-/* mensaje inicial */
 
 function boot(){
 
@@ -75,8 +78,6 @@ function boot(){
     print('Escribe "help" para comenzar.');
 }
 
-/* crear input */
-
 function createInput(){
 
     const wrapper = document.createElement("div");
@@ -84,7 +85,7 @@ function createInput(){
 
     const prompt = document.createElement("span");
     prompt.className = "prompt";
-    prompt.textContent = "s2ktux@web:~$";
+    prompt.textContent = "s2ktux@server:~$";
 
     const input = document.createElement("input");
     input.className = "terminal-input";
@@ -111,8 +112,6 @@ function createInput(){
     });
 }
 
-/* comandos */
-
 function runCommand(cmd){
 
     if(cmd === "help"){
@@ -129,7 +128,7 @@ function runCommand(cmd){
     }
 
     else if(cmd === "about"){
-        print(" Trabajo en el area de sistemas desde hace años y me gusta mucho Linux. Al mismo tiempo que aprendo, me gusta compartirlo para todo aquel que esté siguiendo mi mismo camino");
+        print(" Trabajo en el area de sistemas desde hace años y me gusta mucho Linux. Al mismo tiempo que aprendo, me gusta compartirlo para todo aquel que esté siguiendo o quiera seguir el mismo camino");
     }
 
     else if(cmd === "cursos"){
@@ -145,26 +144,24 @@ function runCommand(cmd){
         boot();
     }
 
-   else if(cmd === "whoami"){
-    print("s2ktux");
-} 
+    else if(cmd === "whoami"){
+        print("s2ktux");
+    }
 
     else if(cmd === "pwd"){
-    print("/home/s2ktux");
-}
+        print("/home/s2ktux");
+    }
 
     else if(cmd === "sudo"){
-    print("Buen intento 😄", "error!");
-}
+        print("Buen intento!!😄", "error");
+    }
 
     else if(cmd !== ""){
         print("Command not found: "+cmd,"error");
     }
 }
 
-/* iniciar terminal */
-
 boot();
 createInput();
 
-};
+});
