@@ -2,12 +2,14 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<title>Terminal S2KTUX</title>
+<title>s2ktux terminal</title>
 
 <style>
+
 body{
-    background:#e5e5e5;
-    font-family: monospace;
+    margin:0;
+    background:#e6e6e6;
+    font-family:monospace;
 }
 
 /* ===== TERMINAL ===== */
@@ -16,18 +18,26 @@ body{
     width:900px;
     margin:60px auto;
     background:#0f1117;
-    border-radius:12px;
+    border-radius:14px;
     overflow:hidden;
     box-shadow:0 20px 40px rgba(0,0,0,.4);
 }
 
-/* Barra superior */
+/* HEADER */
+
 .terminal-header{
+    position:relative;
     background:#2b2b2b;
-    padding:8px 12px;
+    padding:12px;
     display:flex;
     align-items:center;
-    gap:10px;
+}
+
+/* botones mac */
+
+.buttons{
+    display:flex;
+    gap:6px;
 }
 
 .dot{
@@ -35,59 +45,58 @@ body{
     height:12px;
     border-radius:50%;
 }
+
 .red{background:#ff5f56;}
 .yellow{background:#ffbd2e;}
 .green{background:#27c93f;}
 
+/* titulo centrado REAL */
+
 .title{
-    margin-left:10px;
+    position:absolute;
+    left:50%;
+    transform:translateX(-50%);
     color:#cfcfcf;
     font-size:14px;
 }
 
-/* Cuerpo terminal */
+/* BODY */
+
 .terminal-body{
     padding:20px;
+    min-height:420px;
     color:#00ff9c;
-    min-height:400px;
-    line-height:1.5;
     white-space:pre-wrap;
+    overflow-y:auto;
 }
 
-/* Línea de entrada */
+/* INPUT */
+
 .input-line{
     display:flex;
 }
 
 .prompt{
-    color:#00ff9c;
     margin-right:6px;
+    color:#00ff9c;
 }
 
-input{
+.terminal-input{
     background:transparent;
     border:none;
     outline:none;
-    color:#ffffff;
+    color:white;
     font-family:monospace;
-    font-size:15px;
     width:100%;
 }
 
-/* placeholder estilo terminal */
-input::placeholder{
+.terminal-input::placeholder{
     color:rgba(255,255,255,0.35);
 }
 
-/* salida comandos */
-.output{
-    color:#9cdcfe;
-    margin:4px 0;
-}
+.output{ color:#9cdcfe; }
+.error{ color:#ff6b6b; }
 
-.error{
-    color:#ff6b6b;
-}
 </style>
 </head>
 
@@ -96,31 +105,129 @@ input::placeholder{
 <div class="terminal">
 
     <div class="terminal-header">
-        <div class="dot red"></div>
-        <div class="dot yellow"></div>
-        <div class="dot green"></div>
+
+        <div class="buttons">
+            <div class="dot red"></div>
+            <div class="dot yellow"></div>
+            <div class="dot green"></div>
+        </div>
+
         <div class="title">s2ktux@server:~/Cursos</div>
+
     </div>
 
-    <div class="terminal-body" id="terminal"></div>
+    <div id="terminal-body" class="terminal-body"></div>
 
 </div>
 
 <script>
 
-const terminal = document.getElementById("terminal");
+/* ===== ESPERAR SIEMPRE A QUE TODO EXISTA ===== */
+window.onload = function(){
 
-/* ===== MENSAJE BIENVENIDA ===== */
+const terminal = document.getElementById("terminal-body");
 
-function bootMessage() {
-    print(`
-Bienvenido a s2ktux
----------------------------------------
-Aquí podrás aprender sobre Linux,
-administración de sistemas y proyectos.
+/* imprimir linea */
 
-Escribe "help" para comenzar.
-`);
+function print(text, type="output"){
+    const line = document.createElement("div");
+    line.className = type;
+    line.textContent = text;
+    terminal.appendChild(line);
 }
 
-funct
+/* mensaje inicial */
+
+function boot(){
+
+    print("Bienvenido a s2ktux");
+    print("---------------------------------------");
+    print("Aquí podrás aprender sobre Linux");
+    print("administración de sistemas y scripting.");
+    print("");
+    print('Escribe "help" para comenzar.');
+}
+
+/* crear input */
+
+function createInput(){
+
+    const wrapper = document.createElement("div");
+    wrapper.className = "input-line";
+
+    const prompt = document.createElement("span");
+    prompt.className = "prompt";
+    prompt.textContent = "s2ktux@web:~$";
+
+    const input = document.createElement("input");
+    input.className = "terminal-input";
+    input.placeholder = "Escribe algo... (ej: help)";
+
+    wrapper.appendChild(prompt);
+    wrapper.appendChild(input);
+    terminal.appendChild(wrapper);
+
+    input.focus();
+
+    input.addEventListener("keydown", function(e){
+
+        if(e.key === "Enter"){
+
+            const cmd = input.value.trim();
+            input.disabled = true;
+
+            runCommand(cmd);
+
+            createInput();
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+    });
+}
+
+/* comandos */
+
+function runCommand(cmd){
+
+    if(cmd === "help"){
+        print("");
+        print("Comandos disponibles:");
+        print("help      ayuda");
+        print("about     sobre mi");
+        print("skills    tecnologías");
+        print("projects  proyectos");
+        print("clear     limpiar terminal");
+    }
+
+    else if(cmd === "about"){
+        print("Administrador Linux (RHCSA + LPIC-1).");
+    }
+
+    else if(cmd === "skills"){
+        print("Linux | Bash | Networking | Systemd | Podman");
+    }
+
+    else if(cmd === "projects"){
+        print("Portfolio en construcción...");
+    }
+
+    else if(cmd === "clear"){
+        terminal.innerHTML="";
+        boot();
+    }
+
+    else if(cmd !== ""){
+        print("Command not found: "+cmd,"error");
+    }
+}
+
+/* iniciar terminal */
+
+boot();
+createInput();
+
+};
+
+</script>
+
+</body>
+</html>
