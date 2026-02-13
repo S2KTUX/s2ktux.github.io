@@ -50,7 +50,7 @@ body{
 .yellow{background:#ffbd2e;}
 .green{background:#27c93f;}
 
-/* titulo centrado REAL */
+/* titulo centrado */
 
 .title{
     position:absolute;
@@ -112,7 +112,7 @@ body{
             <div class="dot green"></div>
         </div>
 
-        <div class="title">s2ktux@server:~/Cursos</div>
+        <div class="title">s2ktux@server:/home/s2ktux/</div>
 
     </div>
 
@@ -143,8 +143,8 @@ function boot(){
     print("Bienvenido a s2ktux");
     print("---------------------------------------");
     print("Aquí podrás aprender sobre Linux");
-    print("administración de sistemas y scripting.");
-    print("");
+    print("Preparación para certificados LPIC y RHCSA");
+    print("Y proyectos pequeños...");
     print('Escribe "help" para comenzar.');
 }
 
@@ -191,29 +191,51 @@ function runCommand(cmd){
     if(cmd === "help"){
         print("");
         print("Comandos disponibles:");
-        print("help      ayuda");
-        print("about     sobre mi");
-        print("skills    tecnologías");
-        print("projects  proyectos");
-        print("clear     limpiar terminal");
+        print("help");
+        print("about mi");
+        print("cursos");
+        print("proyectos");
+        print("whoami");
+        print("pwd");
+        print("ls");
+        print("sudo");
+        print("clear");
     }
 
     else if(cmd === "about"){
-        print("Administrador Linux (RHCSA + LPIC-1).");
+        print(" Trabajo en el area de sistemas desde hace años y me gusta mucho Linux. Al mismo tiempo que aprendo, me gusta compartirlo para todo aquel que esté siguiendo mi mismo camino");
     }
 
-    else if(cmd === "skills"){
-        print("Linux | Bash | Networking | Systemd | Podman");
+    else if(cmd === "cursos"){
+        print("Actualmente cuento con el curso de LPIC1 y RHCSA. RHCSA está tambien en el canal de Youtube!!");
     }
 
-    else if(cmd === "projects"){
-        print("Portfolio en construcción...");
+    else if(cmd === "proyectos"){
+        print("Proximamente..");
     }
 
     else if(cmd === "clear"){
         terminal.innerHTML="";
         boot();
     }
+
+   else if(cmd === "whoami"){
+    print("s2ktux");
+} 
+
+    else if(cmd === "pwd"){
+    print("/home/s2ktux");
+}
+
+    else if(cmd === "ls"){
+    print("about.txt");
+    print("cursos.txt");
+    print("proyectos/");
+}
+
+    else if(cmd === "sudo"){
+    print("Buen intento 😄", "error!");
+}
 
     else if(cmd !== ""){
         print("Command not found: "+cmd,"error");
