@@ -1,9 +1,16 @@
 // Barra de progreso de lectura
 window.addEventListener('scroll', () => {
+
+    const progressBar = document.querySelector('.reading-progress');
+
+    // si no existe, no hacemos nada
+    if(!progressBar) return;
+
     const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
     const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
     const scrolled = (winScroll / height) * 100;
-    document.querySelector('.reading-progress').style.width = scrolled + '%';
+
+    progressBar.style.width = scrolled + '%';
 });
 
 // Botón de volver arriba
