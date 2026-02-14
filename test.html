@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S2KTUX | Terminal Portfolio</title>
+    <style>
+        /* --- ESTILOS (CSS) --- */
+        :root {
+            --bg-color: #09090b;       /* Fondo casi negro */
+            --term-bg: #18181b;        /* Fondo de la terminal */
+            --text-main: #a1a1aa;      /* Gris texto */
+            --accent: #10b981;         /* Verde matrix/hacker */
+            --accent-glow: rgba(16, 185, 129, 0.2);
+            --font-stack: 'Courier New', Courier, monospace; /* Fuente monoespaciada esencial */
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-stack);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden; /* Evita scroll en la página, solo en la terminal */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Fondo sutil de grid para efecto cyber */
+            background-image: radial-gradient(#27272a 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .main-container {
+            width: 90%;
+            max-width: 850px;
+            height: 80vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--term-bg);
+            border: 1px solid #27272a;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px); /* Efecto cristal */
+        }
+
+        /* --- BARRA SUPERIOR --- */
+        .window-bar {
+            background-color: #09090b;
+            padding: 12px 20px;
+            border-radius: 12px 12px 0 0;
+            border-bottom: 1px solid #27272a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #71717a;
+        }
+
+        .controls { display: flex; gap: 8px; }
+        .control {
+            width: 12px; height: 12px; border-radius: 50%;
+        }
+        .red { background-color: #ef4444; }
+        .yellow { background-color: #eab308; }
+        .green { background-color: #22c55e; }
+
+        /* --- CUERPO DE LA TERMINAL --- */
+        .terminal-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Scrollbar personalizada minimalista */
+        .terminal-body::-webkit-scrollbar { width: 8px; }
+        .terminal-body::-webkit-scrollbar-track { background: var(--term-bg); }
+        .terminal-body::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        .terminal-body::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* --- TEXTOS Y OUTPUT --- */
+        #output { margin-bottom: 10px; }
+
+        .line { margin-bottom: 8px; }
+        .command-echo { color: var(--accent); font-weight: bold; }
+        .response-text { color: var(--text-main); white-space: pre-wrap; }
+        .path { color: #60a5fa; } /* Azul para rutas o enlaces */
+        .highlight { color: #f472b6; font-weight: bold; } /* Rosa para titulos */
+
+        /* --- INPUT --- */
+        .input-line {
+            display: flex;
+            align-items: center;
+        }
+
+        .prompt {
+            color: var(--accent);
+            margin-right: 10px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: var(--font-stack);
+            font-size: 1rem;
+            flex: 1;
+            outline: none;
+            caret-color: var(--accent); /* Color del cursor parpadeante */
+        }
+
+        /* --- LINKS --- */
+        a { color: #60a5fa; text-decoration: none; border-bottom: 1px dotted #60a5fa; }
+        a:hover { color: #fff; background: #60a5fa; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <!-- Barra superior decorativa (Estilo ventana de sistema) -->
+        <div class="window-bar">
+            <div class="controls">
+                <div class="control red"></div>
+                <div class="control yellow"></div>
+                <div class="control green"></div>
+            </div>
+            <div class="bar-title">s2ktux@portfolio:~</div>
+            <div class="bar-info">v1.0.4</div>
+        </div>
+
+        <!-- El cuerpo de la terminal -->
+        <div class="terminal-body" id="terminal-body">
+            <!-- Aquí aparecerá el historial -->
+            <div id="output"></div>
+
+            <!-- La línea de entrada activa -->
+            <div class="input-line">
+                <span class="prompt">visitor@s2ktux:~$</span>
+                <input type="text" id="cmd-input" autocomplete="off" autofocus>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LÓGICA (JS) -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const input = document.getElementById('cmd-input');
+            const output = document.getElementById('output');
+            const terminalBody = document.getElementById('terminal-body');
+
+            // Configuración Inicial
+            const welcomeMessage = `
+<div class="line">
+  <span class="highlight">BIENVENIDO AL SISTEMA S2KTUX v1.0</span><br><br>
+  Soy un administrador de sistemas y desarrollador enfocado en Linux y seguridad.<br>
+  Este portfolio funciona como una terminal interactiva.<br><br>
+  Escribe <span class="path">'help'</span> para ver los comandos disponibles.
+</div>`;
+
+            // Imprimir mensaje de bienvenida al cargar
+            printOutput(welcomeMessage, false);
+
+            // Escuchar tecla Enter
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    const command = this.value.trim();
+                    if (command) {
+                        // Mostrar el comando que escribió el usuario
+                        printOutput(`<span class="prompt">visitor@s2ktux:~$</span> ${command}`, true);
+                        processCommand(command);
+                    } else {
+                        // Si pulsa enter sin escribir, solo muestra el prompt
+                        printOutput(`<span class="prompt">visitor@s2ktux:~$</span>`, true);
+                    }
+                    this.value = ''; // Limpiar input
+                }
+            });
+
+            // Mantener el scroll abajo
+            function scrollToBottom() {
+                terminalBody.scrollTop = terminalBody.scrollHeight;
+            }
+
+            // Función para escribir en la terminal
+            function printOutput(html, isCommand) {
+                const div = document.createElement('div');
+                div.className = 'line';
+                if(isCommand) div.classList.add('command-echo');
+                div.innerHTML = html;
+                output.appendChild(div);
+                scrollToBottom();
+            }
+
+            // Lógica de comandos
+            function processCommand(cmd) {
+                const command = cmd.toLowerCase().split(' ')[0]; // Coger primera palabra
+
+                switch(command) {
+                    case 'help':
+                        printOutput(`
+<span class="highlight">COMANDOS DISPONIBLES:</span>
+  <span class="path">about</span>      - Sobre mí y mis skills
+  <span class="path">projects</span>   - Mis proyectos recientes
+  <span class="path">contact</span>    - Cómo contactar conmigo
+  <span class="path">clear</span>      - Limpiar la terminal
+  <span class="path">sudo</span>       - ¿Eres admin? (Prueba a ver)`);
+                        break;
+
+                    case 'about':
+                        printOutput(`
+<span class="highlight">> SOBRE MÍ</span>
+  Me apasiona el Open Source y la automatización.
+  Tengo experiencia en:
+  - Linux (Debian/Arch)
+  - Scripting (Bash, Python)
+  - DevOps (Docker, CI/CD)
+  - Seguridad Ofensiva/Defensiva`);
+                        break;
+
+                    case 'projects':
+                        printOutput(`
+<span class="highlight">> PROYECTOS</span>
+  1. <a href="#">Auto-Deploy Script</a> - Script en Bash para despliegues automáticos.
+  2. <a href="#">Secure-Docker</a> - Imágenes de Docker endurecidas para producción.
+  3. <a href="#">Net-Monitor</a> - Herramienta de visualización de tráfico en tiempo real.`);
+                        break;
+
+                    case 'contact':
+                        printOutput(`
+<span class="highlight">> CONTACTO</span>
+  Email:    contacto@s2ktux.dev
+  GitHub:   github.com/s2ktux
+  LinkedIn: /in/s2ktux`);
+                        break;
+
+                    case 'clear':
+                        output.innerHTML = '';
+                        break;
+
+                    case 'sudo':
+                        printOutput(`<span style="color:#ef4444">Permiso denegado. Eres solo un visitante.</span>`);
+                        break;
+
+                    default:
+                        printOutput(`Comando no encontrado: ${command}. Escribe <span class="path">'help'</span> para ayuda.`);
+                }
+            }
+            
+            // Mantener el foco en el input al hacer click en cualquier parte
+            document.addEventListener('click', () => input.focus());
+        });
+    </script>
+</body>
+</html>
