@@ -153,7 +153,7 @@
             </div>
             
             <!-- Terminal en hero -->
-            <div id="terminal" class="terminal-window max-w-lg mx-auto md:ml-auto shadow-2xl">
+            <div id="terminal" class="terminal-window max-w-xl mx-auto md:ml-auto shadow-2xl">
                 <div class="terminal-header">
                     <div class="terminal-dots">
                         <div class="terminal-dot bg-red-500"></div>
@@ -164,9 +164,7 @@
                         s2ktux@arch: ~ 
                     </div>
                 </div>
-                <div class="p-6 min-h-[380px] bg-black/90">
-                    <!-- Aquí se inyecta el terminal -->
-                </div>
+                <div id="terminal-body" class="p-6 bg-black/90 h-[450px]"></div>
             </div>
         </div>
         
@@ -446,14 +444,15 @@
 
         // Inicializar terminal
         $(document).ready(function() {
-            $('#terminal .p-6').terminal({
+            $('#terminal-body').terminal({
                 help: function() {
                     this.echo('Comandos disponibles:');
                     this.echo(' ls          → Lista cursos');
                     this.echo(' cd cursos   → Ir a cursos');
                     this.echo(' whoami      → Quién eres');
-                    this.echo(' clear       → Limpia pantalla');
                     this.echo(' rice        → Muestra un setup bonito');
+                    this.echo(' exit        → Salir del terminal');
+                    this.echo(' clear       → Limpia pantalla');
                 },
                 ls: function() {
                     this.echo('Cursos disponibles:');
@@ -475,12 +474,15 @@
                 rice: function() {
                     this.echo('Aquí tienes un setup Hyprland real de la comunidad:');
                     this.echo('https://i.redd.it/hyprland-and-cachyos-and-graphite-gtk-my-favorite-setup-r-hyprland-v0-1jvc3pf.jpg');
+                },
+                exit: function() {
+                    this.echo('Saliendo del terminal... ¡Vuelve pronto!');
+                    this.disable();
                 }
             }, {
-                greetings: 'Bienvenido a s2ktux@arch ~\nEscribe "help" para empezar.\n',
+                greetings: 'Bienvenido a S2KTUX Terminal Interactivo\nEscribe "help" para ver comandos disponibles.\n\n',
                 prompt: 's2ktux@arch ~ $ ',
                 name: 's2ktux-terminal',
-                height: 340,
                 width: '100%'
             });
         });
