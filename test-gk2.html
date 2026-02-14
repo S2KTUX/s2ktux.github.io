@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S2KTUX - Aprende Linux de forma práctica</title>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- jQuery Terminal -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/2.35.0/js/jquery.terminal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/2.35.0/css/jquery.terminal.min.css">
+
+    <style>
+        :root {
+            --bg: #0d1117;
+            --card: #161b22;
+            --text: #c9d1d9;
+            --green: #39ff9d;
+            --cyan: #56d4dd;
+            --blue: #58a6ff;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            background-image: radial-gradient(circle at 50% 50%, #161b22 0%, #0d1117 70%);
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            background: rgba(13, 17, 23, 0.85);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid #30363d;
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--green);
+        }
+
+        nav a {
+            color: var(--text);
+            margin-left: 2rem;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        nav a:hover {
+            color: var(--green);
+        }
+
+        .hero {
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 0 5%;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(90deg, var(--green), var(--cyan));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        /* Terminal Style */
+        .terminal-window {
+            width: 90%;
+            max-width: 900px;
+            background: #000;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+
+        .terminal-header {
+            background: #1e1e1e;
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dots span {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+
+        .terminal-title {
+            margin-left: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            color: #8b949e;
+        }
+
+        #terminal {
+            height: 380px;
+            padding: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 15px;
+        }
+
+        section {
+            padding: 80px 5%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            font-size: 2.4rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--green);
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 2rem;
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--green);
+            box-shadow: 0 15px 40px rgba(57, 255, 157, 0.15);
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem;
+            color: #8b949e;
+            border-top: 1px solid #30363d;
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.6rem; }
+            nav a { margin-left: 1rem; font-size: 0.95rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">S2KTUX</div>
+        <nav>
+            <a href="#welcome">Inicio</a>
+            <a href="#about">Nosotros</a>
+            <a href="#cursos">Cursos</a>
+            <a href="#pasos">Primeros Pasos</a>
+            <a href="#comunidad">Comunidad</a>
+        </nav>
+    </header>
+
+    <section class="hero" id="welcome">
+        <h1>Aprende Linux de verdad</h1>
+        <p>Domina sistemas operativos Linux con proyectos reales, comandos prácticos y un enfoque 100% hands-on.</p>
+        
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="dots">
+                    <span class="red"></span>
+                    <span class="yellow"></span>
+                    <span class="green"></span>
+                </div>
+                <div class="terminal-title">s2ktux@linux: ~</div>
+            </div>
+            <div id="terminal"></div>
+        </div>
+    </section>
+
+    <section id="about">
+        <h2>Sobre S2KTUX</h2>
+        <div class="cards">
+            <div class="card">
+                <h3>Enfoque Práctico</h3>
+                <p>Olvídate de teoría innecesaria. Aprende haciendo desde el primer día con laboratorios reales.</p>
+            </div>
+            <div class="card">
+                <h3>Proyectos Reales</h3>
+                <p>Servidores, redes, automatización, seguridad y mucho más. Proyectos que puedes poner en tu portafolio.</p>
+            </div>
+            <div class="card">
+                <h3>Comunidad Activa</h3>
+                <p>Únete a un grupo de estudiantes y profesionales que aprenden juntos todos los días.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="cursos">
+        <h2>Nuestros Cursos</h2>
+        <div class="cards">
+            <div class="card">Instalación y Configuración de Linux</div>
+            <div class="card">Comandos Avanzados y Shell Scripting</div>
+            <div class="card">Administración de Redes y Servidores</div>
+            <div class="card">Seguridad Linux y Hardening</div>
+            <div class="card">Docker & Contenedores</div>
+            <div class="card">Cloud Computing con Linux</div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 S2KTUX - Aprende Linux de forma práctica</p>
+    </footer>
+
+    <script>
+        $(document).ready(function() {
+            $('#terminal').terminal({
+                help: function() {
+                    this.echo('[[b;#39ff9d;]Comandos disponibles:]');
+                    this.echo('');
+                    this.echo('ls                 → Ver cursos disponibles');
+                    this.echo('cd cursos          → Ir a sección de cursos');
+                    this.echo('clear              → Limpiar terminal');
+                    this.echo('help               → Mostrar esta ayuda');
+                },
+                ls: function() {
+                    this.echo('Cursos disponibles:');
+                    this.echo('   ├─ instalación-linux');
+                    this.echo('   ├─ comandos-avanzados');
+                    this.echo('   ├─ redes-servidores');
+                    this.echo('   └─ docker-contenedores');
+                },
+                cd: function(dir) {
+                    if (dir === 'cursos') {
+                        document.querySelector('#cursos').scrollIntoView({ behavior: 'smooth' });
+                        this.echo('[[b;#39ff9d;]Navegando a Cursos...]');
+                    } else {
+                        this.echo('[[b;#ff5f56;]Directorio no encontrado]');
+                    }
+                }
+            }, {
+                greetings: 'Bienvenido a S2KTUX\nEscribe [[b;#39ff9d;]help] para ver los comandos disponibles\n',
+                prompt: 'guest@s2ktux:~$ ',
+                name: 's2ktux',
+                height: 380
+            });
+        });
+    </script>
+</body>
+</html>
