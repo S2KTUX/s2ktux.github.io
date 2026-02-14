@@ -3,274 +3,267 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S2KTUX | SysAdmin & DevOps</title>
+    <title>S2KTUX | SysAdmin & DevOps Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. CORE VARIABLES --- */
+        /* --- TUS VARIABLES ORIGINALES --- */
         :root {
             --hue: 217; 
             --accent: hsl(var(--hue), 90%, 60%); 
-            --accent-glow: hsla(var(--hue), 90%, 60%, 0.2);
-            --accent-subtle: hsla(var(--hue), 90%, 60%, 0.1);
             --bg-color: #050505;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
             --card-bg: rgba(15, 17, 21, 0.7);
             --nav-bg: rgba(15, 17, 21, 0.85);
-            --footer-bg: #050505;
             --border-color: rgba(255,255,255,0.1);
-            --code-bg: #1e293b;
-            --radius: 8px;
-            --term-bg: #0c0c0c;
-            --term-text: #d4d4d8;
-            --term-header: #161b22;
-            --term-border: #30363d;
             --font-main: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
 
-        /* --- 2. LIGHT MODE --- */
+        /* --- TODOS TUS TEMAS (RECUPERADOS) --- */
         body.mode-light {
-            --bg-color: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --card-bg: #ffffff;
-            --nav-bg: rgba(255, 255, 255, 0.9);
-            --footer-bg: #ffffff;
+            --bg-color: #f8fafc; --text-main: #0f172a; --text-muted: #64748b;
+            --card-bg: #ffffff; --nav-bg: rgba(255, 255, 255, 0.9);
             --border-color: rgba(0,0,0,0.08);
-            --code-bg: #f1f5f9;
-            --term-bg: #ffffff;
-            --term-text: #333333;
-            --term-header: #f1f5f9;
-            --term-border: #e2e8f0;
-            --accent: hsl(var(--hue), 85%, 45%); 
-            --accent-glow: hsla(var(--hue), 85%, 45%, 0.15);
         }
-
-        /* --- 3. THEME OVERRIDES --- */
+        /* El tema Rojo Claro que pediste */
+        body.color-ruby.mode-light {
+            --hue: 350; --accent: #e11d48; --bg-color: #fff1f2;
+            --text-main: #881337; --card-bg: #ffffff; --border-color: #fecdd3;
+        }
+        body.color-ruby { --hue: 350; --accent: #f43f5e; }
         body.color-matrix { --hue: 145; --accent: #10b981; }
         body.color-purple { --hue: 270; --accent: #a855f7; }
-        body.color-ruby { --hue: 350; --accent: #f43f5e; }
-        
-        /* CORRECCIÓN: Sunset Orange ahora es un Rojo Claro estilo Ruby */
-        body.color-sunset.mode-light {
-            --hue: 350;
-            --accent: #e11d48;
-            --card-bg: #ffffff;
-            --border-color: #fecdd3;
-            --text-main: #881337;
-            --bg-color: #fff1f2;
-        }
+        body.color-blue { --hue: 217; --accent: #3b82f6; }
 
-        /* --- 4. ALIVE BACKGROUND (Recuperado) --- */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: var(--font-main);
-            min-height: 100vh;
-            display: flex; flex-direction: column;
-            position: relative; overflow-x: hidden;
+        body { 
+            background-color: var(--bg-color); color: var(--text-main); 
+            font-family: var(--font-main); overflow-x: hidden;
+            min-height: 100vh; display: flex; flex-direction: column;
         }
-        .orb {
-            position: fixed; border-radius: 50%; filter: blur(90px);
-            opacity: 0.4; z-index: -1; animation: floatOrb 20s infinite ease-in-out alternate;
-        }
-        .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -200px; }
-        .orb-2 { width: 500px; height: 500px; background: var(--accent); bottom: -150px; right: -150px; animation-delay: -5s; }
-        @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(80px, 60px) scale(1.15); } }
 
-        /* --- 5. NAVEGACIÓN (LAS 3 ISLAS INDEPENDIENTES) --- */
-        .nav-island-container {
-            position: fixed; top: 20px; width: 100%; padding: 0 5%;
-            display: flex; justify-content: space-between; align-items: center; z-index: 1000;
+        /* --- FONDO ANIMADO ORIGINAL --- */
+        .bg-glow {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% -20%, hsla(var(--hue), 90%, 60%, 0.15), transparent 80%);
+            z-index: -1; pointer-events: none;
+        }
+
+        /* --- NAVEGACIÓN: LAS 3 ISLAS (CORREGIDAS) --- */
+        .nav-container {
+            position: fixed; top: 20px; left: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%; z-index: 1000;
         }
         .island {
-            background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color); box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            padding: 0.8rem 1.5rem; border-radius: 9999px;
+            background: var(--nav-bg); border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            border-radius: 99px; padding: 10px 20px; display: flex; align-items: center;
         }
-        .brand-logo { font-weight: 800; font-size: 1.2rem; text-decoration: none; color: var(--text-main); }
-        .nav-links { display: flex; gap: 2rem; }
-        .nav-link {
-            color: var(--text-muted); text-decoration: none; font-size: 0.95rem;
-            font-weight: 500; cursor: pointer; position: relative;
+        .brand { font-weight: 800; text-decoration: none; color: var(--text-main); font-size: 1.1rem; }
+        .nav-links { gap: 25px; display: flex; }
+        .nav-link { 
+            text-decoration: none; color: var(--text-muted); font-size: 0.9rem; 
+            font-weight: 600; cursor: pointer; position: relative;
         }
-        .nav-link:hover, .nav-link.active { color: var(--text-main); }
+        .nav-link.active { color: var(--accent); }
         .nav-link.active::after {
-            content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
-            width: 4px; height: 4px; background-color: var(--accent); border-radius: 50%;
+            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
+            width: 4px; height: 4px; background: var(--accent); border-radius: 50%;
         }
-        .theme-btn {
-            background: none; border: none; color: var(--text-main); cursor: pointer;
-            display: flex; align-items: center; justify-content: center;
-        }
+        .theme-toggle { cursor: pointer; border: none; background: none; color: var(--text-main); }
 
-        /* --- 6. TERMINAL (LINUX REAL) --- */
-        .terminal-container {
-            width: 95%; max-width: 1000px; height: 500px; background: var(--term-bg);
-            margin: 0 auto; border-radius: 12px; border: 1px solid var(--term-border);
-            display: flex; flex-direction: column; overflow: hidden;
-        }
-        .term-body { flex: 1; padding: 20px; font-family: var(--font-mono); overflow-y: auto; color: var(--term-text); }
-        .term-line { margin-bottom: 5px; word-break: break-all; }
-        .term-input-container { display: flex; align-items: center; gap: 10px; }
-        .term-prompt { color: var(--accent); font-weight: bold; white-space: nowrap; }
-        #term-input { background: transparent; border: none; color: inherit; font-family: inherit; outline: none; width: 100%; }
-
-        /* --- 7. FOOTER (CORREGIDO) --- */
-        .modern-footer {
-            width: 100%; background: var(--footer-bg); border-top: 1px solid var(--border-color);
-            padding: 30px 0; margin-top: auto;
-        }
-        .footer-content { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
-        .footer-center { text-align: center; flex: 1; color: var(--text-main); font-weight: 600; }
-        .icon-svg { width: 24px; height: 24px; fill: var(--text-muted); transition: 0.2s; }
-        .social-icons { display: flex; gap: 15px; }
-
-        /* Estilos generales secciones */
-        main { padding-top: 120px; flex: 1; width: 100%; max-width: 1200px; margin: 0 auto; padding-left: 20px; padding-right: 20px; }
+        /* --- CONTENIDO PRINCIPAL (TU ESTILO) --- */
+        main { flex: 1; padding: 120px 5% 50px; max-width: 1200px; margin: 0 auto; width: 100%; }
         .page-section { display: none; }
-        .page-section.active { display: block; animation: fadeIn 0.4s ease; }
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        
-        .hero { text-align: center; margin-bottom: 4rem; }
-        .hero h1 { font-size: 3.5rem; font-weight: 800; margin-bottom: 1rem; }
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .card { background: var(--card-bg); border: 1px solid var(--border-color); padding: 25px; border-radius: var(--radius); }
+        .page-section.active { display: block; animation: fadeIn 0.5s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Menu Temas */
-        .theme-selector {
-            position: absolute; top: 60px; right: 5%; background: var(--card-bg);
-            border: 1px solid var(--border-color); padding: 10px; border-radius: 12px;
-            display: none; flex-direction: column; gap: 5px; z-index: 2001;
+        /* HERO TEXT (RECUPERADO) */
+        .hero { text-align: center; margin-bottom: 60px; }
+        .hero h1 { font-size: 4.5rem; font-weight: 800; line-height: 0.9; margin-bottom: 20px; }
+        .hero p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
+
+        /* CARDS (TU ESTILO ORIGINAL) */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .card { 
+            background: var(--card-bg); border: 1px solid var(--border-color); 
+            padding: 30px; border-radius: 16px; transition: 0.3s;
         }
-        .theme-selector.active { display: flex; }
-        .theme-option { padding: 8px 15px; cursor: pointer; border-radius: 6px; font-size: 0.9rem; display: flex; justify-content: space-between; gap: 10px;}
-        .theme-option:hover { background: var(--accent-subtle); }
+        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
+        .card h3 { margin-bottom: 10px; font-size: 1.4rem; }
+        .card p { color: var(--text-muted); line-height: 1.6; }
+
+        /* --- TERMINAL (ESTILO REAL INTEGRADO) --- */
+        .terminal {
+            background: #0c0c0c; border: 1px solid #2d2d2d; border-radius: 12px;
+            height: 500px; display: flex; flex-direction: column; overflow: hidden;
+            font-family: var(--font-mono); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+        .term-head { background: #1a1a1a; padding: 12px; display: flex; gap: 8px; border-bottom: 1px solid #2d2d2d; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .term-body { flex: 1; padding: 20px; overflow-y: auto; color: #d1d1d1; font-size: 0.95rem; line-height: 1.5; }
+        .term-input-line { display: flex; gap: 10px; align-items: center; }
+        #term-input { background: transparent; border: none; color: inherit; font-family: inherit; outline: none; flex: 1; }
+        .prompt { color: var(--accent); font-weight: bold; }
+
+        /* --- FOOTER (TU ESTILO ORIGINAL) --- */
+        footer { padding: 40px 5%; border-top: 1px solid var(--border-color); margin-top: 50px; }
+        .footer-wrap { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .socials { display: flex; gap: 20px; }
+        .socials svg { width: 20px; height: 20px; fill: var(--text-muted); transition: 0.3s; }
+        .socials svg:hover { fill: var(--accent); }
+
+        /* MENU TEMAS */
+        .theme-menu {
+            position: fixed; top: 75px; right: 5%; background: var(--card-bg);
+            border: 1px solid var(--border-color); border-radius: 12px; padding: 10px;
+            display: none; flex-direction: column; gap: 5px; z-index: 1100; backdrop-filter: blur(10px);
+        }
+        .theme-menu.active { display: flex; }
+        .theme-opt { padding: 8px 15px; cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
+        .theme-opt:hover { background: var(--accent); color: white; }
     </style>
 </head>
-<body class="color-ruby">
+<body class="color-blue">
 
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+    <div class="bg-glow"></div>
 
-    <div class="nav-island-container">
-        <div class="island">
-            <a href="#" onclick="navigate('home')" class="brand-logo">S2KTUX</a>
-        </div>
+    <header class="nav-container">
+        <div class="island"><a href="#" class="brand" onclick="navigate('home')">S2KTUX</a></div>
         
         <div class="island">
             <nav class="nav-links">
-                <a class="nav-link active" onclick="navigate('home')" id="link-home">Inicio</a>
-                <a class="nav-link" onclick="navigate('courses')" id="link-courses">Cursos</a>
-                <a class="nav-link" onclick="navigate('terminal')" id="link-terminal">Terminal</a>
-                <a class="nav-link" onclick="navigate('projects')" id="link-projects">Proyectos</a>
+                <a onclick="navigate('home')" class="nav-link active" id="link-home">Inicio</a>
+                <a onclick="navigate('courses')" class="nav-link" id="link-courses">Cursos</a>
+                <a onclick="navigate('terminal')" class="nav-link" id="link-terminal">Terminal</a>
+                <a onclick="navigate('projects')" class="nav-link" id="link-projects">Proyectos</a>
             </nav>
         </div>
 
         <div class="island">
-            <button class="theme-btn" onclick="toggleThemeMenu()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+            <button class="theme-toggle" onclick="toggleThemes()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             </button>
-            <div class="theme-selector" id="themeMenu">
-                <div class="theme-option" onclick="setTheme('ruby', false)">Ruby Red 🌙</div>
-                <div class="theme-option" onclick="setTheme('matrix', false)">Matrix 🌙</div>
-                <div class="theme-option" onclick="setTheme('purple', false)">Purple 🌙</div>
-                <div class="theme-option" onclick="setTheme('sunset', true)">Domina Linux (Rojo) ☀️</div>
-                <div class="theme-option" onclick="setTheme('matrix', true)">Matrix ☀️</div>
-            </div>
         </div>
+    </header>
+
+    <div class="theme-menu" id="themeMenu">
+        <div class="theme-opt" onclick="setTheme('blue', false)">Cyber Blue (Oscuro)</div>
+        <div class="theme-opt" onclick="setTheme('ruby', false)">Ruby Red (Oscuro)</div>
+        <div class="theme-opt" onclick="setTheme('matrix', false)">Matrix (Oscuro)</div>
+        <div class="theme-opt" onclick="setTheme('purple', false)">Deep Purple (Oscuro)</div>
+        <div class="theme-opt" onclick="setTheme('ruby', true)">Rojo Sunset (Claro)</div>
+        <div class="theme-opt" onclick="setTheme('blue', true)">Cloud Blue (Claro)</div>
     </div>
 
     <main>
         <section id="home" class="page-section active">
             <div class="hero">
                 <h1>Domina Linux.<br>Desde la consola.</h1>
-                <p>Aprendizaje real enfocado en entornos RHEL y automatización.</p>
+                <p>Especialización técnica en Administración de Sistemas RHEL, Cloud Infrastructure y Automatización DevOps.</p>
             </div>
-            <div class="content-grid">
-                <div class="card"><h3>RHCSA</h3><p>Administración profesional de Red Hat.</p></div>
-                <div class="card"><h3>LPIC-1</h3><p>Fundamentos de Linux GNU/Unix.</p></div>
-                <div class="card"><h3>Ansible</h3><p>Automatización de infraestructura.</p></div>
+            <div class="grid">
+                <div class="card">
+                    <h3>Sistemas RHEL</h3>
+                    <p>Dominio profundo de Red Hat Enterprise Linux, gestión de kernel y servicios críticos.</p>
+                </div>
+                <div class="card">
+                    <h3>Infraestructura</h3>
+                    <p>Despliegue de arquitecturas escalables y gestión de almacenamiento persistente.</p>
+                </div>
+                <div class="card">
+                    <h3>Automatización</h3>
+                    <p>Optimización de flujos de trabajo mediante Bash Scripting y Ansible Playbooks.</p>
+                </div>
             </div>
         </section>
 
         <section id="terminal" class="page-section">
-            <div class="terminal-container">
-                <div class="term-header">
-                    <div style="display:flex; gap:8px;">
-                        <div style="width:12px; height:12px; border-radius:50%; background:#ff5f56"></div>
-                        <div style="width:12px; height:12px; border-radius:50%; background:#ffbd2e"></div>
-                        <div style="width:12px; height:12px; border-radius:50%; background:#27c93f"></div>
-                    </div>
+            <div class="terminal" onclick="document.getElementById('term-input').focus()">
+                <div class="term-head">
+                    <div class="dot" style="background: #ff5f56;"></div>
+                    <div class="dot" style="background: #ffbd2e;"></div>
+                    <div class="dot" style="background: #27c93f;"></div>
                 </div>
-                <div class="term-body" id="term-body" onclick="document.getElementById('term-input').focus()">
-                    <div id="term-history">
-                        <div class="term-line">Bienvenido a S2KTUX Terminal. Escribe 'help'.</div>
-                    </div>
-                    <div class="term-input-container">
-                        <span class="term-prompt">visitor@s2ktux:~$</span>
-                        <input type="text" id="term-input" autocomplete="off" autofocus>
+                <div class="term-body" id="term-body">
+                    <div style="color: var(--accent); margin-bottom: 10px;">[ SYSTEM READY ] v1.0.4 - Escribe 'help' para comandos.</div>
+                    <div id="term-history"></div>
+                    <div class="term-input-line">
+                        <span class="prompt">visitor@s2ktux:~$</span>
+                        <input type="text" id="term-input" autocomplete="off" spellcheck="false">
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="courses" class="page-section"><h2>Cursos</h2></section>
-        <section id="projects" class="page-section"><h2>Proyectos</h2></section>
+        <section id="courses" class="page-section">
+            <h2 style="margin-bottom: 30px; font-size: 2.5rem;">Cursos y Certificaciones</h2>
+            <div class="grid">
+                <div class="card"><h3>RHCSA EX200</h3><p>Curso completo de preparación para la certificación oficial de Red Hat.</p></div>
+                <div class="card"><h3>LPIC-1 101-500</h3><p>Fundamentos y administración básica de sistemas Linux profesionales.</p></div>
+            </div>
+        </section>
+
+        <section id="projects" class="page-section">
+            <h2 style="margin-bottom: 30px; font-size: 2.5rem;">Proyectos Open Source</h2>
+            <div class="grid">
+                <div class="card"><h3>Scripting Automator</h3><p>Colección de scripts para hardening de servidores en producción.</p></div>
+            </div>
+        </section>
     </main>
 
-    <footer class="modern-footer">
-        <div class="footer-content">
-            <div class="footer-logo" style="font-weight:800;">S2KTUX</div>
-            
-            <div class="footer-center">
-                Domina Linux. Desde la consola.
-            </div>
-            
-            <div class="social-icons">
-                <a href="#" aria-label="GitHub"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
-                <a href="#" aria-label="LinkedIn"><svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
+    <footer>
+        <div class="footer-wrap">
+            <div style="font-weight: 800;">S2KTUX</div>
+            <div style="color: var(--text-muted); font-size: 0.9rem;">© 2026 - Domina Linux. Desde la consola.</div>
+            <div class="socials">
+                <a href="#"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
+                <a href="#"><svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
             </div>
         </div>
     </footer>
 
     <script>
-        function navigate(id) {
-            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+        function navigate(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.getElementById('link-'+id).classList.add('active');
+            document.getElementById(pageId).classList.add('active');
+            document.getElementById('link-' + pageId).classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        function toggleThemeMenu() { document.getElementById('themeMenu').classList.toggle('active'); }
+        function toggleThemes() { document.getElementById('themeMenu').classList.toggle('active'); }
 
-        function setTheme(color, light) {
-            document.body.className = `color-${color} ${light ? 'mode-light' : ''}`;
+        function setTheme(color, isLight) {
+            document.body.className = `color-${color} ${isLight ? 'mode-light' : ''}`;
             document.getElementById('themeMenu').classList.remove('active');
         }
 
-        // TERMINAL REAL
+        // --- LÓGICA DE TERMINAL REAL ---
         const input = document.getElementById('term-input');
         const history = document.getElementById('term-history');
         const body = document.getElementById('term-body');
 
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                const val = input.value;
+                const val = input.value.trim();
+                if (val === '') return;
+
                 const line = document.createElement('div');
-                line.className = 'term-line';
-                line.innerHTML = `<span class="term-prompt">visitor@s2ktux:~$</span> ${val}`;
+                line.innerHTML = `<span class="prompt">visitor@s2ktux:~$</span> ${val}`;
                 history.appendChild(line);
 
                 const response = document.createElement('div');
-                response.className = 'term-line';
-                if (val.toLowerCase() === 'help') response.innerText = 'Comandos: help, clear, courses';
+                response.style.color = "var(--text-muted)";
+                response.style.marginBottom = "10px";
+
+                if (val.toLowerCase() === 'help') response.innerText = "Comandos: help, clear, courses, about";
                 else if (val.toLowerCase() === 'clear') { history.innerHTML = ''; response.innerText = ''; }
-                else response.innerText = 'Comando no encontrado';
-                
+                else response.innerText = `Command not found: ${val}`;
+
                 history.appendChild(response);
                 input.value = '';
                 body.scrollTop = body.scrollHeight;
