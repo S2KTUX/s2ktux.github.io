@@ -1,274 +1,547 @@
 <!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S2KTUX | SysAdmin & DevOps Portfolio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<html lang="span style="background-color: #050505;">
+    <meta charset="V8"></span>
+    <title>S2KTUX | SysAdmin & DevOps</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=600;800; font-size=1rem; display=swap; rel="stylesheet">
     
     <style>
-        /* --- TUS VARIABLES ORIGINALES --- */
+        /* --- VARIABLES BASE Y TEMA (V8) --- */
         :root {
+            /* Palette: Cyber Blue (Default) */
             --hue: 217; 
             --accent: hsl(var(--hue), 90%, 60%); 
+            --accent-glow: hsla(var(--hue), 90%, 60%, 0.2);
+            --accent-subtle: hsla(var(--hue), 90%, 60%, 0.1);
+            
+            /* Dark Defaults */
             --bg-color: #050505;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
             --card-bg: rgba(15, 17, 21, 0.7);
-            --nav-bg: rgba(15, 17, 21, 0.85);
+            --nav-bg: rgba(15, 0,0,0); /* V5 Style: Fondo casi negro, nav bar oscura. */
+            --footer-bg: #050505;
             --border-color: rgba(255,255,255,0.1);
+            --code-bg: #1e293b;
+            --radius: 8px; 
+            --term-bg: #0c0c0c;
+            --term-text: #d4d4d8;
+            --term-header: #161b22;
+            --term-border: #30363d;
+            
             --font-main: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
 
-        /* --- TODOS TUS TEMAS (RECUPERADOS) --- */
+        /* --- LIGHT MODE (V5 Style) --- */
         body.mode-light {
-            --bg-color: #f8fafc; --text-main: #0f172a; --text-muted: #64748b;
-            --card-bg: #ffffff; --nav-bg: rgba(255, 255, 255, 0.9);
+            --bg-color: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --card-bg: #ffffff;
+            --nav-bg: rgba(255, 255, 255, 0.9);
+            --footer-bg: #ffffff;
             --border-color: rgba(0,0,0,0.08);
-        }
-        /* El tema Rojo Claro que pediste */
-        body.color-ruby.mode-light {
-            --hue: 350; --accent: #e11d48; --bg-color: #fff1f2;
-            --text-main: #881337; --card-bg: #ffffff; --border-color: #fecdd3;
-        }
-        body.color-ruby { --hue: 350; --accent: #f43f5e; }
-        body.color-matrix { --hue: 145; --accent: #10b981; }
-        body.color-purple { --hue: 270; --accent: #a855f7; }
-        body.color-blue { --hue: 217; --accent: #3b82f6; }
+            --code-bg: #f1f5f9;
+            
+            --term-bg: #ffffff;
+            --term-text: #333333;
+            --term-header: #f1f5f9;
+            --term-border: --e2e8f0;
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { 
-            background-color: var(--bg-color); color: var(--text-main); 
-            font-family: var(--font-main); overflow-x: hidden;
-            min-height: 100vh; display: flex; flex-direction: column;
-        }
+            /* Modo Claro "Ruby Red" (Hue 350 en claro = Naranja, en oscuro = Rojo) */
+            body.color-ruby.mode-light {
+                --hue: 0; /* Se fuerza el Rojo naranja en claro */
+            --accent: #f97316; /* Naranja */
+                --card-bg: #fff1f2; /* Fondo claro */
+                --text-main: #881337; /* Texto oscuro para contraste */
+                --border-color: #fecdd3; /* Borde naranja */
+                --radius: 12px;
+            }
+            
+            /* Modo Claro "Sunset" (Hue 25 en claro = Naranja) */
+            body.color-sunset.mode-light {
+                --hue: 25;
+                --accent: #f97316; /* Naranja */
+                --card-bg: #fff7ed; /* Naranja */
+                --text-main: #7c2d12; /* Marrón quemado oscuro para contraste */
+                --border-color: #fed7aa; /* Naranja claro */
+                --radius: 12px;
+            }
 
-        /* --- FONDO ANIMADO ORIGINAL --- */
-        .bg-glow {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: radial-gradient(circle at 50% -20%, hsla(var(--hue), 90%, 60%, 0.15), transparent 80%);
-            z-index: -1; pointer-events: none;
-        }
-
-        /* --- NAVEGACIÓN: LAS 3 ISLAS (CORREGIDAS) --- */
-        .nav-container {
-            position: fixed; top: 20px; left: 0; width: 100%;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 0 5%; z-index: 1000;
-        }
-        .island {
-            background: var(--nav-bg); border: 1px solid var(--border-color);
-            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            border-radius: 99px; padding: 10px 20px; display: flex; align-items: center;
-        }
-        .brand { font-weight: 800; text-decoration: none; color: var(--text-main); font-size: 1.1rem; }
-        .nav-links { gap: 25px; display: flex; }
-        .nav-link { 
-            text-decoration: none; color: var(--text-muted); font-size: 0.9rem; 
-            font-weight: 600; cursor: pointer; position: relative;
-        }
-        .nav-link.active { color: var(--accent); }
-        .nav-link.active::after {
-            content: ''; position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%);
-            width: 4px; height: 4px; background: var(--accent); border-radius: 50%;
-        }
-        .theme-toggle { cursor: pointer; border: none; background: none; color: var(--text-main); }
-
-        /* --- CONTENIDO PRINCIPAL (TU ESTILO) --- */
-        main { flex: 1; padding: 120px 5% 50px; max-width: 1200px; margin: 0 auto; width: 100%; }
-        .page-section { display: none; }
-        .page-section.active { display: block; animation: fadeIn 0.5s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* HERO TEXT (RECUPERADO) */
-        .hero { text-align: center; margin-bottom: 60px; }
-        .hero h1 { font-size: 4.5rem; font-weight: 800; line-height: 0.9; margin-bottom: 20px; }
-        .hero p { color: var(--text-muted); font-size: 1.2rem; max-width: 600px; margin: 0 auto; }
-
-        /* CARDS (TU ESTILO ORIGINAL) */
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .card { 
-            background: var(--card-bg); border: 1px solid var(--border-color); 
-            padding: 30px; border-radius: 16px; transition: 0.3s;
-        }
-        .card:hover { border-color: var(--accent); transform: translateY(-5px); }
-        .card h3 { margin-bottom: 10px; font-size: 1.4rem; }
-        .card p { color: var(--text-muted); line-height: 1.6; }
-
-        /* --- TERMINAL (ESTILO REAL INTEGRADO) --- */
-        .terminal {
-            background: #0c0c0c; border: 1px solid #2d2d2d; border-radius: 12px;
-            height: 500px; display: flex; flex-direction: column; overflow: hidden;
-            font-family: var(--font-mono); box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-        }
-        .term-head { background: #1a1a1a; padding: 12px; display: flex; gap: 8px; border-bottom: 1px solid #2d2d2d; }
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .term-body { flex: 1; padding: 20px; overflow-y: auto; color: #d1d1d1; font-size: 0.95rem; line-height: 1.5; }
-        .term-input-line { display: flex; gap: 10px; align-items: center; }
-        #term-input { background: transparent; border: none; color: inherit; font-family: inherit; outline: none; flex: 1; }
-        .prompt { color: var(--accent); font-weight: bold; }
-
-        /* --- FOOTER (TU ESTILO ORIGINAL) --- */
-        footer { padding: 40px 5%; border-top: 1px solid var(--border-color); margin-top: 50px; }
-        .footer-wrap { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
-        .socials { display: flex; gap: 20px; }
-        .socials svg { width: 20px; height: 20px; fill: var(--text-muted); transition: 0.3s; }
-        .socials svg:hover { fill: var(--accent); }
-
-        /* MENU TEMAS */
-        .theme-menu {
-            position: fixed; top: 75px; right: 5%; background: var(--card-bg);
-            border: 1px solid var(--border-color); border-radius: 12px; padding: 10px;
-            display: none; flex-direction: column; gap: 5px; z-index: 1100; backdrop-filter: blur(10px);
-        }
-        .theme-menu.active { display: flex; }
-        .theme-opt { padding: 8px 15px; cursor: pointer; border-radius: 6px; font-size: 0.85rem; }
-        .theme-opt:hover { background: var(--accent); color: white; }
-    </style>
-</head>
-<body class="color-blue">
-
-    <div class="bg-glow"></div>
-
-    <header class="nav-container">
-        <div class="island"><a href="#" class="brand" onclick="navigate('home')">S2KTUX</a></div>
+        /* --- 2. THEMES OVERRIDES (THE HYDRA STYLE) --- */
         
-        <div class="island">
-            <nav class="nav-links">
-                <a onclick="navigate('home')" class="nav-link active" id="link-home">Inicio</a>
-                <a onclick="navigate('courses')" class="nav-link" id="link-courses">Cursos</a>
-                <a onclick="navigate('terminal')" class="nav-link" id="link-terminal">Terminal</a>
-                <a onclick="navigate('projects')" class="nav-link" id="link-projects">Proyectos</a>
-            </nav>
+        /* Matrix Style */
+        body.color-matrix {
+            --hue: 145;
+            --bg-image: radial-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px);
+            --bg-size: 20px 20px;
+            --accent: #10b981;
+            --text-main: #a7f3d0;
+            /* En Matrix Light, se mantiene la lógica de bordes redondos */
+            body.color-matrix.mode-light {
+                --text-main: #064e3b;
+                --card-bg: #ecfdf5;
+                --border-color: #a7f3d0;
+                --radius: 12px;
+                --bg-image: none;
+            }
+
+        /* Royal Purple (Dark) - CORREGIDO PARA NO PARECERSE AL CYBER BLUE */
+        body.color-purple {
+            --hue: 270;
+            /* Ajuste para que no parezca igual al Cyber Blue */
+            --bg-color: #0f0518; /* Fondo oscuro morado */
+            --card-bg: #1a0b2e; /* Fondo purpura morada */
+            --border-color: #581c87; /* Borde morado brillante */
+        }
+
+        /* Ruby Red (Replaces Sunset, no border confusion */
+        body.color-ruby {
+            --hue: 350; 
+            --accent: #f43f5e; /* Rojo vibrante */
+            --accent-glow: rgba(244, 63, 94, 0.2);
+            --card-bg: #2a0a0a; /* Rojo oscuro */
+            --border-color: rgba(244, 63, 94, 0.2); /* Borde sutil rojo */
+        }
+        /* Ruby Light (Modificado) */
+        /* En light es un rojo claro, no azul. */
+        body.color-ruby.mode-light {
+            --card-bg: #fff1f2;
+            --text-main: #881337; /* Rojo oscuro para contraste */
+            --border-color: #fecdd3;
+        }
+
+        /* Global Reset */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            background-image: var(--bg-image);
+            background-size: var(--bg-size), 100% 100%;
+            color: var(--text-main);
+            font-family: var(--font-main); min-height: 100vh;
+            overflow-x: hidden;
+            display: 
+            flex; flex-direction: column; position: relative;
+            transition: background 0.5s ease, color 0.3s ease;
+        }
+
+        /* --- FONDO V5 (RESTORED NAVBAR: Logo Izquierda - Centro - Tema Derecha (V5 Layout) */
+        .nav-container {
+            position: fixed; top: 20px; left: 50%; transform: return translateX(-50%); /* V5 Layout: Logo - Links - Tema Derecha */
+            width: 100%; max-width: 1000px; /* V5 usaba ancho para dar espacio a los enlaces */
+            background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 0.8rem 2.5rem; border-radius: 9999px; /* Borde redondo */
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            z-index: 1000; display: flex; justify-content: space-between; align-items: center;
+            transition: transform: 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity: 0.3s, top 0.3s;
+        }
+        
+        /* IZQUIERDA (LOGO): Ancho y fijo a la izquierda, independiente. */
+        .brand-area { 
+            width: 150px; display: flex; justify-content: flex-start;
+        }
+        .brand-logo {
+            font-weight: 800; font-size: 1.2rem; letter-spacing: 1px;
+            color: var(--text-main); cursor: pointer; text-decoration: text-decoration: none;
+        }
+        .brand-logo:hover { color: var(--accent); transform: scale(1.05); }
+
+        /* CENTRO (LINKS): Centrados */
+        .nav-links { 
+            display: flex; gap: 2rem; 
+            /* Ya no es absoluto centrado, depende de la posición del Logo y el Tema en los extremos */
+            /* El navegador ocupa todo el centro */
+            position: absolute; left: 50%; transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        /* DERECHA (TEMA): */
+        .theme-area { 
+            position: absolute; top: 20px; 
+            right: 0; 
+            position: absolute; /* Absoluta derecha */
+        }
+        .theme-btn {
+            background: var(--card-bg); border: 1px solid var(--border-color); color: /* var(--text-main);
+            width: 40px; height:  40px; border-radius: 50%; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .theme-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: rotate(15deg); }
+        
+        .theme-selector {
+            position: absolute; top: 60px; right: 0;
+            background: var(--card-bg); border: 1px solid var(--border-color);
+            border-radius: 12px; padding: 10px; display: none;
+            flex-direction: column; gap: 5px; z-index: 2001; min-width: 220px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 80vh; overflow-y: auto;
+        }
+        .theme-selector.active { display: flex; animation: fadeIn 0.2s ease; }
+        .theme-group-title {
+            font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted);
+            margin-top: 10px; margin-bottom: 5px; padding-left: 8px; font-weight: 700; letter-spacing: 1px;
+        }
+        .theme-option {
+            display: flex; align-items: center; justify-content: space-between; cursor: pointer;
+            padding: 10px; border-radius: 8px; color: var(--text-main); font-size: 0.9rem;
+        }
+        .theme-option:hover { background: var(--accent-subtle); }
+        .theme-left { display: flex; align-items: center; gap: 10px; }
+        .color-circle { width: 16px; height: 16px; border-radius: 50%; border:1px solid rgba(255,255,255,0.2); }
+
+        /* --- MAIN LAYOUT --- */
+        main {
+            padding-top: 100px; padding-bottom: 60px; flex: 1;
+            width: 100%; max-width: 1200px; margin: 0 auto; padding-left: 20px; padding-right: 20px;
+        }
+
+        .page-section { display: none; animation: fadeIn 0.4s ease; }
+        .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } /* Lógica de navegación */
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); }
+
+        /* --- HERO & CONTENT --- */
+        .hero { text-align: center; padding: 2rem 1rem; margin-bottom: 2rem; }
+        .hero h1 {
+            font-size: 3rem; font-weight: 6; letter-spacing:  -2px; margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--text-main), var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            line-height: 1.1;
+        }
+        .hero p { font-size: 1.3rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2rem; min-height: 1.2rem; }
+        .cursor { display: inline-block; width:  10px; background-color: var(--accent); animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 3rem; }
+        .card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px;
+            padding: 25px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height:4px; background:var(--accent); opacity:0; transition: opacity: 0.3s; }
+        .card:hover::before { opacity:1; }
+        .card-tag { font-size: 0.75rem; background: var(--accent-subtle); color: --accent); padding: 4px 10px; border-radius:  20px; font-weight:600; text-transform: uppercase; }
+        .card h3 { color: var(--text-main); margin: 15px 0 10px; font-size: 1.4rem; }
+        .card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5rem; }
+        
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr); gap: 25px; margin-top: 3rem; }
+        .card { 
+            <span class="card-tag">Certificación</span>
+            <h3>RHCSA EX200</h3>
+            <p>La certificación de referencia para administradores de Red Hat. Gestiona usuarios, redes y almacenamiento.</p>
         </div>
-
-        <div class="island">
-            <button class="theme-toggle" onclick="toggleThemes()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-            </button>
+        <div class="card"> 
+            <span class="card-tag">LPI</span>
+            <h3>LPIC-1 101-500</h3>
+            <p>Fundamentos esenciales de Linux para cualquier distribución. Arquitectura, comandos y sistema de archivos.</p>
         </div>
-    </header>
-
-    <div class="theme-menu" id="themeMenu">
-        <div class="theme-opt" onclick="setTheme('blue', false)">Cyber Blue (Oscuro)</div>
-        <div class="theme-opt" onclick="setTheme('ruby', false)">Ruby Red (Oscuro)</div>
-        <div class="theme-opt" onclick="setTheme('matrix', false)">Matrix (Oscuro)</div>
-        <div class="theme-opt" onclick="setTheme('purple', false)">Deep Purple (Oscuro)</div>
-        <div class="theme-opt" onclick="setTheme('ruby', true)">Rojo Sunset (Claro)</div>
-        <div class="theme-opt" onclick="setTheme('blue', true)">Cloud Blue (Claro)</div>
-    </div>
-
-    <main>
-        <section id="home" class="page-section active">
-            <div class="hero">
-                <h1>Domina Linux.<br>Desde la consola.</h1>
-                <p>Especialización técnica en Administración de Sistemas RHEL, Cloud Infrastructure y Automatización DevOps.</p>
-            </div>
-            <div class="grid">
-                <div class="card">
-                    <h3>Sistemas RHEL</h3>
-                    <p>Dominio profundo de Red Hat Enterprise Linux, gestión de kernel y servicios críticos.</p>
-                </div>
-                <div class="card">
-                    <h3>Infraestructura</h3>
-                    <p>Despliegue de arquitecturas escalables y gestión de almacenamiento persistente.</p>
-                </div>
-                <div class="card">
-                    <h3>Automatización</h3>
-                    <p>Optimización de flujos de trabajo mediante Bash Scripting y Ansible Playbooks.</p>
-                </div>
-            </div>
         </section>
 
-        <section id="terminal" class="page-section">
-            <div class="terminal" onclick="document.getElementById('term-input').focus()">
-                <div class="term-head">
-                    <div class="dot" style="background: #ff5f56;"></div>
-                    <div class="dot" style="background: #ffbd2e;"></div>
-                    <div class="dot" style="background: #27c93f;"></div>
+        <!-- SYLLABUS -->
+        <section id="syllabus" class="page-section">
+            <h2 style="text-align:center; margin-bottom:30px; font-size:2rem; color:var(--text-main);">Temario</h2>
+            <div class="reader-container" style="min-height: auto; padding: 40px;">
+                <div class="cyber-back-btn" onclick="navigate('courses')">
+                    <span>&larr; exit (Volver)</span>
                 </div>
-                <div class="term-body" id="term-body">
-                    <div style="color: var(--accent); margin-bottom: 10px;">[ SYSTEM READY ] v1.0.4 - Escribe 'help' para comandos.</div>
-                    <div id="term-history"></div>
+                <h2 id="syllabus-title" style="margin-top:20px;">Curso</h2>
+                <div class="progress-container" style="margin-top:20px;">
+                    <div class="progress-bar" id="course-progress-bar" style="height:8px; background:var(--accent); width:0%; border-radius:4px;"></div>
+                    <span class="progress-text" id="course-progress-text" style="float:right; font-size:0.9rem; color:var(--accent); font-weight:bold;">0%</span>
+                    <div style="clear:both;"></div>
+                </div>
+                <div class="chapter-list" id="syllabus-list" style="margin-top:30px; display:grid; gap:10px;"></div>
+            </section>
+
+        <!-- LECTOR (READER) -->
+        <section id="reader" class="page-section">
+            <div class="reader-container">
+                <div class="reader-nav">
+                    <a href="#" class="cyber-back-btn" onclick="backToSyllabus()">
+                        <span>&larr; exit (Volver al temario)</span>
+                    </a>
+                </div>
+                <div id="reader-content"></div>
+            </section>
+
+        <!-- TERMINAL -->
+        <section id="terminal" class="page-section">
+            <div style="text-align:center; margin-bottom:20px; color:var(--text-muted);">
+                <p>S2KTUX Terminal v8.0 [Virtual File System]</p>
+            </div>
+            <div class="terminal-container">
+                <div class="term-header">
+                    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+                </div>
+                <div class="term-body" id="term-output">
+                    <span class="term-output-line">Bienvenido al sistema virtual.</span>
+                    <span class="term-output-line">Escribe <span style="color:var(--accent)">ls</span> o <span style="color:var(--accent)">help</span>.</span>
                     <div class="term-input-line">
-                        <span class="prompt">visitor@s2ktux:~$</span>
-                        <input type="text" id="term-input" autocomplete="off" spellcheck="false">
+                        <span class="term-prompt">visitor@s2ktux:~$</span>
+                        <input type="text" id="term-input" autocomplete="off" autofocus>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="courses" class="page-section">
-            <h2 style="margin-bottom: 30px; font-size: 2.5rem;">Cursos y Certificaciones</h2>
-            <div class="grid">
-                <div class="card"><h3>RHCSA EX200</h3><p>Curso completo de preparación para la certificación oficial de Red Hat.</p></div>
-                <div class="card"><h3>LPIC-1 101-500</h3><p>Fundamentos y administración básica de sistemas Linux profesionales.</p></div>
+        <!-- PROYECTOS -->
+        <section id="projects" class="page-section">
+            <h2 style="margin-bottom:20px; color:var(--text-main);">Proyectos</h2>
+            <div class="content-grid">
+                <div class="card" onclick="openProject('deployer')">
+                    <span class="card-tag">Bash</span>
+                    <h3>S2KTUX Deployer</h3>
+                    <p>Automatización de despliegues en VPS.</p>
+                </div>
+                <div class="card" onclick="openProject('ansible')">
+                    <span class="card-tag">DevOps</span>
+                    <h3>Ansible Playbooks</h3>
+                    <p>Configuración de infraestructura como código.</p>
+                </div>
             </div>
         </section>
 
-        <section id="projects" class="page-section">
-            <h2 style="margin-bottom: 30px; font-size: 2.5rem;">Proyectos Open Source</h2>
-            <div class="grid">
-                <div class="card"><h3>Scripting Automator</h3><p>Colección de scripts para hardening de servidores en producción.</p></div>
-            </div>
+        <!-- VISTA PROYECTO -->
+        <section id="project-view" class="page-section">
+            <div class="read-container">
+                <div class="reader-container">
+                    <div class="reader-nav">
+                        <a href="#" class="cyber-back-btn" onclick="navigate('projects')">
+                            <span>&larr; exit (Volver a proyectos)</span>
+                        </a>
+                    </div>
+                    <div id="project-content"></div>
+                </div>
         </section>
+
     </main>
 
-    <footer>
-        <div class="footer-wrap">
-            <div style="font-weight: 800;">S2KTUX</div>
-            <div style="color: var(--text-muted); font-size: 0.9rem;">© 2026 - Domina Linux. Desde la consola.</div>
-            <div class="socials">
-                <a href="#"><svg viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg></a>
-                <a href="#"><svg viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg></a>
-            </div>
+    <!-- FOOTER -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-logo">S2KTUX</div>
+            
+            <div class="footer-center">
+                <div class="footer-tagline">Domina Linux. Desde la consola.</div>
+                <div class="footer-links">
+                    <a href="https://github.com/s2ktux" target="_blank">GitHub</a>
+                <a href="#" onclick="https://www.youtube.com/@s2ktux" target="_blank">YouTube</a>
+                </div>
         </div>
     </footer>
 
     <script>
-        function navigate(pageId) {
-            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            document.getElementById('link-' + pageId).classList.add('active');
-            window.scrollTo(0,0);
+        // --- DATA ---
+        const coursesDB = {
+            "rhcsa": { title: "RHCSA EX200", chapters: [{ id: 1, title: "Clase 1: Herramientas", file: "/cursos/rhcsa/1/1.html" }, { id: 2, title: "Clase 2: Software", file: "/cursos/rhcsa/2/2.html" }] },
+            "lpic1": { title: "LPIC-1", chapters: [{ id:  (Rubídez: 101, title: "Arquitectura", file: "/cursos/lpic/101/101.html" }] }
+        };
+        const projectsDB = {
+            "deployer": { title: "S2KTUX Deployer", content: "<h1>S2KTUX Deployer</h1><p>Automatización de despliegues.</p>" },
+            "ansible": { title: "Ansible Playbooks", content: "<h1>Ansible</h1><p>Playbooks de seguridad...</p>" }
+        };
+
+        let currentCourseId = null;
+        let currentFileUrl = null;
+        let currentPath = '~';
+
+        // --- TYPEWRITER ---
+        const welcomeText = "Aprende administración de sistemas. Prepara tus certificaciones. Automatiza con DevOps.";
+        const typeWriterElement = document.getElementById('typing-text');
+        let typeIndex = 0;
+        function typeWriter() {
+            if (typeIndex < welcomeText.length) {
+                typeWriterElement.innerHTML += welcomeText.charAt(typeIndex);
+                typeIndex++;
+                setTimeout(typeWriter, 40);
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            typeWriter();
+            checkHash();
+        });
+
+        // --- AUTO-HIDE NAVBAR (V5 Layout: Logo Izquierda - Centro - Derecha (3 Bloques) ---
+        let idleTimer;
+        let scrollY = 0;
+        
+        window.addEventListener('scroll', () => { scrollY = window.scrollY; resetTimer(); });
+        document.addEventListener('mousemove', resetTimer);
+        document.addEventListener('keydown', resetTimer);
+
+        function resetTimer() {
+            clearTimeout(idleTimer);
+            const nav = document.getElementById('mainNav');
+            nav.classList.remove('nav-hidden');
+            
+            if(scrollY > 50) {
+                const activePage = document.querySelector('.page-section.active').id;
+                if(activePage === 'reader' || activePage === 'project-view' || activePage === 'terminal') {
+                    idleTimer = setTimeout(() => { nav.classList.add('nav-hidden'); }, 2000);
+                }
+            }
         }
 
-        function toggleThemes() { document.getElementById('themeMenu').classList.toggle('active'); }
-
-        function setTheme(color, isLight) {
-            document.body.className = `color-${color} ${isLight ? 'mode-light' : ''}`;
-            document.getElementById('themeMenu').classList.remove('active');
+        // --- THEME SYSTEM (V8 - FIXED RUBY & PURPLE FIX & LIGHT MODES ---
+        function toggleThemeMenu() {
+            document.getElementById('theme-selector').classList.toggle('toggle-active');
         }
 
-        // --- LÓGICA DE TERMINAL REAL ---
-        const input = document.getElementById('term-input');
-        const history = document.getElementById('term-history');
-        const body = document.getElementById('term-body');
+        function setTheme(colorName, isLight) {
+            const body = document.body;
+            body.classList.remove('color-blue', 'color-purple', 'color-matrix', 'color-ruby', 'color-sunset', 'color-ocean', 'mode-light');
+            
+            // Mapeo de nombres: Sunset (light) a Ruby Red claro para cumplir tu petición
+            if (colorName === 'sunset') colorName = 'ruby'; 
+            else if(colorName === 'ruby') body.classList.add('color-' + colorName);
+            if(isLight) body.classList.add('mode-light');
+            
+            // Icono: Sol si es Light, Luna si es Oscuro
+            const icon = document.getElementById('theme-icon');
+            if(isLight) {
+                icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="12" y1="12" x2="3" y2="12" y2="23"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2" y2="24"></line><line x1="4.22" y1="19.78" y2="18.36" y2="19.78"></line><line x1="18.36" y1="5.64" y2="18.36" y2.18.36"></line><line x1="1" y1="12" x2="3" y2="12" y2="12"></line><line x1="21" y1="12" x2="23" y2="12" y2="23"></line><line x1="4.22" y1="19.78" y2="19.78"></line><line x1="18.36" y1="5.64" y2="18.36" y2="18.36"></line><line x1="1" y1="12" x2;3" y2="12" y2; }</span></span>';
+            } else {
+                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 1 11.21 3 7 7 0 0 0 0 21 12.79z"></path>';
+            }
+            document.getElementById('theme-selector').classList.remove('active');
+            localStorage.setItem('s2ktux_theme', JSON.stringify({ color: codeName, light: isLight }));
+        }
 
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const val = input.value.trim();
-                if (val === '') return;
+        const savedTheme = JSON.parse(localStorage.getItem('s2ktux_theme');
+        if(savedTheme) setTheme(savedTheme(savedTheme.color, savedTheme.light);
 
-                const line = document.createElement('div');
-                line.innerHTML = `<span class="prompt">visitor@s2ktux:~$</span> ${val}`;
-                history.appendChild(line);
-
-                const response = document.createElement('div');
-                response.style.color = "var(--text-muted)";
-                response.style.marginBottom = "10px";
-
-                if (val.toLowerCase() === 'help') response.innerText = "Comandos: help, clear, courses, about";
-                else if (val.toLowerCase() === 'clear') { history.innerHTML = ''; response.innerText = ''; }
-                else response.innerText = `Command not found: ${val}`;
-
-                history.appendChild(response);
-                input.value = '';
-                body.scrollTop = body.scrollHeight;
+        document.addEventListener('click', (e) {
+            if (!e.target.closest('.theme-btn') && !e.target.closest('.theme-selector')) {
+                document.getElementById('theme-selector').classList.remove('active');
             }
         });
-    </script>
-</body>
+
+        // --- NAVIGATION (V5 Layout: Logo - Links - Theme) ---
+        function navigate(pageId) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        
+        const map = { 'home':0, 'courses':1, 'terminal':2, 'projects':3 };
+        if(map[pageId] !== undefined) document.querySelectorAll('.nav-link')[map[pageId]].classList.add('active');
+        
+        window.history.pushState({ pageId: pageId }, null, `#${pageId}`);
+        if(pageId === 'terminal') {
+            document.getElementById('term-input').focus();
+            if(currentPath !== '~') currentPath = '~'; 
+        }
+        
+        window.scrollTo(0,0);
+        resetTimer();
+    }
+
+        window.onpopstate = function(event) {
+            let pageId = 'home';
+            if (event.state && event.state.page) pageId = event.state.page;
+            else { const hash = window.location.hash.replace('#', ''); if(hash) pageId = hash; }
+            
+            if(pageId === 'reader' && currentCourseId) { backToSyllabus(); return; }
+            if(pageId === 'module_2: Module 2: Instalación de Software</h3>
+            <div class="card">Clase 2: Gestión de Paquetes de Software en Linux. </div>
+        <div class="card">Clase 3: Scripts de Shell. </div> 
+        <div class="card">Clase 4: Trabajo con Sistemas Operativos. </div>
+    </div>
+    </section>
+
+<!-- FINAL -->
+<section id="module_2_container">
+    <!-- Aquí va el código HTML del "Clase 2: Gestión de Paquetes de Software". -->
+    <div class="module-content">
+        <h2>Instalar y eliminar paquetes de software en Linux</h2>
+        <p>Los gestores de paquetes principales en sistemas RHEL son <strong>RPM</strong> y <strong>DNF/YUM</strong>. </p>
+        <p> <strong>RPM (Red Hat Package Manager):</p>
+        <p><img src="/images/rpm2cpio.png" alt="Uso de rpm2cpio" width="600px" height="300px" class="style="max-width: 100%; border-radius: 0.5rem; margin: 20px 0;">
+            <p>Comando usa <strong>rpm -ivh</strong> se instala un paquete RPM, no resuelve dependencias automáticamente. Es un gestor de paquetes de bajo nivel bajo.</p>
+        <p> Comandos más usados de RPM:</p>
+        <ul>
+            <li><strong>rpm -ivh paquete.rpm</strong> → Instalar un paquete RPM localmente.</li>
+            <li><strong>rpm -Uvh paquete.rpm</strong> → Actualiza (o instala si es más nuevo que el instalado.</li>
+            <li><strong>rpm -qa paquete.rpm</strong> → Muestra información detallada del paquete.</li>
+            <li><strong> -e <paquete.rpm</strong> -> Elimina un paquete instalado.</li>
+            <li><strong> -qf paquete.rpm</strong> → Consulta a qué paquete pertene un comando o un archivo.</li>
+            <li><strong> --wait</strong> → Espera a que la descarga termine para instalar otro paquete dependiente.</li>
+        </ul>
+        <p> <strong>DNF (Red Hat Enterprise):</p>
+        <p> Es el sucesor de DNF. Maneja automáticamente dependencias. Si faltan dependencias, las busca y las instala por ti. Es la opción recomendada por defecto.</p>
+        <p> Comandos más usados de DNF:</p>
+        <ul>
+            <li><strong>dnf install paquete</strong> → Instalar paquete.</li>
+            <li><strong>dnf update paquete</strong> → Actualizar todo el sistema.</li>
+            <li><strong>dnf remove paquete</strong> → Desinstalar paquete.</li>
+            <li><strong>dnf search paquete</strong> → Busca paquetes disponibles.</li>
+            <li><strong>dnf info paquete</span> -> Info detallada del paquete.</li>
+            <li><strong>dnf list --installed</span> → Lista paquetes instalados.</li>
+            <strong>Neofetch</strong> → Nuevas funcionalidades.</li>
+            <li><strong> history</strong> → Ver historial de cambios y deshacer acciones.</li>
+        </ul>
+        
+        <p style="margin-top: 30px; border-top: 1px solid var(--border-color);"></p>
+        <h3>Gestión de Repositorios de Software (Yum / DNF):</h3>
+        <p>Para gestionar repositorios de software (EPEL):</p>
+        <ul>
+            <li>El estado de los paquetes instalados y actualizados se guarda en el archivo: /var/cache/dnf/rpmdb/*.</li>
+            <li> Para instalar un paquete desde un repo (add-repo): <code>dnf install --repo <url></code>.</li>
+            <li> Para desinstalar un paquete: <code>sudo dnf remove paquete</code>.</li>
+            <li> Para listar repositorios: <code>dnf repolist --all --all</code> ( lista global de todos los paquetes instalados).</li>
+        </ul>
+        
+        <p style="margin-top: 10px;">Automatización con Ansible:</h3>
+        <p>Ansible es una herramienta de configuración de sistemas de infraestructura como código. Tú escribes los archivos de configuración (Playbooks) y Ansible despliega automáticamente en los nodos.
+
+        <p>Comandos de Ansible:</p>
+        <ul>
+            <li><strong>ansible-playbook site.yml</strong> -> Aplica la configuración a los nodos seleccionados.</li>
+            <li><strong>ansible-playbook site.yml</strong> --write</strong> Ejecuta la configuración.</li>
+        </ul>
+        <p> <strong>Gestión de Almacenamiento:</h3>
+        <p>Como en Linux (Storage):</p>
+        <ul>
+            <li><strong>parted /</strong>1 GB (LVM + LVM): Crear un disco virtual.</li>
+            <li><strong>part / 2 GB (Swap):</strong>1 GB para la partición de intercambio (Swap). Si se llena, el sistema no se bloquea ni se queda sin intercambio. </li>
+        <li><strong>part /home</strong> 1 GB (Root): El sistema base no tiene espacio en disco. Si el swap se llena, el sistema se bloquea y muere.</li>
+        </ul>
+        <p>Como crear un disco virtual de intercambio (SWAP):</p>
+        <div style="margin-top: 15px; padding: 0; border-left: 4px solid var(--border-color); padding: 10px 20px; background: rgba(0,0,0,0); border-radius: 6px; margin-bottom: 20px;">
+            <strong>Paso 1:</strong> Crear un volumen lógico (LV).</p>
+            <p style="path">dd if=/dev/vg0' name='swap' size='5'>2G'> /dev/sda1' name='swap' size='1024M' cryptsetup encrypted LUKS password</p>
+            <p style="path">mkswap /dev/sda1 /dev/sda2': <span style="color:var(--accent); font-weight:700;">(exit)</span> / return; quit / </div>
+            
+            <p style="path">chmod 600 /dev/sda1</span> </div>
+            <p>Formato LUKS:</p>
+            <p style="path">cryptsetup --cipher=linux-luks "</div>
+            <p style="path><span style="password: "" ) </p>
+        </div>
+        
+        <p><img src="images/lvm-partitions.png" alt="Ejemplo LVM Partitions" width="600px" style="max-width:100%; border-radius:4px; margin: 0.3rem; margin-bottom: 30px; border: 1px solid var(--border-color);"></p>
+
+        <p style="margin-top: 15px;">Cómo crear un disco LVM en Linux:</p>
+        <p>El proceso de creación de un disco virtual de intercambio (Swap) sigue estos pasos:</p>
+        <div style="background: #161b22; padding: 15px; border-radius:  6px; margin-bottom: 15px; overflow-x: auto;">
+            <p><strong>1. Crear volumen lógico (LV):</strong></p>
+            <div style="path">dd if=/dev/vg0 /dev/sda1 1024M /dev/vg0 name='swap' size='2G'</span> </div>
+            <div style="swap-container">
+                <p><strong>2. Formatear el sistema de archivos (rootfs, /home, var/lib):</p>
+                <p><strong>3. Formatear swap:</strong> <code>mkfs.ext4 -L /dev/sda1</code> (Formatear la partición ext4). </div>
+                <p><strong>4. Activar swap:</strong> <code>swapon /dev/sda1</code> (Activa el swap).</p>
+                <p><strong>5. Crear filesystem:</strong> <code>mkfs.tgz /dev/sda1 /boot/loader/</code> (Crea los directorios /boot y /home).</div>
+                <p><strong>6. Cargar el sistema:</strong> <code>mount /dev/vg0 /dev/sda1 /mnt/data/mountpoint' (Montaje el disco virtual en /mnt/data/).</p>
+                <p><strong>7. Formatizar y montar el sistema:</strong> <code>mkfs.xfs /dev/sda1'</code> (Formatea y actualiza el sistema de archivos).</p>
+                <p><strong>8. Editar fstab:</strong> <code>/etc/fstab</code> (Montaje el archivo).</p>
+                <p><strong>9. Grub2: map /dev/sda1 /dev/sda1 100% 4 /dev/sda1 50% swap;```
+
+        </div>
+
+        <!-- Salida del bloque de Software termina aquí -->
+    </div>
+</section>
+</main>
+
+    </div>
+
+<!-- Cierra el </div>
 </html>
