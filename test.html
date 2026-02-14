@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S2KTUX | Terminal Portfolio</title>
+    <title>S2KTUX | Linux Learning Terminal</title>
     <style>
         /* --- ESTILOS (CSS) --- */
         :root {
@@ -11,15 +11,10 @@
             --term-bg: #18181b;        /* Fondo de la terminal */
             --text-main: #a1a1aa;      /* Gris texto */
             --accent: #10b981;         /* Verde matrix/hacker */
-            --accent-glow: rgba(16, 185, 129, 0.2);
-            --font-stack: 'Courier New', Courier, monospace; /* Fuente monoespaciada esencial */
+            --font-stack: 'Courier New', Courier, monospace;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg-color);
@@ -27,11 +22,11 @@
             font-family: var(--font-stack);
             height: 100vh;
             width: 100vw;
-            overflow: hidden; /* Evita scroll en la página, solo en la terminal */
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Fondo sutil de grid para efecto cyber */
+            /* Fondo sutil de grid */
             background-image: radial-gradient(#27272a 1px, transparent 1px);
             background-size: 30px 30px;
         }
@@ -39,15 +34,15 @@
         /* --- CONTENEDOR PRINCIPAL --- */
         .main-container {
             width: 90%;
-            max-width: 850px;
-            height: 80vh;
+            max-width: 900px; /* Un poco más ancho para ver mejor las imágenes */
+            height: 85vh;
             display: flex;
             flex-direction: column;
             background-color: var(--term-bg);
             border: 1px solid #27272a;
             border-radius: 12px;
             box-shadow: 0 20px 50px rgba(0,0,0,0.5);
-            backdrop-filter: blur(10px); /* Efecto cristal */
+            backdrop-filter: blur(10px);
         }
 
         /* --- BARRA SUPERIOR --- */
@@ -62,11 +57,8 @@
             font-size: 0.85rem;
             color: #71717a;
         }
-
         .controls { display: flex; gap: 8px; }
-        .control {
-            width: 12px; height: 12px; border-radius: 50%;
-        }
+        .control { width: 12px; height: 12px; border-radius: 50%; }
         .red { background-color: #ef4444; }
         .yellow { background-color: #eab308; }
         .green { background-color: #22c55e; }
@@ -80,34 +72,43 @@
             line-height: 1.6;
         }
 
-        /* Scrollbar personalizada minimalista */
+        /* Scrollbar */
         .terminal-body::-webkit-scrollbar { width: 8px; }
         .terminal-body::-webkit-scrollbar-track { background: var(--term-bg); }
         .terminal-body::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
         .terminal-body::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-        /* --- TEXTOS Y OUTPUT --- */
+        /* --- ESTILOS DE TEXTO --- */
         #output { margin-bottom: 10px; }
-
-        .line { margin-bottom: 8px; }
+        .line { margin-bottom: 15px; }
         .command-echo { color: var(--accent); font-weight: bold; }
         .response-text { color: var(--text-main); white-space: pre-wrap; }
-        .path { color: #60a5fa; } /* Azul para rutas o enlaces */
-        .highlight { color: #f472b6; font-weight: bold; } /* Rosa para titulos */
+        .path { color: #60a5fa; cursor: pointer; } /* Azul para comandos */
+        .path:hover { text-decoration: underline; }
+        .highlight { color: #f472b6; font-weight: bold; } /* Rosa para títulos */
+        
+        /* Estilo para el contenido de los cursos (imágenes, etc) */
+        .lesson-content {
+            border-left: 3px solid var(--accent);
+            padding-left: 15px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+        }
+        .lesson-content img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #444;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: block;
+        }
+        .lesson-content h3 { color: #fff; margin-bottom: 10px; }
+        .lesson-content code { background: #000; padding: 2px 5px; color: var(--accent); border-radius: 3px; }
 
         /* --- INPUT --- */
-        .input-line {
-            display: flex;
-            align-items: center;
-        }
-
-        .prompt {
-            color: var(--accent);
-            margin-right: 10px;
-            font-weight: bold;
-            white-space: nowrap;
-        }
-
+        .input-line { display: flex; align-items: center; }
+        .prompt { color: var(--accent); margin-right: 10px; font-weight: bold; white-space: nowrap; }
+        
         #cmd-input {
             background: transparent;
             border: none;
@@ -116,7 +117,7 @@
             font-size: 1rem;
             flex: 1;
             outline: none;
-            caret-color: var(--accent); /* Color del cursor parpadeante */
+            caret-color: var(--accent);
         }
 
         /* --- LINKS --- */
@@ -128,23 +129,20 @@
 
     <div class="main-container">
         
-        <!-- Barra superior decorativa (Estilo ventana de sistema) -->
+        <!-- Barra superior -->
         <div class="window-bar">
             <div class="controls">
                 <div class="control red"></div>
                 <div class="control yellow"></div>
                 <div class="control green"></div>
             </div>
-            <div class="bar-title">s2ktux@portfolio:~</div>
-            <div class="bar-info">v1.0.4</div>
+            <div class="bar-title">s2ktux@learning:~</div>
+            <div class="bar-info">v2.0-beta</div>
         </div>
 
-        <!-- El cuerpo de la terminal -->
+        <!-- Terminal -->
         <div class="terminal-body" id="terminal-body">
-            <!-- Aquí aparecerá el historial -->
             <div id="output"></div>
-
-            <!-- La línea de entrada activa -->
             <div class="input-line">
                 <span class="prompt">visitor@s2ktux:~$</span>
                 <input type="text" id="cmd-input" autocomplete="off" autofocus>
@@ -160,41 +158,199 @@
             const output = document.getElementById('output');
             const terminalBody = document.getElementById('terminal-body');
 
-            // Configuración Inicial
+            // --- AQUÍ ESTÁ TU BASE DE DATOS DE CURSOS ---
+            // Cuando tengas tus imágenes reales, cambia las URLs de 'src'
+            const courseDB = {
+                "lpic1": {
+                    title: "LPIC-1: Linux Administrator (101-500)",
+                    description: "Certificación junior. Arquitectura del sistema, instalación y gestión de paquetes.",
+                    topics: [
+                        {
+                            id: 1,
+                            title: "101.1 - Determinar y Configurar Hardware",
+                            content: `
+                                <h3>Arquitectura del Hardware</h3>
+                                <p>Linux es compatible con muchas arquitecturas, pero x86_64 es la más común en servidores.</p>
+                                <p>Comandos clave:</p>
+                                <ul>
+                                    <li><code>lspci</code> : Muestra dispositivos PCI.</li>
+                                    <li><code>lsusb</code> : Muestra dispositivos USB.</li>
+                                </ul>
+                                <br>
+                                <!-- IMAGEN DE EJEMPLO 1 -->
+                                <img src="https://placehold.co/600x300/18181b/10b981?text=Salida+de+lspci" alt="Ejemplo lspci">
+                                <p style="font-size:0.8rem; color:#888;">Fig 1. Salida típica del comando lspci.</p>
+                            `
+                        },
+                        {
+                            id: 2,
+                            title: "101.2 - Arraque del Sistema (Boot Process)",
+                            content: `
+                                <h3>Secuencia de Arrque</h3>
+                                <p>Entender el BIOS/UEFI es vital. El proceso sigue estos pasos:</p>
+                                <ol>
+                                    <li>POST (Power On Self Test).</li>
+                                    <li>Carga del MBR/GPT.</li>
+                                    <li>Carga del Bootloader (GRUB2).</li>
+                                    <li>Carga del Kernel.</li>
+                                    <li>Inicio de <code>systemd</code> o <code>init</code>.</li>
+                                </ol>
+                                <br>
+                                <!-- IMAGEN DE EJEMPLO 2 -->
+                                <img src="https://placehold.co/600x250/18181b/10b981?text=Diagrama+Flujo+Boot" alt="Diagrama Boot">
+                            `
+                        }
+                    ]
+                },
+                "rhcsa": {
+                    title: "RHCSA: Red Hat System Administrator (EX200)",
+                    description: "Administración específica de entornos Red Hat Enterprise Linux.",
+                    topics: [
+                        {
+                            id: 1,
+                            title: "Gestión de Usuarios y Grupos",
+                            content: `
+                                <h3>Usuarios y Contraseñas</h3>
+                                <p>En Red Hat, los archivos de configuración claves son /etc/passwd y /etc/shadow.</p>
+                                <p>Para crear un usuario:</p>
+                                <div style="background:#000; padding:10px; border:1px solid #333; margin:10px 0;">
+                                    [root@server ~]# useradd -m -s /bin/bash nuevo_usuario<br>
+                                    [root@server ~]# passwd nuevo_usuario
+                                </div>
+                                <img src="https://placehold.co/600x200/18181b/10b981?text=Terminal+Usuario+RHCSA" alt="Terminal RHCSA">
+                            `
+                        }
+                    ]
+                }
+            };
+
+            let currentCourse = null;
+
+            // --- MENSAJE DE BIENVENIDA ---
             const welcomeMessage = `
 <div class="line">
-  <span class="highlight">BIENVENIDO AL SISTEMA S2KTUX v1.0</span><br><br>
-  Soy un administrador de sistemas y desarrollador enfocado en Linux y seguridad.<br>
-  Este portfolio funciona como una terminal interactiva.<br><br>
-  Escribe <span class="path">'help'</span> para ver los comandos disponibles.
+  <span class="highlight">S2KTUX LEARNING SYSTEM v2.0</span><br><br>
+  Este entorno está diseñado para aprender Linux mientras usas una terminal simulada.<br>
+  Toda la documentación, imágenes y ejercicios están accesibles vía comandos.<br><br>
+  <span class="path">Escribe 'courses' para empezar.</span>
 </div>`;
 
-            // Imprimir mensaje de bienvenida al cargar
             printOutput(welcomeMessage, false);
 
-            // Escuchar tecla Enter
+            // --- EVENTO INPUT ---
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     const command = this.value.trim();
                     if (command) {
-                        // Mostrar el comando que escribió el usuario
                         printOutput(`<span class="prompt">visitor@s2ktux:~$</span> ${command}`, true);
                         processCommand(command);
                     } else {
-                        // Si pulsa enter sin escribir, solo muestra el prompt
                         printOutput(`<span class="prompt">visitor@s2ktux:~$</span>`, true);
                     }
-                    this.value = ''; // Limpiar input
+                    this.value = '';
+                    scrollToBottom();
                 }
             });
 
-            // Mantener el scroll abajo
-            function scrollToBottom() {
-                terminalBody.scrollTop = terminalBody.scrollHeight;
+            // --- PROCESADOR DE COMANDOS ---
+            function processCommand(cmd) {
+                const args = cmd.toLowerCase().split(' ');
+                const mainCmd = args[0];
+                const arg1 = args[1]; 
+
+                switch(mainCmd) {
+                    case 'help':
+                        printOutput(`
+<span class="highlight">MANUAL DE AYUDA:</span>
+  <span class="path">courses</span>        : Lista todos los cursos disponibles.
+  <span class="path">open [curso]</span>   : Entra en un curso (ej: 'open lpic1').
+  <span class="path">read [id]</span>      : Lee un tema dentro del curso actual.
+  <span class="path">back</span>           : Vuelve al directorio raíz.
+  <span class="path">projects</span>       : Mis proyectos personales.
+  <span class="path">clear</span>          : Limpia la terminal.`);
+                        break;
+
+                    case 'courses':
+                        let list = `<span class="highlight">CATÁLOGO DE CURSOS:</span><br><br>`;
+                        for (const key in courseDB) {
+                            list += `<span class="path">[${key}]</span><br>   ${courseDB[key].title}<br><br>`;
+                        }
+                        list += `<span style="color:#888">Uso: open [nombre]</span>`;
+                        printOutput(list);
+                        break;
+
+                    case 'open':
+                        if (!arg1) {
+                            printOutput("Error: Debes especificar un curso. Escribe 'courses' para ver la lista.");
+                            return;
+                        }
+                        if (courseDB[arg1]) {
+                            currentCourse = arg1;
+                            const course = courseDB[arg1];
+                            let topicList = `<span class="highlight">${course.title}</span><br><span style="color:#888">${course.description}</span><br><br>TEMAS DISPONIBLES:<br>`;
+                            
+                            course.topics.forEach(t => {
+                                topicList += `  <span class="path">[${t.id}]</span> ${t.title}<br>`;
+                            });
+                            
+                            topicList += `<br><span class="path">Comando:</span> read [id]`;
+                            printOutput(topicList);
+                        } else {
+                            printOutput(`Error: El curso '${arg1}' no se encuentra en la base de datos.`);
+                        }
+                        break;
+
+                    case 'read':
+                        if (!currentCourse) {
+                            printOutput("Error: No estás dentro de ningún curso. Usa 'open [curso]' primero.");
+                            return;
+                        }
+                        if (!arg1) {
+                            printOutput("Error: Debes indicar el número de tema (ej: 'read 1').");
+                            return;
+                        }
+                        
+                        const course = courseDB[currentCourse];
+                        const topic = course.topics.find(t => t.id == arg1);
+                        
+                        if (topic) {
+                            const htmlContent = `
+                                <div class="lesson-content">
+                                    <h4>Tema ${topic.id}: ${topic.title}</h4>
+                                    <div style="color:#d4d4d8;">${topic.content}</div>
+                                </div>
+                                <br>
+                                <span style="opacity:0.5; font-size:0.9em;">Fin del tema. Escribe 'read ${parseInt(arg1)+1}' para continuar.</span>
+                            `;
+                            printOutput(htmlContent);
+                        } else {
+                            printOutput("Error: Ese ID de tema no existe en este curso.");
+                        }
+                        break;
+
+                    case 'back':
+                        currentCourse = null;
+                        printOutput("Volviendo al menú principal...");
+                        break;
+
+                    case 'projects':
+                        printOutput(`
+<span class="highlight">MIS PROYECTOS:</span>
+  [EMPTY] - Esta sección está vacía por ahora.
+  Planeo subir aquí mis scripts de automatización.`);
+                        break;
+
+                    case 'clear':
+                        output.innerHTML = '';
+                        break;
+
+                    default:
+                        printOutput(`Comando no encontrado: ${mainCmd}. Escribe 'help'.`);
+                }
             }
 
-            // Función para escribir en la terminal
-            function printOutput(html, isCommand) {
+            // --- UTILIDADES ---
+            function printOutput(html, isCommand = false) {
                 const div = document.createElement('div');
                 div.className = 'line';
                 if(isCommand) div.classList.add('command-echo');
@@ -203,62 +359,11 @@
                 scrollToBottom();
             }
 
-            // Lógica de comandos
-            function processCommand(cmd) {
-                const command = cmd.toLowerCase().split(' ')[0]; // Coger primera palabra
-
-                switch(command) {
-                    case 'help':
-                        printOutput(`
-<span class="highlight">COMANDOS DISPONIBLES:</span>
-  <span class="path">about</span>      - Sobre mí y mis skills
-  <span class="path">projects</span>   - Mis proyectos recientes
-  <span class="path">contact</span>    - Cómo contactar conmigo
-  <span class="path">clear</span>      - Limpiar la terminal
-  <span class="path">sudo</span>       - ¿Eres admin? (Prueba a ver)`);
-                        break;
-
-                    case 'about':
-                        printOutput(`
-<span class="highlight">> SOBRE MÍ</span>
-  Me apasiona el Open Source y la automatización.
-  Tengo experiencia en:
-  - Linux (Debian/Arch)
-  - Scripting (Bash, Python)
-  - DevOps (Docker, CI/CD)
-  - Seguridad Ofensiva/Defensiva`);
-                        break;
-
-                    case 'projects':
-                        printOutput(`
-<span class="highlight">> PROYECTOS</span>
-  1. <a href="#">Auto-Deploy Script</a> - Script en Bash para despliegues automáticos.
-  2. <a href="#">Secure-Docker</a> - Imágenes de Docker endurecidas para producción.
-  3. <a href="#">Net-Monitor</a> - Herramienta de visualización de tráfico en tiempo real.`);
-                        break;
-
-                    case 'contact':
-                        printOutput(`
-<span class="highlight">> CONTACTO</span>
-  Email:    contacto@s2ktux.dev
-  GitHub:   github.com/s2ktux
-  LinkedIn: /in/s2ktux`);
-                        break;
-
-                    case 'clear':
-                        output.innerHTML = '';
-                        break;
-
-                    case 'sudo':
-                        printOutput(`<span style="color:#ef4444">Permiso denegado. Eres solo un visitante.</span>`);
-                        break;
-
-                    default:
-                        printOutput(`Comando no encontrado: ${command}. Escribe <span class="path">'help'</span> para ayuda.`);
-                }
+            function scrollToBottom() {
+                terminalBody.scrollTop = terminalBody.scrollHeight;
             }
-            
-            // Mantener el foco en el input al hacer click en cualquier parte
+
+            // Mantener foco
             document.addEventListener('click', () => input.focus());
         });
     </script>
