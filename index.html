@@ -3,167 +3,207 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S2KTUX - Aprende Sistemas Linux</title>
+    <title>S2KTUX | Mastering Linux</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #1e1e1e;
-            color: #d4d4d4;
-            font-family: 'Courier New', monospace;
+        :root {
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --accent: #38bdf8;
+            --text-main: #f8fafc;
+            --text-dim: #94a3b8;
+            --terminal-header: #334155;
+            --green: #4ade80;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
             line-height: 1.6;
+            overflow-x: hidden;
         }
-        header {
-            background-color: #252526;
-            padding: 20px;
-            text-align: center;
-            border-bottom: 2px solid #007acc;
-        }
-        header h1 {
-            color: #4ec9b0;
-            margin: 0;
-        }
+
+        /* Navbar sutil */
         nav {
-            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            padding: 2rem 10%;
+            align-items: center;
+            position: absolute;
+            width: 100%;
         }
-        nav a {
-            color: #9cdcfe;
-            margin: 0 15px;
+
+        .logo { font-weight: 800; font-size: 1.5rem; color: var(--accent); text-decoration: none; }
+        .nav-links a { color: var(--text-dim); text-decoration: none; margin-left: 2rem; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 150px 10% 100px;
+            min-height: 100vh;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .hero-text { flex: 1; min-width: 300px; }
+        .hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem; font-weight: 800; }
+        .gradient-text {
+            background: linear-gradient(90deg, #38bdf8, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hero-text p { font-size: 1.2rem; color: var(--text-dim); margin-bottom: 2rem; max-width: 500px; }
+
+        .btn-group { display: flex; gap: 1rem; }
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
             text-decoration: none;
+            font-weight: 700;
+            transition: 0.3s;
         }
-        nav a:hover {
-            color: #ffffff;
+        .btn-primary { background: var(--accent); color: var(--bg); }
+        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
+        .btn-secondary { border: 1px solid var(--text-dim); color: var(--text-main); }
+
+        /* Terminal Estilo HyprLuna */
+        .terminal-window {
+            flex: 1;
+            min-width: 350px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
+            overflow: hidden;
         }
-        section {
-            padding: 40px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+
+        .terminal-header {
+            background: var(--terminal-header);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
-        #welcome {
-            text-align: center;
-        }
-        #terminal {
-            background-color: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 5px;
-            padding: 10px;
-            height: 300px;
-            width: 80%;
-            margin: 20px auto;
-            overflow: auto;
-            color: #c9d1d9;
+
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
+        .red { background: #ff5f56; }
+        .yellow { background: #ffbd2e; }
+        .green { background: #27c93f; }
+        .t-title { margin-left: auto; margin-right: auto; font-family: 'Fira Code'; font-size: 0.8rem; color: var(--text-dim); }
+
+        .terminal-body {
+            padding: 25px;
+            font-family: 'Fira Code', monospace;
             font-size: 14px;
+            min-height: 250px;
+            color: #cbd5e1;
         }
-        h2 {
-            color: #4ec9b0;
+
+        .prompt { color: var(--green); margin-right: 8px; }
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--accent);
+            margin-left: 4px;
+            animation: blink 1s infinite;
         }
-        .feature {
-            background-color: #252526;
-            padding: 20px;
-            margin: 20px 0;
-            border-radius: 5px;
-        }
-        footer {
-            text-align: center;
-            padding: 20px;
-            background-color: #252526;
-            color: #858585;
+
+        @keyframes blink { 50% { opacity: 0; } }
+
+        @media (max-width: 768px) {
+            .hero { padding-top: 100px; text-align: center; justify-content: center; }
+            .hero-text h1 { font-size: 2.5rem; }
+            .btn-group { justify-content: center; }
+            nav { padding: 1rem 5%; }
         }
     </style>
-    <!-- Bibliotecas para el terminal interactivo -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/2.35.0/js/jquery.terminal.min.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/2.35.0/css/jquery.terminal.min.css">
 </head>
 <body>
-    <header>
-        <h1>S2KTUX</h1>
-        <nav>
-            <a href="#welcome">Inicio</a>
-            <a href="#about">Sobre Nosotros</a>
-            <a href="#features">Cursos</a>
-            <a href="#steps">Primeros Pasos</a>
-            <a href="#community">Comunidad</a>
-        </nav>
-    </header>
 
-    <section id="welcome">
-        <h2>Bienvenido a S2KTUX</h2>
-        <p>Aprende sistemas y redes Linux de forma práctica. Prueba nuestro terminal interactivo para simular comandos.</p>
-        <div id="terminal"></div>
-    </section>
-
-    <section id="about">
-        <h2>Sobre Nosotros</h2>
-        <p>Somos una academia dedicada a enseñar Linux desde cero hasta niveles profesionales, con proyectos reales y enfoque práctico.</p>
-    </section>
-
-    <section id="features">
-        <h2>Características y Cursos</h2>
-        <div class="feature">
-            <h3>Instalación de Linux</h3>
-            <p>Guías paso a paso para instalar distribuciones como Ubuntu o Arch.</p>
+    <nav>
+        <a href="#" class="logo">S2KTUX</a>
+        <div class="nav-links">
+            <a href="#">Cursos</a>
+            <a href="#">Proyectos</a>
+            <a href="#">Comunidad</a>
         </div>
-        <div class="feature">
-            <h3>Comandos Básicos</h3>
-            <p>Aprende ls, cd, mkdir y más con ejemplos interactivos.</p>
+    </nav>
+
+    <section class="hero">
+        <div class="hero-text">
+            <h1>La ruta del <span class="gradient-text">SysAdmin</span> empieza aquí.</h1>
+            <p>Aprende Linux, Redes y Automatización con proyectos reales. De usuario a experto en línea de comandos.</p>
+            <div class="btn-group">
+                <a href="#" class="btn btn-primary">Empezar ahora</a>
+                <a href="#" class="btn btn-secondary">Ver proyectos</a>
+            </div>
         </div>
-        <div class="feature">
-            <h3>Configuración de Redes</h3>
-            <p>Proyectos para configurar servidores, firewalls y VPN.</p>
+
+        <div class="terminal-window">
+            <div class="terminal-header">
+                <div class="dot red"></div>
+                <div class="dot yellow"></div>
+                <div class="dot green"></div>
+                <div class="t-title">s2ktux@learning: ~</div>
+            </div>
+            <div class="terminal-body" id="typewriter">
+                </div>
         </div>
     </section>
-
-    <section id="steps">
-        <h2>Primeros Pasos</h2>
-        <ol>
-            <li>Instala Linux en tu máquina o usa una VM.</li>
-            <li>Aprende comandos básicos en el terminal.</li>
-            <li>Configura tu red y únete a la comunidad.</li>
-        </ol>
-    </section>
-
-    <section id="community">
-        <h2>Únete a la Comunidad</h2>
-        <p>Suscríbete para recibir actualizaciones y participa en foros.</p>
-        <!-- Aquí puedes añadir un formulario real -->
-        <form>
-            <input type="email" placeholder="Tu email">
-            <button type="submit">Suscribirse</button>
-        </form>
-    </section>
-
-    <footer>
-        <p>&copy; 2026 S2KTUX. Todos los derechos reservados.</p>
-    </footer>
 
     <script>
-        $('#terminal').terminal({
-            help: function() {
-                this.echo('Comandos disponibles:');
-                this.echo(' - ls: Lista cursos');
-                this.echo(' - cd cursos: Navega a sección de cursos');
-                this.echo(' - help: Muestra esta ayuda');
-                this.echo(' - clear: Limpia el terminal');
-            },
-            ls: function() {
-                this.echo('Cursos disponibles:');
-                this.echo(' - instalacion-linux');
-                this.echo(' - comandos-basicos');
-                this.echo(' - config-redes');
-            },
-            cd: function(dir) {
-                if (dir === 'cursos') {
-                    window.location.href = '#features';
-                    this.echo('Navegando a cursos...');
+        const terminal = document.getElementById('typewriter');
+        const lines = [
+            { text: 'whoami', type: 'command' },
+            { text: 's2ktux: Future Linux Expert', type: 'output' },
+            { text: 'ls -l /skills', type: 'command' },
+            { text: 'drwxr-xr-x linux-basics', type: 'output' },
+            { text: 'drwxr-xr-x networking-pro', type: 'output' },
+            { text: 'drwxr-xr-x shell-scripting', type: 'output' },
+            { text: 'systemctl start success.service', type: 'command' },
+            { text: 'Status: Running...', type: 'output' }
+        ];
+
+        async function typeEffect() {
+            for (let line of lines) {
+                let div = document.createElement('div');
+                div.style.marginBottom = "8px";
+                
+                if (line.type === 'command') {
+                    div.innerHTML = `<span class="prompt">s2ktux@server:~$</span> <span class="content"></span><span class="cursor"></span>`;
+                    terminal.appendChild(div);
+                    let contentSpan = div.querySelector('.content');
+                    let cursor = div.querySelector('.cursor');
+                    
+                    for (let char of line.text) {
+                        contentSpan.textContent += char;
+                        await new Promise(r => setTimeout(r, 70));
+                    }
+                    cursor.remove();
                 } else {
-                    this.echo('Directorio no encontrado: ' + dir);
+                    div.innerHTML = `<span style="color: #94a3b8;">${line.text}</span>`;
+                    terminal.appendChild(div);
+                    await new Promise(r => setTimeout(r, 300));
                 }
             }
-        }, {
-            greetings: 's2ktux@server:~$ Bienvenido al terminal interactivo. Escribe "help" para ayuda.\n',
-            prompt: 's2ktux@server:~$ '
-        });
+            // Añadir prompt final
+            let finalPrompt = document.createElement('div');
+            finalPrompt.innerHTML = `<span class="prompt">s2ktux@server:~$</span> <span class="cursor"></span>`;
+            terminal.appendChild(finalPrompt);
+        }
+
+        window.onload = typeEffect;
     </script>
 </body>
 </html>
