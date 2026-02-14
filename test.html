@@ -152,92 +152,38 @@
     </div>
 
     <!-- LÓGICA (JS) -->
+      // ... (El resto del código HTML y CSS igual que antes) ...
+
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('cmd-input');
             const output = document.getElementById('output');
             const terminalBody = document.getElementById('terminal-body');
 
-            // --- AQUÍ ESTÁ TU BASE DE DATOS DE CURSOS ---
-            // Cuando tengas tus imágenes reales, cambia las URLs de 'src'
+            // BASE DE DATOS SIMPLIFICADA
+            // Ya no guardamos el texto aquí, solo la RUTA al archivo.
             const courseDB = {
                 "lpic1": {
-                    title: "LPIC-1: Linux Administrator (101-500)",
-                    description: "Certificación junior. Arquitectura del sistema, instalación y gestión de paquetes.",
+                    title: "LPIC-1: Linux Administrator",
+                    description: "Certificación junior de administración de Linux.",
                     topics: [
-                        {
-                            id: 1,
-                            title: "101.1 - Determinar y Configurar Hardware",
-                            content: `
-                                <h3>Arquitectura del Hardware</h3>
-                                <p>Linux es compatible con muchas arquitecturas, pero x86_64 es la más común en servidores.</p>
-                                <p>Comandos clave:</p>
-                                <ul>
-                                    <li><code>lspci</code> : Muestra dispositivos PCI.</li>
-                                    <li><code>lsusb</code> : Muestra dispositivos USB.</li>
-                                </ul>
-                                <br>
-                                <!-- IMAGEN DE EJEMPLO 1 -->
-                                <img src="https://placehold.co/600x300/18181b/10b981?text=Salida+de+lspci" alt="Ejemplo lspci">
-                                <p style="font-size:0.8rem; color:#888;">Fig 1. Salida típica del comando lspci.</p>
-                            `
-                        },
-                        {
-                            id: 2,
-                            title: "101.2 - Arraque del Sistema (Boot Process)",
-                            content: `
-                                <h3>Secuencia de Arrque</h3>
-                                <p>Entender el BIOS/UEFI es vital. El proceso sigue estos pasos:</p>
-                                <ol>
-                                    <li>POST (Power On Self Test).</li>
-                                    <li>Carga del MBR/GPT.</li>
-                                    <li>Carga del Bootloader (GRUB2).</li>
-                                    <li>Carga del Kernel.</li>
-                                    <li>Inicio de <code>systemd</code> o <code>init</code>.</li>
-                                </ol>
-                                <br>
-                                <!-- IMAGEN DE EJEMPLO 2 -->
-                                <img src="https://placehold.co/600x250/18181b/10b981?text=Diagrama+Flujo+Boot" alt="Diagrama Boot">
-                            `
-                        }
-                    ]
-                },
-                "rhcsa": {
-                    title: "RHCSA: Red Hat System Administrator (EX200)",
-                    description: "Administración específica de entornos Red Hat Enterprise Linux.",
-                    topics: [
-                        {
-                            id: 1,
-                            title: "Gestión de Usuarios y Grupos",
-                            content: `
-                                <h3>Usuarios y Contraseñas</h3>
-                                <p>En Red Hat, los archivos de configuración claves son /etc/passwd y /etc/shadow.</p>
-                                <p>Para crear un usuario:</p>
-                                <div style="background:#000; padding:10px; border:1px solid #333; margin:10px 0;">
-                                    [root@server ~]# useradd -m -s /bin/bash nuevo_usuario<br>
-                                    [root@server ~]# passwd nuevo_usuario
-                                </div>
-                                <img src="https://placehold.co/600x200/18181b/10b981?text=Terminal+Usuario+RHCSA" alt="Terminal RHCSA">
-                            `
-                        }
+                        { id: 1, title: "101.1 - Arquitectura", file: "content/tema1.html" },
+                        { id: 2, title: "101.2 - Boot Process", file: "content/tema2.html" }
                     ]
                 }
             };
 
             let currentCourse = null;
 
-            // --- MENSAJE DE BIENVENIDA ---
             const welcomeMessage = `
 <div class="line">
-  <span class="highlight">S2KTUX LEARNING SYSTEM v2.0</span><br><br>
-  Este entorno está diseñado para aprender Linux mientras usas una terminal simulada.<br>
-  Toda la documentación, imágenes y ejercicios están accesibles vía comandos.<br><br>
+  <span class="highlight">SISTEMA DE CARGA EXTERNA v3.0</span><br><br>
+  Ahora el contenido se carga dinámicamente desde archivos HTML.<br>
+  Esto permite tener cursos infinitos sin ralentizar la web inicialmente.<br><br>
   <span class="path">Escribe 'courses' para empezar.</span>
 </div>`;
-
             printOutput(welcomeMessage, false);
 
-            // --- EVENTO INPUT ---
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     const command = this.value.trim();
@@ -252,8 +198,7 @@
                 }
             });
 
-            // --- PROCESADOR DE COMANDOS ---
-            function processCommand(cmd) {
+            async function processCommand(cmd) {
                 const args = cmd.toLowerCase().split(' ');
                 const mainCmd = args[0];
                 const arg1 = args[1]; 
@@ -261,95 +206,87 @@
                 switch(mainCmd) {
                     case 'help':
                         printOutput(`
-<span class="highlight">MANUAL DE AYUDA:</span>
-  <span class="path">courses</span>        : Lista todos los cursos disponibles.
-  <span class="path">open [curso]</span>   : Entra en un curso (ej: 'open lpic1').
-  <span class="path">read [id]</span>      : Lee un tema dentro del curso actual.
-  <span class="path">back</span>           : Vuelve al directorio raíz.
-  <span class="path">projects</span>       : Mis proyectos personales.
-  <span class="path">clear</span>          : Limpia la terminal.`);
+<span class="highlight">AYUDA:</span>
+  <span class="path">courses</span>        : Lista cursos.
+  <span class="path">open [curso]</span>   : Abre curso.
+  <span class="path">read [id]</span>      : Carga el archivo HTML externo.
+  <span class="path">clear</span>          : Limpiar.`);
                         break;
 
                     case 'courses':
-                        let list = `<span class="highlight">CATÁLOGO DE CURSOS:</span><br><br>`;
+                        let list = `<span class="highlight">CURSOS:</span><br><br>`;
                         for (const key in courseDB) {
-                            list += `<span class="path">[${key}]</span><br>   ${courseDB[key].title}<br><br>`;
+                            list += `<span class="path">[${key}]</span> - ${courseDB[key].title}<br><br>`;
                         }
-                        list += `<span style="color:#888">Uso: open [nombre]</span>`;
                         printOutput(list);
                         break;
 
                     case 'open':
-                        if (!arg1) {
-                            printOutput("Error: Debes especificar un curso. Escribe 'courses' para ver la lista.");
-                            return;
-                        }
-                        if (courseDB[arg1]) {
+                        if (arg1 && courseDB[arg1]) {
                             currentCourse = arg1;
                             const course = courseDB[arg1];
-                            let topicList = `<span class="highlight">${course.title}</span><br><span style="color:#888">${course.description}</span><br><br>TEMAS DISPONIBLES:<br>`;
-                            
+                            let topicList = `<span class="highlight">${course.title}</span><br><br>TEMAS:<br>`;
                             course.topics.forEach(t => {
-                                topicList += `  <span class="path">[${t.id}]</span> ${t.title}<br>`;
+                                topicList += `  <span class="path">[${t.id}]</span> ${t.title} (Archivo: ${t.file})<br>`;
                             });
-                            
-                            topicList += `<br><span class="path">Comando:</span> read [id]`;
                             printOutput(topicList);
                         } else {
-                            printOutput(`Error: El curso '${arg1}' no se encuentra en la base de datos.`);
+                            printOutput("Curso no encontrado.");
                         }
                         break;
 
+                    // --- AQUÍ ESTÁ LA MAGIA DEL FETCH ---
                     case 'read':
                         if (!currentCourse) {
-                            printOutput("Error: No estás dentro de ningún curso. Usa 'open [curso]' primero.");
+                            printOutput("Error: Abre un curso primero ('open lpic1').");
                             return;
                         }
                         if (!arg1) {
-                            printOutput("Error: Debes indicar el número de tema (ej: 'read 1').");
+                            printOutput("Error: Indica el ID del tema (ej: 'read 1').");
                             return;
                         }
-                        
+
                         const course = courseDB[currentCourse];
                         const topic = course.topics.find(t => t.id == arg1);
-                        
+
                         if (topic) {
-                            const htmlContent = `
-                                <div class="lesson-content">
-                                    <h4>Tema ${topic.id}: ${topic.title}</h4>
-                                    <div style="color:#d4d4d8;">${topic.content}</div>
-                                </div>
-                                <br>
-                                <span style="opacity:0.5; font-size:0.9em;">Fin del tema. Escribe 'read ${parseInt(arg1)+1}' para continuar.</span>
-                            `;
-                            printOutput(htmlContent);
+                            // Mostramos un mensaje de carga
+                            const loadingId = 'loading-' + Date.now();
+                            printOutput(`<div id="${loadingId}" style="color:#888">Cargando recurso ${topic.file}...</div>`);
+                            scrollToBottom();
+
+                            try {
+                                // 1. Ir a buscar el archivo
+                                const response = await fetch(topic.file);
+                                
+                                if (!response.ok) throw new Error("Archivo no encontrado");
+
+                                // 2. Convertir a texto
+                                const htmlContent = await response.text();
+
+                                // 3. Eliminar el mensaje de "Cargando..."
+                                document.getElementById(loadingId).remove();
+
+                                // 4. Imprimir el contenido real
+                                printOutput(htmlContent);
+
+                            } catch (error) {
+                                document.getElementById(loadingId).remove();
+                                printOutput(`<span style="color:red">Error: No se pudo cargar "${topic.file}".<br>Verifica que el archivo exista y uses un servidor local.</span>`);
+                            }
                         } else {
-                            printOutput("Error: Ese ID de tema no existe en este curso.");
+                            printOutput("ID de tema no válido.");
                         }
-                        break;
-
-                    case 'back':
-                        currentCourse = null;
-                        printOutput("Volviendo al menú principal...");
-                        break;
-
-                    case 'projects':
-                        printOutput(`
-<span class="highlight">MIS PROYECTOS:</span>
-  [EMPTY] - Esta sección está vacía por ahora.
-  Planeo subir aquí mis scripts de automatización.`);
                         break;
 
                     case 'clear':
                         output.innerHTML = '';
                         break;
-
                     default:
-                        printOutput(`Comando no encontrado: ${mainCmd}. Escribe 'help'.`);
+                        printOutput(`Comando desconocido.`);
                 }
             }
 
-            // --- UTILIDADES ---
             function printOutput(html, isCommand = false) {
                 const div = document.createElement('div');
                 div.className = 'line';
@@ -363,7 +300,6 @@
                 terminalBody.scrollTop = terminalBody.scrollHeight;
             }
 
-            // Mantener foco
             document.addEventListener('click', () => input.focus());
         });
     </script>
