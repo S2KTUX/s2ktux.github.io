@@ -152,8 +152,8 @@
                 </div>
             </div>
             
-            <!-- Terminal en hero -->
-            <div id="terminal" class="terminal-window max-w-xl mx-auto md:ml-auto shadow-2xl">
+        <!-- Terminal en hero  -->
+            <div class="terminal-window max-w-2xl mx-auto md:ml-auto shadow-2xl h-[560px]">
                 <div class="terminal-header">
                     <div class="terminal-dots">
                         <div class="terminal-dot bg-red-500"></div>
@@ -164,9 +164,8 @@
                         s2ktux@arch: ~ 
                     </div>
                 </div>
-                <div id="terminal-body" class="p-6 bg-black/90 h-[450px]"></div>
+                <div id="terminal-body" class="bg-black/95 h-[calc(100%-52px)]"></div>
             </div>
-        </div>
         
         <!-- Scroll indicator -->
         <div class="absolute bottom-12 left-1/2 flex flex-col items-center gap-2 text-xs text-zinc-500">
@@ -483,7 +482,9 @@
                 greetings: 'Bienvenido a S2KTUX Terminal Interactivo\nEscribe "help" para ver comandos disponibles.\n\n',
                 prompt: 's2ktux@arch ~ $ ',
                 name: 's2ktux-terminal',
-                width: '100%'
+                height: 480,
+                width: '100%',
+                name: 's2ktux'
             });
         });
         
