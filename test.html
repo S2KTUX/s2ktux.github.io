@@ -112,7 +112,7 @@
         .orb-3 { width: 300px; height: 300px; background: #fff; opacity: 0.1; top: 40%; left: 60%; animation-delay: -10s; }
         @keyframes floatOrb { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(80px, 60px) scale(1.15); } }
 
-        /* --- 6. NAVIGATION (FIXED ALIGNMENT) --- */
+        /* --- 6. NAVIGATION --- */
         .floating-nav {
             position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
             background: var(--nav-bg); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
@@ -121,11 +121,10 @@
             box-shadow: 0 10px 40px rgba(0,0,0,0.2);
             z-index: 1000; display: flex; align-items: center;
             transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, top 0.3s, width 0.3s;
-            width: auto; /* Ajusta al contenido */
+            width: auto;
         }
         .nav-hidden { transform: translate(-50%, -150%); opacity: 0; }
 
-        /* Desktop: Links Centered */
         .nav-links { display: flex; gap: 2.5rem; }
         .nav-link { color: var(--text-muted); text-decoration: none; font-size: 0.95rem; font-weight: 500; transition: 0.3s; cursor: pointer; position: relative; }
         .nav-link:hover, .nav-link.active { color: var(--text-main); text-shadow: 0 0 8px rgba(255,255,255,0.2); }
@@ -135,7 +134,6 @@
             box-shadow: 0 0 8px var(--accent);
         }
 
-        /* Mobile: Logo Left, Burger Right (Hidden by default on desktop) */
         .mobile-header-content { display: none; width: 100%; justify-content: space-between; align-items: center; }
         .brand-logo { font-weight: 800; font-size: 1.2rem; letter-spacing: 1px; color: var(--text-main); text-decoration: none; }
         .hamburger-btn { display: none; background: none; border: none; cursor: pointer; flex-direction: column; gap: 5px; z-index: 1002; padding: 5px; }
@@ -164,7 +162,7 @@
         .theme-left { display: flex; align-items: center; gap: 10px; }
         .color-circle { width: 16px; height: 16px; border-radius: 50%; border:1px solid rgba(255,255,255,0.2); }
 
-        /* --- 7. MOBILE MENU OVERLAY --- */
+        /* --- 7. MOBILE MENU --- */
         .mobile-menu-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--bg-color); z-index: 1001;
@@ -173,9 +171,7 @@
             backdrop-filter: blur(20px);
         }
         .mobile-menu-overlay.active { opacity: 1; visibility: visible; }
-        .mobile-nav-link {
-            font-size: 2rem; font-weight: 800; color: var(--text-main); text-decoration: none; text-transform: uppercase; transition: 0.3s;
-        }
+        .mobile-nav-link { font-size: 2rem; font-weight: 800; color: var(--text-main); text-decoration: none; text-transform: uppercase; transition: 0.3s; }
         .mobile-nav-link:hover { color: var(--accent); transform: scale(1.1); }
 
         /* --- 8. MAIN LAYOUT --- */
@@ -186,7 +182,7 @@
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* --- 9. HOME SECTIONS --- */
-        .hero { text-align: center; padding: 2rem 1rem; margin-bottom: 6rem; } /* Más espacio abajo */
+        .hero { text-align: center; padding: 2rem 1rem; margin-bottom: 6rem; }
         .hero h1 {
             font-size: 4.5rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 1.5rem;
             background: linear-gradient(to right, var(--text-main), var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
@@ -196,18 +192,24 @@
         .cursor { display: inline-block; width: 8px; background-color: var(--accent); animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* Nuevas Secciones */
-        .section-spacer { margin-top: 8rem; margin-bottom: 4rem; } /* Separación generosa */
+        /* SECCIÓN DE METODOLOGÍA (NUEVA) */
+        .section-spacer { margin-top: 8rem; margin-bottom: 4rem; }
         .section-header { text-align: center; margin-bottom: 3rem; }
         .section-header h2 { font-size: 2.5rem; color: var(--text-main); margin-bottom: 1rem; }
         .section-header p { color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto; }
 
-        /* Stats Grid */
-        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; margin-top: 3rem; }
-        .stat-card { text-align: center; padding: 30px 20px; background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); transition: 0.3s; }
-        .stat-card:hover { transform: translateY(-5px); border-color: var(--accent); }
-        .stat-number { font-size: 3rem; font-weight: 800; color: var(--accent); display: block; margin-bottom: 10px; font-family: var(--font-mono); }
-        .stat-label { color: var(--text-muted); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .methodology-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .method-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); padding: 40px; border-radius: var(--radius);
+            text-align: center; transition: 0.3s;
+        }
+        .method-card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .method-icon {
+            font-size: 3rem; margin-bottom: 20px; display: inline-block; padding: 20px; border-radius: 50%;
+            background: var(--accent-subtle); color: var(--accent);
+        }
+        .method-card h3 { color: var(--text-main); margin-bottom: 15px; font-size: 1.3rem; }
+        .method-card p { color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; }
 
         /* Skills */
         .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
@@ -215,7 +217,7 @@
         .skill-bar-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
         .skill-bar-fill { height: 100%; background: var(--accent); border-radius: 4px; }
 
-        /* Roadmap & Ecosystem (Reused Styles) */
+        /* Roadmap & Ecosystem */
         .roadmap-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 2rem; }
         .roadmap-step {
             background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; border-radius: var(--radius);
@@ -269,79 +271,69 @@
         .chapter-info h4 { color: var(--text-main); font-size: 1.1rem; margin-bottom: 4px; }
         .chapter-info span { color: var(--text-muted); font-size: 0.85rem; font-family: var(--font-mono); }
 
-        /* --- 11. TERMINAL --- */
+        /* --- 11. TERMINAL (MEJORADA) --- */
         .terminal-container {
             width: 95%; max-width: 1100px; height: 80vh; margin: 0 auto; background: var(--term-bg);
             border-radius: 12px; border: 1px solid var(--term-border); display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
-        .term-header { background: var(--term-header); padding: 10px 20px; border-radius: 12px 12px 0 0; border-bottom: 1px solid var(--term-border); display: flex; gap: 8px; }
+        .term-header { 
+            background: var(--term-header); padding: 10px 20px; border-radius: 12px 12px 0 0; border-bottom: 1px solid var(--term-border); 
+            display: flex; justify-content: center; align-items: center; position: relative; 
+        }
+        .term-title {
+            font-family: var(--font-mono); font-size: 0.85rem; color: var(--text-muted); background: rgba(0,0,0,0.2);
+            padding: 2px 10px; border-radius: 4px;
+        }
+        .window-controls { position: absolute; left: 20px; display: flex; gap: 8px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; }
         .dot.r { background: #ef4444; } .dot.y { background: #eab308; } .dot.g { background: #22c55e; }
-        .term-body { flex: 1; padding: 20px; font-family: var(--font-mono); overflow-y: auto; color: var(--term-text); scroll-behavior: smooth; }
+        
+        .term-body { 
+            flex: 1; padding: 20px; font-family: var(--font-mono); overflow-y: auto; color: var(--term-text); scroll-behavior: smooth; 
+            /* Evita scroll horizontal en móviles */
+            overflow-x: hidden; 
+        }
         .term-line { display: block; margin-bottom: 5px; word-break: break-all; line-height: 1.5; }
-        .term-input-line { display: flex; align-items: center; margin-top: 5px; }
+        .term-input-wrapper { display: flex; align-items: center; margin-top: 5px; width: 100%; }
         .term-prompt { color: var(--accent); margin-right: 10px; font-weight: bold; white-space: nowrap; user-select: none; }
-        #term-input { background: transparent; border: none; color: var(--term-text); width: 100%; font-family: var(--font-mono); outline: none; caret-color: var(--accent); }
-        .cmd-info { color: #3b82f6; } .cmd-success { color: #10b981; } .cmd-error { color: #ef4444; }
+        #term-input { 
+            background: transparent; border: none; color: var(--term-text); width: 100%; font-family: var(--font-mono); 
+            outline: none; caret-color: var(--accent); font-size: inherit; 
+        }
+        .cmd-info { color: #3b82f6; } .cmd-success { color: #10b981; } .cmd-error { color: #ef4444; } .cmd-warn { color: #eab308; }
 
-        /* --- 12. FOOTER (FIXED CENTERING) --- */
+        /* --- 12. FOOTER --- */
         .modern-footer {
             width: 100%; background: var(--footer-bg); border-top: 1px solid var(--border-color);
             padding: 50px 0; margin-top: auto; z-index: 900;
         }
         .footer-content {
             width: 100%; max-width: 1600px; margin: 0 auto; padding: 0 40px;
-            /* TRUCO DE CENTRADO PERFECTO */
-            display: grid;
-            grid-template-columns: 1fr auto 1fr; /* Izquierda (espacio), Centro (ancho auto), Derecha (espacio) */
-            align-items: center;
+            display: grid; grid-template-columns: 1fr auto 1fr; align-items: center;
         }
-        .footer-center {
-            grid-column: 2; /* Situar en la columna central */
-            text-align: center;
-        }
-        .footer-logo { 
-            font-size: 2rem; font-weight: 900; letter-spacing: -1px; color: var(--text-main); 
-            text-decoration: none; background: linear-gradient(90deg, var(--text-main), var(--accent));
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
+        .footer-center { grid-column: 2; text-align: center; }
+        .footer-logo { font-size: 2rem; font-weight: 900; letter-spacing: -1px; color: var(--text-main); text-decoration: none; background: linear-gradient(90deg, var(--text-main), var(--accent)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .footer-slogan { color: var(--text-main); font-size: 1.1rem; font-weight: 600; margin-top: 5px; }
-        .social-icons { display: flex; gap: 25px; grid-column: 3; justify-self: end; } /* Alinear a la derecha */
+        .social-icons { display: flex; gap: 25px; grid-column: 3; justify-self: end; }
         .icon-svg { width: 24px; height: 24px; fill: var(--text-muted); transition: 0.3s; }
         .social-icons a:hover .icon-svg { fill: var(--accent); transform: translateY(-3px); }
 
         /* --- 13. RESPONSIVE --- */
         @media (max-width: 768px) {
             .floating-nav { width: 90%; padding: 0.8rem 1.5rem; justify-content: space-between; top: 15px; }
-            .nav-links { display: none; } /* Ocultar enlaces desktop */
-            .mobile-header-content { display: flex; } /* Mostrar header móvil */
-            
+            .nav-links { display: none; }
+            .mobile-header-content { display: flex; }
             .hero h1 { font-size: 2.8rem; }
             .hero p { font-size: 1.1rem; }
-            
             main { padding-top: 100px; padding-left: 15px; padding-right: 15px; }
-            
-            .stats-grid { grid-template-columns: 1fr; }
-            .skills-grid { grid-template-columns: 1fr; }
-            .content-grid { grid-template-columns: 1fr; }
-            .roadmap-container { grid-template-columns: 1fr; }
-            
+            .methodology-grid, .skills-grid, .content-grid, .roadmap-container { grid-template-columns: 1fr; }
             .terminal-container { height: 70vh; border-radius: 0; border-left: none; border-right: none; }
             .term-body { font-size: 0.9rem; padding: 15px; }
             .reader-container { padding: 0 20px 40px; }
-            
-            /* Footer Mobile: Stack vertical */
-            .footer-content { 
-                display: flex; 
-                flex-direction: column; 
-                gap: 30px; 
-                text-align: center; 
-                padding: 0 20px; 
-            }
+            .footer-content { display: flex; flex-direction: column; gap: 30px; text-align: center; padding: 0 20px; }
             .footer-center { grid-column: auto; order: 2; }
             .social-icons { grid-column: auto; order: 3; justify-self: center; }
             .footer-logo { order: 1; font-size: 1.8rem; }
-            
             .theme-floater { top: auto; bottom: 20px; right: 20px; }
             .theme-selector { bottom: 60px; top: auto; right: 0; }
         }
@@ -352,16 +344,14 @@
     <!-- SPLASH SCREEN -->
     <div id="splash" class="splash-screen">
         <div class="splash-logo">S2KTUX</div>
-        <div class="splash-bar">
-            <div class="splash-progress"></div>
-        </div>
+        <div class="splash-bar"><div class="splash-progress"></div></div>
     </div>
 
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
 
-    <!-- MOBILE MENU OVERLAY -->
+    <!-- MOBILE MENU -->
     <div id="mobile-menu" class="mobile-menu-overlay">
         <a href="#" class="mobile-nav-link" onclick="navigate('home'); toggleMobileMenu()">Inicio</a>
         <a href="#" class="mobile-nav-link" onclick="navigate('courses'); toggleMobileMenu()">Cursos</a>
@@ -371,32 +361,24 @@
 
     <!-- NAV BAR -->
     <nav class="floating-nav" id="mainNav">
-        
-        <!-- DESKTOP: Links Centrados -->
         <div class="nav-links">
             <a class="nav-link active" onclick="navigate('home')">Inicio</a>
             <a class="nav-link" onclick="navigate('courses')">Cursos</a>
             <a class="nav-link" onclick="navigate('terminal')">Terminal</a>
             <a class="nav-link" onclick="navigate('projects')">Proyectos</a>
         </div>
-
-        <!-- MOBILE: Logo (Izq) + Burger (Der) -->
         <div class="mobile-header-content">
             <a href="#" class="brand-logo" onclick="navigate('home'); toggleMobileMenu()">S2KTUX</a>
             <button class="hamburger-btn" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
             </button>
         </div>
     </nav>
 
-    <!-- BOTON TEMA FLOTANTE -->
+    <!-- BOTON TEMA -->
     <div class="theme-floater">
         <button class="theme-btn" onclick="toggleThemeMenu()" title="Temas">
-            <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
+            <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
         <div class="theme-selector" id="themeMenu">
             <div class="theme-group-title">Modo Oscuro</div>
@@ -420,20 +402,27 @@
                 <p><span id="typing-text"></span><span class="cursor"></span></p>
             </div>
 
-            <!-- SECCIÓN: ESTADÍSTICAS -->
+            <!-- NUEVA SECCIÓN: METODOLOGÍA -->
             <div class="section-spacer">
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <span class="stat-number">5+</span>
-                        <span class="stat-label">Cursos Oficiales</span>
+                <div class="section-header">
+                    <h2>¿Cómo aprenderás?</h2>
+                    <p>Nuestra metodología combina teoría sólida con práctica inmediata en entornos reales.</p>
+                </div>
+                <div class="methodology-grid">
+                    <div class="method-card">
+                        <div class="method-icon">📚</div>
+                        <h3>Teoría Estructurada</h3>
+                        <p>Contenido curado paso a paso. Desde la instalación del sistema hasta la configuración avanzada de servicios.</p>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-number">2k+</span>
-                        <span class="stat-label">Estudiantes Activos</span>
+                    <div class="method-card">
+                        <div class="method-icon">💻</div>
+                        <h3>Práctica en Terminal</h3>
+                        <p>No solo leas, ejecuta. Usa nuestra terminal interactiva integrada para memorizar comandos.</p>
                     </div>
-                    <div class="stat-card">
-                        <span class="stat-number">50h</span>
-                        <span class="stat-label">Contenido Práctico</span>
+                    <div class="method-card">
+                        <div class="method-icon">🚀</div>
+                        <h3>Proyectos Reales</h3>
+                        <p>Aplica tus conocimientos desplegando servidores, configurando firewalls y automatizando tareas.</p>
                     </div>
                 </div>
             </div>
@@ -448,12 +437,12 @@
                     <div class="roadmap-step">
                         <div class="step-number">01</div>
                         <h3>Fundamentos</h3>
-                        <p>Domina la línea de comandos, permisos, sistema de archivos y gestión de procesos. La base de todo administrador.</p>
+                        <p>Domina la línea de comandos, permisos, sistema de archivos y gestión de procesos.</p>
                     </div>
                     <div class="roadmap-step">
                         <div class="step-number">02</div>
                         <h3>Administración</h3>
-                        <p>Configura redes, almacenamiento (LVM), usuarios y servicios críticos en RHEL y Debian.</p>
+                        <p>Configura redes, almacenamiento (LVM), usuarios y servicios en RHEL y Debian.</p>
                     </div>
                     <div class="roadmap-step">
                         <div class="step-number">03</div>
@@ -571,19 +560,24 @@
         <!-- TERMINAL -->
         <section id="terminal" class="page-section">
             <div style="text-align:center; margin-bottom:20px; color:var(--text-muted);">
-                <p>S2KTUX Terminal v7.0 [Interactive]</p>
+                <p>S2KTUX Terminal v7.1 [Interactive Mode]</p>
             </div>
             <div class="terminal-container">
                 <div class="term-header">
-                    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+                    <div class="window-controls">
+                        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+                    </div>
+                    <!-- TÍTULO CENTRADO -->
+                    <div class="term-title" id="term-title">visitor@s2ktux:~</div>
                 </div>
                 <div class="term-body" id="term-body">
-                    <div class="term-line">S2KTUX OS [Version 7.0.1]</div>
+                    <div class="term-line">S2KTUX OS [Version 7.1.0]</div>
                     <div class="term-line">(c) 2024 S2KTUX Corp. All rights reserved.</div>
                     <div class="term-line"><br></div>
-                    <div class="term-input-line">
+                    <!-- Wrapper para mantener el input al final -->
+                    <div class="term-input-wrapper" id="term-input-wrapper">
                         <span class="term-prompt">visitor@s2ktux:~$</span>
-                        <input type="text" id="term-input" autocomplete="off">
+                        <input type="text" id="term-input" autocomplete="off" spellcheck="false">
                     </div>
                 </div>
             </div>
@@ -623,17 +617,12 @@
     <!-- FOOTER -->
     <footer class="modern-footer">
         <div class="footer-content">
-            <!-- Izquierda: Espacio + Logo (en desktop) -->
             <div style="grid-column: 1; display: flex; justify-content: flex-start; align-items: center;">
                 <a href="#" class="footer-logo">S2KTUX</a>
             </div>
-            
-            <!-- Centro: Texto -->
             <div class="footer-center">
                 <div class="footer-slogan">Domina Linux. Sin límites.</div>
             </div>
-            
-            <!-- Derecha: Iconos -->
             <div class="social-icons">
                 <a href="https://github.com/s2ktux" target="_blank" aria-label="GitHub">
                     <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
@@ -856,49 +845,187 @@
             navigate('project-view');
         }
 
-        // --- TERMINAL ---
+        // --- TERMINAL (FIXED & ENHANCED) ---
         const termInput = document.getElementById('term-input');
         const termBody = document.getElementById('term-body');
+        const termInputWrapper = document.getElementById('term-input-wrapper');
+        const termTitle = document.getElementById('term-title');
         let commandHistory = [];
+
+        // Sistema de archivos virtual simulado
+        let virtualFS = {
+            "~": ["cursos", "proyectos", "README.md"],
+            "~/cursos": ["rhcsa", "lpic1"],
+            "~/proyectos": ["deployer", "ansible"],
+            "files": {
+                "README.md": "Bienvenido a S2KTUX. Escribe 'help' para comenzar."
+            }
+        };
+
+        // Actualizar título y prompt
+        function updateTerminalUI() {
+            const fullPath = `visitor@s2ktux:${currentPath}$`;
+            termTitle.innerText = fullPath.replace('$', ''); // Para el título
+            document.querySelector('.term-prompt').innerText = fullPath; // Para el prompt
+        }
+
         termInput.addEventListener('keydown', function(e) {
             if (e.key === 'Enter') {
                 const cmd = this.value.trim();
+                
+                // 1. Crear línea de historial (comando ya escrito)
                 if (cmd) {
                     commandHistory.push(cmd);
-                    const promptText = `<span class="term-prompt">visitor@s2ktux:${currentPath}$</span>`;
-                    const echoLine = document.createElement('div');
-                    echoLine.className = 'term-line';
-                    echoLine.innerHTML = `${promptText} ${cmd}`;
-                    termBody.insertBefore(echoLine, this.parentElement);
+                    const historyLine = document.createElement('div');
+                    historyLine.className = 'term-line';
+                    historyLine.innerHTML = `<span style="color:var(--accent); font-weight:bold;">${document.querySelector('.term-prompt').innerText}</span> ${cmd}`;
+                    
+                    // Insertar ANTES del input wrapper
+                    termBody.insertBefore(historyLine, termInputWrapper);
+                    
+                    // Procesar comando
                     processTermCommand(cmd);
+                } else {
+                    // Si está vacío, solo nueva línea vacía
+                    const emptyLine = document.createElement('div');
+                    emptyLine.className = 'term-line';
+                    termBody.insertBefore(emptyLine, termInputWrapper);
                 }
+
+                // 2. Limpiar input
                 this.value = '';
+
+                // 3. Scroll al fondo
                 termBody.scrollTop = termBody.scrollHeight;
+
+                // 4. FOCO AUTOMÁTICO (Solución al problema de perder foco)
+                setTimeout(() => termInput.focus(), 0);
             }
+        });
+
+        // Click en el terminal siempre devuelve el foco al input
+        document.getElementById('terminal').addEventListener('click', () => {
+            termInput.focus();
         });
 
         function processTermCommand(cmd) {
             const args = cmd.split(' ');
             const mainCmd = args[0].toLowerCase();
+            const arg1 = args[1];
+            
             const response = document.createElement('div');
             response.className = 'term-line';
             
             switch(mainCmd) {
-                case 'help': response.innerHTML = `<span class="cmd-info">Comandos:</span> help, ls, cd, whoami, date, uname, neofetch, history, clear, exit`; break;
-                case 'ls': if (currentPath === '~') response.innerHTML = "cursos  proyectos  README.md"; else if (currentPath === '~/cursos') response.innerHTML = "rhcsa/  lpic1/"; else response.innerHTML = "bash: ls..."; break;
-                case 'cd': if (!args[1]) { currentPath = '~'; } else if (args[1] === '..') { currentPath = '~'; navigate('home'); } else if (args[1] === 'cursos') { currentPath = '~/cursos'; navigate('courses'); } else if (args[1] === 'proyectos') { currentPath = '~/proyectos'; navigate('projects'); } break;
+                case 'help':
+                    response.innerHTML = `<span class="cmd-info">Comandos disponibles:</span><br>
+                    - help: Muestra esta ayuda<br>
+                    - ls: Lista archivos<br>
+                    - cd: Cambia directorio<br>
+                    - pwd: Muestra ruta actual<br>
+                    - echo [texto]: Imprime texto<br>
+                    - clear: Limpia pantalla<br>
+                    - whoami: Usuario actual<br>
+                    - date: Fecha<br>
+                    - uname -a: Info sistema<br>
+                    - history: Historial<br>
+                    - mkdir [nombre]: Crea directorio<br>
+                    - touch [archivo]: Crea archivo<br>
+                    - rm [archivo]: Borra archivo<br>
+                    - apt update: Simula actualización<br>
+                    - exit: Salir`;
+                    break;
+                case 'ls':
+                    if (virtualFS[currentPath]) {
+                        response.innerHTML = virtualFS[currentPath].join('  ');
+                    } else {
+                        response.innerHTML = `<span class="cmd-error">ls: cannot access '${currentPath}': No such file or directory</span>`;
+                    }
+                    break;
+                case 'cd':
+                    if (!arg1) {
+                        currentPath = '~';
+                    } else if (arg1 === '..') {
+                        currentPath = '~';
+                        navigate('home');
+                    } else if (arg1 === 'cursos') {
+                        currentPath = '~/cursos';
+                        navigate('courses');
+                    } else if (arg1 === 'proyectos') {
+                        currentPath = '~/proyectos';
+                        navigate('projects');
+                    } else {
+                        response.innerHTML = `<span class="cmd-error">bash: cd: ${arg1}: No such file or directory</span>`;
+                    }
+                    updateTerminalUI();
+                    break;
+                case 'pwd':
+                    response.innerHTML = `/home/visitor${currentPath === '~' ? '' : currentPath.replace('~', '')}`;
+                    break;
+                case 'echo':
+                    response.innerHTML = args.slice(1).join(' ') || '';
+                    break;
+                case 'mkdir':
+                    if(arg1) {
+                        if(!virtualFS[currentPath].includes(arg1)) {
+                            virtualFS[currentPath].push(arg1);
+                            response.innerHTML = ''; // Silent success like real mkdir
+                        } else {
+                            response.innerHTML = `<span class="cmd-error">mkdir: cannot create directory '${arg1}': File exists</span>`;
+                        }
+                    } else {
+                        response.innerHTML = `mkdir: missing operand`;
+                    }
+                    break;
+                case 'touch':
+                    if(arg1) {
+                        if(!virtualFS[currentPath].includes(arg1)) {
+                            virtualFS[currentPath].push(arg1);
+                            response.innerHTML = '';
+                        } else {
+                            response.innerHTML = ``; // touch updates timestamp, no error usually
+                        }
+                    }
+                    break;
+                case 'rm':
+                    if(arg1) {
+                        const idx = virtualFS[currentPath].indexOf(arg1);
+                        if(idx > -1) {
+                            virtualFS[currentPath].splice(idx, 1);
+                            response.innerHTML = '';
+                        } else {
+                            response.innerHTML = `<span class="cmd-error">rm: cannot remove '${arg1}': No such file or directory</span>`;
+                        }
+                    }
+                    break;
+                case 'apt':
+                    if(arg1 === 'update') {
+                        response.innerHTML = `<span class="cmd-info">Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease</span><br>
+                        <span class="cmd-info">Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]</span><br>
+                        <span class="cmd-info">Get:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]</span><br>
+                        <span class="cmd-success">Reading package lists... Done</span><br>
+                        <span class="cmd-success">Building dependency tree... Done</span><br>
+                        <span class="cmd-success">Calculating upgrade... Done</span><br>
+                        <span class="cmd-success">0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.</span>`;
+                    } else {
+                        response.innerHTML = `apt: missing command`;
+                    }
+                    break;
                 case 'whoami': response.innerHTML = `<span class="cmd-success">visitor</span>`; break;
                 case 'date': response.innerHTML = new Date().toString(); break;
-                case 'uname': response.innerHTML = args[1] === '-a' ? "S2KTUX 7.0.0-generic x86_64" : "S2KTUX"; break;
-                case 'neofetch': response.innerHTML = `<div class="ascii-art">S2KTUX Linux<br>OS: S2KTUX v7.0<br>Host: Web Container<br>Kernel: 6.5.0<br>Uptime: 24 days<br>Shell: bash 5.1</div>`; break;
+                case 'uname': response.innerHTML = args[1] === '-a' ? "S2KTUX s2ktux-ssh 7.1.0-generic #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux" : "S2KTUX"; break;
+                case 'history': response.innerHTML = commandHistory.map((c, i) => `${i+1}  ${c}`).join('<br>'); break;
                 case 'clear': termBody.querySelectorAll('.term-line').forEach(l => l.remove()); return; 
-                case 'exit': navigate('home'); currentPath = '~'; return;
-                default: response.innerHTML = `<span class="cmd-error">bash: ${mainCmd}: not found</span>`;
+                case 'exit': navigate('home'); currentPath = '~'; updateTerminalUI(); return;
+                default: response.innerHTML = `<span class="cmd-error">bash: ${mainCmd}: command not found</span>`;
             }
-            termBody.insertBefore(response, termInput.parentElement);
-            termBody.appendChild(termInput.parentElement);
+            
+            // Insertar respuesta antes del input wrapper
+            termBody.insertBefore(response, termInputWrapper);
+            
+            // IMPORTANTE: Asegurar que el input wrapper siempre sea el último elemento
+            termBody.appendChild(termInputWrapper);
         }
-        document.getElementById('terminal').addEventListener('click', () => termInput.focus());
 
     </script>
 </body>
