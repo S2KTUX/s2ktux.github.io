@@ -27,6 +27,8 @@
             border-radius: 12px;
             box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
         
         .terminal-header {
@@ -107,8 +109,8 @@
 
     <!-- Hero con terminal integrado -->
     <section id="hero" class="hero-bg min-h-screen flex items-center pt-20">
-        <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-2 gap-16 items-center">
-            <div class="space-y-8">
+        <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-2 gap-16 items-stretch">
+            <div class="space-y-8 flex flex-col justify-center">
                 <div class="inline-flex items-center gap-2 bg-zinc-900 rounded-full px-5 py-2 text-xs tracking-widest">
                     <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
                     NUEVO: Terminal interactivo v2
@@ -152,8 +154,8 @@
                 </div>
             </div>
             
-        <!-- Terminal en hero  -->
-            <div class="terminal-window max-w-2xl mx-auto md:ml-auto shadow-2xl h-[560px]">
+            <!-- Terminal en hero -->
+            <div id="terminal" class="terminal-window max-w-xl mx-auto md:ml-auto shadow-2xl">
                 <div class="terminal-header">
                     <div class="terminal-dots">
                         <div class="terminal-dot bg-red-500"></div>
@@ -164,8 +166,9 @@
                         s2ktux@arch: ~ 
                     </div>
                 </div>
-                <div id="terminal-body" class="bg-black/95 h-[calc(100%-52px)]"></div>
+                <div id="terminal-body" class="p-6 bg-black/90 flex-1"></div>
             </div>
+        </div>
         
         <!-- Scroll indicator -->
         <div class="absolute bottom-12 left-1/2 flex flex-col items-center gap-2 text-xs text-zinc-500">
@@ -482,9 +485,8 @@
                 greetings: 'Bienvenido a S2KTUX Terminal Interactivo\nEscribe "help" para ver comandos disponibles.\n\n',
                 prompt: 's2ktux@arch ~ $ ',
                 name: 's2ktux-terminal',
-                height: 480,
                 width: '100%',
-                name: 's2ktux'
+                height: '100%'
             });
         });
         
