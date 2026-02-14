@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S2KTUX • Aprende Linux como un pro</title>
+    <!-- Tailwind CDN para un diseño moderno y rápido -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- jQuery y jQuery Terminal para el terminal interactivo -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/2.35.0/js/jquery.terminal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/2.35.0/css/jquery.terminal.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+        
+        :root {
+            --accent: #10b981; /* Verde terminal moderno */
+        }
+        
+        body {
+            font-family: 'JetBrains Mono', monospace;
+        }
+        
+        .terminal-window {
+            background: #111827;
+            border: 2px solid #1f2937;
+            border-radius: 12px;
+            box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.5);
+            overflow: hidden;
+        }
+        
+        .terminal-header {
+            background: #1f2937;
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .terminal-dots {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+        
+        .hero-bg {
+            background-image: linear-gradient(rgba(0,0,0,0.85), rgba(0,0,0,0.85)), url('https://picsum.photos/id/1015/1920/1080');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        .feature-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(16 185 129 / 0.2);
+        }
+        
+        .section-title {
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(to right, #10b981, #34d399);
+            border-radius: 9999px;
+        }
+    </style>
+</head>
+<body class="bg-zinc-950 text-zinc-300 overflow-x-hidden">
+    <!-- Navbar -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-zinc-900/80 backdrop-blur-lg border-b border-zinc-800">
+        <div class="max-w-screen-2xl mx-auto px-8 py-5 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-emerald-500 rounded-xl flex items-center justify-center text-white font-bold text-xl">S</div>
+                <div>
+                    <span class="text-2xl font-bold tracking-tighter text-white">S2KTUX</span>
+                    <span class="text-emerald-400 text-xs tracking-widest block -mt-1">LINUX ACADEMY</span>
+                </div>
+            </div>
+            <div class="hidden md:flex items-center gap-10 text-sm uppercase tracking-widest font-medium">
+                <a href="#hero" class="hover:text-emerald-400 transition-colors">Inicio</a>
+                <a href="#about" class="hover:text-emerald-400 transition-colors">Sobre</a>
+                <a href="#cursos" class="hover:text-emerald-400 transition-colors">Cursos</a>
+                <a href="#showcase" class="hover:text-emerald-400 transition-colors">Showcase</a>
+                <a href="#comunidad" class="hover:text-emerald-400 transition-colors">Comunidad</a>
+            </div>
+            <a href="#comunidad" 
+               class="px-8 py-3 bg-emerald-500 hover:bg-emerald-600 transition-colors rounded-2xl text-sm font-semibold text-black">
+                Únete gratis
+            </a>
+        </div>
+    </nav>
+
+    <!-- Hero con terminal integrado -->
+    <section id="hero" class="hero-bg min-h-screen flex items-center pt-20">
+        <div class="max-w-screen-2xl mx-auto px-8 grid md:grid-cols-2 gap-16 items-center">
+            <div class="space-y-8">
+                <div class="inline-flex items-center gap-2 bg-zinc-900 rounded-full px-5 py-2 text-xs tracking-widest">
+                    <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                    NUEVO: Terminal interactivo v2
+                </div>
+                
+                <h1 class="text-7xl md:text-8xl font-bold tracking-tighter leading-none text-white">
+                    Domina Linux.<br>
+                    <span class="text-emerald-400">Desde cero.</span>
+                </h1>
+                
+                <p class="text-xl text-zinc-400 max-w-lg">
+                    Cursos prácticos, proyectos reales y una comunidad que vive en el terminal. 
+                    Aprende como un sysadmin real.
+                </p>
+                
+                <div class="flex items-center gap-6">
+                    <a href="#cursos" 
+                       class="px-10 py-4 bg-white text-zinc-950 font-semibold rounded-3xl flex items-center gap-3 hover:scale-105 transition-all">
+                        Ver cursos
+                        <span class="text-2xl">→</span>
+                    </a>
+                    <a href="#terminal" 
+                       class="px-10 py-4 border border-zinc-700 hover:bg-zinc-900 rounded-3xl flex items-center gap-3 transition-all">
+                        Probar terminal
+                    </a>
+                </div>
+                
+                <div class="flex items-center gap-12 text-sm">
+                    <div>
+                        <div class="text-emerald-400 font-mono text-4xl font-bold">42</div>
+                        <div class="text-zinc-500">Cursos completos</div>
+                    </div>
+                    <div>
+                        <div class="text-emerald-400 font-mono text-4xl font-bold">12k</div>
+                        <div class="text-zinc-500">Estudiantes</div>
+                    </div>
+                    <div>
+                        <div class="text-emerald-400 font-mono text-4xl font-bold">∞</div>
+                        <div class="text-zinc-500">Proyectos reales</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Terminal en hero -->
+            <div id="terminal" class="terminal-window max-w-lg mx-auto md:ml-auto shadow-2xl">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <div class="terminal-dot bg-red-500"></div>
+                        <div class="terminal-dot bg-yellow-500"></div>
+                        <div class="terminal-dot bg-emerald-500"></div>
+                    </div>
+                    <div class="flex-1 text-center text-xs text-zinc-400 font-medium tracking-widest">
+                        s2ktux@arch: ~ 
+                    </div>
+                </div>
+                <div class="p-6 min-h-[380px] bg-black/90">
+                    <!-- Aquí se inyecta el terminal -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-12 left-1/2 flex flex-col items-center gap-2 text-xs text-zinc-500">
+            <div class="w-px h-12 bg-gradient-to-b from-transparent via-emerald-500 to-transparent"></div>
+            DESPLAZA PARA EXPLORAR
+        </div>
+    </section>
+
+    <!-- Sobre nosotros -->
+    <section id="about" class="py-24 bg-zinc-900">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="grid md:grid-cols-12 gap-16 items-center">
+                <div class="md:col-span-5">
+                    <div class="sticky top-24">
+                        <div class="uppercase text-emerald-400 text-sm tracking-[3px] font-medium mb-4">¿Quiénes somos?</div>
+                        <h2 class="text-5xl font-bold leading-tight text-white mb-8">
+                            No solo teoría.<br>
+                            Aprendizaje <span class="text-emerald-400">real</span>.
+                        </h2>
+                        <p class="text-zinc-400 text-lg leading-relaxed">
+                            Nacimos en 2024 porque estamos hartos de tutoriales de 2018 que nadie entiende. 
+                            Aquí aprendes Linux instalándolo, rompiéndolo y arreglándolo. Como en la vida real.
+                        </p>
+                        <div class="mt-12 flex items-center gap-6">
+                            <img src="https://picsum.photos/id/64/80/80" alt="Fundador" class="w-16 h-16 rounded-2xl">
+                            <div>
+                                <div class="font-semibold">S2K • Fundador</div>
+                                <div class="text-emerald-400 text-sm">ex-DevOps @ AWS</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-span-7">
+                    <div class="grid grid-cols-2 gap-8">
+                        <div class="bg-zinc-950 p-8 rounded-3xl border border-zinc-800">
+                            <div class="text-emerald-400 text-6xl mb-6">01</div>
+                            <div class="text-2xl font-semibold mb-3">Desde cero</div>
+                            <div class="text-zinc-400">Instalación de Arch, Ubuntu, Fedora… todo con comandos reales.</div>
+                        </div>
+                        <div class="bg-zinc-950 p-8 rounded-3xl border border-zinc-800">
+                            <div class="text-emerald-400 text-6xl mb-6">02</div>
+                            <div class="text-2xl font-semibold mb-3">Proyectos vivos</div>
+                            <div class="text-zinc-400">Servidores, redes, automatización, containers… que puedes desplegar hoy.</div>
+                        </div>
+                        <div class="bg-zinc-950 p-8 rounded-3xl border border-zinc-800">
+                            <div class="text-emerald-400 text-6xl mb-6">03</div>
+                            <div class="text-2xl font-semibold mb-3">Comunidad activa</div>
+                            <div class="text-zinc-400">Discord, Matrix y un servidor propio donde todos resolvemos problemas juntos.</div>
+                        </div>
+                        <div class="bg-zinc-950 p-8 rounded-3xl border border-zinc-800">
+                            <div class="text-emerald-400 text-6xl mb-6">04</div>
+                            <div class="text-2xl font-semibold mb-3">Actualizado 2026</div>
+                            <div class="text-zinc-400">Hyprland, NixOS, Wayland, Systemd… todo lo que está en la cresta de la ola.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cursos -->
+    <section id="cursos" class="py-24">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="text-center mb-16">
+                <div class="uppercase text-xs tracking-widest text-emerald-400 mb-3">CURSOS PRÁCTICOS</div>
+                <h2 class="text-5xl font-bold text-white section-title">Aprende haciendo</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- Curso 1 -->
+                <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden group">
+                    <div class="h-56 bg-[url('https://picsum.photos/id/1018/800/600')] bg-cover relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 text-emerald-400 text-sm uppercase tracking-widest">Nivel 1</div>
+                    </div>
+                    <div class="p-8">
+                        <div class="text-2xl font-semibold mb-2">Linux desde cero</div>
+                        <div class="text-zinc-400 mb-6">Instalación, comandos básicos, shell scripting. Tu primera máquina virtual en 3 horas.</div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-emerald-400 font-mono text-sm">12 módulos</div>
+                            <a href="#" class="text-xs uppercase tracking-widest bg-emerald-500/10 text-emerald-400 px-6 py-3 rounded-2xl hover:bg-emerald-500 hover:text-black transition-all">Empezar gratis</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Curso 2 -->
+                <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden group">
+                    <div class="h-56 bg-[url('https://picsum.photos/id/870/800/600')] bg-cover relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 text-emerald-400 text-sm uppercase tracking-widest">Nivel 2</div>
+                    </div>
+                    <div class="p-8">
+                        <div class="text-2xl font-semibold mb-2">Servidores y redes</div>
+                        <div class="text-zinc-400 mb-6">Nginx, Docker, firewalls, WireGuard. Monta tu propio servidor en casa.</div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-emerald-400 font-mono text-sm">18 módulos</div>
+                            <a href="#" class="text-xs uppercase tracking-widest bg-emerald-500/10 text-emerald-400 px-6 py-3 rounded-2xl hover:bg-emerald-500 hover:text-black transition-all">Ver curso</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Curso 3 -->
+                <div class="feature-card bg-zinc-900 border border-zinc-800 rounded-3xl overflow-hidden group">
+                    <div class="h-56 bg-[url('https://picsum.photos/id/201/800/600')] bg-cover relative">
+                        <div class="absolute inset-0 bg-gradient-to-t from-zinc-900 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 text-emerald-400 text-sm uppercase tracking-widest">Avanzado</div>
+                    </div>
+                    <div class="p-8">
+                        <div class="text-2xl font-semibold mb-2">Hyprland & NixOS</div>
+                        <div class="text-zinc-400 mb-6">Configura un desktop Wayland ultrarrápido y gestiona tu sistema con Nix.</div>
+                        <div class="flex justify-between items-center">
+                            <div class="text-emerald-400 font-mono text-sm">10 módulos</div>
+                            <a href="#" class="text-xs uppercase tracking-widest bg-emerald-500/10 text-emerald-400 px-6 py-3 rounded-2xl hover:bg-emerald-500 hover:text-black transition-all">Próximamente</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Showcase de setups Linux -->
+    <section id="showcase" class="py-24 bg-zinc-900">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="flex justify-between items-end mb-12">
+                <div>
+                    <div class="uppercase text-xs tracking-widest text-emerald-400">SHOWCASE</div>
+                    <h2 class="text-5xl font-bold text-white">Setups reales de la comunidad</h2>
+                </div>
+                <a href="#" class="text-emerald-400 flex items-center gap-2 text-sm uppercase tracking-widest">
+                    Ver más en Discord 
+                    <span class="text-xl">→</span>
+                </a>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                <img src="https://i.redd.it/hyprland-and-cachyos-and-graphite-gtk-my-favorite-setup-r-hyprland-v0-1jvc3pf.jpg" class="rounded-3xl aspect-video object-cover hover:scale-105 transition-transform" alt="Hyprland setup">
+                <img src="https://i.redd.it/black-on-black-text-in-dolphin-hyprland-and-dankmaterialshell-v0-1q1yxd4.jpg" class="rounded-3xl aspect-video object-cover hover:scale-105 transition-transform" alt="Dolphin file manager">
+                <img src="https://i.redd.it/10-hyprland-dotfiles-to-transform-your-linux-desktop-v0-eduea.jpg" class="rounded-3xl aspect-video object-cover hover:scale-105 transition-transform" alt="Hyprland config">
+                <img src="https://i.redd.it/hyprland-simple-darkmode-theme-on-arch-v0-gh0zj.jpg" class="rounded-3xl aspect-video object-cover hover:scale-105 transition-transform" alt="Darkmode Hyprland">
+            </div>
+        </div>
+    </section>
+
+    <!-- Primeros pasos -->
+    <section class="py-24">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="text-center mb-16">
+                <div class="uppercase text-xs tracking-widest text-emerald-400 mb-3">EN 4 PASOS</div>
+                <h2 class="text-5xl font-bold text-white section-title">De novato a pro</h2>
+            </div>
+            
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-4xl shadow-xl">💻</div>
+                    <div class="text-emerald-400 text-sm uppercase tracking-widest mb-2">Paso 1</div>
+                    <div class="font-semibold text-2xl mb-3">Elige tu distro</div>
+                    <div class="text-zinc-400">Ubuntu para empezar, Arch para sufrir (y aprender).</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-4xl shadow-xl">⌨️</div>
+                    <div class="text-emerald-400 text-sm uppercase tracking-widest mb-2">Paso 2</div>
+                    <div class="font-semibold text-2xl mb-3">Domina el terminal</div>
+                    <div class="text-zinc-400">ls, cd, grep, ssh… y nunca vuelves a usar el ratón.</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-4xl shadow-xl">🛠️</div>
+                    <div class="text-emerald-400 text-sm uppercase tracking-widest mb-2">Paso 3</div>
+                    <div class="font-semibold text-2xl mb-3">Proyectos reales</div>
+                    <div class="text-zinc-400">Un servidor web, una VPN, un homelab completo.</div>
+                </div>
+                <div class="text-center">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-400 flex items-center justify-center text-4xl shadow-xl">👥</div>
+                    <div class="text-emerald-400 text-sm uppercase tracking-widest mb-2">Paso 4</div>
+                    <div class="font-semibold text-2xl mb-3">Únete a la tribu</div>
+                    <div class="text-zinc-400">Comparte tu rice, pide ayuda, ayuda a otros.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comunidad -->
+    <section id="comunidad" class="py-24 bg-zinc-900">
+        <div class="max-w-screen-2xl mx-auto px-8">
+            <div class="grid md:grid-cols-12 gap-16">
+                <div class="md:col-span-5">
+                    <div class="bg-zinc-950 rounded-3xl p-10 border border-zinc-800">
+                        <div class="uppercase text-emerald-400 text-sm tracking-widest mb-6">ÚNETE YA</div>
+                        <h3 class="text-4xl font-bold leading-none mb-8">La comunidad más activa de Linux en español</h3>
+                        
+                        <form class="space-y-6">
+                            <div>
+                                <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-2">Tu email</label>
+                                <input type="email" placeholder="tu@correo.com" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-400">
+                            </div>
+                            <div class="grid grid-cols-2 gap-6">
+                                <div>
+                                    <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-2">Nombre</label>
+                                    <input type="text" placeholder="S2K" class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-400">
+                                </div>
+                                <div>
+                                    <label class="text-xs uppercase tracking-widest text-zinc-400 block mb-2">Distro favorita</label>
+                                    <select class="w-full bg-black border border-zinc-700 rounded-2xl px-6 py-4 text-lg focus:outline-none focus:border-emerald-400">
+                                        <option>Arch</option>
+                                        <option>Ubuntu</option>
+                                        <option>Fedora</option>
+                                        <option>NixOS</option>
+                                        <option>Otra</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="w-full bg-emerald-500 text-black font-semibold py-5 rounded-3xl text-lg hover:bg-emerald-400 transition-all">Entrar al Discord</button>
+                        </form>
+                    </div>
+                </div>
+                <div class="md:col-span-7 flex flex-col justify-center">
+                    <div class="text-5xl font-bold text-white mb-8">“Por fin un sitio que enseña Linux como se usa de verdad.”</div>
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-zinc-700 rounded-2xl"></div>
+                        <div>
+                            <div>@linuxfan92</div>
+                            <div class="text-emerald-400 text-sm">Miembro desde hace 8 meses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black py-16 border-t border-zinc-900">
+        <div class="max-w-screen-2xl mx-auto px-8 text-xs text-zinc-500 flex flex-wrap justify-between gap-y-8">
+            <div>
+                © 2026 S2KTUX • Hecho con ❤️ y café en España
+            </div>
+            <div class="flex gap-12">
+                <div>
+                    <div class="uppercase mb-4 text-emerald-400">Enlaces</div>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-white">Cursos</a></li>
+                        <li><a href="#" class="hover:text-white">Blog</a></li>
+                        <li><a href="#" class="hover:text-white">Discord</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <div class="uppercase mb-4 text-emerald-400">Legal</div>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="hover:text-white">Privacidad</a></li>
+                        <li><a href="#" class="hover:text-white">Términos</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="text-right">
+                <div class="text-emerald-400 text-sm">Hecho por humanos que usan Linux todos los días</div>
+                <div class="mt-6 flex gap-4 justify-end">
+                    <a href="#" class="hover:text-emerald-400">𝕏</a>
+                    <a href="#" class="hover:text-emerald-400">Discord</a>
+                    <a href="#" class="hover:text-emerald-400">GitHub</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tailwind script
+        tailwind.config = {
+            content: [],
+            theme: {
+                extend: {
+                    fontFamily: {
+                        mono: ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+
+        // Inicializar terminal
+        $(document).ready(function() {
+            $('#terminal .p-6').terminal({
+                help: function() {
+                    this.echo('Comandos disponibles:');
+                    this.echo(' ls          → Lista cursos');
+                    this.echo(' cd cursos   → Ir a cursos');
+                    this.echo(' whoami      → Quién eres');
+                    this.echo(' clear       → Limpia pantalla');
+                    this.echo(' rice        → Muestra un setup bonito');
+                },
+                ls: function() {
+                    this.echo('Cursos disponibles:');
+                    this.echo('├── linux-desde-cero');
+                    this.echo('├── servidores-redes');
+                    this.echo('└── hyprland-nixos');
+                },
+                cd: function(dir) {
+                    if (dir === 'cursos') {
+                        window.location.href = '#cursos';
+                        this.echo('Abriendo sección de cursos...');
+                    } else {
+                        this.echo('Directorio no encontrado: ' + dir);
+                    }
+                },
+                whoami: function() {
+                    this.echo('Eres un futuro sysadmin. Bienvenido a S2KTUX.');
+                },
+                rice: function() {
+                    this.echo('Aquí tienes un setup Hyprland real de la comunidad:');
+                    this.echo('https://i.redd.it/hyprland-and-cachyos-and-graphite-gtk-my-favorite-setup-r-hyprland-v0-1jvc3pf.jpg');
+                }
+            }, {
+                greetings: 'Bienvenido a s2ktux@arch ~\nEscribe "help" para empezar.\n',
+                prompt: 's2ktux@arch ~ $ ',
+                name: 's2ktux-terminal',
+                height: 340,
+                width: '100%'
+            });
+        });
+        
+        // Smooth scroll para los enlaces del nav
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
