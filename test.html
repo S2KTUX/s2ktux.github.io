@@ -3,899 +3,340 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S2KTUX | SysAdmin & DevOps</title>
+    <title>S2KTUX | SysAdmin & DevOps Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* --- 1. CORE VARIABLES --- */
+        /* --- VARIABLES CORE --- */
         :root {
-            /* Palette: Cyber Blue (Default) */
             --hue: 217; 
             --accent: hsl(var(--hue), 90%, 60%); 
-            --accent-glow: hsla(var(--hue), 90%, 60%, 0.2);
-            --accent-subtle: hsla(var(--hue), 90%, 60%, 0.1);
-            
-            /* Dark Defaults */
             --bg-color: #050505;
             --text-main: #e2e8f0;
             --text-muted: #94a3b8;
             --card-bg: rgba(15, 17, 21, 0.7);
             --nav-bg: rgba(15, 17, 21, 0.85);
-            --footer-bg: #050505;
             --border-color: rgba(255,255,255,0.1);
             --code-bg: #1e293b;
-            --radius: 8px;
-            
-            /* Terminal */
             --term-bg: #0c0c0c;
-            --term-text: #d4d4d8;
-            --term-header: #161b22;
-            --term-border: #30363d;
-            
             --font-main: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
+            --radius: 12px;
         }
 
-        /* --- 2. LIGHT MODE --- */
+        /* --- TEMAS --- */
         body.mode-light {
-            --bg-color: #f8fafc;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-            --card-bg: #ffffff;
-            --nav-bg: rgba(255, 255, 255, 0.9);
-            --footer-bg: #ffffff;
-            --border-color: rgba(0,0,0,0.08);
-            --code-bg: #f1f5f9;
-            
-            --term-bg: #ffffff;
-            --term-text: #333333;
-            --term-header: #f1f5f9;
-            --term-border: #e2e8f0;
-
-            --accent: hsl(var(--hue), 85%, 45%); 
-            --accent-glow: hsla(var(--hue), 85%, 45%, 0.15);
-            --radius: 12px;
+            --bg-color: #f8fafc; --text-main: #0f172a; --text-muted: #64748b;
+            --card-bg: #ffffff; --nav-bg: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(0,0,0,0.08); --term-bg: #ffffff; --code-bg: #f1f5f9;
         }
 
-        /* --- 3. THEME OVERRIDES --- */
-        
-        /* Matrix Style */
-        body.color-matrix {
-            --hue: 145;
-            --bg-image: radial-gradient(rgba(16, 185, 129, 0.05) 1px, transparent 1px);
-            --bg-size: 20px 20px;
-            --accent: #10b981;
-            --text-main: #a7f3d0;
-        }
-        body.color-matrix .terminal-container { border: 1px solid #10b981; }
-        body.color-matrix.mode-light {
-            --text-main: #064e3b;
-            --card-bg: #ecfdf5;
-            --border-color: #a7f3d0;
-            --radius: 12px;
-            --bg-image: none;
-        }
-
-        /* Royal Purple Style (Glass/Dark) */
-        body.color-purple {
-            --hue: 270;
-            --card-bg: #1a0b2e; /* Fondo purpura oscuro */
-            --border-color: #581c87;
-            --bg-color: #0f0518; /* Fondo general muy oscuro */
-        }
-        body.color-purple .card {
-            backdrop-filter: blur(5px);
-            -webkit-backdrop-filter: blur(5px);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-        }
-        body.color-purple.mode-light {
-            --text-main: #581c87;
-            --card-bg: #fdf4ff;
-            --accent: #9333ea;
-            --card-bg: rgba(255, 255, 255, 0.9);
-            --border-color: #e9d5ff;
-        }
-
-        /* Ruby Red Style */
-        body.color-ruby {
-            --hue: 350;
-            --accent: #f43f5e;
-            --accent-glow: rgba(244, 63, 94, 0.2);
-            --card-bg: #2a0a0a;
-        }
-        body.color-ruby.mode-light {
-            --card-bg: #fff1f2;
-            --border-color: #fecdd3;
-            --text-main: #881337;
-            --radius: 12px;
-        }
-
-        /* Sunset Orange Style (Solo Claro, o ajustado como usuario quiera) */
-        body.color-sunset {
-            --hue: 25;
-            --accent: #f97316;
-        }
+        /* EL TEMA QUE PEDISTE: Rojo Rubí en Claro (Sunset Override) */
         body.color-sunset.mode-light {
-            --card-bg: #fff7ed;
-            --border-color: #fed7aa;
-            --text-main: #7c2d12;
+            --hue: 350; --accent: #e11d48; --bg-color: #fff1f2;
+            --text-main: #881337; --card-bg: #ffffff; --border-color: #fecdd3;
         }
+        body.color-ruby { --hue: 350; --accent: #f43f5e; }
+        body.color-matrix { --hue: 145; --accent: #10b981; }
+        body.color-purple { --hue: 270; --accent: #a855f7; }
 
-        /* Global Reset */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background-color: var(--bg-color);
-            background-image: var(--bg-image);
-            background-size: var(--bg-size), 100% 100%;
-            color: var(--text-main);
-            font-family: var(--font-main);
-            min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: background 0.5s ease, color 0.3s ease;
+        body { 
+            background-color: var(--bg-color); color: var(--text-main); 
+            font-family: var(--font-main); transition: all 0.3s ease; 
+            min-height: 100vh; display: flex; flex-direction: column; overflow-x: hidden;
         }
 
-        /* --- 4. ALIVE BACKGROUND --- */
-        .orb {
-            position: fixed; border-radius: 50%; filter: blur(90px);
-            opacity: 0.4; z-index: -1; transition: background 0.5s ease;
-            animation: floatOrb 20s infinite ease-in-out alternate;
+        /* --- NAVEGACIÓN (LAS 3 ISLAS) --- */
+        .nav-wrapper {
+            position: fixed; top: 20px; left: 0; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%; z-index: 1000;
         }
-        .orb-1 { width: 600px; height: 600px; background: var(--accent); top: -200px; left: -200px; animation-delay: 0s; }
-        .bar-2 { width: 500px; height: 500px; background: var(--accent); bottom: -150px; right: -150px; animation-delay: -5s; }
-        .orb-3 { width: 300px; height: 300px; background: #fff; opacity: 0.1; top: 40%; left: 60%; animation-delay: -10s; }
-
-        @keyframes floatOrb {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(80px, 60px) scale(1.15); }
+        .brand-island, .theme-island, .menu-island {
+            background: var(--nav-bg); border: 1px solid var(--border-color);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: 0.3s;
         }
-
-        /* --- 5. NAVIGATION (LOGO - LINKS - THEME) --- */
-        .nav-container {
-            position: fixed; top: 20px; left: 50%; transform: translateX(-50%);
-            width: 90%; max-width: 1100px;
-            background: var(--nav-bg); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-            padding: 0.8rem 2rem; border-radius: 9999px;
-            border: 1px solid var(--border-color);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            z-index: 1000; display: flex; justify-content: space-between; align-items: center;
-            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s, top 0.3s;
-        }
+        .brand-island { padding: 10px 25px; border-radius: 50px; font-weight: 800; text-decoration: none; color: var(--text-main); }
+        .menu-island { padding: 10px 30px; border-radius: 50px; display: flex; gap: 25px; }
+        .theme-island { width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
         
-        .nav-hidden { transform: translate(-50%, -150%); opacity: 0; }
+        .nav-link { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 600; cursor: pointer; }
+        .nav-link:hover, .nav-link.active { color: var(--accent); }
 
-        .brand-area { width: 150px; display: flex; justify-content: flex-start; }
-        .brand-logo {
-            font-weight: 800; font-size: 1.2rem; letter-spacing: 1px;
-            color: var(--text-main); cursor: pointer; text-decoration: none; transition: 0.3s;
-        }
-        .brand-logo:hover { color: var(--accent); transform: scale(1.05); }
-
-        .nav-links { display: flex; gap: 2rem; position: absolute; left: 50%; transform: translateX(-50%); }
-        .nav-link {
-            color: var(--text-muted); text-decoration: none; font-size: 0.95rem;
-            font-weight: 500; transition: 0.3s; cursor: pointer; position: relative;
-        }
-        .nav-link:hover, .nav-link.active { color: var(--text-main); }
-        .nav-link.active::after {
-            content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
-            width: 4px; height: 4px; background-color: var(--accent); border-radius: 50%;
-        }
-
-        .theme-area { width: 150px; display: flex; justify-content: flex-end; }
-        .theme-btn {
-            background: var(--card-bg); border: 1px solid var(--border-color); color: var(--text-main);
-            width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
-            display: flex; align-items: center; justify-content: center; transition: 0.3s;
-        }
-        .theme-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: rotate(15deg); }
-        
-        .theme-selector {
-            position: absolute; top: 60px; right: 0;
-            background: var(--card-bg); border: 1px solid var(--border-color);
-            border-radius: 12px; padding: 10px; display: none;
-            flex-direction: column; gap: 5px; z-index: 2001; min-width: 220px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-height: 80vh; overflow-y: auto;
-        }
-        .theme-selector.active { display: flex; animation: fadeIn 0.2s ease; }
-        .theme-group-title {
-            font-size: 0.7rem; text-transform: uppercase; color: var(--text-muted);
-            margin-top: 10px; margin-bottom: 5px; padding-left: 8px; font-weight: 700; letter-spacing: 1px;
-        }
-        .theme-option {
-            display: flex; align-items: center; justify-content: space-between; cursor: pointer;
-            padding: 10px; border-radius: 8px; color: var(--text-main); font-size: 0.9rem;
-        }
-        .theme-option:hover { background: var(--accent-subtle); }
-        .theme-left { display: flex; align-items: center; gap: 10px; }
-        .color-circle { width: 16px; height: 16px; border-radius: 50%; border:1px solid rgba(255,255,255,0.2); }
-
-        /* --- 6. MAIN LAYOUT --- */
-        main {
-            padding-top: 100px; padding-bottom: 60px; flex: 1;
-            width: 100%; max-width: 1600px; margin: 0 auto; padding-left: 20px; padding-right: 20px;
-        }
-
+        /* --- CONTENIDO PRINCIPAL --- */
+        main { flex: 1; padding: 140px 5% 80px; max-width: 1400px; margin: 0 auto; width: 100%; }
         .page-section { display: none; animation: fadeIn 0.4s ease; }
         .page-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- 7. HERO & CONTENT --- */
-        .hero { text-align: center; padding: 2rem 1rem; margin-bottom: 4rem; }
-        .hero h1 {
-            font-size: 4rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 1rem;
-            background: linear-gradient(to right, var(--text-main), var(--text-muted)); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            line-height: 1.1;
-        }
-        .hero p { font-size: 1.3rem; color: var(--text-muted); max-width: 700px; margin: 0 auto 2rem; min-height: 1.4em; }
-        .cursor { display: inline-block; width: 8px; background-color: var(--accent); animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0; } }
+        /* HERO */
+        .hero { text-align: center; margin-bottom: 5rem; }
+        .hero h1 { font-size: 4rem; font-weight: 800; letter-spacing: -2px; margin-bottom: 1.5rem; line-height: 1.1; }
+        .hero p { font-size: 1.3rem; color: var(--text-muted); max-width: 700px; margin: 0 auto; }
 
-        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; margin-top: 3rem; }
-        .card {
-            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius);
-            padding: 25px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
+        /* GRID DE CARDS */
+        .content-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .card { 
+            background: var(--card-bg); border: 1px solid var(--border-color); padding: 30px; 
+            border-radius: var(--radius); transition: 0.3s; position: relative; overflow: hidden;
         }
-        .card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .card::before { content: ''; position: absolute; top:0; left:0; width:100%; height:4px; background:var(--accent); opacity:0; transition: opacity 0.3s; }
-        .card:hover::before { opacity:1; }
-        .card-tag { font-size: 0.75rem; background: var(--accent-subtle); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
-        .card h3 { color: var(--text-main); margin: 15px 0 10px; font-size: 1.4rem; }
-        .card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); }
+        .card-tag { font-size: 0.7rem; background: rgba(var(--hue), 90%, 60%, 0.1); color: var(--accent); padding: 4px 10px; border-radius: 20px; font-weight: 700; text-transform: uppercase; }
+        .card h3 { margin: 15px 0 10px; font-size: 1.5rem; }
 
-        /* --- 8. READER & NAVIGATION --- */
-        .reader-container {
-            background: var(--card-bg); max-width: 1300px; margin: 0 auto; border-radius: 0 0 16px 16px;
-            padding: 0 60px 60px; border: 1px solid var(--border-color); border-top: none; 
-            line-height: 1.8; font-size: 1.1rem; position: relative;
-            min-height: 80vh; animation: fadeIn 0.5s ease;
-        }
-        
-        /* Cyber-Pill Button con mejor visibilidad en Light */
-        .cyber-back-btn {
-            background: rgba(0,0,0,0.3); border: 1px solid var(--border-color);
-            color: var(--text-muted); padding: 8px 16px; border-radius: 6px;
-            font-family: var(--font-mono); font-size: 0.9rem;
-            display: inline-flex; align-items: center; gap: 8px;
-            cursor: pointer; transition: all 0.2s; text-decoration: none;
-        }
-        /* Override para Light Mode: texto más oscuro */
-        body.mode-light .cyber-back-btn {
-            color: #374151; /* Gris oscuro */
-            background: rgba(255,255,255,0.5);
-        }
-        
-        .cyber-back-btn:hover {
-            background: var(--accent); color: white; border-color: var(--accent);
-            transform: translateX(-3px);
-        }
-        .cyber-back-btn span { color: var(--accent); transition: 0.2s; }
-        .cyber-back-btn:hover span { color: white; }
-
-        .reader-nav { padding: 15px 0; border-bottom: 1px solid var(--border-color); margin-bottom: 30px; }
-        .reader-container h1 { font-size: 2.8rem; margin-bottom: 1.5rem; color: var(--text-main); }
-        .reader-container h2 { color: var(--accent); margin-top: 3rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
-        .reader-container h3 { color: var(--text-main); margin-top: 2rem; margin-bottom: 0.8rem; }
-        .reader-container p { margin-bottom: 1.4rem; color: var(--text-muted); }
-        .reader-container ul { margin-left: 20px; margin-bottom: 1.4rem; color: var(--text-muted); }
-        .reader-container img { max-width: 100%; border-radius: 8px; margin: 30px 0; border: 1px solid var(--border-color); }
-        .reader-container code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; color: var(--accent); font-family: var(--font-mono); }
-
-        .next-btn-container { margin-top: 60px; text-align: right; padding-top: 30px; border-top: 1px solid var(--border-color); }
-        .next-btn {
-            background: var(--accent); color: white; border: none; padding: 12px 30px;
-            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1.1rem;
-            box-shadow: 0 0 15px var(--accent-glow); transition: transform 0.2s;
-        }
-        .next-btn:hover { transform: scale(1.05); }
-
-        /* --- 9. TERMINAL (FIXED) --- */
+        /* --- TERMINAL (CORREGIDA) --- */
         .terminal-container {
-            width: 95%; max-width: 1200px; height: 85vh; margin: 0 auto; background: var(--term-bg);
-            border-radius: 12px; border: 1px solid var(--term-border); display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            width: 100%; max-width: 1000px; height: 600px; background: var(--term-bg);
+            margin: 0 auto; border-radius: 12px; border: 1px solid var(--border-color);
+            display: flex; flex-direction: column; box-shadow: 0 30px 60px rgba(0,0,0,0.4);
         }
-        .term-header { background: var(--term-header); padding: 10px 20px; border-radius: 12px 12px 0 0; border-bottom: 1px solid var(--term-border); display: flex; gap: 8px; }
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .dot.r { background: #ef4444; } .dot.y { background: #eab308; } .dot.g { background: #22c55e; }
-        .term-body { flex: 1; padding: 20px; font-family: var(--font-mono); overflow-y: auto; color: var(--term-text); position: relative; }
-        .term-output-line { display: block; margin-bottom: 5px; word-break: break-all; }
-        
-        /* Input line moved outside term-output for safety in logic */
-        .term-input-line {
-            margin-top: 10px; display: flex; align-items: center;
-        }
-        
-        .term-prompt { color: var(--accent); margin-right: 10px; font-weight: bold; white-space: nowrap; }
-        #term-input { background: transparent; border: none; color: var(--term-text); width: 100%; font-family: var(--font-mono); outline: none; }
-        
-        .help-table { width: 100%; border-collapse: collapse; margin-top: 10px; color: var(--term-text); }
-        .help-table td { padding: 4px 0; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .help-cmd { color: var(--accent); font-weight: bold; padding-right: 20px; }
+        .term-header { background: rgba(255,255,255,0.05); padding: 12px 20px; display: flex; gap: 8px; border-bottom: 1px solid var(--border-color); }
+        .term-body { flex: 1; padding: 25px; font-family: var(--font-mono); overflow-y: auto; color: var(--text-main); }
+        .term-input-line { display: flex; align-items: center; gap: 10px; margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 15px; }
+        #term-input { background: transparent; border: none; color: inherit; font-family: inherit; outline: none; flex: 1; }
+        .term-prompt { color: var(--accent); font-weight: bold; }
 
-        /* --- 10. FOOTER --- */
-        .modern-footer {
-            width: 100%; background: var(--footer-bg); border-top: 1px solid var(--border-color);
-            padding: 30px 0; margin-top: auto; z-index: 900;
+        /* --- LECTOR Y TEMARIO --- */
+        .reader-container { background: var(--card-bg); padding: 40px; border-radius: var(--radius); border: 1px solid var(--border-color); line-height: 1.8; }
+        .cyber-back-btn { 
+            display: inline-flex; align-items: center; gap: 8px; padding: 8px 16px; 
+            background: var(--border-color); border-radius: 6px; cursor: pointer; text-decoration: none; color: var(--text-main); font-size: 0.9rem;
         }
-        .footer-content {
-            max-width: 1200px; margin: 0 auto; padding: 0 20px;
-            display: flex; justify-content: space-between; align-items: center;
+        .chapter-item { 
+            padding: 15px; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 10px; 
+            cursor: pointer; display: flex; justify-content: space-between; transition: 0.2s;
         }
-        .footer-center {
-            text-align: center; display: flex; flex-direction: column; align-items: center;
-            flex: 1; margin: 0 20px;
-        }
-        .footer-tagline { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 5px; }
-        .footer-links { display: flex; gap: 20px; }
-        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: 0.2s; display: flex; align-items: center; gap: 8px;}
-        .footer-links a:hover { color: var(--accent); }
-        .social-icons { display: flex; gap: 20px; }
-        .icon-svg { width: 24px; height: 24px; fill: var(--text-muted); transition: 0.2s; }
-        .social-icons a:hover .icon-svg { fill: var(--accent); transform: translateY(-3px); }
+        .chapter-item:hover { background: var(--accent); color: white; }
 
+        /* --- FOOTER --- */
+        footer { padding: 40px 5%; border-top: 1px solid var(--border-color); background: var(--bg-color); margin-top: auto; }
+        .footer-content { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .footer-center { font-weight: 800; font-size: 1.1rem; color: var(--text-main); }
+
+        /* MENU TEMAS */
+        .theme-menu {
+            position: fixed; top: 75px; right: 5%; background: var(--card-bg);
+            border: 1px solid var(--border-color); padding: 15px; border-radius: 15px;
+            display: none; flex-direction: column; gap: 8px; z-index: 1001; min-width: 200px;
+        }
+        .theme-menu.active { display: flex; }
+        .theme-opt { cursor: pointer; padding: 10px; border-radius: 8px; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; transition: 0.2s; }
+        .theme-opt:hover { background: var(--accent); color: white; }
     </style>
 </head>
-<body class="color-ruby"> <!-- Default Theme Start -->
+<body class="color-ruby">
 
-    <div class="orb orb-1"></div>
-    <div class="bar-2 orb-2"></div>
-    <div class="orb-3"></div>
-
-    <!-- NAV CONTAINER (Layout: Logo Left, Links Center, Theme Right) -->
-    <nav class="nav-container" id="mainNav">
+    <div class="nav-wrapper">
+        <a href="#" class="brand-island" onclick="navigate('home')">S2KTUX</a>
         
-        <!-- IZQUIERDA: LOGO -->
-        <div class="brand-area">
-            <a href="#" onclick="navigate('home')" class="brand-logo">S2KTUX</a>
-        </div>
+        <nav class="menu-island">
+            <a onclick="navigate('home')" class="nav-link active" id="link-home">Inicio</a>
+            <a onclick="navigate('courses')" class="nav-link" id="link-courses">Cursos</a>
+            <a onclick="navigate('terminal')" class="nav-link" id="link-terminal">Terminal</a>
+            <a onclick="navigate('projects')" class="nav-link" id="link-projects">Proyectos</a>
+        </nav>
 
-        <!-- CENTRO: LINKS (Absolutamente centrado visualmente) -->
-        <div class="nav-links">
-            <a class="nav-link active" onclick="navigate('home')">Inicio</a>
-            <a class="nav-link" onclick="navigate('courses')">Cursos</a>
-            <a class="nav-link" onclick="navigate('terminal')">Terminal</a>
-            <a class="nav-link" onclick="navigate('projects')">Proyectos</a>
+        <div class="theme-island" onclick="toggleThemeMenu()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </div>
+    </div>
 
-        <!-- DERECHA: TEMAS -->
-        <div class="theme-area">
-            <div style="position: relative;">
-                <button class="theme-btn" onclick="toggleThemeMenu()" title="Temas">
-                    <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-                    </svg>
-                </button>
-                <div class="theme-selector" id="themeMenu">
-                    <!-- OSCUROS -->
-                    <div class="theme-group-title">Modo Oscuro</div>
-                    <div class="theme-option" onclick="setTheme('blue', false)">
-                        <div class="theme-left"><div class="color-circle" style="background:#3b82f6"></div> Cyber Blue</div>
-                        <span>🌙</span>
-                    </div>
-                    <div class="theme-option" onclick="setTheme('purple', false)">
-                        <div class="theme-left"><div class="color-circle" style="background:#a855f7"></div> Royal Purple</div>
-                        <span>🌙</span>
-                    </div>
-                    <div class="theme-option" onclick="setTheme('matrix', false)">
-                        <div class="theme-left"><div class="color-circle" style="background:#10b981"></div> Matrix</div>
-                        <span>🌙</span>
-                    </div>
-                    <div class="theme-option" onclick="setTheme('ruby', false)">
-                        <div class="theme-left"><div class="color-circle" style="background:#ef4444"></div> Ruby Red</div>
-                        <span>🌙</span>
-                    </div>
-
-                    <!-- CLAROS -->
-                    <div class="theme-group-title" style="margin-top:10px;">Modo Claro</div>
-                    <div class="theme-option" onclick="setTheme('blue', true)">
-                        <div class="theme-left"><div class="color-circle" style="background:#3b82f6"></div> Cyber Blue</div>
-                        <span>☀️</span>
-                    </div>
-                    <div class="theme-option" onclick="setTheme('purple', true)">
-                        <div class="theme-left"><div class="color-circle" style="background:#a855f7"></div> Royal Purple</div>
-                        <span>☀️</span>
-                    </div>
-                    <div class="theme-option" onclick="setTheme('matrix', true)">
-                        <div class="theme-left"><div class="color-circle" style="background:#10b981"></div> Matrix</div>
-                        <span>☀️</span>
-                    </div>
-                    <div class="theme-option" onclick="setTheme('sunset', true)">
-                        <div class="theme-left"><div class="color-circle" style="background:#f97316"></div> Sunset Orange</div>
-                        <span>☀️</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <div class="theme-menu" id="themeMenu">
+        <div class="theme-opt" onclick="setTheme('ruby', false)">🌙 Ruby Red (Oscuro)</div>
+        <div class="theme-opt" onclick="setTheme('matrix', false)">🌙 Matrix (Oscuro)</div>
+        <div class="theme-opt" onclick="setTheme('sunset', true)">☀️ Sunset (Rojo Claro)</div>
+        <div class="theme-opt" onclick="setTheme('blue', true)">☀️ Cyber Blue (Claro)</div>
+    </div>
 
     <main>
-        <!-- INICIO -->
         <section id="home" class="page-section active">
             <div class="hero">
                 <h1>Domina Linux.<br>Desde la consola.</h1>
-                <p><span id="typing-text"></span><span class="cursor"></span></p>
+                <p>Especialización técnica en Administración de Sistemas RHEL, Cloud Infrastructure y Automatización DevOps.</p>
             </div>
 
-            <!-- CONTENIDO (Linux Focused) -->
             <div style="text-align:center; margin-bottom: 4rem;">
-                <h2 style="color:var(--text-main); font-size:1.8rem; margin-bottom:1rem;">Más que una web, una escuela</h2>
+                <h2 style="margin-bottom:1rem;">Más que una web, una escuela</h2>
                 <p style="color:var(--text-muted); max-width:800px; margin:0 auto;">
                     Sumérgete en un entorno de aprendizaje real. Domina la administración de sistemas RHEL, gestiona paquetes RPM y automatiza con Ansible. Aquí no solo lees, practicas.
                 </p>
             </div>
 
             <div class="content-grid">
-                <div class="card" style="cursor:default;">
+                <div class="card">
                     <span class="card-tag">Certificación</span>
                     <h3>RHCSA EX200</h3>
-                    <p>La certificación de referencia para administradores de Red Hat. Gestiona usuarios, redes y almacenamiento.</p>
+                    <p>La certificación de referencia para administradores de Red Hat. Gestión de usuarios, redes y almacenamiento persistente.</p>
                 </div>
-                <div class="card" style="cursor:default;">
+                <div class="card">
                     <span class="card-tag">LPI</span>
                     <h3>LPIC-1 101-500</h3>
-                    <p>Fundamentos esenciales de Linux para cualquier distribución. Arquitectura, comandos y sistema de archivos.</p>
+                    <p>Fundamentos esenciales de Linux. Arquitectura de sistema, comandos de GNU/Unix y jerarquía de archivos.</p>
                 </div>
-                <div class="card" style="cursor:default;">
+                <div class="card">
                     <span class="card-tag">DevOps</span>
                     <h3>Automatización</h3>
-                    <p>Introducción a Ansible y Terraform. Lleva tu infraestructura al siguiente nivel.</p>
+                    <p>Introducción a Ansible y Terraform. Despliega infraestructura como código de forma eficiente.</p>
                 </div>
-                <div class="card" style="cursor:default;">
+                <div class="card">
                     <span class="card-tag">Seguridad</span>
-                    <h3>Hardening</h3>
-                    <p>Protege tus servidores. Firewalls, SELinux y mejores prácticas de seguridad en Linux.</p>
+                    <h3>Hardening Linux</h3>
+                    <p>Protección de servidores en producción. Firewalls, políticas de SELinux y auditoría de sistemas.</p>
                 </div>
             </div>
         </section>
 
-        <!-- CURSOS -->
         <section id="courses" class="page-section">
-            <h2 style="text-align:center; margin-bottom:40px; font-size:2.5rem; color:var(--text-main);">Cursos Disponibles</h2>
+            <h2 style="text-align:center; margin-bottom:40px; font-size:2.5rem;">Cursos Disponibles</h2>
             <div class="content-grid">
-                <div class="card" onclick="openSyllabus('rhcsa')">
+                <div class="card" onclick="openSyllabus('RHCSA')">
                     <span class="card-tag">Red Hat</span>
                     <h3>RHCSA EX200</h3>
-                    <p>Domina la administración de RHEL. Usuarios, permisos, redes y almacenamiento.</p>
+                    <p>Haz clic para ver el temario completo de administración de sistemas.</p>
                 </div>
-                <div class="card" onclick="openSyllabus('lpic1')">
+                <div class="card" onclick="openSyllabus('LPIC-1')">
                     <span class="card-tag">LPI</span>
                     <h3>LPIC-1 101-500</h3>
-                    <p>Fundamentos esenciales de Linux para cualquier distribución.</p>
+                    <p>Haz clic para ver los módulos de certificación profesional Linux.</p>
                 </div>
             </div>
         </section>
 
-        <!-- SYLLABUS -->
         <section id="syllabus" class="page-section">
-            <h2 style="text-align:center; margin-bottom:30px; font-size:2rem; color:var(--text-main);">Temario</h2>
-            <div class="reader-container" style="min-height: auto; padding: 40px;">
-                <div class="cyber-back-btn" onclick="navigate('courses')">
-                    <span>&larr; exit (Volver)</span>
-                </div>
-                <h2 id="syllabus-title" style="margin-top:20px;">Curso</h2>
-                <div class="progress-container" style="margin-top:20px;">
-                    <div class="progress-bar" id="course-progress-bar" style="height:8px; background:var(--accent); width:0%; border-radius:4px;"></div>
-                    <span class="progress-text" id="course-progress-text" style="float:right; font-size:0.9rem; color:var(--accent); font-weight:bold;">0%</span>
-                    <div style="clear:both;"></div>
-                </div>
-                <div class="chapter-list" id="syllabus-list" style="margin-top:30px; display:grid; gap:10px;"></div>
-            </div>
-        </section>
-
-        <!-- LECTOR -->
-        <section id="reader" class="page-section">
             <div class="reader-container">
-                <div class="reader-nav">
-                    <a href="#" class="cyber-back-btn" onclick="backToSyllabus()">
-                        <span>&larr; exit (Volver al temario)</span>
-                    </a>
-                </div>
-                <div id="reader-content"></div>
+                <div class="cyber-back-btn" onclick="navigate('courses')">← Volver a Cursos</div>
+                <h2 id="syllabus-title" style="margin: 20px 0;">Temario del Curso</h2>
+                <div id="syllabus-list"></div>
             </div>
         </section>
 
-        <!-- TERMINAL -->
         <section id="terminal" class="page-section">
-            <div style="text-align:center; margin-bottom:20px; color:var(--text-muted);">
-                <p>S2KTUX Terminal v7.0 [Virtual File System]</p>
-            </div>
             <div class="terminal-container">
                 <div class="term-header">
-                    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+                    <div class="dot" style="background:#ff5f56"></div>
+                    <div class="dot" style="background:#ffbd2e"></div>
+                    <div class="dot" style="background:#27c93f"></div>
+                    <span style="margin-left:auto; font-size:0.8rem; opacity:0.5;">s2ktux_bash_v7</span>
                 </div>
                 <div class="term-body" id="term-output">
-                    <span class="term-output-line">Bienvenido al sistema virtual.</span>
-                    <span class="term-output-line">Intenta <span style="color:var(--accent)">ls</span> o <span style="color:var(--accent)">help</span>.</span>
+                    <div style="color:var(--accent)">[ SYSTEM ONLINE ] Bienvenido a la terminal virtual de S2KTUX.</div>
+                    <div>Escribe <span style="color:var(--accent)">help</span> para ver los comandos disponibles.</div>
                 </div>
-                <!-- INPUT LINE MOVED OUTSIDE TO PREVENT CLEAR BUGS -->
                 <div class="term-input-line">
                     <span class="term-prompt">visitor@s2ktux:~$</span>
-                    <input type="text" id="term-input" autocomplete="off">
+                    <input type="text" id="term-input" autocomplete="off" spellcheck="false" autofocus>
                 </div>
             </div>
         </section>
 
-        <!-- PROYECTOS -->
         <section id="projects" class="page-section">
-            <h2 style="margin-bottom:20px; color:var(--text-main);">Proyectos</h2>
+            <h2 style="margin-bottom:30px;">Mis Proyectos</h2>
             <div class="content-grid">
-                <div class="card" onclick="openProject('deployer')">
+                <div class="card">
                     <span class="card-tag">Bash</span>
                     <h3>S2KTUX Deployer</h3>
-                    <p>Automatización de despliegues en VPS.</p>
+                    <p>Script avanzado para automatizar despliegues de servicios web en servidores debian/rhel.</p>
                 </div>
-                <div class="card" onclick="openProject('ansible')">
-                    <span class="card-tag">DevOps</span>
-                    <h3>Ansible Playbooks</h3>
-                    <p>Configuración de infraestructura como código.</p>
+                <div class="card">
+                    <span class="card-tag">Ansible</span>
+                    <h3>Lab-In-A-Box</h3>
+                    <p>Playbooks para levantar un laboratorio completo de Pentesting o SysAdmin en minutos.</p>
                 </div>
             </div>
         </section>
-
-        <!-- VISTA PROYECTO -->
-        <section id="project-view" class="page-section">
-            <div class="reader-container">
-                <div class="reader-nav">
-                    <a href="#" class="cyber-back-btn" onclick="navigate('projects')">
-                        <span>&larr; exit (Volver a proyectos)</span>
-                    </a>
-                </div>
-                <div id="project-content"></div>
-            </div>
-        </section>
-
     </main>
 
-    <!-- FOOTER -->
-    <footer class="modern-footer">
+    <footer>
         <div class="footer-content">
-            <div class="footer-logo">S2KTUX</div>
-            
-            <div class="footer-center">
-                <div class="footer-tagline">Aprende. Practica. Domina.</div>
-                <div class="footer-links">
-                    <a href="#" onclick="navigate('home')">Aprender</a>
-                    <a href="#" onclick="navigate('courses')">Mapa del sitio</a>
-                </div>
-            </div>
-            
-            <div class="social-icons">
-                <a href="https://github.com/s2ktux" target="_blank" aria-label="GitHub">
-                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
-                </a>
-                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
-                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
-                </a>
-                <a href="https://youtube.com/@s2ktux" target="_blank" aria-label="YouTube">
-                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
-                </a>
-                <a href="#" target="_blank" aria-label="Discord">
-                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.2113.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
-                </a>
+            <div>© 2026 S2KTUX</div>
+            <div class="footer-center">Domina Linux. Desde la consola.</div>
+            <div class="social-links">
+                <a href="#" style="color:var(--text-muted); text-decoration:none;">GitHub</a>
             </div>
         </div>
     </footer>
 
     <script>
-        // --- DATA ---
-        const coursesDB = {
-            "rhcsa": { title: "RHCSA EX200", chapters: [{ id: 1, title: "Clase 1: Herramientas", file: "/cursos/rhcsa/1/1.html" }, { id: 2, title: "Clase 2: Software", file: "/cursos/rhcsa/2/2.html" }] },
-            "lpic1": { title: "LPIC-1", chapters: [{ id: 101, title: "Arquitectura", file: "/cursos/lpic/101/101.html" }] }
-        };
-        const projectsDB = {
-            "deployer": { title: "S2KTUX Deployer", content: "<h1>S2KTUX Deployer</h1><p>Automatización de despliegues...</p>" },
-            "ansible": { title: "Ansible Playbooks", content: "<h1>Ansible</h1><p>Playbooks de seguridad...</p>" }
-        };
-
-        let currentCourseId = null;
-        let currentFileUrl = null;
-        let currentPath = '~';
-
-        // --- TYPEWRITER ---
-        const welcomeText = "Aprende administración de sistemas. Prepara tus certificaciones. Automatiza con DevOps.";
-        const typeWriterElement = document.getElementById('typing-text');
-        let typeIndex = 0;
-        function typeWriter() {
-            if (typeIndex < welcomeText.length) {
-                typeWriterElement.innerHTML += welcomeText.charAt(typeIndex);
-                typeIndex++;
-                setTimeout(typeWriter, 40);
-            }
-        }
-        document.addEventListener('DOMContentLoaded', () => {
-            typeWriter();
-            checkHash();
-        });
-
-        // --- AUTO-HIDE NAVBAR ---
-        let idleTimer;
-        let scrollY = 0;
-        
-        window.addEventListener('scroll', () => { scrollY = window.scrollY; resetTimer(); });
-        document.addEventListener('mousemove', resetTimer);
-        document.addEventListener('keydown', resetTimer);
-
-        function resetTimer() {
-            clearTimeout(idleTimer);
-            const nav = document.getElementById('mainNav');
-            nav.classList.remove('nav-hidden');
+        // --- NAVEGACIÓN ---
+        function navigate(pageId) {
+            document.querySelectorAll('.page-section').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             
-            if(scrollY > 50) {
-                const activePage = document.querySelector('.page-section.active').id;
-                if(activePage === 'reader' || activePage === 'project-view' || activePage === 'terminal') {
-                    idleTimer = setTimeout(() => { nav.classList.add('nav-hidden'); }, 2000);
-                }
-            }
+            document.getElementById(pageId).classList.add('active');
+            document.getElementById('link-' + pageId).classList.add('active');
+            window.scrollTo(0,0);
         }
 
-        // --- THEME SYSTEM (FIXED RUBY/SUNSET) ---
+        // --- TEMAS ---
         function toggleThemeMenu() {
             document.getElementById('themeMenu').classList.toggle('active');
         }
 
-        function setTheme(colorName, isLight) {
-            const body = document.body;
-            body.classList.remove('color-blue', 'color-purple', 'color-matrix', 'color-ruby', 'color-sunset', 'color-ocean', 'mode-light');
-            
-            if (isLight) {
-                body.classList.add('mode-light');
-                if(colorName === 'sunset') {
-                     body.classList.add('color-sunset');
-                } else {
-                     body.classList.add('color-' + colorName);
-                }
-            } else {
-                if(colorName === 'ruby') body.classList.add('color-ruby');
-                else body.classList.add('color-' + colorName);
-            }
-            
-            const icon = document.getElementById('theme-icon');
-            if(isLight) {
-                icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
-            } else {
-                icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
-            }
-
+        function setTheme(color, light) {
+            document.body.className = `color-${color} ${light ? 'mode-light' : ''}`;
             document.getElementById('themeMenu').classList.remove('active');
-            localStorage.setItem('s2ktux_theme', JSON.stringify({ color: colorName, light: isLight }));
         }
 
-        const savedTheme = JSON.parse(localStorage.getItem('s2ktux_theme'));
-        if(savedTheme) setTheme(savedTheme.color, savedTheme.light);
-
-        document.addEventListener('click', (e) => {
-            if (!e.target.closest('.theme-btn') && !e.target.closest('.theme-selector')) {
-                document.getElementById('themeMenu').classList.remove('active');
-            }
-        });
-
-        // --- NAVIGATION ---
-        function navigate(pageId) {
-            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            
-            const map = { 'home':0, 'courses':1, 'terminal':2, 'projects':3 };
-            if(map[pageId] !== undefined) document.querySelectorAll('.nav-link')[map[pageId]].classList.add('active');
-            
-            window.history.pushState({ page: pageId }, null, `#${pageId}`);
-            if(pageId === 'terminal') {
-                document.getElementById('term-input').focus();
-                if(currentPath !== '~') currentPath = '~'; 
-            }
-            
-            window.scrollTo(0,0);
-            resetTimer();
-        }
-
-        window.onpopstate = function(event) {
-            let pageId = 'home';
-            if (event.state && event.state.page) pageId = event.state.page;
-            else { const hash = window.location.hash.replace('#', ''); if(hash) pageId = hash; }
-            
-            if(pageId === 'reader' && currentCourseId) { backToSyllabus(); return; }
-            if(pageId === 'project-view') { navigate('projects'); return; }
-
-            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            resetTimer();
-        };
-
-        function checkHash() {
-            const hash = window.location.hash.replace('#', '');
-            if(hash && hash !== 'reader' && hash !== 'project-view') navigate(hash);
-        }
-
-        // --- COURSES ---
-        function openSyllabus(courseId) {
-            const course = coursesDB[courseId];
-            if(!course) return;
-            currentCourseId = courseId;
-            document.getElementById('syllabus-title').innerText = course.title;
-            const list = document.getElementById('syllabus-list'); list.innerHTML = ''; 
-            
-            let readCount = 0;
-            course.chapters.forEach(chap => { if(localStorage.getItem('s2ktux_read_' + chap.file)) readCount++; });
-            const progress = Math.round((readCount / course.chapters.length) * 100);
-            document.getElementById('course-progress-bar').style.width = `${progress}%`;
-            document.getElementById('course-progress-text').innerText = `${progress}%`;
-            
-            course.chapters.forEach(chap => {
-                const isRead = localStorage.getItem('s2ktux_read_' + chap.file);
-                const checkmark = isRead ? '<span style="color:var(--accent); font-weight:bold; margin-left:10px;">&#10003;</span>' : '';
-                const div = document.createElement('div');
-                div.className = 'card'; div.style.padding = "15px"; div.style.cursor = "pointer";
-                div.innerHTML = `<h4 style="color:var(--text-main); margin:0; font-size:1rem;">${chap.title} ${checkmark}</h4>`;
-                div.onclick = () => openReader(chap.file);
-                list.appendChild(div);
-            });
+        // --- TEMARIO DINÁMICO ---
+        function openSyllabus(course) {
             navigate('syllabus');
+            document.getElementById('syllabus-title').innerText = "Temario: " + course;
+            const list = document.getElementById('syllabus-list');
+            list.innerHTML = `
+                <div class="chapter-item"><span>Módulo 1: Introducción y Arquitectura</span> <span>0%</span></div>
+                <div class="chapter-item"><span>Módulo 2: Gestión de Paquetes y Librerías</span> <span>0%</span></div>
+                <div class="chapter-item"><span>Módulo 3: Comandos GNU y Unix</span> <span>0%</span></div>
+                <div class="chapter-item"><span>Módulo 4: Dispositivos y Sistemas de Archivos</span> <span>0%</span></div>
+            `;
         }
 
-        async function openReader(fileUrl) {
-            const readerContent = document.getElementById('reader-content');
-            readerContent.innerHTML = '<div style="text-align:center; padding:50px;">Cargando...</div>';
-            navigate('reader');
-            currentFileUrl = fileUrl;
-            localStorage.setItem('s2ktux_read_' + fileUrl, 'true');
-            
-            try {
-                const response = await fetch(fileUrl);
-                if(response.ok) {
-                    const text = await response.text();
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(text, 'text/html');
-                    const content = doc.querySelector('main') || doc.querySelector('body') || doc;
-                    readerContent.innerHTML = content.innerHTML;
-                    addNextButton();
-                } else throw new Error("404");
-            } catch (e) {
-                readerContent.innerHTML = `<h1>Error</h1><p>Usa Live Server o GitHub Pages.</p>`;
-            }
-        }
-
-        function addNextButton() {
-            if(!currentCourseId) return;
-            const course = coursesDB[currentCourseId];
-            const idx = course.chapters.findIndex(c => c.file === currentFileUrl);
-            const nextChapter = course.chapters[idx + 1];
-            const btnContainer = document.createElement('div');
-            btnContainer.className = 'next-btn-container';
-            if (nextChapter) {
-                btnContainer.innerHTML = `<button class="next-btn" onclick="openReader('${nextChapter.file}')">Siguiente: ${nextChapter.title} &rarr;</button>`;
-            } else {
-                btnContainer.innerHTML = `<div style="text-align:right; color:var(--text-muted);">¡Curso completado! 🎉</div>`;
-            }
-            document.getElementById('reader-content').appendChild(btnContainer);
-        }
-
-        function backToSyllabus() {
-            navigate('syllabus');
-            if(currentCourseId) openSyllabus(currentCourseId);
-        }
-
-        function openProject(id) {
-            const proj = projectsDB[id];
-            if(!proj) return;
-            document.getElementById('project-content').innerHTML = `<h1>${proj.title}</h1>${proj.content}`;
-            navigate('project-view');
-        }
-
-        // --- TERMINAL (FIXED RESPONSIVE & LOGIC) ---
+        // --- LÓGICA TERMINAL ---
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('term-output');
-        const termInputLine = document.querySelector('.term-input-line');
-        
-        // Estructura del Sistema de Archivos Virtual
-        const fileSystem = {
-            "~": { type: "dir", children: ["cursos", "proyectos"], files: ["README.md"] },
-            "~/cursos": { type: "dir", target: "courses", items: ["rhcsa", "lpic1"] },
-            "~/proyectos": { type: "dir", target: "projects", items: ["deployer", "ansible"] },
-            "README.md": { type: "file", content: "S2KTUX Portfolio v7.0 - Domina Linux desde la consola." }
-        };
-        
-        termInput.addEventListener('keydown', function(e) {
+
+        termInput.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                e.preventDefault(); // Prevenir submit de formular
-                const cmd = this.value.trim();
-                if (cmd) {
-                    // Echo del comando
-                    const cmdLine = document.createElement('div');
-                    cmdLine.className = 'term-output-line';
-                    cmdLine.innerHTML = `<span class="term-prompt">visitor@s2ktux:${currentPath}$</span> ${cmd}`;
-                    // Insertar antes de la línea de input (que ahora está fuera)
-                    // Si termInputLine está dentro de termBody, usamos insertBefore
-                    termOutput.insertBefore(cmdLine, termInputLine);
-                    
-                    processTermCommand(cmd);
+                const val = termInput.value.trim().toLowerCase();
+                const userLine = document.createElement('div');
+                userLine.innerHTML = `<span class="term-prompt">visitor@s2ktux:~$</span> ${val}`;
+                termOutput.appendChild(userLine);
+
+                const response = document.createElement('div');
+                response.style.color = "var(--text-muted)";
+                response.style.marginBottom = "15px";
+
+                switch(val) {
+                    case 'help':
+                        response.innerHTML = "Comandos disponibles: <br> - <b>clear</b>: Limpia la terminal <br> - <b>courses</b>: Lista de cursos <br> - <b>about</b>: Información del sistema";
+                        break;
+                    case 'courses':
+                        response.innerHTML = "Cursos activos: RHCSA, LPIC-1, Ansible Automation.";
+                        break;
+                    case 'clear':
+                        termOutput.innerHTML = '';
+                        response.innerHTML = '';
+                        break;
+                    case 'about':
+                        response.innerHTML = "S2KTUX Terminal v7.0.0-stable. Kernel: Virtual JS Engine.";
+                        break;
+                    default:
+                        if(val !== "") response.innerHTML = `Comando no reconocido: ${val}`;
                 }
-                this.value = '';
+
+                termOutput.appendChild(response);
+                termInput.value = '';
                 termOutput.scrollTop = termOutput.scrollHeight;
-                
-                // Asegurar foco
-                setTimeout(() => this.focus(), 10);
             }
         });
 
-        function processTermCommand(cmd) {
-            const args = cmd.split(' ');
-            const mainCmd = args[0].toLowerCase();
-            const arg1 = args[1];
-            const response = document.createElement('div');
-            response.className = 'term-output-line';
-            
-            switch(mainCmd) {
-                case 'help':
-                    response.innerHTML = `
-                    <table class="help-table">
-                        <tr><td class="help-cmd">ls</td><td>Listar directorio actual</td></tr>
-                        <tr><td class="help-cmd">cd [dir]</td><td>Cambiar directorio (ej: cd cursos)</td></tr>
-                        <tr><td class="help-cmd">cat [file]</td><td>Leer archivo (ej: cat README.md)</td></tr>
-                        <tr><td class="help-cmd">clear</td><td>Limpiar pantalla</td></tr>
-                        <tr><td class="help-cmd">exit</td><td>Cerrar sesión</td></tr>
-                    </table>`;
-                    break;
-                case 'ls':
-                    if (currentPath === '~') {
-                        response.innerHTML = "cursos  proyectos  README.md";
-                    } else if (currentPath === '~/cursos') {
-                        response.innerHTML = "rhcsa/  lpic1/";
-                    } else if (currentPath === '~/proyectos') {
-                        response.innerHTML = "deployer  ansible/";
-                    } else {
-                        response.innerHTML = `bash: ls: cannot access '${currentPath}`;
-                    }
-                    break;
-                case 'cd':
-                    if (!arg1) {
-                        currentPath = '~';
-                    } else if (arg1 === '..') {
-                        currentPath = '~';
-                        navigate('home');
-                    } else if (arg1 === 'cursos') {
-                        currentPath = '~/cursos';
-                        navigate('courses');
-                    } else if (arg1 === 'proyectos') {
-                        currentPath = '~/proyectos';
-                        navigate('projects');
-                    } else {
-                        response.innerHTML = `bash: cd: ${arg1}: No such file or directory`;
-                    }
-                    break;
-                case 'cat':
-                    if (arg1 && arg1 === "README.md") {
-                        response.innerHTML = fileSystem["README.md"].content;
-                    } else {
-                        response.innerHTML = `cat: ${arg1}: No such file or directory`;
-                    }
-                    break;
-                case 'clear': 
-                    termOutput.querySelectorAll('.term-output-line').forEach(el => el.remove()); 
-                    return;
-                case 'exit': 
-                    navigate('home'); 
-                    currentPath = '~';
-                    return;
-                case 'man':
-                    if (currentCourseId) {
-                        response.innerHTML = `Manual de ${coursesDB[currentCourseId].title}.\nPara leer usa el comando 'cat' o navega por la interfaz gráfica.`;
-                    } else {
-                        response.innerHTML = "¿Qué manual necesitas? Navega a un curso primero.";
-                    }
-                    break;
-                default: 
-                    response.innerHTML = `bash: ${mainCmd}: command not found`;
+        // Asegurar foco en terminal al hacer click
+        document.addEventListener('click', (e) => {
+            if (document.getElementById('terminal').classList.contains('active')) {
+                termInput.focus();
             }
-            // Insertar respuesta justo antes de la línea de input
-            termOutput.insertBefore(response, termInputLine);
-        }
-        
-        document.getElementById('terminal').addEventListener('click', () => termInput.focus());
-
+        });
     </script>
 </body>
 </html>
