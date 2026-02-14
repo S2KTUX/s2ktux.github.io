@@ -4,261 +4,147 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S2KTUX | Academy & Lab</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0b0f1a;
-            --card-bg: #161b2c;
+            --bg: #030712;
+            --card-bg: #0f172a;
             --accent: #38bdf8;
-            --accent-glow: rgba(56, 189, 248, 0.15);
+            --accent-soft: rgba(56, 189, 248, 0.1);
             --text-main: #f8fafc;
             --text-dim: #94a3b8;
-            --terminal-header: #1e293b;
             --green: #4ade80;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { background-color: var(--bg); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            overflow-x: hidden;
+        /* --- BACKGROUND GLOW --- */
+        .blob {
+            position: absolute; width: 500px; height: 500px; background: radial-gradient(circle, var(--accent-soft) 0%, transparent 70%);
+            z-index: -1; top: -100px; right: -100px; filter: blur(40px);
         }
 
-        /* --- NAVEGACIÓN --- */
         nav {
-            display: flex;
-            justify-content: space-between;
-            padding: 1.5rem 10%;
-            align-items: center;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            background: rgba(11, 15, 26, 0.8);
-            backdrop-filter: blur(10px);
-            z-index: 1000;
+            display: flex; justify-content: space-between; padding: 1.5rem 10%; align-items: center;
+            position: fixed; width: 100%; top: 0; background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(12px); z-index: 1000;
             border-bottom: 1px solid rgba(255,255,255,0.05);
         }
 
-        .logo { font-weight: 800; font-size: 1.4rem; color: var(--text-main); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+        .logo { font-weight: 800; font-size: 1.5rem; color: var(--text-main); text-decoration: none; }
         .logo span { color: var(--accent); }
-        .nav-links a { color: var(--text-dim); text-decoration: none; margin-left: 2rem; font-size: 0.9rem; transition: 0.3s; }
-        .nav-links a:hover { color: var(--accent); }
 
-        /* --- HERO SECTION --- */
-        .hero {
-            display: flex;
-            align-items: center;
-            padding: 180px 10% 100px;
-            min-height: 100vh;
-            gap: 60px;
-        }
+        /* --- HERO --- */
+        .hero { display: flex; align-items: center; padding: 180px 10% 120px; min-height: 100vh; gap: 80px; position: relative; }
+        .hero-text { flex: 1.2; }
+        .hero-text h1 { font-size: 4.5rem; line-height: 1; margin-bottom: 1.5rem; letter-spacing: -3px; }
+        .gradient-text { background: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .hero-text p { font-size: 1.2rem; color: var(--text-dim); margin-bottom: 2.5rem; line-height: 1.6; max-width: 550px; }
 
-        .hero-text { flex: 1; }
-        .hero-text h1 { font-size: 4rem; line-height: 1; margin-bottom: 1.5rem; font-weight: 800; letter-spacing: -2px; }
-        .gradient-text { background: linear-gradient(90deg, #38bdf8, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .hero-text p { font-size: 1.25rem; color: var(--text-dim); margin-bottom: 2.5rem; line-height: 1.6; }
-
-        .btn-group { display: flex; gap: 1rem; }
-        .btn { padding: 0.9rem 2.2rem; border-radius: 10px; text-decoration: none; font-weight: 600; transition: 0.3s; font-size: 0.95rem; }
-        .btn-primary { background: var(--accent); color: #000; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 15px 30px var(--accent-glow); }
-        .btn-secondary { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: var(--text-main); }
-        .btn-secondary:hover { background: rgba(255,255,255,0.1); }
-
-        /* --- TERMINAL --- */
+        .terminal-wrapper { flex: 1; position: relative; }
         .terminal-window {
-            flex: 1;
-            background: #0d1117;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 40px 80px rgba(0,0,0,0.6);
-            overflow: hidden;
-            height: 380px;
+            background: #0d1117; border-radius: 16px; border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 50px 100px -20px rgba(0,0,0,0.7); overflow: hidden; height: 400px; position: relative; z-index: 2;
         }
-
-        .terminal-header { background: var(--terminal-header); padding: 12px 20px; display: flex; align-items: center; gap: 8px; }
+        .terminal-header { background: #1e293b; padding: 14px 20px; display: flex; align-items: center; gap: 8px; }
         .dot { width: 12px; height: 12px; border-radius: 50%; }
         .red { background: #ff5f56; } .yellow { background: #ffbd2e; } .green { background: #27c93f; }
-        .t-title { margin-left: auto; margin-right: auto; font-family: 'Fira Code'; font-size: 0.75rem; color: var(--text-dim); }
-
         .terminal-body { padding: 25px; font-family: 'Fira Code', monospace; font-size: 14px; color: #e6edf3; }
-        .prompt { color: var(--green); margin-right: 8px; }
-        .cursor { display: inline-block; width: 8px; height: 15px; background: var(--accent); margin-left: 4px; animation: blink 1s infinite; }
 
-        /* --- SECCIÓN CURSOS --- */
-        .section-container { padding: 100px 10%; text-align: center; }
-        .section-tag { color: var(--accent); font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 1rem; display: block; }
-        .section-title { font-size: 2.5rem; margin-bottom: 3rem; font-weight: 800; }
-
-        .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 2rem; }
-        .course-card {
-            background: var(--card-bg);
-            padding: 2.5rem;
-            border-radius: 20px;
-            text-align: left;
-            border: 1px solid rgba(255,255,255,0.05);
-            transition: 0.4s;
-            position: relative;
-            overflow: hidden;
+        /* --- FEATURES / CURSOS --- */
+        .section { padding: 120px 10%; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 2.5rem; margin-top: 4rem; }
+        .card {
+            background: var(--card-bg); padding: 3rem; border-radius: 24px; border: 1px solid rgba(255,255,255,0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
-        .course-card:hover { 
-            transform: translateY(-10px); 
-            border-color: var(--accent);
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-        }
-        .course-card h3 { font-size: 1.5rem; margin-bottom: 1rem; }
-        .course-card p { color: var(--text-dim); font-size: 0.95rem; margin-bottom: 1.5rem; }
-        .course-link { color: var(--accent); text-decoration: none; font-weight: 600; font-size: 0.9rem; }
+        .card:hover { transform: translateY(-12px); border-color: var(--accent); background: #1e293b; }
+        .card-icon { width: 50px; height: 50px; background: var(--accent-soft); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 2rem; color: var(--accent); font-weight: 800; }
 
-        /* --- FOOTER --- */
-        footer { padding: 80px 10% 40px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 100px; }
-        .footer-content { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 40px; margin-bottom: 50px; }
-        .footer-logo { flex: 1; min-width: 250px; }
-        .footer-links { flex: 2; display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px; }
-        .link-group h4 { margin-bottom: 1.5rem; font-size: 1rem; }
-        .link-group a { display: block; color: var(--text-dim); text-decoration: none; margin-bottom: 0.8rem; font-size: 0.9rem; transition: 0.3s; }
-        .link-group a:hover { color: var(--accent); }
-        .copyright { text-align: center; color: var(--text-dim); font-size: 0.8rem; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 30px; }
-
-        @keyframes blink { 50% { opacity: 0; } }
-
-        @media (max-width: 992px) {
-            .hero { flex-direction: column; text-align: center; padding-top: 140px; }
-            .hero-text h1 { font-size: 3rem; }
-            .btn-group { justify-content: center; }
-            .terminal-window { width: 100%; max-width: 550px; height: 320px; }
-        }
+        @media (max-width: 1100px) { .hero { flex-direction: column; text-align: center; } .hero-text h1 { font-size: 3.5rem; } }
     </style>
 </head>
 <body>
-
+    <div class="blob"></div>
     <nav>
-        <a href="#" class="logo">S2K<span>TUX</span></a>
+        <a href="index.html" class="logo">S2K<span>TUX</span></a>
         <div class="nav-links">
             <a href="#cursos">Cursos</a>
-            <a href="#proyectos">Proyectos</a>
-            <a href="#comunidad">Comunidad</a>
-            <a href="#" style="background: var(--accent); color: #000; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 700;">Login</a>
+            <a href="#lab">Laboratorios</a>
+            <a href="curso-detalle.html" style="color: var(--accent); font-weight: 800;">Ver Demo Curso</a>
         </div>
     </nav>
 
     <section class="hero">
         <div class="hero-text">
-            <span class="section-tag">Infraestructura & Sistemas</span>
-            <h1>Domina el arte de <br><span class="gradient-text">Linux & Networking</span></h1>
-            <p>Formación técnica especializada en administración de sistemas para la nueva generación de ingenieros Cloud y DevOps.</p>
-            <div class="btn-group">
-                <a href="#cursos" class="btn btn-primary">Ver Catálogo</a>
-                <a href="#proyectos" class="btn btn-secondary">Proyectos Lab</a>
+            <h1>Expertise en <br><span class="gradient-text">Sistemas Linux</span></h1>
+            <p>De la instalación a la infraestructura como código. Aprende las herramientas que mueven internet con laboratorios interactivos.</p>
+            <div style="display: flex; gap: 15px;">
+                <a href="#cursos" class="btn" style="background:var(--accent); color:#000; padding:15px 30px; border-radius:12px; text-decoration:none; font-weight:800;">Explorar Academia</a>
             </div>
         </div>
-
-        <div class="terminal-window">
-            <div class="terminal-header">
-                <div class="dot red"></div>
-                <div class="dot yellow"></div>
-                <div class="dot green"></div>
-                <div class="t-title">s2ktux@academy: ~</div>
-            </div>
-            <div class="terminal-body" id="typewriter"></div>
-        </div>
-    </section>
-
-    <section id="cursos" class="section-container">
-        <span class="section-tag">Programas Académicos</span>
-        <h2 class="section-title">Aprende con rutas certificadas</h2>
-        
-        <div class="course-grid">
-            <div class="course-card">
-                <h3>Linux Essentials</h3>
-                <p>Domina la terminal desde cero. Gestión de usuarios, permisos, procesos y el sistema de archivos de forma profesional.</p>
-                <a href="#" class="course-link">Empezar curso →</a>
-            </div>
-            <div class="course-card">
-                <h3>Networking Pro</h3>
-                <p>Configuración de redes, protocolos TCP/IP, firewalls y resolución de problemas en entornos reales corporativos.</p>
-                <a href="#" class="course-link">Explorar módulo →</a>
-            </div>
-            <div class="course-card">
-                <h3>Bash Scripting</h3>
-                <p>Automatiza tareas repetitivas. Crea herramientas personalizadas y optimiza la administración de tus servidores.</p>
-                <a href="#" class="course-link">Ver detalles →</a>
+        <div class="terminal-wrapper">
+            <div class="terminal-window">
+                <div class="terminal-header">
+                    <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+                    <div style="margin:auto; font-size:12px; opacity:0.5; font-family:'Fira Code'">guest@s2ktux: ~</div>
+                </div>
+                <div class="terminal-body" id="typewriter"></div>
             </div>
         </div>
     </section>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-logo">
-                <a href="#" class="logo">S2K<span>TUX</span></a>
-                <p style="color: var(--text-dim); margin-top: 1rem; font-size: 0.9rem;">Academia líder en formación técnica de sistemas y redes para hispanohablantes.</p>
+    <section id="cursos" class="section">
+        <h2 style="font-size: 3rem; text-align: center;">Programas de <span class="gradient-text">Élite</span></h2>
+        <div class="grid">
+            <div class="card">
+                <div class="card-icon">01</div>
+                <h3>Administración RHCSA</h3>
+                <p>Preparación intensiva para la certificación Red Hat. Domina SELinux, Storage y Networking.</p>
             </div>
-            <div class="footer-links">
-                <div class="link-group">
-                    <h4>Contenido</h4>
-                    <a href="#">Cursos Gratuito</a>
-                    <a href="#">Certificaciones</a>
-                    <a href="#">Laboratorios</a>
-                </div>
-                <div class="link-group">
-                    <h4>Comunidad</h4>
-                    <a href="#">Discord</a>
-                    <a href="#">GitHub</a>
-                    <a href="#">LinkedIn</a>
-                </div>
-                <div class="link-group">
-                    <h4>Legal</h4>
-                    <a href="#">Privacidad</a>
-                    <a href="#">Términos</a>
-                </div>
+            <div class="card">
+                <div class="card-icon">02</div>
+                <h3>Bash Automation</h3>
+                <p>Escribe scripts que trabajen por ti. Desde simples backups hasta despliegues complejos.</p>
+            </div>
+            <div class="card">
+                <div class="card-icon">03</div>
+                <h3>Docker & Containers</h3>
+                <p>Aprende a orquestar servicios. La base fundamental del DevOps moderno.</p>
             </div>
         </div>
-        <div class="copyright">
-            © 2026 S2KTUX Academy. Desarrollado con ❤️ para la comunidad Linux.
-        </div>
-    </footer>
+    </section>
 
     <script>
         const terminal = document.getElementById('typewriter');
         const lines = [
-            { text: 'ssh s2ktux@academy', type: 'command' },
-            { text: 'Conectando a S2KTUX Academy...', type: 'output' },
-            { text: 'Access Granted.', type: 'output' },
-            { text: 'ls /learning/path', type: 'command' },
-            { text: 'RHCSA_Prep   Docker_Basics   Cyber_Security', type: 'output' },
-            { text: 'cat welcome.txt', type: 'command' },
-            { text: '¡Bienvenido al servidor! ¿Qué quieres aprender hoy?', type: 'output' }
+            { text: 'init academy --mode intensive', type: 'command' },
+            { text: 'Cargando módulos de kernel...', type: 'output' },
+            { text: '[ OK ] Net_Pro_V2 Loaded', type: 'output' },
+            { text: '[ OK ] SysAdmin_Labs Loaded', type: 'output' },
+            { text: './start_learning.sh', type: 'command' },
+            { text: 'Acceso concedido. Bienvenido, SysAdmin.', type: 'output' }
         ];
 
         async function typeEffect() {
             for (let line of lines) {
                 let div = document.createElement('div');
                 div.style.marginBottom = "10px";
-                
                 if (line.type === 'command') {
-                    div.innerHTML = `<span class="prompt">s2ktux@server:~$</span> <span class="content"></span><span class="cursor"></span>`;
+                    div.innerHTML = `<span style="color:var(--green)">$</span> <span class="content"></span>`;
                     terminal.appendChild(div);
                     let contentSpan = div.querySelector('.content');
-                    let cursor = div.querySelector('.cursor');
-                    
                     for (let char of line.text) {
                         contentSpan.textContent += char;
-                        await new Promise(r => setTimeout(r, 60));
+                        await new Promise(r => setTimeout(r, 50));
                     }
-                    cursor.remove();
                 } else {
-                    div.innerHTML = `<span style="color: #94a3b8;">${line.text}</span>`;
+                    div.innerHTML = `<span style="color:var(--text-dim)">${line.text}</span>`;
                     terminal.appendChild(div);
                     await new Promise(r => setTimeout(r, 400));
                 }
             }
-            let finalPrompt = document.createElement('div');
-            finalPrompt.innerHTML = `<span class="prompt">s2ktux@server:~$</span> <span class="cursor"></span>`;
-            terminal.appendChild(finalPrompt);
         }
-
         window.onload = typeEffect;
     </script>
 </body>
