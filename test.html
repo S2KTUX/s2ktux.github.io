@@ -11,12 +11,13 @@
         :root {
             --bg-color: #050505;
             --card-bg: #121212;
-            --nav-bg: rgba(20, 20, 20, 0.8);
+            --nav-bg: rgba(20, 20, 20, 0.85);
+            --footer-bg: rgba(10, 10, 10, 0.9);
             --text-main: #e0e0e0;
             --text-muted: #a0a0a0;
             --accent: #3b82f6; /* Azul moderno */
-            --accent-glow: rgba(59, 130, 246, 0.3);
-            --border-color: #333;
+            --accent-glow: rgba(59, 130, 246, 0.2);
+            --border-color: #27272a;
             --font-main: 'Inter', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
@@ -29,9 +30,11 @@
             font-family: var(--font-main);
             min-height: 100vh;
             overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* --- NAVEGACIÓN FLOTANTE (Pill Shape) --- */
+        /* --- NAVEGACIÓN FLOTANTE --- */
         .floating-nav {
             position: fixed;
             top: 20px;
@@ -41,7 +44,7 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 0.8rem 2rem;
-            border-radius: 9999px; /* Bordes totalmente circulares */
+            border-radius: 9999px;
             border: 1px solid var(--border-color);
             box-shadow: 0 10px 30px rgba(0,0,0,0.5);
             z-index: 1000;
@@ -77,49 +80,61 @@
             box-shadow: 0 0 8px var(--accent);
         }
 
-        /* --- CONTENEDOR DE PÁGINAS --- */
+        /* --- MAIN CONTAINER --- */
         main {
-            padding-top: 100px; /* Espacio para el nav */
+            padding-top: 100px;
+            padding-bottom: 100px; /* Espacio para el footer */
+            flex: 1;
             max-width: 1200px;
             margin: 0 auto;
-            padding-bottom: 50px;
+            width: 100%;
+            padding-left: 20px;
+            padding-right: 20px;
         }
 
         .page-section {
-            display: none; /* Ocultar todas por defecto */
-            animation: fadeIn 0.5s ease;
-            padding: 0 20px;
+            display: none;
+            animation: fadeIn 0.4s ease;
         }
 
-        .page-section.active {
-            display: block; /* Mostrar la activa */
-        }
+        .page-section.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* --- ESTILOS HOME --- */
-        .hero {
-            text-align: center;
-            padding: 4rem 1rem;
-        }
+        /* --- HOME --- */
+        .hero { text-align: center; padding: 3rem 1rem; }
         .hero h1 {
             font-size: 3.5rem;
             font-weight: 800;
-            background: linear-gradient(to right, #fff, #a0a0a0);
+            background: linear-gradient(to right, #fff, #888);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 1rem;
             letter-spacing: -1px;
         }
-        .hero p {
-            font-size: 1.2rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 2rem;
+        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem; }
+        
+        .stats-container {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 4rem;
+            flex-wrap: wrap;
         }
+        .stat-box {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            min-width: 150px;
+        }
+        .stat-number { font-size: 2rem; font-weight: 800; color: var(--accent); display: block; }
+        .stat-label { font-size: 0.9rem; color: var(--text-muted); }
+
         .cta-button {
             display: inline-block;
             padding: 12px 30px;
@@ -133,55 +148,88 @@
         }
         .cta-button:hover { transform: scale(1.05); }
 
-        /* --- ESTILOS CURSOS (Modern Reader) --- */
+        /* --- CURSOS (GRID) --- */
         .course-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+            gap: 25px;
         }
         .course-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 20px;
+            border-radius: 16px;
+            padding: 25px;
             cursor: pointer;
-            transition: transform 0.2s, border-color 0.2s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
         .course-card:hover {
             transform: translateY(-5px);
             border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
         }
-        .course-card h3 { color: #fff; margin-bottom: 10px; }
-        .course-card p { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 15px; }
+        .course-card::before {
+            content: ''; position: absolute; top:0; left:0; width:100%; height:4px; background:var(--accent);
+            opacity:0; transition: opacity 0.3s;
+        }
+        .course-card:hover::before { opacity:1; }
+        
         .course-tag {
             font-size: 0.75rem;
-            background: rgba(255,255,255,0.1);
-            padding: 4px 8px;
-            border-radius: 4px;
-            color: #fff;
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            text-transform: uppercase;
         }
+        .course-card h3 { color: #fff; margin: 15px 0 10px; font-size: 1.4rem; }
+        .course-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
+        .course-meta { display: flex; justify-content: space-between; color: #666; font-size: 0.85rem; }
 
-        /* Estilo para la página de lectura del curso (La parte "Elegante") */
+        /* --- SYLLABUS (LISTA DE TEMAS) --- */
+        .syllabus-header { margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
+        .back-link { color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 20px; transition: color 0.2s; }
+        .back-link:hover { color: var(--accent); }
+        
+        .chapter-list { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .chapter-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            padding: 15px 20px;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .chapter-item:hover { background: #1a1a1a; border-color: var(--accent); }
+        .chapter-info h4 { color: #fff; font-size: 1.1rem; margin-bottom: 4px; }
+        .chapter-info span { color: var(--text-muted); font-size: 0.9rem; }
+        .chapter-arrow { color: var(--accent); font-size: 1.2rem; }
+
+        /* --- READER (LECTOR) --- */
         .course-reader {
             background: var(--card-bg);
             max-width: 900px;
             margin: 0 auto;
             border-radius: 16px;
-            padding: 40px;
+            padding: 40px 50px; /* Más padding para leer mejor */
             border: 1px solid var(--border-color);
             line-height: 1.8;
             font-size: 1.05rem;
         }
         .course-reader h1 { font-size: 2.5rem; margin-bottom: 1rem; color: #fff; }
-        .course-reader h2 { color: var(--accent); margin-top: 2rem; margin-bottom: 1rem; }
-        .course-reader h3 { color: #fff; margin-top: 1.5rem; margin-bottom: 0.5rem; }
-        .course-reader p { margin-bottom: 1rem; color: #ccc; }
-        .course-reader ul { margin-left: 20px; margin-bottom: 1rem; color: #ccc; }
+        .course-reader h2 { color: var(--accent); margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px; }
+        .course-reader h3 { color: #fff; margin-top: 1.8rem; margin-bottom: 0.8rem; }
+        .course-reader p { margin-bottom: 1.2rem; color: #ccc; }
+        .course-reader ul { margin-left: 20px; margin-bottom: 1.2rem; color: #ccc; }
         .course-reader img { 
             max-width: 100%; 
             border-radius: 8px; 
-            margin: 20px 0; 
+            margin: 25px 0; 
             border: 1px solid #333;
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
@@ -192,15 +240,8 @@
             color: var(--accent);
             font-family: var(--font-mono);
         }
-        .back-btn {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: var(--text-muted);
-            cursor: pointer;
-        }
-        .back-btn:hover { color: #fff; }
 
-        /* --- ESTILOS TERMINAL (Reutilizado pero adaptado) --- */
+        /* --- TERMINAL --- */
         .terminal-container {
             width: 100%;
             max-width: 900px;
@@ -225,7 +266,6 @@
         .dot.r { background: #ef4444; }
         .dot.y { background: #eab308; }
         .dot.g { background: #22c55e; }
-        
         .term-body {
             flex: 1;
             padding: 20px;
@@ -233,7 +273,6 @@
             overflow-y: auto;
             color: #a1a1aa;
         }
-        .term-output { margin-bottom: 10px; }
         .term-input-line { display: flex; align-items: center; }
         .term-prompt { color: #10b981; margin-right: 10px; font-weight: bold; }
         #term-input {
@@ -247,6 +286,57 @@
         .cmd-echo { color: #10b981; font-weight: bold; }
         .term-highlight { color: #f472b6; font-weight: bold; }
         .term-path { color: #60a5fa; }
+
+        /* --- FOOTER CHULO --- */
+        .modern-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: var(--footer-bg);
+            backdrop-filter: blur(15px);
+            border-top: 1px solid var(--border-color);
+            padding: 15px 0;
+            z-index: 900;
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        .footer-logo { font-weight: 800; color: #fff; font-size: 1.1rem; letter-spacing: 1px; }
+        .footer-links { display: flex; gap: 20px; }
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            position: relative;
+        }
+        .footer-links a:hover { color: var(--accent); }
+        
+        /* Tooltip simple para el footer */
+        .footer-links a::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #000;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            border: 1px solid #333;
+        }
+        .footer-links a:hover::after { opacity: 1; }
 
         /* --- PROYECTOS --- */
         .project-grid {
@@ -279,109 +369,110 @@
         <!-- SECCIÓN: INICIO -->
         <section id="home" class="page-section active">
             <div class="hero">
-                <h1>Domina Linux.<br>Sin límites.</h1>
-                <p>Una plataforma híbrida para aprender administración de sistemas. Lee contenido estructurado o practica en nuestro entorno interactivo.</p>
-                <a href="#" class="cta-button" onclick="navigate('courses')">Empezar a Aprender</a>
+                <h1>Domina Linux.<br>Desde la consola.</h1>
+                <p>Plataforma híbrida para administradores de sistemas. Aprende con cursos estructurados o practica en nuestro entorno interactivo.</p>
+                <a href="#" class="cta-button" onclick="navigate('courses')">Ver Cursos</a>
+                
+                <div class="stats-container">
+                    <div class="stat-box">
+                        <span class="stat-number">40+</span>
+                        <span class="stat-label">Módulos</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number">4</span>
+                        <span class="stat-label">Certificaciones</span>
+                    </div>
+                    <div class="stat-box">
+                        <span class="stat-number">100%</span>
+                        <span class="stat-label">Práctico</span>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <!-- SECCIÓN: CURSOS (LISTA) -->
+        <!-- SECCIÓN: CURSOS (LISTA DE CURSOS) -->
         <section id="courses" class="page-section">
-            <h2 style="text-align:center; margin-bottom:30px; font-size:2rem;">Catálogo de Cursos</h2>
+            <h2 style="text-align:center; margin-bottom:40px; font-size:2.5rem;">Catálogo Oficial</h2>
             <div class="course-grid">
-                <!-- Card RHCSA -->
-                <div class="course-card" onclick="openCourse('rhcsa')">
+                <!-- RHCSA -->
+                <div class="course-card" onclick="openSyllabus('rhcsa')">
                     <span class="course-tag">Red Hat</span>
-                    <h3 style="margin-top:10px;">RHCSA EX200</h3>
-                    <p>Administración de sistemas Red Hat Enterprise Linux. Gestión de software, usuarios y seguridad.</p>
-                    <span style="color:var(--accent); font-size:0.9rem;">Abrir curso &rarr;</span>
+                    <h3>RHCSA EX200</h3>
+                    <p>Administración completa de sistemas Red Hat. Desde la shell hasta la gestión de almacenamiento y seguridad.</p>
+                    <div class="course-meta">
+                        <span>11 Módulos</span>
+                        <span style="color:var(--accent)">Explorar &rarr;</span>
+                    </div>
                 </div>
                 
-                <!-- Card LPIC1 -->
-                <div class="course-card" onclick="openCourse('lpic1')">
+                <!-- LPIC1 -->
+                <div class="course-card" onclick="openSyllabus('lpic1')">
                     <span class="course-tag">Linux Professional</span>
-                    <h3 style="margin-top:10px;">LPIC-1 101-500</h3>
-                    <p>Arquitectura de sistema, arranque de Linux y gestión de paquetes genérica.</p>
-                    <span style="color:var(--accent); font-size:0.9rem;">Próximamente &rarr;</span>
+                    <h3>LPIC-1 101-500</h3>
+                    <p>Arquitectura, comandos GNU, redes y fundamentos de Linux. La base de todo administrador.</p>
+                    <div class="course-meta">
+                        <span>10 Módulos</span>
+                        <span style="color:var(--accent)">Explorar &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- AWS -->
+                <div class="course-card">
+                    <span class="course-tag" style="background:#fbbf2420; color:#fbbf24">Cloud</span>
+                    <h3>AWS Practitioner</h3>
+                    <p>Introducción a los servicios de Amazon Web Services. Computación, almacenamiento y redes en la nube.</p>
+                    <div class="course-meta">
+                        <span>Próximamente</span>
+                        <span style="color:#666">Lock &rarr;</span>
+                    </div>
+                </div>
+
+                <!-- RHCE -->
+                <div class="course-card">
+                    <span class="course-tag" style="background:#ef444420; color:#ef4444">Avanzado</span>
+                    <h3>RHCE EX294</h3>
+                    <p>Automatización con Ansible. Toma el control de tu infraestructura como código.</p>
+                    <div class="course-meta">
+                        <span>Próximamente</span>
+                        <span style="color:#666">Lock &rarr;</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN: LECTOR DE CURSO (MODERNO Y ELEGANTE) -->
-        <section id="course-reader" class="page-section">
-            <div class="back-btn" onclick="navigate('courses')">&larr; Volver a Cursos</div>
+        <!-- SECCIÓN: SYLLABUS (TEMARIO DEL CURSO SELECCIONADO) -->
+        <section id="syllabus" class="page-section">
+            <div class="syllabus-header">
+                <div class="back-link" onclick="navigate('courses')">
+                    <span>&larr; Volver a Cursos</span>
+                </div>
+                <h2 id="syllabus-title" style="font-size:2rem; color:#fff;">Nombre del Curso</h2>
+                <p id="syllabus-desc" style="color:var(--text-muted); margin-top:10px;">Descripción del curso</p>
+            </div>
+            
+            <div class="chapter-list" id="syllabus-list">
+                <!-- Se llena con JS -->
+            </div>
+        </section>
+
+        <!-- SECCIÓN: LECTOR DE CONTENIDO -->
+        <section id="reader" class="page-section">
+            <div class="back-link" onclick="backToSyllabus()">
+                <span>&larr; Volver al Temario</span>
+            </div>
             
             <div class="course-reader">
-                <!-- Aquí inyectaremos el contenido dinámicamente, pero pongo el RHCSA por defecto para el ejemplo -->
-                <div id="course-content">
-                    <h1>Administrar el software en Linux</h1>
-                    <p>Gestión de paquetes y repositorios (RPM y Flatpak)</p>
-                    <div style="background:#1a1a20; padding:15px; border-left:4px solid var(--accent); margin:20px 0; border-radius:4px;">
-                        <strong>Video asociado:</strong> <a href="https://youtu.be/GM_9D8zNOag" target="_blank" style="color:var(--accent);">Ver en YouTube - Clase 2</a>
-                    </div>
-
-                    <h2>1. Configurar el acceso a los repositorios de RPM</h2>
-                    <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes usando gestores como <strong>dnf</strong>. En RHEL, los repositorios se definen mediante archivos <strong>.repo</strong> en <code>/etc/yum.repos.d/</code>.</p>
-                    
-                    <p>El contenido principal de un .repo, por ejemplo, es:</p>
-                    <!-- Asegúrate de que la imagen existe o usa una externa para probar -->
-                    <img src="/images/repo-rpm.png" alt="Contenido .repo" onerror="this.src='https://placehold.co/600x300/121212/fff?text=repo-rpm.png'">
-                    
-                    <p>Donde cada campo significa:</p>
-                    <ul>
-                        <li><strong>[id-del-repo]</strong> → Identificador del repositorio.</li>
-                        <li><strong>name</strong> → Nombre descriptivo.</li>
-                        <li><strong>baseurl</strong> → Enlace directo al servidor (Si es local: <code>baseurl=file:///RUTA-MONTAJE</code>).</li>
-                        <li><strong>enabled</strong> → Activo (1) o ignorado (0).</li>
-                        <li><strong>gpgcheck</strong> → Validar firma (1) o no (0).</li>
-                        <li><strong>gpgkey</strong> → URL de la clave pública.</li>
-                    </ul>
-
-                    <h2>2. Instalar y eliminar paquetes de software RPM</h2>
-                    <p>Los gestores principales son <strong>RPM</strong> (no resuelve dependencias) y <strong>DNF</strong> (sí resuelve). Yum está obsoleto.</p>
-
-                    <h3>Comandos RPM Clave</h3>
-                    <ul>
-                        <li><code>rpm -ivh paquete.rpm</code> → Instalar local.</li>
-                        <li><code>rpm -e nombre_paquete</code> → Eliminar.</li>
-                        <li><code>rpm -qa</code> → Listar todos los instalados.</li>
-                        <li><code>rpm -qf archivo</code> → ¿A qué paquete pertenece este archivo?</li>
-                    </ul>
-
-                    <h3>Comandos DNF Clave</h3>
-                    <ul>
-                        <li><code>dnf install paquete</code> → Instalar.</li>
-                        <li><code>dnf remove paquete</code> → Eliminar.</li>
-                        <li><code>dnf history</code> → Ver historial de cambios.</li>
-                        <li><code>dnf provides comando</code> → ¿Qué paquete tiene este comando?</li>
-                    </ul>
-
-                    <h2>3. Configurar el acceso a los repositorios de Flatpak</h2>
-                    <p>Flatpak es un sistema de distribución independiente de la distro, con dependencias aisladas. El repo común es <strong>Flathub</strong>.</p>
-                    <p>Comandos de gestión de repositorios:</p>
-                    <ul>
-                        <li><code>flatpak remote-add</code> → Añadir.</li>
-                        <li><code>flatpak remotes</code> → Listar.</li>
-                        <li><code>flatpak remote-delete</code> → Eliminar.</li>
-                    </ul>
-
-                    <h2>4. Instalar y eliminar paquetes de software Flatpak</h2>
-                    <p>Las aplicaciones usan nombre completo (ej: <code>org.mozilla.firefox</code>).</p>
-                    <ul>
-                        <li><code>flatpak install app</code> → Instalar.</li>
-                        <li><code>flatpak list</code> → Listar instaladas.</li>
-                        <li><code>flatpak run app</code> → Ejecutar.</li>
-                    </ul>
+                <div id="reader-content">
+                    <!-- Contenido dinámico aquí -->
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN: TERMINAL (PLAYGROUND) -->
+        <!-- SECCIÓN: TERMINAL -->
         <section id="terminal" class="page-section">
             <div style="text-align:center; margin-bottom:20px; color:var(--text-muted);">
-                <p>Entorno de prueba seguro. Escribe <span class="term-path">'help'</span> para ver comandos.</p>
+                <p>Entorno de prueba. Escribe <span class="term-path">'help'</span> para comandos.</p>
             </div>
-            
             <div class="terminal-container">
                 <div class="term-header">
                     <div class="dot r"></div>
@@ -389,7 +480,7 @@
                     <div class="dot g"></div>
                 </div>
                 <div class="term-body" id="term-output">
-                    <div class="term-output">S2KTUX Terminal v1.0 [Modo Práctica]<br>Escribe 'help' para comenzar.</div>
+                    <div class="term-output">S2KTUX Terminal v1.5 [Secure Connection]<br>Usuario: visitor | Sistema: Linux Kernel 6.5</div>
                     <div class="term-input-line">
                         <span class="term-prompt">visitor@s2ktux:~$</span>
                         <input type="text" id="term-input" autocomplete="off" autofocus>
@@ -400,58 +491,168 @@
 
         <!-- SECCIÓN: PROYECTOS -->
         <section id="projects" class="page-section">
-            <h2 style="margin-bottom:20px;">Mis Proyectos</h2>
+            <h2 style="margin-bottom:20px;">Proyectos Destacados</h2>
             <div class="project-grid">
                 <div class="project-card">
-                    <h3>S2KTUX Auto-Deploy</h3>
-                    <p>Script en Bash para automatizar despliegues en servidores VPS.</p>
+                    <h3>S2KTUX Deployer</h3>
+                    <p>Script en Bash para automatizar despliegues en VPS usando Git hooks.</p>
+                    <a href="#" style="color:var(--accent); font-size:0.9rem;">Ver en GitHub</a>
                 </div>
                 <div class="project-card">
-                    <h3>Net-Monitor</h3>
-                    <p>Herramienta de visualización de tráfico de red en tiempo real.</p>
+                    <h3>Net-Monitor CLI</h3>
+                    <p>Herramienta de visualización de tráfico de red en tiempo real escrita en Python.</p>
+                    <a href="#" style="color:var(--accent); font-size:0.9rem;">Ver en GitHub</a>
+                </div>
+                <div class="project-card">
+                    <h3>Container-Security</h3>
+                    <p>Imagen de Docker base endurecida para cumplimiento de normativas.</p>
+                    <a href="#" style="color:var(--accent); font-size:0.9rem;">Ver DockerHub</a>
                 </div>
             </div>
         </section>
 
     </main>
 
-    <script>
-        // --- NAVEGACIÓN ---
-        function navigate(pageId) {
-            // Ocultar todas las secciones
-            document.querySelectorAll('.page-section').forEach(section => {
-                section.classList.remove('active');
-            });
-            // Quitar active de nav
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
-            });
+    <!-- FOOTER CHULO -->
+    <footer class="modern-footer">
+        <div class="footer-content">
+            <div class="footer-logo">S2KTUX</div>
+            <div class="footer-links">
+                <a href="https://github.com/s2ktux" target="_blank" data-tooltip="GitHub">GitHub</a>
+                <a href="mailto:contact@s2ktux.com" data-tooltip="Email">Contacto</a>
+                <a href="https://linkedin.com" target="_blank" data-tooltip="LinkedIn">LinkedIn</a>
+                <a href="https://www.youtube.com/@s2ktux" target="_blank" data-tooltip="YouTube">YouTube</a>
+            </div>
+        </div>
+    </footer>
 
-            // Mostrar la seleccionada
+    <script>
+        // --- BASE DE DATOS DE CURSOS (Temarios) ---
+        // Aquí definimos las 11 secciones de RHCSA y las 10 de LPIC
+        const coursesDB = {
+            "rhcsa": {
+                title: "RHCSA: Red Hat Certified System Administrator",
+                desc: "Domina la administración de RHEL 8/9. Gestión de usuarios, redes, almacenamiento y seguridad.",
+                chapters: [
+                    { id: 1, title: "Clase 1: Herramientas esenciales de Linux", file: "/cursos/rhcsa/1/1.html" },
+                    { id: 2, title: "Clase 2: Gestión de Software en Linux", file: "/cursos/rhcsa/2/2.html" },
+                    { id: 3, title: "Clase 3: Crear scripts de shell sencillos", file: "/cursos/rhcsa/3/3.html" },
+                    { id: 4, title: "Clase 4: Trabajar con sistemas operativos", file: "/cursos/rhcsa/4/4.html" },
+                    { id: 5, title: "Clase 5: Configuración del Almacenamiento Local", file: "/cursos/rhcsa/5/5.html" },
+                    { id: 6, title: "Clase 6: Crear y Configurar Sistemas de Archivos", file: "/cursos/rhcsa/6/6.html" },
+                    { id: 7, title: "Clase 7: Implementar, configurar y mantener sistemas", file: "/cursos/rhcsa/7/7.html" },
+                    { id: 8, title: "Clase 8: Gestionar redes básicas", file: "/cursos/rhcsa/8/8.html" },
+                    { id: 9, title: "Clase 9: Gestionar usuarios y grupos", file: "/cursos/rhcsa/9/9.html" },
+                    { id: 10, title: "Clase 10: Gestionar la seguridad", file: "/cursos/rhcsa/10/10.html" },
+                    { id: 11, title: "EXTRA: Recursos adicionales", file: "/cursos/rhcsa/EXTRA/extra.html" }
+                ]
+            },
+            "lpic1": {
+                title: "LPIC-1: Linux Professional Institute",
+                desc: "Fundamentos esenciales de Linux para cualquier distribución.",
+                chapters: [
+                    { id: 101, title: "101: Arquitectura del Sistema", file: "/cursos/lpic/101/101.html" },
+                    { id: 102, title: "102: Instalación y Paquetes", file: "/cursos/lpic/102/102.html" },
+                    { id: 103, title: "103: Comandos GNU y Unix", file: "/cursos/lpic/103/103.html" },
+                    { id: 104, title: "104: Dispositivos y FHS", file: "/cursos/lpic/104/104.html" },
+                    { id: 105, title: "105: Shells y Scripts", file: "/cursos/lpic/105/105.html" },
+                    { id: 106, title: "106: Interfaces de usuario", file: "/cursos/lpic/106/106.html" },
+                    { id: 107, title: "107: Tareas administrativas", file: "/cursos/lpic/107/107.html" },
+                    { id: 108, title: "108: Servicios esenciales", file: "/cursos/lpic/108/108.html" },
+                    { id: 109, title: "109: Fundamentos de redes", file: "/cursos/lpic/109/109.html" },
+                    { id: 110, title: "110: Seguridad", file: "/cursos/lpic/110/110.html" }
+                ]
+            }
+        };
+
+        let currentCourseId = null;
+
+        // --- NAVEGACIÓN PRINCIPAL ---
+        function navigate(pageId) {
+            document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            
             document.getElementById(pageId).classList.add('active');
             
-            // Activar link del nav (lógica simple)
-            const navLinks = document.querySelectorAll('.nav-link');
-            if(pageId === 'home') navLinks[0].classList.add('active');
-            if(pageId === 'courses') navLinks[1].classList.add('active');
-            if(pageId === 'terminal') {
-                navLinks[2].classList.add('active');
-                document.getElementById('term-input').focus();
-            }
-            if(pageId === 'projects') navLinks[3].classList.add('active');
-
-            // Scroll arriba
+            // Highlight Nav
+            const map = { 'home':0, 'courses':1, 'terminal':2, 'projects':3 };
+            if(map[pageId] !== undefined) document.querySelectorAll('.nav-link')[map[pageId]].classList.add('active');
+            
+            // Si vamos a terminal, foco
+            if(pageId === 'terminal') document.getElementById('term-input').focus();
+            
             window.scrollTo(0,0);
         }
 
-        // --- CARGAR CURSOS (Simulado para el ejemplo) ---
-        function openCourse(courseId) {
-            // Aquí podrías usar fetch para cargar el HTML externo como hicimos antes
-            // Por ahora, mostramos la sección de lector (que tiene el RHCSA por defecto)
-            navigate('course-reader');
+        // --- ABRIR TEMARIO (Nivel 2) ---
+        function openSyllabus(courseId) {
+            const course = coursesDB[courseId];
+            if(!course) return;
+
+            currentCourseId = courseId;
+            document.getElementById('syllabus-title').innerText = course.title;
+            document.getElementById('syllabus-desc').innerText = course.desc;
+            
+            const list = document.getElementById('syllabus-list');
+            list.innerHTML = ''; // Limpiar
+
+            course.chapters.forEach(chap => {
+                const div = document.createElement('div');
+                div.className = 'chapter-item';
+                div.innerHTML = `
+                    <div class="chapter-info">
+                        <h4>${chap.title}</h4>
+                        <span>Módulo ${chap.id}</span>
+                    </div>
+                    <div class="chapter-arrow">&rarr;</div>
+                `;
+                div.onclick = () => openReader(chap.file);
+                list.appendChild(div);
+            });
+
+            navigate('syllabus');
         }
 
-        // --- LÓGICA DE LA TERMINAL (PLAYGROUND) ---
+        // --- ABRIR LECTOR (Nivel 3) ---
+        async function openReader(fileUrl) {
+            const readerContent = document.getElementById('reader-content');
+            readerContent.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted);">Cargando módulo...</div>';
+            navigate('reader');
+
+            try {
+                // Intentamos cargar el archivo real
+                const response = await fetch(fileUrl);
+                if(response.ok) {
+                    const text = await response.text();
+                    // Si es un archivo HTML completo, extraemos solo el body o el contenido principal
+                    // Asumimos que tus archivos tienen un div con id 'contenido' o similar, 
+                    // si no, mostramos todo el HTML pero el estilo de la página se encargará.
+                    // Para este ejemplo, inyectamos tal cual.
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(text, 'text/html');
+                    
+                    // Intentar buscar el main o body del archivo cargado para no traer tags html/head dobles
+                    const content = doc.querySelector('main') || doc.querySelector('body') || doc;
+                    readerContent.innerHTML = content.innerHTML;
+                } else {
+                    throw new Error("404");
+                }
+            } catch (e) {
+                // Fallback por si falla la carga (ej: pruebas locales sin servidor)
+                readerContent.innerHTML = `
+                    <h1>Contenido no disponible</h1>
+                    <p>No se pudo cargar el archivo: <code>${fileUrl}</code></p>
+                    <p><strong>Nota:</strong> Para que esto funcione con tus archivos reales, debes estar en un servidor (GitHub Pages o Live Server).<br>Estás viendo este mensaje de error porque estás abriendo el archivo localmente o la ruta es incorrecta.</p>
+                    <img src="/images/error-placeholder.png" onerror="this.src='https://placehold.co/600x300/121212/fff?text=Error+de+Carga'" alt="Error">
+                `;
+            }
+        }
+
+        function backToSyllabus() {
+            navigate('syllabus');
+        }
+
+        // --- TERMINAL LOGIC ---
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('term-output');
 
@@ -459,13 +660,10 @@
             if (e.key === 'Enter') {
                 const cmd = this.value.trim();
                 if (cmd) {
-                    // Imprimir comando
                     const cmdLine = document.createElement('div');
                     cmdLine.className = 'term-output';
                     cmdLine.innerHTML = `<span class="cmd-echo">visitor@s2ktux:~$</span> ${cmd}`;
                     termOutput.insertBefore(cmdLine, this.parentElement);
-                    
-                    // Procesar
                     processTermCommand(cmd);
                 }
                 this.value = '';
@@ -480,28 +678,28 @@
             switch(cmd.toLowerCase()) {
                 case 'help':
                     response.innerHTML = `<span class="term-highlight">COMANDOS DISPONIBLES:</span><br>
-  <span class="term-path">whoami</span>   - Usuario actual<br>
-  <span class="term-path">date</span>     - Fecha y hora<br>
+  <span class="term-path">courses</span>  - Ver lista de cursos<br>
+  <span class="term-path">ls</span>       - Listar archivos (fake)<br>
   <span class="term-path">clear</span>    - Limpiar terminal<br>
-  <span class="term-path">sudo</span>     - Modo superusuario (fake)<br>
-  <span class="term-path">exit</span>     - Salir de la terminal`;
+  <span class="term-path">whoami</span>   - Identidad<br>
+  <span class="term-path">sudo</span>     - Modo root (fake)<br>
+  <span class="term-path">exit</span>     - Salir`;
+                    break;
+                case 'courses':
+                    response.innerHTML = "Accediendo al módulo de cursos... [OK]";
+                    setTimeout(() => navigate('courses'), 500);
                     break;
                 case 'whoami':
                     response.innerHTML = "visitor";
                     break;
-                case 'date':
-                    response.innerHTML = new Date().toString();
-                    break;
                 case 'clear':
-                    // Borrar todo menos el input
-                    const allOutputs = termOutput.querySelectorAll('.term-output');
-                    allOutputs.forEach(el => el.remove());
-                    return; // No añadir el response div
+                    termOutput.querySelectorAll('.term-output').forEach(el => el.remove());
+                    return;
                 case 'sudo':
-                    response.innerHTML = "<span style='color:red'>[sudo] password for visitor: </span> <br>Lo siento, esto es solo un simulador web. No tienes permisos reales.";
+                    response.innerHTML = "[sudo] password for visitor: ******* <br> Permiso denegado. Eres solo un visitante en esta máquina.";
                     break;
                 case 'exit':
-                    navigate('home'); // Mágico: salir de la terminal te lleva al inicio
+                    navigate('home');
                     return;
                 default:
                     response.innerHTML = `bash: ${cmd}: command not found`;
@@ -509,10 +707,7 @@
             termOutput.insertBefore(response, termInput.parentElement);
         }
 
-        // Mantener foco en la terminal si estás en esa pestaña
-        document.getElementById('terminal').addEventListener('click', () => {
-            termInput.focus();
-        });
+        document.getElementById('terminal').addEventListener('click', () => termInput.focus());
 
     </script>
 </body>
