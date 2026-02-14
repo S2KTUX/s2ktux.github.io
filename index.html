@@ -3,90 +3,167 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="SysRiser - Aprende sistemas y redes de forma sencilla. Prepárate para tu futuro en tecnología con nuestros cursos y proyectos prácticos.">
-    <meta name="keywords" content="sistemas, redes, cursos, tecnología, Linux, proyectos, academia">
-    <meta name="author" content="S2KTUX">
     <title>S2KTUX - Aprende Sistemas Linux</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="images/favicon.png">
+    <style>
+        body {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+        header {
+            background-color: #252526;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #007acc;
+        }
+        header h1 {
+            color: #4ec9b0;
+            margin: 0;
+        }
+        nav {
+            margin-top: 10px;
+        }
+        nav a {
+            color: #9cdcfe;
+            margin: 0 15px;
+            text-decoration: none;
+        }
+        nav a:hover {
+            color: #ffffff;
+        }
+        section {
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        #welcome {
+            text-align: center;
+        }
+        #terminal {
+            background-color: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 5px;
+            padding: 10px;
+            height: 300px;
+            width: 80%;
+            margin: 20px auto;
+            overflow: auto;
+            color: #c9d1d9;
+            font-size: 14px;
+        }
+        h2 {
+            color: #4ec9b0;
+        }
+        .feature {
+            background-color: #252526;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: #252526;
+            color: #858585;
+        }
+    </style>
+    <!-- Bibliotecas para el terminal interactivo -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/2.35.0/js/jquery.terminal.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.terminal/2.35.0/css/jquery.terminal.min.css">
 </head>
 <body>
-    <div class="gradient-bg"></div>
     <header>
-        <div class="header-left">
-            <a href="/index.html" class="header-logo">S2KTUX</a>
-        </div>
+        <h1>S2KTUX</h1>
         <nav>
-            <a href="/index.html">Inicio</a>
-            <a href="/cursos/cursos.html">Cursos</a>
-            <a href="/proyectos/proyectos.html">Proyectos</a>
+            <a href="#welcome">Inicio</a>
+            <a href="#about">Sobre Nosotros</a>
+            <a href="#features">Cursos</a>
+            <a href="#steps">Primeros Pasos</a>
+            <a href="#community">Comunidad</a>
         </nav>
     </header>
-    <main id="contenido">
-        <!-- Sección de Bienvenida -->
-        <section class="welcome-section">
-            <div class="welcome-content">
-                <h1>Bienvenido a S2KTUX</h1>
-                <p>Tu camino hacia el dominio de sistemas comienza aquí. Aprende con cursos prácticos y proyectos reales, diseñados para prepararte para el futuro de la tecnología.</p>
-                <a href="/cursos/cursos.html" class="cta-button">Explora los Cursos</a>
-            </div>
-        </section>
-        
-        <section id="terminal-section">
-            <div class="terminal">
-                <div class="terminal-header">
-                    <div class="buttons">
-                    <div class="dot red"></div>
-                    <div class="dot yellow"></div>
-                    <div class="dot green"></div>
-                </div>
-                <div class="title">s2ktux@server:/home/s2ktux</div>
-            </div>
-            <div id="terminal-body" class="terminal-body"></div>
-            </div>
-        </section>
 
-        <!-- Sección Sobre Nosotros -->
-        <section class="about-section">
-            <h2>Sobre Nosotros</h2>
-            <p>En S2KTUX, El objetivo es convertirnos en la academia líder en formación de sistemas y redes. Ofrecemos contenido práctico y accesible para que cualquier persona, desde principiantes hasta profesionales, pueda dominar las habilidades necesarias para el mundo tecnológico.</p>
-            <p>Con un enfoque en la práctica, te ayudamos a construir una base sólida mientras trabajas en proyectos reales que puedes aplicar en tu carrera.</p>
-        </section>
+    <section id="welcome">
+        <h2>Bienvenido a S2KTUX</h2>
+        <p>Aprende sistemas y redes Linux de forma práctica. Prueba nuestro terminal interactivo para simular comandos.</p>
+        <div id="terminal"></div>
+    </section>
 
-        <!-- Sección Primeros Pasos -->
-        <section class="first-steps-section">
-            <h2>Primeros Pasos: Configura tu Entorno</h2>
-            <p>Si eres nuevo en sistemas y redes, aquí tienes una guía rápida para empezar:</p>
-            <div class="steps-container">
-                <div class="step-card">
-                    <h3>Paso 1: Instala Linux</h3>
-                    <p>Descarga e instala una distribución de Linux como AlmaLinux Es un sistema operativo esencial para aprender sistemas orientado a REDHAT.</p>
-                </div>
-                <div class="step-card">
-                    <h3>Paso 2: Aprende Comandos Básicos</h3>
-                    <p>Practica comandos como <code>ls</code>, <code>cd</code>, y <code>pwd</code> en la terminal para familiarizarte con el entorno.</p>
-                </div>
-                <div class="step-card">
-                    <h3>Paso 3: Configura una Red</h3>
-                    <p>Conecta tu máquina a una red y prueba comandos como <code>ping</code> para verificar la conectividad.</p>
-                </div>
-            </div>
-        </section>
+    <section id="about">
+        <h2>Sobre Nosotros</h2>
+        <p>Somos una academia dedicada a enseñar Linux desde cero hasta niveles profesionales, con proyectos reales y enfoque práctico.</p>
+    </section>
 
-    </main>
-    <footer>
-        <div class="footer-content">
-            <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
-            <div class="footer-links">
-                <a href="https://github.com/s2ktux" data-tooltip="Visita nuestro GitHub">GitHub</a>
-                <a href="mailto:contact@s2ktux.com" data-tooltip="Envíanos un correo">Contacto</a>
-                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
-                <a href="https://www.youtube.com/@s2ktux" data-tooltip="Mira nuestros videos">YouTube</a>
-            </div>
+    <section id="features">
+        <h2>Características y Cursos</h2>
+        <div class="feature">
+            <h3>Instalación de Linux</h3>
+            <p>Guías paso a paso para instalar distribuciones como Ubuntu o Arch.</p>
         </div>
+        <div class="feature">
+            <h3>Comandos Básicos</h3>
+            <p>Aprende ls, cd, mkdir y más con ejemplos interactivos.</p>
+        </div>
+        <div class="feature">
+            <h3>Configuración de Redes</h3>
+            <p>Proyectos para configurar servidores, firewalls y VPN.</p>
+        </div>
+    </section>
+
+    <section id="steps">
+        <h2>Primeros Pasos</h2>
+        <ol>
+            <li>Instala Linux en tu máquina o usa una VM.</li>
+            <li>Aprende comandos básicos en el terminal.</li>
+            <li>Configura tu red y únete a la comunidad.</li>
+        </ol>
+    </section>
+
+    <section id="community">
+        <h2>Únete a la Comunidad</h2>
+        <p>Suscríbete para recibir actualizaciones y participa en foros.</p>
+        <!-- Aquí puedes añadir un formulario real -->
+        <form>
+            <input type="email" placeholder="Tu email">
+            <button type="submit">Suscribirse</button>
+        </form>
+    </section>
+
+    <footer>
+        <p>&copy; 2026 S2KTUX. Todos los derechos reservados.</p>
     </footer>
-    <a href="#" id="back-to-top">↑ Volver arriba</a>
-    <script src="/conf/scripts.js"></script>
+
+    <script>
+        $('#terminal').terminal({
+            help: function() {
+                this.echo('Comandos disponibles:');
+                this.echo(' - ls: Lista cursos');
+                this.echo(' - cd cursos: Navega a sección de cursos');
+                this.echo(' - help: Muestra esta ayuda');
+                this.echo(' - clear: Limpia el terminal');
+            },
+            ls: function() {
+                this.echo('Cursos disponibles:');
+                this.echo(' - instalacion-linux');
+                this.echo(' - comandos-basicos');
+                this.echo(' - config-redes');
+            },
+            cd: function(dir) {
+                if (dir === 'cursos') {
+                    window.location.href = '#features';
+                    this.echo('Navegando a cursos...');
+                } else {
+                    this.echo('Directorio no encontrado: ' + dir);
+                }
+            }
+        }, {
+            greetings: 's2ktux@server:~$ Bienvenido al terminal interactivo. Escribe "help" para ayuda.\n',
+            prompt: 's2ktux@server:~$ '
+        });
+    </script>
 </body>
 </html>
