@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S2KTUX | Aprende Linux</title>
+    <title>S2KTUX | Pro Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
@@ -15,7 +15,7 @@
             --footer-bg: rgba(10, 10, 10, 0.9);
             --text-main: #e0e0e0;
             --text-muted: #a0a0a0;
-            --accent: #3b82f6; /* Azul moderno */
+            --accent: #3b82f6; 
             --accent-glow: rgba(59, 130, 246, 0.2);
             --border-color: #27272a;
             --font-main: 'Inter', sans-serif;
@@ -24,14 +24,23 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        /* --- 1. FONDO ANIMADO --- */
         body {
-            background-color: var(--bg-color);
+            background: linear-gradient(-45deg, #020204, #0f172a, #020204, #1a1a1a);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
             color: var(--text-main);
             font-family: var(--font-main);
             min-height: 100vh;
             overflow-x: hidden;
             display: flex;
             flex-direction: column;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         /* --- NAVEGACIÓN FLOTANTE --- */
@@ -57,306 +66,130 @@
             text-decoration: none;
             font-size: 0.95rem;
             font-weight: 500;
-            transition: color 0.3s, text-shadow 0.3s;
+            transition: color 0.3s;
             cursor: pointer;
             position: relative;
         }
-
-        .nav-link:hover, .nav-link.active {
-            color: #fff;
-            text-shadow: 0 0 10px rgba(255,255,255,0.3);
-        }
-
+        .nav-link:hover, .nav-link.active { color: #fff; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
         .nav-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 4px;
-            height: 4px;
-            background-color: var(--accent);
-            border-radius: 50%;
-            box-shadow: 0 0 8px var(--accent);
+            content: ''; position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%);
+            width: 4px; height: 4px; background-color: var(--accent); border-radius: 50%; box-shadow: 0 0 8px var(--accent);
         }
 
-        /* --- MAIN CONTAINER --- */
+        /* --- MAIN --- */
         main {
-            padding-top: 100px;
-            padding-bottom: 100px; /* Espacio para el footer */
-            flex: 1;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-            padding-left: 20px;
-            padding-right: 20px;
+            padding-top: 100px; padding-bottom: 100px; flex: 1;
+            max-width: 1200px; margin: 0 auto; width: 100%; padding-left: 20px; padding-right: 20px;
         }
 
-        .page-section {
-            display: none;
-            animation: fadeIn 0.4s ease;
-        }
-
+        .page-section { display: none; animation: fadeIn 0.4s ease; }
         .page-section.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        /* --- HOME --- */
+        /* --- HERO --- */
         .hero { text-align: center; padding: 3rem 1rem; }
         .hero h1 {
-            font-size: 3.5rem;
-            font-weight: 800;
-            background: linear-gradient(to right, #fff, #888);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 1rem;
-            letter-spacing: -1px;
+            font-size: 3.5rem; font-weight: 800; letter-spacing: -1px;
+            background: linear-gradient(to right, #fff, #888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 1rem;
         }
-        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem; }
-        
-        .stats-container {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 4rem;
-            flex-wrap: wrap;
-        }
-        .stat-box {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            min-width: 150px;
-        }
-        .stat-number { font-size: 2rem; font-weight: 800; color: var(--accent); display: block; }
-        .stat-label { font-size: 0.9rem; color: var(--text-muted); }
+        .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 600px; margin: 0 auto 2rem; min-height: 1.2em; } /* min-height para evitar salto al escribir */
+        .cursor { display: inline-block; width: 8px; background-color: var(--accent); animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0; } }
 
-        .cta-button {
-            display: inline-block;
-            padding: 12px 30px;
-            background: var(--accent);
-            color: white;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
-            box-shadow: 0 0 20px var(--accent-glow);
-            transition: transform 0.2s;
-        }
-        .cta-button:hover { transform: scale(1.05); }
-
-        /* --- CURSOS (GRID) --- */
-        .course-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
+        /* --- CURSOS GRID --- */
+        .course-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
         .course-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px;
+            padding: 25px; cursor: pointer; transition: all 0.3s ease; position: relative; overflow: hidden;
         }
-        .course-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-        .course-card::before {
-            content: ''; position: absolute; top:0; left:0; width:100%; height:4px; background:var(--accent);
-            opacity:0; transition: opacity 0.3s;
-        }
+        .course-card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .course-card::before { content: ''; position: absolute; top:0; left:0; width:100%; height:4px; background:var(--accent); opacity:0; transition: opacity 0.3s; }
         .course-card:hover::before { opacity:1; }
-        
-        .course-tag {
-            font-size: 0.75rem;
-            background: rgba(59, 130, 246, 0.15);
-            color: #60a5fa;
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: 600;
-            text-transform: uppercase;
-        }
+        .course-tag { font-size: 0.75rem; background: rgba(59, 130, 246, 0.15); color: #60a5fa; padding: 4px 10px; border-radius: 20px; font-weight: 600; text-transform: uppercase; }
         .course-card h3 { color: #fff; margin: 15px 0 10px; font-size: 1.4rem; }
         .course-card p { color: var(--text-muted); font-size: 0.95rem; margin-bottom: 20px; line-height: 1.5; }
         .course-meta { display: flex; justify-content: space-between; color: #666; font-size: 0.85rem; }
 
-        /* --- SYLLABUS (LISTA DE TEMAS) --- */
+        /* --- SYLLABUS (LISTA) --- */
         .syllabus-header { margin-bottom: 30px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px; }
         .back-link { color: var(--text-muted); cursor: pointer; display: inline-flex; align-items: center; gap: 5px; margin-bottom: 20px; transition: color 0.2s; }
         .back-link:hover { color: var(--accent); }
-        
         .chapter-list { display: grid; grid-template-columns: 1fr; gap: 10px; }
         .chapter-item {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 15px 20px;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: var(--card-bg); border: 1px solid var(--border-color); padding: 15px 20px; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s;
         }
         .chapter-item:hover { background: #1a1a1a; border-color: var(--accent); }
         .chapter-info h4 { color: #fff; font-size: 1.1rem; margin-bottom: 4px; }
         .chapter-info span { color: var(--text-muted); font-size: 0.9rem; }
         .chapter-arrow { color: var(--accent); font-size: 1.2rem; }
+        
+        /* Checkmark de Progreso */
+        .progress-check { color: #10b981; font-weight: bold; margin-left: 10px; font-size: 1.2rem; }
 
-        /* --- READER (LECTOR) --- */
+        /* --- READER --- */
         .course-reader {
-            background: var(--card-bg);
-            max-width: 900px;
-            margin: 0 auto;
-            border-radius: 16px;
-            padding: 40px 50px; /* Más padding para leer mejor */
-            border: 1px solid var(--border-color);
-            line-height: 1.8;
-            font-size: 1.05rem;
+            background: var(--card-bg); max-width: 900px; margin: 0 auto; border-radius: 16px;
+            padding: 40px 50px; border: 1px solid var(--border-color); line-height: 1.8; font-size: 1.05rem; position: relative;
         }
         .course-reader h1 { font-size: 2.5rem; margin-bottom: 1rem; color: #fff; }
         .course-reader h2 { color: var(--accent); margin-top: 2.5rem; margin-bottom: 1rem; border-bottom: 1px solid #333; padding-bottom: 10px; }
         .course-reader h3 { color: #fff; margin-top: 1.8rem; margin-bottom: 0.8rem; }
         .course-reader p { margin-bottom: 1.2rem; color: #ccc; }
         .course-reader ul { margin-left: 20px; margin-bottom: 1.2rem; color: #ccc; }
-        .course-reader img { 
-            max-width: 100%; 
-            border-radius: 8px; 
-            margin: 25px 0; 
-            border: 1px solid #333;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        .course-reader img { max-width: 100%; border-radius: 8px; margin: 25px 0; border: 1px solid #333; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
+        .course-reader code { background: #000; padding: 2px 6px; border-radius: 4px; color: var(--accent); font-family: var(--font-mono); }
+
+        /* 2. BOTÓN SIGUIENTE */
+        .next-btn-container { margin-top: 50px; text-align: right; padding-top: 20px; border-top: 1px solid #333; }
+        .next-btn {
+            background: var(--accent); color: white; border: none; padding: 12px 25px;
+            border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 1rem;
+            box-shadow: 0 0 15px var(--accent-glow); transition: transform 0.2s;
         }
-        .course-reader code {
-            background: #000;
-            padding: 2px 6px;
-            border-radius: 4px;
-            color: var(--accent);
-            font-family: var(--font-mono);
-        }
+        .next-btn:hover { transform: scale(1.05); background: #2563eb; }
 
         /* --- TERMINAL --- */
         .terminal-container {
-            width: 100%;
-            max-width: 900px;
-            height: 70vh;
-            margin: 0 auto;
-            background: #18181b;
-            border-radius: 12px;
-            border: 1px solid #333;
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            width: 100%; max-width: 900px; height: 70vh; margin: 0 auto; background: #18181b;
+            border-radius: 12px; border: 1px solid #333; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
         }
-        .term-header {
-            background: #09090b;
-            padding: 10px 20px;
-            border-radius: 12px 12px 0 0;
-            border-bottom: 1px solid #333;
-            display: flex;
-            gap: 8px;
-        }
+        .term-header { background: #09090b; padding: 10px 20px; border-radius: 12px 12px 0 0; border-bottom: 1px solid #333; display: flex; gap: 8px; }
         .dot { width: 10px; height: 10px; border-radius: 50%; }
-        .dot.r { background: #ef4444; }
-        .dot.y { background: #eab308; }
-        .dot.g { background: #22c55e; }
-        .term-body {
-            flex: 1;
-            padding: 20px;
-            font-family: var(--font-mono);
-            overflow-y: auto;
-            color: #a1a1aa;
-        }
+        .dot.r { background: #ef4444; } .dot.y { background: #eab308; } .dot.g { background: #22c55e; }
+        .term-body { flex: 1; padding: 20px; font-family: var(--font-mono); overflow-y: auto; color: #a1a1aa; }
         .term-input-line { display: flex; align-items: center; }
         .term-prompt { color: #10b981; margin-right: 10px; font-weight: bold; }
-        #term-input {
-            background: transparent;
-            border: none;
-            color: #fff;
-            width: 100%;
-            font-family: var(--font-mono);
-            outline: none;
-        }
+        #term-input { background: transparent; border: none; color: #fff; width: 100%; font-family: var(--font-mono); outline: none; }
         .cmd-echo { color: #10b981; font-weight: bold; }
         .term-highlight { color: #f472b6; font-weight: bold; }
         .term-path { color: #60a5fa; }
 
-        /* --- FOOTER CHULO --- */
+        /* --- FOOTER --- */
         .modern-footer {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: var(--footer-bg);
-            backdrop-filter: blur(15px);
-            border-top: 1px solid var(--border-color);
-            padding: 15px 0;
-            z-index: 900;
+            position: fixed; bottom: 0; left: 0; width: 100%; background: var(--footer-bg);
+            backdrop-filter: blur(15px); border-top: 1px solid var(--border-color); padding: 15px 0; z-index: 900;
         }
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0 20px;
-        }
+        .footer-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
         .footer-logo { font-weight: 800; color: #fff; font-size: 1.1rem; letter-spacing: 1px; }
         .footer-links { display: flex; gap: 20px; }
-        .footer-links a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-            position: relative;
-        }
+        .footer-links a { color: var(--text-muted); text-decoration: none; font-size: 0.9rem; transition: color 0.3s; position: relative; }
         .footer-links a:hover { color: var(--accent); }
-        
-        /* Tooltip simple para el footer */
         .footer-links a::after {
-            content: attr(data-tooltip);
-            position: absolute;
-            bottom: 120%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #000;
-            color: #fff;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            border: 1px solid #333;
+            content: attr(data-tooltip); position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+            background: #000; color: #fff; padding: 5px 10px; border-radius: 4px; font-size: 0.75rem; white-space: nowrap;
+            opacity: 0; pointer-events: none; transition: opacity 0.2s; border: 1px solid #333;
         }
         .footer-links a:hover::after { opacity: 1; }
 
         /* --- PROYECTOS --- */
-        .project-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 20px;
-        }
-        .project-card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
+        .project-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .project-card { background: var(--card-bg); padding: 20px; border-radius: 8px; border: 1px solid var(--border-color); }
         .project-card h3 { color: #fff; margin-bottom: 10px; }
-
     </style>
 </head>
 <body>
 
-    <!-- NAVEGACIÓN FLOTANTE -->
     <nav class="floating-nav">
         <a class="nav-link active" onclick="navigate('home')">Inicio</a>
         <a class="nav-link" onclick="navigate('courses')">Cursos</a>
@@ -365,119 +198,71 @@
     </nav>
 
     <main>
-
-        <!-- SECCIÓN: INICIO -->
+        <!-- INICIO -->
         <section id="home" class="page-section active">
             <div class="hero">
                 <h1>Domina Linux.<br>Desde la consola.</h1>
-                <p>Plataforma híbrida para administradores de sistemas. Aprende con cursos estructurados o practica en nuestro entorno interactivo.</p>
+                <p><span id="typing-text"></span><span class="cursor"></span></p>
                 <a href="#" class="cta-button" onclick="navigate('courses')">Ver Cursos</a>
                 
-                <div class="stats-container">
-                    <div class="stat-box">
-                        <span class="stat-number">40+</span>
-                        <span class="stat-label">Módulos</span>
+                <div class="stats-container" style="display:flex; justify-content:center; gap:40px; margin-top:4rem; flex-wrap:wrap;">
+                    <div class="stat-box" style="background:var(--card-bg); border:1px solid var(--border-color); padding:20px; border-radius:12px; text-align:center; min-width:150px;">
+                        <span class="stat-number" style="font-size:2rem; font-weight:800; color:var(--accent); display:block;">40+</span>
+                        <span class="stat-label" style="font-size:0.9rem; color:var(--text-muted);">Módulos</span>
                     </div>
-                    <div class="stat-box">
-                        <span class="stat-number">4</span>
-                        <span class="stat-label">Certificaciones</span>
-                    </div>
-                    <div class="stat-box">
-                        <span class="stat-number">100%</span>
-                        <span class="stat-label">Práctico</span>
+                    <div class="stat-box" style="background:var(--card-bg); border:1px solid var(--border-color); padding:20px; border-radius:12px; text-align:center; min-width:150px;">
+                        <span class="stat-number" style="font-size:2rem; font-weight:800; color:var(--accent); display:block;">4</span>
+                        <span class="stat-label" style="font-size:0.9rem; color:var(--text-muted);">Certificaciones</span>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN: CURSOS (LISTA DE CURSOS) -->
+        <!-- CURSOS -->
         <section id="courses" class="page-section">
             <h2 style="text-align:center; margin-bottom:40px; font-size:2.5rem;">Catálogo Oficial</h2>
             <div class="course-grid">
-                <!-- RHCSA -->
                 <div class="course-card" onclick="openSyllabus('rhcsa')">
                     <span class="course-tag">Red Hat</span>
                     <h3>RHCSA EX200</h3>
                     <p>Administración completa de sistemas Red Hat. Desde la shell hasta la gestión de almacenamiento y seguridad.</p>
-                    <div class="course-meta">
-                        <span>11 Módulos</span>
-                        <span style="color:var(--accent)">Explorar &rarr;</span>
-                    </div>
+                    <div class="course-meta"><span>11 Módulos</span><span style="color:var(--accent)">Explorar &rarr;</span></div>
                 </div>
-                
-                <!-- LPIC1 -->
                 <div class="course-card" onclick="openSyllabus('lpic1')">
                     <span class="course-tag">Linux Professional</span>
                     <h3>LPIC-1 101-500</h3>
                     <p>Arquitectura, comandos GNU, redes y fundamentos de Linux. La base de todo administrador.</p>
-                    <div class="course-meta">
-                        <span>10 Módulos</span>
-                        <span style="color:var(--accent)">Explorar &rarr;</span>
-                    </div>
-                </div>
-
-                <!-- AWS -->
-                <div class="course-card">
-                    <span class="course-tag" style="background:#fbbf2420; color:#fbbf24">Cloud</span>
-                    <h3>AWS Practitioner</h3>
-                    <p>Introducción a los servicios de Amazon Web Services. Computación, almacenamiento y redes en la nube.</p>
-                    <div class="course-meta">
-                        <span>Próximamente</span>
-                        <span style="color:#666">Lock &rarr;</span>
-                    </div>
-                </div>
-
-                <!-- RHCE -->
-                <div class="course-card">
-                    <span class="course-tag" style="background:#ef444420; color:#ef4444">Avanzado</span>
-                    <h3>RHCE EX294</h3>
-                    <p>Automatización con Ansible. Toma el control de tu infraestructura como código.</p>
-                    <div class="course-meta">
-                        <span>Próximamente</span>
-                        <span style="color:#666">Lock &rarr;</span>
-                    </div>
+                    <div class="course-meta"><span>10 Módulos</span><span style="color:var(--accent)">Explorar &rarr;</span></div>
                 </div>
             </div>
         </section>
 
-        <!-- SECCIÓN: SYLLABUS (TEMARIO DEL CURSO SELECCIONADO) -->
+        <!-- SYLLABUS -->
         <section id="syllabus" class="page-section">
             <div class="syllabus-header">
-                <div class="back-link" onclick="navigate('courses')">
-                    <span>&larr; Volver a Cursos</span>
-                </div>
+                <div class="back-link" onclick="navigate('courses')"><span>&larr; Volver a Cursos</span></div>
                 <h2 id="syllabus-title" style="font-size:2rem; color:#fff;">Nombre del Curso</h2>
                 <p id="syllabus-desc" style="color:var(--text-muted); margin-top:10px;">Descripción del curso</p>
             </div>
-            
-            <div class="chapter-list" id="syllabus-list">
-                <!-- Se llena con JS -->
-            </div>
+            <div class="chapter-list" id="syllabus-list"></div>
         </section>
 
-        <!-- SECCIÓN: LECTOR DE CONTENIDO -->
+        <!-- READER -->
         <section id="reader" class="page-section">
-            <div class="back-link" onclick="backToSyllabus()">
-                <span>&larr; Volver al Temario</span>
-            </div>
-            
+            <div class="back-link" onclick="backToSyllabus()"><span>&larr; Volver al Temario</span></div>
             <div class="course-reader">
-                <div id="reader-content">
-                    <!-- Contenido dinámico aquí -->
-                </div>
+                <div id="reader-content"></div>
             </div>
         </section>
 
-        <!-- SECCIÓN: TERMINAL -->
+        <!-- TERMINAL -->
         <section id="terminal" class="page-section">
             <div style="text-align:center; margin-bottom:20px; color:var(--text-muted);">
                 <p>Entorno de prueba. Escribe <span class="term-path">'help'</span> para comandos.</p>
             </div>
             <div class="terminal-container">
                 <div class="term-header">
-                    <div class="dot r"></div>
-                    <div class="dot y"></div>
-                    <div class="dot g"></div>
+                    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
                 </div>
                 <div class="term-body" id="term-output">
                     <div class="term-output">S2KTUX Terminal v1.5 [Secure Connection]<br>Usuario: visitor | Sistema: Linux Kernel 6.5</div>
@@ -489,31 +274,24 @@
             </div>
         </section>
 
-        <!-- SECCIÓN: PROYECTOS -->
+        <!-- PROYECTOS -->
         <section id="projects" class="page-section">
             <h2 style="margin-bottom:20px;">Proyectos Destacados</h2>
             <div class="project-grid">
                 <div class="project-card">
                     <h3>S2KTUX Deployer</h3>
-                    <p>Script en Bash para automatizar despliegues en VPS usando Git hooks.</p>
-                    <a href="#" style="color:var(--accent); font-size:0.9rem;">Ver en GitHub</a>
+                    <p>Script en Bash para automatizar despliegues.</p>
+                    <a href="#" style="color:var(--accent);">Ver GitHub</a>
                 </div>
                 <div class="project-card">
                     <h3>Net-Monitor CLI</h3>
-                    <p>Herramienta de visualización de tráfico de red en tiempo real escrita en Python.</p>
-                    <a href="#" style="color:var(--accent); font-size:0.9rem;">Ver en GitHub</a>
-                </div>
-                <div class="project-card">
-                    <h3>Container-Security</h3>
-                    <p>Imagen de Docker base endurecida para cumplimiento de normativas.</p>
-                    <a href="#" style="color:var(--accent); font-size:0.9rem;">Ver DockerHub</a>
+                    <p>Visualización de tráfico en tiempo real.</p>
+                    <a href="#" style="color:var(--accent);">Ver GitHub</a>
                 </div>
             </div>
         </section>
-
     </main>
 
-    <!-- FOOTER CHULO -->
     <footer class="modern-footer">
         <div class="footer-content">
             <div class="footer-logo">S2KTUX</div>
@@ -521,70 +299,89 @@
                 <a href="https://github.com/s2ktux" target="_blank" data-tooltip="GitHub">GitHub</a>
                 <a href="mailto:contact@s2ktux.com" data-tooltip="Email">Contacto</a>
                 <a href="https://linkedin.com" target="_blank" data-tooltip="LinkedIn">LinkedIn</a>
-                <a href="https://www.youtube.com/@s2ktux" target="_blank" data-tooltip="YouTube">YouTube</a>
             </div>
         </div>
     </footer>
 
     <script>
-        // --- BASE DE DATOS DE CURSOS (Temarios) ---
-        // Aquí definimos las 11 secciones de RHCSA y las 10 de LPIC
+        // --- BASE DE DATOS ---
         const coursesDB = {
             "rhcsa": {
                 title: "RHCSA: Red Hat Certified System Administrator",
-                desc: "Domina la administración de RHEL 8/9. Gestión de usuarios, redes, almacenamiento y seguridad.",
+                desc: "Domina la administración de RHEL 8/9.",
                 chapters: [
-                    { id: 1, title: "Clase 1: Herramientas esenciales de Linux", file: "/cursos/rhcsa/1/1.html" },
-                    { id: 2, title: "Clase 2: Gestión de Software en Linux", file: "/cursos/rhcsa/2/2.html" },
-                    { id: 3, title: "Clase 3: Crear scripts de shell sencillos", file: "/cursos/rhcsa/3/3.html" },
-                    { id: 4, title: "Clase 4: Trabajar con sistemas operativos", file: "/cursos/rhcsa/4/4.html" },
-                    { id: 5, title: "Clase 5: Configuración del Almacenamiento Local", file: "/cursos/rhcsa/5/5.html" },
-                    { id: 6, title: "Clase 6: Crear y Configurar Sistemas de Archivos", file: "/cursos/rhcsa/6/6.html" },
-                    { id: 7, title: "Clase 7: Implementar, configurar y mantener sistemas", file: "/cursos/rhcsa/7/7.html" },
-                    { id: 8, title: "Clase 8: Gestionar redes básicas", file: "/cursos/rhcsa/8/8.html" },
-                    { id: 9, title: "Clase 9: Gestionar usuarios y grupos", file: "/cursos/rhcsa/9/9.html" },
-                    { id: 10, title: "Clase 10: Gestionar la seguridad", file: "/cursos/rhcsa/10/10.html" },
-                    { id: 11, title: "EXTRA: Recursos adicionales", file: "/cursos/rhcsa/EXTRA/extra.html" }
+                    { id: 1, title: "Clase 1: Herramientas esenciales", file: "/cursos/rhcsa/1/1.html" },
+                    { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/2/2.html" },
+                    { id: 3, title: "Clase 3: Scripts de shell", file: "/cursos/rhcsa/3/3.html" },
+                    { id: 4, title: "Clase 4: Sistemas Operativos", file: "/cursos/rhcsa/4/4.html" },
+                    { id: 5, title: "Clase 5: Almacenamiento Local", file: "/cursos/rhcsa/5/5.html" }
                 ]
             },
             "lpic1": {
                 title: "LPIC-1: Linux Professional Institute",
-                desc: "Fundamentos esenciales de Linux para cualquier distribución.",
+                desc: "Fundamentos esenciales de Linux.",
                 chapters: [
-                    { id: 101, title: "101: Arquitectura del Sistema", file: "/cursos/lpic/101/101.html" },
-                    { id: 102, title: "102: Instalación y Paquetes", file: "/cursos/lpic/102/102.html" },
-                    { id: 103, title: "103: Comandos GNU y Unix", file: "/cursos/lpic/103/103.html" },
-                    { id: 104, title: "104: Dispositivos y FHS", file: "/cursos/lpic/104/104.html" },
-                    { id: 105, title: "105: Shells y Scripts", file: "/cursos/lpic/105/105.html" },
-                    { id: 106, title: "106: Interfaces de usuario", file: "/cursos/lpic/106/106.html" },
-                    { id: 107, title: "107: Tareas administrativas", file: "/cursos/lpic/107/107.html" },
-                    { id: 108, title: "108: Servicios esenciales", file: "/cursos/lpic/108/108.html" },
-                    { id: 109, title: "109: Fundamentos de redes", file: "/cursos/lpic/109/109.html" },
-                    { id: 110, title: "110: Seguridad", file: "/cursos/lpic/110/110.html" }
+                    { id: 101, title: "101: Arquitectura", file: "/cursos/lpic/101/101.html" },
+                    { id: 102, title: "102: Instalación", file: "/cursos/lpic/102/102.html" }
                 ]
             }
         };
 
         let currentCourseId = null;
+        let currentFileUrl = null; // Para el botón siguiente
 
-        // --- NAVEGACIÓN PRINCIPAL ---
+        // --- 3. TYPEWRITER EFFECT ---
+        const welcomeText = "Plataforma híbrida para administradores de sistemas. Aprende con cursos estructurados o practica en nuestro entorno interactivo.";
+        const typeWriterElement = document.getElementById('typing-text');
+        let typeIndex = 0;
+
+        function typeWriter() {
+            if (typeIndex < welcomeText.length) {
+                typeWriterElement.innerHTML += welcomeText.charAt(typeIndex);
+                typeIndex++;
+                setTimeout(typeWriter, 30); // Velocidad de escritura
+            }
+        }
+
+        // Iniciar al cargar
+        document.addEventListener('DOMContentLoaded', () => {
+            typeWriter();
+            checkHash(); // Cargar sección si hay hash en la URL
+        });
+
+        // --- 4. HISTORY API & NAVEGACIÓN ---
         function navigate(pageId) {
+            // Ocultar todas
             document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
             
+            // Mostrar actual
             document.getElementById(pageId).classList.add('active');
             
-            // Highlight Nav
+            // Actualizar Nav
             const map = { 'home':0, 'courses':1, 'terminal':2, 'projects':3 };
             if(map[pageId] !== undefined) document.querySelectorAll('.nav-link')[map[pageId]].classList.add('active');
             
-            // Si vamos a terminal, foco
+            // Actualizar URL sin recargar
+            window.history.pushState(null, null, `#${pageId}`);
+
             if(pageId === 'terminal') document.getElementById('term-input').focus();
-            
             window.scrollTo(0,0);
         }
 
-        // --- ABRIR TEMARIO (Nivel 2) ---
+        // Manejar botón Atrás del navegador
+        window.onpopstate = function() {
+            const hash = window.location.hash.replace('#', '') || 'home';
+            navigate(hash);
+        };
+
+        // Cargar estado inicial por URL
+        function checkHash() {
+            const hash = window.location.hash.replace('#', '');
+            if(hash) navigate(hash);
+        }
+
+        // --- ABRIR SYLLABUS ---
         function openSyllabus(courseId) {
             const course = coursesDB[courseId];
             if(!course) return;
@@ -594,14 +391,18 @@
             document.getElementById('syllabus-desc').innerText = course.desc;
             
             const list = document.getElementById('syllabus-list');
-            list.innerHTML = ''; // Limpiar
+            list.innerHTML = ''; 
 
             course.chapters.forEach(chap => {
+                // 5. LOCALSTORAGE CHECK
+                const isRead = localStorage.getItem('s2ktux_read_' + chap.file);
+                const checkmark = isRead ? '<span class="progress-check">&#10003;</span>' : '';
+
                 const div = document.createElement('div');
                 div.className = 'chapter-item';
                 div.innerHTML = `
                     <div class="chapter-info">
-                        <h4>${chap.title}</h4>
+                        <h4>${chap.title} ${checkmark}</h4>
                         <span>Módulo ${chap.id}</span>
                     </div>
                     <div class="chapter-arrow">&rarr;</div>
@@ -611,48 +412,76 @@
             });
 
             navigate('syllabus');
+            window.history.pushState(null, null, `#course/${courseId}`);
         }
 
-        // --- ABRIR LECTOR (Nivel 3) ---
+        // --- ABRIR READER ---
         async function openReader(fileUrl) {
             const readerContent = document.getElementById('reader-content');
-            readerContent.innerHTML = '<div style="text-align:center; padding:50px; color:var(--text-muted);">Cargando módulo...</div>';
+            readerContent.innerHTML = '<div style="text-align:center; padding:50px;">Cargando módulo...</div>';
             navigate('reader');
+            currentFileUrl = fileUrl;
+
+            // 5. GUARDAR PROGRESO
+            localStorage.setItem('s2ktux_read_' + fileUrl, 'true');
 
             try {
-                // Intentamos cargar el archivo real
                 const response = await fetch(fileUrl);
                 if(response.ok) {
                     const text = await response.text();
-                    // Si es un archivo HTML completo, extraemos solo el body o el contenido principal
-                    // Asumimos que tus archivos tienen un div con id 'contenido' o similar, 
-                    // si no, mostramos todo el HTML pero el estilo de la página se encargará.
-                    // Para este ejemplo, inyectamos tal cual.
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(text, 'text/html');
-                    
-                    // Intentar buscar el main o body del archivo cargado para no traer tags html/head dobles
                     const content = doc.querySelector('main') || doc.querySelector('body') || doc;
                     readerContent.innerHTML = content.innerHTML;
+
+                    // 2. BOTÓN SIGUIENTE
+                    addNextButton();
                 } else {
                     throw new Error("404");
                 }
             } catch (e) {
-                // Fallback por si falla la carga (ej: pruebas locales sin servidor)
                 readerContent.innerHTML = `
                     <h1>Contenido no disponible</h1>
-                    <p>No se pudo cargar el archivo: <code>${fileUrl}</code></p>
-                    <p><strong>Nota:</strong> Para que esto funcione con tus archivos reales, debes estar en un servidor (GitHub Pages o Live Server).<br>Estás viendo este mensaje de error porque estás abriendo el archivo localmente o la ruta es incorrecta.</p>
-                    <img src="/images/error-placeholder.png" onerror="this.src='https://placehold.co/600x300/121212/fff?text=Error+de+Carga'" alt="Error">
+                    <p>No se pudo cargar: <code>${fileUrl}</code></p>
+                    <p>Recuerda usar un servidor local o GitHub Pages.</p>
+                    <img src="https://placehold.co/600x300/121212/fff?text=Error+de+Carga" alt="Error">
                 `;
             }
         }
 
-        function backToSyllabus() {
-            navigate('syllabus');
+        // Lógica del Botón Siguiente
+        function addNextButton() {
+            if(!currentCourseId) return;
+            const course = coursesDB[currentCourseId];
+            const idx = course.chapters.findIndex(c => c.file === currentFileUrl);
+            const nextChapter = course.chapters[idx + 1];
+
+            const btnContainer = document.createElement('div');
+            btnContainer.className = 'next-btn-container';
+            
+            if (nextChapter) {
+                btnContainer.innerHTML = `
+                    <button class="next-btn" onclick="openReader('${nextChapter.file}')">
+                        Siguiente: ${nextChapter.title} &rarr;
+                    </button>
+                `;
+            } else {
+                btnContainer.innerHTML = `
+                    <div style="text-align:right; color:var(--text-muted); font-style:italic;">
+                        ¡Has completado este curso!
+                    </div>
+                `;
+            }
+            document.getElementById('reader-content').appendChild(btnContainer);
         }
 
-        // --- TERMINAL LOGIC ---
+        function backToSyllabus() {
+            navigate('syllabus');
+            // Recargamos la lista para mostrar los checkmarks actualizados
+            if(currentCourseId) openSyllabus(currentCourseId);
+        }
+
+        // --- TERMINAL ---
         const termInput = document.getElementById('term-input');
         const termOutput = document.getElementById('term-output');
 
@@ -676,39 +505,18 @@
             response.className = 'term-output';
             
             switch(cmd.toLowerCase()) {
-                case 'help':
-                    response.innerHTML = `<span class="term-highlight">COMANDOS DISPONIBLES:</span><br>
-  <span class="term-path">courses</span>  - Ver lista de cursos<br>
-  <span class="term-path">ls</span>       - Listar archivos (fake)<br>
-  <span class="term-path">clear</span>    - Limpiar terminal<br>
-  <span class="term-path">whoami</span>   - Identidad<br>
-  <span class="term-path">sudo</span>     - Modo root (fake)<br>
-  <span class="term-path">exit</span>     - Salir`;
-                    break;
-                case 'courses':
-                    response.innerHTML = "Accediendo al módulo de cursos... [OK]";
-                    setTimeout(() => navigate('courses'), 500);
-                    break;
-                case 'whoami':
-                    response.innerHTML = "visitor";
-                    break;
-                case 'clear':
-                    termOutput.querySelectorAll('.term-output').forEach(el => el.remove());
-                    return;
-                case 'sudo':
-                    response.innerHTML = "[sudo] password for visitor: ******* <br> Permiso denegado. Eres solo un visitante en esta máquina.";
-                    break;
-                case 'exit':
-                    navigate('home');
-                    return;
-                default:
-                    response.innerHTML = `bash: ${cmd}: command not found`;
+                case 'help': response.innerHTML = `<span class="term-highlight">COMANDOS:</span> courses, ls, clear, whoami, sudo, exit`; break;
+                case 'courses': response.innerHTML = "Accediendo..."; setTimeout(() => navigate('courses'), 500); break;
+                case 'whoami': response.innerHTML = "visitor"; break;
+                case 'clear': termOutput.querySelectorAll('.term-output').forEach(el => el.remove()); return;
+                case 'sudo': response.innerHTML = "[sudo] Permiso denegado."; break;
+                case 'exit': navigate('home'); return;
+                default: response.innerHTML = `bash: ${cmd}: command not found`;
             }
             termOutput.insertBefore(response, termInput.parentElement);
         }
 
         document.getElementById('terminal').addEventListener('click', () => termInput.focus());
-
     </script>
 </body>
 </html>
