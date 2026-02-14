@@ -3,28 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>S2KTUX | Admin de Sistemas</title>
+    <title>S2KTUX | Systems & Cloud Architecture</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
+            /* Tema Claro (Por defecto) */
             --bg: #ffffff;
             --surface: #f8fafc;
-            --accent: #6366f1; /* Indigo Eléctrico */
+            --accent: #6366f1;
             --text-main: #0f172a;
             --text-muted: #64748b;
             --border: #e2e8f0;
+            --term-bg: #1e293b;
             --font-mono: 'JetBrains Mono', monospace;
+            --dot-color: #e2e8f0;
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        [data-theme="dark"] {
+            --bg: #0f172a;
+            --surface: #1e293b;
+            --accent: #818cf8;
+            --text-main: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --term-bg: #000000;
+            --dot-color: #334155;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; transition: background-color 0.3s, color 0.3s; }
 
         body {
             background-color: var(--bg);
             color: var(--text-main);
             font-family: 'Outfit', sans-serif;
             overflow-x: hidden;
-            background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
-            background-size: 40px 40px; /* Fondo de puntos sutil */
+            background-image: radial-gradient(var(--dot-color) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
 
         /* --- HEADER --- */
@@ -32,202 +46,198 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 30px 8%;
+            padding: 25px 8%;
             position: sticky;
             top: 0;
-            background: rgba(255,255,255,0.8);
-            backdrop-filter: blur(10px);
+            background: rgba(var(--bg), 0.8);
+            backdrop-filter: blur(12px);
             z-index: 100;
+            border-bottom: 1px solid var(--border);
         }
 
-        .logo { 
-            font-weight: 800; 
-            font-size: 1.4rem; 
-            letter-spacing: -1px; 
-            display: flex; 
-            align-items: center; gap: 8px;
-        }
+        .logo { font-weight: 800; font-size: 1.4rem; letter-spacing: -1px; text-decoration: none; color: var(--text-main); }
         .logo span { color: var(--accent); }
 
-        nav { display: flex; gap: 30px; }
+        nav { display: flex; gap: 30px; align-items: center; }
         nav a { text-decoration: none; color: var(--text-muted); font-size: 0.9rem; font-weight: 500; transition: 0.3s; }
         nav a:hover { color: var(--accent); }
+
+        /* --- BOTÓN TEMA --- */
+        .theme-toggle {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+        }
 
         /* --- HERO SECTION --- */
         .hero {
             display: grid;
             grid-template-columns: 1fr 1fr;
             align-items: center;
-            padding: 80px 8% 120px;
+            padding: 60px 8% 100px;
             gap: 60px;
-            min-height: 80vh;
+            min-height: 85vh;
         }
 
         .hero-text h1 {
-            font-size: 4.5rem;
-            line-height: 1;
+            font-size: 4rem;
+            line-height: 1.1;
             font-weight: 800;
             margin-bottom: 25px;
-            letter-spacing: -3px;
+            letter-spacing: -2px;
         }
 
         .hero-text p {
-            font-size: 1.2rem;
+            font-size: 1.15rem;
             color: var(--text-muted);
             margin-bottom: 40px;
-            max-width: 500px;
+            max-width: 520px;
             line-height: 1.6;
         }
 
-        /* Botones Estilo Moderno */
         .btn-group { display: flex; gap: 15px; }
         .btn {
             padding: 14px 28px;
-            border-radius: 8px;
+            border-radius: 10px;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.95rem;
             transition: 0.3s;
         }
-        .btn-primary { background: var(--text-main); color: white; }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .btn-primary { background: var(--accent); color: white; }
+        .btn-primary:hover { opacity: 0.9; transform: translateY(-2px); }
         .btn-secondary { border: 1px solid var(--border); color: var(--text-main); }
-        .btn-secondary:hover { background: var(--surface); }
 
-        /* --- TERMINAL FLOTANTE --- */
+        /* --- TERMINAL --- */
         .terminal-wrapper {
-            position: relative;
-            background: #1e293b; /* Terminal oscura para contraste */
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 30px 60px -15px rgba(15, 23, 42, 0.3);
-            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--term-bg);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border);
         }
 
         .terminal-header {
             display: flex;
             gap: 8px;
             margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
         }
-        .dot { width: 10px; height: 10px; border-radius: 50%; }
+        .dot { width: 12px; height: 12px; border-radius: 50%; }
 
         .terminal-content {
             font-family: var(--font-mono);
             font-size: 0.9rem;
-            color: #e2e8f0;
-            min-height: 280px;
-            line-height: 1.7;
+            color: #cbd5e1;
+            min-height: 300px;
         }
 
-        .prompt { color: var(--accent); font-weight: bold; }
-        .cursor { display: inline-block; width: 8px; height: 17px; background: var(--accent); vertical-align: middle; animation: blink 1s infinite; }
+        .prompt { color: var(--accent); font-weight: bold; margin-right: 10px; }
+        .cursor { display: inline-block; width: 8px; height: 17px; background: var(--accent); animation: blink 1s infinite; vertical-align: middle; }
 
         @keyframes blink { 50% { opacity: 0; } }
 
-        /* --- DETALLES EXTRA --- */
-        .tech-stack {
-            display: flex;
-            gap: 20px;
-            margin-top: 60px;
-            opacity: 0.5;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
         @media (max-width: 1024px) {
-            .hero { grid-template-columns: 1fr; text-align: center; }
+            .hero { grid-template-columns: 1fr; text-align: center; padding-top: 40px; }
             .hero-text h1 { font-size: 3rem; }
             .hero-text p { margin: 0 auto 40px; }
             .btn-group { justify-content: center; }
-            .terminal-wrapper { max-width: 500px; margin: 0 auto; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">S2K<span>TUX</span></div>
+        <a href="#" class="logo">S2K<span>TUX</span></a>
         <nav>
-            <a href="#">Laboratorio</a>
-            <a href="#">Formación</a>
-            <a href="#">Recursos</a>
+            <a href="#">Conceptos</a>
+            <a href="#">Monitorización</a>
+            <a href="#">Cloud</a>
+            <button class="theme-toggle" id="themeBtn" title="Cambiar tema">
+                <svg id="sunIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"/><path d="M12 1v2m0 18v2M4.22 4.22l1.42 1.42m12.72 12.72l1.42 1.42M1 12h2m18 0h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+                <svg id="moonIcon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            </button>
         </nav>
-        <div class="btn-group">
-            <a href="#" class="btn btn-secondary" style="padding: 8px 16px; font-size: 0.8rem;">Login</a>
-        </div>
     </header>
 
     <section class="hero">
         <div class="hero-text">
-            <h1>Domina la <br>infraestructura.</h1>
-            <p>Formación especializada en administración de sistemas Linux y DevOps. Aprende a gestionar entornos de alto rendimiento con casos reales.</p>
+            <h1>Documentando la <br>ingeniería de sistemas.</h1>
+            <p>Exploraciones técnicas sobre Linux, arquitectura Cloud y observabilidad. Un espacio personal donde desgrano conceptos complejos de infraestructura.</p>
             
             <div class="btn-group">
-                <a href="#" class="btn btn-primary">Empezar Ruta</a>
-                <a href="#" class="btn btn-secondary">Ver Temario</a>
-            </div>
-
-            <div class="tech-stack">
-                <span>RHEL</span> • <span>Debian</span> • <span>Docker</span> • <span>Ansible</span>
+                <a href="#" class="btn btn-primary">Leer Artículos</a>
+                <a href="#" class="btn btn-secondary">Sobre mí</a>
             </div>
         </div>
 
         <div class="terminal-wrapper">
             <div class="terminal-header">
-                <div class="dot" style="background: #ef4444;"></div>
-                <div class="dot" style="background: #f59e0b;"></div>
-                <div class="dot" style="background: #10b981;"></div>
-                <span style="margin-left: auto; color: #64748b; font-size: 0.7rem; font-family: var(--font-mono);">server.s2ktux.es</span>
+                <div class="dot" style="background: #ff5f56;"></div>
+                <div class="dot" style="background: #ffbd2e;"></div>
+                <div class="dot" style="background: #27c93f;"></div>
             </div>
-            <div class="terminal-content" id="typewriter">
-                </div>
+            <div class="terminal-content" id="typewriter"></div>
         </div>
     </section>
 
     <script>
+        // --- LÓGICA DE TEMA ---
+        const themeBtn = document.getElementById('themeBtn');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        let isDark = false;
+
+        themeBtn.onclick = () => {
+            isDark = !isDark;
+            document.body.setAttribute('data-theme', isDark ? 'dark' : 'light');
+            sunIcon.style.display = isDark ? 'block' : 'none';
+            moonIcon.style.display = isDark ? 'none' : 'block';
+        };
+
+        // --- LÓGICA DE TERMINAL ---
         const terminal = document.getElementById('typewriter');
         const script = [
-            { text: 'ssh root@s2ktux', type: 'cmd' },
-            { text: 'Autenticando usuario...', type: 'out' },
-            { text: 'Acceso garantizado al sistema.', type: 'out' },
-            { text: 'systemctl status academy.service', type: 'cmd' },
-            { text: '● academy.service - Formación Activa', type: 'out' },
-            { text: '  Status: Listo para el despliegue.', type: 'out' },
-            { text: 'ls -la /proyectos/cursos', type: 'cmd' },
-            { text: 'total 2026', type: 'out' },
-            { text: 'drwxr-xr-x  SysAdmin_Pro', type: 'out' },
-            { text: 'drwxr-xr-x  DevOps_Essential', type: 'out' }
+            { text: 'whoami', type: 'cmd' },
+            { text: 'S2KTUX: SysAdmin & Cloud Enthusiast', type: 'out' },
+            { text: 'ls -F /blog/categorias', type: 'cmd' },
+            { text: 'Linux/  Cloud/  Monitoring/  Scripts/', type: 'out' },
+            { text: 'cat /etc/os-release', type: 'cmd' },
+            { text: 'PRETTY_NAME="S2KTUX Knowledge Base"', type: 'out' },
+            { text: 'status --check monitoring', type: 'cmd' },
+            { text: '[ OK ] Prometheus & Grafana stack up.', type: 'out' }
         ];
 
         async function typeWriter() {
             for (const line of script) {
                 const div = document.createElement('div');
-                div.style.marginBottom = "5px";
+                div.style.marginBottom = "8px";
                 
                 if (line.type === 'cmd') {
-                    div.innerHTML = `<span class="prompt">➜</span> <span class="content"></span><span class="cursor"></span>`;
+                    div.innerHTML = `<span class="prompt">$</span> <span class="content"></span><span class="cursor"></span>`;
                     terminal.appendChild(div);
                     const contentSpan = div.querySelector('.content');
                     const cursor = div.querySelector('.cursor');
                     
                     for (const char of line.text) {
                         contentSpan.textContent += char;
-                        await new Promise(r => setTimeout(r, 60));
+                        await new Promise(r => setTimeout(r, 50));
                     }
                     cursor.remove();
                 } else {
-                    div.innerHTML = `<span style="color: #94a3b8;">${line.text}</span>`;
+                    div.innerHTML = `<span style="color: var(--text-muted); opacity: 0.8;">${line.text}</span>`;
                     terminal.appendChild(div);
-                    await new Promise(r => setTimeout(r, 400));
+                    await new Promise(r => setTimeout(r, 350));
                 }
             }
-            // Prompt final
             const final = document.createElement('div');
-            final.innerHTML = `<span class="prompt">➜</span> <span class="cursor"></span>`;
+            final.innerHTML = `<span class="prompt">$</span> <span class="cursor"></span>`;
             terminal.appendChild(final);
         }
 
