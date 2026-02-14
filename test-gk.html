@@ -29,6 +29,7 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            min-height: 400px; /* Altura mínima para que sea visible */
         }
         
         .terminal-header {
@@ -79,6 +80,12 @@
             height: 3px;
             background: linear-gradient(to right, #10b981, #34d399);
             border-radius: 9999px;
+        }
+
+        /* Fix para que el terminal interno ocupe todo el espacio */
+        .terminal {
+            height: 100% !important;
+            width: 100% !important;
         }
     </style>
 </head>
