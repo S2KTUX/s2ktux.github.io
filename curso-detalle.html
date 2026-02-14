@@ -2,60 +2,43 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso: Linux RHCSA | S2KTUX</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <title>Clase 1 | S2KTUX</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #030712; --sidebar: #0f172a; --accent: #38bdf8; --text-main: #f8fafc; }
-        body { background: var(--bg); color: var(--text-main); font-family: 'Plus Jakarta Sans', sans-serif; display: flex; }
-        
-        /* SIDEBAR DE LECCIONES */
-        .sidebar { width: 350px; background: var(--sidebar); height: 100vh; position: fixed; border-right: 1px solid rgba(255,255,255,0.05); padding: 2rem; overflow-y: auto; }
-        .sidebar h2 { font-size: 1.2rem; margin-bottom: 2rem; color: var(--accent); }
-        .lesson-item { padding: 1rem; border-radius: 10px; margin-bottom: 0.5rem; cursor: pointer; transition: 0.3s; font-size: 0.9rem; border: 1px solid transparent; }
-        .lesson-item:hover { background: rgba(56, 189, 248, 0.1); }
-        .lesson-item.active { background: var(--accent); color: #000; font-weight: 700; }
+        :root { --bg: #030712; --side: #0f172a; --accent: #38bdf8; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: var(--bg); color: #fff; font-family: 'Plus Jakarta Sans', sans-serif; display: flex; }
 
-        /* CONTENIDO PRINCIPAL */
-        .main-content { margin-left: 350px; flex: 1; padding: 4rem; }
-        .video-placeholder { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 20px; display: flex; align-items: center; justify-content: center; border: 1px solid rgba(255,255,255,0.1); margin-bottom: 2rem; }
-        .content-text h1 { font-size: 2.5rem; margin-bottom: 1rem; }
-        .content-text p { color: #94a3b8; line-height: 1.8; margin-bottom: 2rem; }
-        
-        .nav-buttons { display: flex; justify-content: space-between; margin-top: 4rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.05); }
+        .sidebar { width: 300px; background: var(--side); height: 100vh; padding: 30px; border-right: 1px solid #1e293b; position: fixed; }
+        .sidebar h2 { color: var(--accent); margin-bottom: 30px; font-size: 1.2rem; }
+        .lesson { padding: 12px; border-radius: 8px; margin-bottom: 10px; cursor: pointer; color: #94a3b8; transition: 0.3s; }
+        .lesson:hover { background: rgba(255,255,255,0.05); color: #fff; }
+        .lesson.active { background: var(--accent); color: #000; font-weight: 700; }
+
+        .content { margin-left: 300px; padding: 50px; width: 100%; }
+        .video-box { width: 100%; aspect-ratio: 16/9; background: #000; border-radius: 15px; border: 1px solid #334155; margin-bottom: 30px; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+        .text-content h1 { font-size: 2.5rem; margin-bottom: 20px; }
+        .text-content p { color: #94a3b8; line-height: 1.8; font-size: 1.1rem; }
     </style>
 </head>
 <body>
-    <aside class="sidebar">
-        <a href="index.html" style="color:var(--text-main); text-decoration:none; display:block; margin-bottom:2rem; opacity:0.5;">← Volver al inicio</a>
-        <h2>Linux RHCSA Prep</h2>
-        <div class="lesson-item active">1. Introducción al sistema</div>
-        <div class="lesson-item">2. Gestión de archivos (ls, cp, mv)</div>
-        <div class="lesson-item">3. Permisos y Usuarios</div>
-        <div class="lesson-item">4. SSH y Control Remoto</div>
-        <div class="lesson-item">5. Instalación de paquetes</div>
-        <div class="lesson-item">6. Configuración de Red</div>
-    </aside>
+    <div class="sidebar">
+        <a href="index.html" style="color:#64748b; text-decoration:none; font-size:0.8rem;">← VOLVER AL INICIO</a>
+        <h2 style="margin-top:20px;">Curso Linux Pro</h2>
+        <div class="lesson active">1. Introducción</div>
+        <div class="lesson">2. La Terminal</div>
+        <div class="lesson">3. Usuarios y Permisos</div>
+        <div class="lesson">4. Redes en Linux</div>
+    </div>
 
-    <main class="main-content">
-        <div class="video-placeholder">
-            <span style="color:var(--accent); font-size:1.2rem;">[ Reproductor de Vídeo / Demo ]</span>
+    <div class="content">
+        <div class="video-box">
+            <h3>https://youtu.be/enwp35IHCic</h3>
         </div>
-        <div class="content-text">
-            <h1>1. Introducción al sistema</h1>
-            <p>En esta lección aprenderemos los fundamentos del kernel Linux y cómo interactuar con el shell. Entenderemos por qué Linux es el sistema preferido para servidores y cómo navegar por la estructura de directorios estándar (FHS).</p>
-            
-            <div style="background: #1e293b; padding: 2rem; border-radius: 12px; border-left: 4px solid var(--accent);">
-                <h4 style="margin-bottom:10px;">Comandos clave de hoy:</h4>
-                <code style="font-family:'Fira Code'; color:var(--accent);">uname -a</code><br>
-                <code style="font-family:'Fira Code'; color:var(--accent);">lsblk</code>
-            </div>
+        <div class="text-content">
+            <h1>1. Introducción a Sistemas</h1>
+            <p>Bienvenido al primer módulo. En esta lección vamos a entender qué es el Kernel, cómo se comunica con el hardware y por qué Linux es la base de la infraestructura moderna.</p>
         </div>
-
-        <div class="nav-buttons">
-            <button style="background:none; border:none; color:var(--text-dim); cursor:pointer;">← Anterior</button>
-            <button style="background:var(--accent); border:none; padding:10px 25px; border-radius:8px; font-weight:800; cursor:pointer;">Siguiente Lección</button>
-        </div>
-    </main>
+    </div>
 </body>
 </html>
