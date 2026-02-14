@@ -2,44 +2,91 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>S2KTUX | Academy</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S2KTUX | Academy & Lab</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&family=Fira+Code&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #030712; --accent: #38bdf8; --text: #f8fafc; }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; }
+        :root { 
+            --bg: #030712; 
+            --side: #0f172a; 
+            --accent: #38bdf8; 
+            --text: #f8fafc; 
+            --text-dim: #94a3b8;
+        }
         
-        nav { display: flex; justify-content: space-between; padding: 1.5rem 10%; background: rgba(3,7,18,0.9); position: fixed; width: 100%; top:0; z-index: 100; border-bottom: 1px solid #1e293b; }
-        .logo { font-weight: 800; color: var(--text); text-decoration: none; font-size: 1.5rem; }
+        * { margin: 0; padding: 0; box-sizing: border-box; scroll-behavior: smooth; }
+        body { background: var(--bg); color: var(--text); font-family: 'Plus Jakarta Sans', sans-serif; line-height: 1.6; }
+        
+        /* HEADER */
+        nav { display: flex; justify-content: space-between; padding: 1.5rem 10%; background: rgba(3,7,18,0.95); position: fixed; width: 100%; top:0; z-index: 1000; border-bottom: 1px solid #1e293b; backdrop-filter: blur(10px); }
+        .logo { font-weight: 800; color: var(--text); text-decoration: none; font-size: 1.5rem; letter-spacing: -1px; }
         .logo span { color: var(--accent); }
-        .nav-links a { color: #94a3b8; text-decoration: none; margin-left: 20px; font-weight: 600; }
+        .nav-links a { color: var(--text-dim); text-decoration: none; margin-left: 25px; font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .nav-links a:hover { color: var(--accent); }
 
-        .hero { display: flex; align-items: center; padding: 150px 10% 50px; min-height: 80vh; gap: 50px; }
-        .hero-text { flex: 1; }
-        .hero-text h1 { font-size: 3.5rem; margin-bottom: 20px; line-height: 1.1; }
-        .hero-text p { color: #94a3b8; font-size: 1.2rem; margin-bottom: 30px; }
-        
-        .btn { background: var(--accent); color: #000; padding: 15px 30px; border-radius: 10px; text-decoration: none; font-weight: 800; display: inline-block; }
+        /* HERO */
+        .hero { display: flex; align-items: center; padding: 180px 10% 100px; min-height: 90vh; gap: 50px; flex-wrap: wrap; }
+        .hero-text { flex: 1; min-width: 350px; }
+        .hero-text h1 { font-size: 4rem; margin-bottom: 20px; line-height: 1; font-weight: 800; }
+        .hero-text p { color: var(--text-dim); font-size: 1.2rem; margin-bottom: 35px; max-width: 500px; }
+        .btn { background: var(--accent); color: #000; padding: 18px 35px; border-radius: 12px; text-decoration: none; font-weight: 800; display: inline-block; transition: 0.3s; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(56, 189, 248, 0.4); }
 
-        .terminal-box { flex: 1; background: #0d1117; border-radius: 15px; border: 1px solid #30363d; overflow: hidden; height: 350px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
-        .t-header { background: #161b22; padding: 10px 15px; display: flex; gap: 8px; }
+        /* TERMINAL */
+        .terminal-box { flex: 1; min-width: 400px; background: #0d1117; border-radius: 15px; border: 1px solid #30363d; overflow: hidden; height: 380px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); }
+        .t-header { background: #161b22; padding: 12px 18px; display: flex; gap: 8px; }
         .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .t-body { padding: 20px; font-family: 'Fira Code', monospace; color: #e6edf3; font-size: 14px; }
+        .t-body { padding: 25px; font-family: 'Fira Code', monospace; color: #e6edf3; font-size: 14px; line-height: 1.8; }
+
+        /* SECCIÓN STATS */
+        .stats { display: flex; justify-content: space-around; padding: 60px 10%; background: #0f172a; border-y: 1px solid #1e293b; text-align: center; }
+        .stat-item h3 { font-size: 2.5rem; color: var(--accent); }
+        .stat-item p { color: var(--text-dim); text-transform: uppercase; font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; }
+
+        /* SECCIÓN CURSOS / GRID */
+        .section { padding: 100px 10%; }
+        .section-title { text-align: center; margin-bottom: 60px; }
+        .section-title h2 { font-size: 2.5rem; margin-bottom: 10px; }
+        .section-title p { color: var(--text-dim); }
+
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .card { background: #0f172a; padding: 40px; border-radius: 20px; border: 1px solid #1e293b; transition: 0.3s; }
+        .card:hover { border-color: var(--accent); transform: translateY(-10px); }
+        .card h3 { margin-bottom: 15px; font-size: 1.5rem; }
+        .card p { color: var(--text-dim); margin-bottom: 25px; }
+        .card a { color: var(--accent); text-decoration: none; font-weight: 700; font-size: 0.9rem; }
+
+        /* FOOTER */
+        footer { padding: 80px 10% 40px; border-top: 1px solid #1e293b; background: #030712; text-align: center; }
+        .footer-links { margin-bottom: 30px; }
+        .footer-links a { color: var(--text-dim); text-decoration: none; margin: 0 15px; font-size: 0.9rem; }
+        .footer-links a:hover { color: var(--accent); }
+        .copy { color: #4b5563; font-size: 0.8rem; }
+
+        @media (max-width: 768px) {
+            .hero-text h1 { font-size: 2.5rem; }
+            .hero { padding: 120px 5% 50px; text-align: center; }
+            .hero-text p { margin: 0 auto 30px; }
+            .terminal-box { min-width: 100%; }
+        }
     </style>
 </head>
 <body>
+
     <nav>
         <a href="index.html" class="logo">S2K<span>TUX</span></a>
         <div class="nav-links">
-            <a href="curso.html" style="color: var(--accent);">Ver Demo Curso</a>
+            <a href="#cursos">Cursos</a>
+            <a href="#metodo">Metodología</a>
+            <a href="curso.html" style="color: var(--accent); border: 1px solid var(--accent); padding: 8px 15px; border-radius: 8px;">Demo Gratis</a>
         </div>
     </nav>
 
-    <section class="hero">
+    <header class="hero">
         <div class="hero-text">
-            <h1>Domina <span style="color:var(--accent)">Linux</span><br>como un experto</h1>
-            <p>Aprende administración de sistemas con la terminal interactiva de S2KTUX.</p>
-            <a href="curso-detalle.html" class="btn">Empezar ahora</a>
+            <h1>Domina <span style="color:var(--accent)">Linux</span> & DevSecOps</h1>
+            <p>Formación práctica de alto nivel para entusiastas y profesionales de sistemas. Aprende haciendo, no solo mirando.</p>
+            <a href="#cursos" class="btn">Explorar Cursos</a>
         </div>
         <div class="terminal-box">
             <div class="t-header">
@@ -49,17 +96,90 @@
             </div>
             <div class="t-body" id="typing"></div>
         </div>
+    </header>
+
+    <section class="stats">
+        <div class="stat-item"><h3>+1k</h3><p>Alumnos</p></div>
+        <div class="stat-item"><h3>15</h3><p>Cursos Pro</p></div>
+        <div class="stat-item"><h3>24/7</h3><p>Laboratorios</p></div>
     </section>
 
+    <section id="cursos" class="section">
+        <div class="section-title">
+            <h2>Programas Destacados</h2>
+            <p>Rutas de aprendizaje diseñadas por expertos en infraestructura.</p>
+        </div>
+        <div class="grid">
+            <div class="card">
+                <h3>Linux RHCSA Prep</h3>
+                <p>Todo lo necesario para aprobar el examen de certificación de Red Hat. Storage, Selinux y más.</p>
+                <a href="curso.html">MÁS INFORMACIÓN →</a>
+            </div>
+            <div class="card">
+                <h3>Docker & Kubernetes</h3>
+                <p>Domina la orquestación de contenedores y despliega microservicios como un profesional.</p>
+                <a href="#">MÁS INFORMACIÓN →</a>
+            </div>
+            <div class="card">
+                <h3>Bash Scripting Pro</h3>
+                <p>Automatiza el 90% de tus tareas diarias con scripts robustos y eficientes.</p>
+                <a href="#">MÁS INFORMACIÓN →</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="metodo" class="section" style="background: #060b18;">
+        <div class="section-title">
+            <h2>Nuestra Metodología</h2>
+        </div>
+        <div class="grid">
+            <div class="card" style="background:transparent; border:none;">
+                <h3 style="color:var(--accent)">1. Teoría Directa</h3>
+                <p>Sin relleno. Explicaciones claras sobre el funcionamiento real de los sistemas.</p>
+            </div>
+            <div class="card" style="background:transparent; border:none;">
+                <h3 style="color:var(--accent)">2. Labs Interactivos</h3>
+                <p>Acceso a terminales reales para practicar cada comando en entornos seguros.</p>
+            </div>
+            <div class="card" style="background:transparent; border:none;">
+                <h3 style="color:var(--accent)">3. Proyectos Reales</h3>
+                <p>Al finalizar, habrás montado infraestructuras completas desde cero.</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#">Twitter</a>
+            <a href="#">GitHub</a>
+            <a href="#">LinkedIn</a>
+            <a href="#">Soporte</a>
+        </div>
+        <p class="copy">© 2026 S2KTUX Academy. Hecho por y para SysAdmins.</p>
+    </footer>
+
     <script>
-        const text = ["$ whoami", "s2ktux_student", "$ status --learning", "Progress: 85%", "$ systemctl start success"];
+        const text = [
+            "$ ssh student@s2ktux_academy",
+            "Authenticating...",
+            "Welcome to S2KTUX Labs V2.0",
+            "$ ls -l /courses",
+            "drwxr-xr-x  Linux_Pro",
+            "drwxr-xr-x  Security_Labs",
+            "$ ./start_career.sh"
+        ];
         let i = 0; let j = 0;
         function type() {
             if (i < text.length) {
-                document.getElementById("typing").innerHTML += text[i][j];
+                let currentLine = text[i];
+                document.getElementById("typing").innerHTML += currentLine[j];
                 j++;
-                if (j >= text[i].length) { document.getElementById("typing").innerHTML += "<br>"; i++; j = 0; setTimeout(type, 800); }
-                else { setTimeout(type, 50); }
+                if (j >= currentLine.length) { 
+                    document.getElementById("typing").innerHTML += "<br>"; 
+                    i++; j = 0; 
+                    setTimeout(type, 600); 
+                }
+                else { setTimeout(type, 40); }
             }
         }
         window.onload = type;
