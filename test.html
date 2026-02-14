@@ -152,17 +152,26 @@
     </div>
 
     <!-- LÓGICA (JS) -->
-      // ... (El resto del código HTML y CSS igual que antes) ...
-
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('cmd-input');
             const output = document.getElementById('output');
             const terminalBody = document.getElementById('terminal-body');
 
-            // BASE DE DATOS SIMPLIFICADA
-            // Ya no guardamos el texto aquí, solo la RUTA al archivo.
             const courseDB = {
+            "rhcsa": {
+                title: "RHCSA: Red Hat System Administrator",
+                description: "Gestión de sistemas RHEL.",
+                topics: [
+            // ... otros temas ...
+            {
+                id: 5, // Pon el ID que toque en tu curso
+                title: "Gestión de Software (RPM y Flatpak)",
+                file: "content/rhcsa-gestion-software.html"
+            }
+        ]
+    }
+};            const courseDB = {
                 "lpic1": {
                     title: "LPIC-1: Linux Administrator",
                     description: "Certificación junior de administración de Linux.",
