@@ -82,10 +82,17 @@
             border-radius: 9999px;
         }
 
-        /* Fix para que el terminal interno ocupe todo el espacio */
+        /* Fix para que el terminal interno ocupe todo el espacio y sea legible */
         .terminal {
             height: 100% !important;
             width: 100% !important;
+            font-size: 16px !important; /* Aumenta el tamaño de fuente para mejor legibilidad */
+            line-height: 1.5 !important;
+        }
+
+        .terminal .cmd {
+            white-space: pre-wrap !important; /* Permite wrap del texto sin cortar palabras */
+            word-break: break-word !important;
         }
     </style>
 </head>
@@ -161,8 +168,8 @@
                 </div>
             </div>
             
-            <!-- Terminal en hero -->
-            <div id="terminal" class="terminal-window max-w-xl mx-auto md:ml-auto shadow-2xl">
+            <!-- Terminal en hero, ahora más ancho -->
+            <div id="terminal" class="terminal-window max-w-2xl mx-auto md:ml-auto shadow-2xl w-full">
                 <div class="terminal-header">
                     <div class="terminal-dots">
                         <div class="terminal-dot bg-red-500"></div>
