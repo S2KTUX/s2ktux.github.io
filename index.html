@@ -4,203 +4,198 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>S2KTUX | Mastering Linux</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f172a;
-            --card-bg: #1e293b;
+            --bg: #030712;
+            --card-bg: rgba(17, 24, 39, 0.7);
             --accent: #38bdf8;
-            --text-main: #f8fafc;
-            --text-dim: #94a3b8;
-            --terminal-header: #334155;
-            --green: #4ade80;
+            --accent-glow: rgba(56, 189, 248, 0.2);
+            --text-main: #f3f4f6;
+            --text-dim: #9ca3af;
+            --border: rgba(255, 255, 255, 0.1);
+            --font-mono: 'Fira Code', monospace;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        /* --- TEMAS --- */
+        body.mode-light {
+            --bg: #f8fafc; --text-main: #0f172a; --text-dim: #64748b;
+            --card-bg: rgba(255, 255, 255, 0.8); --border: rgba(0,0,0,0.05);
         }
+        body.theme-ruby { --accent: #f43f5e; --accent-glow: rgba(244, 63, 94, 0.2); }
+        /* Tema Rojo Sunset (Claro) */
+        body.theme-ruby.mode-light { --bg: #fff1f2; --text-main: #881337; --accent: #e11d48; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg);
             color: var(--text-main);
             font-family: 'Inter', sans-serif;
-            line-height: 1.6;
             overflow-x: hidden;
+            transition: background 0.4s ease;
         }
 
-        /* Navbar sutil */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            padding: 2rem 10%;
-            align-items: center;
-            position: absolute;
-            width: 100%;
+        /* --- FONDO AURORA --- */
+        .aurora {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none; overflow: hidden;
+        }
+        .blob {
+            position: absolute; width: 500px; height: 500px;
+            background: var(--accent); filter: blur(120px);
+            opacity: 0.15; border-radius: 50%; animation: move 20s infinite alternate;
+        }
+        @keyframes move { 
+            0% { transform: translate(-10%, -10%); } 
+            100% { transform: translate(20%, 30%); } 
         }
 
-        .logo { font-weight: 800; font-size: 1.5rem; color: var(--accent); text-decoration: none; }
-        .nav-links a { color: var(--text-dim); text-decoration: none; margin-left: 2rem; transition: 0.3s; }
-        .nav-links a:hover { color: var(--accent); }
+        /* --- NAVEGACIÓN (ISLAS) --- */
+        .nav-wrapper {
+            position: fixed; top: 25px; width: 100%;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 5%; z-index: 1000;
+        }
+        .island {
+            background: var(--card-bg); border: 1px solid var(--border);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            padding: 10px 24px; border-radius: 99px; display: flex; align-items: center; gap: 20px;
+        }
+        .logo { font-weight: 800; font-size: 1.2rem; color: var(--accent); text-decoration: none; letter-spacing: -1px; }
+        .nav-links a { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; font-weight: 600; transition: 0.3s; }
+        .nav-links a:hover { color: var(--text-main); }
+        .theme-btn { cursor: pointer; color: var(--text-main); background: none; border: none; }
 
-        /* Hero Section */
+        /* --- HERO --- */
         .hero {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 150px 10% 100px;
-            min-height: 100vh;
-            gap: 40px;
-            flex-wrap: wrap;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 180px 10% 100px; min-height: 100vh; gap: 60px;
         }
+        .hero-text { flex: 1.2; }
+        .hero-text h1 { font-size: 4.5rem; font-weight: 800; line-height: 1; letter-spacing: -3px; margin-bottom: 2rem; }
+        .hero-text p { font-size: 1.25rem; color: var(--text-dim); margin-bottom: 2.5rem; line-height: 1.6; }
 
-        .hero-text { flex: 1; min-width: 300px; }
-        .hero-text h1 { font-size: 3.5rem; line-height: 1.1; margin-bottom: 1.5rem; font-weight: 800; }
-        .gradient-text {
-            background: linear-gradient(90deg, #38bdf8, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .hero-text p { font-size: 1.2rem; color: var(--text-dim); margin-bottom: 2rem; max-width: 500px; }
-
-        .btn-group { display: flex; gap: 1rem; }
         .btn {
-            padding: 0.8rem 2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 700;
-            transition: 0.3s;
+            padding: 1rem 2.5rem; border-radius: 12px; font-weight: 700;
+            text-decoration: none; transition: 0.4s; display: inline-block;
         }
-        .btn-primary { background: var(--accent); color: var(--bg); }
-        .btn-primary:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(56, 189, 248, 0.3); }
-        .btn-secondary { border: 1px solid var(--text-dim); color: var(--text-main); }
+        .btn-primary { background: var(--accent); color: white; box-shadow: 0 10px 25px var(--accent-glow); }
+        .btn-primary:hover { transform: translateY(-5px); box-shadow: 0 15px 35px var(--accent-glow); }
 
-        /* Terminal Estilo HyprLuna */
+        /* --- TERMINAL HYPRLUNA --- */
         .terminal-window {
-            flex: 1;
-            min-width: 350px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.1);
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);
-            overflow: hidden;
+            flex: 1; min-width: 450px; background: var(--card-bg);
+            border-radius: 16px; border: 1px solid var(--border);
+            backdrop-filter: blur(16px); overflow: hidden;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
         }
-
-        .terminal-header {
-            background: var(--terminal-header);
-            padding: 12px 20px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .term-header {
+            background: rgba(0,0,0,0.2); padding: 14px 20px;
+            display: flex; align-items: center; border-bottom: 1px solid var(--border);
         }
-
+        .dots { display: flex; gap: 8px; }
         .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .red { background: #ff5f56; }
-        .yellow { background: #ffbd2e; }
-        .green { background: #27c93f; }
-        .t-title { margin-left: auto; margin-right: auto; font-family: 'Fira Code'; font-size: 0.8rem; color: var(--text-dim); }
-
-        .terminal-body {
-            padding: 25px;
-            font-family: 'Fira Code', monospace;
-            font-size: 14px;
-            min-height: 250px;
-            color: #cbd5e1;
+        .term-body { 
+            padding: 25px; font-family: var(--font-mono); font-size: 0.9rem; 
+            min-height: 320px; line-height: 1.7;
         }
-
-        .prompt { color: var(--green); margin-right: 8px; }
-        .cursor {
-            display: inline-block;
-            width: 8px;
-            height: 15px;
-            background: var(--accent);
-            margin-left: 4px;
-            animation: blink 1s infinite;
-        }
+        .prompt { color: var(--accent); font-weight: bold; }
+        .cursor { width: 8px; height: 18px; background: var(--accent); display: inline-block; vertical-align: middle; animation: blink 1s infinite; }
 
         @keyframes blink { 50% { opacity: 0; } }
 
-        @media (max-width: 768px) {
-            .hero { padding-top: 100px; text-align: center; justify-content: center; }
-            .hero-text h1 { font-size: 2.5rem; }
-            .btn-group { justify-content: center; }
-            nav { padding: 1rem 5%; }
+        @media (max-width: 968px) {
+            .hero { flex-direction: column; text-align: center; padding-top: 140px; }
+            .terminal-window { min-width: 100%; }
+            .hero-text h1 { font-size: 3rem; }
         }
     </style>
 </head>
-<body>
+<body class="theme-blue">
 
-    <nav>
-        <a href="#" class="logo">S2KTUX</a>
-        <div class="nav-links">
-            <a href="#">Cursos</a>
-            <a href="#">Proyectos</a>
-            <a href="#">Comunidad</a>
+    <div class="aurora">
+        <div class="blob"></div>
+    </div>
+
+    <div class="nav-wrapper">
+        <div class="island"><a href="#" class="logo">S2KTUX</a></div>
+        <div class="island">
+            <nav class="nav-links">
+                <a href="#">Cursos</a>
+                <a href="#">Proyectos</a>
+                <a href="#">Stack</a>
+            </nav>
         </div>
-    </nav>
+        <div class="island">
+            <button class="theme-btn" onclick="cycleTheme()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>
+            </button>
+        </div>
+    </div>
 
     <section class="hero">
         <div class="hero-text">
-            <h1>La ruta del <span class="gradient-text">SysAdmin</span> empieza aquí.</h1>
-            <p>Aprende Linux, Redes y Automatización con proyectos reales. De usuario a experto en línea de comandos.</p>
-            <div class="btn-group">
-                <a href="#" class="btn btn-primary">Empezar ahora</a>
-                <a href="#" class="btn btn-secondary">Ver proyectos</a>
-            </div>
+            <h1>Mastering <br><span style="color: var(--accent)">Linux</span> Systems.</h1>
+            <p>De los fundamentos del kernel a la orquestación en la nube. Una ruta técnica diseñada para los SysAdmins del futuro.</p>
+            <a href="#" class="btn btn-primary">Iniciar Despliegue</a>
         </div>
 
         <div class="terminal-window">
-            <div class="terminal-header">
-                <div class="dot red"></div>
-                <div class="dot yellow"></div>
-                <div class="dot green"></div>
-                <div class="t-title">s2ktux@learning: ~</div>
-            </div>
-            <div class="terminal-body" id="typewriter">
+            <div class="term-header">
+                <div class="dots">
+                    <div class="dot" style="background: #ff5f56"></div>
+                    <div class="dot" style="background: #ffbd2e"></div>
+                    <div class="dot" style="background: #27c93f"></div>
                 </div>
+                <div style="margin-left: auto; font-size: 0.7rem; color: var(--text-dim); font-family: var(--font-mono)">bash — 80x24</div>
+            </div>
+            <div class="term-body" id="typewriter"></div>
         </div>
     </section>
 
     <script>
         const terminal = document.getElementById('typewriter');
         const lines = [
-            { text: 'whoami', type: 'command' },
-            { text: 's2ktux: Future Linux Expert', type: 'output' },
-            { text: 'ls -l /skills', type: 'command' },
-            { text: 'drwxr-xr-x linux-basics', type: 'output' },
-            { text: 'drwxr-xr-x networking-pro', type: 'output' },
-            { text: 'drwxr-xr-x shell-scripting', type: 'output' },
-            { text: 'systemctl start success.service', type: 'command' },
-            { text: 'Status: Running...', type: 'output' }
+            { text: 'ssh admin@s2ktux.io', type: 'cmd' },
+            { text: 'Connecting to server...', type: 'out' },
+            { text: 'Access Granted.', type: 'out' },
+            { text: 'ls /learning/path', type: 'cmd' },
+            { text: '1. Kernel_Basics  2. Networking', type: 'out' },
+            { text: '3. Automation     4. Security', type: 'out' },
+            { text: 'systemctl status motivation', type: 'cmd' },
+            { text: '● motivation.service - Active: running', type: 'out' }
         ];
 
         async function typeEffect() {
             for (let line of lines) {
                 let div = document.createElement('div');
-                div.style.marginBottom = "8px";
-                
-                if (line.type === 'command') {
-                    div.innerHTML = `<span class="prompt">s2ktux@server:~$</span> <span class="content"></span><span class="cursor"></span>`;
+                if (line.type === 'cmd') {
+                    div.innerHTML = `<span class="prompt">λ</span> <span class="content"></span><span class="cursor"></span>`;
                     terminal.appendChild(div);
-                    let contentSpan = div.querySelector('.content');
-                    let cursor = div.querySelector('.cursor');
-                    
+                    let content = div.querySelector('.content');
                     for (let char of line.text) {
-                        contentSpan.textContent += char;
-                        await new Promise(r => setTimeout(r, 70));
+                        content.textContent += char;
+                        await new Promise(r => setTimeout(r, 50));
                     }
-                    cursor.remove();
+                    div.querySelector('.cursor').remove();
                 } else {
-                    div.innerHTML = `<span style="color: #94a3b8;">${line.text}</span>`;
+                    div.innerHTML = `<span style="color: var(--text-dim)">${line.text}</span>`;
                     terminal.appendChild(div);
-                    await new Promise(r => setTimeout(r, 300));
+                    await new Promise(r => setTimeout(r, 200));
                 }
             }
-            // Añadir prompt final
-            let finalPrompt = document.createElement('div');
-            finalPrompt.innerHTML = `<span class="prompt">s2ktux@server:~$</span> <span class="cursor"></span>`;
-            terminal.appendChild(finalPrompt);
+            let final = document.createElement('div');
+            final.innerHTML = `<span class="prompt">λ</span> <span class="cursor"></span>`;
+            terminal.appendChild(final);
+        }
+
+        // Sistema de cambio de temas sencillo
+        let currentTheme = 0;
+        const themes = ['', 'theme-ruby', 'mode-light', 'theme-ruby mode-light'];
+        function cycleTheme() {
+            currentTheme = (currentTheme + 1) % themes.length;
+            document.body.className = themes[currentTheme];
         }
 
         window.onload = typeEffect;
