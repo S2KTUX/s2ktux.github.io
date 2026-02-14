@@ -1,11 +1,168 @@
-    <!-- LÓGICA (JS) CORREGIDA -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S2KTUX | Linux Learning Terminal</title>
+    
+    <!-- --- ESTILOS (CSS) --- -->
+    <style>
+        :root {
+            --bg-color: #09090b;       /* Fondo casi negro */
+            --term-bg: #18181b;        /* Fondo de la terminal */
+            --text-main: #a1a1aa;      /* Gris texto */
+            --accent: #10b981;         /* Verde matrix/hacker */
+            --font-stack: 'Courier New', Courier, monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: var(--font-stack);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Fondo sutil de grid */
+            background-image: radial-gradient(#27272a 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL --- */
+        .main-container {
+            width: 90%;
+            max-width: 900px;
+            height: 85vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--term-bg);
+            border: 1px solid #27272a;
+            border-radius: 12px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        /* --- BARRA SUPERIOR --- */
+        .window-bar {
+            background-color: #09090b;
+            padding: 12px 20px;
+            border-radius: 12px 12px 0 0;
+            border-bottom: 1px solid #27272a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+            color: #71717a;
+        }
+        .controls { display: flex; gap: 8px; }
+        .control { width: 12px; height: 12px; border-radius: 50%; }
+        .red { background-color: #ef4444; }
+        .yellow { background-color: #eab308; }
+        .green { background-color: #22c55e; }
+
+        /* --- CUERPO DE LA TERMINAL --- */
+        .terminal-body {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+
+        /* Scrollbar */
+        .terminal-body::-webkit-scrollbar { width: 8px; }
+        .terminal-body::-webkit-scrollbar-track { background: var(--term-bg); }
+        .terminal-body::-webkit-scrollbar-thumb { background: #3f3f46; border-radius: 4px; }
+        .terminal-body::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+        /* --- ESTILOS DE TEXTO --- */
+        #output { margin-bottom: 10px; }
+        .line { margin-bottom: 15px; }
+        .command-echo { color: var(--accent); font-weight: bold; }
+        .response-text { color: var(--text-main); white-space: pre-wrap; }
+        .path { color: #60a5fa; cursor: pointer; } /* Azul para comandos */
+        .path:hover { text-decoration: underline; }
+        .highlight { color: #f472b6; font-weight: bold; } /* Rosa para títulos */
+        
+        /* Estilo para el contenido de los cursos (imágenes, etc) */
+        .lesson-content {
+            border-left: 3px solid var(--accent);
+            padding-left: 15px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            color: #d4d4d8;
+        }
+        .lesson-content img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #444;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: block;
+        }
+        .lesson-content h3, .lesson-content h4 { color: #fff; margin-bottom: 10px; margin-top: 20px; }
+        .lesson-content code { background: #000; padding: 2px 5px; color: var(--accent); border-radius: 3px; }
+        .lesson-content ul { margin-left: 20px; margin-bottom: 10px; }
+
+        /* --- INPUT --- */
+        .input-line { display: flex; align-items: center; }
+        .prompt { color: var(--accent); margin-right: 10px; font-weight: bold; white-space: nowrap; }
+        
+        #cmd-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-family: var(--font-stack);
+            font-size: 1rem;
+            flex: 1;
+            outline: none;
+            caret-color: var(--accent);
+        }
+
+        /* --- LINKS --- */
+        a { color: #60a5fa; text-decoration: none; border-bottom: 1px dotted #60a5fa; }
+        a:hover { color: #fff; background: #60a5fa; }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        
+        <!-- Barra superior -->
+        <div class="window-bar">
+            <div class="controls">
+                <div class="control red"></div>
+                <div class="control yellow"></div>
+                <div class="control green"></div>
+            </div>
+            <div class="bar-title">s2ktux@learning:~</div>
+            <div class="bar-info">v2.0-beta</div>
+        </div>
+
+        <!-- Terminal -->
+        <div class="terminal-body" id="terminal-body">
+            <div id="output"></div>
+            <div class="input-line">
+                <span class="prompt">visitor@s2ktux:~$</span>
+                <input type="text" id="cmd-input" autocomplete="off" autofocus>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- --- LÓGICA (JS) --- -->
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById('cmd-input');
             const output = document.getElementById('output');
             const terminalBody = document.getElementById('terminal-body');
 
-            // --- BASE DE DATOS UNIFICADA ---
+            // --- BASE DE DATOS DE CURSOS ---
+            // Asegúrate de que estos archivos existan en la carpeta "content/"
             const courseDB = {
                 "rhcsa": {
                     title: "RHCSA: Red Hat System Administrator",
@@ -30,15 +187,17 @@
 
             let currentCourse = null;
 
+            // --- MENSAJE DE BIENVENIDA ---
             const welcomeMessage = `
 <div class="line">
   <span class="highlight">SISTEMA DE CARGA EXTERNA v3.0</span><br><br>
-  Ahora el contenido se carga dinámicamente desde archivos HTML.<br>
+  El contenido se carga dinámicamente desde archivos HTML.<br>
   Esto permite tener cursos infinitos sin ralentizar la web inicialmente.<br><br>
   <span class="path">Escribe 'courses' para empezar.</span>
 </div>`;
             printOutput(welcomeMessage, false);
 
+            // --- EVENTO DE TECLADO ---
             input.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     const command = this.value.trim();
@@ -53,6 +212,7 @@
                 }
             });
 
+            // --- PROCESADOR DE COMANDOS ---
             async function processCommand(cmd) {
                 const args = cmd.toLowerCase().split(' ');
                 const mainCmd = args[0];
@@ -86,10 +246,11 @@
                             });
                             printOutput(topicList);
                         } else {
-                            printOutput("Curso no encontrado.");
+                            printOutput("Curso no encontrado. Intenta 'rhcsa' o 'lpic1'.");
                         }
                         break;
 
+                    // --- CARGA DE ARCHIVOS EXTERNOS ---
                     case 'read':
                         if (!currentCourse) {
                             printOutput("Error: Abre un curso primero ('open rhcsa' o 'open lpic1').");
@@ -110,16 +271,16 @@
 
                             try {
                                 const response = await fetch(topic.file);
-                                if (!response.ok) throw new Error("Archivo no encontrado");
+                                if (!response.ok) throw new Error("Archivo no encontrado (Error 404)");
                                 const htmlContent = await response.text();
                                 document.getElementById(loadingId).remove();
                                 printOutput(htmlContent);
                             } catch (error) {
                                 document.getElementById(loadingId).remove();
-                                printOutput(`<span style="color:red">Error: No se pudo cargar "${topic.file}".<br>Verifica que el archivo exista en la carpeta 'content/'.</span>`);
+                                printOutput(`<span style="color:red">Error Crítico:<br> No se pudo cargar "${topic.file}".<br><br>Posibles causas:<br>1. El archivo no existe en la carpeta 'content/'.<br>2. Estás abriendo el archivo localmente (file://) en lugar de un servidor local (Live Server o GitHub Pages).</span>`);
                             }
                         } else {
-                            printOutput("ID de tema no válido.");
+                            printOutput("ID de tema no válido en este curso.");
                         }
                         break;
 
@@ -131,6 +292,7 @@
                 }
             }
 
+            // --- UTILIDADES ---
             function printOutput(html, isCommand = false) {
                 const div = document.createElement('div');
                 div.className = 'line';
@@ -144,6 +306,9 @@
                 terminalBody.scrollTop = terminalBody.scrollHeight;
             }
 
+            // Mantener el foco en el input al hacer click en cualquier parte
             document.addEventListener('click', () => input.focus());
         });
     </script>
+</body>
+</html>
