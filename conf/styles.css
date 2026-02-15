@@ -1020,3 +1020,31 @@ body.mode-light .cyber-back-btn {
         right: 0;
     }
 }
+
+.reader-container img {
+    max-width: 100%;  /* Responsive */
+    height: auto;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    margin: 20px auto;
+    display: block;
+}
+.reader-container img[loading="lazy"] {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+.reader-container img.loaded {
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .reader-container {
+        padding: 20px;
+        font-size: 1rem;  /* Fuente más pequeña para móvil */
+    }
+    .reader-container p, .reader-container li {
+        word-break: break-word;
+        overflow-wrap: break-word;  /* Mejor wrap para textos largos */
+    }
+}
