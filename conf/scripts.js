@@ -191,6 +191,21 @@ async function openReader(fileUrl) {
             const doc = parser.parseFromString(text, 'text/html');
             const content = doc.querySelector('main') || doc.querySelector('body') || doc;
             readerContent.innerHTML = content.innerHTML;
+            const loadedHeadings = readerContent.querySelectorAll('h1, h2, h3');
+loadedHeadings.forEach(h => h.classList.add('section-header'));  // Aplica tu estilo de headers
+
+const loadedParagraphs = readerContent.querySelectorAll('p');
+loadedParagraphs.forEach(p => {
+    p.style.color = 'var(--text-muted)';  // Hereda color muted
+    p.style.lineHeight = '1.6';  // Mejora legibilidad
+});
+
+// Si el sitio está en modo oscuro/claro, fuerza en el contenedor
+if (document.body.classList.contains('mode-light')) {
+    readerContent.classList.add('mode-light');
+} else {
+    readerContent.classList.remove('mode-light');
+}
             addNextButton();
         } else {
             throw new Error("404");
@@ -400,3 +415,12 @@ function processTermCommand(cmd) {
     // IMPORTANTE: Asegurar que el input wrapper siempre sea el último elemento
     termBody.appendChild(termInputWrapper);
 }
+
+
+// Optimizar imágenes
+const loadedImages = readerContent.querySelectorAll('img');
+loadedImages.forEach(img => {
+    if (!img.hasAttribute('alt')) img.alt = 'Imagen de curso';  // Accesibilidad
+    img.loading = 'lazy';  // Lazy loading
+    img.classList.add('loaded');  // Para animación
+});
