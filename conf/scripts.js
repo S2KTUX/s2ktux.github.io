@@ -46,7 +46,7 @@ function toggleMobileMenu() {
     }
 }
 
-const welcomeText = "Plataforma para aprender a utilizar sistemas Linux de manera profesional y contenidos de modificaciones para un Linux divertido. Proximamente se añadirán cursos de Cloud.";
+const welcomeText = "Tu terminal, tus reglas. Aprende administración profesional de Linux y descubre el lado creativo de las modificaciones de sistema. Expandiendo fronteras hacia el Cloud muy pronto.";
 const typeWriterElement = document.getElementById('typing-text');
 let typeIndex = 0;
 function typeWriter() {
