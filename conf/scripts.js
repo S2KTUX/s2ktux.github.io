@@ -191,53 +191,6 @@ async function openReader(fileUrl) {
             const doc = parser.parseFromString(text, 'text/html');
             const content = doc.querySelector('main') || doc.querySelector('body') || doc;
             readerContent.innerHTML = content.innerHTML;
-            // Integración suave: heredar tema y estilizar
-readerContent.classList.add('course-content');  // Nueva clase para estilos específicos
-
-// Heredar tema actual
-if (document.body.classList.contains('mode-light')) {
-    readerContent.classList.add('mode-light');
-}
-readerContent.style.opacity = '0';  // Para fade-in
-setTimeout(() => readerContent.style.transition = 'opacity 0.5s'; readerContent.style.opacity = '1', 100);
-
-// Procesar headings y paragraphs
-const headings = readerContent.querySelectorAll('h1, h2, h3, h4');
-headings.forEach(h => {
-    h.classList.add('section-header');  // Usa tu estilo de headers
-    h.style.color = 'var(--text-main)';  // Hereda color del tema
-});
-
-const paragraphs = readerContent.querySelectorAll('p');
-paragraphs.forEach(p => {
-    p.style.color = 'var(--text-muted)';
-    p.style.lineHeight = '1.6';
-    p.style.fontSize = '1.1rem';
-    p.style.wordBreak = 'break-word';  // Evita cortes en móvil
-});
-
-// Listas y bloques de código (si hay)
-const lists = readerContent.querySelectorAll('ul, ol');
-lists.forEach(list => {
-    list.style.paddingLeft = '2rem';
-    list.style.color = 'var(--text-muted)';
-});
-
-// Imágenes: responsive + lazy + alts
-const images = readerContent.querySelectorAll('img');
-images.forEach(img => {
-    if (!img.alt) img.alt = 'Contenido del curso';  // Accesibilidad
-    img.style.maxWidth = '100%';
-    img.style.height = 'auto';
-    img.style.borderRadius = 'var(--radius)';
-    img.style.border = '1px solid var(--border-color)';
-    img.style.boxShadow = '0 4px 12px rgba(0,0,0,0.2)';
-    img.loading = 'lazy';
-    img.classList.add('course-image');  // Para animación
-});
-
-// Scroll suave al contenido
-readerContent.scrollIntoView({ behavior: 'smooth' });
             
             const loadedHeadings = readerContent.querySelectorAll('h1, h2, h3');
 loadedHeadings.forEach(h => h.classList.add('section-header'));  // Aplica tu estilo de headers
