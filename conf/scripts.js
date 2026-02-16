@@ -3,8 +3,7 @@ const coursesDB = {
     "rhcsa": {
         title: "RHCSA EX200",
         chapters: [
-            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/1.html" },
-            // CORRECCIÓN: Ruta corregida de 'rhcesa' a 'rhcsa'
+            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/test.html" },
             { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/2/2.html" },
             { id: 3, title: "Clase 3: Usuarios y Grupos", file: "/cursos/rhcsa/3/3.html" }
         ]
@@ -27,7 +26,6 @@ let currentCourseId = null;
 let currentFileUrl = null;
 let currentPath = '~';
 
-// --- SPLASH SCREEN ---
 window.addEventListener('load', () => {
     setTimeout(() => {
         const splash = document.getElementById('splash');
@@ -38,7 +36,6 @@ window.addEventListener('load', () => {
     }, 1500);
 });
 
-// --- MOBILE MENU ---
 function toggleMobileMenu() {
     const menu = document.getElementById('mobile-menu');
     const burger = document.getElementById('hamburger');
@@ -49,7 +46,6 @@ function toggleMobileMenu() {
     }
 }
 
-// --- TYPEWRITER ---
 const welcomeText = "Plataforma híbrida para administradores de sistemas. Aprende con cursos estructurados o practica en nuestro entorno interactivo.";
 const typeWriterElement = document.getElementById('typing-text');
 let typeIndex = 0;
@@ -91,7 +87,6 @@ function resetTimer() {
     }
 }
 
-// --- THEME SYSTEM ---
 function toggleThemeMenu() {
     const menu = document.getElementById('themeMenu');
     if(menu) menu.classList.toggle('active');
@@ -128,7 +123,6 @@ document.addEventListener('click', (e) => {
     }
 });
 
-// --- NAVIGATION ---
 function navigate(pageId) {
     document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -136,7 +130,6 @@ function navigate(pageId) {
     const pageSection = document.getElementById(pageId);
     if(pageSection) pageSection.classList.add('active');
 
-    // CORRECCIÓN: Agregado 'syllabus' al mapeo para que se ilumine el botón Cursos
     const map = { 'home':0, 'courses':1, 'syllabus': 1, 'terminal':2, 'projects':3 };
     if (map[pageId] !== undefined) {
         const links = document.querySelectorAll('.nav-link');
@@ -173,7 +166,6 @@ window.onpopstate = function(event) {
         return;
     }
     
-    // CORRECCIÓN: '. Each' cambiado por '.forEach'
     document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
     document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
     
@@ -185,13 +177,11 @@ window.onpopstate = function(event) {
 
 function checkHash() {
     const hash = window.location.hash.replace('#', '');
-    // CORRECCIÓN: Paréntesis corregido
     if (hash && hash !== 'reader' && hash !== 'image-container' && hash !== 'project-view') {
         navigate(hash);
     }
 }
 
-// --- COURSES ---
 function openSyllabus(courseId) {
     const course = coursesDB[courseId];
     if (!course) return;
@@ -206,7 +196,6 @@ function openSyllabus(courseId) {
     list.innerHTML = '';
     let readCount = 0;
     
-    // Ahora esto funcionará para lpic1 ya que cambiamos 'quaters' por 'chapters'
     course.chapters.forEach(chap => {
         if (localStorage.getItem('s2ktux_read_' + chap.file)) readCount++;
     });
@@ -232,7 +221,6 @@ function openSyllabus(courseId) {
     navigate('syllabus');
 }
 
-// --- READER & IMÁGENES ---
 async function openReader(fileUrl) {
     const readerContent = document.getElementById('reader-content');
     if(!readerContent) return;
@@ -252,17 +240,13 @@ async function openReader(fileUrl) {
         const doc = parser.parseFromString(text, 'text/html');
         let content = doc.querySelector('main') || doc.querySelector('body') || doc;
 
-        // 1. LIMPIEZA DE ESTILOS INLINE
         const allElements = content.querySelectorAll('*');
         allElements.forEach(el => el.removeAttribute('style'));
 
-        // 2. Inyectar contenido limpio
         readerContent.innerHTML = content.innerHTML;
-        
-        // 3. Aplicar clase base
+
         readerContent.classList.add('course-content');
 
-        // 4. ESTILOS DE IMÁGENES
         const images = readerContent.querySelectorAll('img');
         images.forEach(img => {
             img.classList.add('lesson-img');
@@ -270,15 +254,11 @@ async function openReader(fileUrl) {
             img.onerror = function() { this.src = '/images/placeholder.png'; }; 
         });
 
-        // 5. Heredar tema
         if (document.body.classList.contains('mode-light')) {
             readerContent.classList.add('mode-light');
         }
 
-        // 6. Scroll al inicio
         window.scrollTo({ top: 0, behavior: 'smooth' });
-
-        // 7. Botón Siguiente
         addNextButton();
 
     } catch (e) {
