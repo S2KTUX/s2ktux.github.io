@@ -1048,3 +1048,95 @@ body.mode-light .cyber-back-btn {
         overflow-wrap: break-word;  /* Mejor wrap para textos largos */
     }
 }
+/* ============================================= */
+
+.course-content {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 3rem 2.8rem;
+    margin: 2rem 0;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.45);
+    animation: fadeInContent 0.7s ease forwards;
+    opacity: 0;
+}
+
+@keyframes fadeInContent {
+    to { opacity: 1; }
+}
+
+/* Títulos del curso */
+.course-content h3 {
+    color: var(--accent);
+    font-size: 1.75rem;
+    margin: 2.8rem 0 1.4rem 0;
+    padding-bottom: 0.9rem;
+    position: relative;
+}
+
+.course-content h3:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 80px;
+    height: 3px;
+    background: linear-gradient(to right, var(--accent), transparent);
+}
+
+/* Párrafos y listas */
+.course-content p, .course-content li {
+    color: var(--text-muted) !important;
+    line-height: 1.85;
+    font-size: 1.08rem;
+    margin-bottom: 1.3rem;
+}
+
+/* Imágenes - estilo moderno */
+.course-content img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+    margin: 2.5rem auto;
+    display: block;
+    transition: all 0.4s ease;
+}
+
+.course-content img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+}
+
+/* Bloques de código / comandos */
+.course-content code {
+    background: var(--code-bg);
+    color: var(--accent);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.96rem;
+}
+
+.course-content pre {
+    background: #0a0a0a;
+    padding: 2rem;
+    border-radius: 12px;
+    overflow-x: auto;
+    border: 1px solid var(--border-color);
+    margin: 2.2rem 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .course-content {
+        padding: 2rem 1.4rem;
+        margin: 1rem -15px;
+        border-radius: 0;
+    }
+    .course-content img {
+        margin: 2rem -15px;
+        border-radius: 0;
+    }
+}
