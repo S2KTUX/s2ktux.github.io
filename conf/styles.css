@@ -1141,13 +1141,14 @@ body.mode-light .cyber-back-btn {
     }
 }
 
-/* --- COMPONENTES INTERNOS DE LECCIONES (ARREGLADO) --- */
-
-/* 1. Arreglar el bloque de código (El "Bloque Negro") */
+/* 1. Bloque de código (Terminal Style) */
 .course-content pre {
-    background: #0a0a0a; /* Fondo negro */
-    color: var(--term-text) !important; /* <--- ESTO ES CLAVE. Texto claro */
-    padding: 2rem;
+    background: #0a0a0a; /* Fondo negro fijo para estilo terminal */
+    
+    /* CORRECCIÓN: Usamos un color CLARO fijo en vez de la variable variable */
+    color: #e2e8f0 !important; 
+    
+    padding: 1.5rem;
     border-radius: 12px;
     overflow-x: auto;
     border: 1px solid var(--border-color);
@@ -1155,6 +1156,15 @@ body.mode-light .cyber-back-btn {
     font-family: var(--font-mono) !important;
     font-size: 0.95rem !important;
     line-height: 1.6;
+    box-shadow: inset 0 0 20px rgba(0,0,0,0.5); /* Dale un poco de profundidad */
+}
+
+/* 2. Asegurar que la etiqueta <code> interior no cambie el color */
+.course-content pre code {
+    color: inherit !important; /* Hereda el #e2e8f0 del <pre> */
+    background: none !important;
+    padding: 0;
+    font-size: inherit;
 }
 
 /* 2. Estilo para Imágenes (Efecto Moderno) */
