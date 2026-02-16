@@ -22,10 +22,11 @@
 
     <!-- OBJETIVO 1: CONFIGURAR ACCESO A REPOSITORIOS RPM -->
     <h4>1. Configurar el acceso a los repositorios RPM</h4>
-    <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes. En RHEL, se definen mediante archivos <strong>.repo</strong> en <code>/etc/yum.repos.d/</code>.</p>
+    <p>Los repositorios RPM son fuentes de contenido que permiten instalar y actualizar paquetes. En RHEL, se definen mediante archivos <strong>.repo</strong> en <code>/etc/yum.repos.d/</code>.</p>
     
     <p>El contenido esencial de un archivo <strong>.repo</strong> es:</p>
-    <img src="/images/repo-rpm.png" alt="Ejemplo archivo .repo" class="lesson-img">
+    <!-- Asegúrate que esta ruta de imagen es correcta: /images/repo-rpm.png -->
+    <img src="/images/repo-rpm.png" alt="Contenido .repo" class="lesson-img">
     
     <p>Entendiendo los campos clave:</p>
     <ul>
@@ -49,7 +50,7 @@
         <li>Crear: <code>dnf config-manager --add-repo=https://ejemplo.com/repo.repo</code></li>
         <li>Habilitar: <code>dnf config-manager --set-enabled rhel-8-for-x86_64-baseos-rpms</code></li>
         <li>Deshabilitar: <code>dnf config-manager --set-disabled rhel-8-for-x86_64-baseos-rpms</code></li>
-li>Actualizar caché: <code>dnf clean all && dnf makecache</code></li>
+        <li>Actualizar caché tras cambios: <code>dnf clean all && dnf makecache</code></li>
         <li>Ver repositorios: <code>dnf repolist</code></li>
     </ul>
     <img src="/images/recargar-repo-rpm.png" alt="Resultado de dnf repolist" class="lesson-img">
@@ -57,7 +58,6 @@ li>Actualizar caché: <code>dnf clean all && dnf makecache</code></li>
     <!-- OBJETIVO 2: INSTALAR Y ELIMINAR PAQUETES RPM -->
     <h4>2. Instalar y eliminar paquetes de software RPM</h4>
     
-    <!-- NOTA SIMPLIFICADA (Sin fondo, sin borde, solo texto) -->
     <div class="note-box">
         <strong>💡 Nota:</strong>
         <p><code>rpm</code> gestiona paquetes individuales. <code>dnf</code> (sucesor de <code>yum</code>) gestiona dependencias automáticamente.</p>
@@ -68,27 +68,27 @@ li>Actualizar caché: <code>dnf clean all && dnf makecache</code></li>
     <ul>
         <li><code>rpm -ivh paquete.rpm</code> → Instalar y ver detalles (verbose).</li>
         <li><code>rpm -Uvh paquete.rpm</code> → Actualizar o instalar si es más nuevo.</li>
-        <li><code>rpm -e nombre_paquete</code> → Eliminar (erase) el paquete。</li>
-        <li><code>rpm -Vpaquete</code> → Verificar integridad (Verify)。</li>
-        <li><code>rpm -qa</code> → Consultar todos (Query All) los paquetes instalados.</li>
+        <li><code>rpm -e nombre_paquete</code> → Eliminar (erase) el paquete.</li>
+        <li><code>rpm -Vpaquete</code> → Verificar integridad (Verify).</li>
+        <li><code>rpm -qa</code> → Consultar todos (Query All) los paquetes instados.</li>
         <li><code>rpm -qf /ruta/archivo</code> -> ¿Qué paquete instaló este archivo？</li>
-        <li><code>rpm -qi paquete</code> -> Consultar información (Info)。</li>
+        <li><code>rpm -qi paquete</code> -> Consultar información (Info).</li>
     </ul>
 
     <h5>Comandos DNF (Dandified YUM)</h5>
     <p>Es la herramienta recomendada para el día a día en RHEL 8 y 9.</p>
     <ul>
-        <li><code>dnf install paquete</code> → Instalar。</li>
-        <li><code>dnf remove paquete</code> → Desinstalar。</li>
-        <li><code>dnf upgrade paquete</code> → Actualizar。</li>
-        <li><code>dnf search paquete</code> -> Buscar en repositorios。</li>
-        <li><code>dnf list installed</code> -> Ver lo instalado。</li>
-        <li><code>dnf repoquery paquete</code> -> Busca disponible。</li>
-        <li><code>dnf info paquete</code> -> Ver detalles del paquete。</li>
+        <li><code>dnf install paquete</code> → Instalar.</li>
+        <li><code>dnf remove paquete</code> → Desinstalar.</li>
+        <li><code>dnf upgrade paquete</code> → Actualizar.</li>
+        <li><code>dnf search paquete</code> -> Buscar en repositorios.</li>
+        <li><code>dnf list installed</code> -> Ver lo instalado.</li>
+        <li><code>dnf repoquery paquete</code> -> Busca disponible.</li>
+        <li><code>dnf info paquete</code> -> Ver detalles del paquete.</li>
         <li><code>dnf provides comando</code> -> ¿Qué paquete provee este comando？</li>
     </ul>
 
-    <p>Para revertir acciones (útil si cometes un error):</p>
+    <p>Para revertir acciones:</p>
     <ul>
         <li>Ver historial: <code>dnf history</code></li>
         <li>Deshacer último cambio: <code>dnf history undo 1</code></li>
@@ -105,8 +105,8 @@ li>Actualizar caché: <code>dnf clean all && dnf makecache</code></li>
     
     <p><strong>Gestión de repositorios:</strong></p>
     <ul>
-        <li><code>flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</code> → Añadir Flathub。</li>
-        <li><code>flatpak remotes</code> → Listar repositorios activos。</li>
+        <li><code>flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</code> → Añadir Flathub.</li>
+        <li><code>flatpak remotes</code> → Listar repositorios activos.</li>
         <li><code>flatpak remote-delete flathub</code> → Eliminar。</li>
     </ul>
     <img src="/images/flatpak-repo.png" alt="Gestión remota Flatpak" class="lesson-img">
@@ -119,7 +119,7 @@ li>Actualizar caché: <code>dnf clean all && dnf makecache</code></li>
         <p>Si encuentras errores de autenticación con <code>--auth-file</code>, soluciona manualmente:</p>
     </div>
     <pre style="color: #e2e8f0 !important;"><code>cp $XDG_RUNTIME_DIR/containers/auth.json /etc/flatpak/ archive-auth.json
-chmod 644 /etc/flatpak/archive-auth.json</code></pre>
+chmod 644 /etc/flatpak/ archive-auth.json</code></pre>
 
     <!-- OBJETIVO 4: INSTALAR Y ELIMINAR PAQUETES FLATPAK -->
     <h4>4. Instalar y eliminar paquetes Flatpak</h4>
@@ -134,11 +134,12 @@ chmod 644 /etc/flatpak/archive-auth.json</code></pre>
     <p><strong>Gestión:</strong></p>
     <ul>
         <li><code>flatpak list</code> → Ver aplicaciones instaladas。</li>
-        <li><code>flatpak info org.gimp.GIMP</code> → Ver detalles de la aplicación。</li>
-        <li><code>flatpak run org.gimp.GIMP</code> → Ejecutar aplicación。</li>
+        <li><code>flatpak info org.gimp.GIMP</code> → Ver detalles.</li>
+        <li><code>flatpak run org.gimp.GIMP</code> → Ejecutar.</li>
         <li><code>flatpak uninstall org.gimp.GIMP</code> → Eliminar。</li>
-        <code>flatpak update --app org.gimp.GIMP</code> → Actualizar。
-        <li><code>flatpak search gimp</code> → Buscar en repositorios。
+        <li><code>flatpak update --app org.gimp.GIMP</code> → Actualizar。</li>
+        <li><code>flatpak search gimp</code> → Buscar en repositorios。</li>
     </ul>
     <img src="/images/flatpak-install.png" alt="Instalación GIMP" class="lesson-img">
+</div>
 </div>
