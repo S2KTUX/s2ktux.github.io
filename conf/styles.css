@@ -1212,25 +1212,3 @@ body.mode-light .cyber-back-btn {
     box-shadow: 0 0 20px var(--accent-glow);
 }
 
-/* --- NUEVA NOTA SIMPLIFICADA (Sin decoraciones extra) --- */
-.course-content .note-box {
-    padding: 15px 20px;
-    margin: 20px 0;
-    border-left: 3px solid var(--text-muted); /* Línea gris sutil */
-    background: none; /* Sin fondo */
-    box-shadow: none; /* Sin sombra */
-}
-.course-content .note-box strong {
-    color: var(--text-muted);
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    font-weight: 700;
-    display: block;
-    margin-bottom: 8px;
-}
-.course-content .note-box p {
-    margin: 0;
-    font-size: 0.95rem;
-    color: var(--text-muted);
-    line-height: 1.5rem;
-}
