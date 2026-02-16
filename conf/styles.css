@@ -1089,16 +1089,14 @@ body.mode-light .cyber-back-btn {
 }
 /* ============================================= */
 .course-content {
-    background-color: var(--card-bg) !important; 
-    
-    opacity: 1; 
-
-    border: 1px solid var(--border-color);
-    border-top: 3px solid var(--accent);
-
     position: relative;
     z-index: 10;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8);
+    opacity: 1 !important;
+    border-radius: var(--radius);
+    padding: 3rem 2.8rem;
+    margin: 2rem 0;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    border: 1px solid var(--border-color);
 }
 
 body:not(.mode-light) .course-content {
@@ -1181,7 +1179,6 @@ color: #e2e8f0 !important;
     font-size: 0.96rem;
 }
 
-/* 2. El bloque de terminal (pre) */
 .course-content pre {
     background: var(--term-bg) !important; /* Cambia según el tema (Matrix, Ruby...) */
     color: var(--term-text) !important;
@@ -1193,12 +1190,10 @@ color: #e2e8f0 !important;
     font-size: 0.95rem !important;
     line-height: 1.6;
     
-    /* Control de texto */
+
     white-space: pre-wrap;
     word-wrap: break-word;
     overflow-x: hidden;
-    
-    /* Sombra exterior elegante (sin el inset sucio) */
     box-shadow: 0 10px 30px rgba(0,0,0,0.25);
 }
 
