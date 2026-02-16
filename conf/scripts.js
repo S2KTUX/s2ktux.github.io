@@ -194,31 +194,27 @@ async function openReader(fileUrl) {
         const doc = parser.parseFromString(text, 'text/html');
         let content = doc.querySelector('main') || doc.querySelector('body') || doc;
 
-        // MEJORA 1: Limpiar estilos en línea para respetar tu CSS
+        // --- LIMPIEZA DE ESTILOS (Paso clave para que funcione) ---
         const allElements = content.querySelectorAll('*');
         allElements.forEach(el => el.removeAttribute('style'));
 
-        // Inyectar contenido limpio
+        // Inyectar contenido
         readerContent.innerHTML = content.innerHTML;
-        
-        // Aseguramos que el contenedor tenga la clase base
-        readerContent.classList.add('course-content'); 
-        // Aseguramos que coja la clase lesson-content si quieres usar la del CSS anterior
-        // readerContent.classList.add('lesson-content'); 
+        readerContent.classList.add('course-content');
 
-        // MEJORA 2: Aplicar clases a imágenes automáticamente para el estilo
+        // --- ESTILO DE IMÁGENES (Paso clave para el efecto moderno) ---
         const images = readerContent.querySelectorAll('img');
         images.forEach(img => {
-            img.classList.add('lesson-img'); // Aplica el estilo CSS de imágenes
+            img.classList.add('lesson-img'); // Aplica el borde y sombra
             img.loading = 'lazy';
         });
 
-        // Heredar tema actual (Opcional si usas variables CSS, pero seguro)
+        // Heredar tema actual
         if (document.body.classList.contains('mode-light')) {
             readerContent.classList.add('mode-light');
         }
 
-        // MEJORA 3: Scroll al top al cargar
+        // Scroll al inicio
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (e) {
