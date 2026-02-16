@@ -1082,7 +1082,8 @@ body.mode-light .cyber-back-btn {
 }
 
 body:not(.mode-light) .course-content {
-    background-color: #0a0a0c; 
+    --text-main: #f1f5f9;
+    --text-muted: #94a3b8;
 }
 
 body.mode-light .course-content {
@@ -1101,6 +1102,8 @@ body.mode-light .course-content {
     margin: 2.8rem 0 1.4rem 0;
     padding-bottom: 0.9rem;
     position: relative;
+    text-shadow: 0 0 15px var(--accent-glow);
+    letter-spacing: 0.5px;
 }
 
 .course-content h3:after {
@@ -1115,13 +1118,14 @@ body.mode-light .course-content {
 
 /* Párrafos y listas */
 .course-content p, .course-content li {
-    color: var(--text-muted) !important;
+color: #e2e8f0 !important; 
     line-height: 1.85;
     font-size: 1.08rem;
     margin-bottom: 1.3rem;
+    -webkit-font-smoothing: antialiased;
 }
 
-/* Imágenes - estilo moderno */
+/* Imágenes */
 .course-content img {
     max-width: 100% !important;
     height: auto !important;
