@@ -102,52 +102,88 @@ function setTheme(colorName, isLight) {
     document.getElementById('themeMenu').classList.remove('active');
     localStorage.setItem('s2ktux_theme', JSON.stringify({ color: colorName, light: isLight }));
 }
-const savedTheme = JSON.parse(localStorage.getItem('sustux_theme'));
+const savedTheme = JSON.parse(localStorage.getItem('s2ktux_theme'));
 if (savedTheme) setTheme(savedTheme.color, savedTheme.light);
+
 document.addEventListener('click', (e) => {
-    if (!e.target.closest('.theme-btn') && !e.target.closest('.theme-selector')) {
-        document.getElementById('themeMenu').classList.remove('active');
+    if (!e.target.closest('.theme-btn') &&
+        !e.target.closest('.theme-selector')) {
+        document.getElementById('themeMenu')?.classList.remove('active');
     }
 });
 
 // --- NAVIGATION ---
 function navigate(pageId) {
-    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-    const map = { 'home':0, 'courses':1, 'terminal':2, 'projects':3 };
-    if (map[pageId] !== undefined) document.querySelectorAll('.nav-link')[map[pageId]].classList.add('active');
-    window.history.pushState({ page: pageId }, null, `#${pageId}`);
-    if (pageId === 'terminal') {
-        setTimeout(() => document.getElementById('term-input').focus(), 100);
-        if (currentPath !== '~') currentPath = '~';
+    document.querySelectorAll('.page-section')
+        .forEach(s => s.classList.remove('active'));
+
+    document.querySelectorAll('.nav-link')
+        .forEach(l => l.classList.remove('active'));
+
+    const page = document.getElementById(pageId);
+    if (!page) return;
+
+    page.classList.add('active');
+
+    const map = { home:0, courses:1, terminal:2, projects:3 };
+    if (map[pageId] !== undefined) {
+        document.querySelectorAll('.nav-link')[map[pageId]]
+            ?.classList.add('active');
     }
+
+    window.history.pushState({ page: pageId }, null, `#${pageId}`);
+
+    if (pageId === 'terminal') {
+        setTimeout(() =>
+            document.getElementById('term-input')?.focus(), 100);
+        currentPath = '~';
+    }
+
     window.scrollTo(0,0);
     resetTimer();
 }
+
 window.onpopstate = function(event) {
     let pageId = 'home';
-    if (event.state && event.state.page) pageId = event.state.page;
+
+    if (event.state?.page) pageId = event.state.page;
     else {
-        const hash = window.location.hash.replace('#', '');
+        const hash = window.location.hash.replace('#','');
         if (hash) pageId = hash;
     }
+
     if (pageId === 'reader' && currentCourseId) {
         backToSyllabus();
         return;
     }
+
     if (pageId === 'project-view') {
         navigate('projects');
         return;
     }
-    document.querySelectorAll('.page-section'). Each(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-link'). Each(l => l.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
+
+    document.querySelectorAll('.page-section')
+        .forEach(s => s.classList.remove('active'));
+
+    document.querySelectorAll('.nav-link')
+        .forEach(l => l.classList.remove('active'));
+
+    document.getElementById(pageId)?.classList.add('active');
+
     resetTimer();
 };
+
 function checkHash() {
-    const hash = window.location.hash.replace('#', '');
-    if (hash && hash !== 'reader' && hash !== 'image-container') && hash !== 'project-view') navigate(hash);
+    const hash = window.location.hash.replace('#','');
+
+    if (
+        hash &&
+        hash !== 'reader' &&
+        hash !== 'image-container' &&
+        hash !== 'project-view'
+    ) {
+        navigate(hash);
+    }
 }
 
 // --- COURSES ---
