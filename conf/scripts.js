@@ -444,3 +444,8 @@ function processTermCommand(cmd) {
     termBody.insertBefore(response, termInputWrapper);
     termBody.appendChild(termInputWrapper);
 }
+
+window.openSyllabus = openSyllabus;
+window.openReader = openReader;
+window.navigate = navigate;
+window.backToSyllabus = backToSyllabus;
