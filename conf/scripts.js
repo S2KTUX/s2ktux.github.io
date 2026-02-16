@@ -3,7 +3,7 @@ const coursesDB = {
     "rhcsa": {
         title: "RHCSA EX200",
         chapters: [
-            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/1.html" },
+            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/test.html" },
             { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/2/2.html" },
             { id: 3, title: "Clase 3: Usuarios y Grupos", file: "/cursos/rhcsa/3/3.html" }
         ]
@@ -192,25 +192,43 @@ async function openReader(fileUrl) {
         const text = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, 'text/html');
-        const content = doc.querySelector('main') || doc.querySelector('body') || doc;
+        let content = doc.querySelector('main') || doc.querySelector('body') || doc;
 
+        // MEJORA 1: Limpiar estilos en línea para respetar tu CSS
+        const allElements = content.querySelectorAll('*');
+        allElements.forEach(el => el.removeAttribute('style'));
+
+        // Inyectar contenido limpio
         readerContent.innerHTML = content.innerHTML;
-        readerContent.classList.add('course-content');
+        
+        // Aseguramos que el contenedor tenga la clase base
+        readerContent.classList.add('course-content'); 
+        // Aseguramos que coja la clase lesson-content si quieres usar la del CSS anterior
+        // readerContent.classList.add('lesson-content'); 
 
-        // Heredar tema actual
+        // MEJORA 2: Aplicar clases a imágenes automáticamente para el estilo
+        const images = readerContent.querySelectorAll('img');
+        images.forEach(img => {
+            img.classList.add('lesson-img'); // Aplica el estilo CSS de imágenes
+            img.loading = 'lazy';
+        });
+
+        // Heredar tema actual (Opcional si usas variables CSS, pero seguro)
         if (document.body.classList.contains('mode-light')) {
             readerContent.classList.add('mode-light');
         }
 
-        // Scroll suave al contenido
-        setTimeout(() => readerContent.scrollIntoView({ behavior: 'smooth' }), 300);
+        // MEJORA 3: Scroll al top al cargar
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (e) {
         readerContent.innerHTML = `
             <div style="text-align:center; padding:80px; color:#ef4444;">
                 <h3>✗ No se pudo cargar la lección</h3>
-                <p>Verifica que el archivo existe en la ruta correcta.</p>
-                <button onclick="backToSyllabus()" class="cyber-back-btn">Volver al temario</button>
+                <p style="color:var(--text-muted)">Verifica que el archivo existe en la ruta correcta.</p>
+                <div style="margin-top:20px;">
+                    <button onclick="backToSyllabus()" class="cyber-back-btn">Volver al temario</button>
+                </div>
             </div>`;
     }
 }
