@@ -3,23 +3,24 @@ const coursesDB = {
     "rhcsa": {
         title: "RHCSA EX200",
         chapters: [
-            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/test.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/2/2.html" },
+            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/1.html" },
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcesa/2/2.html" },
             { id: 3, title: "Clase 3: Usuarios y Grupos", file: "/cursos/rhcsa/3/3.html" }
         ]
     },
     "lpic1": {
         title: "LPIC-1 101-500",
-        chapters: [
+        quaters: [
             { id: 101, title: "Arquitectura de Sistema", file: "/cursos/lpic/101/101.html" },
             { id: 102, title: "Instalación de Linux", file: "/cursos/lpic/102/102.html" }
         ]
     }
 };
 const projectsDB = {
-    "deployer": { title: "S2KTUX Deployer", content: "<h1>S2KTUX Deployer</h1><p>Automatización de despliegues...</p>" },
+    "deployer": { title: "S2KTUX Optimized Deployer", content: "<h1>S2KTUX Deployer</h1><p>Automatización de despliegues...</p>" },
     "ansible": { title: "Ansible Playbooks", content: "<h1>Ansible</h1><p>Playbooks de seguridad...</p>" }
 };
+
 let currentCourseId = null;
 let currentFileUrl = null;
 let currentPath = '~';
@@ -101,7 +102,7 @@ function setTheme(colorName, isLight) {
     document.getElementById('themeMenu').classList.remove('active');
     localStorage.setItem('s2ktux_theme', JSON.stringify({ color: colorName, light: isLight }));
 }
-const savedTheme = JSON.parse(localStorage.getItem('s2ktux_theme'));
+const savedTheme = JSON.parse(localStorage.getItem('sustux_theme'));
 if (savedTheme) setTheme(savedTheme.color, savedTheme.light);
 document.addEventListener('click', (e) => {
     if (!e.target.closest('.theme-btn') && !e.target.closest('.theme-selector')) {
@@ -139,14 +140,14 @@ window.onpopstate = function(event) {
         navigate('projects');
         return;
     }
-    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    document.querySelectorAll('.page-section'). Each(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-link'). Each(l => l.classList.remove('active'));
     document.getElementById(pageId).classList.add('active');
     resetTimer();
 };
 function checkHash() {
     const hash = window.location.hash.replace('#', '');
-    if (hash && hash !== 'reader' && hash !== 'project-view') navigate(hash);
+    if (hash && hash !== 'reader' && hash !== 'image-container') && hash !== 'project-view') navigate(hash);
 }
 
 // --- COURSES ---
@@ -177,7 +178,7 @@ function openSyllabus(courseId) {
     });
     navigate('syllabus');
 }
-// Reemplazar toda la función openReader con esta versión:
+// --- READER & IMÁGENES (MODIFICADO) ---
 async function openReader(fileUrl) {
     const readerContent = document.getElementById('reader-content');
     readerContent.innerHTML = '<div style="text-align:center; padding:100px; color:var(--text-muted);">Cargando lección...</div>';
@@ -192,44 +193,51 @@ async function openReader(fileUrl) {
 
         const text = await response.text();
         const parser = new DOMParser();
-        const codeHTML = parser.parseFromString(text, 'text/html');
-        let content = codeHTML.querySelector('main') || codeHTML.querySelector('body') || codeHTML;
+        const doc = parser.parseFromString(text, 'text/html');
+        let content = doc.querySelector('main') || doc.querySelector('body') || doc;
 
-        // 1. Limpieza de estilos (Importante para que funcione)
+        // 1. LIMPIEZA DE ESTILOS INLINE (Importante para que funcione)
         const allElements = content.querySelectorAll('*');
         allElements.forEach(el => el.removeAttribute('style'));
 
         // 2. Inyectar contenido limpio
         readerContent.innerHTML = content.innerHTML;
+        
+        // 3. Aplicar clase base
         readerContent.classList.add('course-content');
 
-        // 3. Aplicar estilo a imágenes (Lazy Loading + Estilos CSS)
+        // 4. ESTILOS DE IMÁGENES (Mover la lógica aquí)
         const images = readerContent.querySelectorAll('img');
         images.forEach(img => {
             img.classList.add('lesson-img');
             img.loading = 'lazy';
-            img.onerror = function() { this.src = '/images/placeholder.png'; }; // Fallback por si la imagen falla
+            // Fallback si la imagen no carga
+            img.onerror = function() { this.src = '/images/placeholder.png'; }; 
         });
 
-        // 4. Heredar tema
+        // 5. Heredar tema
         if (document.body.classList.contains('mode-light')) {
-            <code>reader-content.classList.add('mode-light');
+            readerContent.classList.add('mode-light');
         }
 
-        // 5. Scroll suave
+        // 6. Scroll al inicio
         window.scrollTo({ top: 0, behavior: 'smooth' });
+
+        // 7. Botón Siguiente
+        addNextButton();
 
     } catch (e) {
         readerContent.innerHTML = `
             <div style="text-align:center; padding:80px; color:#ef4444;">
                 <h3>✗ No se pudo cargar la lección</h3>
-                <p style="color:var(--text-muted)">Verifica que los archivos estén en la carpeta raíz: /cursos/...</p>
+                <p style="color:var(--text-muted)">Verifica que el archivo existe y que la ruta es correcta.</p>
                 <div style="margin-top:20px;">
                     <button onclick="backToSyllabus()" class="cyber-back-btn">Volver al temario</button>
                 </div>
             </div>`;
     }
 }
+
 function addNextButton() {
     if (!currentCourseId) return;
     const course = coursesDB[currentCourseId];
@@ -244,10 +252,12 @@ function addNextButton() {
     }
     document.getElementById('reader-content').appendChild(btnContainer);
 }
+
 function backToSyllabus() {
     navigate('syllabus');
     if (currentCourseId) openSyllabus(currentCourseId);
 }
+
 function openProject(id) {
     const proj = projectsDB[id];
     if (!proj) return;
@@ -255,13 +265,13 @@ function openProject(id) {
     navigate('project-view');
 }
 
-// --- TERMINAL (FIXED & ENHANCED) ---
+// --- TERMINAL ---
 const termInput = document.getElementById('term-input');
 const termBody = document.getElementById('term-body');
 const termInputWrapper = document.getElementById('term-input-wrapper');
 const termTitle = document.getElementById('term-title');
 let commandHistory = [];
-// Sistema de archivos virtual simulado
+// Sistema de archivos virtual
 let virtualFS = {
     "~": ["cursos", "proyectos", "README.md"],
     "~/cursos": ["rhcsa", "lpic1"],
@@ -270,46 +280,33 @@ let virtualFS = {
         "README.md": "Bienvenido a S2KTUX. Escribe 'help' para comenzar."
     }
 };
-// Actualizar título y prompt
 function updateTerminalUI() {
     const fullPath = `visitor@s2ktux:${currentPath}$`;
-    termTitle.innerText = fullPath.replace('$', ''); // Para el título
-    document.querySelector('.term-prompt').innerText = fullPath; // Para el prompt
+    termTitle.innerText = fullPath.replace('$', ''); 
+    document.querySelector('.term-prompt').innerText = fullPath; 
 }
 termInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter') {
         const cmd = this.value.trim();
-        // 1. Crear línea de historial (comando ya escrito)
         if (cmd) {
             commandHistory.push(cmd);
             const historyLine = document.createElement('div');
             historyLine.className = 'term-line';
             historyLine.innerHTML = `<span style="color:var(--accent); font-weight:bold;">${document.querySelector('.term-prompt').innerText}</span> ${cmd}`;
-            // Insertar ANTES del input wrapper
             termBody.insertBefore(historyLine, termInputWrapper);
-            // Procesar comando
             processTermCommand(cmd);
         } else {
-            // Si está vacío, solo nueva línea vacía
             const emptyLine = document.createElement('div');
             emptyLine.className = 'term-line';
             termBody.insertBefore(emptyLine, termInputWrapper);
         }
-        // 2. Limpiar input
         this.value = '';
-        // 3. Scroll al fondo
         termBody.scrollTop = termBody.scrollHeight;
-        // 4. FOCO AUTOMÁTICO (Solución al problema de perder foco)
         setTimeout(() => termInput.focus(), 0);
     }
 });
-// Click en el terminal siempre devuelve el foco al input
-document.getElementById('terminal').addEventListener('click', () => {
-    termInput.focus();
-});
-document.getElementById('terminal').addEventListener('touchstart', () => {
-    termInput.focus();
-});
+document.getElementById('terminal').addEventListener('click', () => { termInput.focus(); });
+document.getElementById('terminal').addEventListener('touchstart', () => { termInput.focus(); });
 function processTermCommand(cmd) {
     const args = cmd.split(' ');
     const mainCmd = args[0].toLowerCase();
@@ -318,7 +315,7 @@ function processTermCommand(cmd) {
     response.className = 'term-line';
     switch(mainCmd) {
         case 'help':
-            response.innerHTML = `<span class="cmd-info">Comandos disponibles:</span><br> - help: Muestra esta ayuda<br> - ls: Lista archivos<br> - cd: Cambia directorio<br> - pwd: Muestra ruta actual<br> - echo [texto]: Imprime texto<br> - clear: Limpia pantalla<br> - whoami: Usuario actual<br> - date: Fecha<br> - uname -a: Info sistema<br> - history: Historial<br> - mkdir [nombre]: Crea directorio<br> - touch [archivo]: Crea archivo<br> - rm [archivo]: Borra archivo<br> - apt update: Simula actualización<br> - open [curso]: Abre curso (ej: open rhcsa)<br> - exit: Salir`;
+            response.innerHTML = `<span class="cmd-info">Comandos disponibles:</span><br> - help, ls, cd, pwd, echo, clear, whoami, date, uname, history, mkdir, touch, rm, apt update, open [curso], exit`;
             break;
         case 'ls':
             if (virtualFS[currentPath]) {
@@ -354,7 +351,7 @@ function processTermCommand(cmd) {
             if(arg1) {
                 if(!virtualFS[currentPath].includes(arg1)) {
                     virtualFS[currentPath].push(arg1);
-                    response.innerHTML = ''; // Silent success like real mkdir
+                    response.innerHTML = '';
                 } else {
                     response.innerHTML = `<span class="cmd-error">mkdir: cannot create directory '${arg1}': File exists</span>`;
                 }
@@ -366,9 +363,9 @@ function processTermCommand(cmd) {
             if(arg1) {
                 if(!virtualFS[currentPath].includes(arg1)) {
                     virtualFS[currentPath].push(arg1);
-                    response.innerHTML = '';
+                    response.innerHTML = ''; 
                 } else {
-                    response.innerHTML = ``; // touch updates timestamp, no error usually
+                    response.innerHTML = ``;
                 }
             }
             break;
@@ -385,49 +382,30 @@ function processTermCommand(cmd) {
             break;
         case 'apt':
             if(arg1 === 'update') {
-                response.innerHTML = `<span class="cmd-info">Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease</span><br> <span class="cmd-info">Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]</span><br> <span class="cmd-info">Get:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]</span><br> <span class="cmd-success">Reading package lists... Done</span><br> <span class="cmd-success">Building dependency tree... Done</span><br> <span class="cmd-success">Calculating upgrade... Done</span><br> <span class="cmd-success">0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.</span>`;
+                response.innerHTML = `<span class="cmd-info">Hit:1 http://archive.ubuntu.com/ubuntu jammy InRelease</span><br> <span class="cmd-info">Get:2 http://security.ubuntu.com/ubuntu jammy-security InRelease [110 kB]</span><br> <span class="cmd-info">Get:3 http://archive.ubuntu.com/ubuntu jammy-updates InRelease [119 kB]</span><br> <span class="cmd-success">Reading package lists... Done</span><br> <span class="cmd-success">Building dependency tree... Done</span><br><span class="cmd-success">Calculating upgrade... Done</span><br> <span class="cmd-success">0 upgraded, 0 newly installed, 0 to remove and 0 not upgraded.</span>`;
             } else {
                 response.innerHTML = `apt: missing command`;
             }
             break;
-        case 'whoami':
-            response.innerHTML = `<span class="cmd-success">visitor</span>`;
-            break;
-        case 'date':
-            response.innerHTML = new Date().toString();
-            break;
-        case 'uname':
-            response.innerHTML = args[1] === '-a' ? "S2KTUX s2ktux-ssh 7.1.0-generic #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux" : "S2KTUX";
-            break;
-        case 'history':
-            response.innerHTML = commandHistory.map((c, i) => `${i+1} ${c}`).join('<br>');
-            break;
-        case 'clear':
-            termBody.querySelectorAll('.term-line').forEach(l => l.remove());
-            return;
-        case 'exit':
-            navigate('home');
-            currentPath = '~';
-            updateTerminalUI();
-            return;
+        case 'whoami': response.innerHTML = `<span class="cmd-success">visitor</span>`; break;
+        case 'date': response.innerHTML = new Date().toString(); break;
+        case 'uname': response.innerHTML = args[1] === '-a' ? "S2KTUX s2ktux-ssh 7.1.0-generic #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux" : "S2KTUX"; break;
+        case 'history': response.innerHTML = commandHistory.map((c, i) => `${i+1}  ${c}`).join('<br>'); break;
+        case 'clear': termBody.querySelectorAll('.term-line').forEach(l => l.remove()); return;
+        case 'exit': navigate('home'); currentPath = '~'; updateTerminalUI(); return;
         case 'open':
             if (arg1 === 'rhcsa') {
-                navigate('courses');
-                openSyllabus('rhcsa');
+                navigate('courses'); openSyllabus('rhcsa');
                 response.innerHTML = '<span class="cmd-success">Abriendo curso RHCSA...</span>';
             } else if (arg1 === 'lpic1') {
-                navigate('courses');
-                openSyllabus('lpic1');
+                navigate('courses'); openSyllabus('lpic1');
                 response.innerHTML = '<span class="cmd-success">Abriendo curso LPIC-1...</span>';
             } else {
                 response.innerHTML = '<span class="cmd-error">Curso no encontrado. Usa: open rhcsa o open lpic1</span>';
             }
             break;
-        default:
-            response.innerHTML = `<span class="cmd-error">bash: ${mainCmd}: command not found</span>`;
+        default: response.innerHTML = `<span class="cmd-error">bash: ${mainCmd}: command not found</span>`;
     }
-    // Insertar respuesta antes del input wrapper
     termBody.insertBefore(response, termInputWrapper);
-    // IMPORTANTE: Asegurar que el input wrapper siempre sea el último elemento
     termBody.appendChild(termInputWrapper);
 }
