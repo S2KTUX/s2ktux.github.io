@@ -46,7 +46,7 @@ function toggleMobileMenu() {
     }
 }
 
-const welcomeText = "Plataforma híbrida para administradores de sistemas. Aprende con cursos estructurados o practica en nuestro entorno interactivo.";
+const welcomeText = "Plataforma para aprender a utilizar sistemas Linux de manera profesional y contenidos de modificaciones para un Linux divertido. Proximamente se añadirán cursos de Cloud.";
 const typeWriterElement = document.getElementById('typing-text');
 let typeIndex = 0;
 function typeWriter() {
@@ -61,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
     checkHash();
 });
 
-// --- AUTO-HIDE NAVBAR ---
 let idleTimer;
 let scrollY = 0;
 window.addEventListener('scroll', () => {
@@ -113,7 +112,6 @@ function setTheme(colorName, isLight) {
     }
     localStorage.setItem('s2ktux_theme', JSON.stringify({ color: colorName, light: isLight }));
 }
-// CORRECCIÓN: Clave de localStorage corregida de 'sustux_theme' a 's2ktux_theme'
 const savedTheme = JSON.parse(localStorage.getItem('s2ktux_theme'));
 if (savedTheme) setTheme(savedTheme.color, savedTheme.light);
 document.addEventListener('click', (e) => {
@@ -239,36 +237,39 @@ async function openReader(fileUrl) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, 'text/html');
         let content = doc.querySelector('main') || doc.querySelector('body') || doc;
-
         const allElements = content.querySelectorAll('*');
         allElements.forEach(el => el.removeAttribute('style'));
 
         readerContent.innerHTML = content.innerHTML;
-
+        
         readerContent.classList.add('course-content');
 
         const images = readerContent.querySelectorAll('img');
-images.forEach(img => {
-    img.classList.add('lesson-img');
-    img.loading = 'lazy';
-    img.onerror = function() { 
-        this.src = '/images/placeholder.png'; 
-        this.classList.add('loaded'); // Importante para mostrar el error también
-    };
+        images.forEach(img => {
+            img.classList.add('lesson-img');
+            img.loading = 'lazy';
+            
+            img.style.cursor = 'zoom-in';
+            img.addEventListener('click', function() {
+                openLightbox(this.src);
+            });
 
-    if (img.complete) {
-        img.classList.add('loaded');
-    } else {
-        img.onload = function() {
-            this.classList.add('loaded');
-        };
-    }
-});
+            img.onerror = function() { 
+                this.src = '/images/placeholder.png'; 
+                this.classList.add('loaded'); 
+            };
+            if (img.complete) {
+                img.classList.add('loaded');
+            } else {
+                img.onload = function() {
+                    img.classList.add('loaded');
+                };
+            }
+        });
 
         if (document.body.classList.contains('mode-light')) {
             readerContent.classList.add('mode-light');
         }
-
         window.scrollTo({ top: 0, behavior: 'smooth' });
         addNextButton();
 
@@ -472,3 +473,31 @@ function processTermCommand(cmd) {
     termBody.insertBefore(response, termInputWrapper);
     termBody.appendChild(termInputWrapper);
 }
+
+
+
+function openLightbox(src) {
+    const modal = document.getElementById('lightbox-modal');
+    const modalImg = document.getElementById('lightbox-img');
+    modal.classList.remove('hidden');
+    // Pequeño delay para que la transición de opacidad funcione
+    setTimeout(() => modal.classList.add('show'), 10);
+    modalImg.src = src;
+}
+
+function closeLightbox() {
+    const modal = document.getElementById('lightbox-modal');
+    modal.classList.remove('show');
+    // Esperar a que termine la animación antes de ocultar
+    setTimeout(() => {
+        modal.classList.add('hidden');
+        document.getElementById('lightbox-img').src = '';
+    }, 300);
+}
+
+// Cerrar al pulsar Escape
+document.addEventListener('keydown', function(e) {
+    if (e.key === "Escape") {
+        closeLightbox();
+    }
+});
