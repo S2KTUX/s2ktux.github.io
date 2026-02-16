@@ -681,13 +681,11 @@ main {
 
 /* --- 10. READER & SYLLABUS --- */
 .reader-container {
-    background: var(--card-bg);
+    background: transparent;
     max-width: 1200px;
     margin: 0 auto;
-    border-radius: 0 0 16px 16px;
     padding: 0 40px 60px;
-    border: 1px solid var(--border-color);
-    border-top: none;
+    border: none;
     line-height: 1.8;
     font-size: 1.1rem;
     position: relative;
@@ -1056,7 +1054,7 @@ body.mode-light .cyber-back-btn {
     border-radius: var(--radius);
     padding: 3rem 2.8rem;
     margin: 2rem 0;
-    box-shadow: 0 15px 40px rgba(0,0,0,0.45);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
     animation: fadeInContent 0.7s ease forwards;
     opacity: 0;
 }
@@ -1218,8 +1216,8 @@ body.mode-light .cyber-back-btn {
 /* 4. Caja de Alerta */
 .course-content .lesson-alert {
     border: 1px solid var(--accent);
-    background: var(--accent-glow);
-    color: var(--text-main) !important; /* Color principal del tema */
+    background: var(--accent-subtle);
+    color: var(--text-main) !important;
     padding: 15px;
     border-radius: var(--radius);
     margin: 25px 0;
@@ -1228,7 +1226,7 @@ body.mode-light .cyber-back-btn {
     letter-spacing: 1px;
     font-weight: 800;
     font-size: 0.85rem;
-    box-shadow: 0 0 20px var(--accent-glow);
+    box-shadow: none;
 }
 /* --- LIGHTBOX --- */
 .lightbox-modal {
