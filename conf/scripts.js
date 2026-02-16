@@ -178,65 +178,64 @@ function openSyllabus(courseId) {
     });
     navigate('syllabus');
 }
-// --- READER & IMÁGENES (MODIFICADO) ---
+// ... código previo ...
 async function openReader(fileUrl) {
-    const readerContent = document.getElementById('reader-content');
-    readerContent.innerHTML = '<div style="text-align:center; padding:100px; color:var(--text-muted);">Cargando lección...</div>';
+    const readerContent = document.getElementById('ref'); // Asegúrate que el ID sea 'ref'
+    readerContent.innerHTML = '<div style="text-align:center; padding:100px; color:var(--text-muted);">Cargando...</div>';
     
-    navigate('reader');
+    navigate('reader'); // Navega a la sección lector
     currentFileUrl = fileUrl;
-    localStorage.setItem('s2ktux_read_' + fileUrl, true);
+    localStorage.setItem('s2ktux_read_' + fileUrl, 'true');
 
     try {
+        // 1. Fetch con manejo de errores básico (esto es vital si falla la ruta)
         const response = await fetch(fileUrl);
-        if (!response.ok) throw new Error("404");
+        
+        if (!response.ok) {
+             // Si falla, muestra el error en pantalla
+             readerContent.innerHTML = `<div style="text-align:center; padding:80px; color:#ef4444;"><h3>✗ Error de carga</h3><p>El archivo no se encuentra en la ruta <code>${fileUrl}</code>.</p><button onclick="backToSyllabus()">Volver al temario</button></div>`;
+             return;
+        }
 
+        // 2. Parsear el HTML
         const text = await response.text();
         const parser = new DOMParser();
         const doc = parser.parseFromString(text, 'text/html');
-        let content = doc.querySelector('main') || doc.querySelector('body') || doc;
+        // Busca el contenido dentro de <main> o <body>
+        let content = doc.querySelector('course-content') || doc.querySelector('main') || doc.querySelector('body') || doc;
 
-        // 1. LIMPIEZA DE ESTILOS INLINE (Importante para que funcione)
+        // 3. Limpieza de estilos críticos (muy importante)
         const allElements = content.querySelectorAll('*');
         allElements.forEach(el => el.removeAttribute('style'));
 
-        // 2. Inyectar contenido limpio
+        // 4. Inyectar contenido limpio
         readerContent.innerHTML = content.innerHTML;
         
-        // 3. Aplicar clase base
+        // 5. Aplicar clases
         readerContent.classList.add('course-content');
 
-        // 4. ESTILOS DE IMÁGENES (Mover la lógica aquí)
+        // 6. Estilos de imágenes
         const images = readerContent.querySelectorAll('img');
         images.forEach(img => {
-            img.classList.add('lesson-img');
+            img.classList.add('lesson-img'); // Aplica los estilos (bordes, sombras)
             img.loading = 'lazy';
-            // Fallback si la imagen no carga
-            img.onerror = function() { this.src = '/images/placeholder.png'; }; 
+            img.onerror = function() { this.src = '/images/placeholder.png'; } // Fallback
         });
 
-        // 5. Heredar tema
+        // 7. Tema light mode
         if (document.body.classList.contains('mode-light')) {
             readerContent.classList.add('mode-light');
         }
 
-        // 6. Scroll al inicio
+        // 8. Scroll al top
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
-        // 7. Botón Siguiente
-        addNextButton();
-
     } catch (e) {
-        readerContent.innerHTML = `
-            <div style="text-align:center; padding:80px; color:#ef4444;">
-                <h3>✗ No se pudo cargar la lección</h3>
-                <p style="color:var(--text-muted)">Verifica que el archivo existe y que la ruta es correcta.</p>
-                <div style="margin-top:20px;">
-                    <button onclick="backToSyllabus()" class="cyber-back-btn">Volver al temario</button>
-                </div>
-            </div>`;
+        // Error genérico si falla el JS
+        console.error("Error en openReader:", e);
     }
 }
+
 
 function addNextButton() {
     if (!currentCourseId) return;
