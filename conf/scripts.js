@@ -179,40 +179,39 @@ function openSyllabus(courseId) {
 }
 async function openReader(fileUrl) {
     const readerContent = document.getElementById('reader-content');
-    readerContent.innerHTML = '<div style="text-align:center; padding:50px;">Cargando...</div>';
+    readerContent.innerHTML = '<div style="text-align:center; padding:100px; color:var(--text-muted);">Cargando lección...</div>';
+    
     navigate('reader');
     currentFileUrl = fileUrl;
     localStorage.setItem('s2ktux_read_' + fileUrl, 'true');
+
     try {
         const response = await fetch(fileUrl);
-        if (response.ok) {
-            const text = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(text, 'text/html');
-            const content = doc.querySelector('main') || doc.querySelector('body') || doc;
-            readerContent.innerHTML = content.innerHTML;
-            
-            const loadedHeadings = readerContent.querySelectorAll('h1, h2, h3');
-loadedHeadings.forEach(h => h.classList.add('section-header'));  // Aplica tu estilo de headers
+        if (!response.ok) throw new Error("404");
 
-const loadedParagraphs = readerContent.querySelectorAll('p');
-loadedParagraphs.forEach(p => {
-    p.style.color = 'var(--text-muted)';  // Hereda color muted
-    p.style.lineHeight = '1.6';  // Mejora legibilidad
-});
+        const text = await response.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, 'text/html');
+        const content = doc.querySelector('main') || doc.querySelector('body') || doc;
 
-// Si el sitio está en modo oscuro/claro, fuerza en el contenedor
-if (document.body.classList.contains('mode-light')) {
-    readerContent.classList.add('mode-light');
-} else {
-    readerContent.classList.remove('mode-light');
-}
-            addNextButton();
-        } else {
-            throw new Error("404");
+        readerContent.innerHTML = content.innerHTML;
+        readerContent.classList.add('course-content');
+
+        // Heredar tema actual
+        if (document.body.classList.contains('mode-light')) {
+            readerContent.classList.add('mode-light');
         }
+
+        // Scroll suave al contenido
+        setTimeout(() => readerContent.scrollIntoView({ behavior: 'smooth' }), 300);
+
     } catch (e) {
-        readerContent.innerHTML = `<h1>Error</h1><p>Usa Live Server o GitHub Pages. Detalle: ${e.message}</p>`;
+        readerContent.innerHTML = `
+            <div style="text-align:center; padding:80px; color:#ef4444;">
+                <h3>✗ No se pudo cargar la lección</h3>
+                <p>Verifica que el archivo existe en la ruta correcta.</p>
+                <button onclick="backToSyllabus()" class="cyber-back-btn">Volver al temario</button>
+            </div>`;
     }
 }
 function addNextButton() {
