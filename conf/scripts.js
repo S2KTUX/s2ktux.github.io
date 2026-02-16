@@ -3,7 +3,7 @@ const coursesDB = {
     "rhcsa": {
         title: "RHCSA EX200",
         chapters: [
-            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/1.html" },
+            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/test.html" },
             { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcesa/2/2.html" },
             { id: 3, title: "Clase 3: Usuarios y Grupos", file: "/cursos/rhcsa/3/3.html" }
         ]
