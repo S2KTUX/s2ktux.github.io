@@ -21,139 +21,123 @@
     <hr>
 
     <!-- OBJETIVO 1: CONFIGURAR ACCESO A REPOSITORIOS RPM -->
-    <details open>
-        <summary>
-            <h4>1. Configurar el acceso a los repositorios RPM</h4>
-        </summary>
-        
-        <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes. En RHEL, se definen mediante archivos <strong>.repo</strong> en <code>/etc/yum.repos.d/</code>.</p>
-        
-        <p>El contenido esencial de un archivo <strong>.repo</strong> es:</p>
-        <img src="/images/repo-rpm.png" alt="Ejemplo archivo .repo" class="lesson-img">
-        
-        <p>Entendiendo los campos clave:</p>
-        <ul>
-            <li><strong>[id_del_repo]</strong>: Identificador único del repositorio.</li>
-            <li><strong>name</strong>: Nombre descriptivo legible.</li>
-li><li><strong>baseurl</strong>: Ubicación del servidor. Si es una ISO local: <code>baseurl=file:///RUTA-MONTAJE</code>.</li>
-            <li><strong>enabled</strong>: 1 (activo) o 0 (inactivo).</li>
-            <li><strong>gpgcheck</strong>: 1 (validar firma) o 0 (omitir).</li>
-            <li><strong>gpgkey</strong>: URL de la clave pública GPG.</li>
-        </ul>
-        <p>Para el examen RHCSA, a menudo se configura <code>gpgcheck=0</code> para simplificar.</p>
-        
-        <p><strong>Proceso de carga de un repositorio local:</strong></p>
-        <ol>
-            <li>Montar la ISO: <code>mount -o loop /ruta/a/iso.iso /mnt/cdrom</code></li>
-            <li>Crear el archivo <strong>.repo</strong> apuntando a <code>/mnt/cdrom/BaseOS/AppStream/</code>.</li>
-        </ol>
+    <h4>1. Configurar el acceso a los repositorios RPM</h4>
+    <p>Los repositorios RPM son fuentes de software que permiten instalar y actualizar paquetes. En RHEL, se definen mediante archivos <strong>.repo</strong> en <code>/etc/yum.repos.d/</code>.</p>
+    
+    <p>El contenido esencial de un archivo <strong>.repo</strong> es:</p>
+    <img src="/images/repo-rpm.png" alt="Ejemplo archivo .repo" class="lesson-img">
+    
+    <p>Entendiendo los campos clave:</p>
+    <ul>
+        <li><strong>[id_del_repo]</strong>: Identificador único del repositorio.</li>
+        <li><strong>name</strong>: Nombre descriptivo legible.</li>
+        <li><strong>baseurl</strong>: Ubicación del servidor. Si es una ISO local: <code>baseurl=file:///RUTA-MONTAJE</code>.</li>
+        <li><strong>enabled</strong>: 1 (activo) o 0 (inactivo).</li>
+        <li><strong>gpgcheck</strong>: 1 (validar firma) o 0 (omitir).</li>
+        <li><strong>gpgkey</strong>: URL de la clave pública GPG.</li>
+    </ul>
+    <p>Para el examen RHCSA, a menudo se configura <code>gpgcheck=0</code> para simplificar.</p>
+    
+    <p><strong>Proceso de carga de un repositorio local:</strong></p>
+    <ol>
+        <li>Montar la ISO: <code>mount -o loop /ruta/a/iso.iso /mnt/cdrom</code></li>
+        <li>Crear el archivo <strong>.repo</strong> apuntando a <code>/mnt/cdrom/BaseOS/AppStream/</code>.</li>
+    </ol>
 
-        <p><strong>Gestión de repositorios:</strong></p>
-        <ul>
-            <li>Crear: <code>dnf config-manager --add-repo=https://ejemplo.com/repo.repo</code></li>
-            <li>Habilitar: <code>dnf config-manager --set-enabled rhel-8-for-x86_64-baseos-rpms</code></li>
-            <li>Deshabilitar: <code>dnf config-manager --set-disabled rhel-8-for-x86_64-baseos-rpms</code></li>
-            <li>Actualizar caché tras cambios: <code>dnf clean all && dnf makecache</code></li>
-            <li>Ver repositorios: <code>dnf repolist</code></li>
-        </ul>
-        <img src="/images/recargar-repo-rpm.png" alt="Resultado de dnf repolist" class="lesson-img">
-    </details>
+    <p><strong>Gestión de repositorios:</strong></p>
+    <ul>
+        <li>Crear: <code>dnf config-manager --add-repo=https://ejemplo.com/repo.repo</code></li>
+        <li>Habilitar: <code>dnf config-manager --set-enabled rhel-8-for-x86_64-baseos-rpms</code></li>
+        <li>Deshabilitar: <code>dnf config-manager --set-disabled rhel-8-for-x86_64-baseos-rpms</code></li>
+        <li>Actualizar caché tras cambios: <code>dnf clean all && dnf makecache</code></li>
+        <li>Ver repositorios: <code>dnf repolist</code></li>
+    </ul>
+    <img src="/images/recargar-repo-rpm.png" alt="Resultado de dnf repolist" class="lesson-img">
 
     <!-- OBJETIVO 2: INSTALAR Y ELIMINAR PAQUETES RPM -->
-    <details open>
-        <summary>
-            <h4>2. Instalar y eliminar paquetes de software RPM</h4>
-        </summary>
+    <h4>2. Instalar y eliminar paquetes de software RPM</h4>
+    
+    <div class="note-box">
+        <strong>💡 Nota:</strong>
+        <p><code>rpm</code> gestiona paquetes individuales. <code>dnf</code> (sucesor de <code>yum</code>) gestiona dependencias automáticamente.</p>
+    </div>
 
-        <div class="terminal-callout" style="border-left-color: var(--text-muted); background: rgba(255,255,255,0.05);">
-            <strong>Diferencia clave:</strong> <code>rpm</code> gestiona paquetes individuales. <code>dnf</code> (sucesor de <code>yum</code>) gestiona dependencias automáticamente.
-        </div>
+    <h5>Comandos RPM (Low-level)</h5>
+    <p>Se usan cuando tienes el archivo <strong>.rpm</strong> local o necesitas opciones específicas.</p>
+    <ul>
+        <li><code>rpm -ivh paquete.rpm</code> → Instalar y ver detalles (verbose).</li>
+        <li><code>rpm -Uvh paquete.rpm</code> → Actualizar o instalar si es más nuevo.</li>
+        <li><code>rpm -e nombre_paquete</code> → Eliminar (erase) el paquete.</li>
+        <li><code>rpm -Vpaquete</code> → Verificar integridad (Verify).</li>
+        <li><code>rpm -qa</code> → Consultar todos (Query All) los paquetes instalados.</li>
+        <li><code>rpm -qf /ruta/archivo</code> -> ¿Qué paquete instaló este archivo?</li>
+        <li><code>rpm -qi paquete</code> -> Consultar información (Info).</li>
+    </ul>
 
-        <h5>Comandos RPM (Low-level)</h5>
-        <p>Se usan cuando tienes el archivo <strong>.rpm</strong> local o necesitas opciones específicas.</p>
-        <ul>
-            <li><code>rpm -ivh paquete.rpm</code> → Instalar y ver detalles (verbose).</li>
-            <li><code>rpm -Uvh paquete.rpm</code> → Actualizar o instalar si es más nuevo.</li>
-            <li><code>rpm -e nombre_paquete</code> → Eliminar (erase) el paquete.</li>
-            <li><code>rpm -Vpaquete</code> → Verificar integridad (Verify).</li>
-            <li><code>rpm -qa</code> → Consultar todos (Query All) los paquetes instalados.</li>
-            <li><code>rpm -qf /ruta/archivo</code> -> ¿Qué paquete instaló este archivo?</li>
-            <li><code>rpm -qi paquete</code> -> Consultar información (Info).</li>
-        </ul>
+    <h5>Comandos DNF (Dandified YUM)</h5>
+    <p>Es la herramienta recomendada para el día a día en RHEL 8 y 9.</p>
+    <ul>
+        <li><code>dnf install paquete</code> → Instalar.</li>
+        <li><code>dnf remove paquete</code> → Desinstalar.</li>
+        <li><code>dnf upgrade paquete</code> → Actualizar.</li>
+        <li><code>dnf search paquete</code> -> Buscar en repositorios.</li>
+        <li><code>dnf list installed</code> -> Ver lo instalado.</li>
+        <li><code>dnf repoquery paquete</code> -> Busca disponible.</li>
+        <li><code>dnf info paquete</code> -> Ver detalles del paquete.</li>
+        <li><code>dnf provides comando</code> -> ¿Qué paquete provee este comando?</li>
+    </ul>
 
-        <h5>Comandos DNF (Dandified YUM)</h5>
-        <p>Es la herramienta recomendada para el día a día en RHEL 8 y 9.</p>
-        <ul>
-            <li><code>dnf install paquete</code> → Instalar.</li>
-            <li><code>dnf remove paquete</code> → Desinstalar.</li>
-            <li><code>dnf upgrade paquete</code> → Actualizar.</li>
-            <li><code>dnf search paquete</code> -> Buscar en repositorios.</li>
-            <li><code>dnf list installed</code> -> Ver lo instalado.</li>
-            <li><code>dnf repoquery paquete</code> -> Buscar disponible.</li>
-            <li><code>dnf info paquete</code> -> Ver detalles del paquete.</li>
-            <li><code>dnf provides comando</code> -> ¿Qué paquete provee este comando?</li>
-        </ul>
-
-        <p>Para revertir acciones (útil si cometes un error):</p>
-        <ul>
-            <li>Ver historial: <code>dnf history</code></li>
-            <li>Deshacer último cambio: <code>dnf history undo 1</code></li>
-        </ul>
-        <img src="/images/history-rpm.png" alt="Historial de dnf" class="lesson-img">
-        
-        <p><strong>Extracción de archivos de un RPM:</strong></p>
-        <p>Para ver el contenido de un RPM sin instalarlo, usa <code>rpm2cpio</code>:</p>
-        <img src="/images/recuperar-archivo-rpm.png" alt="Ejemplo de extracción" class="lesson-img">
-    </details>
+    <p>Para revertir acciones (útil si cometes un error):</p>
+    <ul>
+        <li>Ver historial: <code>dnf history</code></li>
+        <li>Deshacer último cambio: <code>dnf history undo 1</code></li>
+    </ul>
+    <img src="/images/history-rpm.png" alt="Historial de dnf" class="lesson-img">
+    
+    <p><strong>Extracción de archivos de un RPM:</strong></p>
+    <p>Para ver el contenido de un RPM sin instalarlo, usa <code>rpm2cpio</code>:</p>
+    <img src="/images/recuperar-archivo-rpm.png" alt="Ejemplo de extracción" class="lesson-img">
 
     <!-- OBJETIVO 3: CONFIGURAR FLATPAK -->
-    <details>
-        <summary>
-            <h4>3. Configurar el acceso a repositorios Flatpak</h4>
-        </summary>
-
-        <p>Flatpak permite instalar aplicaciones sandboxeadas y aisladas. El repositorio universal es <strong>Flathub</strong>.</p>
-        
-        <p><strong>Gestión de repositorios:</strong></p>
-        <ul>
-            <li><code>flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</code> → Añadir Flathub.</li>
-            <li><code>flatpak remotes</code> → Listar repositorios activos.</li>
-            <li><code>flatpak remote-delete flathub</code> → Eliminar.</li>
-        </ul>
-        <img src="/images/flatpak-repo.png" alt="Gestión remota Flatpak" class="lesson-img">
-        <p><strong>Configuración para el examen RHCSA:</strong></p>
-        <p>A menudo se requiere añadir el repositorio oficial de Red Hat para aplicaciones RHEL específicas.</p>
-        <img src="/images/flatpak-redhat.png" alt="Repo oficial Red Hat" class="lesson-img">
-        
+    <h4>3. Configurar el acceso a repositorios Flatpak</h4>
+    <p>Flatpak permite instalar aplicaciones sandboxeadas y aisladas. El repositorio universal es <strong>Flathub</strong>.</p>
+    
+    <p><strong>Gestión de repositorios:</strong></p>
+    <ul>
+        <li><code>flatpak remote-add --if-not-exists flathub https://flathub.org/repo/flathub.flatpakrepo</code> → Añadir Flathub.</li>
+        <li><code>flatpak remotes</code> → Listar repositorios activos.</li>
+        <li><code>flatpak remote-delete flathub</code> → Eliminar.</li>
+    </ul>
+    <img src="/images/flatpak-repo.png" alt="Gestión remota Flatpak" class="lesson-img">
+    <p><strong>Configuración para el examen RHCSA:</strong></p>
+    <p>A menudo se requiere añadir el repositorio oficial de Red Hat para aplicaciones RHEL específicas.</p>
+    <img src="/images/flatpak-redhat.png" alt="Repo oficial Red Hat" class="lesson-img">
+    
+    <div class="note-box">
+        <strong>💡 Nota:</strong>
         <p>Si encuentras errores de autenticación con <code>--auth-file</code>, soluciona manualmente:</p>
-        <pre><code>cp $XDG_RUNTIME_DIR/containers/auth.json /etc/flatpak/oci-auth.json
-chmod 644 /etc/flatpak/oci-auth.json</code></pre>
-    </details>
+    </div>
+    <pre><code>cp $XDG_RUNTIME_DIR/containers/auth.json /etc/flatpak/ archive-auth.json
+chmod 644 /etc/flatpak/archive-auth.json</code></pre>
 
     <!-- OBJETIVO 4: INSTALAR Y ELIMINAR PAQUETES FLATPAK -->
-    <details open>
-        <summary>
-            <4>4. Instalar y eliminar paquetes Flatpak</h4>
-        </summary>
-
-        <p>Las aplicaciones Flatpak se identifican con su nombre inverso de dominio (ej: <code>org.gnome.Calendar</code>).</p>
-        
-        <p><strong>Instalación:</strong></p>
-        <ul>
-            <li><code>flatpak install org.gimp.GIMP</code></li>
-            <li><code>flatpak install flathub</code> (instalar todo lo de Flathub)</li>
-        </ul>
-        
-        <p><strong>Gestión:</strong></p>
-        <ul>
-            <li><code>flatpak list</code> → Ver aplicaciones instaladas.</li>
-            <li><code>flatpak info org.gimp.GIMP</code> → Ver detalles de la aplicación.</li>
-            <li><code>flatpak run org.gimp.GIMP</code> → Ejecutar aplicación.</li>
-            <li><code>flatpak uninstall org.gimp.GIMP</code> → Eliminar.</li>
-            <li><code>flatpak update --app org.gimp.GIMP</code> → Actualizar.</li>
-            <li><code>flatpak search gimp</code> → Buscar en repositorios.</li>
-        </ul>
-        <img src="/images/flatpak-install.png" alt="Instalación GIMP" class="lesson-img">
-    </details>
-
+    <h4>4. Instalar y eliminar paquetes Flatpak</h4>
+    <p>Las aplicaciones Flatpak se identifican con su nombre inverso de dominio (ej: <code>org.gnome.Calendar</code>).</p>
+    
+    <p><strong>Instalación:</strong></p>
+    <ul>
+        <li><code>flatpak install org.gimp.GIMP</code></li>
+        <li><code>flatpak install flathub</code> (instalar todo lo de Flathub)</li>
+    </ul>
+    
+    <p><strong>Gestión:</strong></p>
+    <ul>
+        <li><code>flatpak list</code> → Ver aplicaciones instaladas.</li>
+        <li><code>flatpak info org.gimp.GIMP</code> → Ver detalles de la aplicación.</li>
+        <li><code>flatpak run org.gimp.GIMP</code> → Ejecutar aplicación.</li>
+li><code>flatpak uninstall org.gimp.GIMP</code> → Eliminar.</li>
+        <li><code>flatpak update --app org.gimp.GIMP</code> → Actualizar.</li>
+        <li><code>flatpak search gimp</code> → Buscar en repositorios.</li>
+    </ul>
+    <img src="/images/flatpak-install.png" alt="Instalación GIMP" class="lesson-img">
 </div>
