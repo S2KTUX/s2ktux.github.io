@@ -1141,13 +1141,45 @@ body.mode-light .cyber-back-btn {
     }
 }
 
-/* --- COMPONENTES INTERNOS DE LECCIONES (Callouts y Alerts) --- */
+/* --- COMPONENTES INTERNOS DE LECCIONES (ARREGLADO) --- */
 
-/* 1. Caja de información (Video / Info) */
-.course-content .terminal-callout {
-    background: rgba(255, 255, 255, 0.03); /* Fondo muy sutil */
+/* 1. Arreglar el bloque de código (El "Bloque Negro") */
+.course-content pre {
+    background: #0a0a0a; /* Fondo negro */
+    color: var(--term-text) !important; /* <--- ESTO ES CLAVE. Texto claro */
+    padding: 2rem;
+    border-radius: 12px;
+    overflow-x: auto;
     border: 1px solid var(--border-color);
-    border-left: 4px solid var(--accent); /* El borde izquierdo toma el color del tema */
+    margin: 2.2rem 0;
+    font-family: var(--font-mono) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6;
+}
+
+/* 2. Estilo para Imágenes (Efecto Moderno) */
+.course-content img {
+    max-width: 100% !important;
+    height: auto !important;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.5);
+    margin: 2.5rem 0;
+    display: block;
+    transition: all 0.4s ease;
+    object-fit: contain; /* Evita que la imagen se estire */
+}
+
+.course-content img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.6);
+}
+
+/* 3. Caja de Video/Info */
+.course-content .terminal-callout {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent);
     padding: 15px 20px;
     margin: 25px 0;
     border-radius: 6px;
@@ -1156,20 +1188,19 @@ body.mode-light .cyber-back-btn {
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 15px;
-    transition: all 0.3s ease;
+}
+.course-content .terminal-callout a {
+    color: var(--accent);
+    font-weight: 600;
+    text-decoration: none;
+    border-bottom: 1px dashed var(--accent);
 }
 
-.course-content .terminal-callout:hover {
-    background: var(--accent-subtle); /* Un brillo sutil al pasar el ratón */
-    transform: translateX(5px); /* Pequeño movimiento interactivo */
-    border-left-color: var(--accent-glow);
-}
-
-/* 2. Caja de Alerta (Atención) */
+/* 4. Caja de Alerta */
 .course-content .lesson-alert {
     border: 1px solid var(--accent);
-    background: var(--accent-glow); /* Fondo del color del tema pero transparente */
-    color: var(--text-main); /* Asegura que se lea bien en claro y oscuro */
+    background: var(--accent-glow);
+    color: var(--text-main) !important; /* Color principal del tema */
     padding: 15px;
     border-radius: var(--radius);
     margin: 25px 0;
@@ -1178,11 +1209,5 @@ body.mode-light .cyber-back-btn {
     letter-spacing: 1px;
     font-weight: 800;
     font-size: 0.85rem;
-    box-shadow: 0 0 20px var(--accent-glow); /* Efecto de resplandor */
-}
-
-/* 3. Clase específica para imágenes (por si usas <img class="lesson-img">) */
-.course-content .lesson-img {
-    /* Esto permite ajustar detalles específicos de imagen si lo necesitas */
-    width: 100%; /* Asegura responsividad */
+    box-shadow: 0 0 20px var(--accent-glow);
 }
