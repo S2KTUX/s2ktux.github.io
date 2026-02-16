@@ -1,25 +1,26 @@
 /* --- 1. CORE VARIABLES --- */
 :root {
-    /* Palette: Cyber Blue (Default) */
+
     --hue: 217;
     --accent: hsl(var(--hue), 90%, 60%);
     --accent-glow: hsla(var(--hue), 90%, 60%, 0.2);
     --accent-subtle: hsla(var(--hue), 90%, 60%, 0.1);
-    /* Dark Defaults */
     --bg-color: #050505;
-    --text-main: #e2e8f0;
-    --text-muted: #94a3b8;
-    --card-bg: rgba(15, 17, 21, 0.7);
-    --nav-bg: rgba(20, 20, 20, 0.85);
+    --text-main: #fafafa;
+    --text-muted: #a1a1aa; 
+    --card-bg: #09090b;
+    
+    --nav-bg: rgba(9, 9, 11, 0.9);
     --footer-bg: #050505;
-    --border-color: rgba(255,255,255,0.1);
-    --code-bg: #1e293b;
+    --border-color: rgba(255, 255, 255, 0.06);
+    
+    --code-bg: #111113;  
     --radius: 8px;
-    /* Terminal */
-    --term-bg: #0c0c0c;
-    --term-text: #d4d4d8;
-    --term-header: #161b22;
-    --term-border: #30363d;
+    --term-bg: #000000;
+    --term-text: #e4e4e7;
+    --term-header: #09090b;
+    --term-border: #27272a;
+
     --font-main: 'Inter', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 }
