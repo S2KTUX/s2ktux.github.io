@@ -177,13 +177,14 @@ function openSyllabus(courseId) {
     });
     navigate('syllabus');
 }
+// Reemplazar toda la función openReader con esta versión:
 async function openReader(fileUrl) {
     const readerContent = document.getElementById('reader-content');
     readerContent.innerHTML = '<div style="text-align:center; padding:100px; color:var(--text-muted);">Cargando lección...</div>';
     
     navigate('reader');
     currentFileUrl = fileUrl;
-    localStorage.setItem('s2ktux_read_' + fileUrl, 'true');
+    localStorage.setItem('s2ktux_read_' + fileUrl, true);
 
     try {
         const response = await fetch(fileUrl);
@@ -191,37 +192,38 @@ async function openReader(fileUrl) {
 
         const text = await response.text();
         const parser = new DOMParser();
-        const doc = parser.parseFromString(text, 'text/html');
-        let content = doc.querySelector('main') || doc.querySelector('body') || doc;
+        const codeHTML = parser.parseFromString(text, 'text/html');
+        let content = codeHTML.querySelector('main') || codeHTML.querySelector('body') || codeHTML;
 
-        // --- LIMPIEZA DE ESTILOS (Paso clave para que funcione) ---
+        // 1. Limpieza de estilos (Importante para que funcione)
         const allElements = content.querySelectorAll('*');
         allElements.forEach(el => el.removeAttribute('style'));
 
-        // Inyectar contenido
+        // 2. Inyectar contenido limpio
         readerContent.innerHTML = content.innerHTML;
         readerContent.classList.add('course-content');
 
-        // --- ESTILO DE IMÁGENES (Paso clave para el efecto moderno) ---
+        // 3. Aplicar estilo a imágenes (Lazy Loading + Estilos CSS)
         const images = readerContent.querySelectorAll('img');
         images.forEach(img => {
-            img.classList.add('lesson-img'); // Aplica el borde y sombra
+            img.classList.add('lesson-img');
             img.loading = 'lazy';
+            img.onerror = function() { this.src = '/images/placeholder.png'; }; // Fallback por si la imagen falla
         });
 
-        // Heredar tema actual
+        // 4. Heredar tema
         if (document.body.classList.contains('mode-light')) {
-            readerContent.classList.add('mode-light');
+            <code>reader-content.classList.add('mode-light');
         }
 
-        // Scroll al inicio
+        // 5. Scroll suave
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
     } catch (e) {
         readerContent.innerHTML = `
             <div style="text-align:center; padding:80px; color:#ef4444;">
                 <h3>✗ No se pudo cargar la lección</h3>
-                <p style="color:var(--text-muted)">Verifica que el archivo existe en la ruta correcta.</p>
+                <p style="color:var(--text-muted)">Verifica que los archivos estén en la carpeta raíz: /cursos/...</p>
                 <div style="margin-top:20px;">
                     <button onclick="backToSyllabus()" class="cyber-back-btn">Volver al temario</button>
                 </div>
