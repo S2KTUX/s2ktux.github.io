@@ -9,13 +9,11 @@
     <link rel="stylesheet" href="conf/styles.css">
 </head>
 <body class="color-ruby">
-
     <!-- SPLASH SCREEN -->
     <div id="splash" class="splash-screen">
         <div class="splash-logo">S2KTUX</div>
         <div class="splash-bar"><div class="splash-progress"></div></div>
     </div>
-
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
@@ -39,29 +37,23 @@
         <div class="mobile-header-content">
             <a href="#" class="brand-logo" onclick="navigate('home'); toggleMobileMenu()">S2KTUX</a>
             <button class="hamburger-btn" id="hamburger" onclick="toggleMobileMenu()" aria-label="Abrir menú" aria-expanded="false">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
             </button>
         </div>
     </nav>
 
-    <!-- BOTÓN TEMA -->
+    <!-- BOTON TEMA -->
     <div class="theme-floater">
         <button class="theme-btn" onclick="toggleThemeMenu()" aria-label="Cambiar tema">
-            <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
+            <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </button>
         <div class="theme-selector" id="themeMenu">
-            <!-- Aquí van tus opciones de tema (las mismas que tenías) -->
             <div class="theme-group-title">Modo Oscuro</div>
             <div class="theme-option" onclick="setTheme('blue', false)"><div class="theme-left"><div class="color-circle" style="background:#3b82f6"></div> Cyber Blue</div><span>🌙</span></div>
             <div class="theme-option" onclick="setTheme('purple', false)"><div class="theme-left"><div class="color-circle" style="background:#a855f7"></div> Royal Purple</div><span>🌙</span></div>
             <div class="theme-option" onclick="setTheme('matrix', false)"><div class="theme-left"><div class="color-circle" style="background:#10b981"></div> Matrix</div><span>🌙</span></div>
             <div class="theme-option" onclick="setTheme('ruby', false)"><div class="theme-left"><div class="color-circle" style="background:#ef4444"></div> Ruby Red</div><span>🌙</span></div>
             <div class="theme-option" onclick="setTheme('sunset', false)"><div class="theme-left"><div class="color-circle" style="background:#fb923c"></div> Sunset</div><span>🌙</span></div>
-            
             <div class="theme-group-title" style="margin-top:10px;">Modo Claro</div>
             <div class="theme-option" onclick="setTheme('blue', true)"><div class="theme-left"><div class="color-circle" style="background:#3b82f6"></div> Cyber Blue</div><span>☀️</span></div>
             <div class="theme-option" onclick="setTheme('purple', true)"><div class="theme-left"><div class="color-circle" style="background:#a855f7"></div> Royal Purple</div><span>☀️</span></div>
@@ -74,54 +66,242 @@
     <main>
         <!-- INICIO -->
         <section id="home" class="page-section active">
-            <!-- Tu contenido de inicio aquí (hero, metodología, roadmap, skills, etc.) -->
-            <!-- (Lo mantengo igual que tenías) -->
             <div class="hero">
                 <h1>Domina Linux.<br>Sin límites.</h1>
                 <p><span id="typing-text"></span><span class="cursor"></span></p>
             </div>
-            <!-- ... resto de secciones de home ... -->
+            <!-- NUEVA SECCIÓN: METODOLOGÍA -->
+            <div class="section-spacer">
+                <div class="section-header">
+                    <h2>¿Cómo aprenderás?</h2>
+                    <p>Nuestra metodología combina teoría sólida con práctica inmediata en entornos reales.</p>
+                </div>
+                <div class="methodology-grid">
+                    <div class="method-card">
+                        <div class="method-icon">📚</div>
+                        <h3>Teoría Estructurada</h3>
+                        <p>Contenido curado paso a paso. Desde la instalación del sistema hasta la configuración avanzada de servicios.</p>
+                    </div>
+                    <div class="method-card">
+                        <div class="method-icon">💻</div>
+                        <h3>Práctica en Terminal</h3>
+                        <p>No solo leas, ejecuta. Usa nuestra terminal interactiva integrada para memorizar comandos.</p>
+                    </div>
+                    <div class="method-card">
+                        <div class="method-icon">🚀</div>
+                        <h3>Proyectos Reales</h3>
+                        <p>Aplica tus conocimientos desplegando servidores, configurando firewalls y automatizando tareas.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- SECCIÓN: ROADMAP -->
+            <div class="section-spacer">
+                <div class="section-header">
+                    <h2>Tu Camino en Linux</h2>
+                    <p>Una ruta estructurada desde los fundamentos hasta la automatización avanzada.</p>
+                </div>
+                <div class="roadmap-container">
+                    <div class="roadmap-step">
+                        <div class="step-number">01</div>
+                        <h3>Fundamentos</h3>
+                        <p>Domina la línea de comandos, permisos, sistema de archivos y gestión de procesos.</p>
+                    </div>
+                    <div class="roadmap-step">
+                        <div class="step-number">02</div>
+                        <h3>Administración</h3>
+                        <p>Configura redes, almacenamiento (LVM), usuarios y servicios en RHEL y Debian.</p>
+                    </div>
+                    <div class="roadmap-step">
+                        <div class="step-number">03</div>
+                        <h3>DevOps</h3>
+                        <p>Automatiza despliegues con Ansible, maneja contenedores Docker y orquesta con Kubernetes.</p>
+                    </div>
+                </div>
+            </div>
+            <!-- SECCIÓN: SKILLS -->
+            <div class="section-spacer">
+                <div class="section-header">
+                    <h2>Stack Tecnológico</h2>
+                    <p>Las herramientas que dominarás para gestionar infraestructuras modernas.</p>
+                </div>
+                <div class="skills-grid">
+                    <div class="skill-item">
+                        <h4>Linux SysAdmin <span>95%</span></h4>
+                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 95%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <h4>Bash & Scripting <span>90%</span></h4>
+                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 90%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <h4>Ansible & Terraform <span>85%</span></h4>
+                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 85%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <h4>Docker & K8s <span>80%</span></h4>
+                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 80%"></div></div>
+                    </div>
+                    <div class="skill-item">
+                        <h4>Security & Hardening <span>75%</span></h4>
+                        <div class="skill-bar-bg"><div class="skill-bar-fill" style="width: 75%"></div></div>
+                    </div>
+                </div>
+            </div>
+            <!-- SECCIÓN: ECOSISTEMA -->
+            <div class="section-spacer">
+                <div class="section-header">
+                    <h2>Ecosistema</h2>
+                </div>
+                <div class="content-grid">
+                    <div class="card" style="cursor:default;">
+                        <span class="card-tag">Shell</span>
+                        <h3>Bash Scripting</h3>
+                        <p>Automatiza tareas rutinarias. Desde backups complejos hasta monitoreo de sistemas en tiempo real.</p>
+                    </div>
+                    <div class="card" style="cursor:default;">
+                        <span class="card-tag">Kernel</span>
+                        <h3>Interno Linux</h3>
+                        <p>Entiende cómo funciona el corazón del sistema: gestión de memoria, procesos y drivers.</p>
+                    </div>
+                    <div class="card" style="cursor:default;">
+                        <span class="card-tag">Cloud</span>
+                        <h3>Infraestructura</h3>
+                        <p>Despliega servidores en AWS, Azure o DigitalOcean usando Terraform y CLI.</p>
+                    </div>
+                    <div class="card" style="cursor:default;">
+                        <span class="card-tag">Security</span>
+                        <h3>Hardening</h3>
+                        <p>Cierra puertos, configura Firewalls (iptables/nftables) y aplica SELinux.</p>
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- CURSOS -->
         <section id="courses" class="page-section">
-            <!-- Tu sección de cursos -->
+            <div class="section-header">
+                <h2>Cursos Disponibles</h2>
+            </div>
+            <div class="content-grid">
+                <div class="card" onclick="openSyllabus('rhcsa')" role="button" aria-label="Abrir curso RHCSA">
+                    <span class="card-tag">Red Hat</span>
+                    <h3>RHCSA EX200</h3>
+                    <p>Domina la administración de RHEL. Usuarios, permisos, redes y almacenamiento.</p>
+                </div>
+                <div class="card" onclick="openSyllabus('lpic1')" role="button" aria-label="Abrir curso LPIC-1">
+                    <span class="card-tag">LPI</span>
+                    <h3>LPIC-1 101-500</h3>
+                    <p>Fundamentos esenciales de Linux para cualquier distribución.</p>
+                </div>
+            </div>
         </section>
 
         <!-- SYLLABUS -->
         <section id="syllabus" class="page-section">
-            <!-- Tu syllabus -->
+            <h2 style="text-align:center; margin-bottom:30px; font-size:2rem; color:var(--text-main);">Temario</h2>
+            <div class="reader-container" style="min-height: auto; padding: 40px;">
+                <div class="cyber-back-btn" onclick="navigate('courses')">
+                    <span>&larr; exit (Volver)</span>
+                </div>
+                <h2 id="syllabus-title" style="margin-top:20px;">Curso</h2>
+                <div class="progress-container">
+                    <div class="progress-bar" id="course-progress-bar"></div>
+                    <span class="progress-text" id="course-progress-text">0%</span>
+                </div>
+                <div class="chapter-list" id="syllabus-list"></div>
+            </div>
         </section>
 
-        <!-- LECTOR DE CURSOS (AQUÍ ESTÁ LA CLAVE) -->
+        <!-- LECTOR -->
         <section id="reader" class="page-section">
             <div class="reader-container">
                 <div class="cyber-back-btn" onclick="backToSyllabus()">
                     <span>&larr; exit (Volver al temario)</span>
                 </div>
-                <div id="reader-content" class="course-content"></div>
+                <div id="reader-content"></div>
             </div>
         </section>
 
         <!-- TERMINAL -->
         <section id="terminal" class="page-section">
-            <!-- Tu terminal -->
+            <div style="text-align:center; margin-bottom:20px; color:var(--text-muted);">
+                <p>S2KTUX Terminal v7.1 [Interactive Mode]</p>
+            </div>
+            <div class="terminal-container">
+                <div class="term-header">
+                    <div class="window-controls">
+                        <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
+                    </div>
+                    <!-- TÍTULO CENTRADO -->
+                    <div class="term-title" id="term-title">visitor@s2ktux:~</div>
+                </div>
+                <div class="term-body" id="term-body">
+                    <div class="term-line">S2KTUX OS [Version 7.1.0]</div>
+                    <div class="term-line">(c) 2024 S2KTUX Corp. All rights reserved.</div>
+                    <div class="term-line"><br></div>
+                    <!-- Wrapper para mantener el input al final -->
+                    <div class="term-input-wrapper" id="term-input-wrapper">
+                        <span class="term-prompt">visitor@s2ktux:~$</span>
+                        <input type="text" id="term-input" autocomplete="off" spellcheck="false">
+                    </div>
+                </div>
+            </div>
         </section>
 
         <!-- PROYECTOS -->
         <section id="projects" class="page-section">
-            <!-- Tus proyectos -->
+            <div class="section-header">
+                <h2>Proyectos</h2>
+            </div>
+            <div class="content-grid">
+                <div class="card" onclick="openProject('deployer')" role="button" aria-label="Abrir proyecto Deployer">
+                    <span class="card-tag">Bash</span>
+                    <h3>S2KTUX Deployer</h3>
+                    <p>Automatización de despliegues en VPS.</p>
+                </div>
+                <div class="card" onclick="openProject('ansible')" role="button" aria-label="Abrir proyecto Ansible">
+                    <span class="card-tag">DevOps</span>
+                    <h3>Ansible Playbooks</h3>
+                    <p>Configuración de infraestructura como código.</p>
+                </div>
+            </div>
         </section>
 
         <!-- VISTA PROYECTO -->
         <section id="project-view" class="page-section">
-            <!-- Vista de proyecto -->
+            <div class="reader-container">
+                <div class="cyber-back-btn" onclick="navigate('projects')">
+                    <span>&larr; exit (Volver a proyectos)</span>
+                </div>
+                <div id="project-content"></div>
+            </div>
         </section>
     </main>
 
     <!-- FOOTER -->
     <footer class="modern-footer">
-        <!-- Tu footer -->
+        <div class="footer-content">
+            <div style="grid-column: 1; display: flex; justify-content: flex-start; align-items: center;">
+                <a href="#" class="footer-logo">S2KTUX</a>
+            </div>
+            <div class="footer-center">
+                <div class="footer-slogan">Domina Linux. Sin límites.</div>
+            </div>
+            <div class="social-icons">
+                <a href="https://github.com/s2ktux" target="_blank" aria-label="GitHub">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                </a>
+                <a href="https://linkedin.com" target="_blank" aria-label="LinkedIn">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                </a>
+                <a href="https://youtube.com/@s2ktux" target="_blank" aria-label="YouTube">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+                </a>
+                <a href="#" target="_blank" aria-label="Discord">
+                    <svg class="icon-svg" viewBox="0 0 24 24"><path d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.2113.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914a.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>
+                </a>
+            </div>
+        </div>
     </footer>
 
     <script src="conf/scripts.js"></script>
