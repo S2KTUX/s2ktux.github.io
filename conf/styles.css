@@ -34,7 +34,7 @@ body.mode-light {
     --footer-bg: #ffffff;
     --border-color: rgba(0,0,0,0.08);
     --code-bg: #f1f5f9;
-    --term-bg: #ffffff;
+    --term-bg: #f8fafc;
     --term-text: #333333;
     --term-header: #f1f5f9;
     --term-border: #e2e8f0;
@@ -1119,16 +1119,46 @@ body.mode-light .cyber-back-btn {
     font-size: 0.96rem;
 }
 
-.course-content pre {
-    background: #0a0a0a;
-    padding: 2rem;
-    border-radius: 12px;
-    overflow-x: auto;
-    border: 1px solid var(--border-color);
-    margin: 2.2rem 0;
+.course-content :not(pre) > code {
+    background: var(--code-bg);
+    color: var(--accent);
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-family: var(--font-mono);
+    font-size: 0.96rem;
 }
 
-/* Responsive */
+/* 2. El bloque de terminal (pre) */
+.course-content pre {
+    background: var(--term-bg) !important; /* Cambia según el tema (Matrix, Ruby...) */
+    color: var(--term-text) !important;
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--term-border);
+    margin: 2.2rem 0;
+    font-family: var(--font-mono) !important;
+    font-size: 0.95rem !important;
+    line-height: 1.6;
+    
+    /* Control de texto */
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: hidden;
+    
+    /* Sombra exterior elegante (sin el inset sucio) */
+    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+
+/* 3. El code dentro del pre (Limpieza de parches) */
+.course-content pre > code {
+    background: transparent !important;
+    color: inherit !important;
+    padding: 0 !important;
+    border: none !important;
+    display: block;
+}
+
+/* 4. Responsive corregido */
 @media (max-width: 768px) {
     .course-content {
         padding: 2rem 1.4rem;
@@ -1139,41 +1169,14 @@ body.mode-light .cyber-back-btn {
         margin: 2rem -15px;
         border-radius: 0;
     }
+    .course-content pre {
+        border-radius: 0;
+        margin: 1.5rem -1.4rem; /* Se expande al borde en móvil como el resto */
+    }
 }
 
-/* 1. BLOQUE DE CÓDIGO (TERMINAL) - VERSIÓN DEFINITIVA */
-.course-content pre {
-    background: #0a0a0a !important; /* Fondo negro siempre */
-    color: #e2e8f0 !important;     /* Texto claro siempre */
-    
-    padding: 1.5rem;
-    border-radius: 12px;
-    border: 1px solid var(--border-color);
-    margin: 2.2rem 0;
-    font-family: 'JetBrains Mono', monospace !important; /* Fuente monoespaciada */
-    font-size: 0.95rem !important;
-    line-height: 1.6;
-    
-    /* Comportamiento del texto */
-    white-space: pre-wrap;      /* Hace que baje de línea en móviles (recomendado) */
-    word-wrap: break-word;      /* Evita que las palabras largas rompan el diseño */
-    overflow-x: hidden;         /* Oculta barra de scroll horizontal si usas pre-wrap */
-    
-    /* Sombra interna para dar profundidad */
-    box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
-}
 
-/* Forzar color a la etiqueta <code> interna para evitar conflictos */
-.course-content pre > code {
-    color: #e2e8f0 !important;
-    background-color: transparent !important; /* Quitar fondo gris de las etiquetas code */
-    padding: 0 !important;
-    font-family: inherit !important;
-    font-size: inherit !important;
-    text-shadow: none !important;
-}
 
-/* 2. Estilo para Imágenes (Efecto Moderno) */
 .course-content img {
     max-width: 100% !important;
     height: auto !important;
