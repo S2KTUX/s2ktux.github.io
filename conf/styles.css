@@ -1298,3 +1298,62 @@ body.mode-light .cyber-back-btn {
 .hidden {
     display: none !important;
 }
+
+/* --- 14. BOTÓN SIGUIENTE LECCIÓN (GENERADO POR JS) --- */
+
+.next-btn-container {
+    margin-top: 5rem;
+    padding-top: 2rem;
+    border-top: 1px dashed var(--border-color);
+    text-align: right; 
+}
+
+.next-btn {
+    background: var(--accent-subtle);
+    color: var(--accent);
+    border: 1px solid var(--accent);
+    padding: 14px 30px;
+    border-radius: var(--radius);
+    font-family: var(--font-mono); 
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+.next-btn:hover {
+    background: var(--accent);
+    color: #fff !important;
+    box-shadow: 0 0 25px var(--accent-glow);
+    transform: translateY(-4px) scale(1.02);
+}
+
+.next-btn:active {
+    transform: translateY(-1px);
+}
+
+/* Ajuste para que en móviles sea más fácil de tocar */
+@media (max-width: 768px) {
+    .next-btn-container {
+        text-align: center;
+        margin-top: 3rem;
+    }
+    .next-btn {
+        width: 100%;
+        padding: 18px;
+    }
+}
+
+.course-completed-msg {
+    color: var(--accent);
+    font-family: var(--font-main);
+    font-weight: 700;
+    font-size: 1.2rem;
+    padding: 20px;
+    border: 1px solid var(--accent-subtle);
+    border-radius: var(--radius);
+    display: inline-block;
+}
