@@ -1141,30 +1141,36 @@ body.mode-light .cyber-back-btn {
     }
 }
 
-/* 1. Bloque de código (Terminal Style) */
+/* 1. BLOQUE DE CÓDIGO (TERMINAL) - VERSIÓN DEFINITIVA */
 .course-content pre {
-    background: #0a0a0a; /* Fondo negro fijo para estilo terminal */
-    
-    /* CORRECCIÓN: Usamos un color CLARO fijo en vez de la variable variable */
-    color: #e2e8f0 !important; 
+    background: #0a0a0a !important; /* Fondo negro siempre */
+    color: #e2e8f0 !important;     /* Texto claro siempre */
     
     padding: 1.5rem;
     border-radius: 12px;
-    overflow-x: auto;
     border: 1px solid var(--border-color);
     margin: 2.2rem 0;
-    font-family: var(--font-mono) !important;
+    font-family: 'JetBrains Mono', monospace !important; /* Fuente monoespaciada */
     font-size: 0.95rem !important;
     line-height: 1.6;
-    box-shadow: inset 0 0 20px rgba(0,0,0,0.5); /* Dale un poco de profundidad */
+    
+    /* Comportamiento del texto */
+    white-space: pre-wrap;      /* Hace que baje de línea en móviles (recomendado) */
+    word-wrap: break-word;      /* Evita que las palabras largas rompan el diseño */
+    overflow-x: hidden;         /* Oculta barra de scroll horizontal si usas pre-wrap */
+    
+    /* Sombra interna para dar profundidad */
+    box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
 }
 
-/* 2. Asegurar que la etiqueta <code> interior no cambie el color */
-.course-content pre code {
-    color: inherit !important; /* Hereda el #e2e8f0 del <pre> */
-    background: none !important;
-    padding: 0;
-    font-size: inherit;
+/* Forzar color a la etiqueta <code> interna para evitar conflictos */
+.course-content pre > code {
+    color: #e2e8f0 !important;
+    background-color: transparent !important; /* Quitar fondo gris de las etiquetas code */
+    padding: 0 !important;
+    font-family: inherit !important;
+    font-size: inherit !important;
+    text-shadow: none !important;
 }
 
 /* 2. Estilo para Imágenes (Efecto Moderno) */
