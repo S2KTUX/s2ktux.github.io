@@ -43,6 +43,28 @@ body.mode-light {
     --radius: 12px;
 }
 
+body.mode-light .course-content {
+    background-color: var(--card-bg) !important;
+    color: var(--text-main) !important;
+}
+
+body.mode-light .course-content p, 
+body.mode-light .course-content li,
+body.mode-light .course-content span {
+    color: var(--text-muted) !important;
+}
+
+body.mode-light .course-content h1,
+body.mode-light .course-content h2,
+body.mode-light .course-content h3 {
+    color: var(--text-main) !important;
+}
+
+body.mode-light .orb {
+    opacity: 0.05;
+    filter: blur(120px);
+}
+
 /* --- 3. THEME OVERRIDES --- */
 body.color-matrix {
     --hue: 145;
