@@ -248,11 +248,22 @@ async function openReader(fileUrl) {
         readerContent.classList.add('course-content');
 
         const images = readerContent.querySelectorAll('img');
-        images.forEach(img => {
-            img.classList.add('lesson-img');
-            img.loading = 'lazy';
-            img.onerror = function() { this.src = '/images/placeholder.png'; }; 
-        });
+images.forEach(img => {
+    img.classList.add('lesson-img');
+    img.loading = 'lazy';
+    img.onerror = function() { 
+        this.src = '/images/placeholder.png'; 
+        this.classList.add('loaded'); // Importante para mostrar el error también
+    };
+
+    if (img.complete) {
+        img.classList.add('loaded');
+    } else {
+        img.onload = function() {
+            this.classList.add('loaded');
+        };
+    }
+});
 
         if (document.body.classList.contains('mode-light')) {
             readerContent.classList.add('mode-light');
