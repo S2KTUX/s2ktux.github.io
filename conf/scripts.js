@@ -431,12 +431,3 @@ function processTermCommand(cmd) {
     // IMPORTANTE: Asegurar que el input wrapper siempre sea el último elemento
     termBody.appendChild(termInputWrapper);
 }
-
-
-// Optimizar imágenes
-const loadedImages = readerContent.querySelectorAll('img');
-loadedImages.forEach(img => {
-    if (!img.hasAttribute('alt')) img.alt = 'Imagen de curso';  // Accesibilidad
-    img.loading = 'lazy';  // Lazy loading
-    img.classList.add('loaded');  // Para animación
-});
