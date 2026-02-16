@@ -1140,3 +1140,49 @@ body.mode-light .cyber-back-btn {
         border-radius: 0;
     }
 }
+
+/* --- COMPONENTES INTERNOS DE LECCIONES (Callouts y Alerts) --- */
+
+/* 1. Caja de información (Video / Info) */
+.course-content .terminal-callout {
+    background: rgba(255, 255, 255, 0.03); /* Fondo muy sutil */
+    border: 1px solid var(--border-color);
+    border-left: 4px solid var(--accent); /* El borde izquierdo toma el color del tema */
+    padding: 15px 20px;
+    margin: 25px 0;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+    transition: all 0.3s ease;
+}
+
+.course-content .terminal-callout:hover {
+    background: var(--accent-subtle); /* Un brillo sutil al pasar el ratón */
+    transform: translateX(5px); /* Pequeño movimiento interactivo */
+    border-left-color: var(--accent-glow);
+}
+
+/* 2. Caja de Alerta (Atención) */
+.course-content .lesson-alert {
+    border: 1px solid var(--accent);
+    background: var(--accent-glow); /* Fondo del color del tema pero transparente */
+    color: var(--text-main); /* Asegura que se lea bien en claro y oscuro */
+    padding: 15px;
+    border-radius: var(--radius);
+    margin: 25px 0;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 800;
+    font-size: 0.85rem;
+    box-shadow: 0 0 20px var(--accent-glow); /* Efecto de resplandor */
+}
+
+/* 3. Clase específica para imágenes (por si usas <img class="lesson-img">) */
+.course-content .lesson-img {
+    /* Esto permite ajustar detalles específicos de imagen si lo necesitas */
+    width: 100%; /* Asegura responsividad */
+}
