@@ -193,9 +193,9 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    /* Patrón de puntos sutil para dar textura técnica */
-    background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-    background-size: 30px 30px;
+    /* Puntos ligeramente más visibles como en Hyprluna */
+    background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+    background-size: 32px 32px;
     z-index: -2;
     pointer-events: none;
 }
@@ -203,44 +203,46 @@ body::before {
 .orb {
     position: fixed;
     border-radius: 50%;
-    filter: blur(140px); /* Subido de 90px a 140px para suavizar bordes */
-    opacity: 0.15;       /* Bajado de 0.4 a 0.15 para que sea un susurro de color */
+    filter: blur(80px); 
+    opacity: 0.2;
     z-index: -1;
     transition: background 0.8s ease;
-    animation: floatOrb 25s infinite ease-in-out alternate; /* Más lento (25s) */
+
+    animation: floatOrb 20s infinite ease-in-out alternate;
 }
 
 .orb-1 {
-    width: 800px; /* Más grande para que el degradado sea más eterno */
-    height: 800px;
+    width: 380px; 
+    height: 380px;
     background: var(--accent);
-    top: -300px;
-    left: -200px;
+    top: 15%;   
+    left: 10%;
 }
 
 .orb-2 {
-    width: 700px;
-    height: 700px;
+    width: 320px; 
+    height: 320px;
     background: var(--accent);
-    bottom: -200px;
-    right: -100px;
+    bottom: 15%;
+    right: 10%;
     animation-delay: -5s;
 }
 
 .orb-3 {
-    width: 400px;
-    height: 400px;
+    width: 200px;  
+    height: 200px;
     background: #fff;
-    opacity: 0.05; /* Casi invisible, solo para dar un toque de luz */
-    top: 30%;
-    left: 50%;
+    opacity: 0.04;
+    top: 40%;
+    left: 45%;
     animation-delay: -10s;
 }
+
 @keyframes floatOrb {
     0% { transform: translate(0, 0) scale(1); }
-    100% { transform: translate(80px, 60px) scale(1.15); }
-}
 
+    100% { transform: translate(40px, 30px) scale(1.05); }
+}
 /* --- 6. NAVIGATION --- */
 .floating-nav {
     position: fixed;
