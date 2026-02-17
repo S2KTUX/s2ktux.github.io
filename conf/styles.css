@@ -1432,140 +1432,140 @@ body.mode-light .course-content {
 }
 @media (max-width: 768px) {
     .floating-nav {
-        width: 90%;
-        padding: 0.8rem 1.5rem;
-        justify-content: space-between;
-        top: 15px;
+        width: 90% !important;
+        padding: 0.8rem 1.5rem !important;
+        justify-content: space-between !important;
+        top: 15px !important;
     }
 
     .nav-links {
-        display: none;
+        display: none !important;
     }
 
     .mobile-header-content {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        width: 100%;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: space-between !important;
+        width: 100% !important;
     }
 
     .custom-menu-btn {
-        display: flex; 
+        display: flex !important; 
     }
 
     main {
-        padding-top: 100px;
-        padding-left: 15px;
-        padding-right: 15px;
-        width: 100%;
-        box-sizing: border-box;
-        overflow-x: hidden;
+        padding-top: 100px !important;
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+        overflow-x: hidden !important;
     }
 
     .hero h1 {
-        font-size: 2.2rem !important;
-        line-height: 1.2;
+        font-size: 1.8rem !important;
+        line-height: 1.1 !important;
+        word-wrap: break-word !important;
     }
 
     .hero p {
-        font-size: 1.1rem;
+        font-size: 1rem !important;
     }
 
     .methodology-grid, .skills-grid, .content-grid, .roadmap-container {
-        grid-template-columns: 1fr;
+        grid-template-columns: 1fr !important;
     }
 
     .terminal-container {
         width: 100% !important;
-        margin: 15px 0 !important;
-        height: 60vh;
+        margin: 10px 0 !important;
+        height: 55vh !important;
         border-radius: 8px !important;
-        display: flex;
-        flex-direction: column;
-        overflow: hidden;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
     }
 
     .term-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 6px 12px !important;
-        height: 35px;
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        padding: 0 12px !important;
+        height: 35px !important;
+        background: rgba(0, 0, 0, 0.2) !important;
     }
 
     .term-controls {
         display: flex !important;
-        gap: 5px;
-        min-width: 50px;
+        gap: 5px !important;
     }
 
     .term-controls span {
-        width: 10px;
-        height: 10px;
+        width: 8px !important;
+        height: 8px !important;
     }
 
     #term-title {
         position: static !important;
-        font-size: 0.65rem !important;
-        background: rgba(0, 0, 0, 0.1);
-        padding: 2px 8px;
-        border-radius: 4px;
-        max-width: 150px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+        font-size: 0.6rem !important;
+        background: rgba(0, 0, 0, 0.1) !important;
+        padding: 2px 6px !important;
+        border-radius: 4px !important;
     }
 
     .term-body {
-        padding: 10px !important;
-        font-size: 0.85rem !important;
-        line-height: 1.2 !important;
-        word-break: break-all !important; 
-        white-space: pre-wrap !important;
+        padding: 8px !important;
+        font-size: 0.8rem !important;
+        line-height: 1.0 !important;
+    }
+
+    .term-body * {
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.0 !important;
     }
 
     .term-line {
-        display: flex;
-        flex-wrap: wrap; 
-        gap: 5px;
-        margin-bottom: 4px !important;
+        display: flex !important;
+        flex-wrap: wrap !important;
+        gap: 4px !important;
+        margin-bottom: 2px !important;
     }
 
     .term-input-wrapper {
-        display: flex;
-        width: 100%;
-        align-items: center;
-        gap: 8px;
+        display: flex !important;
+        width: 100% !important;
+        align-items: center !important;
+        gap: 5px !important;
+        margin-top: 2px !important;
     }
 
     #term-input {
-        flex: 1;
-        background: transparent;
-        border: none;
-        outline: none;
-        color: var(--text-main);
-        font-family: var(--font-mono);
-        font-size: 16px; 
+        flex: 1 !important;
+        background: transparent !important;
+        border: none !important;
+        outline: none !important;
+        color: var(--text-main) !important;
+        font-size: 16px !important; 
     }
 
     .term-prompt {
-        white-space: nowrap;
-        color: var(--accent);
+        white-space: nowrap !important;
+        color: var(--accent) !important;
     }
 
     .course-content, .reader-container {
-        padding: 1.5rem !important;
+        padding: 10px !important;
         margin: 0 !important;
         width: 100% !important;
-        box-sizing: border-box;
+        box-sizing: border-box !important;
     }
 
     .course-content h1, .reader-container h1 {
-        font-size: 1.7rem !important;
+        font-size: 1.5rem !important;
         line-height: 1.1 !important;
-        margin: 1.5rem 0 !important;
         word-break: break-word !important;
-        word-wrap: break-word;
     }
 
     .course-content pre, .reader-container pre {
@@ -1573,58 +1573,39 @@ body.mode-light .course-content {
         max-width: 100% !important;
         overflow-x: auto !important;  
         white-space: pre !important;               
-        word-break: normal !important; 
-        margin: 1.5rem 0 !important;
-        padding: 15px !important;
+        margin: 1rem 0 !important;
+        padding: 10px !important;
         border-radius: 4px !important;
-        box-sizing: border-box;
     }
 
     .course-content img {
         max-width: 100% !important;
         height: auto !important;
-        display: block;
-        margin: 1.5rem 0 !important;
+        margin: 1rem 0 !important;
         border-radius: 4px !important;
     }
 
-    .reader-container p, .reader-container li {
-        word-break: break-word;
-        overflow-wrap: break-word;  
-    }
-
     .footer-content {
-        display: flex;
-        flex-direction: column;
-        gap: 30px;
-        text-align: center;
-        padding: 0 20px;
+        display: flex !important;
+        flex-direction: column !important;
+        gap: 20px !important;
+        text-align: center !important;
     }
-
-    .footer-center { grid-column: auto; order: 2; }
-    .social-icons { grid-column: auto; order: 3; justify-self: center; }
-    .footer-logo { order: 1; font-size: 1.8rem; }
 
     .theme-floater {
-        top: auto;
-        bottom: 20px;
-        right: 20px;
+        bottom: 15px !important;
+        right: 15px !important;
+        top: auto !important;
     }
 
     .theme-selector {
-        bottom: 60px;
-        top: auto;
-        right: 0;
-    }
-
-    .next-btn-container {
-        text-align: center;
-        margin-top: 3rem;
+        bottom: 55px !important;
+        top: auto !important;
     }
 
     .next-btn {
-        width: 100%;
-        padding: 18px;
+        width: 100% !important;
+        padding: 15px !important;
     }
 }
 
