@@ -1409,3 +1409,160 @@ color: #e2e8f0 !important;
     border-radius: var(--radius);
     display: inline-block;
 }
+.lesson-wrapper {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* Cabecera de la lección */
+.lesson-header {
+    text-align: center;
+    margin-bottom: 4rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.lesson-header .badge {
+    background: var(--accent-subtle);
+    color: var(--accent);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border: 1px solid var(--accent-glow);
+}
+
+.lesson-header h1 {
+    font-size: 3rem;
+    margin: 1.5rem 0 1rem;
+    background: linear-gradient(to right, var(--text-main), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Tarjeta de Video YouTube */
+.video-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    padding: 12px 25px;
+    border-radius: 12px;
+    text-decoration: none;
+    transition: 0.3s;
+    margin-top: 1rem;
+}
+
+.video-card:hover {
+    border-color: #ff0000; /* Color YouTube */
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+.video-icon { font-size: 1.5rem; }
+.video-text { text-align: left; display: flex; flex-direction: column; }
+.video-text strong { color: var(--text-main); font-size: 0.9rem; }
+.video-text span { color: var(--text-muted); font-size: 0.8rem; }
+
+/* Layout de dos columnas: Sidebar + Cuerpo */
+.lesson-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 4rem;
+    align-items: start;
+}
+
+/* Sidebar interna (TOC) */
+.lesson-toc {
+    position: sticky;
+    top: 120px;
+    padding: 1.5rem;
+    background: var(--nav-bg);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+}
+
+.lesson-toc h4 { 
+    font-size: 0.8rem; 
+    text-transform: uppercase; 
+    color: var(--accent); 
+    margin-bottom: 1.2rem;
+    letter-spacing: 1px;
+}
+
+.lesson-toc ul { list-style: none; }
+.lesson-toc li { margin-bottom: 10px; }
+.lesson-toc a { 
+    color: var(--text-muted); 
+    text-decoration: none; 
+    font-size: 0.9rem;
+    transition: 0.2s;
+}
+
+.lesson-toc a:hover { color: var(--text-main); padding-left: 5px; }
+
+/* Secciones de contenido */
+.lesson-section {
+    margin-bottom: 5rem;
+}
+
+/* Terminal Mockup dentro del curso */
+.terminal-mockup {
+    background: #000;
+    border-radius: 8px;
+    border: 1px solid var(--term-border);
+    margin: 1.5rem 0;
+    overflow: hidden;
+    font-family: var(--font-mono);
+}
+
+.term-dots {
+    background: #1a1a1a;
+    padding: 8px 12px;
+    display: flex;
+    gap: 6px;
+}
+
+.term-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #333;
+}
+
+.term-content {
+    padding: 15px;
+    color: #fff;
+    font-size: 0.9rem;
+}
+
+.term-content .user { color: var(--accent); }
+
+/* Grid de información rápida (ej: descriptores 0, 1, 2) */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
+    margin: 2rem 0;
+}
+
+.info-item {
+    background: var(--accent-subtle);
+    border: 1px solid var(--accent-glow);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    color: var(--text-main);
+}
+
+/* Ajuste móvil */
+@media (max-width: 1024px) {
+    .lesson-layout {
+        grid-template-columns: 1fr;
+    }
+    .lesson-toc {
+        display: none; /* Ocultamos sidebar en móvil para que no estorbe */
+    }
+}
