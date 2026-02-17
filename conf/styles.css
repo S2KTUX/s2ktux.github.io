@@ -1430,7 +1430,6 @@ body.mode-light .course-content {
 @keyframes blink {
     50% { opacity: 0; }
 }
-
 @media (max-width: 768px) {
     .floating-nav {
         width: 90%;
@@ -1438,59 +1437,71 @@ body.mode-light .course-content {
         justify-content: space-between;
         top: 15px;
     }
+
     .nav-links {
         display: none;
     }
+
     .mobile-header-content {
         display: flex;
         align-items: center;
         justify-content: space-between;
         width: 100%;
     }
+
     .custom-menu-btn {
         display: flex; 
     }
+
     .hero h1 {
-        font-size: 2.8rem;
+        font-size: 2.2rem;
     }
+
     .hero p {
         font-size: 1.1rem;
     }
+
     main {
         padding-top: 100px;
         padding-left: 15px;
         padding-right: 15px;
+        overflow-x: hidden;
     }
+
     .methodology-grid, .skills-grid, .content-grid, .roadmap-container {
         grid-template-columns: 1fr;
     }
+
     .terminal-container {
-width: 100vw;
-        margin: 0 -15px; 
-        height: 65vh;
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
+        width: 100% !important;
+        margin: 15px 0 !important;
+        height: 50vh;
+        border-radius: 8px !important;
         display: flex;
         flex-direction: column;
         overflow: hidden;
     }
+
     .term-header {
         display: flex;
         justify-content: space-between;
         align-items: center;
         padding: 6px 12px !important;
         height: 35px;
+        background: rgba(0, 0, 0, 0.2);
     }
+
     .term-controls {
         display: flex !important;
         gap: 5px;
         min-width: 50px;
     }
+
     .term-controls span {
         width: 10px;
         height: 10px;
     }
+
     #term-title {
         position: static !important;
         font-size: 0.65rem !important;
@@ -1502,12 +1513,30 @@ width: 100vw;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+
+    .term-body {
+        padding: 12px !important;
+        font-size: 0.8rem !important;
+        word-break: break-all !important; 
+        white-space: pre-wrap !important;
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+
+    .term-line {
+        display: flex;
+        flex-wrap: wrap; 
+        gap: 5px;
+        margin-bottom: 8px;
+    }
+
     .term-input-wrapper {
         display: flex;
         width: 100%;
         align-items: center;
         gap: 8px;
     }
+
     #term-input {
         flex: 1;
         background: transparent;
@@ -1517,28 +1546,52 @@ width: 100vw;
         font-family: var(--font-mono);
         font-size: 16px; 
     }
-.term-body {
-        word-break: break-all !important; 
-        white-space: pre-wrap !important; 
-    }
-    .term-line {
-        display: flex;
-        flex-wrap: wrap; 
-        gap: 5px;
-        margin-bottom: 8px;
-    }
+
     .term-prompt {
         white-space: nowrap;
         color: var(--accent);
     }
-    .reader-container {
-        padding: 20px;
-        font-size: 1rem; 
+
+    .course-content, .reader-container {
+        padding: 1.5rem !important;
+        margin: 0 !important;
+        width: 100% !important;
+        box-sizing: border-box;
     }
+
+    .course-content h1, .reader-container h1 {
+        font-size: 1.7rem !important;
+        line-height: 1.1 !important;
+        margin: 1.5rem 0 !important;
+        word-break: break-word !important;
+        word-wrap: break-word;
+    }
+
+    .course-content pre, .reader-container pre {
+        width: auto !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;  
+        white-space: pre !important;               
+        word-break: normal !important; 
+        margin: 1.5rem -1.5rem !important;
+        padding: 15px !important;
+        border-radius: 0 !important;
+        box-sizing: border-box;
+    }
+
+    .course-content img {
+        max-width: 100% !important;
+        height: auto !important;
+        display: block;
+        margin: 2rem -1.5rem !important;
+        border-radius: 0 !important;
+    }
+
     .reader-container p, .reader-container li {
         word-break: break-word;
         overflow-wrap: break-word;  
     }
+
     .footer-content {
         display: flex;
         flex-direction: column;
@@ -1546,79 +1599,44 @@ width: 100vw;
         text-align: center;
         padding: 0 20px;
     }
+
     .footer-center {
         grid-column: auto;
         order: 2;
     }
+
     .social-icons {
         grid-column: auto;
         order: 3;
         justify-self: center;
     }
+
     .footer-logo {
         order: 1;
         font-size: 1.8rem;
     }
+
     .theme-floater {
         top: auto;
         bottom: 20px;
         right: 20px;
     }
+
     .theme-selector {
         bottom: 60px;
         top: auto;
         right: 0;
     }
-    .course-content {
-        padding: 2rem 1.4rem;
-        margin: 1rem -15px;
-        border-radius: 0;
-    }
-    .course-content img {
-        margin: 2rem -15px;
-        border-radius: 0;
-    }
-    .course-content pre {
-        border-radius: 0;
-        margin: 1.5rem -1.4rem; 
-    }
+
     .next-btn-container {
         text-align: center;
         margin-top: 3rem;
     }
+
     .next-btn {
         width: 100%;
         padding: 18px;
     }
-}
-.course-content pre, .reader-container pre {
-    width: auto !important;
-    max-width: 100% !important;
-    overflow-x: auto !important;  
-    white-space: pre !important;               
-    word-break: normal !important; 
-    margin: 1.5rem -15px !important;
-    padding: 15px !important;
-    border-radius: 0 !important;
-}
-.course-content h1 {
-        font-size: 1.7rem !important;
-        line-height: 1.1;
-        margin: 1.5rem 0 !important;
-        word-break: break-word !important;
-    }
-.course-content h1, .reader-container h1 {
-    font-size: 1.7rem !important;
-    line-height: 1.1 !important;
-    margin: 1.5rem 0 !important;
-    word-break: break-word !important;
-    word-wrap: break-word;
-}
-.course-content img {
-    max-width: 100% !important;
-    height: auto !important;
-    display: block;
-    margin: 1rem auto;
 }
 
 @media (max-width: 1024px) {
