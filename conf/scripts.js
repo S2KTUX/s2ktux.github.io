@@ -18,12 +18,19 @@ const coursesDB = {
     },
     "lpic1": {
         title: "LPIC-1 101-500",
-        // CORRECCIÓN: 'quaters' cambiado a 'chapters' para que coincida con la lógica de openSyllabus
         chapters: [
             { id: 101, title: "Arquitectura de Sistema", file: "/cursos/lpic/101/101.html" },
             { id: 102, title: "Instalación de Linux", file: "/cursos/lpic/102/102.html" }
         ]
     }
+    "aws": {
+        title: "AWS Cloud",
+        chapters: [
+            { id: 101, title: "Proximamente...", file: "#" },
+            { id: 102, title: "Proximamente...", file: "#" },
+            { id: 103, title: "Proximamente...", file: "#" }
+    ]
+}
 };
 const projectsDB = {
     "deployer": { title: "S2KTUX Optimized Deployer", content: "<h1>S2KTUX Deployer</h1><p>Automatización de despliegues...</p>" },
@@ -187,6 +194,30 @@ function checkHash() {
         navigate(hash);
     }
 }
+
+document.addEventListener('click', function(e) {
+    const tocLink = e.target.closest('.lesson-toc a');
+    
+    if (tocLink) {
+        e.preventDefault(); 
+        
+        const targetId = tocLink.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        
+        if (targetElement) {
+            const navHeight = 110; 
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
+            });
+            
+            if (typeof resetTimer === 'function') resetTimer();
+        }
+    }
+});
 
 function openSyllabus(courseId) {
     const course = coursesDB[courseId];
