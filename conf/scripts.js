@@ -2,17 +2,17 @@ const coursesDB = {
     "rhcsa": {
         title: "RHCSA EX200",
         chapters: [
-            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/1.html" },
+            { id: 1, title: "Clase 1: Herramientas principales y su uso", file: "/cursos/rhcsa/1/1.html" },
             { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/2/2.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/3/3.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/4/4.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/5/5.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/6/6.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/7/7.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/8/8.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/9/9.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/10/10.html" },
-            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/EXTRA/extra.html" },
+            { id: 3, title: "Clase 3: Creación de scripts de shell sencillos", file: "/cursos/rhcsa/3/3.html" },
+            { id: 4, title: "Clase 4: Uso de los sistemas en funcionamiento", file: "/cursos/rhcsa/4/4.html" },
+            { id: 5, title: "Clase 5: Configuración del almacenamiento local", file: "/cursos/rhcsa/5/5.html" },
+            { id: 6, title: "Clase 6: Creación y configuración de sistemas de archivos", file: "/cursos/rhcsa/6/6.html" },
+            { id: 7, title: "Clase 7: Implementación, configuración y mantenimiento de los sistemas", file: "/cursos/rhcsa/7/7.html" },
+            { id: 8, title: "Clase 8: Gestión de las conexiones de red básicas", file: "/cursos/rhcsa/8/8.html" },
+            { id: 9, title: "Clase 9: Gestión de los usuarios y los grupos", file: "/cursos/rhcsa/9/9.html" },
+            { id: 10, title: "Clase 10: Gestión de la seguridad", file: "/cursos/rhcsa/10/10.html" },
+            { id: 11, title: "Clase EXTRA: Podman y repaso", file: "/cursos/rhcsa/EXTRA/extra.html" },
         ]
     },
     "lpic1": {
@@ -29,6 +29,7 @@ const coursesDB = {
             { id: 102, title: "Proximamente...", file: "#" },
             { id: 103, title: "Proximamente...", file: "#" }
     ]
+    }
 };
 const projectsDB = {
     "deployer": { title: "S2KTUX Optimized Deployer", content: "<h1>S2KTUX Deployer</h1><p>Automatización de despliegues...</p>" },
