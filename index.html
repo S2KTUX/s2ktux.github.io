@@ -40,12 +40,12 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
-    <div id="mobile-menu" class="mobile-menu-overlay">
-        <a href="#" class="mobile-nav-link" onclick="navigate('home'); toggleMobileMenu()">Inicio</a>
-        <a href="#" class="mobile-nav-link" onclick="navigate('courses'); toggleMobileMenu()">Cursos</a>
-        <a href="#" class="mobile-nav-link" onclick="navigate('terminal'); toggleMobileMenu()">Terminal</a>
-        <a href="#" class="mobile-nav-link" onclick="navigate('projects'); toggleMobileMenu()">Proyectos</a>
-    </div>
+<div id="mobile-menu" class="mobile-menu-overlay">
+    <a href="javascript:void(0)" class="mobile-nav-link" onclick="handleMobileNavigation('home')">Inicio</a>
+    <a href="javascript:void(0)" class="mobile-nav-link" onclick="handleMobileNavigation('courses')">Cursos</a>
+    <a href="javascript:void(0)" class="mobile-nav-link" onclick="handleMobileNavigation('terminal')">Terminal</a>
+    <a href="javascript:void(0)" class="mobile-nav-link" onclick="handleMobileNavigation('projects')">Proyectos</a>
+</div>
     <nav class="floating-nav" id="mainNav">
         <div class="nav-links">
             <a class="nav-link active" onclick="navigate('home')">Inicio</a>
@@ -53,12 +53,18 @@
             <a class="nav-link" onclick="navigate('terminal')">Terminal</a>
             <a class="nav-link" onclick="navigate('projects')">Proyectos</a>
         </div>
-        <div class="mobile-header-content">
-            <a href="#" class="brand-logo" onclick="navigate('home'); toggleMobileMenu()">S2KTUX</a>
-            <button class="hamburger-btn" id="hamburger" onclick="toggleMobileMenu()" aria-label="Abrir menú" aria-expanded="false">
-                <span class="hamburger-line"></span><span class="hamburger-line"></span><span class="hamburger-line"></span>
-            </button>
+<div class="mobile-header-content">
+    <a href="javascript:void(0)" class="brand-logo" onclick="navigate('home')">S2KTUX</a>
+    
+    <button class="custom-menu-btn" id="hamburger" onclick="toggleMobileMenu()" aria-label="Menu">
+        <div class="menu-dots">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
         </div>
+    </button>
+</div>
     </nav>
     <div class="theme-floater">
         <button class="theme-btn" onclick="toggleThemeMenu()" aria-label="Cambiar tema">
