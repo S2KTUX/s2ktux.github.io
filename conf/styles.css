@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap');
 /* --- 1. CORE VARIABLES --- */
 :root {
 
@@ -9,20 +10,17 @@
     --text-main: #fafafa;
     --text-muted: #a1a1aa; 
     --card-bg: #09090b;
-    
     --nav-bg: rgba(9, 9, 11, 0.9);
     --footer-bg: #050505;
     --border-color: rgba(255, 255, 255, 0.06);
-    
     --code-bg: #111113;  
     --radius: 8px;
     --term-bg: #000000;
     --term-text: #e4e4e7;
     --term-header: #09090b;
     --term-border: #27272a;
-
-    --font-main: 'Inter', sans-serif;
-    --font-mono: 'JetBrains Mono', monospace;
+    --font-main: 'Geist', 'Inter', sans-serif;
+    --font-mono: 'Geist Mono', 'JetBrains Mono', monospace;
 }
 
 /* --- 2. LIGHT MODE --- */
@@ -154,6 +152,10 @@ body {
     flex-direction: column;
     position: relative;
     transition: background 0.5s ease, color 0.3s ease;
+    line-height: 1.6; /* Clave para la legibilidad del contenido */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
 /* --- 4. SPLASH SCREEN --- */
