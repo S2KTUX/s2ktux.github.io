@@ -1,4 +1,3 @@
-// --- DATA ---
 const coursesDB = {
     "rhcsa": {
         title: "RHCSA EX200",
@@ -30,135 +29,117 @@ const coursesDB = {
             { id: 102, title: "Proximamente...", file: "#" },
             { id: 103, title: "Proximamente...", file: "#" }
     ]
-}
 };
 const projectsDB = {
     "deployer": { title: "S2KTUX Optimized Deployer", content: "<h1>S2KTUX Deployer</h1><p>Automatización de despliegues...</p>" },
     "ansible": { title: "Ansible Playbooks", content: "<h1>Ansible</h1><p>Playbooks de seguridad...</p>" }
 };
 
+let virtualFS = {
+    "~": ["cursos", "proyectos", "README.md"],
+    "~/cursos": ["rhcsa", "lpic1"],
+    "~/proyectos": ["deployer", "ansible"],
+    "files": {
+        "README.md": "Bienvenido a S2KTUX. Escribe 'help' para comenzar."
+    }
+};
+
+let commandHistory = [];
+
 let currentCourseId = null;
 let currentFileUrl = null;
 let currentPath = '~';
 
+const termInput = document.getElementById('term-input');
+const termBody = document.getElementById('term-body');
+const termInputWrapper = document.getElementById('term-input-wrapper');
+const termTitle = document.getElementById('term-title');
+const terminalEl = document.getElementById('terminal');
+const typeWriterElement = document.getElementById('typing-text');
+
 window.addEventListener('load', () => {
-    setTimeout(() => {
-        const splash = document.getElementById('splash');
-        if(splash) {
+    const splash = document.getElementById('splash');
+    if(splash) {
+        setTimeout(() => {
             splash.classList.add('hidden');
             setTimeout(() => splash.remove(), 800);
-        }
-    }, 1500);
+        }, 1500);
+    }
 });
 
-function toggleMobileMenu() {
-    const menu = document.getElementById('mobile-menu');
-    const burger = document.getElementById('hamburger');
-    if(menu && burger) {
-        menu.classList.toggle('active');
-        burger.classList.toggle('active');
-        burger.setAttribute('aria-expanded', burger.classList.contains('active'));
-    }
-}
-
-const welcomeText = "Tu terminal, tus reglas. Aprende administración profesional de Linux y descubre el lado creativo de las modificaciones de sistema. Expandiendo fronteras hacia el Cloud muy pronto.";
-const typeWriterElement = document.getElementById('typing-text');
-let typeIndex = 0;
-function typeWriter() {
-    if (typeIndex < welcomeText.length) {
-        typeWriterElement.innerHTML += welcomeText.charAt(typeIndex);
-        typeIndex++;
-        setTimeout(typeWriter, 30);
-    }
-}
 document.addEventListener('DOMContentLoaded', () => {
     if(typeWriterElement) typeWriter();
     checkHash();
 });
 
-let idleTimer;
-let scrollY = 0;
 window.addEventListener('scroll', () => {
     scrollY = window.scrollY;
     resetTimer();
 });
-document.addEventListener('mousemove', resetTimer);
-document.addEventListener('keydown', resetTimer);
-function resetTimer() {
-    clearTimeout(idleTimer);
-    const nav = document.getElementById('mainNav');
-    if(nav) nav.classList.remove('nav-hidden');
-    if (scrollY > 50) {
-        const activePage = document.querySelector('.page-section.active');
-        if(activePage) {
-            const activeId = activePage.id;
-            if (activeId === 'reader' || activeId === 'project-view' || activeId === 'terminal') {
-                idleTimer = setTimeout(() => {
-                    if(nav) nav.classList.add('nav-hidden');
-                }, 2000);
-            }
-        }
-    }
-}
 
-function toggleThemeMenu() {
-    const menu = document.getElementById('themeMenu');
-    if(menu) menu.classList.toggle('active');
-}
-function setTheme(colorName, isLight) {
-    const body = document.body;
-    body.classList.remove('color-blue', 'color-purple', 'color-matrix', 'color-ruby', 'color-sunset', 'mode-light');
-    if (colorName !== 'blue') {
-        body.classList.add('color-' + colorName);
+document.addEventListener('mousemove', resetTimer);
+document.addEventListener('keydown', (e) => {
+    resetTimer();
+    if (e.key === "Escape") {
+        closeLightbox();
     }
-    if (isLight) body.classList.add('mode-light');
-    
-    const icon = document.getElementById('theme-icon');
-    if (icon) {
-        if (isLight) {
-            icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
-        } else {
-            icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
-        }
-    }
-    
-    if(document.getElementById('themeMenu')) {
-        document.getElementById('themeMenu').classList.remove('active');
-    }
-    localStorage.setItem('s2ktux_theme', JSON.stringify({ color: colorName, light: isLight }));
-}
-const savedTheme = JSON.parse(localStorage.getItem('s2ktux_theme'));
-if (savedTheme) setTheme(savedTheme.color, savedTheme.light);
+});
+
 document.addEventListener('click', (e) => {
     if (!e.target.closest('.theme-btn') && !e.target.closest('.theme-selector')) {
         const menu = document.getElementById('themeMenu');
         if(menu) menu.classList.remove('active');
     }
+    
+    const tocLink = e.target.closest('.lesson-toc a');
+    if (tocLink) {
+        e.preventDefault(); 
+        const targetId = tocLink.getAttribute('href').substring(1);
+        const targetElement = document.getElementById(targetId);
+        if (targetElement) {
+            const navHeight = 110; 
+            const elementPosition = targetElement.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: "smooth"
+            });
+            if (typeof resetTimer === 'function') resetTimer();
+        }
+    }
 });
 
-function navigate(pageId) {
-    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-    
-    const pageSection = document.getElementById(pageId);
-    if(pageSection) pageSection.classList.add('active');
+if(termInput) {
+    termInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const cmd = this.value.trim();
+            if (cmd) {
+                commandHistory.push(cmd);
+                const historyLine = document.createElement('div');
+                historyLine.className = 'term-line';
+                const promptText = document.querySelector('.term-prompt') ? document.querySelector('.term-prompt').innerText : '';
+                historyLine.innerHTML = `<span style="color:var(--accent); font-weight:bold;">${promptText}</span> ${cmd}`;
+                if(termBody && termInputWrapper) {
+                    termBody.insertBefore(historyLine, termInputWrapper);
+                    processTermCommand(cmd);
+                }
+            } else {
+                if(termBody && termInputWrapper) {
+                    const emptyLine = document.createElement('div');
+                    emptyLine.className = 'term-line';
+                    termBody.insertBefore(emptyLine, termInputWrapper);
+                }
+            }
+            this.value = '';
+            if(termBody) termBody.scrollTop = termBody.scrollHeight;
+            setTimeout(() => this.focus(), 0);
+        }
+    });
+}
 
-    const map = { 'home':0, 'courses':1, 'syllabus': 1, 'terminal':2, 'projects':3 };
-    if (map[pageId] !== undefined) {
-        const links = document.querySelectorAll('.nav-link');
-        if(links[map[pageId]]) links[map[pageId]].classList.add('active');
-    }
-
-    window.history.pushState({ page: pageId }, null, `#${pageId}`);
-    if (pageId === 'terminal') {
-        setTimeout(() => {
-            const termInput = document.getElementById('term-input');
-            if(termInput) termInput.focus();
-        }, 100);
-        if (currentPath !== '~') currentPath = '~';
-    }
-    window.scrollTo(0,0);
-    resetTimer();
+if(terminalEl) {
+    terminalEl.addEventListener('click', () => { if(termInput) termInput.focus(); });
+    terminalEl.addEventListener('touchstart', () => { if(termInput) termInput.focus(); });
 }
 
 window.onpopstate = function(event) {
@@ -188,6 +169,33 @@ window.onpopstate = function(event) {
     resetTimer();
 };
 
+let idleTimer;
+let scrollY = 0;
+
+function navigate(pageId) {
+    document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+    
+    const pageSection = document.getElementById(pageId);
+    if(pageSection) pageSection.classList.add('active');
+
+    const map = { 'home':0, 'courses':1, 'syllabus': 1, 'terminal':2, 'projects':3 };
+    if (map[pageId] !== undefined) {
+        const links = document.querySelectorAll('.nav-link');
+        if(links[map[pageId]]) links[map[pageId]].classList.add('active');
+    }
+
+    window.history.pushState({ page: pageId }, null, `#${pageId}`);
+    if (pageId === 'terminal') {
+        setTimeout(() => {
+            if(termInput) termInput.focus();
+        }, 100);
+        if (currentPath !== '~') currentPath = '~';
+    }
+    window.scrollTo(0,0);
+    resetTimer();
+}
+
 function checkHash() {
     const hash = window.location.hash.replace('#', '');
     if (hash && hash !== 'reader' && hash !== 'image-container' && hash !== 'project-view') {
@@ -195,29 +203,74 @@ function checkHash() {
     }
 }
 
-document.addEventListener('click', function(e) {
-    const tocLink = e.target.closest('.lesson-toc a');
-    
-    if (tocLink) {
-        e.preventDefault(); 
-        
-        const targetId = tocLink.getAttribute('href').substring(1);
-        const targetElement = document.getElementById(targetId);
-        
-        if (targetElement) {
-            const navHeight = 110; 
-            const elementPosition = targetElement.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - navHeight;
+function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const burger = document.getElementById('hamburger');
+    if(menu && burger) {
+        menu.classList.toggle('active');
+        burger.classList.toggle('active');
+        burger.setAttribute('aria-expanded', burger.classList.contains('active'));
+    }
+}
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: "smooth"
-            });
-            
-            if (typeof resetTimer === 'function') resetTimer();
+function resetTimer() {
+    clearTimeout(idleTimer);
+    const nav = document.getElementById('mainNav');
+    if(nav) nav.classList.remove('nav-hidden');
+    if (scrollY > 50) {
+        const activePage = document.querySelector('.page-section.active');
+        if(activePage) {
+            const activeId = activePage.id;
+            if (activeId === 'reader' || activeId === 'project-view' || activeId === 'terminal') {
+                idleTimer = setTimeout(() => {
+                    if(nav) nav.classList.add('nav-hidden');
+                }, 2000);
+            }
         }
     }
-});
+}
+
+function toggleThemeMenu() {
+    const menu = document.getElementById('themeMenu');
+    if(menu) menu.classList.toggle('active');
+}
+
+function setTheme(colorName, isLight) {
+    const body = document.body;
+    body.classList.remove('color-blue', 'color-purple', 'color-matrix', 'color-ruby', 'color-sunset', 'mode-light');
+    if (colorName !== 'blue') {
+        body.classList.add('color-' + colorName);
+    }
+    if (isLight) body.classList.add('mode-light');
+    
+    const icon = document.getElementById('theme-icon');
+    if (icon) {
+        if (isLight) {
+            icon.innerHTML = '<circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>';
+        } else {
+            icon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>';
+        }
+    }
+    
+    if(document.getElementById('themeMenu')) {
+        document.getElementById('themeMenu').classList.remove('active');
+    }
+    localStorage.setItem('s2ktux_theme', JSON.stringify({ color: colorName, light: isLight }));
+}
+
+const savedTheme = JSON.parse(localStorage.getItem('s2ktux_theme'));
+if (savedTheme) setTheme(savedTheme.color, savedTheme.light);
+
+const welcomeText = "Tu terminal, tus reglas. Aprende administración profesional de Linux y descubre el lado creativo de las modificaciones de sistema. Expandiendo fronteras hacia el Cloud muy pronto.";
+let typeIndex = 0;
+
+function typeWriter() {
+    if (typeIndex < welcomeText.length) {
+        typeWriterElement.innerHTML += welcomeText.charAt(typeIndex);
+        typeIndex++;
+        setTimeout(typeWriter, 30);
+    }
+}
 
 function openSyllabus(courseId) {
     const course = coursesDB[courseId];
@@ -329,7 +382,7 @@ function addNextButton() {
     if (!currentCourseId) return;
     const course = coursesDB[currentCourseId];
     const idx = course.chapters.findIndex(c => c.file === currentFileUrl);
-    if(idx === -1) return; // Capa de seguridad extra
+    if(idx === -1) return;
 
     const nextChapter = course.chapters[idx + 1];
     const btnContainer = document.createElement('div');
@@ -355,61 +408,11 @@ function openProject(id) {
     navigate('project-view');
 }
 
-// --- TERMINAL ---
-const termInput = document.getElementById('term-input');
-const termBody = document.getElementById('term-body');
-const termInputWrapper = document.getElementById('term-input-wrapper');
-const termTitle = document.getElementById('term-title');
-let commandHistory = [];
-
-let virtualFS = {
-    "~": ["cursos", "proyectos", "README.md"],
-    "~/cursos": ["rhcsa", "lpic1"],
-    "~/proyectos": ["deployer", "ansible"],
-    "files": {
-        "README.md": "Bienvenido a S2KTUX. Escribe 'help' para comenzar."
-    }
-};
-
 function updateTerminalUI() {
     const fullPath = `visitor@s2ktux:${currentPath}$`;
     if(termTitle) termTitle.innerText = fullPath.replace('$', ''); 
     const prompt = document.querySelector('.term-prompt');
     if(prompt) prompt.innerText = fullPath; 
-}
-
-if(termInput) {
-    termInput.addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') {
-            const cmd = this.value.trim();
-            if (cmd) {
-                commandHistory.push(cmd);
-                const historyLine = document.createElement('div');
-                historyLine.className = 'term-line';
-                const promptText = document.querySelector('.term-prompt') ? document.querySelector('.term-prompt').innerText : '';
-                historyLine.innerHTML = `<span style="color:var(--accent); font-weight:bold;">${promptText}</span> ${cmd}`;
-                if(termBody && termInputWrapper) {
-                    termBody.insertBefore(historyLine, termInputWrapper);
-                    processTermCommand(cmd);
-                }
-            } else {
-                if(termBody && termInputWrapper) {
-                    const emptyLine = document.createElement('div');
-                    emptyLine.className = 'term-line';
-                    termBody.insertBefore(emptyLine, termInputWrapper);
-                }
-            }
-            this.value = '';
-            if(termBody) termBody.scrollTop = termBody.scrollHeight;
-            setTimeout(() => this.focus(), 0);
-        }
-    });
-}
-
-const terminalEl = document.getElementById('terminal');
-if(terminalEl) {
-    terminalEl.addEventListener('click', () => { if(termInput) termInput.focus(); });
-    terminalEl.addEventListener('touchstart', () => { if(termInput) termInput.focus(); });
 }
 
 function processTermCommand(cmd) {
@@ -513,13 +516,10 @@ function processTermCommand(cmd) {
     termBody.appendChild(termInputWrapper);
 }
 
-
-
 function openLightbox(src) {
     const modal = document.getElementById('lightbox-modal');
     const modalImg = document.getElementById('lightbox-img');
     modal.classList.remove('hidden');
-    // Pequeño delay para que la transición de opacidad funcione
     setTimeout(() => modal.classList.add('show'), 10);
     modalImg.src = src;
 }
@@ -527,16 +527,8 @@ function openLightbox(src) {
 function closeLightbox() {
     const modal = document.getElementById('lightbox-modal');
     modal.classList.remove('show');
-    // Esperar a que termine la animación antes de ocultar
     setTimeout(() => {
         modal.classList.add('hidden');
         document.getElementById('lightbox-img').src = '';
     }, 300);
 }
-
-// Cerrar al pulsar Escape
-document.addEventListener('keydown', function(e) {
-    if (e.key === "Escape") {
-        closeLightbox();
-    }
-});
