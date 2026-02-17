@@ -1465,19 +1465,69 @@ body.mode-light .course-content {
         grid-template-columns: 1fr;
     }
     .terminal-container {
-        width: 100vw;
+width: 100vw;
         margin: 0 -15px; 
-        height: 60vh;
+        height: 65vh;
         border-radius: 0;
         border-left: none;
         border-right: none;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    .term-header {
+        padding: 8px 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: rgba(255, 255, 255, 0.05);
+    }
+    .term-controls {
+        display: flex;
+        gap: 6px;
+    }
+    .term-controls span {
+        width: 10px;
+        height: 10px;
+    }
+    #term-title {
+        font-size: 0.7rem;
+        opacity: 0.7;
+        font-family: var(--font-mono);
+    }
+    .term-input-wrapper {
+        display: flex;
+        width: 100%;
+        align-items: center;
+        gap: 8px;
+    }
+    #term-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text-main);
+        font-family: var(--font-mono);
+        font-size: 16px; 
     }
     .term-body {
-        font-size: 0.85rem;
-        padding: 15px;
+        font-size: 0.8rem;
+        padding: 12px;
+        flex-grow: 1;
+        overflow-y: auto;
+    }
+    .term-line {
+        display: flex;
+        flex-wrap: wrap; 
+        gap: 5px;
+        margin-bottom: 8px;
     }
     .term-line, #term-input {
-        word-break: break-word;
+        word-break: break-all;
+    }
+    .term-prompt {
+        white-space: nowrap;
+        color: var(--accent);
     }
     .reader-container {
         padding: 20px;
