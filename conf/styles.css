@@ -1471,8 +1471,8 @@ color: #e2e8f0 !important;
 /* Layout de dos columnas: Sidebar + Cuerpo */
 .lesson-layout {
     display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 2rem;
+    grid-template-columns: 210px 1fr;
+    gap: 2.5rem;
     align-items: start;
 }
 
@@ -1480,27 +1480,31 @@ color: #e2e8f0 !important;
 .lesson-toc {
     position: sticky;
     top: 20px;
-    padding: 0.8rem;
+    padding: 1rem;
     background: var(--nav-bg);
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
-    /* Fuente compacta para que quepa todo */
+    font-family: var(--font-main);
     font-size: 0.70rem;
+    backdrop-filter: blur(8px);
 }
 
 .lesson-toc h4 { 
     font-size: 0.65rem;
     text-transform: uppercase; 
     color: var(--accent); 
-    margin-bottom: 10px;
-    letter-spacing: 0.5px;
-    font-weight: bold;
+    margin-bottom: 12px;
+    letter-spacing: 1px;
+    font-weight: 700;
 }
 
 .lesson-toc ul { 
     list-style: none;
     padding: 0;
     margin: 0;
+    gap: 2px;
+    display: flex;
+    flex-direction: column;
 }
 
 .lesson-toc li a {
