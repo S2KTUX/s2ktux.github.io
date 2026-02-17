@@ -1431,181 +1431,111 @@ body.mode-light .course-content {
     50% { opacity: 0; }
 }
 @media (max-width: 768px) {
-    .floating-nav {
-        width: 90% !important;
-        padding: 0.8rem 1.5rem !important;
-        justify-content: space-between !important;
-        top: 15px !important;
-    }
-
-    .nav-links {
-        display: none !important;
-    }
-
-    .mobile-header-content {
-        display: flex !important;
-        align-items: center !important;
-        justify-content: space-between !important;
-        width: 100% !important;
-    }
-
-    .custom-menu-btn {
-        display: flex !important; 
-    }
-
+    
     main {
-        padding-top: 100px !important;
-        padding-left: 10px !important;
-        padding-right: 10px !important;
+        padding-top: 100px;
+        padding-left: 15px !important; 
+        padding-right: 15px !important;
         width: 100% !important;
         max-width: 100vw !important;
-        box-sizing: border-box !important;
-        overflow-x: hidden !important;
+        box-sizing: border-box;
+        overflow-x: hidden; 
     }
 
-    .hero h1 {
-        font-size: 1.8rem !important;
-        line-height: 1.1 !important;
-        word-wrap: break-word !important;
-    }
-
-    .hero p {
-        font-size: 1rem !important;
-    }
-
-    .methodology-grid, .skills-grid, .content-grid, .roadmap-container {
+    #home .methodology-grid,
+    #home .roadmap-container {
+        display: grid !important;
         grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        padding: 0 !important;
+        width: 100% !important;
     }
 
-    .terminal-container {
+    #home > div[style*="display: grid"] {
+        display: grid !important;
+        grid-template-columns: 1fr !important; 
         width: 100% !important;
-        margin: 10px 0 !important;
-        height: 55vh !important;
-        border-radius: 8px !important;
-        display: flex !important;
-        flex-direction: column !important;
-        overflow: hidden !important;
+        gap: 20px !important;
+    }
+
+    .content-grid {
+        grid-template-columns: 1fr !important;
+        gap: 20px !important;
+        width: 100% !important;
+    }
+    .card {
+        width: 100% !important;
+    }
+    .terminal-container {
+        width: calc(100% + 30px) !important;
+        margin-left: -15px !important;
+        margin-right: -15px !important;
+        height: 60vh !important;
+        border-radius: 0 !important;
     }
 
     .term-header {
-        display: flex !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        padding: 0 12px !important;
-        height: 35px !important;
-        background: rgba(0, 0, 0, 0.2) !important;
-    }
-
-    .term-controls {
-        display: flex !important;
-        gap: 5px !important;
-    }
-
-    .term-controls span {
-        width: 8px !important;
-        height: 8px !important;
-    }
-
-    #term-title {
-        position: static !important;
-        font-size: 0.6rem !important;
-        background: rgba(0, 0, 0, 0.1) !important;
-        padding: 2px 6px !important;
-        border-radius: 4px !important;
+        padding: 10px 15px !important;
     }
 
     .term-body {
-        padding: 8px !important;
-        font-size: 0.8rem !important;
-        line-height: 1.0 !important;
-    }
-
-    .term-body * {
-        margin: 0 !important;
-        padding: 0 !important;
-        line-height: 1.0 !important;
+        padding: 10px 15px !important; 
+        font-size: 0.85rem !important;
+        line-height: 1.4 !important; 
+        overflow-x: hidden !important;
     }
 
     .term-line {
-        display: flex !important;
-        flex-wrap: wrap !important;
-        gap: 4px !important;
         margin-bottom: 2px !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
+        white-space: pre-wrap !important; 
     }
 
     .term-input-wrapper {
-        display: flex !important;
-        width: 100% !important;
-        align-items: center !important;
-        gap: 5px !important;
         margin-top: 2px !important;
+        display: flex !important;
+        align-items: center !important;
     }
-
+    
     #term-input {
         flex: 1 !important;
-        background: transparent !important;
-        border: none !important;
-        outline: none !important;
-        color: var(--text-main) !important;
         font-size: 16px !important; 
     }
 
-    .term-prompt {
-        white-space: nowrap !important;
-        color: var(--accent) !important;
+    h1 {
+        font-size: 2rem !important;
+        word-wrap: break-word !important;
+        overflow-wrap: break-word !important;
     }
-
-    .course-content, .reader-container {
-        padding: 10px !important;
-        margin: 0 !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
-    .course-content h1, .reader-container h1 {
+    h2 {
         font-size: 1.5rem !important;
-        line-height: 1.1 !important;
-        word-break: break-word !important;
+    }
+    p, li, span {
+        max-width: 100% !important;
+        word-wrap: break-word !important;
     }
 
-    .course-content pre, .reader-container pre {
-        width: 100% !important;
-        max-width: 100% !important;
-        overflow-x: auto !important;  
-        white-space: pre !important;               
-        margin: 1rem 0 !important;
-        padding: 10px !important;
-        border-radius: 4px !important;
-    }
-
-    .course-content img {
-        max-width: 100% !important;
-        height: auto !important;
-        margin: 1rem 0 !important;
-        border-radius: 4px !important;
+    .floating-nav {
+        width: 90% !important;
+        padding: 0.8rem 1rem !important;
     }
 
     .footer-content {
-        display: flex !important;
         flex-direction: column !important;
         gap: 20px !important;
         text-align: center !important;
     }
-
-    .theme-floater {
-        bottom: 15px !important;
-        right: 15px !important;
-        top: auto !important;
+    .footer-logo {
+        order: 1 !important;
+        font-size: 1.5rem !important;
     }
-
-    .theme-selector {
-        bottom: 55px !important;
-        top: auto !important;
+    .footer-center {
+        order: 2 !important;
     }
-
-    .next-btn {
-        width: 100% !important;
-        padding: 15px !important;
+    .social-icons {
+        order: 3 !important;
+        justify-self: center !important;
     }
 }
 
