@@ -37,7 +37,7 @@
                 <h3>1. Acceder a un prompt de shell</h3>
                 <p>El prompt indica tu identidad y ubicación mediante el formato <code>usuario@máquina:ruta</code>. Se cierra con <code>$</code> para usuarios normales o <code>#</code> para root.</p>
                 <img src="/images/Shell.png" alt="Ejemplo de prompt de shell">
-                <p>El acceso puede ser local (TTY), remoto (SSH) o vía terminal gráfica. Recuerda que Linux es <em>Case Sensitive</em>.</p>
+                <p>El acceso puede ser local (TTY)(Control + Alt + F1 - F6), remoto (SSH) o vía terminal gráfica. Recordad que Linux es <em>Case Sensitive</em>, que es a lo que se refieren con ejecutar con la sintaxis correcta..</p>
             </section>
 
             <section id="obj2" class="lesson-section">
@@ -50,9 +50,10 @@
                 </div>
                 
                 <ul>
+                    <li><strong><code>&lt;</code> , <code>&lt;&lt;</code> , <code>&lt;&lt;&lt;</code></strong> -> Entrada desde archivo, bloque de texto o cadena.</li>
                     <li><code>&gt;</code> , <code>&gt;&gt;</code> : Salida a archivo (sobrescribir o añadir).</li>
                     <li><code>2&gt;</code> : Captura exclusiva de errores.</li>
-                    <li><code>&amp;&gt;</code> : Redirección completa (salida + errores).</li>
+                    <li><code>&amp;&gt;</code> : Redirección completa (salida y errores).</li>
                     <li><code>|</code> : Tubería (conecta procesos).</li>
                 </ul>
                 <img src="/images/redd-basic.png" alt="Ejemplo de redirecciones">
@@ -60,67 +61,82 @@
 
             <section id="obj3" class="lesson-section">
                 <h3>3. Grep y expresiones regulares</h3>
-                <p>Análisis de patrones en texto. Flags clave:</p>
+                <p>Grep sirve para analizar y buscar patrones dentro de archivos o salidas de comandos. Las flags más importantes son :</p>
                 <ul>
-                    <li><code>-E</code> : Regex extendidas (<code>|</code>, <code>+</code>).</li>
-                    <li><code>-v</code> : Invertir búsqueda.</li>
-                    <li><code>-i</code> : Ignorar mayúsculas.</li>
+                    <li><code>-E</code> : Regex extendidas. Ejemplo : <code>grep -E "error|fallo" log.txt</code>.</li>
+                    <li><code>-v</code> : Invertir búsqueda, es decir, que nos borre lo que encuentre.Ejemplo : <code> ps -ef | grep -v grep</code></li>
+                    <li><code>-i</code> : Ignorar mayúsculas. Ejemplo : <code>grep -i "linux" manual.txt</code></li>
                 </ul>
-                <p>Símbolos Regex: <code>^</code> (inicio), <code>$</code> (fin), <code>.</code> (cualquier carácter), <code>*</code> (repetición).</p>
+                <p>Símbolos Regex (expresiones regulares básicas): <code>^</code> (inicio), <code>$</code> (fin), <code>.</code> (cualquier carácter), <code>*</code> (repetición), <code>[]</code> (Cualquiera de los caracteres dentro), <code>|</code> (una opción u otra).</p>
             </section>
 
             <section id="obj4" class="lesson-section">
                 <h3>4. Acceso remoto con SSH</h3>
-                <p>Puerto 22 por defecto. Configuración en <code>/etc/ssh/sshd_config</code>.</p>
+                <p>SSH es un protocolo de red diseñado para establecer conexiones seguras entre dos maquinas. Tiene el puerto 22 por defecto y su configuración está en <code>/etc/ssh/sshd_config</code>.</p>
                 <ul>
-                    <li><code>-p</code> : Puerto específico.</li>
-                    <li><code>-i</code> : Clave privada (Identity file).</li>
-                    <li><code>-v</code> : Modo verbose para depurar.</li>
+                    <li><code>-p</code> : Permite especificar un puerto</li>
+                    <li><code>-i</code> : Indica la ruta de la clave privada.</li>
+                    <li><code>-v</code> : Modo verbose para mostrar más información sobre el proceso de conexión</li>
+                    <li><code>-l</code> : Especifica el nombre del usuario con el que deseamos establecer la conexión.</li>
                 </ul>
                 <img src="/images/ssh.png" alt="Ejemplo de SSH">
             </section>
 
             <section id="obj5" class="lesson-section">
                 <h3>5. Inicio y cambio de usuario</h3>
-                <p>Para cambiar de identidad, usa <code>su -</code> (el guion carga el entorno completo del usuario destino).</p>
+                <p>Para cambiar de identidad, usamos <code>su -</code> (el guion carga el entorno completo del usuario destino).</p>
                 <img src="/images/inicio-su.png" alt="Ejemplo de su -">
-                <p>Con <code>sudo -i</code> usas tu propia contraseña para ganar privilegios de root.</p>
+                <p>Con <code>sudo -i</code> usaremos la propia contraseña del usuario normal para ganar privilegios de root.</p>
                 <img src="/images/inicio-sudo.png" alt="Ejemplo de sudo -i">
+                <p>Podemos comprobar que usuario somos con <code>whoami</code> o <code>id</code>.</p>
             </section>
 
             <section id="obj6" class="lesson-section">
                 <h3>6. Tar y compresión</h3>
-                <p><code>tar</code> empaqueta, mientras que <code>gzip</code> (z) y <code>bzip2</code> (j) comprimen.</p>
+                <p><code>tar</code> se utiliza para empaquetar, mientras que <code>gzip</code> (z) y <code>bzip2</code> (j) para comprimir.</p>
+                <ul>
+                    <li><code>-c</code> -> Create: Crea un nuevo archivo de empaquetado.</li>
+                    <li><code>-x</code> -> Extract: Extrae el contenido de un archivo empaquetado existente.</li>
+                    <li><code>-v</code> -> Verbose: Muestra el listado de archivos procesados por pantalla.</li>
+                    <li><code>-f</code> -> File: Indica el nombre del archivo resultante o el archivo a extraer (siempre debe ser la última flag).</li>
+                </ul>
                 <pre><code>tar -cvzf archivo.tar.gz /carpeta  # Comprimir
 tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
+                <p> Tambien podemos comprimir / descomprimir directamente con gzip o bzip2 : </p>
                 <img src="/images/tar-gz-bz2.png" alt="Ejemplo de tar / gzip / bzip2">
             </section>
 
             <section id="obj7" class="lesson-section">
                 <h3>7. Edición de archivos de texto (VI)</h3>
-                <p>Dominar <strong>VI</strong> es vital para el examen:</p>
+                <p> Vi es un editor de texto, aunque diferente al resto. Cuando lo iniciamos entramos en un modo normal. Tenemos otros editores como nano, que es más simple aunque menos potente:</p>
                 <ul>
                     <li><code>i</code> : Modo inserción.</li>
                     <li><code>Esc + :wq!</code> : Guardar y salir.</li>
+                    <li><code>Esc + q!</code> : Salir sin guardar </li>
                     <li><code>Esc + dd</code> : Borrar línea.</li>
+                    <li><code>u</code> : Deshacer</li>
                 </ul>
+                <p> Podemos mencionar tambien el comando sed que se utilizar para transformar texto en un fichero.</p>
                 <img src="/images/sed.png" alt="Uso de sed para transformaciones">
             </section>
 
             <section id="obj8" class="lesson-section">
                 <h3>8. Gestión de archivos y directorios</h3>
                 <ul>
-                    <li><code>mkdir -p</code> : Crea rutas anidadas.</li>
-                    <li><code>cp -r</code> : Copia directorios recursivamente.</li>
-                    <li><code>rm -rf</code> : Borrado forzado y recursivo.</li>
+                    <li><code>mkdir -p</code> : Crea directorios y subdirectorios ( si fuera necesario).</li>
+                    <li><code>rmdir</code> : Eliminar un directorio</li>
+                    <li><code>cp </code> : Copia archivos / directorios a otra ruta. Usamos -r para hacerlo de forma recursiva.</li>
+                    <li><code>mv</code> : Mover ficheros / directorios.</li>
+                    <li><code>rm -rf</code> : Borrado forzado y recursivo de un archivo o un directorio.</li>
                 </ul>
                 <img src="/images/crear-borrar.png" alt="Gestión de archivos">
             </section>
 
             <section id="obj9" class="lesson-section">
                 <h3>9. Enlaces físicos y simbólicos</h3>
-                <p><strong>Físico (Hard link):</strong> Mismo inodo. Si borras el original, el dato sobrevive.<br>
-                <strong>Simbólico (Soft link):</strong> Acceso directo. Si borras el original, el enlace se rompe.</p>
+                <p>Un <code>enlace fisico</code> es un nombre adicional para los mismos datos en el disco (mismo inodo), mientras que un <code>enlace simbólico</code> es un acceso directo que apunta a la ruta del archivo original (acceso directo en Windows). La sintaxis es ln (-s) archivo-original enlace</p>
+                <p><strong>Físico (Hard link):</strong> Mismo inodo. Si borras el original, el contenido sobrevive. Ejemplo : <code>ln archivo link_fisico</code>.<br>
+                <strong>Simbólico (Soft link):</strong> Acceso directo. Si borras el original, el enlace se rompe y el contenido se pierde. Ejemplo : <code>ln -s archivo link_archivo</code>.</p>
                 <img src="/images/links.png" alt="Diferencia entre enlaces">
             </section>
 
@@ -131,24 +147,22 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                     <div class="info-item">w (2)</div>
                     <div class="info-item">x (1)</div>
                 </div>
-                <p>Uso de <code>chmod</code> para permisos y <code>chown</code> para dueños.</p>
+                <p>Usaremos los comandos <code>chmod</code> para modificar permisos y <code>chown</code> para modificar propietario:grupo. Podremos comprobar con <code>ls -l</code></p>
                 <img src="/images/permisos-basic.png" alt="Listar permisos">
                 <img src="/images/cambiar-permisos-basic.png" alt="Cambiar permisos">
+                <p> Tener en cuenta el flag -R para que se aplique de forma recuersiva a todos los subdirectorios y archivos cuando lo usemos para un directorio</p>
             </section>
 
             <section id="obj11" class="lesson-section">
                 <h3>11. Documentación del sistema</h3>
-                <p>Nunca memorices flags si tienes el sistema delante:</p>
+                <p>Nunca memorices flags si tienes el sistema delante, tenemos diferentes formas de ver documentación de todos los comandos y es muy importante conocerlos y tenerlos presentes :</p>
                 <ul>
                     <li><code>man</code> : Manuales oficiales.</li>
                     <li><code>info</code> : Documentación extendida.</li>
                     <li><code>/usr/share/doc</code> : Ejemplos y guías de paquetes.</li>
+                    <li><code>whatis</code> : Breve explicación de un comando</li>
                 </ul>
             </section>
-
-            <div class="next-btn-container">
-                <button class="next-btn" onclick="loadLesson('2.html')">Siguiente Lección →</button>
-            </div>
         </div>
     </div>
 </div>
