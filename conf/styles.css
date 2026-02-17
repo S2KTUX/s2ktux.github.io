@@ -1,6 +1,3 @@
-Aquí tienes el CSS totalmente **ordenado lógicamente**, con los comentarios eliminados y agrupando estilos duplicados o fragmentados (como las media queries), sin alterar ningún valor ni parámetro.
-
-```css
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap');
 
 :root {
