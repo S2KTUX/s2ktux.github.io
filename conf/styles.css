@@ -235,30 +235,32 @@ body::before {
 }
 
 .orb-1 {
-    width: 380px; 
-    height: 380px;
+    width: 450px;
+    height: 450px;
     background: var(--accent);
-    top: 15%;   
-    left: 10%;
+    top: -150px; 
+    left: -150px;
+    filter: blur(120px);
 }
 
 .orb-2 {
-    width: 320px; 
-    height: 320px;
+    width: 400px;
+    height: 400px;
     background: var(--accent);
-    bottom: 15%;
-    right: 10%;
+    bottom: -100px;
+    right: -150px;
     animation-delay: -5s;
+    filter: blur(120px);
 }
 
 .orb-3 {
-    width: 200px;  
-    height: 200px;
+
+    width: 300px;
+    height: 300px;
     background: #fff;
-    opacity: 0.04;
-    top: 40%;
-    left: 45%;
-    animation-delay: -10s;
+    opacity: 0.02;
+    top: 20%;
+    left: 80%;
 }
 
 @keyframes floatOrb {
