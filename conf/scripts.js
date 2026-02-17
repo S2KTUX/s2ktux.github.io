@@ -22,7 +22,7 @@ const coursesDB = {
             { id: 101, title: "Arquitectura de Sistema", file: "/cursos/lpic/101/101.html" },
             { id: 102, title: "Instalación de Linux", file: "/cursos/lpic/102/102.html" }
         ]
-    }
+    },
     "aws": {
         title: "AWS Cloud",
         chapters: [
