@@ -5,15 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>S2KTUX | Linux & Cloud</title>
     <meta name="description" content="Academia Linux práctica: cursos, proyectos y comunidad para SysAdmin y Cloud.">
-    
     <link rel="icon" type="image/png" href="images/favicon.png">
     <meta name="theme-color" content="#000000">
-
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="conf/styles.css">
 </head>
 <body class="color-ruby">
-    <!-- SPLASH SCREEN -->
     <div id="splash" class="splash-screen">
         <div class="splash-logo">S2KTUX</div>
         <div class="splash-bar"><div class="splash-progress"></div></div>
@@ -21,16 +20,12 @@
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
-
-    <!-- MOBILE MENU -->
     <div id="mobile-menu" class="mobile-menu-overlay">
         <a href="#" class="mobile-nav-link" onclick="navigate('home'); toggleMobileMenu()">Inicio</a>
         <a href="#" class="mobile-nav-link" onclick="navigate('courses'); toggleMobileMenu()">Cursos</a>
         <a href="#" class="mobile-nav-link" onclick="navigate('terminal'); toggleMobileMenu()">Terminal</a>
         <a href="#" class="mobile-nav-link" onclick="navigate('projects'); toggleMobileMenu()">Proyectos</a>
     </div>
-
-    <!-- NAV BAR -->
     <nav class="floating-nav" id="mainNav">
         <div class="nav-links">
             <a class="nav-link active" onclick="navigate('home')">Inicio</a>
@@ -45,8 +40,6 @@
             </button>
         </div>
     </nav>
-
-    <!-- BOTON TEMA -->
     <div class="theme-floater">
         <button class="theme-btn" onclick="toggleThemeMenu()" aria-label="Cambiar tema">
             <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
@@ -68,13 +61,11 @@
     </div>
 
     <main>
-        <!-- INICIO -->
         <section id="home" class="page-section active">
             <div class="hero">
                 <h1>Domina Linux.<br>Sin límites.</h1>
                 <p><span id="typing-text"></span><span class="cursor"></span></p>
             </div>
-            <!-- NUEVA SECCIÓN: METODOLOGÍA -->
             <div class="section-spacer">
                 <div class="section-header">
                     <h2>¿Cómo aprenderás?</h2>
@@ -98,7 +89,6 @@
                     </div>
                 </div>
             </div>
-            <!-- SECCIÓN: ROADMAP -->
             <div class="section-spacer">
                 <div class="section-header">
                     <h2>Tu Camino en Linux</h2>
@@ -122,7 +112,6 @@
                     </div>
                 </div>
             </div>
-            <!-- SECCIÓN: SKILLS -->
             <div class="section-spacer">
                 <div class="section-header">
                     <h2>Stack Tecnológico</h2>
@@ -151,7 +140,6 @@
                     </div>
                 </div>
             </div>
-            <!-- SECCIÓN: ECOSISTEMA -->
             <div class="section-spacer">
                 <div class="section-header">
                     <h2>Ecosistema</h2>
@@ -180,8 +168,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- CURSOS -->
         <section id="courses" class="page-section">
             <div class="section-header">
                 <h2>Cursos Disponibles</h2>
@@ -204,8 +190,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- SYLLABUS -->
         <section id="syllabus" class="page-section">
             <h2 style="text-align:center; margin-bottom:30px; font-size:2rem; color:var(--text-main);">Temario</h2>
             <div class="reader-container" style="min-height: auto; padding: 40px;">
@@ -220,8 +204,6 @@
                 <div class="chapter-list" id="syllabus-list"></div>
             </div>
         </section>
-
-        <!-- LECTOR -->
         <section id="reader" class="page-section">
             <div class="reader-container">
                 <div class="cyber-back-btn" onclick="backToSyllabus()">
@@ -230,18 +212,15 @@
                 <div id="reader-content"></div>
             </div>
         </section>
-
-        <!-- TERMINAL -->
         <section id="terminal" class="page-section">
             <div style="text-align:center; margin-bottom:20px; color:var(--text-muted);">
-                <p>S2KTUX Terminal v7.1 [Interactive Mode]</p>
+                <p>S2KTUX Terminal Beta v0.1</p>
             </div>
             <div class="terminal-container">
                 <div class="term-header">
                     <div class="window-controls">
                         <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
                     </div>
-                    <!-- TÍTULO CENTRADO -->
                     <div class="term-title" id="term-title">visitor@s2ktux:~</div>
                 </div>
                 <div class="term-body" id="term-body">
@@ -256,8 +235,6 @@
                 </div>
             </div>
         </section>
-
-        <!-- PROYECTOS -->
         <section id="projects" class="page-section">
             <div class="section-header">
                 <h2>Proyectos</h2>
@@ -277,10 +254,10 @@
         </section>
 
             <div id="lightbox-modal" class="lightbox-modal hidden">
-    <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
-    <img class="lightbox-content" id="lightbox-img">
-                
-        <!-- VISTA PROYECTO -->
+            <span class="lightbox-close" onclick="closeLightbox()">&times;</span>
+            <img class="lightbox-content" id="lightbox-img">
+        </div>
+
         <section id="project-view" class="page-section">
             <div class="reader-container">
                 <div class="cyber-back-btn" onclick="navigate('projects')">
@@ -291,11 +268,10 @@
         </section>
     </main>
 
-    <!-- FOOTER -->
     <footer class="modern-footer">
         <div class="footer-content">
             <div style="grid-column: 1; display: flex; justify-content: flex-start; align-items: center;">
-                <a href="#" class="footer-logo">S2KTUX</a>
+                <a href="#" class="footer-logo" onclick="navigate('home')">S2KTUX</a>
             </div>
             <div class="footer-center">
                 <div class="footer-slogan">Domina Linux. Sin límites.</div>
@@ -316,10 +292,7 @@
             </div>
         </div>
     </footer>
-        
 
     <script src="conf/scripts.js"></script>
-
-</div>
 </body>
 </html>
