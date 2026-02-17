@@ -90,69 +90,79 @@
                 </div>
             </div>
             <div class="section-spacer">
-                <div class="section-header">
-                <h2>Laboratorios Destacados</h2>
-                <p>Entornos diseñados para monitorizar y gestionar infraestructuras críticas.</p>
-                </div>
-                <div class="content-grid">
-                    <div class="card" onclick="navigate('projects')" role="button">
-                    <span class="card-tag">Virtualización</span>
-                    <h3>Proxmox Virtual Environment</h3>
-                    <p>Arquitectura de virtualización: gestión de contenedores LXC, VMs y optimización de recursos.</p>
-                </div>
-                <div class="card" onclick="navigate('projects')" role="button">
-                <span class="card-tag">Observabilidad</span>
-                <h3>Monitorización de Nodos</h3>
-                <p>Implementación de stacks para el control de métricas y alertas en tiempo real de servidores Linux.</p>
-                </div>
-            </div>
-        </div>
-            <div class="section-spacer">
         <div class="section-header">
-            <h2>Infraestructura & Servicios</h2>
-            <p>Sistemas y herramientas que utilizo para desplegar entornos estables.</p>
+            <h2>El Ecosistema S2KTUX</h2>
+            <p>Una estructura de aprendizaje donde cada pieza encaja para conseguir el control total del sistema.</p>
         </div>
-        <div class="content-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
-            <div class="card" style="cursor:default; padding: 20px; text-align: center;">
-                <h4 style="color:var(--accent-color); margin-bottom: 10px;">Distribuciones</h4>
-                <p style="font-size: 0.9rem;">Debian, RHEL, CentOS, Rocky Linux.</p>
-            </div>
-            <div class="card" style="cursor:default; padding: 20px; text-align: center;">
-                <h4 style="color:var(--accent-color); margin-bottom: 10px;">Automatización</h4>
-                <p style="font-size: 0.9rem;">Bash Scripting avanzado y Ansible Playbooks.</p>
-            </div>
-            <div class="card" style="cursor:default; padding: 20px; text-align: center;">
-                <h4 style="color:var(--accent-color); margin-bottom: 10px;">Servidores Web</h4>
-                <p style="font-size: 0.9rem;">Nginx, Apache, Reverse Proxy, SSL/TLS.</p>
-            </div>
-            <div class="card" style="cursor:default; padding: 20px; text-align: center;">
-                <h4 style="color:var(--accent-color); margin-bottom: 10px;">Seguridad</h4>
-                <p style="font-size: 0.9rem;">Firewalld, Iptables, VPNs y Hardening.</p>
+        <div class="infra-visual-container" style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 40px; border: 1px solid rgba(255,255,255,0.05);">
+            <div class="infra-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; position: relative;">
+                
+                <div class="infra-node" style="border-left: 2px solid var(--accent-color); padding-left: 20px;">
+                    <div style="font-family: 'Geist Mono', monospace; color: var(--accent-color); margin-bottom: 5px;">[ 01 ] BASE</div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 10px;">Hardening & Kernel</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">La base de todo: seguridad en el núcleo, gestión de memoria y optimización de distribuciones Debian/RHEL.</p>
+                </div>
+
+                <div class="infra-node" style="border-left: 2px solid var(--accent-color); padding-left: 20px;">
+                    <div style="font-family: 'Geist Mono', monospace; color: var(--accent-color); margin-bottom: 5px;">[ 02 ] COMPUTE</div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 10px;">Virtualización Proxmox</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Dominio de hipervisores Tipo 1, orquestación de contenedores LXC y máquinas virtuales eficientes.</p>
+                </div>
+
+                <div class="infra-node" style="border-left: 2px solid var(--accent-color); padding-left: 20px;">
+                    <div style="font-family: 'Geist Mono', monospace; color: var(--accent-color); margin-bottom: 5px;">[ 03 ] FLOW</div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 10px;">Bash Automation</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Scripts que conectan servicios, automatizan despliegues y garantizan la resiliencia del sistema.</p>
+                </div>
+
+                <div class="infra-node" style="border-left: 2px solid var(--accent-color); padding-left: 20px;">
+                    <div style="font-family: 'Geist Mono', monospace; color: var(--accent-color); margin-bottom: 5px;">[ 04 ] EDGE</div>
+                    <h3 style="font-size: 1.1rem; margin-bottom: 10px;">Servicios & Networking</h3>
+                    <p style="font-size: 0.9rem; color: var(--text-muted);">Configuración de proxies inversos, balanceo de carga y redes virtuales seguras.</p>
+                </div>
             </div>
         </div>
     </div>
             <div class="section-spacer">
+        <div class="section-header">
+            <h2>Utilidades Rápidas</h2>
+            <p>Pequeñas soluciones para problemas comunes en la administración de sistemas.</p>
+        </div>
+        <div class="content-grid">
+            <div class="card" style="cursor:default; border-left: 3px solid var(--accent-color);">
+                <span class="card-tag">Redes</span>
+                <h3 style="font-family: 'Geist Mono', monospace; font-size: 1rem;">ss -tulpn</h3>
+                <p>Identifica rápidamente qué procesos están escuchando en qué puertos.</p>
+            </div>
+            <div class="card" style="cursor:default; border-left: 3px solid var(--accent-color);">
+                <span class="card-tag">Logs</span>
+                <h3 style="font-family: 'Geist Mono', monospace; font-size: 1rem;">journalctl -xe</h3>
+                <p>La navaja suiza para debugear fallos en servicios de systemd.</p>
+            </div>
+            <div class="card" style="cursor:default; border-left: 3px solid var(--accent-color);">
+                <span class="card-tag">Recursos</span>
+                <h3 style="font-family: 'Geist Mono', monospace; font-size: 1rem;">htop / btop</h3>
+                <p>Monitorización visual de CPU, RAM y procesos en tiempo real.</p>
+            </div>
+            <div class="card" style="cursor:default; border-left: 3px solid var(--accent-color);">
+                <span class="card-tag">Discos</span>
+                <h3 style="font-family: 'Geist Mono', monospace; font-size: 1rem;">lsblk -f</h3>
+                <p>Visualiza la estructura de particiones y sus sistemas de archivos.</p>
+            </div>
+        </div>
+    </div>
+            <div class="section-spacer" style="text-align: center; padding-bottom: 60px;">
             <div class="section-header">
-            <h2>System Status</h2>
-            </div>
-            <div class="terminal-container" style="max-width: 800px; margin: 0 auto; border: 1px solid var(--accent-color);">
-             <div class="term-header">
-                <div class="window-controls">
-                    <div class="dot r"></div><div class="dot y"></div><div class="dot g"></div>
-                </div>
-                <div class="term-title">visitor@s2ktux: ~/profile</div>
-            </div>
-            <div class="term-body" style="font-family: 'Geist Mono', monospace; font-size: 0.85rem; padding: 20px;">
-                <div class="term-line"><span style="color: var(--accent-color);">S2KTUX_NODE_INFO:</span></div>
-                <div class="term-line">-------------------------</div>
-                <div class="term-line">PROFILE: SysAdmin / Linux Enthusiast</div>
-                <div class="term-line">UPTIME: +10 years experience</div>
-                <div class="term-line">CORE_SHELL: /bin/bash</div>
-                <div class="term-line">VIRT_ENG: Proxmox VE</div>
-                <div class="term-line">STATUS: <span style="color: #10b981;">● Online</span></div>
-                <div class="term-line"><br></div>
-                <div class="term-line">visitor@s2ktux: ~/profile <span class="cursor">_</span></div>
-            </div>
+            <h2>¿Quieres aprender sistemas a nivel profesional o te gusta el tunning en Linux?</h2>
+            <p>Explora mis cursos detallados o echa un vistazo a mis laboratorios técnicos.</p>
+        </div>
+        <div style="display: flex; gap: 20px; justify-content: center; margin-top: 30px; flex-wrap: wrap;">
+            <button class="theme-btn" style="padding: 15px 30px; border-radius: 8px; width: auto;" onclick="navigate('courses')">
+                Ver Cursos
+            </button>
+            <button class="theme-btn" style="padding: 15px 30px; border-radius: 8px; width: auto; background: transparent; border: 1px solid var(--accent-color);" onclick="navigate('projects')">
+                Explorar Proyectos
+            </button>
         </div>
     </div>
         </section>
