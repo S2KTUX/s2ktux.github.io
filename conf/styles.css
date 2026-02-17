@@ -1453,19 +1453,22 @@ body.mode-light .course-content {
         display: flex; 
     }
 
-    .hero h1 {
-        font-size: 2.2rem;
-    }
-
-    .hero p {
-        font-size: 1.1rem;
-    }
-
     main {
         padding-top: 100px;
         padding-left: 15px;
         padding-right: 15px;
+        width: 100%;
+        box-sizing: border-box;
         overflow-x: hidden;
+    }
+
+    .hero h1 {
+        font-size: 2.2rem !important;
+        line-height: 1.2;
+    }
+
+    .hero p {
+        font-size: 1.1rem;
     }
 
     .methodology-grid, .skills-grid, .content-grid, .roadmap-container {
@@ -1475,7 +1478,7 @@ body.mode-light .course-content {
     .terminal-container {
         width: 100% !important;
         margin: 15px 0 !important;
-        height: 50vh;
+        height: 60vh;
         border-radius: 8px !important;
         display: flex;
         flex-direction: column;
@@ -1488,7 +1491,6 @@ body.mode-light .course-content {
         align-items: center;
         padding: 6px 12px !important;
         height: 35px;
-        background: rgba(0, 0, 0, 0.2);
     }
 
     .term-controls {
@@ -1515,19 +1517,18 @@ body.mode-light .course-content {
     }
 
     .term-body {
-        padding: 12px !important;
-        font-size: 0.8rem !important;
+        padding: 10px !important;
+        font-size: 0.85rem !important;
+        line-height: 1.2 !important;
         word-break: break-all !important; 
         white-space: pre-wrap !important;
-        flex-grow: 1;
-        overflow-y: auto;
     }
 
     .term-line {
         display: flex;
         flex-wrap: wrap; 
         gap: 5px;
-        margin-bottom: 8px;
+        margin-bottom: 4px !important;
     }
 
     .term-input-wrapper {
@@ -1568,14 +1569,14 @@ body.mode-light .course-content {
     }
 
     .course-content pre, .reader-container pre {
-        width: auto !important;
+        width: 100% !important;
         max-width: 100% !important;
         overflow-x: auto !important;  
         white-space: pre !important;               
         word-break: normal !important; 
-        margin: 1.5rem -1.5rem !important;
+        margin: 1.5rem 0 !important;
         padding: 15px !important;
-        border-radius: 0 !important;
+        border-radius: 4px !important;
         box-sizing: border-box;
     }
 
@@ -1583,8 +1584,8 @@ body.mode-light .course-content {
         max-width: 100% !important;
         height: auto !important;
         display: block;
-        margin: 2rem -1.5rem !important;
-        border-radius: 0 !important;
+        margin: 1.5rem 0 !important;
+        border-radius: 4px !important;
     }
 
     .reader-container p, .reader-container li {
@@ -1600,21 +1601,9 @@ body.mode-light .course-content {
         padding: 0 20px;
     }
 
-    .footer-center {
-        grid-column: auto;
-        order: 2;
-    }
-
-    .social-icons {
-        grid-column: auto;
-        order: 3;
-        justify-self: center;
-    }
-
-    .footer-logo {
-        order: 1;
-        font-size: 1.8rem;
-    }
+    .footer-center { grid-column: auto; order: 2; }
+    .social-icons { grid-column: auto; order: 3; justify-self: center; }
+    .footer-logo { order: 1; font-size: 1.8rem; }
 
     .theme-floater {
         top: auto;
