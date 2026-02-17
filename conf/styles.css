@@ -324,31 +324,45 @@ body::before {
     text-decoration: none;
 }
 
-.hamburger-btn {
+.custom-menu-btn {
     display: none;
     background: none;
     border: none;
     cursor: pointer;
-    flex-direction: column;
-    gap: 5px;
     z-index: 1002;
-    padding: 5px;
+    padding: 10px;
+    width: 40px;
+    height: 40px;
+    position: relative;
+    justify-content: center;
+    align-items: center;
 }
-.hamburger-line {
-    width: 25px;
-    height: 2px;
+
+.menu-dots {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    width: 18px;
+    height: 18px;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.custom-menu-btn .dot {
+    width: 6px;
+    height: 6px;
     background-color: var(--text-main);
-    transition: 0.3s;
-    border-radius: 2px;
+    border-radius: 1px; 
+    transition: all 0.3s ease;
+    box-shadow: 0 0 2px rgba(255,255,255,0.1);
 }
-.hamburger-btn.active .hamburger-line:nth-child(1) {
-    transform: rotate(45deg) translate(5px, 5px);
+
+.custom-menu-btn.active .menu-dots {
+    transform: rotate(45deg);
 }
-.hamburger-btn.active .hamburger-line:nth-child(2) {
-    opacity: 0;
-}
-.hamburger-btn.active .hamburger-line:nth-child(3) {
-    transform: rotate(-45deg) translate(5px, -5px);
+
+.custom-menu-btn.active .dot {
+    background-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
 }
 
 .mobile-menu-overlay {
@@ -357,7 +371,7 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: var(--bg-color);
+    background: var(--nav-bg);
     z-index: 1001;
     display: flex;
     flex-direction: column;
@@ -368,6 +382,7 @@ body::before {
     visibility: hidden;
     transition: 0.4s ease;
     backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 .mobile-menu-overlay.active {
     opacity: 1;
@@ -381,10 +396,11 @@ body::before {
     text-decoration: none;
     text-transform: uppercase;
     transition: 0.3s;
+    font-family: var(--font-mono);
 }
 .mobile-nav-link:hover {
     color: var(--accent);
-    transform: scale(1.1);
+    letter-spacing: 4px;
 }
 
 .theme-floater {
@@ -1422,6 +1438,12 @@ body.mode-light .course-content {
     }
     .mobile-header-content {
         display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+    }
+    .custom-menu-btn {
+        display: flex; 
     }
     .hero h1 {
         font-size: 2.8rem;
