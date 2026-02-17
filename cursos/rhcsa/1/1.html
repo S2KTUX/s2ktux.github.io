@@ -2,105 +2,153 @@
     <header class="lesson-header">
         <span class="badge">RHCSA Objetivo 1</span>
         <h1>Herramientas Esenciales</h1>
-        <p>Dominio de la shell y manipulación de archivos</p>
+        <p>Comprender y usar herramientas esenciales de la shell para la administración del sistema</p>
         
         <a href="https://youtu.be/enwp35IHCic" target="_blank" class="video-card">
             <div class="video-icon">🎬</div>
             <div class="video-text">
-                <strong>CLASE 1 EN VIDEO</strong>
-                <span>Ver tutorial en YouTube</span>
+                <strong>VER VIDEO YOUTUBE - CLASE 1</strong>
+                <span>Tutorial completo de herramientas esenciales</span>
             </div>
         </a>
     </header>
 
     <div class="lesson-layout">
         <aside class="lesson-toc">
-            <h4>En esta lección</h4>
+            <h4>Objetivos del bloque</h4>
             <ul>
-                <li><a href="#obj1">El Prompt de Shell</a></li>
-                <li><a href="#obj2">Redirecciones</a></li>
-                <li><a href="#obj3">Grep y Filtros</a></li>
-                <li><a href="#obj4">Acceso SSH</a></li>
-                <li><a href="#obj6">Tar y Compresión</a></li>
-                <li><a href="#obj10">Permisos ugo/rwx</a></li>
+                <li><a href="#obj1">1. Solicitud de shell</a></li>
+                <li><a href="#obj2">2. Redirección I/O</a></li>
+                <li><a href="#obj3">3. Grep y Regex</a></li>
+                <li><a href="#obj4">4. Acceso SSH</a></li>
+                <li><a href="#obj5">5. Cambio de usuario</a></li>
+                <li><a href="#obj6">6. Tar y compresión</a></li>
+                <li><a href="#obj7">7. Edición de texto (VI)</a></li>
+                <li><a href="#obj8">8. Gestión de archivos</a></li>
+                <li><a href="#obj9">9. Enlaces (Links)</a></li>
+                <li><a href="#obj10">10. Permisos ugo/rwx</a></li>
+                <li><a href="#obj11">11. Documentación</a></li>
             </ul>
         </aside>
 
         <div class="course-content">
             
             <section id="obj1" class="lesson-section">
-                <h3>Acceder a un prompt de shell</h3>
-                <p>El prompt es tu interfaz directa con el kernel. El formato estándar es <code>usuario@máquina:ruta</code>.</p>
-                
+                <h3>1. Acceder a un prompt de shell</h3>
+                <p>El prompt indica tu identidad y ubicación mediante el formato <code>usuario@máquina:ruta</code>. Se cierra con <code>$</code> para usuarios normales o <code>#</code> para root.</p>
                 <img src="/images/Shell.png" alt="Ejemplo de prompt de shell">
-                
-                <div class="terminal-mockup">
-                    <div class="term-dots"><span></span><span></span><span></span></div>
-                    <div class="term-content">
-                        <span class="user">sysriser@linux</span>:<span style="color:var(--accent)">~</span>$ comando [opciones] [argumentos]
-                    </div>
-                </div>
-                <p>Linux es <strong>Case Sensitive</strong>. El símbolo <code>$</code> indica usuario normal y <code>#</code> indica root.</p>
+                <p>El acceso puede ser local (TTY), remoto (SSH) o vía terminal gráfica. Recuerda que Linux es <em>Case Sensitive</em>.</p>
             </section>
 
             <section id="obj2" class="lesson-section">
-                <h3>Redirección de entrada y salida</h3>
-                <p>En Linux, los procesos manejan tres flujos de datos principales:</p>
-                
+                <h3>2. Redirección de entrada y salida</h3>
+                <p>Cada proceso utiliza descriptores estándar:</p>
                 <div class="info-grid">
-                    <div class="info-item"><strong>STDIN (0)</strong><br><small>Entrada de teclado</small></div>
-                    <div class="info-item"><strong>STDOUT (1)</strong><br><small>Salida estándar</small></div>
-                    <div class="info-item"><strong>STDERR (2)</strong><br><small>Flujo de errores</small></div>
+                    <div class="info-item"><strong>0</strong><br>STDIN<br><small>Entrada</small></div>
+                    <div class="info-item"><strong>1</strong><br>STDOUT<br><small>Salida</small></div>
+                    <div class="info-item"><strong>2</strong><br>STDERR<br><small>Errores</small></div>
                 </div>
                 
-                
-
                 <ul>
-                    <li><code>&gt;</code> : Sobrescribe un archivo con la salida.</li>
-                    <li><code>&gt;&gt;</code> : Añade la salida al final del archivo.</li>
-                    <li><code>|</code> (Pipe) : Pasa la salida de un comando como entrada al siguiente.</li>
+                    <li><code>&gt;</code> , <code>&gt;&gt;</code> : Salida a archivo (sobrescribir o añadir).</li>
+                    <li><code>2&gt;</code> : Captura exclusiva de errores.</li>
+                    <li><code>&amp;&gt;</code> : Redirección completa (salida + errores).</li>
+                    <li><code>|</code> : Tubería (conecta procesos).</li>
                 </ul>
-                <img src="/images/redd-basic.png" alt="Esquema de redirecciones">
+                <img src="/images/redd-basic.png" alt="Ejemplo de redirecciones">
             </section>
 
             <section id="obj3" class="lesson-section">
-                <h3>Grep y Análisis de Texto</h3>
-                <p><code>grep</code> permite buscar patrones. Combinado con expresiones regulares (Regex), es extremadamente potente.</p>
-                <pre><code>grep -E "error|fallo" /var/log/messages  # Busca errores o fallos
-grep -v "^#" config.conf                 # Filtra líneas que NO sean comentarios</code></pre>
+                <h3>3. Grep y expresiones regulares</h3>
+                <p>Análisis de patrones en texto. Flags clave:</p>
+                <ul>
+                    <li><code>-E</code> : Regex extendidas (<code>|</code>, <code>+</code>).</li>
+                    <li><code>-v</code> : Invertir búsqueda.</li>
+                    <li><code>-i</code> : Ignorar mayúsculas.</li>
+                </ul>
+                <p>Símbolos Regex: <code>^</code> (inicio), <code>$</code> (fin), <code>.</code> (cualquier carácter), <code>*</code> (repetición).</p>
             </section>
 
             <section id="obj4" class="lesson-section">
-                <h3>Acceso remoto con SSH</h3>
-                <p>Conexión segura al puerto 22. Puedes especificar el usuario con <code>-l</code> o la ruta de la clave con <code>-i</code>.</p>
-                <img src="/images/ssh.png" alt="Conexión SSH entre máquinas">
+                <h3>4. Acceso remoto con SSH</h3>
+                <p>Puerto 22 por defecto. Configuración en <code>/etc/ssh/sshd_config</code>.</p>
+                <ul>
+                    <li><code>-p</code> : Puerto específico.</li>
+                    <li><code>-i</code> : Clave privada (Identity file).</li>
+                    <li><code>-v</code> : Modo verbose para depurar.</li>
+                </ul>
+                <img src="/images/ssh.png" alt="Ejemplo de SSH">
+            </section>
+
+            <section id="obj5" class="lesson-section">
+                <h3>5. Inicio y cambio de usuario</h3>
+                <p>Para cambiar de identidad, usa <code>su -</code> (el guion carga el entorno completo del usuario destino).</p>
+                <img src="/images/inicio-su.png" alt="Ejemplo de su -">
+                <p>Con <code>sudo -i</code> usas tu propia contraseña para ganar privilegios de root.</p>
+                <img src="/images/inicio-sudo.png" alt="Ejemplo de sudo -i">
             </section>
 
             <section id="obj6" class="lesson-section">
-                <h3>Archivar y Comprimir</h3>
-                <p>Uso de <code>tar</code> para empaquetar y algoritmos adicionales para comprimir:</p>
+                <h3>6. Tar y compresión</h3>
+                <p><code>tar</code> empaqueta, mientras que <code>gzip</code> (z) y <code>bzip2</code> (j) comprimen.</p>
+                <pre><code>tar -cvzf archivo.tar.gz /carpeta  # Comprimir
+tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
+                <img src="/images/tar-gz-bz2.png" alt="Ejemplo de tar / gzip / bzip2">
+            </section>
+
+            <section id="obj7" class="lesson-section">
+                <h3>7. Edición de archivos de texto (VI)</h3>
+                <p>Dominar <strong>VI</strong> es vital para el examen:</p>
                 <ul>
-                    <li><strong>-z</strong> : Algoritmo Gzip (rápido).</li>
-                    <li><strong>-j</strong> : Algoritmo Bzip2 (mayor compresión).</li>
+                    <li><code>i</code> : Modo inserción.</li>
+                    <li><code>Esc + :wq!</code> : Guardar y salir.</li>
+                    <li><code>Esc + dd</code> : Borrar línea.</li>
                 </ul>
-                <img src="/images/tar-gz-bz2.png" alt="Ejemplos de compresión tar">
+                <img src="/images/sed.png" alt="Uso de sed para transformaciones">
+            </section>
+
+            <section id="obj8" class="lesson-section">
+                <h3>8. Gestión de archivos y directorios</h3>
+                <ul>
+                    <li><code>mkdir -p</code> : Crea rutas anidadas.</li>
+                    <li><code>cp -r</code> : Copia directorios recursivamente.</li>
+                    <li><code>rm -rf</code> : Borrado forzado y recursivo.</li>
+                </ul>
+                <img src="/images/crear-borrar.png" alt="Gestión de archivos">
+            </section>
+
+            <section id="obj9" class="lesson-section">
+                <h3>9. Enlaces físicos y simbólicos</h3>
+                <p><strong>Físico (Hard link):</strong> Mismo inodo. Si borras el original, el dato sobrevive.<br>
+                <strong>Simbólico (Soft link):</strong> Acceso directo. Si borras el original, el enlace se rompe.</p>
+                <img src="/images/links.png" alt="Diferencia entre enlaces">
             </section>
 
             <section id="obj10" class="lesson-section">
-                <h3>Permisos estándar ugo/rwx</h3>
-                <p>Los permisos se dividen en Propietario, Grupo y Otros. Se calculan sumando sus valores:</p>
+                <h3>10. Permisos estándar ugo/rwx</h3>
                 <div class="info-grid">
-                    <div class="info-item"><strong>4</strong><br>Lectura (r)</div>
-                    <div class="info-item"><strong>2</strong><br>Escritura (w)</div>
-                    <div class="info-item"><strong>1</strong><br>Ejecución (x)</div>
+                    <div class="info-item">r (4)</div>
+                    <div class="info-item">w (2)</div>
+                    <div class="info-item">x (1)</div>
                 </div>
-                <img src="/images/cambiar-permisos-basic.png" alt="Gestión de permisos con chmod">
+                <p>Uso de <code>chmod</code> para permisos y <code>chown</code> para dueños.</p>
+                <img src="/images/permisos-basic.png" alt="Listar permisos">
+                <img src="/images/cambiar-permisos-basic.png" alt="Cambiar permisos">
+            </section>
+
+            <section id="obj11" class="lesson-section">
+                <h3>11. Documentación del sistema</h3>
+                <p>Nunca memorices flags si tienes el sistema delante:</p>
+                <ul>
+                    <li><code>man</code> : Manuales oficiales.</li>
+                    <li><code>info</code> : Documentación extendida.</li>
+                    <li><code>/usr/share/doc</code> : Ejemplos y guías de paquetes.</li>
+                </ul>
             </section>
 
             <div class="next-btn-container">
-                <button class="next-btn" onclick="loadLesson('2.html')">Siguiente: Gestión de Usuarios →</button>
+                <button class="next-btn" onclick="loadLesson('2.html')">Siguiente Lección →</button>
             </div>
-
         </div>
     </div>
 </div>
