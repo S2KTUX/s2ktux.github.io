@@ -210,7 +210,13 @@ function toggleMobileMenu() {
     if(menu && burger) {
         menu.classList.toggle('active');
         burger.classList.toggle('active');
-        burger.setAttribute('aria-expanded', burger.classList.contains('active'));
+        const isActive = burger.classList.contains('active');
+        burger.setAttribute('aria-expanded', isActive);
+        if (isActive) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
     }
 }
 
