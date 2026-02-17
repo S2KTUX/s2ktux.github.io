@@ -3,9 +3,17 @@ const coursesDB = {
     "rhcsa": {
         title: "RHCSA EX200",
         chapters: [
-            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/test.html" },
+            { id: 1, title: "Clase 1: Herramientas Básicas", file: "/cursos/rhcsa/1/1.html" },
             { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/2/2.html" },
-            { id: 3, title: "Clase 3: Usuarios y Grupos", file: "/cursos/rhcsa/3/3.html" }
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/3/3.html" },
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/4/4.html" },
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/5/5.html" },
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/6/6.html" },
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/7/7.html" },
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/8/8.html" },
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/9/9.html" },
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/10/10.html" },
+            { id: 2, title: "Clase 2: Gestión de Software", file: "/cursos/rhcsa/EXTRA/extra.html" },
         ]
     },
     "lpic1": {
