@@ -1480,19 +1480,19 @@ color: #e2e8f0 !important;
 .lesson-toc {
     position: sticky;
     top: 20px;
-    padding: 1rem;
+    padding: 0.8rem;
     background: var(--nav-bg);
     border-radius: var(--radius);
     border: 1px solid var(--border-color);
     /* Fuente compacta para que quepa todo */
-    font-size: 0.80rem;
+    font-size: 0.70rem;
 }
 
 .lesson-toc h4 { 
-    font-size: 0.75rem; /* Un pelín más pequeño para armonizar */
+    font-size: 0.65rem;
     text-transform: uppercase; 
     color: var(--accent); 
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     letter-spacing: 0.5px;
     font-weight: bold;
 }
@@ -1505,12 +1505,11 @@ color: #e2e8f0 !important;
 
 .lesson-toc li a {
     display: block;
-    /* REDUCIDO: El padding era lo que "inflaba" el índice */
-    padding: 5px 8px; 
-    margin-bottom: 2px;
+    padding: 3px 8px; 
+    margin-bottom: 1px;
     color: #555;
     text-decoration: none;
-    line-height: 1.1; /* Interlineado ajustado */
+    line-height: 1; 
     border-left: 2px solid transparent;
     transition: all 0.2s;
 }
