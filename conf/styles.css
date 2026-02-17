@@ -1476,24 +1476,31 @@ width: 100vw;
         overflow: hidden;
     }
     .term-header {
-        padding: 8px 12px;
         display: flex;
-        align-items: center;
         justify-content: space-between;
-        background: rgba(255, 255, 255, 0.05);
+        align-items: center;
+        padding: 6px 12px !important;
+        height: 35px;
     }
     .term-controls {
-        display: flex;
-        gap: 6px;
+        display: flex !important;
+        gap: 5px;
+        min-width: 50px;
     }
     .term-controls span {
         width: 10px;
         height: 10px;
     }
     #term-title {
-        font-size: 0.7rem;
-        opacity: 0.7;
-        font-family: var(--font-mono);
+        position: static !important;
+        font-size: 0.65rem !important;
+        background: rgba(0, 0, 0, 0.1);
+        padding: 2px 8px;
+        border-radius: 4px;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .term-input-wrapper {
         display: flex;
@@ -1510,20 +1517,15 @@ width: 100vw;
         font-family: var(--font-mono);
         font-size: 16px; 
     }
-    .term-body {
-        font-size: 0.8rem;
-        padding: 12px;
-        flex-grow: 1;
-        overflow-y: auto;
+.term-body {
+        word-break: break-all !important; 
+        white-space: pre-wrap !important; 
     }
     .term-line {
         display: flex;
         flex-wrap: wrap; 
         gap: 5px;
         margin-bottom: 8px;
-    }
-    .term-line, #term-input {
-        word-break: break-all;
     }
     .term-prompt {
         white-space: nowrap;
@@ -1588,6 +1590,35 @@ width: 100vw;
         width: 100%;
         padding: 18px;
     }
+}
+.course-content pre, .reader-container pre {
+    width: auto !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;  
+    white-space: pre !important;               
+    word-break: normal !important; 
+    margin: 1.5rem -15px !important;
+    padding: 15px !important;
+    border-radius: 0 !important;
+}
+.course-content h1 {
+        font-size: 1.7rem !important;
+        line-height: 1.1;
+        margin: 1.5rem 0 !important;
+        word-break: break-word !important;
+    }
+.course-content h1, .reader-container h1 {
+    font-size: 1.7rem !important;
+    line-height: 1.1 !important;
+    margin: 1.5rem 0 !important;
+    word-break: break-word !important;
+    word-wrap: break-word;
+}
+.course-content img {
+    max-width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin: 1rem auto;
 }
 
 @media (max-width: 1024px) {
