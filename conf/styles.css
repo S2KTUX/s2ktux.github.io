@@ -338,6 +338,7 @@ body::before {
     align-items: center;
 }
 
+
 .menu-dots {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -364,6 +365,10 @@ body::before {
     background-color: var(--accent);
     box-shadow: 0 0 10px var(--accent-glow);
 }
+.custom-menu-btn.active .dot:nth-child(1) { transform: translate(-3px, -3px); }
+.custom-menu-btn.active .dot:nth-child(2) { transform: translate(3px, -3px); }
+.custom-menu-btn.active .dot:nth-child(3) { transform: translate(-3px, 3px); }
+.custom-menu-btn.active .dot:nth-child(4) { transform: translate(3px, 3px); }
 
 .mobile-menu-overlay {
     position: fixed;
