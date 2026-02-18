@@ -1,164 +1,107 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RHCSA - Crear scripts de shell simples">
-    <meta name="keywords" content="RHCSA, Linux, bash, scripts, if, for, variables">
-    <meta name="author" content="SysRiser">
-    <title>S2KTUX - RHCSA | Scripts de shell</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
-
-<div class="gradient-bg"></div>
-
-<header>
-    <div class="header-left">
-        <a href="/index.html" class="header-logo">S2KTUX</a>
-    </div>
-    <nav>
-        <a href="/index.html">Inicio</a>
-        <a href="/cursos/cursos.html">Cursos</a>
-        <a href="/proyectos/proyectos.html">Proyectos</a>
-    </nav>
-</header>
-
-<main id="contenido">
-
-    <div class="hero">
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">RHCSA Objetivo 3</span>
         <h1>Crear scripts de shell simples</h1>
-        <p>Automatización básica con Bash</p>
-        <p><a href="https://youtu.be/CRaP1XjdS4A" target="_blank">VER VIDEO YOUTUBE - CLASE 3</a></p>
-    </div>
+        <p>Automatización básica y lógica de programación con Bash</p>
+        
+        <a href="https://youtu.be/CRaP1XjdS4A" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - CLASE 3</strong>
+                <span>Tutorial completo de scripting y automatización</span>
+            </div>
+        </a>
+    </header>
 
-    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
-
-    <div class="course-page">
-
-        <div class="sidebar">
-            <h3>Objetivos del bloque</h3>
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
             <ul>
-                <li><a href="#obj1">Ejecutar código condicionalmente</a></li>
-                <li><a href="#obj2">Uso de bucles para procesar datos</a></li>
-                <li><a href="#obj3">Procesar entradas de scripts</a></li>
-                <li><a href="#obj4">Procesar salida de comandos</a></li>
+                <li><a href="#obj1">1. Código condicional</a></li>
+                <li><a href="#obj2">2. Uso de bucles</a></li>
+                <li><a href="#obj3">3. Entradas de scripts</a></li>
+                <li><a href="#obj4">4. Salida de comandos</a></li>
             </ul>
-        </div>
+        </aside>
 
-        <div class="content">
+        <div class="course-content">
 
-            <section id="obj1">
-                <h3>Ejecutar código condicionalmente (if,test,[]...)</h3>
-                <p>Los scripts de shell permiten ejecutar comandos de forma automática. El control condicional se realiza principalmente con <strong>if</strong>, <strong>test</strong> ...</p>
-                <p>Todo script debe comenzar con el <code>#!</code> (shebang(/bin/bash,/bin/sh..) seguido del intérprete, usando luego comandos como <code>read</code> para guardar datos y <code>echo</code> para mostrar resultados.</p>
-                <p> De apartir de esto podemos hacer scripts muy sencillos, como por ejemplo :</p>
-                <img src="/images/script1.png" alt="Script basico" width="600">
-                <p>Debemos recordar que siempre que editemos un archivo para crear un script habrá que darle permisos de ejecución con <code>chmod +x nombres-script</code>. </p>
-                <img src="/images/script2.png" alt="resultado script basico" width="600">
-                <p> Los operadores logicos más comunes :</p>
+            <section id="obj1" class="lesson-section">
+                <h3>1. Ejecutar código condicionalmente (if,test,[]...)</h3>
+                <p>Los scripts de shell permiten ejecutar comandos de forma automática. El control condicional se realiza principalmente con <strong>if</strong>, <strong>test</strong> y los corchetes de evaluación.</p>>
+                <p>Todo script debe comenzar con el <code>#!</code> (shebang) seguido del intérprete (<code>/bin/bash</code>, <code>/bin/sh</code>...), usando luego comandos como <code>read</code> para guardar datos y <code>echo</code> para mostrar resultados.</p>
+                <img src="/images/script1.png" alt="Script basico">
+                <p>Debemos recordar que siempre que editemos un archivo para crear un script habrá que darle permisos de ejecución con <code>chmod +x nombre-script</code>.</p>
+                <img src="/images/script2.png" alt="resultado script basico">
+                <h4>Operadores lógicos de archivos:</h4>
+                <div class="info-grid">
+                    <div class="info-item"><strong>-e</strong><br><small>Existe archivo/dir</small></div>
+                    <div class="info-item"><strong>-f</strong><br><small>Es archivo regular</small></div>
+                    <div class="info-item"><strong>-d</strong><br><small>Es un directorio</small></div>
+                    <div class="info-item"><strong>-r/w/x</strong><br><small>Permisos r, w o x</small></div>
+                </div>
+
+                <h4>Comparación de cadenas y números:</h4>
                 <ul>
-                    <li><strong>-e</strong> → Existe y es un archivo o directorio</li>
-                    <li><strong>-f</strong> → Archivo existe y es regular</li>
-                    <li><strong>-d</strong> → Directorio existe</li>
-                    <li><strong>-r</strong> → Existe y tiene permisos de lectura</li>
-                    <li><strong>-w</strong> → Existe y tiene permisos de escritura</li>
-                    <li><strong>-x</strong> → Existe y tiene permisos de ejecución</li>
+                    <li><strong>Cadenas:</strong> <code>-z</code> (vacía), <code>-n</code> (no vacía), <code>=</code> (igual), <code>!=</code> (distinta).</li>
+                    <li><strong>Números:</strong> <code>-eq</code> (==), <code>-ne</code> (!=), <code>-lt</code> (<), <code>-gt</code> (>), <code>-ge</code> (>=).</li>
                 </ul>
-                <p> Para las cadenas de texto utilizamos principalmente:</p>
+
+                <p>En Bash, los espacios dentro de <code>[ ]</code> son obligatorios: <code>[ "$num" -eq 5 ]</code> es correcto, mientras que <code>["$num"-eq5]</code> fallará.</p>
+                <img src="/images/script3.png" alt="Script con operadores">
+                <img src="/images/script4.png" alt="Resultado operadores">
+
+                <h4>Condiciones compuestas y [[ ]]:</h4>
+                <p>En el scripting moderno se utilizan los dobles corchetes <code>[[ ]]</code> por ser más seguros. Soportan operadores estándar:</p>
                 <ul>
-                    <li><strong>-z "$cadena"</strong> → La cadena está vacía</li>
-                    <li><strong>-n "$cadena"</strong> → La cadena no está vacía</li>
-                    <li><strong>"$cad1" = "$cad2"</strong> → Las cadenas son iguales</li>
-                    <li><strong>"$cad1" != "$cad2"</strong> → Las cadenas son distintas</li>
+                    <li><strong>&&</strong> (AND), <strong>||</strong> (OR), <strong>!</strong> (NOT), <strong>==</strong> (Igualdad), <strong>!=</strong> (Desigualdad).</li>
                 </ul>
-                <p> Para los numeros utilizaremos : </p>
-                <ul>
-                    <li><strong>$num1 -eq $num2</strong> → Existe y es un archivo o directorio</li>
-                    <li><strong>$num1 -ne $num2</strong> → Archivo existe y es regular</li>
-                    <li><strong>$num1 -lt $num2</strong> → Directorio existe</li>
-                    <li><strong>$num1 -gt $num2</strong> → Existe y tiene permisos de lectura</li>
-                    <li><strong>$num1 -ge $num2</strong> → Existe y tiene permisos de escritura</li>
-                </ul>
-                <p>Estos operadores funcionan con <code>test</code> o su equivalente <code>[ ]</code>. Se utilizan junto al condicional <code>if</code>, que siempre debe cerrarse con <code>fi</code>. Por ejemplo:</p>
-                <img src="/images/script3.png" alt="Script basico operadores" width="600">
-                <p> En Bash, los espacios dentro de <code>[ ]</code> son obligatorios: <code>[ "$num" -eq 5 ]</code> es correcto, mientras que <code>["$num"-eq5]</code> es incorrecto.</p>
-                <img src="/images/script4.png" alt="resultado ejemplos operadores" width="600">
-                <p> Por ultimo, tenemos las condiciones compuestas, que mencionaré 5 básicos : </p>
-                <ul>
-                    <li><strong> && </strong> → Operador lógico AND. Se cumple cuando todas las condiciones individuales son verdaderas. </li>
-                    <li><strong>|| </strong> → Operador lógico OR. Se cumple cuando al menos una de las condiciones es verdadera.</li>
-                    <li><strong>! </strong> → Operador lógico NOT. Se utiliza para negar una condición, devolviendo el valor opuesto al original.</li>
-                    <li><strong>==</strong> → Operador de igualdad. Comprueba si los valores de dos expresiones son idénticos.</li>
-                    <li><strong>!=</strong> → Operador de desigualdad. Se cumple solo si los valores comparados son diferentes entre sí.</li>
-                </ul>
-                <p>En el scripting moderno se utilizan los dobles corchetes [[ ]] por ser más potentes y seguros. Evitan errores con variables vacías, soportan los operadores lógicos estándar (&&, ||) y no requieren obligatoriamente el uso de comillas. Si usas condiciones compuestas con [ ], fallará.:</p>
-                <img src="/images/script5.png" alt="Script condicional compuesto" width="600">
-                <img src="/images/script6.png" alt="resultado condicional compuesto" width="600">
-                <p> Por otro lado, tenemos <code>case</code>, que es otra forma de ejecutar codigo condicionalemente : </p>
-                <img src="/images/script7.png" alt=" sintaxis case" width="600">
-                <p> Con esto, podremos crear dobles condicionales, un case dentro de un if, diferentes condiciones con elif ... Posibilidades infinitas</p>
+                <img src="/images/script5.png" alt="Script condicional compuesto">
+                <img src="/images/script6.png" alt="Resultado condicional compuesto">
+
+                <p>También disponemos de <code>case</code> para múltiples opciones de forma más limpia:</p>
+                <img src="/images/script7.png" alt="Sintaxis de case">
             </section>
 
             
-            <section id="obj2">
-                <h3>Uso de bucles para procesar archivos y entradas</h3>
-                <p>Los bucles automatizan tareas repetitivas. El bucle <code>for</code> recorre una lista definida de elementos (archivos, usuarios o comandos), mientras que <code>while</code> se ejecuta continuamente mientras se cumpla una condición específica.</p>
-                <p>En un bucle <code>for</code>, podemos iterar sobre una lista manual, el contenido de un archivo o la salida de un comando. Cuando usamos una lista, nosotros indicamos los valores. Tambien podemos hacer una sustitución de comandos... Ejemplos:</p>
-                <img src="/images/script8.png" alt="Ejemplo bucle for" width="600">
-                <img src="/images/script9.png" alt="resultado bucle for" width="600">
-               <p>El bucle <code>while</code> ejecuta acciones mientras una condición sea verdadera. Es la herramienta ideal para lecturas línea a línea (usando <code>read</code>) o para crear contadores. También podemos usar la variable <code>IFS</code> para definir el separador de campos al procesar archivos complejos (como CSV).</p>
-                <img src="/images/script10.png" alt="ejemplo de while" width="600">
-                <img src="/images/script11.png" alt="Resultado while" width="600">
-
-<p>En definitiva: usamos <strong>for</strong> cuando conocemos el número de elementos, y <strong>while</strong> cuando no sepamos cuanto durará la tarea. Ambos sirven para procesar logs, gestionar usuarios de forma masiva, monitorizar servicios...</p>
-                <p>En definitiva, usaremos <strong>for</strong> cuando sabemos exactamente cuantos elementos hay y <strong>while</strong> cuando no sabemos cuanto durará la tarea.</p>
+            <section id="obj2" class="lesson-section">
+                <h3>2. Uso de bucles para procesar archivos y entradas</h3>
+                <p><strong>Bucle for:</strong> Ideal para iterar(repetir infinitamente) sobre listas manuales, archivos o salidas de comandos.</p>
+                <img src="/images/script8.png" alt="Ejemplo bucle for">
+                <img src="/images/script9.png" alt="Resultado bucle for">
+               <p><strong>Bucle while:</strong> Ideal para lecturas línea a línea (con <code>read</code>) o contadores. Podemos usar <code>IFS</code> para definir separadores en archivos como CSV.</p>
+                <img src="/images/script10.png" alt="Ejemplo bucle while">
+                <img src="/images/script11.png" alt="Resultado bucle while">
+                <p>En definitiva: usamos <strong>for</strong> cuando conocemos el número de elementos, y <strong>while</strong> cuando no sepamos cuánto durará la tarea. <strong>Until</strong> funciona de forma opuesta a while, aunque es menos común.</p>
                 <p> Por ultimo, <strong>until</strong> es lo mismo que while pero funciona de forma opuesta, aunque no he visto usarlo mucho. </p>
             </section>
             
-            <section id="obj3">
-                <h3>Procesar entradas de scripts</h3>
-                <p>Los scripts pueden recibir argumentos desde la línea de comandos al lanzar el script. Existen diferentes tipos de argumentos :</p>
+            <section id="obj3" class="lesson-section">
+                <h3>3. Procesar entradas de scripts</h3>
+                <p>Los scripts pueden recibir argumentos desde la línea de comandos. Estos son los tipos principales:</p>
                 <ul>
-                    <li><strong>$0</strong> → Nombre del script</li>
-                    <li><strong>$1, $2, $3…</strong> → Argumentos individuales</li>
-                    <li><strong>$#</strong> → Número total de argumentos</li>
-                    <li><strong>$@</strong> → Todos los argumentos</li>
-                    <li><strong>$?</strong> → Estado del script</li>
+                    <li><strong>$0</strong> → Nombre del script.</li>
+                    <li><strong>$1, $2...</strong> → Argumentos posicionales individuales.</li>
+                    <li><strong>$#</strong> → Número total de argumentos recibidos.</li>
+                    <li><strong>$@</strong> → Lista de todos los argumentos.</li>
+                    <li><strong>$?</strong> → Estado de salida del último comando (0 = éxito).</li>
+                </ul><strong>$?</strong> → Estado del script</li>
                 </ul>
-                <img src="/images/script12.png" alt="args" width="600">
-                <img src="/images/script13.png" alt="Resultado args" width="600">
-                <p> Mencionar que podemos forzar la salida de un script por lo que fuera usando un exit 1 </p>
+                <img src="/images/script12.png" alt="Uso de argumentos">
+                <img src="/images/script13.png" alt="Resultado de argumentos">
+                <p>Podemos forzar la finalización de un script con un código de error específico usando <code>exit 1</code>.</p>
             </section>
-            <section id="obj4">
-                <h3>Procesar la salida de comandos dentro de un script</h3>
-                <p>La salida de comandos puede almacenarse en variables usando <strong>$(comando)</strong> o comillas invertidas. </p>
-                <p>Básicamente, lo que hacemos es guardar el resultado de un comando dentro de una variable usando $( ). Esto nos permite usar esa información más tarde en el script para procesarla o mandarla a otro sitio, combinándolo con las redirecciones que aprendimos en la Clase 1.</p>
-                <p> Por ejemplo :</p>
-                <img src="/images/script14.png" alt="procesando y redirigiendo script" width="600">
-                <img src="/images/script15.png" alt="Resultado redirección" width="600">
-                <p> Por ultimo, es importante recordar que la mayoría de errores suelen venir de fallos tontos, como no espaciar bien los corchetes, no dar permisos de ejecución, usar rutas relativas, etc...</p>
+            <section id="obj4" class="lesson-section">
+                <<h3>4. Procesar la salida de comandos dentro de un script</h3>
+                <p>La salida de comandos puede almacenarse en variables usando la sintaxis <code>$(comando)</code>.</p>
+                <p>Esto permite capturar información del sistema para procesarla más tarde o redirigirla, combinándola con lo aprendido en la Clase 1 sobre redirecciones de flujo.</p>
+                <img src="/images/script14.png" alt="Procesando y redirigiendo">
+                <img src="/images/script15.png" alt="Resultado redirección en script">
+                <div class="lesson-alert" style="background: rgba(0, 123, 255, 0.1); border-left: 4px solid #007bff; padding: 15px; margin-top: 20px;">
+                    <strong>💡 Consejo Pro:</strong> La mayoría de errores en scripts vienen de fallos de sintaxis: falta de espacios en los corchetes, no dar permisos de ejecución o usar rutas relativas en lugar de absolutas.
+                </div>
             </section>
 
         </div>
     </div>
-</main>
-
-<footer>
-    <div class="footer-content">
-        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
-        <div class="footer-links">
-            <a href="https://github.com/s2ktux">GitHub</a>
-            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
-            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
-        </div>
-    </div>
-</footer>
-
-<a href="#" id="back-to-top">↑ Volver arriba</a>
-<script src="/conf/scripts.js"></script>
-
-</body>
-</html>
+</div>
