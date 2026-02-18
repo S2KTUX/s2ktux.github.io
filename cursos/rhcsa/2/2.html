@@ -27,7 +27,7 @@
         <div class="course-content">
             
             <div class="lesson-alert" style="background: rgba(255,165,0,0.1); border-left: 4px solid #ffa500; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
-                <strong>⚠️ ATENCIÓN:</strong> Los puntos 3 y 4 son exclusivos para <strong>RHCSA v10</strong>.
+                <strong>⚠️ ATENCIÓN:</strong> Los puntos 3 y 4 solo aplican a <strong>RHCSA v10</strong>. En  <strong>RHCSA v9</strong> no forman parte del examen.
             </div>
 
             <section id="obj1" class="lesson-section">
@@ -59,7 +59,6 @@
                     <li><strong>sudo rm /etc/yum.repos.d/[nombre-archivo].repo</strong> → Elimina el repositorio borrando su archivo.</li>
                 </ul>
             </section>
-            </section>
 
             <section id="obj2" class="lesson-section">
                 <h3>2. Instalar y eliminar paquetes de software RPM</h3>
@@ -71,7 +70,7 @@
                     <li><strong>rpm -e nombre_paquete</strong> → Eliminar un paquete instalado.</li>
                     <li><strong>rpm -V nombre_paquete</strong> → Verificar la integridad de los archivos.</li>
                     <li><strong>rpm -qa</strong> → Listar todos los paquetes instalados.</li>
-                    <li><strong>rpm -qf</strong> → Consulta a qué paquete pertenece un comando o archivo.</li>
+                    <li><strong>rpm -qf</strong> → Consulta a qué paquete pertenece un archivo del sistema..</li>
                     <li><strong>rpm -qi nombre_paquete</strong> → Mostrar información detallada de un paquete instalado.</li>
                     <li><strong>rpm -ql paquete</strong> → Lista los archivos que existen en un paquete.</li>
                 </ul>
@@ -96,7 +95,7 @@
 
             <section id="obj3" class="lesson-section">
                 <h3>3. Configurar el acceso a los repositorios de Flatpak</h3>
-                <p>Flatpak es un sistema de distribución independiente diseñado para aplicaciones de escritorio con dependencias aisladas. Los repositorios pueden añadirse mediante:</p>
+                <p>Flatpak es un sistema de distribución de aplicaciones aisladas mediante contenedores de usuario. Los repositorios pueden añadirse mediante:</p>
                 <ul>
                     <li><strong>flatpak remote-add --if-not-exists flathub URL</strong> → Añadir repositorios</li>
                     <li><strong>flatpak remotes</strong> → Listar repositorios configurados</li>
