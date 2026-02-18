@@ -37,7 +37,7 @@
                 <h3>1. Acceder a un prompt de shell</h3>
                 <p>El prompt indica tu identidad y ubicación mediante el formato <code>usuario@máquina:ruta</code>. Se cierra con <code>$</code> para usuarios normales o <code>#</code> para root.</p>
                 <img src="/images/Shell.png" alt="Ejemplo de prompt de shell">
-                <p>El acceso puede ser local (TTY)(Control + Alt + F1 - F6), remoto (SSH) o vía terminal gráfica. Recordad que Linux es <em>Case Sensitive</em>, que es a lo que se refieren con ejecutar con la sintaxis correcta..</p>
+                <p>El acceso puede ser local (TTY)(Control + Alt + F2 - F6 en sistemas modernos), remoto (SSH) o vía terminal gráfica. Linux distingue entre mayúsculas y minúsculas (case-sensitive), por lo que la sintaxis debe escribirse exactamente.</p>
             </section>
 
             <section id="obj2" class="lesson-section">
@@ -47,14 +47,14 @@
                     <div class="info-item"><strong>0</strong><br>STDIN<br><small>Entrada</small></div>
                     <div class="info-item"><strong>1</strong><br>STDOUT<br><small>Salida</small></div>
                     <div class="info-item"><strong>2</strong><br>STDERR<br><small>Errores</small></div>
-                </div>
-                
+                </div>             
                 <ul>
-                    <li><strong><code>&lt;</code> , <code>&lt;&lt;</code> , <code>&lt;&lt;&lt;</code></strong> -> Entrada desde archivo, bloque de texto o cadena.</li>
-                    <li><code>&gt;</code> , <code>&gt;&gt;</code> : Salida a archivo (sobrescribir o añadir).</li>
-                    <li><code>2&gt;</code> : Captura exclusiva de errores.</li>
-                    <li><code>&amp;&gt;</code> : Redirección completa (salida y errores).</li>
-                    <li><code>|</code> : Tubería (conecta procesos).</li>
+                    <li><strong><code>&lt;</code>, <code>&lt;&lt;</code>, <code>&lt;&lt;&lt;</code></strong> → Entrada estándar desde archivo, bloque de texto (heredoc) o cadena.</li>
+                    <li><strong><code>&gt;</code>, <code>&gt;&gt;</code></strong> → Redirige la salida estándar a un archivo (sobrescribe o añade).</li>
+                    <li><strong><code>2&gt;</code></strong> → Redirige únicamente la salida de error (STDERR).</li>
+                    <li><strong><code>2&gt;&amp;1</code></strong> → Redirige STDERR hacia STDOUT.</li>
+                    <li><strong><code>&amp;&gt;</code></strong> → Redirige salida estándar y errores al mismo destino.</li>
+                    <li><strong><code>|</code></strong> → Tubería (envía la salida de un comando como entrada de otro).</li>
                 </ul>
                 <img src="/images/redd-basic.png" alt="Ejemplo de redirecciones">
             </section>
@@ -64,15 +64,16 @@
                 <p>Grep sirve para analizar y buscar patrones dentro de archivos o salidas de comandos. Las flags más importantes son :</p>
                 <ul>
                     <li><code>-E</code> : Regex extendidas. Ejemplo : <code>grep -E "error|fallo" log.txt</code>.</li>
-                    <li><code>-v</code> : Invertir búsqueda, es decir, que nos borre lo que encuentre.Ejemplo : <code> ps -ef | grep -v grep</code></li>
+                    <li><code>-v</code> : Muestra las líneas que NO coinciden con el patrón : <code> ps -ef | grep -v grep</code></li>
                     <li><code>-i</code> : Ignorar mayúsculas. Ejemplo : <code>grep -i "linux" manual.txt</code></li>
+                    <li><code>-r</code> : Busca recursivamente dentro de directorios.</li>
                 </ul>
                 <p>Símbolos Regex (expresiones regulares básicas): <code>^</code> (inicio), <code>$</code> (fin), <code>.</code> (cualquier carácter), <code>*</code> (repetición), <code>[]</code> (Cualquiera de los caracteres dentro), <code>|</code> (una opción u otra).</p>
             </section>
 
             <section id="obj4" class="lesson-section">
                 <h3>4. Acceso remoto con SSH</h3>
-                <p>SSH es un protocolo de red diseñado para establecer conexiones seguras entre dos maquinas. Tiene el puerto 22 por defecto y su configuración está en <code>/etc/ssh/sshd_config</code>.</p>
+                <p>SSH es un protocolo de red diseñado para establecer conexiones seguras entre dos máquinas. Tiene el puerto 22 por defecto y su configuración está en <code>/etc/ssh/sshd_config</code>.</p>
                 <ul>
                     <li><code>-p</code> : Permite especificar un puerto</li>
                     <li><code>-i</code> : Indica la ruta de la clave privada.</li>
@@ -98,7 +99,7 @@
                     <li><code>-c</code> -> Create: Crea un nuevo archivo de empaquetado.</li>
                     <li><code>-x</code> -> Extract: Extrae el contenido de un archivo empaquetado existente.</li>
                     <li><code>-v</code> -> Verbose: Muestra el listado de archivos procesados por pantalla.</li>
-                    <li><code>-f</code> -> File: Indica el nombre del archivo resultante o el archivo a extraer (siempre debe ser la última flag).</li>
+                    <li><code>-f</code> -> File: Indica el nombre del archivo resultante o el archivo a extraer ((normalmente se coloca al final por claridad)).</li>
                 </ul>
                 <pre><code>tar -cvzf archivo.tar.gz /carpeta  # Comprimir
 tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
@@ -112,8 +113,9 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                 <ul>
                     <li><code>i</code> : Modo inserción.</li>
                     <li><code>Esc + :wq!</code> : Guardar y salir.</li>
-                    <li><code>Esc + q!</code> : Salir sin guardar </li>
+                    <li><code>Esc + :q!</code> : Salir sin guardar </li>
                     <li><code>Esc + dd</code> : Borrar línea.</li>
+                    <li><code>/texto</code> : Buscar dentro del archivo.</li>
                     <li><code>u</code> : Deshacer</li>
                 </ul>
                 <p> Podemos mencionar tambien el comando sed que se utilizar para transformar texto en un fichero.</p>
@@ -124,7 +126,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                 <h3>8. Gestión de archivos y directorios</h3>
                 <ul>
                     <li><code>mkdir -p</code> : Crea directorios y subdirectorios ( si fuera necesario).</li>
-                    <li><code>rmdir</code> : Eliminar un directorio</li>
+                    <li><code>rmdir</code> :Elimina directorios vacíos.</li>
                     <li><code>cp </code> : Copia archivos / directorios a otra ruta. Usamos -r para hacerlo de forma recursiva.</li>
                     <li><code>mv</code> : Mover ficheros / directorios.</li>
                     <li><code>rm -rf</code> : Borrado forzado y recursivo de un archivo o un directorio.</li>
@@ -134,9 +136,9 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
 
             <section id="obj9" class="lesson-section">
                 <h3>9. Enlaces físicos y simbólicos</h3>
-                <p>Un <code>enlace fisico</code> es un nombre adicional para los mismos datos en el disco (mismo inodo), mientras que un <code>enlace simbólico</code> es un acceso directo que apunta a la ruta del archivo original (acceso directo en Windows). La sintaxis es ln (-s) archivo-original enlace</p>
-                <p><strong>Físico (Hard link):</strong> Mismo inodo. Si borras el original, el contenido sobrevive. Ejemplo : <code>ln archivo link_fisico</code>.<br>
-                <strong>Simbólico (Soft link):</strong> Acceso directo. Si borras el original, el enlace se rompe y el contenido se pierde. Ejemplo : <code>ln -s archivo link_archivo</code>.</p>
+                <p>Un <code>enlace fisico</code> es un nombre adicional para los mismos datos en el disco (mismo inodo), mientras que un <code>enlace simbólico</code> es un acceso directo que apunta a la ruta del archivo original (acceso directo en Windows). La sintaxis es <code>ln [-s] archivo_original enlace</code>.</p>
+                <p><strong>Físico (Hard link):</strong> Mismo inodo. Si borras el original, el contenido sobrevive.<br>
+                <strong>Simbólico (Soft link):</strong> Acceso directo. Si borras el original, el enlace se rompe y el contenido se pierde.</p>
                 <img src="/images/links.png" alt="Diferencia entre enlaces">
             </section>
 
@@ -151,7 +153,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                 <p>Usaremos los comandos <code>chmod</code> para modificar permisos y <code>chown</code> para modificar propietario:grupo. Podremos comprobar con <code>ls -l</code></p>
                 <img src="/images/permisos-basic.png" alt="Listar permisos">
                 <img src="/images/cambiar-permisos-basic.png" alt="Cambiar permisos">
-                <p> Tener en cuenta el flag -R para que se aplique de forma recuersiva a todos los subdirectorios y archivos cuando lo usemos para un directorio</p>
+                <p> Tener en cuenta el flag -R para que se aplique de forma recursiva a todos los subdirectorios y archivos cuando lo usemos para un directorio</p>
             </section>
 
             <section id="obj11" class="lesson-section">
@@ -162,6 +164,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                     <li><code>info</code> : Documentación extendida.</li>
                     <li><code>/usr/share/doc</code> : Ejemplos y guías de paquetes.</li>
                     <li><code>whatis</code> : Breve explicación de un comando</li>
+                    <li><code>comando --help</code> : Ayuda rápida integrada.</li>
                 </ul>
             </section>
         </div>
