@@ -1,78 +1,56 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RHCSA - Configurar el almacenamiento local">
-    <meta name="keywords" content="RHCSA, Linux, almacenamiento, particiones, LVM, mount, UUID">
-    <meta name="author" content="SysRiser">
-    <title>S2KTUX - RHCSA | Almacenamiento local</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">RHCSA Objetivo 5</span>
+        <h1>Configuración del almacenamiento local</h1>
+        <p>Particiones, LVM y montaje persistente de sistemas de archivos</p>
+        
+        <a href="https://youtu.be/RMWPYC6xllw" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - CLASE 5</strong>
+                <span>Almacenamiento local paso a paso para RHCSA</span>
+            </div>
+        </a>
+    </header>
 
-<div class="gradient-bg"></div>
+    <div class="lesson-layout">
 
-<header>
-    <div class="header-left">
-        <a href="/index.html" class="header-logo">S2KTUX</a>
-    </div>
-    <nav>
-        <a href="/index.html">Inicio</a>
-        <a href="/cursos/cursos.html">Cursos</a>
-        <a href="/proyectos/proyectos.html">Proyectos</a>
-    </nav>
-</header>
-
-<main id="contenido">
-
-    <div class="hero">
-        <h1>Configurar el almacenamiento local</h1>
-        <p>Particiones, LVM y montaje de sistemas de archivos</p>
-        <p><a href="https://youtu.be/RMWPYC6xllw" target="_blank">VER VIDEO YOUTUBE - CLASE 5</a></p>
-    </div>
-
-    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
-
-    <div class="course-page">
-
-        <div class="sidebar">
-            <h3>Objetivos del bloque</h3>
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
             <ul>
-                <li><a href="#obj1">Gestionar particiones GPT</a></li>
-                <li><a href="#obj2">Crear volúmenes físicos</a></li>
-                <li><a href="#obj3">Grupos de volúmenes</a></li>
-                <li><a href="#obj4">Volúmenes lógicos</a></li>
-                <li><a href="#obj5">Montaje automático con UUID o etiqueta</a></li>
-                <li><a href="#obj6">Cambios no destructivos</a></li>
+                <li><a href="#obj1">1. Particiones GPT</a></li>
+                <li><a href="#obj2">2. Volúmenes físicos (PV)</a></li>
+                <li><a href="#obj3">3. Grupos de volúmenes (VG)</a></li>
+                <li><a href="#obj4">4. Volúmenes lógicos (LV)</a></li>
+                <li><a href="#obj5">5. Montaje con UUID o LABEL</a></li>
+                <li><a href="#obj6">6. Cambios no destructivos y SWAP</a></li>
             </ul>
-        </div>
+        </aside>
+        
 
-        <div class="content">
+        <div class="course-content">
 
-            <section id="obj1">
-                <h3>Listar, crear y eliminar particiones en discos GPT</h3>
-                <p> Antes de usar un disco, debemos crear particiones. En sistemas modernos se utiliza el esquema <strong>GPT</strong>. Cuando grabé el video de Youtube mencionaban en los objetivos MBR, pero ahora lo han quitado. Aún así, me parece muy importante como administrador de sistemas que conozcas MBR. </p>
-                <p> Las diferencias entre MBR y GPT son que MBR es el estándar antiguo limitado a 2TB y 4 particiones, mientras que GPT es el sistema moderno que permite discos más grandes, particiones casi ilimitadas y mayor recuperación de datos.</p>
+            <section id="obj1" class="lesson-section">
+                <h3>1. Listar, crear y eliminar particiones GPT</h3>
+                <p>Antes de poder utilizar un disco debemos crear particiones. El estándar actual es <strong>GPT</strong>, que sustituye a MBR, aunque este se sigue usando.</p>
+                <p> Las diferencias principales entre MBR y GPT son que MBR está limitado a 2TB y 4 particiones, mientras que GPT  permite discos más grandes, particiones casi ilimitadas y mayor recuperación de datos.</p>
                 <p> Para listar los discos o particiones que tenemos podemos usar los siguientes comandos, que cualquiera es valido para hacer comprobaciones : </p>
                 <ul>
-                    <li><strong>lsblk</strong> → Muestra de forma visual los discos y sus divisiones. Es el más recomendado</li>
-                    <li><strong>blkid</strong> → Muestra UUID y tipo de sistema de archivos</li>
-                    <li><strong>parted -l</strong> → Indica si el disco es MBR o GPT y su tamaño.</li>
-                    <li><strong>fdisk -l</strong> → Da un informe técnico detallado de todos los discos.</li>
-                    <li><strong>df -h </strong> → Informa cuánto espacio libre queda y dónde se usan.</li>
+                    <li><strong>lsblk</strong> → Vista clara de discos y particiones.</li>
+                    <li><strong>blkid</strong> → UUID y tipo de filesystem.</li>
+                    <li><strong>parted -l</strong> → Información de tabla GPT/MBR.</li>
+                    <li><strong>fdisk -l</strong> → Información técnica detallada.</li>
+                    <li><strong>df -h</strong> → Espacio usado en sistemas montados.</li>
                 </ul>
-                <p> Ejemplos de como se podría un sistema con dos discos y varias particiones en cada uno :</p>
-                <img src="/images/listado-part.png" alt="Particiones" width="1100">
+                <p>Las particiones pueden gestionarse con <code>fdisk</code>, <code>gdisk</code> o <code>parted</code> (recomendado en Red Hat). Tras modificar particiones ejecutamos <code>partprobe</code> para actualizar el kernel.</p>
+                <img src="/images/listado-part.png">
                 <p>Una vez listados los discos, podemos crear o eliminar particiones usando <code>fdisk</code>, <code>gdisk</code> o <code>parted</code>. Tened en cuenta que  gdisk funciona practicamente igual que fdisk.</p>
                 <p>Para usar <code>fdisk</code> ejecutamos <code>fdisk /dev/sdX</code> (el disco se obtiene con <code>fdisk -l</code>) y desde el menú interactivo podemos crear o borrar particiones.</p>
-                <img src="/images/part-fdisk.png" alt="Creación de particiones con fdisk" width="1000">
-                <p>Con <code>n</code> creamos particiones, con <code>d</code> las eliminamos y con <code>t</code> cambiamos su tipo, por ejemplo a <strong>LVM</strong> (listamos los tipos con <code>l</code>.)</p>
-                <img src="/images/mod-tipo-part-fdisk.png" alt="Cambio de tipo de partición a LVM" width="900">
-                <p> Por otro lado, podemos utilizar parted que es el recomendado a usar en el examen debido a que es el estandar de Red Hat. Escribiendo help vemos todas las opciones. Por ejemplo vamos a crear varias particiones : </p>
-                <img src="/images/parted-all.png" alt="Crear parted particiones ejemplo" width="900">
+                <img src="/images/part-fdisk.png" alt="Creación de particiones con fdisk">
+                <p>Con <code>n</code> creamos particiones, con <code>d</code> las eliminamos y con <code>t</code> cambiamos su tipo.</p>
+                <img src="/images/mod-tipo-part-fdisk.png" alt="Cambio de tipo de partición a LVM">
+                <p> Por otro lado, podemos utilizar parted que. Escribiendo help vemos todas las opciones. Por ejemplo vamos a crear varias particiones : </p>
+                <img src="/images/parted-all.png" alt="Crear parted particiones ejemplo">
                 <p>Primero creamos la tabla de particiones GPT, después la partición y, si es necesario, le asignamos el tipo. Recuerda que el inicio de la primera partición es <strong>1MiB</strong>.</p>
                 <p>Al salir de <code>parted</code> es necesario ejecutar <code>partprobe -s</code> para que el sistema detecte los cambios. Luego podemos comprobar las particiones con comandos como <code>lsblk</code>. </p>
                 <p> Por ultimo, aunque no muy relevante pero si podría salir en el examen, existen unas etiquetas INTERNAS de las tablas de GPT. Podemos asignarlas con el comando <code>parted disco name 1(partición) "NOMBRE"</code>. No confundir estas etiquetas con las etiquetas de las particiones que veremos despues.</p>
@@ -80,92 +58,70 @@
 
             </section>
 
-            <section id="obj2">
-                <h3>Crear y eliminar volúmenes físicos</h3>
-                <p> LVM permite gestionar el almacenamiento de forma flexible: primero se crea un volumen físico (PV), luego un grupo de volúmenes (VG) y finalmente los volúmenes lógicos (LV) que son los que usará el sistema. </p>
+            <section id="obj2" class="lesson-section">
+                <h3>2. Crear y eliminar volúmenes físicos (PV)</h3>
+                <p>LVM organiza el almacenamiento en tres capas: <strong>PV → VG → LV</strong>. Un volumen físico es una partición o disco preparado para LVM.</p>
                 <p> Por ejemplo, vamos a crear dos PV, borrar uno y comprobar(pvs o pvdisplay para más información) :</p>
-                <img src="/images/pv-ex.png" alt="pv ejemplo" width="700">
-                <p> Además, mencionar que es muy importante que el tipo de la partición sea LVM. Por ultimo, tenemos el comando <code>pvmove</code> para mover datos entre PVs o <code>pvscan</code> para hacer un escaneo profundo del PV</p>
+                <img src="/images/pv-ex.png" alt="pv ejemplo">
+                <p>Es importante que la partición tenga tipo LVM antes de crear el PV.</p>
             </section>
 
-            <section id="obj3">
-                <h3>Asignar volúmenes físicos a grupos de volúmenes</h3>
-                <p> Un <strong>grupo de volúmenes</strong> (VG) agrupa uno o más volúmenes físicos para crear un espacio común. Una vez creado, podemos extender, reducir y activar/desactivarlos. </p>
+            <section id="obj3" class="lesson-section">
+                <h3>3. Crear y gestionar grupos de volúmenes (VG)</h3>
+                <p>Un <strong>Volume Group</strong> combina varios PV creando un espacio de almacenamiento común.</p>
                 <p> En los VG entra el concepto de PE que es la unidad basica de almacenamiento en LVM. Nosotros asignamos X tamaño pero internamente LVM utilizará los PE. Por defecto son 4MB, entonces si por ejemplo tenemos 10GB, LVM usará 2560PE (10GIB / 4MB)</p>
-                <p> Vamos a crear un nuevo PV ( antes asegurate de que tenga el tipo LVM), y haremos un ejemplo con todas las opciones :</p>
-                <img src="/images/vg-ex.png" alt="vg ejemplo" width="700">
+                <img src="/images/vg-ex.png" alt="vg ejemplo" >
                 <p> Vemos com hemos creado, extendido, reducido y borrado VG, así como comprobado con vgs o vgdisplay. Por ultimo, podriamos activar o desactivar con <code>vgchange -ay/-an nombre-VG</code>, siendo -ay para activar y -an para desactivar</p>
         
             </section>
 
-            <section id="obj4">
-                <h3>Crear y eliminar volúmenes lógicos</h3>
-                <p> Los <strong>volúmenes lógicos</strong> (LV) son los que finalmente se formatean y montan en el sistema. Podemos hacer las mismas acciones que en los VG ( extender, reducir, ver info...)</p>
+            <section id="obj4" class="lesson-section">
+                <h3>4. Crear y administrar volúmenes lógicos (LV)</h3>
+                <p>Los volúmenes lógicos son los dispositivos finales que se formatean y montan en el sistema.</p>
                 <p> Para crear un volumen lógico (LV) podemos indicar el tamaño en gigabytes con <code>-L</code> o usando extensiones físicas (PE) con <code>-l</code> y le daremos un nombre con <code>-n</code>. Por ejemplo:</p>
-                <img src="/images/lv-primera.png" alt="lv ejemplo" width="700">
+                <img src="/images/lv-primera.png" alt="lv ejemplo" >
                 <p> Una vez creados, podemos extender, reducir, borrar... Pero primeramente vamos a darle un formato y montandolos en el sistema para identificarlos. Recordar comprobar con lsblk, df -Th, lvs ...</p>
-                <img src="/images/lv_segunda.png" alt="lv-formatear y montar ejemplo" width="700">
+                <img src="/images/lv_segunda.png" alt="lv-formatear y montar ejemplo">
                 <p> Una vez formateados y montados, ya podriamos extender y reducir, aunque para reducir deben estan DESMONTADOS. Al extender, si añadimos <code>-r</code> se extenderá automaticamente. En caso de que no lo añadamos, tendriamos que ejecutar resize2fs (para ext4) o xfs_growfs (para XFS)  </p>
-                <img src="/images/lv_tercera.png" alt="lv extend ejemplo" width="900">
-                <img src="/images/lv_cuarta.png" alt="lv reduce ejemplo" width="900">
+                <img src="/images/lv_tercera.png" alt="lv extend ejemplo" >
+                <img src="/images/lv_cuarta.png" alt="lv reduce ejemplo">
                 <p> Importante mencionar que extender podemos con todos los filesystem pero REDUCIR no es posible con algunos como xfs y cuando reducimos indicamos el tamaño final que queremos. Tambien podriamos  extender usando % de espacio libre con <code>lvextend -r -l +50%FREE particion</code>. </p>
             </section>
 
-            <section id="obj5">
-                <h3>Montar sistemas de archivos usando UUID o etiqueta</h3>
-                <p> Para montar sistemas de archivos de forma permanente se usa el archivo <code>/etc/fstab</code>. Es recomendable usar <strong>UUID</strong> o <strong>LABEL</strong>. Como sabemos, el UUID podemos obtenerlo del comando <code>blkid</code>.</p>
-                <p> En cuanto las LABEL(etiquetas) podemos asignarlas al formatear la partición con <code> mkfs.ext4 -L "ETIQUETA" /dev/sdbX</code> o una vez creada ( A pesar de comentar en el video una manera, no funciona en XFS), que dependerá si es ext o vfat, aunque lo más optimo es crearla cuando estás formateando la partición</p>
+            <section id="obj5" class="lesson-section">
+                <h3>5. Montar sistemas de archivos usando UUID o LABEL</h3>
+                <p>El montaje persistente se configura en <code>/etc/fstab</code>. Se recomienda usar <strong>UUID</strong> o <strong>LABEL</strong> para evitar problemas si cambia el nombre del dispositivo.</p>
+                <p> En cuanto las LABEL(etiquetas) podemos asignarlas de diferentes maneras </p>
                 <ul>
-                    <li><strong> tune2fs -L "ETIQUETA" /dev/sdbX</strong> → Asignar etiquetas en particiones EXT (e2label ha quedado deprecado aunque si funciona)</li>
-                    <li><strong>swaplabel -L</strong> → Asignar etiquetas en SWAP</li>
-                    <li><strong>mkfs.vfat -n "ETIQUETA" /dev/sdb1</strong> → Al formatear, asignar etiqueta a partición VFAT</li>
+                    <li><code>mkfs.ext4 -L NOMBRE DISCO</code> → Crear filesystem con etiqueta. Es la más recomendada</li>
+                    <li><code>tune2fs -L</code> → Cambiar etiqueta en EXT.</li>
+                    <li><code>swaplabel -L</code> → Etiquetar SWAP.</li>
+                    <li><code>blkid</code> → Obtener UUID.</li>
                 </ul>
-                <p> Podemos usar UUID para evitar problemas si cambia el nombre del dispositivo o LABEL si NUNCA se va a cambiar ( si se hace tenerlo en cuenta para modificar <code>/etc/fstab</code>).</p>
-                <p> La sintaxis para montar un sistema de archivos de forma automatica al arrancar el sistema es : [dispositivo] [punto_montaje] [tipo_fs] [opciones] [dump] [pass] (donde dump es siempre 0 y pass(verificar un filesystem al arrancar) suele ser 0 (no verificar) o 2 (verificar en segundo lugar). Las opciones, si no dicen lo contrario, usar defaults</p>
-                <img src="/images/fstab.png" alt="lv reduce ejemplo" width="700">
-                <p> En el ejemplo lo hacemos a traves de LABEL pero lo podemos hacer con UUID=..., utilizaremos mount -a para comprobar que todo esté OK y systemctl daemon-reload para recargar. </p>
+                <p> La sintaxis para montar un sistema de archivos de forma automatica al arrancar el sistema es : <code>[dispositivo] [montaje] [fs] [opciones] [dump] [pass]</code> (donde dump es siempre 0 y pass(verificar un filesystem al arrancar) suele ser 0 (no verificar) o 2 (verificar en segundo lugar). Las opciones, si no dicen lo contrario, usar defaults</p>
+                <img src="/images/fstab.png" alt="lv reduce ejemplo" >
+                <p>Tras modificarlo, lanzamos <code>mount -a</code> y  systemctl daemon-reload y .</p>
             </section>
 
-            <section id="obj6">
-                <h3>Añadir particiones y volúmenes de forma no destructiva</h3>
-                <p> Cuando nos indican añadir de forma no destructiva es simplemente añadirlos sin perder los datos que ya existan. Con esto se refieren a utilizar los comandos <code>lvextend</code> y <code>vgextend</code>. Muy importante usarlo con -r por si se nos olvida hacer el segundo paso. </p>
-                <p> Por otro lado, cuando usamos reduce tenemos que tener en cuenta que si le damos menos tamaño del espacio ocupado los datos que se queden fuera se eliminarían.</p>
+                <section id="obj6" class="lesson-section">
+                <h3>6. Cambios no destructivos y configuración SWAP</h3>
+                <p>Los cambios no destructivos consisten en ampliar almacenamiento sin perder datos mediante <code>vgextend</code> y <code>lvextend -r</code>. Reducir incorrectamente puede provocar pérdida de información.</p>
                 <p> Uno de los mayores errores que hace que sea destructivo es una vez hemos extendido o reducido, formatear el disco <code>mkfs</code>, ya que borraría todos los datos. El otro error sería borrar la tabla de particiones o la partición con <code>fdisk</code> o <code>parted</code>.</p>
-                <p> Por ultimo, vamos a mencionar SWAP. El SWAP es una zona del disco duro que el sistema utiliza como "memoria RAM de emergencia" cuando la principal se queda sin espacio. Teniamos creada la primera partición como swap en el punto 1. Para formatearla deberiamos de :  </p>
-                <img src="/images/swap.png" alt="lv reduce ejemplo" width="700">
+                <p> El SWAP es una zona del disco duro que el sistema utiliza como "memoria RAM de emergencia" cuando la principal se queda sin espacio. Teniamos creada la primera partición como swap en el punto 1. Para formatearla deberiamos de :  </p>
+                <img src="/images/swap.png" alt="lv reduce ejemplo" >
                 <p> Hemos creado la partición SWAP, le hemos dado formato y la hemos activo. Por ultimo, añadiendola a <code>/etc/fstab</code> la hacemos persistente. Tambien podríamos crear SWAP a traves de archivo aunque dudo mucho que salga en el examen. En caso de sería :</p>
                 <pre><code>
-# Podemos crear el archivo con fallocate ( forma rapida) o dd ( forma lenta pero más compatible ), la que prefieras : 
-                    
-# dd if=/dev/zero of=/swapfile bs=1M count=1024
-                    
-# fallocate -l 1G /swapfile 
-                    
+<pre><code>
+fallocate -l 1G /swapfile #FORMA RAPIDA
+dd if=/dev/zero of=/swapfile bs=1M count=1024 # FORMA LENTA 
+    
 chmod 600 /swapfile
 mkswap /swapfile
 swapon /swapfile
-echo "/swapfile swap swap defaults 0 0" >> /etc/fstab
-swapon --show
+echo "/swapfile swap swap defaults 0 0" >> /etc/fstab</code></pre>
                 </code></pre>
             </section>
 
         </div>
     </div>
-</main>
-
-<footer>
-    <div class="footer-content">
-        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
-        <div class="footer-links">
-            <a href="https://github.com/s2ktux">GitHub</a>
-            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
-            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
-        </div>
-    </div>
-</footer>
-
-<a href="#" id="back-to-top">↑ Volver arriba</a>
-<script src="/conf/scripts.js"></script>
-
-</body>
-</html>
+</div>
