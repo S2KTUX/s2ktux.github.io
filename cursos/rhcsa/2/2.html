@@ -35,20 +35,20 @@
                 <p>Los repositorios son fuentes de software que se definen mediante archivos <code>.repo</code> en <code>/etc/yum.repos.d/</code>. Son esenciales para que <strong>dnf</strong> pueda resolver dependencias automáticamente.</p>
                 
                 <img src="/images/repo-rpm.png" alt="Estructura de un archivo .repo">
-                
-                <div class="info-grid">
-                    <div class="info-item"><strong>[id-repo]</strong><br><small>Identificador del repositorio</small></div>
-                    <div class="info-item"><strong>name</strong><br><small>Descripción del repo</small></div>
-                    <div class="info-item"><strong>baseurl</strong><br><small>Enlace al servidor o file:///ruta-montaje</small></div>
-                    <div class="info-item"><strong>enabled</strong><br><small>1 (activo) o 0 (desactivado)</small></div>
-                    <div class="info-item"><strong>gpgcheck</strong><br><small>Validar firma (1) o no (0)</small></div>
-                </div>
-
+                <p>Donde cada campo significa:</p>
+                <ul>
+                    <li><strong>[id-del-repo]</strong> → Identificador del repositorio.</li>
+                    <li><strong>name</strong> → Nombre descriptivo.</li>
+                    <li><strong>baseurl</strong> → Enlace directo al servidor donde se encuentran los paquetes RPM (Si es local: baseurl=file:///RUTA-MONTAJE).</li>
+                    <li><strong>enabled</strong> → Define si el repositorio está activo (1) o ignorado (0).</li>
+                    <li><strong>gpgcheck</strong> → Indica si el sistema debe validar la firma de seguridad de los paquetes (1) o no (0).</li>
+                    <li><strong>gpgkey</strong> → URL de la clave pública del proveedor para verificar la autenticidad del software.</li>
+                </ul>
                 <p>Comandos de mantenimiento tras añadir un repo:</p>
                 <ul>
-                    <li><code>dnf clean all</code>: Limpia la caché.</li>
-                    <li><code>dnf makecache</code>: Regenera la caché.</li>
-                    <li><code>dnf repolist</code>: Comprueba los repositorios activos.</li>
+                    <li><code>dnf clean all</code> → Limpia la caché.</li>
+                    <li><code>dnf makecache</code> → Regenera la caché.</li>
+                    <li><code>dnf repolist</code> → Comprueba los repositorios activos.</li>
                 </ul>
                 <img src="/images/recargar-repo-rpm.png" alt="Refrescar repositorios">
                 <p>Por último, podríamos gestionar repositorios a través de comandos:</p>
