@@ -34,12 +34,12 @@
                 <p>Debemos recordar que siempre que editemos un archivo para crear un script habrá que darle permisos de ejecución con <code>chmod +x nombre-script</code>.</p>
                 <img src="/images/script2.png" alt="resultado script basico">
                 <h4>Operadores lógicos de archivos:</h4>
-                <div class="info-grid">
-                    <div class="info-item"><strong>-e</strong><br><small>Existe archivo/dir</small></div>
-                    <div class="info-item"><strong>-f</strong><br><small>Es archivo regular</small></div>
-                    <div class="info-item"><strong>-d</strong><br><small>Es un directorio</small></div>
-                    <div class="info-item"><strong>-r/w/x</strong><br><small>Permisos r, w o x</small></div>
-                </div>
+                <ul>
+                    <li><strong>-e</strong><small> : Existe archivo/dir</small></li>
+                    <li><strong>-f</strong><small> : Es archivo regular</small></li>
+                    <li><strong>-d</strong><small> : Es un directorio</small></li>
+                    <li><strong>-r/w/x</strong><small> : Permisos r, w o x</small></li>
+                </ul>
 
                 <h4>Comparación de cadenas y números:</h4>
                 <ul>
@@ -92,13 +92,13 @@
                 <p>Podemos forzar la finalización de un script con un código de error específico usando <code>exit 1</code>.</p>
             </section>
             <section id="obj4" class="lesson-section">
-                <<h3>4. Procesar la salida de comandos dentro de un script</h3>
+                <h3>4. Procesar la salida de comandos dentro de un script</h3>
                 <p>La salida de comandos puede almacenarse en variables usando la sintaxis <code>$(comando)</code>.</p>
                 <p>Esto permite capturar información del sistema para procesarla más tarde o redirigirla, combinándola con lo aprendido en la Clase 1 sobre redirecciones de flujo.</p>
                 <img src="/images/script14.png" alt="Procesando y redirigiendo">
                 <img src="/images/script15.png" alt="Resultado redirección en script">
                 <div class="lesson-alert" style="background: rgba(0, 123, 255, 0.1); border-left: 4px solid #007bff; padding: 15px; margin-top: 20px;">
-                    <strong>💡 Consejo Pro:</strong> La mayoría de errores en scripts vienen de fallos de sintaxis: falta de espacios en los corchetes, no dar permisos de ejecución o usar rutas relativas en lugar de absolutas.
+                    <strong>💡 CONSEJO :</strong> La mayoría de errores en scripts vienen de fallos de sintaxis: falta de espacios en los corchetes, no dar permisos de ejecución o usar rutas relativas en lugar de absolutas.
                 </div>
             </section>
 
