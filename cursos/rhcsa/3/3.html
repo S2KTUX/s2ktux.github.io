@@ -28,8 +28,8 @@
 
             <section id="obj1" class="lesson-section">
                 <h3>1. Ejecutar código condicionalmente (if,test,[]...)</h3>
-                <p>Los scripts de shell permiten ejecutar comandos de forma automática. El control condicional se realiza principalmente con <strong>if</strong>, <strong>test</strong> y los corchetes de evaluación.</p>>
-                <p>Todo script debe comenzar con el <code>#!</code> (shebang) seguido del intérprete (<code>/bin/bash</code>, <code>/bin/sh</code>...), usando luego comandos como <code>read</code> para guardar datos y <code>echo</code> para mostrar resultados.</p>
+                <p>Los scripts de shell permiten ejecutar comandos de forma automática. El control condicional se realiza principalmente con <strong>if</strong>, <strong>test</strong> y los corchetes de evaluación.</p>
+                <p>El shebang (#!) indica qué intérprete ejecutará el script (#!/bin/bash), usando luego comandos como <code>read</code> para guardar datos, <code>echo</code> para mostrar resultados.</p>
                 <img src="/images/script1.png" alt="Script basico">
                 <p>Debemos recordar que siempre que editemos un archivo para crear un script habrá que darle permisos de ejecución con <code>chmod +x nombre-script</code>.</p>
                 <img src="/images/script2.png" alt="resultado script basico">
@@ -66,14 +66,14 @@
             
             <section id="obj2" class="lesson-section">
                 <h3>2. Uso de bucles para procesar archivos y entradas</h3>
-                <p><strong>Bucle for:</strong> Ideal para iterar(repetir infinitamente) sobre listas manuales, archivos o salidas de comandos.</p>
+                <p><strong>Bucle for:</strong> Ideal para iterar sobre una lista conocida de elementos, archivos o salidas de comandos.</p>
                 <img src="/images/script8.png" alt="Ejemplo bucle for">
                 <img src="/images/script9.png" alt="Resultado bucle for">
                <p><strong>Bucle while:</strong> Ideal para lecturas línea a línea (con <code>read</code>) o contadores. Podemos usar <code>IFS</code> para definir separadores en archivos como CSV.</p>
                 <img src="/images/script10.png" alt="Ejemplo bucle while">
                 <img src="/images/script11.png" alt="Resultado bucle while">
-                <p>En definitiva: usamos <strong>for</strong> cuando conocemos el número de elementos, y <strong>while</strong> cuando no sepamos cuánto durará la tarea. <strong>Until</strong> funciona de forma opuesta a while, aunque es menos común.</p>
-                <p> Por ultimo, <strong>until</strong> es lo mismo que while pero funciona de forma opuesta, aunque no he visto usarlo mucho. </p>
+                <p>Usamos for cuando conocemos los elementos a recorrer, while mientras una condición sea verdadera y until mientras sea falsa.</p>
+
             </section>
             
             <section id="obj3" class="lesson-section">
@@ -85,7 +85,7 @@
                     <li><strong>$#</strong> → Número total de argumentos recibidos.</li>
                     <li><strong>$@</strong> → Lista de todos los argumentos.</li>
                     <li><strong>$?</strong> → Estado de salida del último comando (0 = éxito).</li>
-                </ul><strong>$?</strong> → Estado del script</li>
+                    <li><strong>$?</strong> → Estado del script</li>
                 </ul>
                 <img src="/images/script12.png" alt="Uso de argumentos">
                 <img src="/images/script13.png" alt="Resultado de argumentos">
