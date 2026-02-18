@@ -1,81 +1,49 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RHCSA - Operar sistemas en funcionamiento">
-    <meta name="keywords" content="RHCSA, Linux, systemctl, systemd, procesos, journalctl, ssh">
-    <meta name="author" content="SysRiser">
-    <title>S2KTUX - RHCSA | Operar sistemas</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
-
-<div class="gradient-bg"></div>
-
-<header>
-    <div class="header-left">
-        <a href="/index.html" class="header-logo">S2KTUX</a>
-    </div>
-    <nav>
-        <a href="/index.html">Inicio</a>
-        <a href="/cursos/cursos.html">Cursos</a>
-        <a href="/proyectos/proyectos.html">Proyectos</a>
-    </nav>
-</header>
-
-<main id="contenido">
-
-    <div class="hero">
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">RHCSA Objetivo 4</span>
         <h1>Operar sistemas en funcionamiento</h1>
-        <p>Gestión de arranque, procesos, servicios y diagnóstico</p>
-        <p><a href="https://youtu.be/TyjaQtZcA9Y" target="_blank">VER VIDEO YOUTUBE - CLASE 4</a></p>
-    </div>
+        <p>Gestión de arranque, procesos, servicios y diagnóstico del sistema</p>
+        
+        <a href="https://youtu.be/TyjaQtZcA9Y" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - CLASE 4</strong>
+                <span>Administración de sistemas y resolución de problemas</span>
+            </div>
+        </a>
+    </header>
 
-    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
-
-    <div class="course-page">
-
-        <div class="sidebar">
-            <h3>Objetivos del bloque</h3>
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
             <ul>
-                <li><a href="#obj1">Arrancar, reiniciar y apagar sistemas</a></li>
-                <li><a href="#obj2">Arrancar en diferentes targets manualmente</a></li>
-                <li><a href="#obj3">Interrumpir el arranque</a></li>
-                <li><a href="#obj4">Identificar y eliminar procesos</a></li>
-                <li><a href="#obj5">Ajustar la programación de procesos</a></li>
-                <li><a href="#obj6">Administrar tuning profiles</a></li>
-                <li><a href="#obj7">Localizar e interpretar logs</a></li>
-                <li><a href="#obj8">Preservar journals del sistema</a></li>
-                <li><a href="#obj9">Levantar, parar y comprobar el estado de los servicios de red </a></li>
-                <li><a href="#obj10">Transferir archivos de forma segura</a></li>
+                <li><a href="#obj1">1. Arranque y parada</a></li>
+                <li><a href="#obj2">2. Targets de Systemd</a></li>
+                <li><a href="#obj3">3. Interrumpir el arranque (Root)</a></li>
+                <li><a href="#obj4">4. Gestión de procesos</a></li>
+                <li><a href="#obj5">5. Prioridades (Nice/RT)</a></li>
+                <li><a href="#obj6">6. Tuning Profiles</a></li>
+                <li><a href="#obj7">7. Interpretación de logs</a></li>
+                <li><a href="#obj8">8. Persistencia de Journal</a></li>
+                <li><a href="#obj9">9. Servicios de Red</a></li>
+                <li><a href="#obj10">10. Transferencia segura</a></li>
             </ul>
-        </div>
+        </aside>
 
-        <div class="content">
+<div class="course-content">
 
-            <section id="obj1">
-                <h3>Arrancar, reiniciar y apagar sistemas</h3>
-                <p>Antes que nada, debemos mencionar el primer proceso del sistema, llamado <strong>init</strong>. En sistemas antiguos era <strong>SysVinit</strong> y en sistemas modernos es <strong>systemd</strong>. Este proceso es el encargado de arrancar el resto de procesos del sistema.</p>
-                <p>En sistemas antiguos (SysV), el estado del sistema se controlaba mediante <strong>runlevels</strong>. Cada runlevel define cómo se inicia el sistema:</p>
+            <section id="obj1" class="lesson-section">
+                <h3>1. Arrancar, reiniciar y apagar sistemas</h3>
+                <p>El proceso inicial del sistema es PID 1, actualmente gestionado por systemd, sucesor del antiguo init, encargado de gestionar el arranque y los servicios. Los <strong>runlevels ( init 0-6)</strong> fueron sustituidos por <strong>targets</strong>  que cumplen la misma función.</p>
+
                 <ul>
-                    <li><strong>init 0</strong> → Apaga el sistema</li>
-                    <li><strong>init 1</strong> → Modo rescate (un solo usuario)</li>
-                    <li><strong>init 2</strong> → Modo multiusuario sin red (dependía de la distro)</li>
-                    <li><strong>init 3</strong> → Modo multiusuario con red (texto)</li>
-                    <li><strong>init 4</strong> → No usado normalmente</li>
-                    <li><strong>init 5</strong> → Modo gráfico</li>
-                    <li><strong>init 6</strong> → Reinicia el sistema</li>
-                </ul>
-                <p>En sistemas modernos con <strong>systemd</strong>, los runlevels han sido sustituidos por <strong>targets</strong>, que cumplen la misma función pero de forma más flexible :.</p>
-                <ul>
-                    <li><strong> emergency</strong> → Arranca en modo emergencia (minimo absoluto)</li>
-                    <li><strong> rescue</strong> → Arranca en modo rescate (entorno básico)</li>
-                    <li><strong> multi-user.target</strong> → Modo texto multiusuario</li>
-                    <li><strong>  graphical.target</strong> → Modo gráfico</li>
-                </ul>
+                    <li><strong>0 → poweroff.target</strong> — Apagar el sistema</li>
+                    <li><strong>1 → rescue.target</strong> — Modo rescate (usuario único)</li>
+                    <li><strong>3 → multi-user.target</strong> — Multiusuario en modo texto</li>
+                    <li><strong>5 → graphical.target</strong> — Entorno gráfico</li>
+                    <li><strong>6 → reboot.target</strong> — Reiniciar el sistema</li>
+                    <li><strong>emergency.target</strong> — Modo emergencia mínimo</li>
+               </ul>
                 <p> Podemos apagar o reiniciar el sistema usando :</p>
                 <ul>
                     <li><strong>systemctl poweroff</strong> → Apaga el sistema</li>
@@ -85,106 +53,117 @@
                 </ul>
             </section>
 
-            <section id="obj2">
-                <h3>Arrancar sistemas en diferentes objetivos manualmente</h3>
-                <p>Systemd utiliza <strong>targets</strong> en lugar de runlevels. Cada target define un estado operativo del sistema. Como hemos visto en el punto anterior, tenemos diferentes target y podemos iniciar el sistema manualmente ya sea temporalmente o de forma persistente</p>
-                <p> Para hacerlo de forma temporal, podemos usar el comando <code>systemctl isolate "TARGET"</code> o bien cambiarlo directamete desde GRUB editando la linea de linux y añadiendo <code>systemd.unit=TARGET</code> </p> 
-                <p> Cuando lo queremos hacer permanente, deberemos usar el comando <code>systemctl set-default TARGET</code>. Podremos ver cual tenemos por defecto con <code>systemctl get-default</code></p>
-                <img src="/images/per-target.png" alt="permanente ejemplo" width="600">  
+            <section id="obj2" class="lesson-section">
+                <h3>2. Arrancar sistemas en diferentes objetivos manualmente</h3>
+                <p> En <strong>systemd</strong>, los <strong>targets</strong> definen el estado operativo del sistema. Podemos cambiar el target de forma <strong>temporal</strong> o <strong>permanente</strong>.
+                </p>
+                <p><strong>Cambio temporal:</strong></p>
+                <ul>
+                    <li><code>systemctl isolate TARGET</code> → Cambia el target en la sesión actual</li>
+                    <li>Desde GRUB, editando la línea de arranque y añadiendo: <code>systemd.unit=TARGET</code></li>
+                </ul>
+                <p><strong>Cambio permanente:</strong></p>
+                <ul>
+                    <li><code>systemctl set-default TARGET</code> → Define el target por defecto</li>
+                    <li><code>systemctl get-default</code> → Muestra el target actual</li>
+                </ul>
+                <img src="/images/per-target.png" alt="Ejemplo cambio de target permanente" loading="lazy" >
             </section>
 
-            <section id="obj3">
-                <h3>Interrumpir el proceso de arranque para obtener acceso</h3>
-                <p>Durante el arranque, es posible interrumpir GRUB para acceder modificar parametros Esto lo podemos hacer ya sea para encender el sistema con un target especifico, recuperar la contraseña o entrar como modo emergencia para revisar posibles errores </p>
+
+            <section id="obj3" class="lesson-section">
+                <h3>3. Interrumpir el arranque para obtener acceso</h3>
+                <p>Durante el arranque, es posible interrumpir GRUB para acceder y modificar parametros Esto lo podemos hacer ya sea para encender el sistema con un target especifico, recuperar la contraseña o entrar como modo emergencia para revisar posibles errores </p>
                 <p>Uno de los puntos mas importantes del examen es resetear la contraseña de root para poder realizar el examen. Para ello lo primero que haremos será entrar en GRUB y editar la entrada presionando <strong>e</strong>.</p>
                 <p>Una vez dentro, modificamos la linea de linux, añadiendo al final <strong>rd.break</strong> (si no funciona podriamos poner como alternativa init=/bin/bash) y arrancaremos con Ctrl + X.</p>
-                <img src="/images/root-rec1.png" alt="grub line" width="600">  
+                <img src="/images/root-rec1.png" alt="grub line" loading="lazy">  
                 
                 <p> Una vez arrancado, tendremos que seguir los siguientes pasos :</p>
-                <img src="/images/root-rec2.png" alt="grub line" width="600">
+                <img src="/images/root-rec2.png" alt="grub line" loading="lazy">
             </section>
 
-            <section id="obj4">
-                <h3>Identificar procesos intensivos en CPU/memoria y eliminarlos</h3>
+            <section id="obj4" class="lesson-section">
+                <h3>4. Identificar y eliminar procesos</h3>
                 <p>Linux ofrece varias herramientas para ver qué procesos están usando más recursos. Podemos hacerlo de forma <strong>estática</strong> con <code>ps</code> o de forma <strong>interactiva</strong> con <code>top</code>.</p>
                 <p>El comando <code>top</code> muestra los procesos en tiempo real y permite ver el consumo de CPU y memoria. Desde <code>top</code> también podemos matar procesos pulsando <strong>k</strong></p>
-                <img src="/images/top.png" alt="top line" width="600">
+                <img src="/images/top.png" alt="top line" loading="lazy">
                 <p>Los flags más importantes de ps serían :</p>
                 <ul>
                     <li><strong>ps aux</strong> → Muestra todos los procesos del sistema</li>
                     <li><strong>ps -ef</strong> → Vista completa de los procesos en formato extendido</li>
                 </ul>
-                <img src="/images/ps.png" alt="ps" width="600">
+                <img src="/images/ps.png" alt="ps" loading="lazy">
                 <p> Para comprobar el uso de memoria del sistema utilizamos el comando <code>free -h</code>, que muestra la memoria total, usada y libre de forma legible.</p> 
-                <img src="/images/free.png" alt="free pic" width="600">
-                <p>Para finalizar procesos utilizamos el comando <code>kill</code> que tiene diferentes flags, siendo -9 la más usada que mata el proceso forzosamente:</p>
+                <img src="/images/free.png" alt="free pic" loading="lazy">
+                <p>Para finalizar procesos utilizamos el comando <code>kill</code> que tiene diferentes flags : </p>
                 <ul>
-                    <li><strong>kill PID</strong></li>
-                    <li><strong>kill -9 PID</strong></li>
-                    <li><strong>pkill nombre</strong></li>
+                    <li><strong>kill -15 PID</strong> : Es la que se usa por defecto, para el proceso</li>
+                    <li><strong>kill -9 PID</strong> : La más agrevisa, fuerza la finalización del proceso</li>
+                    <li><strong>pkill nombre</strong> : para todos los procesos relacionados con ese nombre</li>
                 </ul>
             </section>
 
-            <section id="obj5">
-                <h3>Ajustar la programación de procesos</h3>
+            <section id="obj5" class="lesson-section">
+                <h3>5. Ajustar la programación de procesos (Nice/RT)</h3>
                 <p>La prioridad de ejecución se controla con <strong>nice</strong> y <strong>renice</strong>. Los valores van de <strong>-20</strong> (más prioridad) a <strong>19</strong> (menos prioridad). La podemos comprobar con top. </p>
                 <ul>
                     <li><strong>nice -n 10 comando</strong> → Ejecuta un comando con menor prioridad</li>
                     <li><strong>renice -5 PID</strong> → Cambia la prioridad de un proceso en ejecución</li>
                 </ul>
-                <img src="/images/nice-re.png" alt="nice example" width="600">
+                <img src="/images/nice-re.png" alt="nice example" loading="lazy">
                 <p> Por otro lado tenemos los procesos real time, que son procesos que tienen prioridad ante todos y va con valores de 0 a 99, siendo 99 el mas alto. Podemos ver su información, cambiar su prioridad o lanzar un proceso con un rt especifico :  </p>
                 <ul>
                     <li><strong>chrt -p PID</strong> → Muestra la política y prioridad real time de un proceso</li>
                     <li><strong>chrt -r -p PRIORIDAD PID</strong> → Cambia la prioridad real time de un proceso existente</li>
                     <li><strong>chrt -r PRIORIDAD comando</strong> → Ejecuta un comando con prioridad real time</li>
                 </ul>
-                <img src="/images/chrt.png
-                    " alt="grub line" width="600">
+                <img src="/images/chrt.png alt="grub line" loading="lazy">
             </section>
 
-            <section id="obj6">
-                <h3>Administrar perfiles de sintonización</h3>
-                <p>El servicio <strong>tuned</strong> permite optimizar el sistema según el uso. Usaremos tuned-adm para gestionar el perfil que queramos poner. Para ver los perfiles que hay y su descripción usariamos <code>tuned-adm list</code>.</p>
+            <section id="obj6" class="lesson-section">
+                <h3>6. Administrar perfiles de sintonización (Tuned)</h3>
+                <p>El servicio <strong>tuned</strong> optimiza el rendimiento según el rol del servidor.</p>
                 <p> Los perfiles más interesantes podrían ser : balanced, virtual-guest, throughput-performance, network-latency... </p>
-                <p> Podemos ver el perfil actual con el comando <code>tuned-adm active</code>, cambiarlo con <code>tuned-adm profile nombre-perfil</code> o apagar este servicio con <code>tuned-adm off</code></p>
-                <img src="/images/tuned.png" alt="tuned-adm ejemplo" width="900">
+                <p> Podemos listar los perfiles con <code>tuned-adm list</code>, ver el perfil actual con el comando <code>tuned-adm active</code>, cambiarlo con <code>tuned-adm profile nombre-perfil</code> o apagar este servicio con <code>tuned-adm off</code>.</p>
+                <img src="/images/tuned.png" alt="tuned-adm ejemplo" loading="lazy">
             </section>
 
-            <section id="obj7">
-                <h3>Localizar e interpretar archivos de registro y journals</h3>
-                <p>Los logs tradicionales se encuentran en <code>/var/log</code>. Systemd utiliza <strong>journalctl</strong> para tratar con los logs y no se pueden leer en texto plano ya que son binarios. Algunos filtros que podemos hacer son :</p>
+            <section id="obj7" class="lesson-section">
+                <h3>7. Localizar e interpretar logs y journals</h3>
+                <p>Los logs tradicionales se encuentran en <code>/var/log</code>. Systemd utiliza <strong>journalctl</strong> para gestionar los logs y no se pueden leer en texto plano ya que son binarios. Algunos filtros que podemos hacer son :</p>
                 <ul>
-                    <li><strong>-p</strong> → Muestra mensajes según su gravedad (err, warning, info…). </li>
-                    <li><strong>-u</strong> → Muestra los mensajes de un servicio concreto</li>
-                    <li><strong>-b</strong> → Muestra los mensajes del arranque del sistema</li>
-                    <li><strong>-xe</strong> → Muestra los últimos errores importantes con ayuda extra</li>
-                    <li><strong>-f</strong> → Muestra los mensajes en tiempo real</li>
-                    <li><strong>-k</strong> → Muestra los mensajes del kernel</li>
+                    <li><code>journalctl -p err</code> : Solo errores.</li>
+                    <li><code>journalctl -u sshd</code> : Logs de un servicio específico.</li>
+                    <li><code>journalctl -xe</code> : Ayuda extendida sobre fallos recientes.</li>
+                    <li><code>journalctl -f </code> : Muestra los mensajes en tiempo real</li>
+                    <li><code>journalctl -b </code> : Logs del arranque del sistema</li>
                 </ul>
-                <p> Una vez sabemos los filtros, podemos usarlos para comprobar los logs :</p>
-                <img src="/images/logs-ex.png" alt="logs ejemplo" width="900">
+                <img src="/images/logs-ex.png" alt="logs ejemplo" loading="lazy">
             </section>
 
-            <section id="obj8">
-                <h3>Preservar journals del sistema</h3>
-                <p>Por defecto, los journals pueden ser volátiles. Para hacerlos persistentes debemos crear la carpeta <code>/var/log/journal</code> y le damos los permisos <code>chown root:systemd-journal /var/log/journal</code> y <code>chmod 2755 /var/log/journal</code>. Por ultimo, en el archivo de configuración ubicado en <code>/etc/systemd/journald.conf</code> pondremos el valor de Storage en persistent. Si no existe el archivo lo copiamos:</p>
-                <img src="/images/log-pers.png" alt="logs persistent conf" width="600">
-                <img src="/images/log-pers2.png" alt="logs persistent conf" width="600">
+            <section id="obj8" class="lesson-section">
+                <h3>8. Preservar journals del sistema</h3>
+                <p>Por defecto, los journals pueden ser volátiles. Para que el journal no se borre al reiniciar, debemos crear la estructura manualmente</p>
+                <pre><code>mkdir /var/log/journal
+                    chown root:systemd-journal /var/log/journal
+                    chmod 2755 /var/log/journal</code></pre>
+                <p>Configurar <code>Storage=persistent</code> en <code>/etc/systemd/journald.conf</code> y reiniciar el servicio.</p>
+                <img src="/images/log-pers.png" alt="logs persistent" loading="lazy">
+                <img src="/images/log-pers2.png" alt="logs persistent" loading="lazy">
                 <p> Preferiblemente, siempre que hagamos un cambio a un archivo de configuración de un servicio, reiniciaremos este servicio <code>systemctl restart systemd-journald</code>.</p>
                 <p>No hemos mencionado la rotación de logs, para ello podemos usar</p>
                 <ul>
-                    <li><strong>--vacum-time</strong> → Borra logs antiguos según el tiempo indicado. </li>
-                    <li><strong>--vacum-size</strong> → Borra logs hasta ocupar el tamaño indicado</li>
+                    <li><strong>--vacuum-time</strong> → Borra logs antiguos según el tiempo indicado. </li>
+                    <li><strong>--vacuum-size</strong> → Borra logs hasta ocupar el tamaño indicado</li>
                     <li><strong>--rotate</strong> → Fuerza la rotación del journal actual</li>
                     <li><strong>--disk-usage</strong> → Muestra cuánto espacio ocupan los logs</li>
                     <li><strong>--list-boots</strong> → Muestra los arranques registrados en el sistema</li>
                 </ul>
-                <img src="/images/logs-rotated.png" alt="logs persistent conf" width
+                <img src="/images/logs-rotated.png" alt="logs persistent conf" loading="lazy">
             </section>
 
-            <section id="obj9">
-                <h3>Iniciar, detener y comprobar el estado de servicios de red</h3>
+            <section id="obj9" class="lesson-section">
+                <h3>9. Iniciar, detener y comprobar servicios de red</h3>
                 <p>Los servicios se pueden gestionar a traves de varios comandos : <code>systemctl</code>, <code>ip</code> o <code>nmcli</code>.</p>
                 <p> Cuando usemos systemctl, el servicio se llama NetworkManager. Usaremos los comandos : </p>
                 <ul>
@@ -193,27 +172,26 @@
                     <li><strong>systemctl restart NetworkManager</strong> → Reiniciar</li>
                     <li><strong>systemctl status NetworkManager</strong> → Comprobar el estado</li>
                 </ul>
-                <img src="/images/networkmanager.png" alt="nm ejemplo" width="900">
+                <img src="/images/networkmanager.png" alt="nm ejemplo" >
                 <p> Tambien podemos usar nmcli para gestionar los servicios de red :</p>
                 <ul>
                     <li><strong>nmcli connection up "interfaz" </strong> → Levantar</li>
                     <li><strong>nmcli connection down "interfaz"</strong> → Parar</li>
                     <li><strong>nmcli connection show</strong> → Comprobar</li>
                 </ul>
-                <img src="/images/nmcli-basic.png" alt="nmcli basic ejemplo" width="900">
+                <img src="/images/nmcli-basic.png" alt="nmcli basic ejemplo" loading="lazy">
                 <p> Por ultimo, podemos usar ip ( aunque este no es recomendable ya que solo hace cambios temporales ) : </p>
                 <ul>
                     <li><strong>ip link set "interfaz" up</strong> → Levantar</li>
                     <li><strong>ip link set "interfaz" down</strong> → Parar</li>
                     <li><strong>ip a</strong> → Comprobar</li>
                 </ul>
-                <img src="/images/ip-basic.png" alt="ip basic ejemplo" width="900">
-                <p> Por ultimo, podemos comprobar la conectividad con el comando <code>ping</code> </p>
+                <img src="/images/ip-basic.png" alt="ip basic ejemplo" loading="lazy">
             </section>
 
-            <section id="obj10">
-                <h3>Transferir archivos de forma segura entre sistemas</h3>
-                <p>La transferencia segura se realiza mediante SSH. Tenemos principalmente dos comandos : scp y sftp. </p>
+            <section id="obj10" class="lesson-section">
+                <h3>10. Transferir archivos de forma segura</h3>
+                <p>La transferencia segura se realiza mediante SSH. Tenemos principalmente : scp y sftp. </p>
                 <p> La sintaxis de scp puede ser :</p>
                 <ul>
                     <li><strong>scp local user@ip:/remoto</strong> → De local a remoto  </li>
@@ -225,9 +203,9 @@
                     <li><strong>-P</strong> → Indicar puerto</li>
                     <li><strong>-p </strong> → Conservar permisos y otros datos</li>
                 </ul>
-                <img src="/images/scp.png" alt="scp ejemplo" width="600">
-                <img src="/images/scp-remoto.png" alt="scp-remoto ejemplo" width="600">
-                <p> Por otro lado, tenemos sftp que tiene un menú interactivo donde podemos lanzar comandos. Para conectarnos usaremos <code>sftp user@IP</code>.</p>
+                <img src="/images/scp.png" alt="scp ejemplo" loading="lazy">
+                <img src="/images/scp-remoto.png" alt="scp-remoto ejemplo" loading="lazy">
+                <p> Por otro lado, tenemos <code>sftp</code> que tiene un menú interactivo donde podemos lanzar comandos. Para conectarnos usaremos <code>sftp user@IP</code>.</p>
                 <p> Si queremos lanzar comandos en local lanzariamos los comandos con una l delante, por ejemplo lcd, lpwd...</p>
                 <p> Los más a tener en cuenta serían : <code>put</code>( Subir un archivo) y <code>get</code>( Descargarlo)</p>
                 
@@ -235,21 +213,4 @@
 
         </div>
     </div>
-</main>
-
-<footer>
-    <div class="footer-content">
-        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
-        <div class="footer-links">
-            <a href="https://github.com/s2ktux">GitHub</a>
-            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
-            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
-        </div>
-    </div>
-</footer>
-
-<a href="#" id="back-to-top">↑ Volver arriba</a>
-<script src="/conf/scripts.js"></script>
-
-</body>
-</html>
+</div>
