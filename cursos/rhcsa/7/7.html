@@ -1,81 +1,59 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RHCSA - Implementar, configurar y mantener sistemas">
-    <meta name="keywords" content="RHCSA, Linux, cron, systemd, servicios, paquetes, grub">
-    <meta name="author" content="SysRiser">
-    <title>S2KTUX - RHCSA | Implementar y mantener sistemas</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
+<div class="lesson-wrapper">
 
-<div class="gradient-bg"></div>
-
-<header>
-    <div class="header-left">
-        <a href="/index.html" class="header-logo">S2KTUX</a>
-    </div>
-    <nav>
-        <a href="/index.html">Inicio</a>
-        <a href="/cursos/cursos.html">Cursos</a>
-        <a href="/proyectos/proyectos.html">Proyectos</a>
-    </nav>
-</header>
-
-<main id="contenido">
-
-    <div class="hero">
+    <header class="lesson-header">
+        <span class="badge">RHCSA Objetivo</span>
         <h1>Implementar, configurar y mantener sistemas</h1>
         <p>Tareas programadas, servicios, paquetes y arranque</p>
-        <p><a href="https://youtu.be/TRauHLhYB4c" target="_blank">VER VIDEO YOUTUBE - CLASE 7</a></p>
-    </div>
 
-    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+        <a href="https://youtu.be/TRauHLhYB4c" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - CLASE 7</strong>
+                <span>Automatización, systemd y mantenimiento del sistema</span>
+            </div>
+        </a>
+    </header>
 
-    <div class="course-page">
+    <div class="lesson-layout">
 
-        <div class="sidebar">
-            <h3>Objetivos del bloque</h3>
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
             <ul>
-                <li><a href="#obj1">Programar tareas</a></li>
-                <li><a href="#obj2">Gestionar servicios</a></li>
-                <li><a href="#obj3">Configurar objetivo de arranque</a></li>
-                <li><a href="#obj4">Configurar cliente de tiempo</a></li>
-                <li><a href="#obj5">Instalar y actualizar paquetes</a></li>
-                <li><a href="#obj6">Modificar el gestor de arranque</a></li>
+                <li><a href="#obj1">1. Programar tareas</a></li>
+                <li><a href="#obj2">2. Gestionar servicios</a></li>
+                <li><a href="#obj3">3. Objetivo de arranque</a></li>
+                <li><a href="#obj4">4. Cliente de tiempo</a></li>
+                <li><a href="#obj5">5. Gestión de paquetes</a></li>
+                <li><a href="#obj6">6. Gestor de arranque</a></li>
             </ul>
-        </div>
+        </aside>
 
-        <div class="content">
+        <div class="course-content">
 
-            <section id="obj1">
-                <h3>Programar tareas con cron y temporizadores systemd</h3>
-                <p>En Linux podemos automatizar tareas para que se ejecuten a una hora o intervalo concreto. Para ello podemos usar at, cron o .timer. Como at es sencillo y poco usado lo ignoraremos, aunque está explicado en el video.</p>
-                <p>La forma clásica es <strong>cron</strong>, usando <code>crontab -e</code>. Cada línea indica cuándo y qué comando se ejecuta. Sigue siendo el más usado y su sintaxis es : <strong>min hora dia mes dia-semana user comando</strong>.</p>
-                <p>Para programar tareas podemos editar el archivo <code>/etc/crontab</code> (añadiendo el campo de usuario) o usar el comando <code>crontab -e -u USUARIO</code> (sin campo de usuario) donde editaremos directamente el cron de ese user, que se crean en <code>/var/spool/cron</code>. En la imagen veremos diferentes ejemplo con intervales, listas, rangos y redirecciones :</p>
-                <img src="/images/cron.png" alt="cron ejemplo" width="1000">
-                <p> Una vez creado nuestro cron, podemos comprobar con crontab -l -u user ( si hemos usado crontab -e -u user ) o cat /etc/crontab si lo hemos editado directamente ahi. Recordad que este levantado el demonio <code>crond</code>, comprobando con <code>systemctl status crond</code>. El log se encuentra en <code>/var/log/cron</code></p>
-                <p> Por otro lado, con Systemd también podemos programar tareas mediante <strong>timers</strong>, que son más modernos y fáciles de controlar. Están ubicados en <code>/etc/systemd/system</code> y los propios de las aplicaciones y/o sistema estan en <code>/usr/lib/systemd/system</code>.</p>
+            <section id="obj1" class="lesson-section">
+                <h3>1. Programar tareas con cron y temporizadores systemd</h3>
+                 <p>En Linux podemos automatizar tareas para ejecutarlas en momentos concretos usando cron o temporizadores systemd. Aunque existe el comando at, su uso es menor.</p>
+                <p>La forma clásica es <strong>cron</strong> mediante <code>crontab -e</code>. Cada línea define cuándo y qué comando ejecutar siguiendo la sintaxis: <strong>min hora día mes día-semana usuario comando</strong>.</p>
+                <p>Para programar tareas podemos editar el archivo <code>/etc/crontab</code> (añadiendo el campo de usuario) o usar el comando <code>crontab -e -u USUARIO</code> (sin campo de usuario) donde editaremos directamente el cron de ese user, que se crean en <code>/var/spool/cron</code> :</p>
+                <img src="/images/cron.png" alt="cron ejemplo">
+                <p>Podemos verificar tareas con <code>crontab -l</code> y revisar logs en <code>/var/log/cron</code>. Es importante comprobar que el servicio <code>crond</code> esté activo.</p>
+                 <p>Systemd introduce los <strong>timers</strong>, una alternativa más moderna y controlable ubicada normalmente en <code>/etc/systemd/system</code>.</p>
                 <img src="/images/systemd-timer.png" alt="systemd timer ejemplo" width="700">
-                <p> Una vez configurado, recordad realizar el systemctl daemon-reload. Para asegurarnos, podemos hacer tanto un <code>systemctl status "nombre".timer</code> o tambien un <code>systemctl list-timers</code>. En mi ejemplo llamado app.timer buscará un app.service en la misma ruta y será lo que ejecute como lo hayamos programado</p>
-                <img src="/images/systemd-timer-status.png" alt="systemd timer ejemplo" width="1000">
+             <p>Tras configurarlos ejecutamos <code>systemctl daemon-reload</code> y comprobamos con <code>systemctl list-timers</code>. En mi ejemplo llamado app.timer buscará un app.service en la misma ruta y será lo que ejecute como lo hayamos programado</p>
+                <img src="/images/systemd-timer-status.png" alt="systemd timer ejemplo">
                 <p> Deberá estar creado el .service con el mismo nombre y activo para poder levantar el .timer</p>
             </section>
 
-            <section id="obj2">
-                <h3>Iniciar, detener y habilitar servicios</h3>
-                <p>Los servicios en sistemas modernos se gestionan con <code>systemctl</code>. Los principales comandos usados por systemctl son : </p>
+            <section id="obj2" class="lesson-section">
+                <h3>2. Iniciar, detener y habilitar servicios</h3>
+                  <p>Los servicios se gestionan mediante <code>systemctl</code>. Los comandos principales son:</p>
                 <ul>
-                    <li><strong>systemctl start servicio</strong> → Inicia el servicio</li>
+                    <li><strong>systemctl start servicio</strong> → Levanta el servicio</li>
                     <li><strong>systemctl stop servicio</strong> → Detiene el servicio</li>
                     <li><strong>systemctl restart servicio</strong> → Reinicia el servicio</li>
                     <li><strong>systemctl status servicio</strong> → Muestra su estado y unas lineas de log.</li>
-                    <li><strong>systemctl enable servicio</strong> → Arranca automáticamente al levantar el sistema(Con --now habilitamos e iniciamos al mismo tiempo)</li>
-                    <li><strong>systemctl disable servicio</strong> → No arranca al iniciar el sistema</li>
+                    <li><strong>systemctl enable servicio</strong> → Arranque automáticamente (Con --now habilitamos y levantaremos al mismo tiempo)</li>
+                    <li><strong>systemctl disable servicio</strong> → Deshabilita (No arranca al iniciar el sistema)</li>
                 </ul>
                 <p> Por otro lado, nos podrían pedir crear un servicio. Los servicios del sistema están en <code>/usr/bin/systemd/system</code>, pero donde nosotros lo creariamos sería en <code>/etc/systemd/system</code></p>
                 <img src="/images/service-sctl.png" alt="systemctl ejemplo" width="700">
@@ -83,8 +61,8 @@
                 <img src="/images/service-sctl-status.png" alt="systemctl status" width="900">
             </section>
 
-            <section id="obj3">
-                <h3>Configurar el sistema para iniciar en un objetivo específico</h3>
+             <section id="obj3" class="lesson-section">
+                <h3>3. Configurar el sistema para iniciar en un objetivo específico</h3>
                 <p>Systemd utiliza <strong>targets</strong> para definir cómo arranca el sistema. Recordabamos los más importantes a tener en cuenta : </p>
                 <ul>
                     <li><strong>graphical.target</strong> → Modo gráfico</li>
@@ -92,66 +70,49 @@
                     <li><strong>rescue.target</strong> → Modo rescate</li>
                     <li><strong>emergency.target</strong> → Modo mínimo</li>
                 </ul>
-                <p> Como ya vimos, podemos comprobar el que tenemos por defecto y cambiarlo si es necesario. Recordad que con <code>systemctl isolate TARGET</code> podemos iniciar un objetivo especifico pero solo temporalmente, util para hacer pruebas en modo grafico, por ejemplo.</p>
+                <p>Podemos cambiar temporalmente usando <code>systemctl isolate TARGET</code> o hacerlo permanente con set-default.</p>
                 <img src="/images/set-default-target.png" alt="set-default target" width="800">
                 <p> En el video indico que si falla el set-default hagamos un enlace, pero no funciona bien. Es debido a que está mal lanzado. Los pasos correctos y simples serían : </p>
                 <img src="/images/default-alt.png" alt="set-default alternative" width="800">
             </section>
 
-            <section id="obj4">
-                <h3>Configurar clientes de servicio de tiempo</h3>
-                <p>La sincronización horaria es clave en servidores. En Red Hat se usa <strong>chrony</strong>, sustituido por el antiguo ntpd. Su configuración está en <code>/etc/chrony.conf</code>. En la configuración podemos poner <code>server IP iburst</code> o <code>server NOMBRE-COMPLETO iburst</code>.</p>
-                <img src="/images/chrony.png" alt="chrony ejemplo" width="700">
-                <p> Una vez hemos añadido la linea que nos indiquen, reiniciaremos el servicio, forzamos la sincronización y comprobamos (Recordamos que si sale * en la linea al hacer <code>chronyc sources -v</code> esta OK, si sale ? es que estaría mal). </p>
-                <img src="/images/chrony-check.png" alt="chrony ejemplo" width="900">
-                <p> Importante que añadais el servicio de ntp al firewall con <code>firewall-cmd --permanent --add-service=ntp</code>, aunque esto lo veremos más a fondo en la clase de firewall </p>
-                <p> Por otro lado, nos pueden pedir hacer un cambio de zona horaria, el idioma o  el teclado </p>
-                <img src="/images/idioma-teclado.png" alt="teclado-idioma-zona" width="900">
+            <section id="obj4" class="lesson-section">
+                <h3>4. Configurar clientes de servicio de tiempo</h3>
+                <p>Red Hat utiliza <strong>chrony</strong> para sincronización horaria. Su configuración se encuentra en <code>/etc/chrony.conf</code>. Su sintaxis es <code>server IP iburst</code></p>
+                <img src="/images/chrony.png" alt="chrony ejemplo" >
+                <p>Tras configurarlo reiniciamos el servicio y verificamos con <code>chronyc sources -v</code> (Recordamos que si sale * esta OK, si sale ? es que estaría mal). </p>
+                <img src="/images/chrony-check.png" alt="chrony ejemplo">
+                <p> Importante que añadais el servicio de ntp al firewall con <code>firewall-cmd --permanent --add-service=ntp</code>.</p>
+                <p>También pueden pedir cambios de zona horaria, idioma o teclado.</p>
+                <img src="/images/idioma-teclado.png" alt="teclado-idioma-zona">
                 
             </section>
 
             <section id="obj5">
                 <h3>Instalar y actualizar paquetes de software</h3>
-                <p>Red Hat utiliza <code>dnf</code> como gestor de paquetes por defecto, el cual ha sustituido a YUM. Lo llevamos usando durante varias clases y ya vimos sus comandos basicos en la CLASE 2 .</p>
+               <p>Red Hat utiliza <code>dnf</code> como gestor de paquetes. Los repositorios se configuran en <code>/etc/yum.repos.d/</code>.</p>
                 <p>Lo que nos piden en este objetivo es basicamente conocer dnf, saber crear un repositorio ( Recordad los repositorios están ubicados en <code>/etc/yum.repos.d/</code>) que pedirán probablemente con URL o con un ISO y CDN que es el metodo oficial de REDHAT. </p>
-                <p>Los comandos basicos de dnf ya los conocemos y crear un .repo tambien, aunque si es un ISO puede cambiar. Deberíamos crear un punto de montaje con <code>mkdir -p /mnt/repo-iso</code>, montamos el iso con <code>mount -o loop /ruta/imagen.iso /mnt/repo</code> (muy importante el -o loop) y configuramos el .repo :</p>
-                <img src="/images/repo-iso.png" alt="iso repo ejemplo" width="700">
-                <p> Además, y como siempre que creemos / editemos un .repo, limpiamos <code>(dnf clean all)</code>, usamos makecache siempre que queramos verificar una URL de baseurl <code>(dnf makecache)</code> y listamos para comprobar <code>(dnf repolist)</code> </p>
+                <p>Si trabajamos con un ISO debemos montarlo usando <code>-o loop</code> y crear el archivo .repo correspondiente:</p>
+                <img src="/images/repo-iso.png" alt="iso repo ejemplo">
+                <p>Tras modificar repositorios ejecutamos <code>dnf clean all</code>, <code>dnf makecache</code> y comprobamos con <code>dnf repolist</code>.</p>
                 <p> Por otro lado, y MUY SEGURAMENTE nos lo pidan, acceso a los repos de REDHAT. Si el sistema es mayor a 8.8 usaremos la forma de <code>rhc</code>, si es inferior usaremos <code>subscription-manager</code>.</p>
                 <p>Independientemente de la herramienta, gestionamos tres contenidos: <strong>Content</strong> (acceso a repositorios), <strong>Analytics</strong> (vulnerabilidades vía Insights) y <strong>Remote-management</strong> (solo disponible en <code>rhc</code>, permite ejecutar soluciones remotas de forma automatizada).</p>
-                <img src="/images/repo-rh.png" alt=" repo Redhat ejemplo rhc" width="900">
-                <p> <code>rhc</code> es más sencillo, en cambio , <code>subscription-manager</code> tiene más pasos, es más antiguo... En ambos podemos usar <code>-h</code> para ver más información.</p>
-                <img src="/images/repo-sm.png" alt=" repo Redhat ejemplo subscription-manager" width="1200">
-                <img src="/images/repo-sm2.png" alt=" repo Redhat ejemplo subscription-manager 2" width="1000">
+                <img src="/images/repo-rh.png" alt=" repo Redhat ejemplo rhc">
+                <img src="/images/repo-sm.png" alt="repo subscription manager">
+                <img src="/images/repo-sm2.png" alt="repo subscription manager 2">
             </section>
 
-            <section id="obj6">
-                <h3>Modificar el gestor de arranque del sistema</h3>
-                <p>El gestor de arranque es <strong>GRUB2</strong>; su configuración base se edita en <code>/etc/default/grub</code>, pero para que los cambios sean efectivos se debe generar el archivo <code>grub.cfg</code> en <code>/boot/grub2/</code> (BIOS) o <code>/boot/efi/EFI/redhat/</code> (UEFI)</p>
-                <p>Podemos bien editar el archivo <code>/etc/default/grub</code>, o utilizar el comando <code>grubby</code>, siendo esta favorita para hacer las modificaciones de GRUB2</p>
+            <section id="obj6" class="lesson-section">
+                <h3>6. Modificar el gestor de arranque del sistema</h3>
+                 <p>El gestor de arranque es <strong>GRUB2</strong>. Podemos modificarlo editando <code>/etc/default/grub</code> o usando <code>grubby</code>.</p>
                 <img src="/images/grubby.png" alt="grub ejemplo" width="1200">
-                <p>Recordad que desde grubby no es necesario recargar el grub, pero si editamos /etc/default/grub DEBEREMOS regenerar la configuración : <code>grub2-mkconfig -o /boot/grtub2/grub.cfg</code> para BIOS o <code>grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg</code> para UEFI.</p>
-                <p> Por ultimo, y para saber si usamos UEFI o BIOS podemos comprobar cual de las dos rutas está vacía o hacer un <code>ls /sys/firmware/efi</code> y si no lo encuentra, seguramente estemos en BIOS. Igualmente y si tienes dudas, utiliza grubby para evitar regenerar la configuración</p>
-            
+                <p>Si editamos manualmente debemos regenerar la configuración:</p>
+                <p>
+                    <code>grub2-mkconfig -o /boot/grub2/grub.cfg</code> (BIOS)<br>
+                    <code>grub2-mkconfig -o /boot/efi/EFI/redhat/grub.cfg</code> (UEFI)
+                </p>
             </section>
 
         </div>
     </div>
-</main>
-
-<footer>
-    <div class="footer-content">
-        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
-        <div class="footer-links">
-            <a href="https://github.com/s2ktux">GitHub</a>
-            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
-            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
-        </div>
-    </div>
-</footer>
-
-<a href="#" id="back-to-top">↑ Volver arriba</a>
-<script src="/conf/scripts.js"></script>
-
-</body>
-</html>
+</div>
