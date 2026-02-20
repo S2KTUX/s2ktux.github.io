@@ -1,136 +1,102 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RHCSA - Administrar usuarios y grupos locales">
-    <meta name="keywords" content="RHCSA, Linux, useradd, groupadd, usermod, chage, sudo, visudo, gestión de usuarios">
-    <meta name="author" content="S2KTUX">
-    <title>S2KTUX - RHCSA | Administrar usuarios y grupos</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
+<div class="lesson-wrapper">
 
-<div class="gradient-bg"></div>
-
-<header>
-    <div class="header-left">
-        <a href="/index.html" class="header-logo">S2KTUX</a>
-    </div>
-    <nav>
-        <a href="/index.html">Inicio</a>
-        <a href="/cursos/cursos.html">Cursos</a>
-        <a href="/proyectos/proyectos.html">Proyectos</a>
-    </nav>
-</header>
-
-<main id="contenido">
-
-    <div class="hero">
+    <header class="lesson-header">
+        <span class="badge">RHCSA Objetivo</span>
         <h1>Administrar usuarios y grupos</h1>
         <p>Gestión de cuentas locales, políticas de contraseñas y privilegios sudo</p>
-        <p><a href="https://youtu.be/3N-B_vGKTYQ" target="_blank">VER VIDEO YOUTUBE - CLASE 9</a></p>
-    </div>
 
-    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+        <a href="https://youtu.be/3N-B_vGKTYQ" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - CLASE 9</strong>
+                <span>Administración de usuarios, grupos y acceso privilegiado</span>
+            </div>
+        </a>
+    </header>
 
-    <div class="course-page">
+    <div class="lesson-layout">
 
-        <div class="sidebar">
-            <h3>Objetivos del bloque</h3>
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
             <ul>
-                <li><a href="#obj1">Cuentas de Usuario</a></li>
-                <li><a href="#obj2">Políticas de Contraseña</a></li>
-                <li><a href="#obj3">Grupos y Membresías</a></li>
-                <li><a href="#obj4">Acceso Privilegiado (Sudo)</a></li>
+                <li><a href="#obj1">1. Cuentas de usuario</a></li>
+                <li><a href="#obj2">2. Políticas de contraseña</a></li>
+                <li><a href="#obj3">3. Grupos y membresías</a></li>
+                <li><a href="#obj4">4. Acceso privilegiado</a></li>
             </ul>
-        </div>
+        </aside>
 
-        <div class="content">
+        <div class="course-content">
 
-            <section id="obj1">
-                <h3>Crear, eliminar y modificar cuentas de usuario locales</h3>
-                <p>En RHEL, la administración de usuarios es crítica para la seguridad. Los archivos principales involucrados son <code>/etc/passwd</code> (datos del usuario) y <code>/etc/shadow</code> (contraseñas cifradas).</p>
-                <p>Los parametros mas importantes a la hora de crear un usuario son : </p>
+            <section id="obj1" class="lesson-section">
+                <h3>1. Crear, eliminar y modificar cuentas de usuario locales</h3>
+              <p>La administración de usuarios en RHEL se basa principalmente en los archivos <code>/etc/passwd</code> y <code>/etc/shadow</code>, donde se almacenan los datos de cuenta y contraseñas cifradas.</p>
+                <p>Los parametros mas importantes al .crear un usuario son : </p>
                 <ul>
-                    <li><code>-u [UID]</code>: Define un ID de usuario específico (ej: 2000).</li>
-                    <li><code>-g [GRUPO]</code>: Asigna el grupo primario (debe existir previamente).</li>
-                    <li><code>-G [GRUPOS]</code>: Añade grupos secundarios separados por comas.</li>
-                    <li><code>-c "[TEXTO]"</code>: Añade un comentario.</li>
-                    <li><code>-s [SHELL]</code>: Define una shell ( /bin/bash, /bin/zsh, /sbin/nologin (shell para cuentas de servicio)...).</li>
-                    <li><code>-d [RUTA]</code>: Define un directorio Home en una ubicación personalizada.</li>
-                    <li><code>-m</code>: Crea automáticamente el directorio Home si no existe.</li>
+                    <li><code>-u UID</code> → Define un identificador de usuario específico.</li>
+                    <li><code>-g GRUPO</code> → Asigna el grupo primario existente.</li>
+                    <li><code>-G GRUPOS</code> → Añade grupos secundarios.</li>
+                    <li><code>-c "TEXTO"</code> → Comentario descriptivo.</li>
+                    <li><code>-s SHELL</code> → Shell asignada (bash, zsh, nologin...).</li>
+                    <li><code>-d RUTA</code> → Directorio home personalizado.</li>
+                    <li><code>-m</code> → Crea automáticamente el home.</li>
                 </ul>
-                <p> Una vez creada la cuenta o siempre que queramos, usamos el comando <code>passwd</code> para asignar o cambiar la contraseña a ese usuario </p>
-                <img src="/images/user-admin.png" alt="Ejemplo de gestión de usuarios" width="800">
+                <p>Tras crear la cuenta usamos <code>passwd</code> para asignar o modificar la contraseña.</p>
+                <img src="/images/user-admin.png" alt="Ejemplo de gestión de usuarios">
                 <p>Por otro lado, tenemos otros parametros para modificar cuentas de usuario : </p>
                 <ul>
-                    <li><code>-aG [GRUPO]</code>: Este es uno de los mas importantes. Añade el usuario a un grupo secundario sin borrar los anteriores.</li>
-                    <li><code>-L</code>: Bloquea la cuenta (impide el inicio de sesión).</li>
-                    <li><code>-U</code>: Desbloquea una cuenta previamente bloqueada.</li>
-                    <li><code>-l [NUEVO_LOGIN]</code>: Cambia el nombre de usuario (login).</li>
-                    <li><code>-s [NUEVA_SHELL]</code>: Cambia la shell asignada (ej: pasar de bash a nologin).</li>
-                    <li><code>-u [NUEVO_UID]</code>: Modifica el ID de usuario de una cuenta existente.</li>
+                    <li><code>-aG GRUPO</code> → Añade grupos secundarios sin eliminar los existentes. ¡¡MUY IMPORTANTE!!</li>
+                    <li><code>-L</code> → Bloquea la cuenta.</li>
+                    <li><code>-U</code> → Desbloquea la cuenta.</li>
+                    <li><code>-l NUEVO_LOGIN</code> → Cambia el nombre de usuario.</li>
+                    <li><code>-s NUEVA_SHELL</code> → Modifica la shell.</li>
+                    <li><code>-u NUEVO_UID</code> → Cambia el UID.</li>
                 </ul>
-                <img src="/images/user-admin2.png" alt="Ejemplo de gestión de usuarios 2" width="800">
-                <p> Por ultimo, para borrar un usuario tenemos dos parametros : -f para forzar y -r que borra su home y su buzón de correo </p>
+                <img src="/images/user-admin2.png" alt="Ejemplo de gestión de usuarios 2">
+                <p>Para eliminar usuarios usamos opciones como <code>-r</code> (borra home y correo) o <code>-f</code> para forzar la eliminación.</p>
                 
             </section>
 
-            <section id="obj2">
-                <h3>Cambiar contraseñas y ajustar el envejecimiento de la contraseña para las cuentas de usuario locales</h3>
-                <p>Como ya hemos visto, para cambiar la contraseña utilizamos el comando <code>passwd</code>. Pero este comando tiene otras opciones interesantes (podemos ver todas con -h):</p>
-                <img src="/images/passwd.png" alt="Uso de passwd" width="800">
-                <p>Por otro lado, y para cumplir con normativas de seguridad, debemos forzar a los usuarios a cambiar sus credenciales periódicamente. La herramienta principal para esto es <code>chage</code>.</p>
+            <section id="obj2" class="lesson-section">
+                <h3>2. Cambiar contraseñas y configurar el envejecimiento</h3>
+               <p>El comando <code>passwd</code> permite cambiar contraseñas y gestionar diferentes opciones relacionadas con autenticación (-h).</p>
+                <img src="/images/passwd.png" alt="Uso de passwd" >
+                <p>Para aplicar políticas de seguridad usamos <code>chage</code>, que permite controlar expiración, aviso previo y tiempo mínimo entre cambios.</p>
                 <p>Lo mejor para entender este comando es con esta imagen.:</p>
-                <img src="/images/chage.png" alt="Chage exp imagen" width="700">
-                <img src="/images/chage-comm.png" alt="Uso de chage para envejecimiento" width="1200">
-                <img src="/images/chage-ex.png" alt="Ejemplo chage" width="1200">
-                <p>Por ultimo, en el archivo <code>/etc/login.defs</code> se nos indica diferentes valores por defecto de las diferentes normativas de seguridad</p>
+                <img src="/images/chage.png" alt="Chage exp imagen">
+                <img src="/images/chage-comm.png" alt="Uso de chage para envejecimiento">
+                <img src="/images/chage-ex.png" alt="Ejemplo chage">
+                <p>Los valores por defecto de políticas de contraseña se definen en <code>/etc/login.defs</code>.</p>
             </section>
 
-            <section id="obj3">
-                <h3>Crear, eliminar y modificar grupos locales</h3>
-                <p>Los grupos permiten asignar permisos a varios usuarios simultáneamente. Un usuario puede pertenecer a un <strong>grupo primario</strong> (GID en /etc/passwd) y a múltiples <strong>grupos secundarios</strong>.</p>
-                <p>Podemos crear un grupo con <code>groupadd</code>, hacer modificaciones con <code>groupmod</code>, eliminar el grupo con <code>groupdel</code>, etc... Recordar la importancia del usermod -aG</p>
-                <img src="/images/group-admin.png" alt="Gestión de grupos y membresías" width="800">
-                <p> Podemos comprobar de diferentes maneras : id user, groups user, getent group grupo... o simplemente mirar el archivo <code>/etc/group</code>. Si borramos un grupo que tiene archivos, sus archivos se quedarán con el GID del grupo pero huerfanos y sin realmente un grupo. Podemos buscar estos archivos con find / -nouser o -nogroup </p>
-                <img src="/images/group-check.png" alt="Check de grupos" width="800">
+            <section id="obj3" class="lesson-section">
+                <h3>3. Crear, eliminar y modificar grupos locales</h3>
+                <p>Los grupos permiten gestionar permisos para múltiples usuarios. Cada usuario tiene un grupo primario y puede pertenecer a varios grupos secundarios.</p>
+                <p>Comandos principales:</p>
+                <ul>
+                    <li><code>groupadd</code> → Crear grupos.</li>
+                    <li><code>groupmod</code> → Modificar grupos.</li>
+                    <li><code>groupdel</code> → Eliminar grupos.</li>
+                </ul>
+                <img src="/images/group-admin.png" alt="Gestión de grupos y membresías">
+                <p>Podemos verificar membresías con <code>id</code>, <code>groups</code>, <code>getent group</code> o revisando <code>/etc/group</code>.</p>
+                <img src="/images/group-check.png" alt="Check de grupos">
                 <p> Por ultimo, podemos asignarle una contraseña a un grupo con el comando <code>gpasswd GRUPO</code>, y con este comando añadir usuarios a ese grupo <code>gpasswd -a USER grupo</code>, borrarlo con <code>-d</code>, eliminar la contraseña con <code>-r</code>...</p>
-                <img src="/images/gpasswd.png" alt="pass de grupos" width="800">          
+                <img src="/images/gpasswd.png" alt="pass de grupos">          
             </section>
 
-            <section id="obj4">
-                <h3>Configurar el acceso privilegiado</h3>
-                <p>En lugar de compartir la contraseña de <strong>root</strong>, utilizamos <code>sudo</code> para delegar privilegios de forma controlada. La configuración reside en <code>/etc/sudoers</code> y en el directorio <code>/etc/sudoers.d/</code>.</p>
+            <section id="obj4" class="lesson-section">
+                <h3>4. Configurar el acceso privilegiado</h3>
+                <p>En lugar de compartir la contraseña de root, utilizamos <code>sudo</code> para delegar privilegios de forma controlada mediante <code>/etc/sudoers</code> y <code>/etc/sudoers.d/</code>.</p>
                 <p>Para editar estos archivos de forma segura, usamos <code>visudo</code>, que verifica la sintaxis antes de guardar para evitar que perdamos el acceso al sistema. Podemos editar tanto el archivo principal como crear uno exclusivo, que lo editariamos con <code>visudo -f /etc/sudoers.d/ARCHIVO</code></p>
                 <p>La sintaxis de sudoers es USUARIO/GRUPO MAQUINA=(USUARIO_A_SUPLANTAR) COMANDOS (los grupos van entre %). Tened en cuenta que si nos pidieran ejecutar algo sin interactividad o para ser usado en scripts se refieren al uso de <strong>NOPASSWD: X</strong>, siempre con un espacio entre : y los comandos</p>
-                <img src="/images/sudoers.png" alt="Configuración de sudoers" width="800">
-                <p>Otra opción de tener acceso privilegiado es añadir un usuario al grupo wheel : </p>
-                <img src="/images/wheel.png" alt="grupo wheel privilegios" width="700">
-                <p>Por ultimo, tenemos el comando <code>sudo -i</code> que carga el entorno completo de root y <code>sudo -s </code> que abre una shell de root manteniendo nuestro entorno. Estos comandos se usan cuando ya tenemos privilegios, pero son maneras de acceder usando la contraseña de nuestro usuario</p>
+                <img src="/images/sudoers.png" alt="Configuración de sudoers">
+                 <p>Otra forma habitual es añadir usuarios al grupo <code>wheel</code>.</p>
+                <img src="/images/wheel.png" alt="grupo wheel privilegios">
+                <p><code>sudo -i</code> carga el entorno completo de root, mientras que <code>sudo -s</code> abre una shell de root manteniendo el entorno del usuario.</p>
                 
             </section>
 
         </div>
     </div>
-</main>
-
-<footer>
-    <div class="footer-content">
-        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
-        <div class="footer-links">
-            <a href="https://github.com/s2ktux">GitHub</a>
-            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
-            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
-        </div>
-    </div>
-</footer>
-
-<a href="#" id="back-to-top">↑ Volver arriba</a>
-<script src="/conf/scripts.js"></script>
-
-</body>
-</html>
+</div>
