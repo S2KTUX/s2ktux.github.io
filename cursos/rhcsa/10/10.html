@@ -1,183 +1,139 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RHCSA - Administrar la seguridad">
-    <meta name="keywords" content="RHCSA, Linux, firewall-cmd, firewalld, umask, SSH, SELinux, contextos, booleanos">
-    <meta name="author" content="S2KTUX">
-    <title>S2KTUX - RHCSA | Administrar la seguridad</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
+<div class="lesson-wrapper">
 
-<div class="gradient-bg"></div>
-
-<header>
-    <div class="header-left">
-        <a href="/index.html" class="header-logo">S2KTUX</a>
-    </div>
-    <nav>
-        <a href="/index.html">Inicio</a>
-        <a href="/cursos/cursos.html">Cursos</a>
-        <a href="/proyectos/proyectos.html">Proyectos</a>
-    </nav>
-</header>
-
-<main id="contenido">
-
-    <div class="hero">
+    <header class="lesson-header">
+        <span class="badge">RHCSA Objetivo</span>
         <h1>Administrar la seguridad</h1>
-        <p>Firewall, Permisos de archivo, SSH y Hardening con SELinux</p>
-        <p><a href="https://youtu.be/mDqQq9ZGehA" target="_blank">VER VIDEO YOUTUBE - CLASE 10</a></p>
-    </div>
+        <p>Firewall, permisos, autenticación SSH y hardening con SELinux</p>
 
-    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+        <a href="https://youtu.be/mDqQq9ZGehA" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - CLASE 10</strong>
+                <span>Firewall, SSH y seguridad avanzada con SELinux</span>
+            </div>
+        </a>
+    </header>
 
-    <div class="course-page">
+    <div class="lesson-layout">
 
-        <div class="sidebar">
-            <h3>Objetivos del bloque</h3>
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
             <ul>
-                <li><a href="#obj1">Firewall-cmd</a></li>
-                <li><a href="#obj2">Permisos (umask)</a></li>
-                <li><a href="#obj3">Claves SSH</a></li>
-                <li><a href="#obj4">Modos SELinux</a></li>
-                <li><a href="#obj5">Contextos SELinux</a></li>
-                <li><a href="#obj6">Restaurar Contextos</a></li>
-                <li><a href="#obj7">Etiquetas de Puerto</a></li>
-                <li><a href="#obj8">Booleanos SELinux</a></li>
+                <li><a href="#obj1">1. Firewall</a></li>
+                <li><a href="#obj2">2. Permisos (umask)</a></li>
+                <li><a href="#obj3">3. Claves SSH</a></li>
+                <li><a href="#obj4">4. Modos SELinux</a></li>
+                <li><a href="#obj5">5. Contextos SELinux</a></li>
+                <li><a href="#obj6">6. Restaurar contextos</a></li>
+                <li><a href="#obj7">7. Puertos SELinux</a></li>
+                <li><a href="#obj8">8. Booleanos SELinux</a></li>
             </ul>
-        </div>
+        </aside>
 
-        <div class="content">
+        <div class="course-content">
 
-            <section id="obj1">
-                <h3>Configure la configuración del firewall usando firewall-cmd/firewalld</h3>
-                <p> Lo básico lo dimos en la CLASE 8. Aqui profudizaremos con las app personalizadas, rich rules, NAT y las ipset. Es muy interesante conocer la ruta <code>/etc/firewalld/zones/"Z0NA".xml</code> donde está la configuración que hemos añadido a la zona. .</p>
-                <p> Lo primero, las app personalizadas. Tenemos las del sistema en <code>/usr/lib/firewalld/services/</code> y podemos copiar cualquiera de ahi en <code>/etc/firewalld/services/</code> y modificarla con los datos que nos dijeran. Muy importante darle los contextos de SELinux (<code>restorecon -v /etc/firewalld/services/archivo.xml</code>).</p>
-                <img src="/images/firewall-app.png" alt="app perso de firewall" width="1000">
-                <p> Despues tenemos las rich rules, que al final simplemente son reglas mas detalladas y especificas hacia algun servicio, puerto ,ip y pueden ser todo lo simples o complejas que te puedas imaginar. Pongo varios ejemplos aunque CREO que en el examen con que sepamos de forma básica ( los 3 primeros ejemplos) es suficiente.</p>
-                <img src="/images/firewall-rich.png" alt="richrules de firewall" width="1200">
-                <p> NAT es esencial cuando nuestro server actual como gateway o necesitamos redirigir el trafico hacia otras maquinas. Tenemos tres maneras de hacerlo ( mencionar que en el video no comento que son formas diferentes e independientes de hacerlo) :</p>
+            <section id="obj1" class="lesson-section">
+                <h3>1. Configurar el firewall con firewalld</h3>
+                <p>Como ya sabemos, firewalld permite gestionar reglas dinámicas mediante zonas, servicios y reglas avanzadas almacenadas en <code>/etc/firewalld/zones/</code>.</p>
+                <p>Podemos crear aplicaciones personalizadas copiando servicios desde <code>/usr/lib/firewalld/services/</code> hacia <code>/etc/firewalld/services/</code> y aplicando contextos SELinux con <code>restorecon</code>.</p> 
+                <img src="/images/firewall-app.png" alt="app perso de firewall">
+                <p>Las <strong>rich rules</strong> permiten crear reglas específicas por IP, puerto o servicio.</p>
+                <img src="/images/firewall-rich.png" alt="richrules de firewall">
+                <p>NAT permite enrutar tráfico mediante:</p>
                 <ul>
-                    <li><code>Masquerade</code>: Sirve para que los equipos de una red interna tengan internet a través del servidor.</li>
-                    <li><code>Port Forwarding</code>: Envía el tráfico que llega a un puerto hacia otro puerto o IP.</li>
-                    <li><code>NAT vía RICH RULE</code>: Hace un reenvío de puertos solo para una IP o red específica.</li>
+                    <li><strong>Masquerade</strong> → acceso a internet desde redes internas.</li>
+                    <li><strong>Port Forwarding</strong> → redirección de puertos.</li>
+                    <li><strong>Rich Rule NAT</strong> → redirección específica por IP/red.</li>
                 </ul>
-                <img src="/images/firewall-nat.png" alt="nat de firewall" width="1200">
-                <p>Por ultimo tenemos las IPSET, que simplemente lista de IPs que el firewall consulta de un solo golpe, lo que nos permite una gran eficiencia a la hora de crear reglas : </p>
-                <img src="/images/firewall-ipset.png" alt="ipset de firewall" width="1200">
+                <img src="/images/firewall-nat.png" alt="nat de firewall">
+                <p>Las <code>ipset</code> permiten manejar listas grandes de IPs de forma eficiente.</p>
+                <img src="/images/firewall-ipset.png" alt="ipset de firewall">
             </section>
 
-            <section id="obj2">
-                <h3>Administrar los permisos de archivo predeterminados</h3>
-                <p>El comando <code>umask</code> controla los permisos que se le <strong>"quitan"</strong> a un archivo o directorio recién creado.</p>
+            <section id="obj2" class="lesson-section">
+                <h3>2. Administrar permisos predeterminados (umask)</h3>
+                <p><code>umask</code> define los permisos que se eliminan al crear archivos o directorios.</p>
                 <p>El valor máximo es 666 para archivos y 777 para directorios (ya que x no se aplica por seguridad).Es decir, la regla o la suma es  Permisos totales - UMASK = Permisos reales. Si el umask es 022, el archivo se crea con 644 (666-022) y el directorio con 755 (777-022).</p>
-                <p>Para aplicar un umask temporalmente hariamos <code>umask valor</code> y para aplicarlos de forma persistente añadimos umask valor al archivo <code>/etc/profile</code> de forma global o <code> ~/.bashrc</code> para un usuario especifico. Recargamos con <code>source ARCHIVO</code></p>
+                <p>Puede aplicarse temporalmente con <code>umask</code> o permanentemente en <code>/etc/profile</code> para global o <code>~/.bashrc</code> para un usuario en especifico.</p>
+            </section>
             </section>
 
-            <section id="obj3">
-                <h3>Configurar la autenticación basada en claves para SSH</h3>
-                <p>Permite el acceso a servidores sin introducir contraseña, utilizando criptografía de clave pública/privada. Esto es algo clave que se utiliza en todas las empresas del mundo en el día a día, por lo que debemos conocerlo bien.</p>
+            <section id="obj3" class="lesson-section">
+                <h3>3. Autenticación SSH mediante claves</h3>
+                <p>Permite acceso seguro sin contraseña usando criptografía pública/privada. La clave pública se copia al servidor y la privada nunca se comparte.</p>
                 <p>Lo que tenemos que tener más claro es que la clave publica es la que compartiremos con el servidor pero la privada NUNCA la compartiremos. Practicad el hecho de que <code>ssh-copy-id</code> podría fallar, el examen está hecho para ponernos trampas en todo momento</p>
-                <img src="/images/ssh-key.png" alt="Autenticación SSH" width="800">
-                <p> Una vez lo tenemos copiado, deberemos de fijarnos en el archivo : <code>/etc/ssh/sshd_config</code>(y no ssh_config como menciono en el video) que tenga <code>PubkeyAuthentication yes</code> y <code>AuthorizezdKeysFile .ssh/authorized_keys</code> sin comentar. No olvideis hacer un <code>systemctl restart sshd</code></p>
+                <img src="/images/ssh-key.png" alt="Autenticación SSH">
+                <p>Debemos verificar en <code>/etc/ssh/sshd_config</code> que estén activadas las opciones:</p>
+                <ul>
+                    <li><code>PubkeyAuthentication yes</code></li>
+                    <li><code>AuthorizedKeysFile .ssh/authorized_keys</code></li>
+                </ul>
+
+                <p>Tras cambios reiniciamos el servicio con <code>systemctl restart sshd</code>.</p>
             </section>
 
-            <section id="obj4">
-                <h3>Configurar modos de aplicación y permisivos para SELinux</h3>
-                <p>SELinux puede estar en tres estados:</p>
+            <section id="obj4" class="lesson-section">
+                <h3>4. Modos de SELinux</h3>
+                <p>SELinux puede funcionar en tres estados:</p>
                 <ul>
-                    <li><strong>Enforcing:</strong> La política se aplica y se bloquean los accesos no permitidos.</li>
-                    <li><strong>Permissive:</strong> No se bloquea nada, pero se registran los avisos en los logs.</li>
-                    <li><strong>Disabled:</strong> El sistema está totalmente desactivado.</li>
+                    <li><strong>Enforcing</strong> → bloquea accesos no permitidos.</li>
+                    <li><strong>Permissive</strong> → solo registra eventos.</li>
+                    <li><strong>Disabled</strong> → desactivado.</li>
                 </ul>
-                <p>Usamos <code>getenforce</code> para ver el modo y <code>setenforce </code> para alternar entre estados. Este comando realizaría un cambio temporal, para que sea persistente deberemos modificarlo en <code>/etc/selinux/config</code>.</p>
-                <img src="/images/selinux-modes.png" alt="Modos SELinux" width="800">
+                <p>Se consulta con <code>getenforce</code> y se cambia temporalmente con <code>setenforce</code>. Para hacerlo permanente se modifica <code>/etc/selinux/config</code>.</p>
+                <img src="/images/selinux-modes.png" alt="Modos SELinux">
             </section>
 
-            <section id="obj5">
-                <h3>Enumere e identifique el contexto del archivo y proceso de SELinux</h3>
-                <p>SELinux etiqueta cada recurso con un contexto (usuario:rol:tipo:nivel). El elemento más importante y el que debemos fijarnos es el <strong>tipo</strong>.</p>
+            <section id="obj5" class="lesson-section">
+                <h3>5. Contextos SELinux</h3>
+               <p>SELinux etiqueta recursos con un contexto (usuario:rol:tipo:nivel). El campo más importante es el <strong>tipo</strong>.</p>
                 <ul>
-                    <li><code>ls -Z</code>: Muestra el contexto de archivos y directorios.</li>
-                    <li><code>ps -eZ</code>: Muestra el contexto de los procesos en ejecución.</li>
+                    <li><code>ls -Z</code> → contexto de archivos.</li>
+                    <li><code>ps -eZ</code> → contexto de procesos.</li>
                 </ul>
-                <p> El proceso siempre va a acabar en t ( httpd_t , sshd_t, mysqld_t...) y representa el servicio que quiere hacer la acción. Por otro lado tenemos el recurso o el archivo, donde hay más variedad y no siempre es igual pero suele seguir unos parametros :   </p>
-                <ul>
-                    <li><code>_sys_content_t</code>: Contenido estático del sistema.</li>
-                    <li><code>_config_t</code>: Archivos de configuración.</li>
-                    <li><code>_log_t</code>: Archivos de registro(logs)</li>
-                    <li><code>_rw_content_t</code>: Contenido donde el servicio tiene permiso para escribir</li>
-                </ul>
-                <p> Es importante mencionar que los dejo anotados para que os suenen cuando los veais, ni mucho menos hay que saberselos. Al ejecutar el comando <code>semanage fcontext -l | grep servicio</code> nos indicará una lista de carpetas y etiquetas que deben de llevar, donde buscamos la que más necesitemos o el comando <code>matchpathcon /ruta/archivo</code>, que nos dice qué etiqueta debería tener un archivo según la política, a diferencia de <code>ls -Z</code>, que nos dice la etiqueta que realmente tiene en ese momento.</p>
-                <img src="/images/selinux-context.png" alt="Contextos SELinux" width="800">
-                <p> Por ultimo, cuando sospechamos que un servicio falla debido a SELinux, podemos usar dos comandos para investigar el motivo del bloqueo :<code>ausearch</code>,que en terminos simples, se podría decir que es el rastreador y <code>audit2why</code> sería el traductor, es decir, recibe la información y te la explica</p>
-                <p> Se pueden utilizar de forma individual, aunque hoy en día lo más común es utilizarlos juntos. ausearch solemos usarlo con <code>-m avc -ts recent</code> ya que la mayoría de bloqueos se registran bajo AVC </p>
-                <img src="/images/selinux-audit.png" alt="AUSEARCH -AUDIT- SELinux" width="800">
+                <p>No hay que memorizarlos los contextos.<code>semanage fcontext -l | grep servicio</code> lista las etiquetas recomendadas, <code>matchpathcon /ruta/archivo</code> indica la que debería tener y <code>ls -Z</code> la que tiene realmente.</p>
+                <img src="/images/selinux-context.png" alt="Contextos SELinux">
+                <p>Para investigar fallos de SELinux, usa <code>ausearch</code> (rastreador) y <code>audit2why</code> (traductor). Lo más común es combinarlos con <code>ausearch -m avc -ts recent | audit2why</code>, ya que la mayoría de bloqueos se registran bajo el tipo avc.</p>
+                <img src="/images/selinux-audit.png" alt="AUSEARCH -AUDIT- SELinux" >
             </section>
 
-            <section id="obj6">
-                <h3>Restaurar contextos de archivo predeterminados</h3>
-                <p>Si movemos archivos o cambiamos etiquetas manualmente, podemos causar errores. <code>restorecon</code> devuelve las etiquetas originales según la política del sistema. Tenemos que tener claro que al mover ficheros el comando <code>mv</code> puede causar bloqueos, en cambio <code>cp</code> suele funcionar bien. Igualmente es buena practica usar siempre <code>restorecon</code></p>
+            <section id="obj6" class="lesson-section">
+                <h3>6. Restaurar contextos predeterminados</h3>
+                <p><code>restorecon</code> restaura etiquetas correctas cuando archivos se mueven o cambian manualmente.</p>
                 <p>El ejemplo más sencillo es el servicio httpd. Este servicio se encuentra en <code>/var/www/html/</code> y necesita un contexto para funcionar. Si importamos un archivo desde otra ubicación y no nos aseguramos de que tenga un contexto correcto, no funcionará. Tal y como hemos visto en la imagen de <code>ausearch -m avc -ts recent | audit2why</code></p>
-                <img src="/images/restorecon.png" alt="Uso de restorecon" width="800">
-                <p> Por otro lado, cuando la carpeta es nueva SELinux no la reconoce, tenemos que "enseñarle" que etiqueta debe llevar. Para ello podemos usar el comando <code>semanage fcontext -a -t TIPO "/RUTA(/.*)?"</code> y aplicamos con <code>restorecon -Rv /ruta</code>. Podemos usar <code>-n</code> en restorecon -Rv para comprobar lo que haría</p>
-                <img src="/images/restorecon-add.png" alt="Uso de restorecon" width="800">
+                <img src="/images/restorecon.png" alt="Uso de restorecon">
+                <p>Para nuevas rutas usamos <code>semanage fcontext -a</code> y aplicamos cambios con <code>restorecon -Rv</code>.</p>
+                <img src="/images/restorecon-add.png" alt="Uso de restorecon">
                 <p> De la misma manera que agregamos con <code>-a</code>, podemos eliminar una regla que hayamos creado exactamente igual pero con <code>-d</code> o modificarla con <code>-m</code>. Recordad lanzar siempre el comando <code>restorecon -Rv</code> para aplicar esos cambios. En el video menciono <code>chcon</code> pero este haría un cambio temporal y se perdería al reiniciar, por lo que mejor usar semanage fcontext. </p>
                 
             </section>
 
             <section id="obj7">
                 <h3>Administrar etiquetas de puerto SELinux</h3>
-                <p>Si un servicio (ej. Apache) debe escuchar en un puerto no estándar, debemos etiquetar ese puerto en SELinux. Podemos comprobar el contexto de los puertos de la misma manera que la de los servicios : <code>semanage port -l | grep servicio</code></p>
-                <p>Una vez tenemos situado el puerto</p>
-                <img src="/images/semanage-ports.png" alt="Puertos SELinux" width="800">
-                <p>Si un servicio necesita usar un puerto diferente, debemos añadirlo con <code>semanage</code>. Por ejemplo, permitir que <strong>httpd</strong> use el puerto 8080:</p>
-                <img src="/images/semanage-ports2.png" alt="Puertos SELinux change" width="800">
+                <p>Si un servicio (ej. Apache) debe escuchar en un puerto no estándar, debemos etiquetar ese puerto en SELinux. Podemos comprobar el contexto de los puertos de la misma manera que la de los servicios : <code>semanage port -l | grep servicio</code>.</p>
+                <img src="/images/semanage-ports.png" alt="Puertos SELinux">
+                <p>Si un servicio necesita usar un puerto diferente, debemos añadirlo con <code>semanage port -a X -p tcp PUERTO</code>. Por ejemplo, permitir que <strong>httpd</strong> use el puerto 8080:</p>
+                <img src="/images/semanage-ports2.png" alt="Puertos SELinux change">
                 <p>Si el puerto ya existe y queremos modificarlo usamos <code>-m</code>, y para eliminarlo usamos <code>-d</code>.</p>
             </section>
-            <section id="obj8">
-                 <h3>Utilice la configuración booleana para modificar la configuración del sistema SELinux</h3>
+             <section id="obj8" class="lesson-section">
+                <h3>8. Booleanos SELinux</h3>
                 <p>Los booleanos son interruptores (on/off) que permiten cambiar reglas de SELinux en tiempo real sin modificar la política completa. Tenemos que tener en cuenta que si un servicio funciona pero SELinux lo bloquea lo primero que revisaremos será los booleanos</p>
                 <p> Con el comando <code>getsebool -a</code> podemos listar todos los booleanos disponibles y podemos filtrar con grep servicio. Tambien podemos filtrar con <code>semanage boolean -l | grep X</code>. </p>
-                <img src="/images/selinux-booleans.png" alt="Booleanos SELinux" width="800">
-                <p> Una vez identificado, podemos cambiar el estado del boolean con el comando <code>setbool nombre on/off</code>. Si quisieramos que sea permanente y sobreviva a un reinicio, deberemos usar el parametro -P </p>
-                <img src="/images/selinux-booleans2.png" alt="Booleanos SELinux" width="800">
+                <img src="/images/selinux-booleans.png" alt="Booleanos SELinux">
+                <p>Se listan con <code>getsebool -a</code> y se modifican con <code>setsebool</code>. Para hacerlo persistente usamos <code>-P</code>.</p>
+                <img src="/images/selinux-booleans2.png" alt="Booleanos SELinux">
                 <p>No es necesario memorizar booleanos concretos, sino saber identificarlos con <code>getsebool</code> o <code>getsebool -a</code> y activarlos correctamente usando <code>setsebool</code> o <code>setsebool -P</code> cuando SELinux bloquea un servicio.</p
-                <p>Igualmente, y por tener unos cuantos que nos suenen, dejo una pequeña lista :</p>
+                <p>Ejemplos comunes:</p>
                 <ul>
-                    <li><code>httpd_can_network_connect</code>: Permite que el servicio web se conecte a redes externas, APIs o bases de datos (Apache / Nginx).</li>
-                    <li><code>httpd_can_sendmail</code>: Permite al servidor web enviar correos electrónicos (Apache).</li>
-                    <li><code>httpd_read_user_content</code>: Permite al servidor web leer archivos dentro de los directorios <code>/home</code> (Apache).</li>
-                    <li><code>ftp_home_dir</code>: Permite al servicio <code>vsftpd</code> acceder a los directorios home de los usuarios.</li>
-                    <li><code>ssh_sysadm_login</code>: Permite a los administradores del sistema loguearse vía SSH con privilegios de sudo.</li>
-                    <li><code>container_manage_cgroup</code>: Permite que los contenedores gestionen sus propios cgroups (Podman).</li>
-                    <li><code>httpd_can_network_connect on</code>: Necesario cuando Apache requiere conexión a una base de datos externa.</li>
-                    <li><code>httpd_enable_homedirs on</code>: Necesario para que Apache sirva contenido web desde <code>/home/user/public_html</code>.</li>
-                </ul>        
+                    <li><code>httpd_can_network_connect</code></li>
+                    <li><code>httpd_enable_homedirs</code></li>
+                    <li><code>ftp_home_dir</code></li>
+                    <li><code>ssh_sysadm_login</code></li>
+                    <li><code>container_manage_cgroup</code></li>
+                </ul>       
             </section>
 
         </div>
     </div>
-</main>
-
-<footer>
-    <div class="footer-content">
-        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
-        <div class="footer-links">
-            <a href="https://github.com/s2ktux">GitHub</a>
-            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
-            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
-        </div>
-    </div>
-</footer>
-
-<a href="#" id="back-to-top">↑ Volver arriba</a>
-<script src="/conf/scripts.js"></script>
-
-</body>
-</html>
+</div>
