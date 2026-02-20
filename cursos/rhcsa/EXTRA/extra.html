@@ -1,138 +1,106 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="RHCSA - Clase Extra: Tips técnicos y metodología">
-    <meta name="keywords" content="RHCSA, Linux, Podman, Find, Root Password, SSH, Red Hat">
-    <meta name="author" content="S2KTUX">
-    <title>S2KTUX - RHCSA | Clase Extra</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
+<div class="lesson-wrapper">
 
-<div class="gradient-bg"></div>
-
-<header>
-    <div class="header-left">
-        <a href="/index.html" class="header-logo">S2KTUX</a>
-    </div>
-    <nav>
-        <a href="/index.html">Inicio</a>
-        <a href="/cursos/cursos.html">Cursos</a>
-        <a href="/proyectos/proyectos.html">Proyectos</a>
-    </nav>
-</header>
-
-<main id="contenido">
-
-    <div class="hero">
+    <header class="lesson-header">
+        <span class="badge">RHCSA Clase Extra</span>
         <h1>Clase Extra</h1>
         <p>Dominio de herramientas críticas, gestión de accesos y entorno de certificación</p>
-        <p><a href="https://youtu.be/T7jPRmBA9_g" target="_blank">VER VIDEO YOUTUBE - CLASE EXTRA</a></p>
-    </div>
 
-    <a href="/cursos/cursos.html" class="back-link">← Volver al curso RHCSA</a>
+        <a href="https://youtu.be/T7jPRmBA9_g" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - CLASE EXTRA</strong>
+                <span>Tips técnicos y metodología para el examen RHCSA</span>
+            </div>
+        </a>
+    </header>
 
-    <div class="course-page">
+    <div class="lesson-layout">
 
-        <div class="sidebar">
-            <h3>Objetivos Extra</h3>
+        <aside class="lesson-toc">
+            <h4>Objetivos Extra</h4>
             <ul>
-                <li><a href="#obj1">Podman</a></li>
-                <li><a href="#obj2">Comando Find</a></li>
-                <li><a href="#obj3">Reset Contraseña Root</a></li>
-                <li><a href="#obj4">SSH y Copy-Paste</a></li>
-                <li><a href="#obj5">Inside Red Hat y SIMULACRO</a></li>
+                <li><a href="#obj1">1. Podman</a></li>
+                <li><a href="#obj2">2. Comando Find</a></li>
+                <li><a href="#obj3">3. Reset root</a></li>
+                <li><a href="#obj4">4. SSH y copy-paste</a></li>
+                <li><a href="#obj5">5. Inside Red Hat</a></li>
             </ul>
-        </div>
+        </aside>
+<div class="course-content">
+
+            <section id="obj1" class="lesson-section">
+                <h3>1. Podman</h3>
 
         <div class="content">
 
-            <section id="obj1">
+            <section id="obj1" class="lesson-section">
                 <h3>1. Podman</h3>
-                <p>Podman es una herramienta para ejecutar contenedores. Una de las cosas que muy posiblemente entre en el examen sería el tema de registro a traves de podman y crear un contenedor como servicio.</p>
-                <p> A diferencia de dnf, con podman descargamos una imagen que se almacena en contenedores. Debemos registrarnos ya que algunas de estas imagenes están protegidas y para registrarnos lanzamos <code>podman login registry.redhat.io</code> y posteriormente pondremos el user y la pass</p>
-                <p>Podemos buscar imagenes <code>podman search httpd </code>y descargarlas, como por ejemplo : <code>podman pull docker.io/library/httpd </code>. Una vez descargada, podemos comprobar con <code>podman images</code> y en caso de necesitar borrar una lanzamos <code>podman rmi ID-IMAGEN</code>. </p>
-                <img src="/images/podman1.png" alt="podman ejemplo" width="1100">
-                <p>Una vez tenemos la imagen podemos lanzar el contenedor con <code>podman run -d --name NOMBRE -p PUERTO_HOST:PUERTO_CONTENEDOR ID-IMAGEN</code>. Comprobamos con <code>podman ps</code> y podemos tanto pararlos <code>podman stop</code> o eliminarlo <code>podman rm</code>.  </p>
-                <img src="/images/podman2.png" alt="podman ejemplo" width="1100">
-                <p> Pero en caso que queramos levantar la imagen de forma interactiva sería con <code>podman run -it ID-IMAGEN /bin/bash</code>. Si quisieramos buscar donde se aloja el contenido de la pagina deberíamos buscar el index : <code>find / -name index</code>. Podrían pedirnos mapear el contenedor a un directorio local : <code>podman run -d --name NOMBRE -p 8080:80 -v /RUTA-LOCAL:/RUTA/index.html:Z ID-IMAGEN</code> </p>
-                <img src="/images/podman3.png" alt="podman ejemplo" width="1100">
-                <p>Por ultimo, nos podrían pedir (Y ES MUY MUY PROBABLE) lanzar un contenedor como servicio como root o como usuario normal. En ambos casos debemos de hacer los mismos pasos, lo unico que cambia sería la ubicación de los archivos finales y como levantamos el contenedor. </p>
-                <p> Para los pasos previos haríamos : Descargamos la imagen <code>podman pull IMAGEN</code>, creamos el contenedor <code>podman run -d --name mi-web -p 8080:80 ID-IMAGEN</code> y podríamos comprobar con <code>podman ps</code>. Una vez generado el contenedor y extraemos la configuración con <code>podman generate systemd --name NOMBRE --files --new</code> que nos generará un fichero .service. Debemos borrar el contenedor ( Solo si usamos --new, que es lo recomendable) una vez generado el .service con <code>podman rm -f NOMBRE</code> para evitar fallos. Seguimos según usuario : </p>
-                <ul>
-                    <li><strong>ROOT</strong> -> Movemos el fichero .service a <code>/etc/systemd/system/</code>, reiniciamos systemd<code>systemctl daemon-reload</code> y levantamos <code>systemctl enable --now NOMBRE.service</code>. Recordad comprobar con <code>systemctl status NOMBRE.service</code>.</li>
-                    <img src="/images/podman4.png" alt="podman ejemplo" width="1100">
-                    <li><strong>USER</strong> -> Previamente haremos <code>loginctl enable-linger usuario</code> y accedemos vía ssh <code>ssh user@localhost</code>. Una vez hechos los pasos previos, creamos la carpeta de destino si no existiese <code>mkdir -p ~/.config/systemd/user/</code> y movemos a esta ruta el .service. Podemos editar este fichero en la ultima fila cambiando el <code>WantedBy=multi-user.target</code> por <code>WantedBy=default.target</code>. Reinicamos <code>systemctl --user daemon reload</code> y levantamos <code>systemctl --user enable --now NOMBRE.service</code>. Por ultimo, lanzamos <code>loginctl enable-linger test</code> para que levante los servicios de este usuario cuando levantemos la maquina. </li>
-                    <img src="/images/podman5.png" alt="podman ejemplo" width="1100">
-                </ul>
+                <p>Podman es una herramienta para ejecutar contenedores y es muy probable que aparezca en el examen, especialmente en tareas relacionadas con el registro en repositorios y la creación de contenedores como servicios.</p>
+                <p>A diferencia de <code>dnf</code>, Podman trabaja con imágenes de contenedor. Algunas imágenes están protegidas, por lo que primero debemos autenticarnos usando <code>podman login registry.redhat.io</code> e introducir nuestras credenciales.</p>
+                <p>Podemos buscar imágenes con <code>podman search httpd</code> y descargarlas, por ejemplo, mediante <code>podman pull docker.io/library/httpd</code>. Las imágenes descargadas se consultan con <code>podman images</code> y pueden eliminarse usando <code>podman rmi ID-IMAGEN</code>.</p>
+                <img src="/images/podman1.png" alt="podman ejemplo">
+                <p>Una vez disponible la imagen, podemos crear un contenedor con <code>podman run -d --name NOMBRE -p PUERTO_HOST:PUERTO_CONTENEDOR ID-IMAGEN</code>. Verificamos su estado con <code>podman ps</code>, pudiendo detenerlo con <code>podman stop</code> o eliminarlo mediante <code>podman rm</code>.</p>
+                <img src="/images/podman2.png" alt="podman ejemplo"
+                <p>Si necesitamos trabajar de forma interactiva utilizaremos <code>podman run -it ID-IMAGEN /bin/bash</code>. Para localizar contenido dentro del sistema podemos usar <code>find / -name index</code>. También pueden pedir mapear contenido local al contenedor mediante volúmenes, por ejemplo: <code>podman run -d --name NOMBRE -p 8080:80 -v /RUTA-LOCAL:/RUTA/index.html:Z ID-IMAGEN</code>.</p>
+                <img src="/images/podman3.png" alt="podman ejemplo">
+                <p>Una tarea muy habitual en el examen es ejecutar un contenedor como servicio systemd, tanto para root como para un usuario normal. El procedimiento base es el mismo: descargar la imagen con <code>podman pull IMAGEN</code>, crear el contenedor con <code>podman run -d --name mi-web -p 8080:80 ID-IMAGEN</code> y comprobarlo con <code>podman ps</code>. Después generamos el servicio con <code>podman generate systemd --name NOMBRE --files --new</code>, lo que crea un fichero <code>.service</code>. Si usamos la opción <code>--new</code> (recomendado), debemos eliminar el contenedor con <code>podman rm -f NOMBRE</code> para evitar conflictos.</p>
+                <p>Si trabajamos como root, movemos el archivo generado a <code>/etc/systemd/system/</code>, recargamos systemd con <code>systemctl daemon-reload</code> y activamos el servicio usando <code>systemctl enable --now NOMBRE.service</code>, comprobando su estado con <code>systemctl status NOMBRE.service</code>.</p>
+                <img src="/images/podman4.png" alt="podman ejemplo">
+                <p>Si lo configuramos para un usuario normal, primero habilitamos la persistencia con <code>loginctl enable-linger usuario</code> y accedemos por SSH. Después, tras seguir los mismos pasos de root, creamos la ruta <code>~/.config/systemd/user/</code>, movemos allí el fichero <code>.service</code> y editamos la última línea cambiando <code>WantedBy=multi-user.target</code> por <code>WantedBy=default.target</code> en caso de que esté mal. Finalmente recargamos con <code>systemctl --user daemon-reload</code>, activamos el servicio con <code>systemctl --user enable --now NOMBRE.service</code> y dejamos habilitado el linger para que el servicio arranque automáticamente al iniciar el sistema.</p>
+                <img src="/images/podman5.png" alt="podman ejemplo">
                 </section>
 
-            <section id="obj2">
-                <h3>2. Find</h3>
-                <p>El comando <code>find</code> es esencial para buscar archivos.</p>
-                <p>Tenemos una serie de parámetros que son los que más se pueden llegar a utilizar. La sintaxis es <code>find RUTA Parámetros</code>. </p>
+            <section id="obj2" class="lesson-section">
+                <h3>2. Comando find</h3>
+                <p>El comando <code>find</code> es esencial para buscar archivos. Los parametros más esenciales : </p>
                 <ul>
-                    <li><code>-type [f/d/l]</code>: Buscar por tipo: <strong>f</strong> (archivo), <strong>d</strong> (directorio) o <strong>l</strong> (enlace simbólico).</li>
-                    <li><code>-name o -iname</code>: Buscar por nombre. <code>-iname</code> ignora mayúsculas/minúsculas.</li>
-                    <li><code>-size [+/-]TAM</code>: Filtrar por tamaño (ej: <code>-size +10M</code> para más de 10 megas).</li>
-                    <li><code>-user [nombre]</code>: Buscar archivos que pertenecen a un usuario específico.</li>
-                    <li><code>-perm [modo]</code>: Buscar por permisos. Ejemplo: <code>-perm /4000</code> busca archivos con el bit <strong>SUID</strong> activo.</li>
-                    <li><code>-mmin [minutos]</code>: Buscar archivos modificados hace <strong>X</strong> minutos (ej: <code>-mmin -120</code> para los últimos 120 min).</li>
-                    <li><code>-mtime [días]</code>: Buscar archivos modificados hace <strong>X</strong> días.</li>
-                    <li><code>-exec COMANDO {} \;</code>: Ejecuta una acción sobre cada archivo encontrado. Imprescindible para copiar o mover resultados.</li>
+                    <li><code>-type [f/d/l]</code> → tipo de archivo.</li>
+                    <li><code>-name / -iname</code> → búsqueda por nombre.</li>
+                    <li><code>-size</code> → filtrar por tamaño.</li>
+                    <li><code>-user</code> → propietario.</li>
+                    <li><code>-perm</code> → permisos (ej: SUID).</li>
+                    <li><code>-mmin</code> → modificación por minutos.</li>
+                    <li><code>-mtime</code> → modificación por días.</li>
+                    <li><code>-exec COMANDO {} \;</code> → ejecutar acciones.</li>
                 </ul>
             </section>
 
-            <section id="obj3">
-                <h3>3. Reset contraseña root</h3>
+            <section id="obj3" class="lesson-section">
+                <h3>3. Resetear contraseña root</h3>
                 <p> Recordemos que esto es uno de los puntos esenciales del examen, siendo el primero o de los primeros. Si no sabemos hacer esto, no podremos hacer nada más. </p>
-                <p> Entrabamos en GRUB, editamos la linea de LINUX (al final de la misma) y ponemos <code>rd.break</code> y CTRL + X. </p>
-                <p> Una vez carga el sistema, montamos el sistema con permisos de escritura <code>mount -o remount,rw /sysroot</code> y accedemos al entorno real con <code>chroot /sysroot</code> (NO debería de fallar, pero si falla buscar con <code>find / -type f -name chroot</code>). </p>
-                <p> Modificamos la password con <code>passwd root</code> y, para que SELinux no nos bloquee el acceso al reiniciar, creamos el archivo de reetiquetado <code>touch /.autorelabel</code>. </p>
-                <p> Por último, salimos del entorno con <code>exit</code> y repetimos <code>exit</code> para que el sistema reinicie y aplique los cambios (puede tardar unos minutos). </p>    
+                <pre>
+                    <code>rd.break</code>
+                    <code>mount -o remount,rw /sysroot</code>
+                    <code># si falla, buscar ruta con find / -name chroot</code>
+                    <code>chroot /sysroot</code>
+                    <code>passwd root</code>
+                    <code>touch /.autorelabel</code>
+                </pre>
+               <p>Salir con <code>exit</code> dos veces para reiniciar y aplicar cambios.</p>
             </section>
 
-            <section id="obj4">
-                <h3>4. Crear user y meterle en wheel para hacer ssh y poder copy paste mejor</h3>
-                <p>Acceder directamente como root por SSH suele fallar. La mejor técnica para ganar velocidad es tener un usuario configurado que nos permita usar ssh para permitir hacer un copy-paste y ganar tiempo.</p>
-                <p>Una vez creado el usuario con useradd usuario, tenemos dos opciones :</p>
+            <section id="obj4" class="lesson-section">
+                <h3>4. Usuario SSH para copy-paste rápido</h3>
+                <p>En el examen puede ser útil usar un usuario con sudo para trabajar vía SSH y copiar comandos rápidamente.</p>
+                <p>Una vez creado el usuario con useradd usuario, tenemos varias opciones :</p>
                 <ul>
-                    <li>1 - Añadirlo al grupo <code>wheel</code>: <code>usermod -aG wheel usuario</code>.</li>
-                    <li>2 - Configurar el archivo <code>sudoers</code>:hacemos <code>sudo visudo</code> y añadimos practicamente al final la linea <code>usuario ALL=(ALL) ALL</code></li>
+                    <li>Añadir a wheel: <code>usermod -aG wheel usuario</code></li>
+                    <li>Configurar sudoers con <code>visudo</code></li>
+                    <li>Crear un archivo en <code>/etc/sudoers.d</code> con el nombre del usuario y el mismo contenido que pondríamos en visudo</li>
                 </ul>
-                <p>Ambas maneras son validas, aunque usad preferiblemente la primera ya que la segunda es más cuando no quieres dar sudo completo. Una vez realizado, fijaros en que todo esté OK para hacer ssh : Archivo de configuración, SELinux, firerwall, servicio activo... </p>
+                <p>Verificar siempre SSH, firewall, SELinux y servicio activo.</p>
             </section>
 
-            <section id="obj5">
-
-                <h3>5. Video Inside REDHAT y SIMULACRO</h3>
-                <p>Es fundamental visualizar el video oficial "Inside a Red Hat Certification" para conocer el entorno real del examen e ir preparados de lo que nos vamos a encontrar mas o menos y no perder tiempo. A pesar de que sean 3 horas y parezca mucho tiempo, NO lo es.</p>
-                <p> Por otro lado, y como simulacro, me he encontrado el siguiente repositorio de GITHUB que está increible : <strong>https://github.com/AustinNicely/rhcsa-simulator</strong>. Aunque está en ingles, es muy muy buen recurso que te puede ayudar a practicar o repasar conceptos. Para su uso, he descargado un Alma Linux versión 9 con interfaz gráfica, aunque puedes usar cualquier linux compatible.</p>
-                <p>Para instalarlo y poder usarlo, los pasos que he dado son : (aparte de un chmod +x *)</p>
-                <img src="/images/rhcsasimulator.png" alt="rhcsa sim ejemplo" width="1100">
+            <section id="obj5" class="lesson-section">
+                <h3>5. Inside Red Hat y simulacro</h3>3>
+               <p>Es recomendable ver el vídeo oficial <strong>Inside a Red Hat Certification</strong> para entender el entorno real del examen.</p>
+                <p> Por otro lado, y como simulacro, me he encontrado el siguiente repositorio de GITHUB que está increible : <strong>https://github.com/AustinNicely/rhcsa-simulator</strong>. Aunque está en ingles, es muy muy buen recurso que te puede ayudar a practicar o repasar conceptos. Podemos instalarlo : </p>
+                <img src="/images/rhcsasimulator.png" alt="rhcsa sim ejemplo">
             </section>
 
         </div>
     </div>
-</main>
-
-<footer>
-    <div class="footer-content">
-        <p>S2KTUX | Un lugar para aprender sistemas y redes</p>
-        <div class="footer-links">
-            <a href="https://github.com/s2ktux">GitHub</a>
-            <a href="mailto:alaisysadm@gmail.com">Contacto</a>
-            <a href="https://www.youtube.com/@s2ktux">YouTube</a>
-        </div>
-    </div>
-</footer>
-
-<a href="#" id="back-to-top">↑ Volver arriba</a>
-<script src="/conf/scripts.js"></script>
+</div>
 
 </body>
 </html>
