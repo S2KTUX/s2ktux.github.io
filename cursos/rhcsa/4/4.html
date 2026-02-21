@@ -145,8 +145,8 @@
                 <h3>8. Preservar journals del sistema</h3>
                 <p>Por defecto, los journals pueden ser volátiles. Para que el journal no se borre al reiniciar, debemos crear la estructura manualmente</p>
                 <pre><code>mkdir /var/log/journal
-                    chown root:systemd-journal /var/log/journal
-                    chmod 2755 /var/log/journal</code></pre>
+chown root:systemd-journal /var/log/journal
+chmod 2755 /var/log/journal</code></pre>
                 <p>Configurar <code>Storage=persistent</code> en <code>/etc/systemd/journald.conf</code> y reiniciar el servicio.</p>
                 <img src="/images/log-pers.png" alt="logs persistent" loading="lazy">
                 <img src="/images/log-pers2.png" alt="logs persistent" loading="lazy">
