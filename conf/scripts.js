@@ -18,16 +18,16 @@ const coursesDB = {
     "lpic1": {
         title: "LPIC-1 101-500",
         chapters: [
-            { id: 1, title: "Arquitectura del sistema", file: "#" },
-            { id: 2, title: "Instalación de Linux y gestión de paquetes", file: "#" },
-            { id: 3, title: "Comandos GNU y Unix", file: "#" },
-            { id: 4, title: "Dispositivos, Sistemas de Archivos y FHS", file: "#" },
-            { id: 5, title: "Shells y scripts ", file: "#" },
-            { id: 6, title: "Interfaces gráficas y accesibilidad", file: "#" },
-            { id: 7, title: "Tareas administrativas", file: "#" },
-            { id: 8, title: "Servicios esenciales del sistema", file: "#" },
-            { id: 9, title: "Fundamentos de redes", file: "#" },
-            { id: 10, title: "Seguridad", file: "#" }
+            { id: 1, title: "Arquitectura del sistema", file: "/cursos/lpic/101/1.html" },
+            { id: 2, title: "Instalación de Linux y gestión de paquetes", file: "/cursos/lpic/102/2.html" },
+            { id: 3, title: "Comandos GNU y Unix", file: "/cursos/lpic/103/3.html" },
+            { id: 4, title: "Dispositivos, Sistemas de Archivos y FHS", file: "/cursos/lpic/104/4.html" },
+            { id: 5, title: "Shells y scripts ", file: "/cursos/lpic/105/5.html" },
+            { id: 6, title: "Interfaces gráficas y accesibilidad", file: "/cursos/lpic/106/6.html" },
+            { id: 7, title: "Tareas administrativas", file: "/cursos/lpic/107/7.html" },
+            { id: 8, title: "Servicios esenciales del sistema", file: "/cursos/lpic/108/8.html" },
+            { id: 9, title: "Fundamentos de redes", file: "/cursos/lpic/109/9.html" },
+            { id: 10, title: "Seguridad", file: "/cursos/lpic/110/10.html" }
         ]
     },
     "aws": {
