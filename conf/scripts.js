@@ -18,12 +18,29 @@ const coursesDB = {
     "lpic1": {
         title: "LPIC-1 101-500",
         chapters: [
-            { id: 101, title: "Arquitectura de Sistema", file: "/cursos/lpic/101/101.html" },
-            { id: 102, title: "Instalación de Linux", file: "/cursos/lpic/102/102.html" }
+            { id: 1, title: "Arquitectura del sistema", file: "#" },
+            { id: 2, title: "Instalación de Linux y gestión de paquetes", file: "#" },
+            { id: 3, title: "Comandos GNU y Unix", file: "#" },
+            { id: 4, title: "Dispositivos, Sistemas de Archivos y FHS", file: "#" },
+            { id: 5, title: "Shells y scripts ", file: "#" },
+            { id: 6, title: "Interfaces gráficas y accesibilidad", file: "#" },
+            { id: 7, title: "Tareas administrativas", file: "#" },
+            { id: 8, title: "Servicios esenciales del sistema", file: "#" },
+            { id: 9, title: "Fundamentos de redes", file: "#" },
+            { id: 10, title: "Seguridad", file: "#" }
         ]
     },
     "aws": {
         title: "AWS Cloud",
+        chapters: [
+            { id: 101, title: "Dominio 1: Conceptos de Cloud (24%)", file: "#" },
+            { id: 102, title: "Dominio 2: Seguridad y Cumplimiento (30%)", file: "#" },
+            { id: 103, title: "Dominio 3: Tecnología y Servicios Cloud (34%)", file: "#" },
+            { id: 104, title: "Dominio 4: Facturación, Precios y Soporte (12%)", file: "#" }
+        ]
+    }
+    "rhce": {
+        title: "RHCE",
         chapters: [
             { id: 101, title: "Proximamente...", file: "#" },
             { id: 102, title: "Proximamente...", file: "#" },
