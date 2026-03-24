@@ -2,13 +2,13 @@
     <header class="lesson-header">
         <span class="badge">LPIC-1 Examen 101</span>
         <h1>Arquitectura del Sistema</h1>
-        <p>Gestión avanzada de hardware, proceso de arranque, niveles de ejecución y recuperación del sistema.</p>
+        <p>Determinar y configurar hardware, arranque del sistema y gestión de niveles de ejecución.</p>
         
         <a href="https://youtu.be/enwp35IHCic" target="_blank" class="video-card">
             <div class="video-icon">🎬</div>
             <div class="video-text">
-                <strong>VER VIDEO YOUTUBE - CLASE 1</strong>
-                <span>Hardware, Boot y Runlevels avanzados</span>
+                <strong>VER VIDEO YOUTUBE - TEMA 101</strong>
+                <span>Hardware, Boot y Runlevels</span>
             </div>
         </a>
     </header>
@@ -28,170 +28,163 @@
             <!-- SECCIÓN: 101.1 HARDWARE -->
             <section id="101.1" class="lesson-section">
                 <h3>101.1 Determinar y configurar los ajustes de hardware</h3>
-                <p>El administrador de sistemas debe tener visibilidad total sobre los componentes físicos y virtuales. Más allá de conocerlos, debemos saber cómo interactuar con ellos a través del kernel.</p>
-
-                <h4>Herramientas de diagnóstico de hardware</h4>
-                <p>Además de los comandos básicos, existen utilidades específicas para obtener información profunda (DMI) y eventos en tiempo real.</p>
                 
+                <h4>Activación de Dispositivos</h4>
+                <p>BIOS se presenta al presionar una tecla durante el arranque (F1, F2, Esc...). Aquí podemos habilitar/deshabilitar periféricos integrados, activar protección básica contra errores y cambiar configuraciones como DMA y IRQ.</p>
+
+                <h4>Inspección de dispositivos en Linux</h4>
+                <p>Podemos identificar recursos de hardware de dos formas: usando comandos o leyendo archivos específicos.</p>
+                
+                <h5>Comandos:</h5>
                 <ul>
-                    <li><strong><code>lspci</code> / <code>lsusb</code></strong>: 
-                        <br>Mapeo de buses PCI y USB. Usar <code>-v</code> (verbose) y <code>-k</code> (kernel driver) es esencial para troubleshooting.
+                    <li><strong><code>lspci</code></strong>: Muestra los dispositivos conectados al bus PCI.
+                        <br>Para más información: <code>lspci -s 01:00.0 -v</code> o <code>lspci -s 04:02.0 -k</code> (más detallado).
                     </li>
-                    <li><strong><code>dmidecode</code></strong>: 
-                        <br>Herramienta potente que lee la tabla DMI (SMBIOS) de la placa base. Muestra número de serie, versión de BIOS, tipo de RAM y velocidad de los procesadores sin necesidad de abrir el chasis. Requiere root.
-                        <pre><code>sudo dmidecode -t memory  # Info detallada de memoria
-sudo dmidecode -s system-serial-number</code></pre>
+                    <li><strong><code>lsusb</code></strong>: Muestra los dispositivos USB.
+                        <br>Opciones útiles: <code>lsusb -v -d 0424:2514</code>, <code>lsusb -t</code> (árbol). Requiere root.
                     </li>
-                    <li><strong><code>udevadm</code></strong>: 
-                        <br>Interfaz para gestionar eventos del dispositivo udev.
-                        <pre><code>udevadm info -a -p /sys/class/net/eth0  # Atributos de una NIC
-udevadm monitor                       # Ver eventos de conexión en tiempo real</code></pre>
-                    </li>
-                    <li><strong><code>hdparm</code> / <code>sdparm</code></strong>: 
-                        <br>Permiten obtener y establecer parámetros de discos duros (SATA/IDE/SCSI), como caché de escritura o gestión de energía.
-                        <pre><code>hdparm -I /dev/sda    # Info detallada del disco
-hdparm -tT /dev/sda   # Test de velocidad de lectura</code></pre>
+                    <li><strong><code>lsmod</code></strong>: Muestra módulos cargados (Module, Size, Used by).
+                        <br>Gestión: <code>modprobe -r modulo</code> (descargar), <code>modprobe -p modulo</code> (info).
+                        <br>Configuración: Parámetros en <code>/etc/modprobe.d/</code>. Bloqueo en <code>/etc/modprobe.d/blacklist.conf</code>.
                     </li>
                 </ul>
-
-                <h4>Gestión de Módulos del Kernel</h4>
-                <p>El kernel Linux es modular. Podemos cargar o descargar controladores en caliente.</p>
-                <ul>
-                    <li><strong><code>lsmod</code></strong>: Lista módulos cargados. Muestra el tamaño y qué otros módulos dependen de él (Used by).</li>
-                    <li><strong><code>modinfo nombre_modulo</code></strong>: Muestra información detallada, autor, parámetros y dependencias.</li>
-                    <li><strong><code>modprobe</code></strong>: La herramienta estándar para cargar/descargar. Resuelve dependencias automáticamente.
-                        <pre><code>modprobe -r vmwgfx    # Descargar módulo
-modprobe vmwgfx        # Cargar módulo</code></pre>
-                    </li>
-                    <li><strong>Configuración:</strong> Los parámetros de los módulos se pueden pasar en <code>/etc/modprobe.d/nombre.conf</code>. Para bloquear un módulo problemático: <code>blacklist modulo_malo</code>.</li>
-                </ul>
-
-                <h4>Sistemas de archivos /proc, /sys y /dev</h4>
-                <p>Linux expone el hardware como archivos. Entender esta estructura es clave.</p>
+                
+                <h5>Archivos:</h5>
                 <div class="info-grid">
                     <div class="info-item">
                         <strong>/proc</strong><br>
-                        <small>Ventana al Kernel</small><br>
-                        <code>cpuinfo, interrupts, meminfo, dma</code>
+                        <small>Info sistema/procesos</small><br>
+                        <code>cpuinfo, interrupts, ioports, dma</code>
                     </div>
                     <div class="info-item">
                         <strong>/sys</strong><br>
-                        <small>Exportación de objetos kobject</small><br>
-                        Estructura dinámica de dispositivos.
+                        <small>Interacción Kernel/Hardware</small>
                     </div>
                     <div class="info-item">
                         <strong>/dev</strong><br>
-                        <small>Nodos de dispositivos</small><br>
-                        Gestionados por <strong>udev</strong>.
+                        <small>Archivos de dispositivos</small><br>
+                        Gestionado por <strong>udev</strong>
                     </div>
                 </div>
-                <p>En <code>/dev</code>, los dispositivos de bloques (almacenamiento) tienen números mayor (tipo de dispositivo) y menor (instancia específica), visibles con <code>ls -l</code>.</p>
+                <p><strong>Udev</strong> gestiona dispositivos (coldplugs/hotplugs) usando reglas en <code>/etc/udev/rules.d/</code>. <strong>acpid</strong> gestiona eventos de energía.</p>
+
+                <h4>Dispositivos de almacenamiento</h4>
+                <p>Nomenclatura de dispositivos de bloques:</p>
+                <pre><code>/dev/hdX    # Canales IDE
+/dev/fdX    # Disquetes
+/dev/sdX    # SCSI/SATA
+/dev/mmcblkXpy # Tarjetas SD
+/dev/nvmeZnXpY # NVMe (Z=controlador, X=disco, Y=partición)</code></pre>
             </section>
 
             <!-- SECCIÓN: 101.2 ARRANQUE -->
             <section id="101.2" class="lesson-section">
                 <h3>101.2 Arranque del Sistema</h3>
-                <p>Comprender la secuencia de arranque es vital para la recuperación de sistemas (boot repair).</p>
+                <p>Para controlar un equipo, el núcleo (kernel) debe cargarse mediante un programa llamado bootloader, y este a su vez lo carga el firmware.</p>
 
                 <h4>BIOS vs UEFI</h4>
-                <table style="width:100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem;">
+                <!-- Estilos aplicados manualmente para coincidir con el tema -->
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <thead>
-                        <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
-                            <th style="padding: 10px;">Característica</th>
-                            <th style="padding: 10px;">BIOS (Legacy)</th>
-                            <th style="padding: 10px;">UEFI</th>
+                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">BIOS (Legacy)</th>
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">UEFI</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Partición de Arranque</td>
-                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">MBR (512 bytes, max 4 particiones primarias)</td>
-                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">GPT (Partición EFI System - ESP, formato FAT32)</td>
+                    <tbody style="background-color: var(--card-bg);">
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px 15px;">1. POST</td>
+                            <td style="padding: 12px 15px;">1. POST</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px 15px;">2. Activar componentes básicos</td>
+                            <td style="padding: 12px 15px;">2. Activar componentes básicos</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px 15px;">3. Carga la primera etapa del gestor de arranque desde MBR (primeros 512 bytes)</td>
+                            <td style="padding: 12px 15px;">3. Lee las definiciones almacenadas en la NVRAM para ejecutar la aplicación definida</td>
                         </tr>
                         <tr>
-                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Gestor de Arranque</td>
-                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Cargado desde MBR (Etapa 1)</td>
-                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Archivo .efi en ESP (/boot/efi/EFI/...)</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 10px;">Seguridad</td>
-                            <td style="padding: 10px;">Básica</td>
-                            <td style="padding: 10px;">Secure Boot (Firma de drivers/Bootloaders)</td>
+                            <td style="padding: 12px 15px;">4. La primera etapa llama a la segunda etapa que carga el kernel</td>
+                            <td style="padding: 12px 15px;">4. Si la app definida es un gestor de arranque, cargará el kernel</td>
                         </tr>
                     </tbody>
                 </table>
+                <p><strong>Detalles UEFI:</strong> No se basa en MBR. Usa partición ESP (EFI System Partition), admite Secure Boot y sistemas de archivos FAT12/16/32. Almacenado en GPT.</p>
 
-                <h4>GRUB 2 (Grand Unified Boot Loader)</h4>
-                <p>El archivo de configuración principal es <code>/boot/grub/grub.cfg</code>, pero <strong>no se debe editar manualmente</strong>, ya que se regenera.</p>
+                <h4>El Cargador de Arranque (GRUB 2)</h4>
+                <p>Presiona <strong>Shift</strong> (BIOS) o <strong>Esc</strong> (UEFI) para invocar el menú. Parámetros del kernel comunes:</p>
                 <ul>
-                    <li><strong>Configuración:</strong> Editar <code>/etc/default/grub</code>.</li>
-                    <li><strong>Actualización:</strong> Ejecutar <code>update-grub</code> (Debian/Ubuntu) o <code>grub2-mkconfig -o /boot/grub2/grub.cfg</code> (RHEL/CentOS).</li>
+                    <li><code>init:</code> Establece un iniciador alternativo (ej. init=/bin/bash)</li>
+                    <li><code>system.unit:</code> Indica la unidad a usar por systemd</li>
+                    <li><code>maxcpus:</code> Cantidad de CPUs a usar</li>
+                    <li><code>root:</code> Establece en qué partición está raíz (root=/dev/sda2)</li>
+                    <li><code>rootflags:</code> Parámetros para el filesystem raíz</li>
+                    <li><code>ro:</code> Montaje de solo lectura para raíz</li>
+                    <li><code>rw:</code> Montaje de lectura y escritura para raíz</li>
                 </ul>
-                
-                <p>Parámetros críticos del kernel (Kernel Parameters) en <code>GRUB_CMDLINE_LINUX</code>:</p>
-                <pre><code>root=/dev/mapper/vg_root-lv_root  # Ubicación del sistema raíz
-ro                                # Montar raíz como Read-Only inicialmente
-quiet splash                      # Ocultar output textual
-init=/bin/bash                    # Reemplazar el init system (Útil para rescate)
-systemd.unit=rescue.target        # Arrancar directamente en modo rescate</code></pre>
+                <p>Para persistir cambios: editar <code>/etc/default/grub</code> en la línea <code>GRUB_CMDLINE_LINUX</code> y ejecutar <code>grub-mkconfig</code> o <code>update-grub</code>.</p>
+                <p>Archivos clave: <code>/boot/grub/grub.cfg</code> (configuración principal), <code>/boot/grub/i386-pc/lvm.mod</code>. Instalar en MBR: <code>grub-install /dev/sdX</code>.</p>
 
-                <h4>Kernel e Initramfs</h4>
-                <p>El kernel (<code>vmlinuz</code>) se carga en RAM. Para acceder al disco real (que puede estar en LVM, RAID o cifrado), necesita un sistema de archivos temporal: <strong>initramfs</strong> (o initrd).</p>
-                <p>Una vez montado el sistema real (<code>/</code>), se ejecuta el PID 1. Históricamente <code>/sbin/init</code>, hoy en día <code>/lib/systemd/systemd</code>.</p>
+                <h4>Inicialización del sistema</h4>
+                <p>El kernel abre <strong>initramfs</strong> (sistema de archivos raíz temporal comprimido), monta <code>/etc/fstab</code> y ejecuta el primer programa (init), que gestiona scripts y demonios.</p>
+                <p>Una vez cargado init, initramfs se elimina de la RAM. Init puede ser SysVinit, Systemd o Upstart (obsoleto).</p>
+                <p>En <strong>SysVinit</strong>, el primer programa es <code>/sbin/init</code> (PID 1). El nivel de ejecución se configura en <code>/etc/inittab</code>. Los scripts de arranque en <code>/etc/rcX.d/</code> usan prefijos <code>S</code> (Start) y <code>K</code> (Kill).</p>
 
-                <h4>Diagnóstico del Arranque</h4>
+                <h4>Inspección de inicialización</h4>
+                <p>Los mensajes del kernel se guardan en el <strong>kernel ring buffer</strong> (se pierden al apagar o con <code>dmesg --clear</code>).</p>
                 <ul>
-                    <li><strong><code>dmesg</code></strong>: Muestra el buffer del anillo del kernel. <code>dmesg -T</code> muestra marcas de tiempo humanas.</li>
-                    <li><strong><code>journalctl</code></strong>: El registro de systemd.
-                        <pre><code>journalctl -b               # Logs del arranque actual
-journalctl -b -1             # Logs del arranque anterior
-journalctl -p err -b         # Solo errores del arranque</code></pre>
-                    </li>
-                    <li><strong><code>systemd-analyze</code></strong>: Analiza el rendimiento del arranque.
-                        <pre><code>systemd-analyze time                    # Tiempo total
-systemd-analyze blame                   # Servicios que más tardan</code></pre>
-                    </li>
+                    <li><code>dmesg</code>: Muestra mensajes actuales.</li>
+                    <li><code>journalctl --list-boots</code>: Listará el número de arranques.</li>
+                    <li><code>journalctl -b 0</code>: Mensajes del inicio actual (<code>-b 1</code> el anterior).</li>
+                    <li><code>journalctl -D RUTA</code>: Mensajes en <code>/var/log/journal</code>.</li>
                 </ul>
             </section>
 
             <!-- SECCIÓN: 101.3 RUNLEVELS -->
             <section id="101.3" class="lesson-section">
-                <h3>101.3 Cambiar runlevels / targets y apagar el sistema</h3>
-                <p>La gestión del "modo" en el que opera el sistema define qué servicios están activos.</p>
+                <h3>101.3 Cambiar los niveles de ejecución / objetivos de arranque y apagar o reiniciar el sistema</h3>
 
-                <h4>SysVinit (Runlevels y /etc/inittab)</h4>
-                <p>En sistemas heredados, <code>/etc/inittab</code> define el comportamiento. Su sintaxis es:</p>
-                <pre><code>id:3:initdefault:</code></pre>
-                <p>Donde <strong>id</strong> es el identificador, <strong>3</strong> es el runlevel por defecto, y <strong>initdefault</strong> es la acción.</p>
+                <h4>Estándar SysVinit</h4>
+                <p>Proporciona estados de sistema llamados <strong>runlevels</strong>. El responsable es <code>/sbin/init</code>, que identifica el nivel en <code>/etc/inittab</code> y carga scripts en <code>/etc/init.d/</code>.</p>
+                <p>Sintaxis <code>/etc/inittab</code>: <code>id:runlevels:action:process</code>.</p>
                 
                 <div class="info-grid">
-                    <div class="info-item"><strong>0</strong><br>Halt (Apagado)</div>
-                    <div class="info-item"><strong>1</strong><br>Single User (Root sin red)</div>
-                    <div class="info-item"><strong>2</strong><br>Multiusuario (sin NFS en Debian)</div>
-                    <div class="info-item"><strong>3</strong><br>Multiusuario completo (Texto)</div>
-                    <div class="info-item"><strong>4</strong><br>No usado (Personalizable)</div>
-                    <div class="info-item"><strong>5</strong><br>Gráfico (X11)</div>
-                    <div class="info-item"><strong>6</strong><br>Reboot</div>
+                    <div class="info-item"><strong>0</strong><br>Apagado</div>
+                    <div class="info-item"><strong>1</strong><br>Modo monousuario (Mantenimiento)</div>
+                    <div class="info-item"><strong>2, 3, 4</strong><br>Modo multiusuario</div>
+                    <div class="info-item"><strong>5</strong><br>Modo multiusuario gráfico</div>
+                    <div class="info-item"><strong>6</strong><br>Reinicio</div>
                 </div>
+                <p><strong>Acciones:</strong> <code>boot</code>, <code>bootwait</code>, <code>sysinit</code>, <code>wait</code>, <code>respawn</code>, <code>ctrlaltdel</code>.</p>
+                <p>Comandos: <code>telinit q</code> (recargar inittab), <code>runlevel</code> (ver nivel), <code>telinit N</code> (cambiar).</p>
 
-                <p>Los scripts de inicio residen en <code>/etc/init.d/</code> y se enlazan en <code>/etc/rcX.d/</code>.</p>
+                <h4>Systemd</h4>
+                <p>Utiliza <strong>unidades</strong>. Tipos: <code>service</code>, <code>socket</code>, <code>device</code>, <code>mount</code>, <code>automount</code>, <code>target</code>, <code>snapshot</code>.</p>
+                <p>Comandos <code>systemctl</code>:</p>
+                <pre><code>start/stop/restart unit.service
+is-active unit.service
+status unit.service
+enable/disable unit.service
+is-enabled unit.service</code></pre>
+                <p>Control de Targets (equivalente a runlevels):</p>
+                <pre><code>systemctl isolate graphical.target  # Cambiar modo
+systemctl set-default graphical.target # Establecer por defecto</code></pre>
+                <p>Nota: Systemd <strong>no</strong> utiliza <code>/etc/fstab</code>. Archivos de configuración en <code>/lib/systemd/system</code>. Listar: <code>systemctl list-unit-files --type=tipo</code>.</p>
+
+                <h4>Upstart (Obsoleto)</h4>
+                <p>Scripts en <code>/etc/init/</code>. Comandos: <code>initctl list</code>, <code>start</code>, <code>status</code>, <code>stop</code>.</p>
+
+                <h4>Apagado y Reinicio</h4>
+                <p><code>shutdown [option] time [message]</code>.</p>
                 <ul>
-                    <li><strong>S##nombre</strong>: Start (Se ejecutan al entrar al runlevel con orden ##).</li>
-                    <li><strong>K##nombre</strong>: Kill (Se ejecutan al salir del runlevel para detener servicios).</li>
+                    <li>Opciones: <code>-h</code> (apagar), <code>-r</code> (reiniciar).</li>
+                    <li>Tiempo: <code>hh:mm</code>, <code>+m</code> (minutos), <code>now</code>/<code>+0</code>.</li>
+                    <li>Systemd: <code>poweroff</code>, <code>reboot</code>.</li>
+                    <li>Mensajes: <code>wall</code> (enviar a todos los usuarios).</li>
                 </ul>
-                <p>Comando para recargar <code>/etc/inittab</code> sin reiniciar: <code>telinit q</code>.</p>
+            </section>
 
-                <h4>Systemd (Targets)</h4>
-                <p>Systemd abstrae los runlevels en "targets" (objetivos). Son unidades que agrupan otras unidades.</p>
-                <pre><code>systemctl get-default               # Ver target actual
-systemctl set-default graphical.target # Establecer por defecto
-systemctl isolate multi-user.target    # Cambiar modo inmediatamente</code></pre>
-
-                <h4>Procedimientos de Recuperación (Rescue Mode)</h4>
-                <p>Si olvidas la contraseña de root o el sistema no arranca, puedes intervenir en GRUB:</p>
-                <ol style="margin-left: 20px;">
-                    <li>En el menú de GRUB, presiona <code>e</code> para editar.</li>
-                    <li>Busca la línea que empieza con <code>linux</code> o <code>linux16</code>.</li>
-                    <li>Añade <code>rd.break</code> o <code>init=/bin/bash</code> al final de la línea.</li>
-                    <li>Presiona <code>Ctrl+x</code> para arrancar.</li>
-                    <li>El sistema te dará una
+        </div>
+    </div>
+</div>
