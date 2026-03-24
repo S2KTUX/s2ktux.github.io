@@ -38,7 +38,7 @@ const coursesDB = {
             { id: 103, title: "Dominio 3: Tecnología y Servicios Cloud (34%)", file: "#" },
             { id: 104, title: "Dominio 4: Facturación, Precios y Soporte (12%)", file: "#" }
         ]
-    }
+    },
     "rhce": {
         title: "RHCE",
         chapters: [
