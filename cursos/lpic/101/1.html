@@ -1,0 +1,174 @@
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">LPIC-1 Examen 101</span>
+        <h1>Arquitectura del Sistema</h1>
+        <p>Diseño del sistema, configuración de hardware, gestión del arranque y niveles de ejecución.</p>
+        
+        <!-- Placeholder para video, actualiza el href si tienes uno -->
+        <a href="https://youtu.be/ejemplo" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - TEMA 101</strong>
+                <span>Arquitectura, Hardware y Arranque</span>
+            </div>
+        </a>
+    </header>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Contenido del Tema</h4>
+            <ul>
+                <li><a href="#intro">Introducción a la Arquitectura</a></li>
+                <li><a href="#hardware">101.1 Determinar y Configurar Hardware</a></li>
+                <li><a href="#boot">101.2 Arranque del Sistema</a></li>
+                <li><a href="#runlevels">101.3 Runlevels y Systemd</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            
+            <!-- SECCIÓN: INTRODUCCIÓN -->
+            <section id="intro" class="lesson-section">
+                <h3>Introducción a la Arquitectura del Sistema</h3>
+                <p>Este bloque del examen LPIC-1 se centra en la comprensión profunda de cómo Linux interactúa con el hardware físico y cómo se gestiona el ciclo de vida del sistema desde que se pulsa el botón de encendido hasta que el kernel está completamente operativo.</p>
+                <p>Aprenderás a inspeccionar dispositivos, gestionar módulos del kernel y entender las diferencias fundamentales entre sistemas de herencia (SysVinit) y modernos (Systemd).</p>
+            </section>
+
+            <!-- SECCIÓN: 101.1 HARDWARE -->
+            <section id="hardware" class="lesson-section">
+                <h3>101.1 Determinar y configurar los ajustes de hardware</h3>
+                <p>Para administrar un sistema, primero debemos conocer qué hay dentro. La interacción comienza en el firmware (BIOS/UEFI) y continúa en el sistema operativo mediante el kernel y sus módulos.</p>
+
+                <h4>Activación en Firmware (BIOS/UEFI)</h4>
+                <p>Antes de cargar Linux, podemos configurar periféricos integrados, proteger contra errores o ajustar DMA/IRQ desde la configuración de la placa base (teclas F2, Supr, Esc al inicio).</p>
+
+                <h4>Inspección de Dispositivos en Linux</h4>
+                <p>Linux identifica el hardware mediante el kernel. Podemos interrogar al sistema usando comandos específicos o leyendo el sistema de archivos virtual <code>/proc</code> y <code>/sys</code>.</p>
+                
+                <ul>
+                    <li><strong><code>lspci</code></strong>: Muestra dispositivos PCI. Usa <code>-v</code> para detalles y <code>-k</code> para ver el driver del kernel asociado.</li>
+                    <li><strong><code>lsusb</code></strong>: Muestra dispositivos USB. <code>-t</code> muestra un árbol jerárquico.</li>
+                    <li><strong><code>lsmod</code></strong>: Lista los módulos del kernel cargados actualmente. Esencial para saber si un driver está activo.</li>
+                    <li><strong><code>modprobe</code></strong>: Gestión inteligente de módulos.
+                        <ul>
+                            <li><code>modprobe -r modulo</code>: Descargar (eliminar) módulo.</li>
+                            <li><code>modprobe modulo</code>: Cargar módulo.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Sistemas de archivos clave (/proc, /sys, /dev)</h4>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>/proc</strong><br>
+                        <small>Info de procesos y sistema</small>
+                    </div>
+                    <div class="info-item">
+                        <strong>/sys</strong><br>
+                        <small>Info de hardware y kernel</small>
+                    </div>
+                    <div class="info-item">
+                        <strong>/dev</strong><br>
+                        <small>Archivos de dispositivos</small>
+                    </div>
+                </div>
+                <p>Archivos importantes en <code>/proc</code> incluyen <code>cpuinfo</code>, <code>interrupts</code>, <code>ioports</code> y <code>dma</code>. Los dispositivos extraíbles son gestionados dinámicamente por <strong>udev</strong> bajo <code>/dev</code>.</p>
+
+                <h4>Nomenclatura de Almacenamiento</h4>
+                <p>Los dispositivos de bloque tienen nombres predecibles según su controlador:</p>
+                <pre><code>/dev/hdX   # Canales IDE (Antiguo)
+/dev/sdX   # SCSI / SATA / USB (Estándar actual)
+/dev/nvme0nXpY # Discos NVMe (n=controlador, X=disco, Y=partición)
+/dev/fdX   # Disquetes</code></pre>
+            </section>
+
+            <!-- SECCIÓN: 101.2 ARRANQUE -->
+            <section id="boot" class="lesson-section">
+                <h3>101.2 Arranque del Sistema</h3>
+                <p>El proceso de arranque es una secuencia crítica donde el firmware entrega el control al bootloader, y este al kernel.</p>
+
+                <h4>BIOS vs UEFI</h4>
+                <table style="width:100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem;">
+                    <thead>
+                        <tr style="border-bottom: 2px solid var(--border-color); text-align: left;">
+                            <th style="padding: 10px;">BIOS (Legacy)</th>
+                            <th style="padding: 10px;">UEFI (Moderno)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">1. POST</td>
+                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">1. POST</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">2. Lee MBR (Primeros 512 bytes)</td>
+                            <td style="padding: 10px; border-bottom: 1px solid var(--border-color);">2. Lee partición EFI (ESP) y NVRAM</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;">3. Carga 1ª etapa GRUB -> Kernel</td>
+                            <td style="padding: 10px;">3. Ejecuta aplicación EFI (GRUB) -> Kernel</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>El Cargador de Arranque (GRUB 2)</h4>
+                <p>GRUB permite pasar parámetros al kernel en el momento del arranque. Los más comunes se editan en <code>/etc/default/grub</code> y se aplican con <code>update-grub</code> o <code>grub-mkconfig</code>.</p>
+                <ul>
+                    <li><code>init=/bin/bash</code> : Cambiar el init system (para recuperación).</li>
+                    <li><code>system.unit=multi-user.target</code> : Arrancar en un modo específico.</li>
+                    <li><code>quiet</code> / <code>splash</code> : Ocultar mensajes de texto del kernel.</li>
+                </ul>
+
+                <h4>Inicialización del Kernel</h4>
+                <p>Una vez cargado, el kernel descomprime el <strong>initramfs</strong> (sistema de archivos raíz temporal en RAM) para cargar módulos necesarios para montar el disco real (<code>/</code>). Luego ejecuta el primer proceso (PID 1), que hoy en día suele ser <strong>systemd</strong> (aunque puede ser SysVinit).</p>
+
+                <h4>Inspección del Arranque</h4>
+                <p>Para diagnosticar fallos de arranque, revisamos los registros del kernel:</p>
+                <pre><code>dmesg                 # Muestra el ring buffer del kernel
+dmesg | grep -i usb  # Filtrar por dispositivos USB
+journalctl -b -1     # Ver logs del arranque ANTERIOR (systemd)
+journalctl -p err    # Ver solo errores</code></pre>
+            </section>
+
+            <!-- SECCIÓN: 101.3 RUNLEVELS -->
+            <section id="runlevels" class="lesson-section">
+                <h3>101.3 Cambiar runlevels / targets y apagar el sistema</h3>
+                
+                <h4>Estándar SysVinit (Runlevels)</h4>
+                <p>En sistemas heredados, el estado del sistema se define por un número (runlevel) configurado en <code>/etc/inittab</code>.</p>
+                <div class="info-grid">
+                    <div class="info-item"><strong>0</strong><br>Apagado (Halt)</div>
+                    <div class="info-item"><strong>1</strong><br>Modo Usuario Único (Recovery)</div>
+                    <div class="info-item"><strong>2-4</strong><br>Multiusuario (sin gráficos usualmente)</div>
+                    <div class="info-item"><strong>5</strong><br>Multiusuario Gráfico</div>
+                    <div class="info-item"><strong>6</strong><br>Reinicio (Reboot)</div>
+                </div>
+                <p>Comandos clave: <code>telinit 5</code> (cambiar nivel), <code>runlevel</code> (ver actual/anterior).</p>
+
+                <h4>Systemd (Targets)</h4>
+                <p>Systemd reemplaza los números numéricos por "unidades objetivo" (targets). Es más potente y gestiona dependencias.</p>
+                <pre><code># Equivalencias
+poweroff.target   -> Runlevel 0
+rescue.target     -> Runlevel 1
+multi-user.target -> Runlevel 3
+graphical.target  -> Runlevel 5
+reboot.target     -> Runlevel 6</code></pre>
+                <p>Gestión básica con <code>systemctl</code>:</p>
+                <pre><code>systemctl isolate multi-user.target  # Cambiar modo ahora
+systemctl set-default graphical.target # Establecer modo por defecto
+systemctl get-default                 # Ver modo por defecto</code></pre>
+
+                <h4>Apagado y Reinicio Seguro</h4>
+                <p>Nunca desconectues la energía directamente. Usa comandos que signalen a los procesos que terminen:</p>
+                <ul>
+                    <li><code>shutdown -h now</code> : Apagar inmediatamente.</li>
+                    <li><code>shutdown -r +10</code> : Reiniciar en 10 minutos.</li>
+                    <li><code>systemctl poweroff</code> : Método systemd.</li>
+                    <li><code>systemctl reboot</code> : Método systemd.</li>
+                    <li><code>wall "Mantenimiento programado"</code> : Enviar mensaje a todos los usuarios logueados.</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+</div>
