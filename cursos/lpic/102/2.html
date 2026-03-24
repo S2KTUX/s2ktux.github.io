@@ -1,0 +1,254 @@
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">LPIC-1 Examen 102</span>
+        <h1>Instalación de Linux y gestión de paquetes</h1>
+        <p>Domina el diseño de particiones, gestores de arranque, librerías compartidas y gestión de paquetes.</p>
+        
+        <a href="https://youtu.be/ejemplo" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - TEMA 102</strong>
+                <span>Particionado, GRUB y Paquetería</span>
+            </div>
+        </a>
+    </header>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
+            <ul>
+                <li><a href="#102.1">102.1 Esquema de particionado</a></li>
+                <li><a href="#102.2">102.2 Gestor de arranque</a></li>
+                <li><a href="#102.3">102.3 Librerías compartidas</a></li>
+                <li><a href="#102.4">102.4 Paquetes Debian</a></li>
+                <li><a href="#102.5">102.5 Paquetes RPM y YUM</a></li>
+                <li><a href="#102.6">102.6 Linux virtualizado</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            <section id="102.1" class="lesson-section">
+                <h3>102.1 Diseño del esquema de particionado</h3>
+                
+                <h4>Puntos de montaje</h4>
+                <p>Para acceder a un sistema de archivos, este debe estar montado en un directorio. Históricamente se usaba <code>/mnt</code>, hoy <code>/media</code> es más común para montajes automáticos (ej. USB en <code>/media/USER/ETIQUETA</code>). Para montajes manuales, <code>/mnt</code> sigue siendo la práctica estándar.</p>
+
+                <h4>Manteniendo las cosas separadas</h4>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>/boot</strong><br>
+                        <small>Arranque</small><br>
+                        Contiene kernel y GRUB. Recomendado separarlo. ~300MB.
+                    </div>
+                    <div class="info-item">
+                        <strong>/home</strong><br>
+                        <small>Usuarios</small><br>
+                        Facilita reinstalaciones sin perder datos de usuario.
+                    </div>
+                    <div class="info-item">
+                        <strong>/var</strong><br>
+                        <small>Logs y Caché</small><br>
+                        Evita que un bucle de logs llene el disco raíz y bloquee el sistema.
+                    </div>
+                </div>
+
+                <h4>Partición de intercambio (SWAP)</h4>
+                <p>La partición <strong>SWAP</strong> intercambia páginas de memoria RAM a disco. No se monta como un sistema de archivos normal. Se configura con <code>mkswap</code> y se activa con <code>swapon</code>.</p>
+                <ul>
+                    <li><strong>Tamaño:</strong> Igual a RAM si ≤ 8GB; mínimo 4GB si > 8GB.</li>
+                    <li>Linux también admite archivos de intercambio.</li>
+                </ul>
+
+                <h4>LVM (Logical Volume Manager)</h4>
+                <p>Permite una gestión flexible del almacenamiento:</p>
+                <ul>
+                    <li><strong>PV (Physical Volume):</strong> Partición o disco físico.</li>
+                    <li><strong>VG (Volume Group):</strong> Agrupación de PVs.</li>
+                    <li><strong>LV (Logical Volume):</strong> Particiones lógicas dentro de un VG donde se crean los sistemas de archivos.</li>
+                    <li><strong>Extents:</strong> Unidad mínima de almacenamiento en un VG.</li>
+                </ul>
+            </section>
+
+            <section id="102.2" class="lesson-section">
+                <h3>102.2 Instalar un gestor de arranque</h3>
+
+                <h4>GRUB Legacy vs. GRUB 2</h4>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">Característica</th>
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">GRUB Legacy</th>
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">GRUB 2</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--card-bg);">
+                        <tr>
+                            <td style="padding: 12px 15px; border-bottom: 1px solid var(--border-color);">Configuración</td>
+                            <td style="padding: 12px 15px; border-bottom: 1px solid var(--border-color);"><code>/boot/grub/menu.lst</code></td>
+                            <td style="padding: 12px 15px; border-bottom: 1px solid var(--border-color);"><code>/etc/default/grub</code> (y scripts en <code>/etc/grub.d</code>)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px 15px;">Estado</td>
+                            <td style="padding: 12px 15px;">Obsoleto (finalizado en 2005)</td>
+                            <td style="padding: 12px 15px;">Estándar actual</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h4>Ubicación del cargador</h4>
+                <p>En sistemas <strong>MBR</strong>, el código de arranque reside en los primeros 512 bytes y carga el gestor secundario. En <strong>GPT</strong> (soluciona límites de 2TB y 4 particiones), en BIOS se usa una partición de arranque especial; en UEFI, GRUB se carga desde la partición EFI (ESP) usando archivos <code>.efi</code>.</p>
+
+                <h4>La partición /boot</h4>
+                <p>Contiene los archivos esenciales para el arranque (Kernel, initrd, configuración GRUB). Archivos clave:</p>
+                <ul>
+                    <li><code>vmlinuz-version</code>: Núcleo comprimido.</li>
+                    <li><code>initrd.img-version</code>: Disco RAM inicial.</li>
+                    <li><code>system.map-version</code>: Tabla de símbolos.</li>
+                    <li><code>/boot/grub/</code>: Archivos del gestor (ej. <code>grub.cfg</code>, <code>lvm.mod</code>).</li>
+                </ul>
+
+                <h4>Configuración de GRUB 2</h4>
+                <p>No editar <code>/boot/grub/grub.cfg</code> directamente. Editar <code>/etc/default/grub</code> y ejecutar <code>update-grub</code> o <code>grub-mkconfig</code>.</p>
+                <ul>
+                    <li><code>GRUB_DEFAULT</code>: Entrada por defecto.</li>
+                    <li><code>GRUB_TIMEOUT</code>: Tiempo de espera.</li>
+                    <li><code>GRUB_CMDLINE_LINUX</code>: Parámetros del kernel (root, ro, etc).</li>
+                </ul>
+                <p><strong>Rescate:</strong> Si el sistema no arranca, usar un Live-CD, montar la partición en <code>/mnt</code> y ejecutar <code>grub-install --boot-directory=/mnt/boot /dev/sda</code>.</p>
+            </section>
+
+            <section id="102.3" class="lesson-section">
+                <h3>102.3 Gestión de librerías compartidas</h3>
+                
+                <h4>Conceptos</h4>
+                <ul>
+                    <li><strong>Estáticas:</strong> Compiladas dentro del programa (sin dependencias externas, tamaño mayor).</li>
+                    <li><strong>Dinámicas (.so):</strong> Compartidas entre programas (menos tamaño, dependencias externas).</li>
+                </ul>
+
+                <h4>Nomenclatura y Rutas</h4>
+                <p>Formato: <code>libnombre.so.version</code>.</p>
+                <p>Ubicaciones estándar: <code>/lib</code>, <code>/lib64</code>, <code>/usr/lib</code>, <code>/usr/local/lib</code>.</p>
+
+                <h4>Configuración y Gestión</h4>
+                <ul>
+                    <li><strong><code>ld.so.conf</code></strong> y <code>/etc/ld.so.conf.d/</code>: Definen rutas de búsqueda.</li>
+                    <li><strong><code>ldconfig</code></strong>: Actualiza la caché de enlaces a librerías tras modificar la configuración.</li>
+                    <li><strong><code>LD_LIBRARY_PATH</code></strong>: Variable de entorno para añadir rutas temporales.</li>
+                    <li><strong><code>ldd programa</code></strong>: Muestra las librerías compartidas de las que depende un ejecutable.</li>
+                </ul>
+            </section>
+
+            <section id="102.4" class="lesson-section">
+                <h3>102.4 Gestión de paquetes Debian</h3>
+                
+                <h4>dpkg (Bajo nivel)</h4>
+                <p>Gestiona archivos <code>.deb</code> individualmente. No resuelve dependencias automáticamente.</p>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
+                            <th style="padding: 10px; color: var(--accent);">Acción</th>
+                            <th style="padding: 10px; color: var(--accent);">Comando</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--card-bg);">
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Instalar</td><td style="padding: 10px;"><code>dpkg -i paquete.deb</code></td></tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Eliminar</td><td style="padding: 10px;"><code>dpkg -r paquete</code> (config persiste)</td></tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Purgar</td><td style="padding: 10px;"><code>dpkg --purge paquete</code></td></tr>
+                        <tr><td style="padding: 10px;">Listar</td><td style="padding: 10px;"><code>dpkg -l</code></td></tr>
+                    </tbody>
+                </table>
+
+                <h4>apt (Alto nivel)</h4>
+                <p>Gestiona repositorios y resuelve dependencias.</p>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
+                            <th style="padding: 10px; color: var(--accent);">Acción</th>
+                            <th style="padding: 10px; color: var(--accent);">Comando</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--card-bg);">
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Actualizar índice</td><td style="padding: 10px;"><code>apt update</code></td></tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Actualizar sistema</td><td style="padding: 10px;"><code>apt upgrade</code></td></tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Instalar</td><td style="padding: 10px;"><code>apt install paquete</code></td></tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Eliminar</td><td style="padding: 10px;"><code>apt remove paquete</code></td></tr>
+                        <tr><td style="padding: 10px;">Limpiar caché</td><td style="padding: 10px;"><code>apt autoclean</code></td></tr>
+                    </tbody>
+                </table>
+                <p>Repositorios en <code>/etc/apt/sources.list</code> y <code>/etc/apt/sources.list.d/</code>.</p>
+            </section>
+
+            <section id="102.5" class="lesson-section">
+                <h3>102.5 Gestión de paquetes RPM y YUM</h3>
+                
+                <h4>RPM (Bajo nivel)</h4>
+                <p>Usado en Red Hat, Fedora, SUSE. No resuelve dependencias complejas.</p>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
+                            <th style="padding: 10px; color: var(--accent);">Acción</th>
+                            <th style="padding: 10px; color: var(--accent);">Comando</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--card-bg);">
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Instalar/Actualizar</td><td style="padding: 10px;"><code>rpm -Uvh paquete.rpm</code></td></tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Eliminar</td><td style="padding: 10px;"><code>rpm -e paquete</code></td></tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Listar instalados</td><td style="padding: 10px;"><code>rpm -qa</code></td></tr>
+                        <tr><td style="padding: 10px;">Info paquete</td><td style="padding: 10px;"><code>rpm -qi paquete</code></td></tr>
+                    </tbody>
+                </table>
+
+                <h4>YUM / DNF (Alto nivel)</h4>
+                <p><strong>YUM</strong> (Yellowdog Updater Modified) y su sucesor <strong>DNF</strong> manejan repositorios y dependencias.</p>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
+                            <th style="padding: 10px; color: var(--accent);">Acción</th>
+                            <th style="padding: 10px; color: var(--accent);">Comando</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--card-bg);">
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Instalar</td><td style="padding: 10px;"><code>yum/dnf install paquete</code></td></tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Actualizar sistema</td><td style="padding: 10px;"><code>yum/dnf update</code></td></tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px;">Eliminar</td><td style="padding: 10px;"><code>yum/dnf remove paquete</code></td></tr>
+                        <tr><td style="padding: 10px;">Buscar</td><td style="padding: 10px;"><code>yum/dnf search paquete</code></td></tr>
+                    </tbody>
+                </table>
+
+                <h4>Zypper (SUSE)</h4>
+                <p>Herramienta equivalente para openSUSE/SLES. Comandos: <code>zypper install</code>, <code>zypper update</code>, <code>zypper remove</code>.</p>
+                <p>Repositorios en <code>/etc/yum.repos.d/</code> (YUM/DNF) o gestionados con <code>zypper addrepo</code>.</p>
+            </section>
+
+            <section id="102.6" class="lesson-section">
+                <h3>102.6 Linux como sistema virtualizado</h3>
+                
+                <h4>Conceptos de Virtualización</h4>
+                <p>Permite ejecutar múltiples sistemas operativos (máquinas virtuales o "guests") sobre un único hardware físico ("host") mediante un hipervisor.</p>
+                <ul>
+                    <li><strong>Hipervisores Tipo 1 (Bare Metal):</strong> Corren directamente sobre el hardware (ej. Xen).</li>
+                    <li><strong>Hipervisores Tipo 2 (Hospedados):</strong> Corren como una aplicación sobre un SO anfitrión (ej. KVM - integrado en kernel Linux, VirtualBox).</li>
+                </ul>
+
+                <h4>Tipos de Máquinas Virtuales</h4>
+                <ul>
+                    <li><strong>Totalmente virtualizadas:</strong> El sistema operativo invitado ignora que es virtual. Requiere soporte de hardware (Intel VT-x / AMD-V).</li>
+                    <li><strong>Paravirtualizadas:</strong> El SO invitado sabe que es virtual y usa controladores específicos para mejor rendimiento.</li>
+                    <li><strong>Híbridas:</strong> Combinación de ambos (hardware virtualizado con controladores paravirtualizados).</li>
+                </ul>
+
+                <h4>Plantillas y Nube</h4>
+                <p>Las <strong>plantillas</strong> son imágenes preconfiguradas para despliegues rápidos. Es crítico verificar el <strong>D-Bus Machine ID</strong> único tras clonar.</p>
+                <p>En entornos de <strong>Nube (IaaS)</strong> como AWS o Azure, gestionamos instancias, almacenamiento y redes. El acceso es vía SSH y la configuración inicial se automatiza a menudo con <strong>cloud-init</strong>.</p>
+            </section>
+
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
+                <a href="/cursos/lpic/102repaso-tema-102.html" target="_blank" class="next-btn" style="display: inline-block;">
+                    📝 Ver Resumen del Tema 
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
