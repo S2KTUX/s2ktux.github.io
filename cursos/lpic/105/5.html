@@ -1,0 +1,232 @@
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">LPIC-1 Examen 105</span>
+        <h1>Shells y Scripts</h1>
+        <p>Domina el entorno de shell, personaliza tu experiencia y aprende a escribir scripts para automatizar tareas en Linux.</p>
+    </header>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
+            <ul>
+                <li><a href="#105.1">105.1 Personalizar y usar el entorno de shell</a></li>
+                <li><a href="#105.2">105.2 Personalizar y escribir scripts sencillos</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            
+            <section id="105.1" class="lesson-section">
+                <h3>105.1 Personalizar y usar el entorno de shell</h3>
+                <p>La shell es una interfaz poderosa entre el usuario y el kernel en Linux. Personalizarla te ayuda a trabajar de forma más eficiente.</p>
+                
+                <h4>Archivos de configuración de la shell</h4>
+                <p>Los archivos de configuración globales están en <code>/etc</code>, mientras que los locales están en el directorio personal del usuario.</p>
+                <ul>
+                    <li><strong>Configuración global:</strong>
+                        <ul>
+                            <li><strong><code>/etc/profile</code>:</strong> Define variables globales como <code>PATH</code> o <code>PS1</code> para sesiones de login.</li>
+                            <li><strong><code>/etc/profile.d/</code>:</strong> Directorio con scripts ejecutados por <code>/etc/profile</code>.</li>
+                            <li><strong><code>/etc/bash.bashrc</code>:</strong> Configuración para shells interactivos no-login. Establece variables, verifica el tamaño de la ventana, etc.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Configuración local:</strong>
+                        <ul>
+                            <li><strong><code>~/.bash_profile</code>:</strong> Configura el entorno del usuario al iniciar una sesión de login.</li>
+                            <li><strong><code>~/.bash_login</code>:</strong> Se ejecuta si no existe <code>.bash_profile</code>.</li>
+                            <li><strong><code>~/.profile</code>:</strong> Se usa si no hay <code>.bash_profile</code> ni <code>.bash_login</code>. Verifica si el shell es bash y carga <code>.bashrc</code>.</li>
+                            <li><strong><code>~/.bashrc</code>:</strong> Similar a <code>/etc/bash.bashrc</code>. Almacena alias y funciones específicas del usuario.</li>
+                            <li><strong><code>~/.bash_logout</code>:</strong> Ejecuta tareas de limpieza al cerrar una sesión de login.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ejecutar archivos:</strong>
+                        <ul>
+                            <li><strong><code>.</code> (punto):</strong> Ejecuta un archivo en el entorno actual. Ejemplo: <code>. ~/.bashrc</code>.</li>
+                            <li><strong><code>source</code>:</strong> Similar al operador <code>.</code>. Ejemplo: <code>source ~/.bashrc</code>.</li>
+                        </ul>
+                    </li>
+                    <li><strong>SKEL:</strong> Variable definida en <code>/etc/adduser.conf</code>. Apunta a un directorio plantilla para nuevos usuarios.</li>
+                </ul>
+
+                <h4>Variables</h4>
+                <p>Las variables son nombres que contienen valores. Pueden incluir letras, números y guiones, pero no empezar por números ni contener espacios.</p>
+                <ul>
+                    <li><strong>Definir y mostrar:</strong>
+                        <ul>
+                            <li>Ejemplo: <code>distro=zorinos</code>, verifica con <code>echo $distro</code>.</li>
+                            <li>Con espacios: <code>distro="zorin 12.4"</code>.</li>
+                            <li>Comillas simples (literales): <code>animal='My $lizard'</code> → <code>My $lizard</code>.</li>
+                            <li>Comillas dobles (sustitución): <code>animal="My $lizard"</code> → <code>My uromastyx</code> (si <code>lizard=uromastyx</code>).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Tipos de variables:</strong>
+                        <ul>
+                            <li><strong>Locales:</strong> Solo en el shell actual, en minúsculas.</li>
+                            <li><strong>Globales (entorno):</strong> Persisten en la sesión, en mayúsculas.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Comandos relacionados:</strong>
+                        <ul>
+                            <li><strong><code>set</code>:</strong> Muestra todas las variables y funciones asignadas (locales y de entorno).</li>
+                            <li><strong><code>unset</code>:</strong> Elimina una variable. Ejemplo: <code>unset distro</code>.</li>
+                            <li><strong><code>export</code>:</strong> Convierte una variable local en global, haciéndola visible en subshells. Ejemplo: <code>export VARIABLE</code>.</li>
+                            <li><strong><code>env</code> y <code>printenv</code>:</strong> Listan exclusivamente las variables de entorno. <code>env</code> también puede modificar el entorno al ejecutar un programa.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Variables especiales:</strong>
+                        <ul>
+                            <li><strong><code>$$</code>:</strong> Contiene el PID del shell actual.</li>
+                            <li><strong><code>$?</code>:</strong> Almacena el código de salida del último comando ejecutado.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Variables comunes:</strong>
+                        <ul>
+                            <li><strong><code>DISPLAY</code>:</strong> Hostname y pantalla (echo $DISPLAY : :0).</li>
+                            <li><strong><code>HOME</code>:</strong> Directorio personal (echo $HOME : /home/sysriser).</li>
+                            <li><strong><code>HOSTNAME</code>:</strong> Nombre del equipo (echo $HOSTNAME : debian).</li>
+                            <li><strong><code>LANG</code>:</strong> Localización (echo $LANG : es_ES.UTF-8).</li>
+                            <li><strong><code>LD_LIBRARY_PATH</code>:</strong> Directorios para bibliotecas (echo $LD_LIBRARY_PATH : /usr/local/lib).</li>
+                            <li><strong><code>MAIL</code>:</strong> Archivo de correo (echo $MAIL : /var/mail/sysriser).</li>
+                            <li><strong><code>PATH</code>:</strong> Directorios para ejecutables (echo $PATH : /usr/local/bin:/usr/bin:/bin).</li>
+                            <li><strong><code>PS1</code>:</strong> Define el prompt de bash.</li>
+                            <li><strong><code>SHELL</code>:</strong> Ruta del shell actual (echo $SHELL : /bin/bash).</li>
+                            <li><strong><code>USER</code>:</strong> Nombre del usuario (echo $USER : sysriser).</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Alias y funciones</h4>
+                <p>Los alias y funciones simplifican comandos repetitivos en el shell.</p>
+                <ul>
+                    <li><strong>Alias:</strong> Sustituto de un comando. Usamos comillas si contiene parámetros o espacios.<br>
+                        - Ejemplo: <code>alias ll="ls -la"</code>.<br>
+                        - Dinámico (comillas simples): <code>alias where?='echo $PWD'</code> (cambia con el directorio).<br>
+                        - Estático (comillas dobles): <code>alias where?="echo $PWD"</code> (valor fijo).<br>
+                        - Listar todos: <code>alias</code> sin parámetros.<br>
+                        - Eliminar: <code>unalias nombre</code>.</li>
+                    <li><strong>Funciones:</strong> Más flexibles que los alias.
+                        <pre>
+# 1. Mediante la palabra function
+function miFuncion() {
+    echo "Hola $1"
+}
+# 2. Mediante los símbolos ()
+miFuncion() {
+    echo "Hola $1"
+}
+                        </pre>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="105.2" class="lesson-section">
+                <h3>105.2 Personalizar y escribir scripts sencillos</h3>
+                <p>Un script es una lista de comandos que un programa, como el intérprete de comandos bash, ejecuta en un orden específico. Personalizarlos te permite automatizar tareas de manera eficiente en Linux.</p>
+                
+                <h4>Estructura y ejecución del script</h4>
+                <p>La primera línea, conocida como shebang (ej. <code>#!/bin/bash</code>), indica qué intérprete debe usarse. El archivo debe ser ejecutable con <code>chmod +x nombre_script.sh</code>.</p>
+                
+                <ul>
+                    <li><strong>Uso de <code>echo</code>:</strong> Muestra texto. Por defecto añade salto de línea, con <code>-n</code> lo evita.<br>
+                        - Ejemplo: <code>echo -n "Hola, "; echo "mundo"</code> → <code>Hola, mundo</code>.</li>
+                    <li><strong>Múltiples comandos en una línea:</strong> Separador <code>;</code>.<br>
+                        - Ejemplo: <code>echo "La hora es: "; date +%H:%M</code>.</li>
+                    <li><strong>Comando <code>read</code>:</strong> Recoge datos ingresados por el usuario en una variable.<br>
+                        - Ejemplo: <code>read nombre; echo "Hola $nombre"</code>.</li>
+                    <li><strong>Comando <code>seq</code>:</strong> Genera secuencias numéricas.<br>
+                        - Básico: <code>seq 10</code> → 1 al 10.<br>
+                        - Con incremento: <code>seq 1 5 20</code> → 1, 6, 11, 16.</li>
+                </ul>
+
+                <h4>Variables especiales en scripts</h4>
+                <ul>
+                    <li><strong><code>$*</code> y <code>$@</code>:</strong> Todos los argumentos pasados al script.</li>
+                    <li><strong><code>$#</code>:</strong> Cantidad total de argumentos pasados.</li>
+                    <li><strong><code>$0</code>:</strong> Nombre del script en ejecución.</li>
+                    <li><strong><code>$$</code>:</strong> ID del proceso actual del script.</li>
+                    <li><strong><code>$?</code>:</strong> Código de salida del último comando (0 éxito).</li>
+                </ul>
+
+                <h4>Expresiones aritméticas</h4>
+                <ul>
+                    <li><strong><code>expr</code>:</strong> <code>SUM=`expr 5 + 3`</code>.</li>
+                    <li><strong><code>$(( ))</code>:</strong> <code>result=$((5 * 3))</code>.</li>
+                    <li>Comparadores: <code>-eq</code> (igual), <code>-ne</code> (no igual), <code>-lt</code> (menor), <code>-gt</code> (mayor).</li>
+                </ul>
+
+                <h4>Ejecución condicional</h4>
+                <p>Basada en el código de estado (0 éxito, != 0 error).</p>
+                <ul>
+                    <li><strong>Operadores lógicos:</strong>
+                        <ul>
+                            <li><code>&&</code>: Ejecuta derecha si izquierda es éxito.<br>
+                                <code>[ -f archivo ] && echo "Existe"</code>.</li>
+                            <li><code>||</code>: Ejecuta derecha si izquierda falla.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Estructura <code>if</code>:</strong>
+                        <pre>
+if [ -f "/etc/passwd" ]; then
+    echo "El archivo existe"
+fi
+                        </pre>
+                    </li>
+                    <li><strong>Estructura <code>case</code>:</strong>
+                        <pre>
+case $1 in
+    start) echo "Iniciando..." ;;
+    stop) echo "Deteniendo..." ;;
+    *) echo "Uso: $0 {start|stop}" ;;
+esac
+                        </pre>
+                    </li>
+                </ul>
+
+                <h4>Pruebas ampliadas</h4>
+                <ul>
+                    <li><strong>Texto:</strong> <code>=</code> / <code>==</code> (igual), <code>!=</code> (desigual), <code>-z</code> (vacío).</li>
+                    <li><strong>Número:</strong> <code>-eq</code>, <code>-ne</code>, <code>-lt</code>, <code>-gt</code>, <code>-le</code>, <code>-ge</code>.</li>
+                    <li><strong>Archivos:</strong> <code>-f</code> (archivo regular), <code>-d</code> (directorio).</li>
+                </ul>
+
+                <h4>Construcciones de bucle</h4>
+                <ul>
+                    <li><strong><code>for</code>:</strong>
+                        <pre>
+for i in $(seq 1 5); do
+    echo "Iteración $i"
+done
+                        </pre>
+                    </li>
+                    <li><strong><code>while</code>:</strong>
+                        <pre>
+counter=1
+while [ $counter -le 5 ]; do
+    echo "Contador: $counter"
+    counter=$((counter+1))
+done
+                        </pre>
+                    </li>
+                    <li><strong><code>until</code>:</strong>
+                        <pre>
+counter=1
+until [ $counter -gt 5 ]; do
+    echo "Contador: $counter"
+    counter=$((counter+1))
+done
+                        </pre>
+                    </li>
+                </ul>
+                <p>Captura de salida: <code>fecha=$(date)</code> almacena la salida en la variable.</p>
+            </section>
+
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Has terminado la teoría? Repasa los puntos clave antes del examen.</p>
+                <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/105/repaso-tema-105.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
+                    📝 Ver Resumen del Tema 105
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
