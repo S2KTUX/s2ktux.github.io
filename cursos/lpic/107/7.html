@@ -1,0 +1,184 @@
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">LPIC-1 Examen 107</span>
+        <h1>Tareas administrativas</h1>
+        <p>Domina la gestión de usuarios, la automatización de tareas con cron/systemd y la configuración de localización en Linux.</p>
+    </header>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
+            <ul>
+                <li><a href="#107.1">107.1 Administrar cuentas de usuario y grupo</a></li>
+                <li><a href="#107.2">107.2 Automatizar tareas administrativas</a></li>
+                <li><a href="#107.3">107.3 Localización e internacionalización</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            
+            <section id="107.1" class="lesson-section">
+                <h3>107.1 Administrar cuentas de usuario y grupo</h3>
+                
+                <h4>Gestión de usuarios y grupos</h4>
+                <p>Comandos principales para administrar usuarios:</p>
+                <ul>
+                    <li><strong>useradd</strong>: Crea una nueva cuenta. Opciones clave:
+                        <ul>
+                            <li><code>-d</code>: Directorio de inicio.</li>
+                            <li><code>-m</code>: Crea el directorio de inicio si no existe.</li>
+                            <li><code>-G</code>: Añade a grupos secundarios.</li>
+                            <li><code>-s</code>: Define el shell (ej. <code>/bin/bash</code>).</li>
+                        </ul>
+                    </li>
+                    <li><strong>usermod</strong>: Modifica una cuenta existente. Opciones clave:
+                        <ul>
+                            <li><code>-d</code>: Cambia directorio de inicio.</li>
+                            <li><code>-e</code>: Fecha de expiración.</li>
+                            <li><code>-L</code>: Bloquea la cuenta.</li>
+                            <li><code>-U</code>: Desbloquea la cuenta.</li>
+                        </ul>
+                    </li>
+                    <li><strong>userdel</strong>: Elimina un usuario. <code>-r</code> elimina también el directorio de inicio.</li>
+                </ul>
+                <p>Para grupos:</p>
+                <ul>
+                    <li><strong>groupadd</strong>: Crea un grupo. <code>-g</code> asigna un GID específico.</li>
+                    <li><strong>groupmod</strong>: Modifica un grupo (nombre o GID).</li>
+                    <li><strong>groupdel</strong>: Elimina un grupo (no si es grupo primario de un usuario).</li>
+                </ul>
+
+                <h4>Directorio skel y archivo login.defs</h4>
+                <ul>
+                    <li><strong>/etc/skel</strong>: Contiene archivos copiados al directorio de inicio de nuevos usuarios (<code>useradd -m</code>). Estandariza configuraciones iniciales.</li>
+                    <li><strong>/etc/login.defs</strong>: Define parámetros para creación de usuarios/grupos.
+                        <ul>
+                            <li><code>CREATE_HOME</code>: Habilita creación de home por defecto.</li>
+                            <li><code>MAIL_DIR</code>: Directorio de cola de correo.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Comandos passwd y chage</h4>
+                <p><strong>passwd</strong>: Cambia contraseña. Root puede cambiar cualquier contraseña; usuarios regulares solo la propia. Opciones: <code>-d</code> (elimina), <code>-e</code> (fuerza cambio al inicio), <code>-l</code> (bloquea), <code>-S</code> (estado), <code>-u</code> (desbloquea).</p>
+                <p><strong>chage</strong>: Gestiona caducidad de contraseñas. Opciones: <code>-d</code> (último cambio), <code>-l</code> (lista info).</p>
+
+                <h4>Archivos passwd, group, shadow y gshadow</h4>
+                <p>Archivos en <code>/etc/</code>:</p>
+                <ul>
+                    <li><strong>/etc/passwd</strong>: Legible por todos. 7 campos <code>:</code> separados (nombre, passwd(x), UID, GID, descripción, home, shell). Ej: <code>sysriser:x:1001:1001:Usuario Sysriser:/home/sysriser:/bin/bash</code>.</li>
+                    <li><strong>/etc/group</strong>: Legible por todos. 4 campos (nombre, passwd(x), GID, miembros). Ej: <code>developers:x:1001:sysriser,user2</code>.</li>
+                    <li><strong>/etc/shadow</strong>: Solo legible por root. 9 campos, incluye contraseña cifrada. Ej: <code>sysriser:$6$...:18659:0:99999:7:::</code>.</li>
+                    <li><strong>/etc/gshadow</strong>: Solo legible por root. 4 campos, incluye contraseña cifrada de grupos.</li>
+                </ul>
+
+                <h4>Comando getent</h4>
+                <p>Consulta bases de datos del sistema (usuarios, grupos). Ejemplo: <code>getent passwd sysriser</code> muestra la línea de <code>/etc/passwd</code> para ese usuario.</p>
+            </section>
+
+            <section id="107.2" class="lesson-section">
+                <h3>107.2 Automatizar tareas administrativas</h3>
+                
+                <h4>Cron</h4>
+                <p><strong>Cron</strong> ejecuta tareas programadas (cron jobs) revisadas cada minuto.</p>
+                <ul>
+                    <li><strong>Crontabs de usuario</strong>: En <code>/var/spool/cron/</code> (o <code>/var/spool/cron/crontabs/</code>). 6 campos: minuto (0-59), hora (0-23), día mes (1-31), mes (1-12), día semana (0-7), comando.
+                        <ul>
+                            <li>Valores: <code>*</code> (cualquier), <code>,</code> (lista), <code>-</code> (rango), <code>/</code> (intervalos).</li>
+                        </ul>
+                    </li>
+                    <li>Ejemplo diario a las 2:00 AM: <code>0 2 * * * /home/sysriser/backup.sh</code>.</li>
+                    <li>Editar: <code>crontab -e</code>. Ver: <code>crontab -l</code>.</li>
+                    <li><strong>Crontabs de sistema</strong>: En <code>/etc/crontab</code> o <code>/etc/cron.d/</code>. Tienen un campo extra para el usuario.
+                        <ul>
+                            <li>Ejemplo: <code>0 3 * * 1 root /usr/sbin/log-cleanup.sh</code> (Lunes 3AM como root).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Restricciones</strong>: <code>/etc/cron.allow</code> (solo listados pueden usar cron) y <code>/etc/cron.deny</code> (listados prohibidos).</li>
+                </ul>
+
+                <h4>Systemd timers</h4>
+                <p>Alternativa a cron, archivos <code>.timer</code>.</p>
+                <p>Ejemplo (<code>backup.timer</code> para primer lunes del mes a las 5:30 AM):</p>
+                <pre>
+[Unit]
+Description=Run backup service
+[Timer]
+OnCalendar=Mon *-*-1..7 05:30:00
+Persistent=true
+[Install]
+WantedBy=timers.target
+                </pre>
+                <ul>
+                    <li>Activar: <code>sudo systemctl enable backup.timer</code>, <code>sudo systemctl start backup.timer</code>.</li>
+                    <li><code>OnCalendar</code>: <code>DíaSemana Año-Mes-Día Hora:Minuto:Segundo</code>.</li>
+                    <li>Ejemplo diario a medianoche: <code>OnCalendar=*-*-* 00:00:00</code>.</li>
+                </ul>
+
+                <h4>at</h4>
+                <p>Programa tareas de ejecución única.</p>
+                <ul>
+                    <li>Opciones: <code>-c</code> (muestra comandos), <code>-l</code> (lista, aka <code>atq</code>), <code>-m</code> (envía correo al finalizar).</li>
+                    <li>Ejemplo: <code>at now +5 minutes</code> → <code>date</code> → <code>Ctrl+D</code>.</li>
+                    <li>Eliminar (ID 3): <code>atrm 3</code>.</li>
+                    <li><strong>Restricciones</strong>: <code>/etc/at.allow</code> y <code>/etc/at.deny</code>.</li>
+                </ul>
+
+                <h4>systemd-run</h4>
+                <p>Programa tareas únicas con unidades transitorias.</p>
+                <ul>
+                    <li>Ejemplo fecha específica: <code>sudo systemd-run --on-calendar="2019-10-06 11:30" date</code>.</li>
+                    <li>Ejemplo relativo: <code>sudo systemd-run --on-active=600 /home/sysriser/script.sh</code>.</li>
+                </ul>
+            </section>
+
+            <section id="107.3" class="lesson-section">
+                <h3>107.3 Localización e internacionalización</h3>
+                
+                <h4>Zonas horarias</h4>
+                <p>Zonas con misma hora relativa a UTC. Se nombran por ciudades (ej. `America/Sao_Paulo`) o desfases (`Etc/GMT+3`).</p>
+                <ul>
+                    <li><strong>Configuración:</strong>
+                        <ul>
+                            <li><code>/etc/timezone</code>: Define la zona.</li>
+                            <li><code>/etc/localtime</code>: Enlace simbólico a <code>/usr/share/zoneinfo/</code>. Ej: <code>sudo ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime</code>.</li>
+                            <li><code>TZ</code>: Variable para sesión. Ej: <code>export TZ="Africa/Cairo"; date</code>.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Comandos:</strong> <code>date</code> (muestra/ajusta hora), <code>timedatectl</code> (configura), <code>tzselect</code> (selección interactiva).</li>
+                </ul>
+
+                <h4>Localización</h4>
+                <p>Configura idioma y formatos (moneda, números) mediante variables de entorno.</p>
+                <ul>
+                    <li><strong>Variables clave:</strong>
+                        <ul>
+                            <li><code>LANG</code>: Idioma y codificación (ej. <code>es_ES.UTF-8</code>).</li>
+                            <li><code>LC_MESSAGES</code>: Idioma de mensajes.</li>
+                            <li><code>LC_TIME</code>: Formato hora/fecha.</li>
+                            <li><code>LC_ALL</code>: Anula todas las demás variables.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Configuración:</strong>
+                        <ul>
+                            <li><code>/etc/locale.conf</code>: Localización del sistema.</li>
+                            <li><code>locale</code>: Muestra configuraciones actuales.</li>
+                            <li><code>localectl</code>: Configura locale (ej. <code>localectl set-locale LANG=es_US.UTF-8</code>).</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Conversión de codificación</h4>
+                <p><strong>iconv</strong>: Convierte codificaciones de caracteres. Listar codificaciones: <code>iconv -l</code>.</p>
+            </section>
+
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Has terminado la teoría? Repasa los puntos clave antes del examen.</p>
+                <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/107/repaso-tema-107.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
+                    📝 Ver Resumen del Tema 107
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
