@@ -1,156 +1,270 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Repaso rápido del Tema 104 (LPIC-1) en SysRiser. Resumen de particiones, sistemas de archivos, permisos, enlaces y búsqueda de archivos.">
-    <meta name="keywords" content="LPIC-1, particiones, sistemas de archivos, permisos, enlaces, búsqueda, Linux, repaso">
-    <meta name="author" content="SysRiser">
-    <title>SysRiser - Repaso Rápido Tema 104 (LPIC-1)</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
-    <div class="gradient-bg"></div>
-    <header>
-        <div class="header-left">
-            <a href="/index.html" class="header-logo">SysRiser</a>
-        </div>
-        <nav>
-            <a href="/index.html">Inicio</a>
-            <a href="/cursos/cursos.html">Cursos</a>
-            <a href="/proyectos/proyectos.html">Proyectos</a>
-        </nav>
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge" style="background: var(--accent); color: #000;">RESUMEN EXAMEN 103</span>
+        <h1>Repaso Rápido: Comandos GNU y Unix</h1>
+        <p>Resumen de 5 minutos para el examen LPIC-1.</p>
     </header>
-    <main id="contenido">
-        <div class="hero">
-            <h1>Repaso Rápido Tema 104 (LPIC-1)</h1>
-            <p>Resumen de 5 minutos sobre particiones, sistemas de archivos, permisos, enlaces y búsqueda de archivos.</p>
-        </div>
-        <a href="/cursos/lpic/104/104.html" class="back-link">← Volver a Dispositivos y sistemas de archivos</a>
-        <div class="course-page">
-            <div class="sidebar">
-                <h3>Contenido del Repaso</h3>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Contenido del Repaso</h4>
+            <ul>
+                <li><a href="#103-1">103.1 Línea de comandos</a></li>
+                <li><a href="#103-2">103.2 Filtros de texto</a></li>
+                <li><a href="#103-3">103.3 Archivos</a></li>
+                <li><a href="#103-4">103.4 Secuencias y redirecciones</a></li>
+                <li><a href="#103-5">103.5 Procesos</a></li>
+                <li><a href="#103-6">103.6 Prioridad de procesos</a></li>
+                <li><a href="#103-7">103.7 Expresiones regulares</a></li>
+                <li><a href="#103-8">103.8 Edición de archivos</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            <section id="103-1" class="lesson-section">
+                <h3>103.1 Trabajar desde la línea de comandos</h3>
                 <ul>
-                    <li><a href="#104-1">104.1 Crear particiones y sistemas de archivos</a></li>
-                    <li><a href="#104-2">104.2 Mantener la integridad de los sistemas de archivos</a></li>
-                    <li><a href="#104-3">104.3 Controlar el montaje y desmontaje</a></li>
-                    <li><a href="#104-5">104.5 Administrar permisos y propietarios de archivos</a></li>
-                    <li><a href="#104-6">104.6 Crear y cambiar enlaces duros y simbólicos</a></li>
-                    <li><a href="#104-7">104.7 Encontrar y ubicar archivos</a></li>
+                    <li><strong>Información del sistema</strong>:
+                        <ul>
+                            <li><code>pwd</code>: Muestra el directorio actual (ej. <code>/home/usuario</code>).</li>
+                            <li><code>touch archivo.txt</code>: Crea un archivo vacío.</li>
+                            <li><code>ls</code>: Lista archivos (ej. <code>archivo.txt documentos</code>).</li>
+                            <li><code>uname -a</code>: Información del sistema (ej. kernel, arquitectura).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Información de comandos</strong>:
+                        <ul>
+                            <li><code>man ls</code>: Manual del comando.</li>
+                            <li><code>apropos copy</code>: Busca comandos relacionados (ej. <code>cp</code>).</li>
+                            <li><code>type cd</code>: Tipo de comando (ej. shell builtin).</li>
+                            <li><code>which ls</code>: Ruta del comando (ej. <code>/bin/ls</code>).</li>
+                            <li><code>history</code>: Lista comandos ejecutados.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Variables de entorno</strong>:
+                        <ul>
+                            <li><code>env</code>: Muestra variables (ej. <code>PATH</code>, <code>HOME</code>).</li>
+                            <li><code>echo $HOME</code>: Valor de variable (ej. <code>/home/usuario</code>).</li>
+                            <li><code>export MI_VAR="hola"</code>: Crea variable.</li>
+                            <li><code>unset MI_VAR</code>: Elimina variable.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Caracteres especiales</strong>: Usa comillas o <code>\</code> para espacios. Ejemplo: <code>touch 'my file'</code>.</li>
                 </ul>
+            </section>
+
+            <section id="103-2" class="lesson-section">
+                <h3>103.2 Procesar secuencias de texto usando filtros</h3>
+                <ul>
+                    <li><strong>Redirecciones y tuberías</strong>:
+                        <ul>
+                            <li><code>echo "Hola" > file.txt</code>: Sobrescribe.</li>
+                            <li><code>echo "Adiós" >> file.txt</code>: Añade.</li>
+                            <li><code>ls | grep ".txt"</code>: Filtra archivos.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Archivos comprimidos</strong>:
+                        <ul>
+                            <li><code>gzip file.txt</code>: Comprime (crea <code>file.txt.gz</code>).</li>
+                            <li><code>zcat file.txt.gz</code>: Muestra contenido comprimido.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ver archivos</strong>:
+                        <ul>
+                            <li><code>less file.txt</code>: Navegación interactiva.</li>
+                            <li><code>head -n 3 file.txt</code>: Primeras 3 líneas.</li>
+                            <li><code>tail -n 2 file.txt</code>: Últimas 2 líneas.</li>
+                        </ul>
+                    </li>
+                    <li><strong>sed</strong>:
+                        <ul>
+                            <li><code>sed 's/cat/dog/' file.txt</code>: Reemplaza.</li>
+                            <li><code>sed -i 's/cat/dog/' file.txt</code>: Reemplaza directamente.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Otros</strong>:
+                        <ul>
+                            <li><code>wc -l file.txt</code>: Cuenta líneas.</li>
+                            <li><code>sort -n file.txt</code>: Ordena numéricamente.</li>
+                            <li><code>sha256sum file.txt</code>: Genera hash para verificar integridad.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="103-3" class="lesson-section">
+                <h3>103.3 Administración básica de archivos</h3>
+                <ul>
+                    <li><strong>Listar</strong>:
+                        <ul>
+                            <li><code>ls -la</code>: Muestra archivos ocultos y detalles.</li>
+                            <li><code>ls -R</code>: Lista recursiva.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Manipulación</strong>:
+                        <ul>
+                            <li><code>touch file.txt</code>: Crea archivo.</li>
+                            <li><code>cp file.txt copia.txt</code>: Copia.</li>
+                            <li><code>mv file.txt /tmp/</code>: Mueve.</li>
+                            <li><code>rm -r dir</code>: Elimina.</li>
+                            <li><code>mkdir -p dir/subdir</code>: Crea directorios.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Comodines</strong>:
+                        <ul>
+                            <li><code>*</code>: Cero o más (ej. <code>ls *.txt</code>).</li>
+                            <li><code>?</code>: Un carácter (ej. <code>ls file?.txt</code>).</li>
+                        </ul>
+                    </li>
+                    <li><strong>find</strong>:
+                        <ul>
+                            <li><code>find / -name "file.txt"</code>: Por nombre.</li>
+                            <li><code>find /home -size +5M</code>: Por tamaño.</li>
+                            <li><code>find /tmp -mtime +2</code>: Por tiempo.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Archivado</strong>:
+                        <ul>
+                            <li><code>tar -cvf file.tar file1.txt</code>: Crea archivo.</li>
+                            <li><code>tar -czvf file.tar.gz dir</code>: Comprime con gzip.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="103-4" class="lesson-section">
+                <h3>103.4 Uso de secuencias, tuberías y redirecciones</h3>
+                <ul>
+                    <li><strong>Redirecciones</strong>:
+                        <ul>
+                            <li><code>wc -l < file.txt</code>: Entrada.</li>
+                            <li><code>ls > lista.txt</code>: Salida (sobrescribe).</li>
+                            <li><code>ls 2> errores.txt</code>: Errores.</li>
+                            <li><code>ls &> salida.txt</code>: Salida y errores.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Here Document/String</strong>:
+                        <ul>
+                            <li><code>wc -c << EOF</code>: Entrada multilínea.</li>
+                            <li><code>wc -c <<< "texto"</code>: Entrada de una línea.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Tuberías</strong>:
+                        <ul>
+                            <li><code>ls | grep ".txt"</code>: Filtra.</li>
+                            <li><code>ps aux | grep "python" | sort -k 3 -r</code>: Filtra y ordena.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Sustitución</strong>:
+                        <ul>
+                            <li><code>echo $(ls)</code>: Usa salida de comando.</li>
+                            <li><code>find . -name "*.log" | xargs rm</code>: Pasa resultados a otro comando.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="103-5" class="lesson-section">
+                <h3>103.5 Crear, supervisar y matar procesos</h3>
+                <ul>
+                    <li><strong>Control de trabajos</strong>:
+                        <ul>
+                            <li><code>jobs</code>: Lista trabajos.</li>
+                            <li><code>fg %1</code>: Trae a primer plano.</li>
+                            <li><code>sleep 500 &</code>: Ejecuta en segundo plano.</li>
+                            <li><code>kill -9 1234</code>: Termina proceso.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Monitoreo</strong>:
+                        <ul>
+                            <li><code>ps -aux</code>: Lista todos los procesos.</li>
+                            <li><code>top</code>: Vista en tiempo real.</li>
+                            <li><code>pgrep python</code>: Busca procesos.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Multiplexores</strong>:
+                        <ul>
+                            <li><code>screen -S sesion</code>: Crea una sesión de <code>screen</code> (usa <code>Ctrl+a d</code> para desconectar).</li>
+                            <li><code>tmux new -s sesion</code>: Crea una sesión de <code>tmux</code> (usa <code>Ctrl+b d</code> para desconectar).</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="103-6" class="lesson-section">
+                <h3>103.6 Modificar la prioridad de ejecución de los procesos</h3>
+                <ul>
+                    <li><strong>Prioridad</strong>: Valor <em>nice</em> de -20 (alta) a 19 (baja). Por defecto: 0.</li>
+                    <li><strong>Comandos</strong>:
+                        <ul>
+                            <li><code>nice -n 10 comando</code>: Inicia con <em>nice</em> 10.</li>
+                            <li><code>renice 15 1234</code>: Cambia <em>nice</em> del PID 1234.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Ver prioridades</strong>: <code>top</code>, <code>ps -el</code>.</li>
+                </ul>
+            </section>
+
+            <section id="103-7" class="lesson-section">
+                <h3>103.7 Realizar búsquedas en archivos de texto usando expresiones regulares</h3>
+                <ul>
+                    <li><strong>Expresiones básicas</strong>:
+                        <ul>
+                            <li><strong><code>.</code></strong>: Cualquier carácter.</li>
+                            <li><strong><code>^</code></strong>: Inicio de línea.</li>
+                            <li><strong><code>$</code></strong>: Final de línea.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Corchetes</strong>: <code>[a-z]</code>, <strong><code>[[:digit:]]</code></strong>.</li>
+                    <li><strong>Cuantificadores</strong>: <code>*</code> (0 o más), <code>+</code> (1 o más, con <code>egrep</code>).</li>
+                    <li><strong>grep</strong>:
+                        <ul>
+                            <li><code>grep -i "hola" file.txt</code>: Ignora mayúsculas.</li>
+                            <li><code>egrep "Hola|Adios" file.txt</code>: Ramas.</li>
+                        </ul>
+                    </li>
+                    <li><strong>find</strong>: <code>find / -regex ".*/\..*"</code>.</li>
+                    <li><strong>sed</strong>: <code>sed 's/gato/perro/g' file.txt</code>.</li>
+                </ul>
+            </section>
+
+            <section id="103-8" class="lesson-section">
+                <h3>103.8 Edición básica de archivos</h3>
+                <ul>
+                    <li><strong>vi</strong>:
+                        <ul>
+                            <li><code>vi archivo.txt</code>: Abre un archivo en vi.</li>
+                            <li>Modos:
+                                <ul>
+                                    <li>Normal: Navegación y comandos.</li>
+                                    <li>Inserción: Escribir texto (<code>i</code> para entrar, <code>Esc</code> para salir).</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Comandos vi</strong>:
+                        <ul>
+                            <li><code>h j k l</code>: Moverse.</li>
+                            <li><code>yy</code>, <code>p</code>: Copiar y pegar.</li>
+                            <li><code>:w</code>, <code>:q</code>: Guardar y salir.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Editores alternativos</strong>:
+                        <ul>
+                            <li><code>nano archivo.txt</code>: Editor simple (<code>Ctrl+O</code> guardar, <code>Ctrl+X</code> salir).</li>
+                            <li><code>emacs archivo.txt</code>: Editor avanzado (<code>Ctrl+X Ctrl+S</code> guardar, <code>Ctrl+X Ctrl+C</code> salir).</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Listo para el examen? Vuelve a la lección completa si tienes dudas.</p>
+                <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/103/103.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
+                    ← Volver a la Lección 103
+                </a>
             </div>
-            <div class="content">
-                <section id="104-1">
-                    <h2>104.1 Crear particiones y sistemas de archivos</h2>
-                    <p>Particionar discos y crear sistemas de archivos es clave en Linux.</p>
-                    <ul>
-                        <li><strong>Tablas de particiones:</strong><br>
-                            - <strong>MBR:</strong> Máximo 2TB, 4 particiones primarias.<br>
-                            - <strong>GPT:</strong> Soporta discos grandes, más particiones.</li>
-                        <li><strong>Herramientas:</strong><br>
-                            - <code>fdisk</code> (MBR): <code>p</code> (mostrar), <code>n</code> (nueva), <code>d</code> (eliminar), <code>t</code> (tipo).<br>
-                            - <code>gdisk</code> (GPT): Incluye <code>s</code> (reorganizar), <code>r</code> (recuperación).<br>
-                            - <code>parted</code>: <code>mklabel msdos/gpt</code>, <code>mkpart</code>, <code>resizepart</code>, <code>rm</code>.</li>
-                        <li><strong>Crear sistemas de archivos:</strong><br>
-                            - <strong>ext4:</strong> <code>mkfs.ext4 /dev/sda1</code> (opciones: <code>-L etiqueta</code>, <code>-c</code> verifica).<br>
-                            - <strong>XFS:</strong> <code>mkfs.xfs /dev/sda1</code>.<br>
-                            - <strong>FAT/vFAT:</strong> <code>mkfs.vfat -F 32 /dev/sda1</code>.<br>
-                            - <strong>btrfs:</strong> <code>mkfs.btrfs /dev/sda1</code>, subvolúmenes (<code>btrfs subvolume create</code>), snapshots (<code>btrfs subvolume snapshot</code>).</li>
-                        <li><strong>SWAP:</strong><br>
-                            - Partición: <code>mkswap /dev/sda2</code>, <code>swapon /dev/sda2</code>.<br>
-                            - Archivo: <code>dd</code> para crear, <code>mkswap /swapfile</code>, <code>swapon /swapfile</code>.</li>
-                    </ul>
-                    <p>El tipo de partición para swap en discos MBR es <code>82</code> (Linux Swap).</p>
-                </section>
-                <section id="104-2">
-                    <h2>104.2 Mantener la integridad de los sistemas de archivos</h2>
-                    <p>Verifica y repara sistemas de archivos, y monitorea el uso del disco.</p>
-                    <ul>
-                        <li><strong><code>du</code> (uso del disco):</strong> <code>-h</code> (legible), <code>-a</code> (todos los archivos), <code>-c</code> (total), <code>-dX</code> (profundidad).</li>
-                        <li><strong><code>df</code> (espacio libre):</strong> <code>-h</code> (legible), <code>-T</code> (tipo), <code>-t tipo</code>, <code>-x tipo</code>.</li>
-                        <li><strong>ext2/3/4:</strong><br>
-                            - <code>fsck</code>/<code>e2fsck</code>: <code>-p</code> (repara auto), <code>-y</code> (responde sí), <code>-A</code> (todos en <code>/etc/fstab</code>).<br>
-                            - <code>tune2fs</code>: <code>-c N</code> (montajes antes de comprobar), <code>-i N</code> (intervalo), <code>-j</code> (journal).</li>
-                        <li><strong>XFS:</strong><br>
-                            - <code>xfs_repair</code>: <code>-n</code> (simula), <code>-d</code> (repara montado, peligroso).<br>
-                            - Otras: <code>xfs_db</code> (depurar), <code>xfs_fsr</code> (desfragmentar).</li>
-                    </ul>
-                    <p>El porcentaje predeterminado de espacio reservado para root en sistemas de archivos ext4 es del 5%.</p>
-                </section>
-                <section id="104-3">
-                    <h2>104.3 Controlar el montaje y desmontaje</h2>
-                    <p>Monta y desmonta sistemas de archivos, y configúralos para el arranque.</p>
-                    <ul>
-                        <li><strong><code>mount</code>:</strong> <code>mount -t tipo dispositivo punto_montaje</code>, <code>-o ro/rw</code>, <code>-a</code> (todos en <code>/etc/fstab</code>).</li>
-                        <li><strong><code>umount</code>:</strong> <code>umount punto_montaje</code>, <code>-f</code> (forzar), <code>-r</code> (solo lectura si falla), usa <code>lsof</code> para archivos abiertos.</li>
-                        <li><strong>Buenas prácticas:</strong> <code>/mnt</code> (manual), <code>/media</code> (automático).</li>
-                        <li><strong><code>/etc/fstab</code>:</strong> Campos: dispositivo, punto de montaje, tipo, opciones (<code>defaults</code>, <code>noexec</code>, <code>nosuid</code>), volcado, orden fsck.</li>
-                        <li><strong>UUID/Etiquetas:</strong> Usa <code>lsblk -f</code> para ver UUID, configúralos en <code>/etc/fstab</code> (ej. <code>UUID=1234-5678</code>).</li>
-                        <li><strong>systemd:</strong> Unidades <code>.mount</code> y <code>.automount</code> para montaje automático, activa con <code>systemctl enable</code>.</li>
-                    </ul>
-                    <p>Para montajes manuales no listados en fstab, systemd puede generar unidades de montaje con <code>systemctl mountsync</code>.</p>
-                </section>
-                <section id="104-5">
-                    <h2>104.5 Administrar permisos y propietarios de archivos</h2>
-                    <p>Gestiona permisos, propietarios y archivos ocultos.</p>
-                    <ul>
-                        <li><strong>Consultar información:</strong> <code>ls -l</code> (archivos), <code>ls -ld</code> (directorios), <code>ls -a</code> (ocultos, ej. <code>.bashrc</code>).</li>
-                        <li><strong>Tipos de archivos:</strong> <code>-</code> (regular), <code>d</code> (directorio), <code>l</code> (enlace simbólico), <code>b</code> (bloques), <code>c</code> (caracteres), <code>s</code> (socket).</li>
-                        <li><strong>Permisos:</strong> <code>r</code> (4, lectura), <code>w</code> (2, escritura), <code>x</code> (1, ejecución); categorías: usuario, grupo, otros.<br>
-                            - <code>chmod</code> (recursivo con <code>-R</code>): Numérico (<code>644</code>), simbólico (<code>u+x</code>).</li>
-                        <li><strong>Propietarios y grupos:</strong> <code>chown usuario:grupo archivo</code> (recursivo con <code>-R</code>), <code>chgrp grupo archivo</code> (recursivo con <code>-R</code>), <code>groups usuario</code>.</li>
-                        <li><strong><code>umask</code> (permisos predeterminados):</strong> Resta de 666 (archivos) o 777 (directorios); usa <code>umask -S</code> para modo simbólico.</li>
-                        <li><strong>Permisos especiales:</strong><br>
-                            - <strong>SUID (4):</strong> Ejecuta con permisos del propietario, <code>s</code> en usuario, <code>chmod 4755 archivo</code>.<br>
-                            - <strong>SGID (2):</strong> Ejecuta con permisos del grupo, en directorios hereda grupo, <code>s</code> en grupo, <code>chmod 2755 archivo</code>.<br>
-                            - <strong>Sticky bit (1):</strong> En directorios, evita borrar archivos de otros, <code>t</code> en otros, <code>chmod 1755 directorio</code>.</li>
-                    </ul>
-                    <p>El valor umask <code>0027</code> establece permisos <code>-rw-r-----</code> para nuevos archivos.</p>
-                </section>
-                <section id="104-6">
-                    <h2>104.6 Crear y cambiar enlaces duros y simbólicos</h2>
-                    <p>Los enlaces apuntan a otros archivos o directorios.</p>
-                    <ul>
-                        <li><strong>Enlaces duros:</strong> Apuntan al mismo inodo, funcionan si se borra el original, solo en el mismo sistema de archivos; crea con <code>ln archivo enlace</code>.</li>
-                        <li><strong>Enlaces simbólicos:</strong> Apuntan a la ruta, se rompen si se borra el original, funcionan entre sistemas de archivos; crea con <code>ln -s archivo enlace</code>.</li>
-                        <li><strong>Verificar:</strong> <code>ls -li</code> (inodo para duros), <code>ls -lh</code> (flecha para simbólicos).</li>
-                    </ul>
-                    <p>Los enlaces duros no pueden apuntar a archivos en diferentes sistemas de archivos porque dependen del mismo inodo.</p>
-                </section>
-                <section id="104-7">
-                    <h2>104.7 Encontrar y ubicar archivos</h2>
-                    <p>Usa el FHS y comandos para buscar archivos.</p>
-                    <ul>
-                        <li><strong>FHS (ubicaciones clave):</strong><br>
-                            - <code>/bin</code>, <code>/sbin</code>: Binarios.<br>
-                            - <code>/etc</code>: Configuración.<br>
-                            - <code>/home</code>: Perfiles de usuario.<br>
-                            - <code>/lib</code>: Librerías.<br>
-                            - <code>/tmp</code>, <code>/var/tmp</code>, <code>/run</code>: Archivos temporales.<br>
-                            - <code>/usr/share/man</code>: Páginas de manual.</li>
-                        <li><strong><code>find</code> (por atributos y tiempo):</strong> <code>-user</code>, <code>-group</code>, <code>-perm</code>, <code>-size</code>, <code>-mtime N</code>, <code>-executable</code>, <code>-maxdepth N</code>.</li>
-                        <li><strong><code>locate</code> (base de datos):</strong> Actualiza con <code>updatedb</code>, <code>-i</code> (ignora mayúsculas), configura en <code>/etc/updatedb.conf</code>.</li>
-                        <li><strong>Binarios:</strong> <code>which</code> (ruta), <code>type</code> (tipo), <code>whereis</code> (binario, manual, fuente).</li>
-                    </ul>
-                    <p>El comando <code>file</code> determina el tipo de archivo usando una base de datos de definiciones.</p>
-                </section>
-            </div>
+
         </div>
-    </main>
-    <footer>
-        <div class="footer-content">
-            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
-            <div class="footer-links">
-                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
-                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
-                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
-                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
-            </div>
-        </div>
-    </footer>
-    <a href="#" id="back-to-top">↑ Volver arriba</a>
-    <script src="/conf/scripts.js"></script>
-</body>
-</html>
+    </div>
+</div>
