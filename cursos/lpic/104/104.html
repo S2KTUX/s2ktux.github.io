@@ -1,79 +1,344 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Curso de Dispositivos, Sistemas de Archivos y FHS (LPIC-1 104) en SysRiser. Aprende a gestionar discos, permisos y la jerarquía de directorios en Linux.">
-    <meta name="keywords" content="LPIC-1, dispositivos, sistemas de archivos, FHS, Linux, curso, tecnología">
-    <meta name="author" content="SysRiser">
-    <title>SysRiser - Dispositivos, Sistemas de Archivos y FHS (LPIC-1 104)</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
-    <div class="gradient-bg"></div>
-    <header>
-        <div class="header-left">
-            <a href="/index.html" class="header-logo">SysRiser</a>
-        </div>
-        <nav>
-            <a href="/index.html">Inicio</a>
-            <a href="/cursos/cursos.html">Cursos</a>
-            <a href="/proyectos/proyectos.html">Proyectos</a>
-        </nav>
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">LPIC-1 Examen 104</span>
+        <h1>Dispositivos, Sistemas de Archivos y FHS</h1>
+        <p>Domina la gestión de discos, particiones, permisos, enlaces y la jerarquía de directorios en Linux.</p>
     </header>
-    <main id="contenido">
-        <div class="hero">
-            <h1>Dispositivos, Sistemas de Archivos y FHS (LPIC-1 104)</h1>
-            <p>Aprende a gestionar discos, permisos y la jerarquía de directorios en Linux.</p>
-        </div>
-        <a href="/cursos/cursos.html" class="back-link">← Volver a Cursos</a>
-        <div class="course-page">
-            <div class="content">
-                <section id="introduccion">
-                    <h2>Descripción</h2>
-                    <p>Este curso te introduce a la gestión de dispositivos, sistemas de archivos y la jerarquía de directorios estándar (FHS) en Linux, una parte esencial del examen LPIC-1 104, enfocándose en la administración de discos, permisos y organización de archivos.</p>
-                </section>
-                <section id="conceptos">
-                    <h2>Conceptos que aprenderás</h2>
-                    <p>En este curso, explorarás:</p>
-                    <ul>
-                        <li>Creación y gestión de particiones y sistemas de archivos como <code>ext4</code> y <code>xfs</code>.</li>
-                        <li>Verificación y reparación de sistemas de archivos con herramientas como <code>fsck</code>.</li>
-                        <li>Montaje y desmontaje de sistemas de archivos, incluyendo el uso de <code>/etc/fstab</code>.</li>
-                        <li>Administración de permisos y propietarios de archivos con <code>chmod</code> y <code>chown</code>.</li>
-                        <li>Creación de enlaces duros y simbólicos usando <code>ln</code>.</li>
-                        <li>Búsqueda de archivos con herramientas como <code>find</code> y <code>locate</code>, y organización según la jerarquía de directorios estándar (FHS).</li>
-                    </ul>
-                </section>
-                <section id="subtemas">
-                    <h2>Subtemas</h2>
-                    <ul>
-                        <li><a href="creacion-particiones-sistemas-archivos.html">104.1 Creación de particiones y sistemas de archivos</a></li>
-                        <li><a href="mantener-integridad-sistemas-archivos.html">104.2 Mantener la integridad de los sistemas de archivos</a></li>
-                        <li><a href="controlar-montaje-desmontaje-sistemas-archivos.html">104.3 Controlar el montaje y desmontaje de los sistemas de archivos</a></li>
-                        <li><a href="administracion-permisos-propietarios-archivos.html">104.5 Administración de los permisos y los propietarios de los archivos</a></li>
-                        <li><a href="crear-cambiar-enlaces-duros-simbolicos.html">104.6 Crear y cambiar enlaces duros y simbólicos</a></li>
-                        <li><a href="encontrar-archivos-ubicar-lugar-correspondiente.html">104.7 Encontrar archivos de sistema y ubicar archivos en el lugar correspondiente</a></li>
-                        <li><a href="repaso-tema-104.html">Repaso Tema 104</a></li>
-                    </ul>
-                </section>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
+            <ul>
+                <li><a href="#104.1">104.1 Crear particiones y sistemas de archivos</a></li>
+                <li><a href="#104.2">104.2 Mantener la integridad de los sistemas de archivos</a></li>
+                <li><a href="#104.3">104.3 Controlar el montaje y desmontaje</a></li>
+                <li><a href="#104.5">104.5 Administración de permisos y propietarios</a></li>
+                <li><a href="#104.6">104.6 Crear y cambiar enlaces</a></li>
+                <li><a href="#104.7">104.7 Encontrar archivos de sistema (FHS)</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            
+            <section id="104.1" class="lesson-section">
+                <h3>104.1 Creación de particiones y sistemas de archivos</h3>
+                <p>Antes de usar un disco en Linux, debe estar particionado. Una partición es una división lógica del disco físico. En Linux, las particiones se identifican como <code>/dev/sda1</code>, <code>/dev/sda2</code>, etc.</p>
+                
+                <h4>MBR y GPT</h4>
+                <p>Existen dos tipos principales de tablas de particiones:</p>
+                <ul>
+                    <li><strong>MBR (Master Boot Record):</strong> Almacena la tabla en el primer sector del disco (sector de arranque), donde Linux instala GRUB.<br>
+                        - Limitado a 2.2 TB por partición (direccionamiento 32 bits).<br>
+                        - Máximo 4 particiones primarias.</li>
+                    <li><strong>GPT (GUID Partition Table):</strong> Soluciona las limitaciones de MBR.<br>
+                        - Soporta tamaños de hasta 9.4 zettabytes (direccionamiento 64 bits).<br>
+                        - Permite hasta 128 particiones por defecto.</li>
+                </ul>
+
+                <h4>Herramientas de particionado</h4>
+                <ul>
+                    <li><strong>fdisk (para MBR):</strong> <code>fdisk /dev/sda</code>.<br>
+                        Opciones: <code>p</code> (muestra tabla), <code>n</code> (nueva), <code>F</code> (espacio libre), <code>d</code> (eliminar), <code>t</code> (cambiar tipo).</li>
+                    <li><strong>gdisk (para GPT):</strong> <code>gdisk /dev/sda</code>.<br>
+                        Opciones adicionales: <code>s</code> (reorganizar número), <code>r</code> (menú recuperación/convertir).</li>
+                    <li><strong>parted:</strong> <code>parted /dev/sda</code>.<br>
+                        Comandos: <code>select</code>, <code>print</code>, <code>mklabel msdos/gpt</code>, <code>mkpart</code>, <code>resizepart</code>, <code>rm</code>, <code>rescue</code>.</li>
+                </ul>
+                <p>En <code>/etc/fstab</code>, es mejor usar <code>LABEL</code> o <code>UUID</code> (visto con <code>lsblk -f</code> o <code>blkid</code>) que nombres de dispositivo.</p>
+
+                <h4>Creación de sistemas de archivos</h4>
+                <p>Después de crear una partición, se debe formatear. Si se ejecuta <code>mkfs</code> sin opciones, por defecto crea <code>ext2</code>.</p>
+                <ul>
+                    <li><strong>ext (ext2, ext3, ext4):</strong> <code>mkfs.ext4 /dev/sda1</code> o <code>mke2fs -t ext4 /dev/sda1</code>.<br>
+                        Opciones: <code>-t</code> (tipo), <code>-c</code> (verifica), <code>-L etiqueta</code>, <code>-v</code> (detallado), <code>-n</code> (simula).<br>
+                        - Por defecto, ext4 reserva el 5% del espacio para root (evita llenado total). Se cambia con <code>tune2fs -m 2 /dev/sda1</code>.<br>
+                        - <code>tune2fs -i 200 /dev/sda1</code>: Intervalo de 200 días entre verificaciones forzadas.</li>
+                    <li><strong>xfs:</strong> <code>mkfs.xfs /dev/sda1</code>. Opciones: <code>-N</code> (simula), <code>-l logdev=/dev/sda2</code>.<br>
+                        - Para corregir inconsistencias: <code>xfs_repair /dev/sda3</code> (debe estar desmontado).</li>
+                    <li><strong>FAT/vFAT:</strong> <code>mkfs.vfat -F 32 /dev/sda1</code>.</li>
+                    <li><strong>btrfs:</strong> <code>mkfs.btrfs /dev/sda1</code>.<br>
+                        - Múltiples discos: <code>mkfs.btrfs -d single -m single /dev/sda /dev/sdb</code>.<br>
+                        - Subvolúmenes: <code>btrfs subvolume create /mnt/disco/BKUP</code>.<br>
+                        - Montar subvolúmenes: <code>mount -t btrfs -o subvol=BKUP /dev/sda1 /mnt/backup</code>.<br>
+                        - Snapshots: <code>btrfs subvolume snapshot /mnt/BKUP /home/sysriser</code> (usa <code>-r</code> para solo lectura).</li>
+                </ul>
+
+                <h4>SWAP (Intercambio)</h4>
+                <p>El tipo de partición swap en MBR es <code>82</code> (Linux swap).</p>
+                <ul>
+                    <li><strong>Partición:</strong><br>
+                        1. <code>mkswap /dev/sda2</code><br>
+                        2. <code>swapon /dev/sda2</code> (desactivar con <code>swapoff</code>).</li>
+                    <li><strong>Archivo:</strong><br>
+                        1. <code>dd if=/dev/zero of=/swapfile bs=1M count=1024</code> (1GB).<br>
+                        2. <code>mkswap /swapfile</code>.<br>
+                        3. <code>swapon /swapfile</code>.</li>
+                </ul>
+                <p>Ver swap activo con <code>swapon -s</code> o solo <code>swapon</code>.</p>
+            </section>
+
+            <section id="104.2" class="lesson-section">
+                <h3>104.2 Mantener la integridad de los sistemas de archivos</h3>
+                
+                <h4>Comprobación del uso del disco (<code>du</code>)</h4>
+                <p>Muestra el tamaño de archivos y directorios.</p>
+                <ul>
+                    <li>Opciones: <code>-h</code> (legible), <code>-a</code> (todos), <code>-S</code> (sin subdirs), <code>-c</code> (total), <code>-dX</code> (profundidad).</li>
+                </ul>
+                <pre>root@zero:~# du -hc
+4,0K    ./.ssh
+76K     .
+76K     total</pre>
+
+                <h4>Comprobación de espacio libre (<code>df</code>)</h4>
+                <p>Muestra el espacio libre en los sistemas de archivos montados.</p>
+                <ul>
+                    <li>Opciones: <code>-h</code> (legible), <code>-x tipo</code> (excluye), <code>-t tipo</code> (filtra), <code>-T</code> (muestra tipo), <code>--output=campo</code>.</li>
+                </ul>
+                <pre>root@zero:~# df -hT
+S.ficheros     Tipo     Tamaño Usados  Disp Uso% Montado en
+/dev/mapper/... ext4       48G   3,4G   42G   8% /</pre>
+
+                <h4>Mantenimiento de ext2/3/4</h4>
+                <ul>
+                    <li><strong><code>fsck</code> / <code>e2fsck</code>:</strong> Verifica y repara. Desmontar primero.<br>
+                        - <code>-A</code>: Chequea todos en <code>/etc/fstab</code>.<br>
+                        - <code>-R</code>: Con <code>-A</code>, ignora raíz.<br>
+                        - <code>-p</code>: Repara auto.<br>
+                        - <code>-y</code>: Sí a todo.<br>
+                        - <code>-C</code>: Barra progreso.</li>
+                    <li><strong><code>tune2fs</code>:</strong> Modifica parámetros.<br>
+                        - <code>-l</code>: Muestra parámetros.<br>
+                        - <code>-c N</code>: Montajes antes de chequear.<br>
+                        - <code>-i N</code>: Intervalo días (ej. <code>1m</code>).<br>
+                        - <code>-L etiqueta</code>: Etiqueta.<br>
+                        - <code>-j</code>: Añade journal (ext2 a ext3).<br>
+                        - <code>-e comportamiento</code>: Acción ante errores (<code>continue</code>, <code>remount-ro</code>, <code>panic</code>).</li>
+                </ul>
+
+                <h4>Mantenimiento de XFS</h4>
+                <ul>
+                    <li><strong><code>xfs_repair</code>:</strong> Repara XFS.<br>
+                        - <code>-n</code>: Simula.<br>
+                        - <code>-d</code>: Repara montado (peligroso).</li>
+                    <li><strong><code>xfs_db</code>:</strong> Depura/analiza.</li>
+                    <li><strong><code>xfs_fsr</code>:</strong> Desfragmenta.</li>
+                </ul>
+            </section>
+
+            <section id="104.3" class="lesson-section">
+                <h3>104.3 Controlar el montaje y desmontaje de sistemas de archivos</h3>
+                
+                <h4>Montar y desmontar</h4>
+                <ul>
+                    <li><strong><code>mount</code>:</strong> <code>mount -t tipo dispositivo punto</code>.<br>
+                        Opciones: <code>-a</code> (todo fstab), <code>-o ro/rw</code>, <code>-o remount</code>.</li>
+                    <li><strong><code>umount</code>:</strong> <code>umount punto</code> o dispositivo.<br>
+                        Opciones: <code>-a</code>, <code>-f</code> (forzar), <code>-r</code> (solo lectura si falla).<br>
+                        Usar <code>lsof /dev/sda1</code> para ver qué lo bloquea.</li>
+                    <li><strong>Buenas prácticas:</strong> <code>/mnt</code> (manual), <code>/media</code> (automático).</li>
+                </ul>
+
+                <h4>Montaje en el arranque (<code>/etc/fstab</code>)</h4>
+                <p>Define 6 campos: dispositivo, punto_montaje, tipo, opciones, volcado, orden_fsck.</p>
+                <ul>
+                    <li><strong>Opciones comunes:</strong><br>
+                        - <code>defaults</code>: Incluye <code>rw, suid, dev, exec, auto, nouser, async</code>.<br>
+                        - <code>atime</code>/<code>noatime</code>: Actualiza tiempo acceso.<br>
+                        - <code>auto</code>/<code>noauto</code>: Monte automático.<br>
+                        - <code>dev</code>/<code>nodev</code>: Interpretar dispositivos.<br>
+                        - <code>exec</code>/<code>noexec</code>: Ejecutar binarios.<br>
+                        - <code>user</code>/<code>nouser</code>: Permitir monte usuario.<br>
+                        - <code>suid</code>/<code>nosuid</code>: Permisos especiales.<br>
+                        - <code>sync</code>/<code>async</code>: Síncrono/Asíncrono.</li>
+                </ul>
+
+                <h4>UUID y Etiquetas</h4>
+                <p>Evita problemas si cambia el nombre del dispositivo.</p>
+                <ul>
+                    <li>Ver UUID: <code>lsblk -f</code> o <code>blkid</code>.</li>
+                    <li>Configurar fstab: <code>UUID=1234-5678 /mnt/datos xfs defaults 0 2</code>.</li>
+                </ul>
+
+                <h4>Montaje con systemd</h4>
+                <p>Unidades <code>.mount</code> y <code>.automount</code> en <code>/etc/systemd/system</code>. El archivo debe llamarse según la ruta (ej. <code>mnt-disco.mount</code>).</p>
+                <pre>
+[Unit]
+Description=Montaje de prueba
+[Mount]
+What=/dev/disk/by-uuid/1234-5678
+Where=/mnt/disco
+Type=xfs
+Options=defaults
+[Install]
+WantedBy=multi-user.target
+                </pre>
+                <p>Activar con <code>systemctl daemon-reload</code>, <code>systemctl start mnt-disco.mount</code>, <code>systemctl enable mnt-disco.mount</code>.</p>
+            </section>
+
+            <section id="104.5" class="lesson-section">
+                <h3>104.5 Administrar permisos y propietarios de archivos</h3>
+                
+                <h4>Consultar información</h4>
+                <ul>
+                    <li><strong><code>ls -l</code>:</strong> Muestra tipo, permisos, enlaces, propietario, grupo, tamaño, fecha, nombre.</li>
+                    <li><strong><code>ls -ld</code>:</strong> Info del directorio (evita listar contenido).</li>
+                    <li><strong><code>ls -a</code>:</strong> Archivos ocultos (ej. <code>.bashrc</code>).</li>
+                </ul>
+                <p><code>stat</code> muestra info detallada e inodo.</p>
+
+                <h4>Tipos de archivos</h4>
+                <ul>
+                    <li><code>-</code>: Regular.<code> d</code>: Directorio.<code> l</code>: Enlace simbólico.<code> b</code>: Bloques.<code> c</code>: Caracteres.<code> s</code>: Socket.</li>
+                </ul>
+
+                <h4>Comprensión de permisos</h4>
+                <p>Categorías: Usuario, Grupo, Otros.</p>
+                <ul>
+                    <li><strong>Tipos:</strong> <code>r</code>(4 lectura), <code>w</code>(2 escritura), <code>x</code>(1 ejecución/entrar).</li>
+                    <li><strong><code>chmod</code> (recursivo <code>-R</code>):</strong><br>
+                        - Numérico: <code>chmod 644 archivo</code> (rw-r--r--).<br>
+                        - Simbólico: <code>chmod u+x script.sh</code> (u=user, g=group, o=other; +, -, =).</li>
+                </ul>
+                <p>El valor <code>umask 0027</code> asegura que nuevos directorios sean rwxr-x--- y archivos rw-r-----.</p>
+
+                <h4>Propietarios y grupos</h4>
+                <ul>
+                    <li><strong><code>chown usuario:grupo archivo</code>:</strong> Cambia ambos. Recursivo <code>-R</code>.</li>
+                    <li><strong><code>chgrp grupo archivo</code>:</strong> Cambia grupo. Recursivo <code>-R</code>.</li>
+                    <li><strong><code>groups usuario</code>:</strong> Muestra grupos del usuario.</li>
+                </ul>
+
+                <h4>Permisos predeterminados (<code>umask</code>)</h4>
+                <p>Resta valores de 666 (archivos) o 777 (directorios).</p>
+                <ul>
+                    <li>Ver valor: <code>umask</code>.</li>
+                    <li>Simbólico: <code>umask -S</code> (ej. <code>u=rwx,g=rx,o=rx</code>).</li>
+                    <li>Ejemplo: <code>umask 022</code> -> Archivos 644, Directorios 755.</li>
+                </ul>
+
+                <h4>Permisos especiales</h4>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
+                            <th style="padding: 12px; color: var(--accent);">Permiso</th>
+                            <th style="padding: 12px; color: var(--accent);">Valor</th>
+                            <th style="padding: 12px; color: var(--accent);">Descripción</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--card-bg);">
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>SUID</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">4</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Ejecuta con permisos del propietario. Se usa en <code>passwd</code>. Muestra <code>s</code> en usuario (<code>rwsr-xr-x</code>). Comando: <code>chmod 4755 archivo</code>.</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>SGID</strong></td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">2</td>
+                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Ejecuta con permisos del grupo. En directorios, los nuevos archivos heredan el grupo. Muestra <code>s</code> en grupo (<code>rwxr-sr-x</code>). Comando: <code>chmod 2755 archivo</code>.</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px;"><strong>Sticky bit</strong></td>
+                            <td style="padding: 12px;">1</td>
+                            <td style="padding: 12px;">En directorios, evita borrar archivos de otros (ej: <code>/tmp</code>). Muestra <code>t</code> en otros (<code>rwxrwxrwt</code>). Comando: <code>chmod 1755 directorio</code>.</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p>Para que nuevos archivos en un directorio sean del grupo "sales", usa SGID: <code>chmod g+s sales</code>.</p>
+            </section>
+
+            <section id="104.6" class="lesson-section">
+                <h3>104.6 Crear y cambiar enlaces duros y simbólicos</h3>
+                
+                <h4>Tipos de enlaces</h4>
+                <ul>
+                    <li><strong>Enlaces duros:</strong><br>
+                        - Apuntan al mismo <strong>inodo</strong> (identificador único de datos).<br>
+                        - Si se borra el original, el enlace duro sigue funcionando (datos persisten mientras haya un enlace).<br>
+                        - Solo dentro del mismo sistema de archivos.<br>
+                        - Incrementan contador de enlaces.</li>
+                    <li><strong>Enlaces simbólicos:</strong><br>
+                        - Atajo que apunta a la ruta.<br>
+                        - Si se borra el original, el enlace se rompe ("dangling").<br>
+                        - Pueden cruzar sistemas de archivos.<br>
+                        - No afectan contador de enlaces.</li>
+                </ul>
+
+                <h4>Gestión (<code>ln</code>)</h4>
+                <ul>
+                    <li><strong>Duro:</strong> <code>ln archivo enlace_duro</code>. Verificar con <code>ls -li</code> (mismo inodo).</li>
+                    <li><strong>Simbólico:</strong> <code>ln -s archivo enlace_simbolico</code>. Verificar con <code>ls -lh</code> (muestra <code>-> destino</code>).</li>
+                </ul>
+                <pre>
+ $ ls -li
+12345 -rw-r--r-- 2 user user 1024 Apr 27 12:00 archivo.txt
+12345 -rw-r--r-- 2 user user 1024 Apr 27 12:00 enlace_duro.txt
+lrwxrwxrwx 1 user user   10 Apr 27 12:00 enlace_simb.txt -> archivo.txt
+                </pre>
+                <p>Al crear un enlace duro, solo cambia el contador de enlaces; permisos y propietario son idénticos en todos los enlaces.</p>
+            </section>
+
+            <section id="104.7" class="lesson-section">
+                <h3>104.7 Encontrar archivos de sistema y FHS</h3>
+                
+                <h4>FHS (Jerarquía del Sistema de Archivos)</h4>
+                <ul>
+                    <li><strong>/</strong>: Raíz.</li>
+                    <li><strong>/bin</strong>: Binarios esenciales.</li>
+                    <li><strong>/boot</strong>: Archivos arranque (kernel, GRUB).</li>
+                    <li><strong>/dev</strong>: Dispositivos físicos/virtuales.</li>
+                    <li><strong>/etc</strong>: Configuración específica del sistema.</li>
+                    <li><strong>/home</strong>: Perfiles de usuario.</li>
+                    <li><strong>/lib</strong>: Librerías para /bin y /sbin.</li>
+                    <li><strong>/media</strong>: Medios extraíbles montados por usuario.</li>
+                    <li><strong>/mnt</strong>: Montaje temporal.</li>
+                    <li><strong>/opt</strong>: Paquetes software de aplicaciones.</li>
+                    <li><strong>/root</strong>: Home del superusuario.</li>
+                    <li><strong>/run</strong>: Datos temporales (se borran al reinicio).</li>
+                    <li><strong>/sbin</strong>: Binarios esenciales para admin.</li>
+                    <li><strong>/usr</strong>: Datos usuario solo lectura (/usr/bin, /usr/sbin, /usr/lib).</li>
+                    <li><strong>/proc</strong>: Virtual, datos procesos.</li>
+                    <li><strong>/var</strong>: Datos variables (logs, servicios).</li>
+                </ul>
+                <p><strong>Ubicaciones clave:</strong> Manuales en <code>/usr/share/man/</code>, binarios admin en <code>/usr/local/bin/</code>, cmdline kernel en <code>/proc/cmdline</code>.</p>
+                <p><strong>Temporales:</strong> <code>/tmp</code> (se borra reinicio), <code>/var/tmp</code> (persiste), <code>/run</code> (se borra reinicio).</p>
+
+                <h4>Buscar archivos (<code>find</code>)</h4>
+                <p>Búsqueda en tiempo real.</p>
+                <ul>
+                    <li><strong>Por atributos:</strong> <code>-user usuario</code>, <code>-group grupo</code>, <code>-readable</code>/<code>-writable</code>/<code>-executable</code>, <code>-empty</code>, <code>-perm NNN</code>, <code>-size N</code> (ej: <code>+100M</code>), <code>-maxdepth N</code>.</li>
+                    <li><strong>Por tiempo:</strong> <code>-amin</code>/<code>-cmin</code>/<code>-mmin</code> (minutos), <code>-atime</code>/<code>-ctime</code>/<code>-mtime</code> (días).</li>
+                    <li><strong>xargs:</strong> Usar <code>-print0</code> para nombres con espacios.</li>
+                </ul>
+
+                <h4>Buscar archivos (<code>locate</code>)</h4>
+                <p>Usa base de datos (<code>/var/lib/mlocate.db</code>), actualizada con <code>updatedb</code>.</p>
+                <ul>
+                    <li>Opciones: <code>-i</code> (ignora mayúsculas), <code>-A</code> (varios patrones), <code>-c</code> (cuenta).</li>
+                    <li>Config: <code>/etc/updatedb.conf</code> (variables <code>PRUNEFS</code>, <code>PRUNENAMES</code>, <code>PRUNEPATHS</code>).</li>
+                </ul>
+
+                <h4>Binarios</h4>
+                <ul>
+                    <li><strong><code>which</code>:</strong> Ruta completa (<code>-a</code> todas).</li>
+                    <li><strong><code>type</code>:</strong> Info comando (<code>-t</code> solo tipo).</li>
+                    <li><strong><code>whereis</code>:</strong> Binario, manual y fuente (<code>-b</code> binario, <code>-m</code> manual).</li>
+                </ul>
+
+                <h4>Otros</h4>
+                <ul>
+                    <li><strong><code>file</code>:</strong> Determina tipo archivo usando DB definiciones.</li>
+                    <li><strong><code>watch</code>:</strong> Ejecuta comando periódicamente.</li>
+                </ul>
+            </section>
+
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Has terminado la teoría? Repasa los puntos clave antes del examen.</p>
+                <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/104/repaso-tema-104.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
+                    📝 Ver Resumen del Tema 104
+                </a>
             </div>
+
         </div>
-    </main>
-    <footer>
-        <div class="footer-content">
-            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
-            <div class="footer-links">
-                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
-                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
-                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
-                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
-            </div>
-        </div>
-    </footer>
-    <a href="#" id="back-to-top">↑ Volver arriba</a>
-    <script src="/conf/scripts.js"></script>
-</body>
-</html>
+    </div>
+</div>
