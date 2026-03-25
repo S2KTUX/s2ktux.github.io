@@ -1,0 +1,181 @@
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">LPIC-1 Examen 109</span>
+        <h1>Fundamentos de redes</h1>
+        <p>Domina los conceptos básicos de redes, configuración, DNS y resolución de problemas en Linux.</p>
+    </header>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
+            <ul>
+                <li><a href="#109.1">109.1 Fundamentos de los protocolos de Internet</a></li>
+                <li><a href="#109.2">109.2 Configuración de red persistente</a></li>
+                <li><a href="#109.3">109.3 Resolución de problemas básicos de red</a></li>
+                <li><a href="#109.4">109.4 Configuración DNS en el lado del cliente</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            
+            <section id="109.1" class="lesson-section">
+                <h3>109.1 Fundamentos de los protocolos de Internet</h3>
+                <p>TCP/IP es una pila de protocolos que permite la comunicación entre dispositivos mediante protocolos como IP, TCP, UDP, DNS y SMTP.</p>
+
+                <h4>IPv4: Direccionamiento y máscaras</h4>
+                <p>IPv4 es el protocolo de direccionamiento lógico que asigna direcciones únicas (32 bits) para enviar paquetes entre hosts.</p>
+                <ul>
+                    <li><strong>Estructura:</strong> 32 bits divididos en 4 octetos (ej. 192.168.10.20). En binario: `11000000.10101000.00001010.00010100`.</li>
+                    <li><strong>Clases de direcciones:</strong>
+                        <ul>
+                            <li><strong>Clase A:</strong> 1-126 (Redes grandes).</li>
+                            <li><strong>Clase B:</strong> 128-191 (Redes medianas).</li>
+                            <li><strong>Clase C:</strong> 192-223 (Redes pequeñas).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Máscara de red:</strong> Define qué parte es red y qué parte es host (ej. `255.255.0.0` /24).</li>
+                    <li><strong>Reservados (Privados):** No enrutables en internet.
+                        <ul>
+                            <li>10.0.0.0/8: Redes grandes (10.0.0.0 a 10.255.255.255).</li>
+                            <li>172.16.0.0/12: Redes medianas (172.16.0.0 a 172.31.255.255).</li>
+                            <li>192.168.0.0/16: Redes pequeñas (192.168.0.0 a 192.168.255.255).</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Protocolos: TCP, UDP e ICMP</h4>
+                <p>Protocolos de transporte y red para la comunicación.</p>
+                <ul>
+                    <li><strong>Puertos:</strong> 16 bits (1-65535).
+                        <ul>
+                            <li>1-1023: Puertos privilegiados (ej. 80 HTTP, 53 DNS, 443 HTTPS).</li>
+                            <li>1024-65535: Puertos no privilegiados.</li>
+                        </ul>
+                    </li>
+                    <li><strong>TCP:</strong> Orientado a conexión, garantiza entrega ordenada y retransmisión. Lento pero fiable (ideal para correo).</li>
+                    <li><strong>UDP:</strong> Sin conexión, rápido, sin control de errores (ideal para streaming).</li>
+                    <li><strong>ICMP:</strong> Analiza y controla la red. <code>ping</code> usa esto para verificar conectividad (Echo Request/Reply).</li>
+                </ul>
+
+                <h4>IPv6: Direcciones y diferencias</h4>
+                <p>IPv6 usa direcciones de 128 bits.</p>
+                <ul>
+                    <li><strong>Formato:</strong> 8 grupos de 16 bits en hexadecimal (ej. `2001:db8:3241::1`).</li>
+                    <li><strong>Tipos:</strong> Unicast (Una interfaz), Multicast (Grupo), Anycast (Grupo).
+                    <li><strong>Diferencias:</strong>
+                        <ul>
+                            <li>Puertos: IPv6 usa corchetes `[]` (ej. `[2001:0db8::1]:443`).</li>
+                            <li>No admite broadcast, usa multicast en su lugar.</li>
+                            <li><strong>Hop Limit:</strong> Reemplaza al TTL de IPv4.</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="109.2" class="lesson-section">
+                <h3>109.2 Configuración de red persistente</h3>
+                <p>Las configuraciones de red se guardan en archivos en `/etc` para aplicar al arrancar.</p>
+
+                <h4>Interfaces de red</h4>
+                <p>Las interfaces (ej. `enp3s5` para Ethernet o `wlo1` para Wi-Fi) conectan el sistema a la red. `ip link show` las lista.</p>
+                <p>Los nombres modernos (Predictable Network Interface Names) se basan en su ubicación física (bus, slot).</p>
+
+                <h4>Gestionar interfaces</h4>
+                <ul>
+                    <li><strong>ifup / ifdown:</strong> Activa/desactiva interfaces según `/etc/network/interfaces`.
+                        <ul>
+                            <li>Ejemplo estático: `iface enp3s5 inet static`, `address 192.168.1.2/24`.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Comandos:</strong>
+                        <ul>
+                            <li>Ver: <code>ip link set dev enp0s8 up</code>.</li>
+                            <li>Asignar IP: <code>ip addr add 192.168.5.5/24 dev enp0s8</code>.</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h4>Nombres y resolución</h4>
+                <ul>
+                    <li><strong>Nombre host:</strong> `/etc/hostname` define el nombre estático. Cambio permanente: <code>hostnamectl set-hostname nuevo-nombre</code>.</li>
+                    <li><strong>Mapeo local:</strong> `/etc/hosts` (ej. `127.0.0.1 localhost`).</li>
+                    <li><strong>Resolución:</strong> `/etc/nsswitch.conf` define el orden (ej. `hosts: files dns`).
+                    <li><strong>DNS:</strong> `/etc/resolv.conf` define `nameserver 8.8.8.8` y `search lpi.org`.</li>
+                </ul>
+
+                <h4>NetworkManager y systemd</h4>
+                <ul>
+                    <li><strong>nmcli:</strong> Gestiona conexiones (ej. `nmcli connection show`).</li>
+                    <li><strong>nmtui:</strong> Interfaz curses para ajustes interactivos.</li>
+                    <li><strong>systemd-networkd:</strong> Usa archivos `.network` en `/etc/systemd/network` (ej. <code>Address=192.168.0.100/24</code>).</li>
+                </ul>
+            </section>
+
+            <section id="109.3" class="lesson-section">
+                <h3>109.3 Resolución de problemas básicos de red</h3>
+                <p>El diagnóstico se realiza con estas herramientas clave:</p>
+
+                <h4>Configurar tu red</h4>
+                <ul>
+                    <li><strong>Ver interfaces:</strong> <code>ip link show</code> (muestra `enp0s3`, `lo`).</li>
+                    <li><strong>Activar:</strong> <code>ip link set dev enp0s8 up</code>.</li>
+                    <li><strong>Asignar IP:</strong> <code>ip addr add 192.168.5.5/24 dev enp0s8</code>.</li>
+                </ul>
+
+                <h4>Herramientas para buscar problemas</h4>
+                <ul>
+                    <li><strong>ping / ping6:</strong> Prueba conectividad ICMP. <code>ping 8.8.8.8</code>.</li>
+                    <li><strong>traceroute / traceroute6:</strong> Rastrea la ruta mostrando saltos (routers).</li>
+                    <li><strong>netcat:</strong> Prueba puertos. <code>nc -zv 192.168.1.1 80</code> (si muestra "open", el puerto está abierto).</li>
+                </ul>
+
+                <h4>Ver y entender las rutas</h4>
+                <ul>
+                    <li><strong>Tabla de enrutamiento:</strong> <code>ip route</code>.</li>
+                    <li>Ejemplo de salida: `default via 10.0.2.2 dev enp0s3 proto dhcp metric 100`.</li>
+                    <li><strong>Añadir ruta:</strong> <code>ip route add 192.168.10.0/24 via 192.168.1.1</code>.</li>
+                    <li><strong>IPv6:</strong> <code>ip -6 route` (muestra prefijos de red como `2001:db8::/64`).</li>
+                </ul>
+
+                <h4>Ver conexiones con netstat y ss</h4>
+                <p>Monitorea conexiones activas y puertos.</p>
+                <ul>
+                    <li><strong>netstat -t:</strong> Conexiones TCP (ej. `ESTAB 0 0 192.168.1.100:22`).</li>
+                    <li><strong>netstat -l:</strong> Puertos en escucha.</li>
+                    <li><strong>netstat -p:</strong> Muestra el proceso (ej. `1234/sshd`).</li>
+                    <li><strong>ss:</strong> Alternativa moderna. Usa `ss -tulnp` para ver todo: TCP/UDP, escuchando, numéricos y programas (ej. `nginx` en puerto 80).</li>
+                </ul>
+            </section>
+
+            <section id="109.4" class="lesson-section">
+                <h3>109.4 Configuración DNS en el lado del cliente</h3>
+                <p>La resolución de nombres convierte "google.com" en una IP.</p>
+
+                <h4>Cómo se buscan los nombres</h4>
+                <p>El proceso sigue el orden definido en `/etc/nsswitch.conf` (ej. `hosts: files dns`).</p>
+
+                <h4>Archivos importantes</h4>
+                <ul>
+                    <li><strong>/etc/hosts:</strong> Mapeo estático. Ej: `127.0.0.1 localhost` o `192.168.1.10 foo.mydomain.org`.</li>
+                    <li><strong>/etc/resolv.conf:</strong> Servidores DNS (`nameserver 8.8.8.8`) y dominios de búsqueda (`search lpi.org`).</li>
+                    <li><strong>/etc/nsswitch.conf:</strong> Define el orden (si buscar primero en archivos locales o en DNS).</li>
+                </ul>
+
+                <h4>Herramientas útiles</h4>
+                <ul>
+                    <li><strong>host:</strong> Consultas simples. Ej: `host google.com` (muestra IP).</li>
+                    <li><strong>dig:</strong> Consultas detalladas. Ej: `dig google.com` (muestra IP, TTL, servidores).</li>
+                    <li><strong>getent:</strong> Busca según <code>/etc/nsswitch.conf`. Ej: `getent hosts google.com` (muestra IP encontrada).</li>
+                </ul>
+            </section>
+
+            <div style="margin-top: 4rem; <padding-top: 2rem; <li style="border-top: 1px dashed var(--border-color); margin-bottom: 1rem;"></li>
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Has terminado la teoría? Repasa los puntos clave antes del examen.</p>
+                <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/9/repaso-tema-109.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
+                    📝 Ver Resumen del Tema 109
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
