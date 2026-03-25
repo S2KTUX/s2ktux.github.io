@@ -1,0 +1,144 @@
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">LPIC-1 Examen 108</span>
+        <h1>Servicios esenciales del sistema</h1>
+        <p>Domina la gestión de la hora del sistema, los registros, el correo electrónico y la impresión en Linux.</p>
+    </header>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
+            <ul>
+                <li><a href="#108.1">108.1 Mantener la hora del sistema</a></li>
+                <li><a href="#108.2">108.2 Registros del sistema</a></li>
+                <li><a href="#108.3">108.3 Conceptos básicos del Agente de Transferencia de Correo</a></li>
+                <li><a href="#108.4">108.4 Gestión de la impresión</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            
+            <section id="108.1" class="lesson-section">
+                <h3>108.1 Mantener la hora del sistema</h3>
+                <p>El comando <code>date</code> muestra la hora y fecha actual del sistema y permite ajustarla manualmente. <code>timedatectl</code> ofrece una alternativa para verificar y configurar la hora.</p>
+
+                <h4>Reloj de hardware</h4>
+                <p>El comando <code>hwclock</code> interactúa con el reloj en tiempo real (RTC) del hardware, manteniendo la hora incluso si el sistema está apagado.</p>
+                <p><strong>Ejemplos <code>timedatectl</code>:</strong></p>
+                <ul>
+                    <li>Listar zonas: <code>timedatectl list-timezones</code></li>
+                    <li>Ajustar hora: <code>timedatectl set-time "2025-05-24 12:30:00"</code></li>
+                </ul>
+
+                <h4>Zona horaria</h4>
+                <p>La zona horaria define el desfase respecto a UTC. Los datos están en <code>/usr/share/zoneinfo/</code> (ej. <code>Canada/Eastern</code>). <code>/etc/localtime</code> suele ser un enlace simbólico a uno de estos archivos.</p>
+                <p><strong>Configuración manual:</strong> <code>sudo ln -sf /usr/share/zoneinfo/Canada/Eastern /etc/localtime</code>.</p>
+                <p>Una zona correcta es clave para convertir marcas de tiempo Unix a hora local.</p>
+
+                <h4>Demonio NTP</h4>
+                <p>El protocolo NTP sincroniza la hora con servidores de red. <code>ntpd</code> se ejecuta en segundo plano. Su configuración es <code>/etc/ntp.conf</code>.</p>
+                <p><code>ntpd</code> sondea múltiples servidores y selecciona los más precisos para ajustar la hora.</p>
+
+                <h4>Chrony</h4>
+                <p>Alternativa moderna a <code>ntpd</code>, con mejor precisión y soporte para sincronización intermitente. Configuración en <code>/etc/chrony.conf</code>.</p>
+                <p>Fuentes remotas: <code>pool</code> y <code>server</code>.</p>
+                <pre><code>pool pool.ntp.org iburst</code></pre>
+                <p>La opción <code>iburst</code> acelera la sincronización inicial.</p>
+            </section>
+
+            <section id="108.2" class="lesson-section">
+                <h3>108.2 Registros del sistema</h3>
+                <p>Los registros almacenan eventos en orden cronológico. rsyslog y systemd-journald son los principales servicios. Facilidades: mail, local5, etc.</p>
+
+                <h4>Gestión con rsyslog</h4>
+                <p>rsyslog usa modelo cliente-servidor. Configuración en <code>/etc/rsyslog.conf</code>. Registros en <code>/var/log/</code>.</p>
+                <ul>
+                    <li><strong><code>/etc/rsyslog.conf</code>: Define reglas (<code>&lt;facilidad&gt;.&lt;prioridad&gt; &lt;acción&gt;</code>).</li>
+                    <li><strong>Directorios <code>/var/log/</code>:</strong>
+                        <ul>
+                            <li><code>syslog</code>: Mensajes generales.</li>
+                            <li><code>auth.log</code>: Autenticación.</li>
+                            <li><code>kern.log</code>: Kernel.</li>
+                            <li><code>messages</code>: Diversos (destino por defecto).</li>
+                        </ul>
+                    </li>
+                    <li><strong><code>logger</strong>:</strong> Añade mensajes manualmente (ej. <code>logger "Mensaje de prueba"</code>).</li>
+                </ul>
+
+                <h4>Rotación con logrotate</h4>
+                <p>Evita que los registros ocupen demasiado espacio. <code>logrotate</code> se ejecuta vía <code>/etc/cron.daily/logrotate</code>.</p>
+                <ul>
+                    <li><strong>Configuración:</strong> <code>/etc/logrotate.conf</code> (global) y <code>/etc/logrotate.d/</code> (específica).</li>
+                    <li>Opciones comunes: `weekly`, `rotate 4`, `compress`.</li>
+                </ul>
+
+                <h4>Gestión con systemd-journald</h4>
+                <p>Centraliza registros en formato binario. Almacenamiento en <code>/run/log/journal/</code> (volátil) o <code>/var/log/journal/</code> (persistente).</p>
+                <ul>
+                    <li><strong><code>journalctl</code>: Consulta el journal (filtros: <code>--since</code>, <code>-u</code>, <code>-b</code>).</li>
+                    <li><strong><code>systemd-cat</strong>: Envía mensajes al journal (ej. <code>echo "Mensaje" | systemd-cat</code>).</li>
+                    <li><strong><code>/etc/systemd/journald.conf</code>: Configura ubicación (<code>Storage=</code>) y límites.</li>
+                </ul>
+            </section>
+
+            <section id="108.3" class="lesson-section">
+                <h3>108.3 Conceptos básicos del Agente de Transferencia de Correo</h3>
+                <p>Un MTA envía y recibe correos en Linux, guardándolos en bandejas privadas (ej. `/var/spool/mail/usuario`). Usa SMTP (puerto TCP 25).</p>
+
+                <h4>MTAs en Linux: sendmail, postfix, exim</h4>
+                <ul>
+                    <li><strong>sendmail:</strong> Tradicional, flexible pero complejo. Por defecto solo local. Para aceptar remotas, editar <code>/etc/mail/sendmail.mc</code> en `DAEMON_OPTIONS` y reiniciar servicio.</li>
+                    <li><strong>postfix:</strong> Moderno, sencillo de configurar. Cola en <code>/var/spool/postfix/</code>.</li>
+                    <li><strong>exim:</strong> Popular en Debian, flexible.</li>
+                </ul>
+                <p>Los MTAs modernos son compatibles con comandos de sendmail.</p>
+
+                <h4>Herramientas y comandos del MTA</h4>
+                <ul>
+                    <li><strong>sendmail emulation:</strong> <code>sendmail -bp</code> (lista cola), <code>sendmail -q</code> (reintenta).</li>
+                    <li><strong><code>mailq</code>:</strong> Muestra cola pendiente y motivo de retraso (ej. "Connection refused").</li>
+                    <li><strong><code>mail</code>:</strong> Cliente consola. Modos lectura (`mail`) y envío (`mail -s "Asunto" user <<< "Msg"`).</li>
+                    <li><strong><code>newaliases</code>:</strong> Actualiza base de datos de alias tras modificar <code>/etc/aliases</code>.</li>
+                </ul>
+
+                <h4>Personalización de la entrega</h4>
+                <ul>
+                    <li><strong><code>~/.forward</strong>:</strong> Archivo en el directorio personal para reenviar correos. No necesita `newaliases` y debe ser escribible solo por el propietario.</li>
+                    <li><strong><code>/etc/aliases</code>:</strong> Alias del sistema (ej. `postmaster: carol`). Requiere `newaliases`.</li>
+                </ul>
+            </section>
+
+            <section id="108.4" class="lesson-section">
+                <h3>108.4 Gestión de la impresión y las impresoras</h3>
+                <p>A pesar del "papelless office", la impresión es clave. CUPS facilita esto enviando archivos a una cola, procesándolos con filtros.</p>
+
+                <h4>Servicio CUPS y su configuración</h4>
+                <p>Instalación: <code>sudo apt install cups</code> (Debian) o <code>sudo dnf install cups</code> (Fedora), luego <code>sudo systemctl start cups.service</code>.</p>
+                <p>Configuración en <code>/etc/cups/</code>:</p>
+                <ul>
+                    <li><strong><code>cupsd.conf</code>:</strong> Configura servicio, acceso web (<code>WebInterface Yes</code>).</li>
+                    <li><strong><code>printers.conf</strong>: Configuración de impresoras (no editar estando activo).</li>
+                    <li><strong><code>printcap</code>: Archivo legacy LPD, enlace a <code>/run/cups/printcap</code>.</li>
+                    <li><strong><code>ppd/</code>: Archivos de descripción de impresora.</li>
+                </ul>
+                <p>Logs en <code>/var/log/cups/</code>. Interfaz web en http://localhost:631.</p>
+
+                <h4>Herramientas legacy de lpd</h4>
+                <ul>
+                    <li><strong><code>lpr</code>:</strong> Envía a impresora por defecto.</li>
+                    <li><strong><code>lprm</code>:</strong> Cancela trabajos (ej. <code>lprm 20</code>).</li>
+                    <li><strong><code>lpq</strong>:</strong> Muestra cola y estados (ej. <code>lpq -a</code> todas las colas).</li>
+                    <li><strong><code>lpstat</strong>:</strong> Estado de impresoras (ej. <code>lpstat -p</code> disponibles).</li>
+                </ul>
+            </section>
+
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Has terminado la teoría? Repasa los puntos clave antes del examen.</p>
+                <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/108/repaso-tema-108.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
+                    📝 Ver Resumen del Tema 108
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
