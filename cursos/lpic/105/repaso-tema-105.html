@@ -1,242 +1,207 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Repaso Tema 105 (LPIC-1 105) en SysRiser. Resumen de personalización de shell y scripts sencillos para el examen.">
-    <meta name="keywords" content="LPIC-1, shell, scripts, Linux, curso">
-    <meta name="author" content="SysRiser">
-    <title>SysRiser - Repaso Tema 105 (LPIC-1 105)</title>
-    <link rel="stylesheet" href="/conf/styles.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="/images/favicon.png">
-</head>
-<body>
-    <div class="gradient-bg"></div>
-    <header>
-        <div class="header-left">
-            <a href="/index.html" class="header-logo">SysRiser</a>
-        </div>
-        <nav>
-            <a href="/index.html">Inicio</a>
-            <a href="/cursos/cursos.html">Cursos</a>
-            <a href="/proyectos/proyectos.html">Proyectos</a>
-        </nav>
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge" style="background: var(--accent); color: #000;">RESUMEN EXAMEN 105</span>
+        <h1>Repaso Tema 105: Shells y Scripts</h1>
+        <p>Resumen rápido para el examen: personalización de shell y scripts sencillos.</p>
     </header>
-    <main id="contenido">
-        <div class="hero">
-            <h1>Repaso Tema 105: Shells y Scripts (LPIC-1 105)</h1>
-            <p>Resumen rápido para el examen: personalización de shell y scripts sencillos.</p>
-        </div>
-        <a href="/cursos/lpic/105/105.html" class="back-link">← Volver a Shells y Scripts</a>
-        <div class="course-page">
-            <div class="sidebar">
-                <h3>Contenido del Repaso</h3>
-                <ul>
-                    <li><a href="#subtema-1051">105.1 Personalizar y usar el entorno de shell</a></li>
-                    <li><a href="#subtema-1052">105.2 Personalizar y escribir scripts sencillos</a></li>
-                </ul>
-            </div>
-            <div class="content">
-                
-                <section id="subtema-1051">
-                    <h2>105.1 Personalizar y usar el entorno de shell</h2>
-                    <p>El entorno de shell es la interfaz entre el usuario y el kernel de Linux, y personalizarlo mejora la productividad. Aquí están los aspectos principales:</p>
-                    
-                    <div class="exam-tip">
-                        <h3>Consejos clave</h3>
-                        <ul>
-                            <li>Para listar todos los alias: <code>alias</code> sin parámetros</li>
-                            <li>Para ver variables de entorno: <code>env</code> o <code>printenv</code></li>
-                            <li>Para hacer una variable global: <code>export VARIABLE</code></li>
-                            <li>El código de salida del último comando está en <code>$?</code></li>
-                        </ul>
-                    </div>
-                    
-                    <ul>
-                        <li><strong>Archivos de configuración:</strong>
-                            <ul>
-                                <li><strong>Globales (en <code>/etc</code>):</strong>
-                                    <ul>
-                                        <li><code>/etc/profile</code>: Define variables como <code>PATH</code> y <code>PS1</code> para sesiones de login.</li>
-                                        <li><code>/etc/profile.d/</code>: Scripts adicionales ejecutados por <code>/etc/profile</code>.</li>
-                                        <li><code>/etc/bash.bashrc</code>: Configura shells interactivos no-login, ajusta variables y tamaño de ventana.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Locales (en <code>~</code>):</strong>
-                                    <ul>
-                                        <li><code>~/.bash_profile</code>: Configura el entorno al iniciar una sesión de login.</li>
-                                        <li><code>~/.bash_login</code>: Se usa si no existe <code>.bash_profile</code>.</li>
-                                        <li><code>~/.profile</code>: Alternativa para shells Bourne, carga <code>.bashrc</code> si es bash.</li>
-                                        <li><code>~/.bashrc</code>: Almacena alias y funciones personales. <strong>No se lee en shells de login</strong>.</li>
-                                        <li><code>~/.bash_logout</code>: Tareas de limpieza al cerrar sesión.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Ejecución:</strong> Usa <code>source</code> o <code>.</code> (punto) para recargar archivos (ej. <code>source ~/.bashrc</code>).</li>
-                            </ul>
-                        </li>
-                        <li><strong>Variables:</strong>
-                            <ul>
-                                <li>Almacenan valores (ej. <code>distro=zorinos</code>). No pueden empezar por números ni tener espacios.</li>
-                                <li><strong>Tipos:</strong> 
-                                    <ul>
-                                        <li>Locales (minúsculas, solo en el shell actual)</li>
-                                        <li>Globales (mayúsculas, para toda la sesión)</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Comandos:</strong>
-                                    <ul>
-                                        <li><code>export</code>: Convierte variables locales en globales (ej. <code>export VAR=valor</code>).</li>
-                                        <li><code>set</code>: Muestra todas las variables y funciones.</li>
-                                        <li><code>unset</code>: Elimina una variable (ej. <code>unset VAR</code>).</li>
-                                        <li><code>env</code>/<code>printenv</code>: Lista variables de entorno.</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Variables especiales:</strong>
-                                    <ul>
-                                        <li><code>DISPLAY</code>: Configuración de pantalla X11</li>
-                                        <li><code>$$</code>: PID del shell actual</li>
-                                        <li><code>$?</code>: Código de salida del último comando</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><strong>Alias y funciones:</strong>
-                            <ul>
-                                <li><strong>Alias:</strong> Atajos para comandos (ej. <code>alias ll="ls -la"</code>). 
-                                    <ul>
-                                        <li>Para listar: <code>alias</code></li>
-                                        <li>Para eliminar: <code>unalias nombre</code></li>
-                                    </ul>
-                                </li>
-                                <li><strong>Funciones:</strong> Bloques reutilizables (ej. <code>miFuncion() { echo "Hola $1"; }</code>).</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </section>
+    <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/105/5.html')" class="cyber-back-btn" style="cursor: pointer; display: inline-flex; align-items: center; text-decoration: none;">
+    ← Volver a la lección completa
+</a>
 
-                <section id="subtema-1052">
-                    <h2>105.2 Personalizar y escribir scripts sencillos</h2>
-                    <p>Los scripts automatizan tareas con comandos ejecutados por un intérprete como bash. Aquí los puntos clave:</p>
-                    
-                    <div class="exam-tip">
-                        <h3>Consejos clave</h3>
-                        <ul>
-                            <li>Para verificar si es un archivo: <code>-f</code></li>
-                            <li>Para verificar si es un directorio: <code>-d</code></li>
-                            <li>Para comparar números: <code>-eq</code>, <code>-lt</code>, etc.</li>
-                            <li>Para capturar salida de comandos: <code>$(comando)</code></li>
-                        </ul>
-                    </div>
-                    
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Contenido del Repaso</h4>
+            <ul>
+                <li><a href="#105.1">105.1 Personalizar y usar el entorno de shell</a></li>
+                <li><a href="#105.2">105.2 Personalizar y escribir scripts sencillos</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            <section id="105.1" class="lesson-section">
+                <h3>105.1 Personalizar y usar el entorno de shell</h3>
+                <p>El entorno de shell es la interfaz entre el usuario y el kernel de Linux, y personalizarlo mejora la productividad. Aquí están los aspectos principales:</p>
+                
+                <div class="exam-tip">
+                    <h4>Consejos clave</h4>
                     <ul>
-                        <li><strong>Estructura y ejecución:</strong>
-                            <ul>
-                                <li>Un script es una lista de comandos con shebang (<code>#!/bin/bash</code>) al inicio. Debe ser ejecutable (<code>chmod +x script.sh</code>).</li>
-                                <li><strong>Comandos básicos:</strong>
-                                    <ul>
-                                        <li><code>echo</code>: Muestra texto (con <code>-n</code> evita salto de línea, ej. <code>echo -n "Hola, "; echo "mundo"</code>).</li>
-                                        <li><code>read</code>: Recoge entrada del usuario (ej. <code>read nombre; echo "Hola $nombre"</code>).</li>
-                                        <li><code>seq</code>: Genera secuencias numéricas (ej. <code>seq 1 3</code> → <code>1 2 3</code>).</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Múltiples comandos:</strong> Separa con <code>;</code> (ej. <code>echo "Hora: "; date +%H:%M</code>).</li>
-                                <li><strong>Variables especiales:</strong>
-                                    <ul>
-                                        <li><code>$*</code> y <code>$@</code>: Todos los argumentos</li>
-                                        <li><code>$#</code>: Cantidad de argumentos</li>
-                                        <li><code>$0</code>: Nombre del script</li>
-                                        <li><code>$$</code>: PID del proceso actual</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Aritmética:</strong>
-                                    <ul>
-                                        <li>Con <code>expr</code>: <code>SUM=`expr 5 + 3`</code></li>
-                                        <li>Con <code>$(( ))</code>: <code>result=$((5 * 3))</code></li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><strong>Ejecución condicional:</strong>
-                            <ul>
-                                <li><strong>Operadores:</strong>
-                                    <ul>
-                                        <li><code>&&</code>: Ejecuta si el anterior tiene éxito</li>
-                                        <li><code>||</code>: Ejecuta si falla</li>
-                                    </ul>
-                                </li>
-                                <li><strong>if:</strong> Ejecuta si la condición devuelve 0.
-                                    <pre>
+                        <li>Para listar todos los alias: <code>alias</code> sin parámetros</li>
+                        <li>Para ver variables de entorno: <code>env</code> o <code>printenv</code></li>
+                        <li>Para hacer una variable global: <code>export VARIABLE</code></li>
+                        <li>El código de salida del último comando está en <code>$?</code></li>
+                    </ul>
+                </div>
+                
+                <ul>
+                    <li><strong>Archivos de configuración:</strong>
+                        <ul>
+                            <li><strong>Globales (en <code>/etc</code>):</strong>
+                                <ul>
+                                    <li><code>/etc/profile</code>: Define variables como <code>PATH</code> y <code>PS1</code> para sesiones de login.</li>
+                                    <li><code>/etc/profile.d/</code>: Scripts adicionales ejecutados por <code>/etc/profile</code>.</li>
+                                    <li><code>/etc/bash.bashrc</code>: Configura shells interactivos no-login, ajusta variables y tamaño de ventana.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Locales (en <code>~</code>):</strong>
+                                <ul>
+                                    <li><code>~/.bash_profile</code>: Configura el entorno al iniciar una sesión de login.</li>
+                                    <li><code>~/.bash_login</code>: Se usa si no existe <code>.bash_profile</code>.</li>
+                                    <li><code>~/.profile</code>: Alternativa para shells Bourne, carga <code>.bashrc</code> si es bash.</li>
+                                    <li><code>~/.bashrc</code>: Almacena alias y funciones personales. <strong>No se lee en shells de login</strong>.</li>
+                                    <li><code>~/.bash_logout</code>: Tareas de limpieza al cerrar sesión.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Ejecución:</strong> Usa <code>source</code> o <code>.</code> (punto) para recargar archivos (ej. <code>source ~/.bashrc</code>).</li>
+                        </ul>
+                    </li>
+                    <li><strong>Variables:</strong>
+                        <ul>
+                            <li>Almacenan valores (ej. <code>distro=zorinos</code>). No pueden empezar por números ni tener espacios.</li>
+                            <li><strong>Tipos:</strong> 
+                                <ul>
+                                    <li>Locales (minúsculas, solo en el shell actual)</li>
+                                    <li>Globales (mayúsculas, para toda la sesión)</li>
+                                </ul>
+                            </li>
+                            <li><strong>Comandos:</strong>
+                                <ul>
+                                    <li><code>export</code>: Convierte variables locales en globales (ej. <code>export VAR=valor</code>).</li>
+                                    <li><code>set</code>: Muestra todas las variables y funciones.</li>
+                                    <li><code>unset</code>: Elimina una variable (ej. <code>unset VAR</code>).</li>
+                                    <li><code>env</code>/<code>printenv</code>: Lista variables de entorno.</li>
+                                </ul>
+                            </li>
+                            <li><strong>Variables especiales:</strong>
+                                <ul>
+                                    <li><code>DISPLAY</code>: Configuración de pantalla X11</li>
+                                    <li><code>$$</code>: PID del shell actual</li>
+                                    <li><code>$?</code>: Código de salida del último comando</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Alias y funciones:</strong>
+                        <ul>
+                            <li><strong>Alias:</strong> Atajos para comandos (ej. <code>alias ll="ls -la"</code>). 
+                                <ul>
+                                    <li>Para listar: <code>alias</code></li>
+                                    <li>Para eliminar: <code>unalias nombre</code></li>
+                                </ul>
+                            </li>
+                            <li><strong>Funciones:</strong> Bloques reutilizables (ej. <code>miFuncion() { echo "Hola $1"; }</code>).</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="105.2" class="lesson-section">
+                <h3>105.2 Personalizar y escribir scripts sencillos</h3>
+                <p>Los scripts automatizan tareas con comandos ejecutados por un intérprete como bash. Aquí los puntos clave:</p>
+                
+                <div class="exam-tip">
+                    <h4>Consejos clave</h4>
+                    <ul>
+                        <li>Para verificar si es un archivo: <code>-f</code></li>
+                        <li>Para verificar si es un directorio: <code>-d</code></li>
+                        <li>Para comparar números: <code>-eq</code>, <code>-lt</code>, etc.</li>
+                        <li>Para capturar salida de comandos: <code>$(comando)</code></li>
+                    </ul>
+                </div>
+                
+                <ul>
+                    <li><strong>Estructura y ejecución:</strong>
+                        <ul>
+                            <li>Un script es una lista de comandos con shebang (<code>#!/bin/bash</code>) al inicio. Debe ser ejecutable (<code>chmod +x script.sh</code>).</li>
+                            <li><strong>Comandos básicos:</strong>
+                                <ul>
+                                    <li><code>echo</code>: Muestra texto (con <code>-n</code> evita salto de línea, ej. <code>echo -n "Hola, "; echo "mundo"</code>).</li>
+                                    <li><code>read</code>: Recoge entrada del usuario (ej. <code>read nombre; echo "Hola $nombre"</code>).</li>
+                                    <li><code>seq</code>: Genera secuencias numéricas (ej. <code>seq 1 3</code> → <code>1 2 3</code>).</li>
+                                </ul>
+                            </li>
+                            <li><strong>Múltiples comandos:</strong> Separa con <code>;</code> (ej. <code>echo "Hora: "; date +%H:%M</code>).</li>
+                            <li><strong>Variables especiales:</strong>
+                                <ul>
+                                    <li><code>$*</code> y <code>$@</code>: Todos los argumentos</li>
+                                    <li><code>$#</code>: Cantidad de argumentos</li>
+                                    <li><code>$0</code>: Nombre del script</li>
+                                    <li><code>$$</code>: PID del proceso actual</li>
+                                </ul>
+                            </li>
+                            <li><strong>Aritmética:</strong>
+                                <ul>
+                                    <li>Con <code>expr</code>: <code>SUM=`expr 5 + 3`</code></li>
+                                    <li>Con <code>$(( ))</code>: <code>result=$((5 * 3))</code></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Ejecución condicional:</strong>
+                        <ul>
+                            <li><strong>Operadores:</strong>
+                                <ul>
+                                    <li><code>&&</code>: Ejecuta si el anterior tiene éxito</li>
+                                    <li><code>||</code>: Ejecuta si falla</li>
+                                </ul>
+                            </li>
+                            <li><strong>if:</strong> Ejecuta si la condición devuelve 0.
+                                <pre>
 if [ -f "/etc/passwd" ]; then
     echo "El archivo existe"
 fi
-                                    </pre>
-                                </li>
-                                <li><strong>case:</strong> Alternativa a múltiples if
-                                    <pre>
+                                </pre>
+                            </li>
+                            <li><strong>case:</strong> Alternativa a múltiples if
+                                <pre>
 case $1 in
     start) echo "Iniciando..." ;;
     stop) echo "Deteniendo..." ;;
     *) echo "Opción no válida" ;;
 esac
-                                    </pre>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><strong>Pruebas:</strong>
-                            <ul>
-                                <li><strong>Archivos:</strong>
-                                    <ul>
-                                        <li><code>-f</code>: Es un archivo regular</li>
-                                        <li><code>-d</code>: Es un directorio</li>
-                                    </ul>
-                                </li>
-                                <li><strong>Números:</strong>
-                                    <ul>
-                                        <li><code>-eq</code>: Igual</li>
-                                        <li><code>-lt</code>: Menor que</li>
-                                        <li><code>-gt</code>: Mayor que</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </li>
-                        <li><strong>Bucles:</strong>
-                            <ul>
-                                <li><strong>for:</strong>
-                                    <pre>
+                                </pre>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Pruebas:</strong>
+                        <ul>
+                            <li><strong>Archivos:</strong>
+                                <ul>
+                                    <li><code>-f</code>: Es un archivo regular</li>
+                                    <li><code>-d</code>: Es un directorio</li>
+                                </ul>
+                            </li>
+                            <li><strong>Números:</strong>
+                                <ul>
+                                    <li><code>-eq</code>: Igual</li>
+                                    <li><code>-lt</code>: Menor que</li>
+                                    <li><code>-gt</code>: Mayor que</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li><strong>Bucles:</strong>
+                        <ul>
+                            <li><strong>for:</strong>
+                                <pre>
 for i in 1 2 3; do
     echo "Número $i"
 done
-                                    </pre>
-                                </li>
-                                <li><strong>while:</strong>
-                                    <pre>
+                                </pre>
+                            </li>
+                            <li><strong>while:</strong>
+                                <pre>
 count=1
 while [ $count -le 3 ]; do
     echo "Contador: $count"
     count=$((count+1))
 done
-                                    </pre>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </section>
-            </div>
+                                </pre>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
         </div>
-    </main>
-    <footer>
-        <div class="footer-content">
-            <p>SysRiser | Un lugar para aprender sistemas y redes</p>
-            <div class="footer-links">
-                <a href="https://github.com/sysriser" data-tooltip="Visita nuestro GitHub">GitHub</a>
-                <a href="mailto:contact@sysriser.com" data-tooltip="Envíanos un correo">Contacto</a>
-                <a href="https://linkedin.com" data-tooltip="Conéctate en LinkedIn">LinkedIn</a>
-                <a href="https://www.youtube.com/@sysriser" data-tooltip="Mira nuestros videos">YouTube</a>
-            </div>
-        </div>
-    </footer>
-    <a href="#" id="back-to-top">↑ Volver arriba</a>
-    <script src="/conf/scripts.js"></script>
-</body>
-</html>
+    </div>
+</div>
