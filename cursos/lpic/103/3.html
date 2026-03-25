@@ -2,7 +2,15 @@
     <header class="lesson-header">
         <span class="badge">LPIC-1 Examen 103</span>
         <h1>Comandos GNU y Unix</h1>
-        <p>Aprende a trabajar con comandos esenciales en sistemas Linux.</p>
+        <p>Domina la línea de comandos, procesamiento de texto, gestión de archivos y procesos en Linux.</p>
+        
+        <a href="https://youtu.be/enwp35IHCic" target="_blank" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - TEMA 103</strong>
+                <span>Comandos, Filtros y Procesos</span>
+            </div>
+        </a>
     </header>
 
     <div class="lesson-layout">
@@ -12,9 +20,9 @@
                 <li><a href="#103.1">103.1 Trabajar desde la línea de comandos</a></li>
                 <li><a href="#103.2">103.2 Procesar secuencias de texto usando filtros</a></li>
                 <li><a href="#103.3">103.3 Administración básica de archivos</a></li>
-                <li><a href="#103.4">103.4 Uso de secuencias, tuberías y redireccionamientos</a></li>
+                <li><a href="#103.4">103.4 Uso de secuencias, tuberías y redirecciones</a></li>
                 <li><a href="#103.5">103.5 Crear, supervisar y matar procesos</a></li>
-                <li><a href="#103.6">103.6 Modificar la prioridad de ejecución</a></li>
+                <li><a href="#103.6">103.6 Modificar la prioridad de procesos</a></li>
                 <li><a href="#103.7">103.7 Búsquedas con expresiones regulares</a></li>
                 <li><a href="#103.8">103.8 Edición básica de archivos</a></li>
             </ul>
@@ -26,366 +34,256 @@
                 <h3>103.1 Trabajar desde la línea de comandos</h3>
                 
                 <h4>Obteniendo información del sistema</h4>
-                <p>Estos comandos te ayudan a conocer detalles del sistema y del entorno de trabajo.</p>
                 <ul>
-                    <li><strong><code>pwd</code></strong>: Muestra el directorio actual en el que estás.<br>
-                        <em>Ejemplo:</em> Si estás en <code>/home/usuario</code>, al ejecutar <code>pwd</code> obtendrás: <code>/home/usuario</code>.</li>
-                    <li><strong><code>touch</code></strong>: Crea un archivo vacío.<br>
-                        <em>Ejemplo:</em> <code>touch archivo.txt</code> crea un archivo llamado <code>archivo.txt</code>.</li>
-                    <li><strong><code>ls</code></strong>: Lista los archivos y carpetas del directorio actual.<br>
-                        <em>Ejemplo:</em> <code>ls</code> podría mostrar: <code>archivo.txt  documentos  imagen.jpg</code>.</li>
-                    <li><strong><code>uname -a</code></strong>: Muestra información completa del sistema.<br>
-                        <em>Ejemplo:</em> <code>uname -a</code> podría mostrar: <code>Linux mi-pc 5.15.0-73-generic #80-Ubuntu SMP Mon May 15 15:11:47 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux</code>.</li>
+                    <li><strong><code>pwd</code></strong>: Muestra el directorio actual.</li>
+                    <li><strong><code>touch</code></strong>: Crea un archivo vacío.</li>
+                    <li><strong><code>ls</code></strong>: Lista archivos y carpetas.</li>
+                    <li><strong><code>uname -a</code></strong>: Muestra información completa del sistema.</li>
                 </ul>
 
-                <h4>Obteniendo información de los comandos</h4>
-                <p>Estos comandos te ayudan a aprender más sobre otros comandos y su uso.</p>
+                <h4>Información de los comandos</h4>
                 <ul>
-                    <li><strong><code>man</code></strong>: Muestra el manual de un comando.<br>
-                        <em>Ejemplo:</em> <code>man ls</code> muestra la documentación del comando <code>ls</code>.</li>
-                    <li><strong><code>apropos</code></strong>: Busca páginas del manual relacionadas con una palabra clave.<br>
-                        <em>Ejemplo:</em> <code>apropos copy</code> podría mostrar comandos como <code>cp</code> (copiar archivos).</li>
-                    <li><strong><code>type</code></strong>: Indica qué tipo de comando es (integrado, alias, etc.).<br>
-                        <em>Ejemplo:</em> <code>type cd</code> muestra: <code>cd is a shell builtin</code>.</li>
-                    <li><strong><code>hash -d</code></strong>: Limpia la caché de rutas de comandos.<br>
-                        <em>Ejemplo:</em> Si cambias la ubicación de un comando, ejecuta <code>hash -d ls</code> para actualizar la caché de <code>ls</code>.</li>
-                    <li><strong><code>which</code></strong>: Muestra la ruta absoluta de un comando.<br>
-                        <em>Ejemplo:</em> <code>which ls</code> podría mostrar: <code>/bin/ls</code>.</li>
-                    <li><strong><code>history</code></strong>: Lista los comandos que has ejecutado. También se guarda en el archivo <code>.bash_history</code>.<br>
-                        <em>Ejemplo:</em> <code>history</code> podría mostrar: <code>1  ls  2  cd /home  3  pwd</code>.</li>
+                    <li><strong><code>man</code></strong>: Muestra el manual de un comando.</li>
+                    <li><strong><code>apropos</code></strong>: Busca páginas de manual por palabra clave.</li>
+                    <li><strong><code>type</code></strong>: Indica el tipo de comando (integrado, alias).</li>
+                    <li><strong><code>which</code></strong>: Muestra la ruta absoluta de un comando.</li>
+                    <li><strong><code>history</code></strong>: Lista comandos ejecutados.</li>
                 </ul>
 
-                <h4>Encontrar, crear y eliminar variables de entorno</h4>
-                <p>Las variables de entorno almacenan información útil para el sistema y los programas.</p>
+                <h4>Variables de entorno</h4>
                 <ul>
-                    <li><strong><code>env</code></strong>: Muestra todas las variables de entorno.<br>
-                        <em>Ejemplo:</em> <code>env</code> podría mostrar: <code>PATH=/usr/bin:/bin  HOME=/home/usuario</code>.</li>
-                    <li><strong><code>echo $VARIABLE</code></strong>: Muestra el valor de una variable.<br>
-                        <em>Ejemplo:</em> <code>echo $HOME</code> muestra: <code>/home/usuario</code>.</li>
-                    <li><strong><code>export VARIABLE</code></strong>: Crea o hace permanente una variable.<br>
-                        <em>Ejemplo:</em> <code>export MI_VAR="hola"</code> crea la variable <code>MI_VAR</code> con el valor <code>hola</code>.</li>
-                    <li><strong><code>set</code></strong>: Lista todas las variables y funciones del entorno.<br>
-                        <em>Ejemplo:</em> <code>set</code> podría mostrar: <code>MI_VAR='hola'  PATH='/usr/bin:/bin'</code>.</li>
-                    <li><strong><code>unset</code></strong>: Elimina una variable de entorno.<br>
-                        <em>Ejemplo:</em> <code>unset MI_VAR</code> elimina la variable <code>MI_VAR</code>.</li>
+                    <li><strong><code>env</code></strong>: Muestra todas las variables de entorno.</li>
+                    <li><strong><code>echo $VAR</code></strong>: Muestra el valor de una variable.</li>
+                    <li><strong><code>export VAR</code></strong>: Crea o exporta una variable.</li>
+                    <li><strong><code>unset VAR</code></strong>: Elimina una variable.</li>
                 </ul>
 
-                <h4>Mantener el valor de caracteres especiales</h4>
-                <p>En Bash, los caracteres alfanuméricos (a-z, 0-9) se leen literalmente, pero los caracteres especiales (como espacios o símbolos) necesitan un tratamiento especial.</p>
-                <p>Por ejemplo, si intentas crear un archivo con <code>touch my big file</code>, Bash interpretará los espacios como separadores. Para solucionarlo:</p>
+                <h4>Caracteres especiales</h4>
+                <p>Para interpretar caracteres especiales literalmente (como espacios), usa:</p>
                 <ul>
-                    <li><strong>Comillas simples (''):</strong> Interpreta todo de forma literal.<br>
-                        <em>Ejemplo:</em> <code>touch 'my big file'</code> crea <code>my big file</code>.</li>
-                    <li><strong>Comillas dobles (""):</strong> Interpreta algunos símbolos como <code>$</code>, <code>`</code>, <code>\</code>.<br>
-                        <em>Ejemplo:</em> <code>touch "my big file"</code> crea <code>my big file</code>.</li>
-                    <li><strong>Contrabarra (\):</strong> Hace que Bash lea el siguiente carácter literalmente.<br>
-                        <em>Ejemplo:</em> <code>touch my\ big\ file</code> crea <code>my big file</code>.</li>
+                    <li><strong>Comillas simples <code>''</code></strong>: Interpreta todo literalmente.</li>
+                    <li><strong>Comillas dobles <code>""</code></strong>: Interpreta <code>$</code>, <code>`</code> y <code>\</code>.</li>
+                    <li><strong>Contrabarra <code>\</code></strong>: Escapa el siguiente carácter.</li>
                 </ul>
             </section>
 
             <section id="103.2" class="lesson-section">
                 <h3>103.2 Procesar secuencias de texto usando filtros</h3>
                 
-                <h4>Redirecciones y tuberías (pipes)</h4>
-                <p>Los comandos de texto usan <code>stdin</code> (entrada), <code>stdout</code> (salida) y <code>stderr</code> (errores).</p>
+                <h4>Redirecciones y Tuberías</h4>
                 <ul>
-                    <li><strong><code>></code></strong>: Redirige la salida a un archivo (sobrescribe).<br>
-                        <em>Ejemplo:</em> <code>echo "Hola" > saludo.txt</code>.</li>
-                    <li><strong><code>>></code></strong>: Añade la salida a un archivo.<br>
-                        <em>Ejemplo:</em> <code>echo "Adiós" >> saludo.txt</code>.</li>
-                    <li><strong><code>|</code></strong> (pipe): Envía la salida de un comando a otro.<br>
-                        <em>Ejemplo:</em> <code>ls | grep ".txt"</code>.</li>
-                    <li><strong><code>diff</code></strong>: Compara dos archivos.<br>
-                        <em>Ejemplo:</em> <code>diff archivo1.txt archivo2.txt</code>.</li>
-                    <li><strong><code>grep</code></strong>: Filtra texto. Con <code>-i</code> ignora mayúsculas/minúsculas.<br>
-                        <em>Ejemplo:</em> <code>grep -i "hola" saludo.txt</code>.</li>
+                    <li><strong><code>></code></strong>: Redirige salida (sobrescribe).</li>
+                    <li><strong><code>>></code></strong>: Añade salida.</li>
+                    <li><strong><code>|</code></strong>: Envía salida de un comando a otro.</li>
+                    <li><strong><code>grep</code></strong>: Filtra texto (<code>-i</code> ignora mayúsculas).</li>
                 </ul>
 
-                <h4>Leer un archivo comprimido</h4>
+                <h4>Archivos comprimidos</h4>
                 <ul>
-                    <li><strong><code>bzip2</code></strong> / <strong><code>bunzip2</code></strong>: Comprime y descomprime.<br>
-                        <em>Ejemplo:</em> <code>bzip2 archivo.txt</code> crea <code>archivo.txt.bz2</code>.</li>
-                    <li><strong><code>gzip</code></strong> / <strong><code>gunzip</code></strong>: Comprime y descomprime.<br>
-                        <em>Ejemplo:</em> <code>gzip archivo.txt</code> crea <code>archivo.txt.gz</code>.</li>
-                    <li><strong><code>xz</code></strong> / <strong><code>unxz</code></strong>: Comprime y descomprime.<br>
-                        <em>Ejemplo:</em> <code>xz archivo.txt</code> crea <code>archivo.txt.xz</code>.</li>
-                    <li><strong><code>bzcat</code></strong>, <strong><code>zcat</code></strong>, <strong><code>xzcat</code></strong>: Muestra el contenido sin descomprimir.<br>
-                        <em>Ejemplo:</em> <code>zcat archivo.txt.gz</code>.</li>
+                    <li><strong><code>gzip</code> / <code>gunzip</code></strong>: Compresión estándar.</li>
+                    <li><strong><code>bzip2</code> / <code>bunzip2</code></strong>: Compresión alternativa.</li>
+                    <li><strong><code>xz</code> / <code>unxz</code></strong>: Alta compresión.</li>
+                    <li><strong><code>zcat</code>, <code>bzcat</code>, <code>xzcat</code></strong>: Leen contenido sin descomprimir.</li>
                 </ul>
 
-                <h4>Ver un archivo paginado</h4>
+                <h4>Ver y manipular texto</h4>
                 <ul>
-                    <li><strong><code>less</code></strong>: Muestra el archivo con navegación (arriba/abajo).<br>
-                        <em>Ejemplo:</em> <code>less archivo.txt</code>.</li>
-                    <li><strong><code>more</code></strong>: Muestra el archivo página por página (solo hacia adelante).<br>
-                        <em>Ejemplo:</em> <code>more archivo.txt</code>.</li>
+                    <li><strong><code>less</code></strong>: Navega página por página.</li>
+                    <li><strong><code>head</code> / <code>tail</code></strong>: Muestra principio o final de un archivo.</li>
+                    <li><strong><code>wc -l</code></strong>: Cuenta líneas.</li>
+                    <li><strong><code>cut</code></strong>: Extrae campos (ej. <code>cut -d' ' -f1</code>).</li>
+                    <li><strong><code>sort</code></strong>: Ordena líneas.</li>
+                    <li><strong><code>tr</code></strong>: Sustituye caracteres.</li>
                 </ul>
 
-                <h4>Obtener una parte del texto</h4>
+                <h4>Integridad de datos</h4>
                 <ul>
-                    <li><strong><code>head</code></strong>: Muestra las primeras líneas. Usa <code>-n</code> para elegir cuántas.<br>
-                        <em>Ejemplo:</em> <code>head -n 3 archivo.txt</code>.</li>
-                    <li><strong><code>tail</code></strong>: Muestra las últimas líneas. Usa <code>-n</code> para elegir cuántas.<br>
-                        <em>Ejemplo:</em> <code>tail -n 2 archivo.txt</code>.</li>
-                </ul>
-
-                <h4>Fundamentos de sed</h4>
-                <p><code>sed</code> filtra y transforma texto.</p>
-                <ul>
-                    <li><strong>borrar:</strong> <code>sed '/cat/d' nombres.txt</code> elimina líneas con "cat".</li>
-                    <li><strong>imprimir coincidencias:</strong> <code>sed -n '/cat/p' ftu.txt</code> muestra solo líneas con "cat".</li>    
-                    <li><strong>reemplazar:</strong> <code>sed 's/cat/dog/' nombres.txt</code> cambia "cat" por "dog".</li>
-                    <li><strong>reemplazar todas:</strong> <code>sed -i 's/cat/dog/g' nombres.txt</code>.</li>
-                    <li><strong>con backup:</strong> <code>sed -i.backup 's/cat/dog/' nombres.txt</code>.</li>
-                </ul>
-
-                <h4>Otros comandos útiles</h4>
-                <ul>
-                    <li><strong><code>nl</code></strong>: Numera las líneas del archivo.<br>
-                        <em>Ejemplo:</em> <code>nl archivo.txt</code>.</li>
-                    <li><strong><code>wc</code></strong>: Cuenta líneas, palabras o caracteres. <code>-l</code> solo líneas.<br>
-                        <em>Ejemplo:</em> <code>wc -l archivo.txt</code>.</li>
-                    <li><strong><code>cut</code></strong>: Extrae partes de cada línea.<br>
-                        <em>Ejemplo:</em> <code>cut -d' ' -f1 nombres.txt</code>.</li>
-                    <li><strong><code>sort</code></strong>: Ordena líneas. <code>-n</code> ordena numéricamente.<br>
-                        <em>Ejemplo:</em> <code>sort -n numeros.txt</code>.</li>
-                    <li><strong><code>tr</code></strong>: Sustituye caracteres.<br>
-                        <em>Ejemplo:</em> <code>echo "hola" | tr 'a' 'A'</code> muestra <code>holA</code>.</li>
+                    <li><strong><code>sha256sum archivo</code></strong>: Genera hash.</li>
+                    <li><strong><code>sha256sum -c archivo_hash</code></strong>: Verifica integridad.</li>
                 </ul>
             </section>
 
             <section id="103.3" class="lesson-section">
                 <h3>103.3 Administración básica de archivos</h3>
-
-                <h4>Manipulación de archivos</h4>
-                <p>En Linux, todo es un archivo: archivos regulares, directorios y archivos especiales.</p>
+                
+                <h4>Comandos básicos</h4>
                 <ul>
-                    <li><strong><code>ls -l</code></strong>: Muestra permisos, propietario, tamaño, fecha y nombre.<br>
-                        Primer carácter: <code>-</code> (archivo), <code>d</code> (directorio), <code>l</code> (enlace simbólico).</li>
-                    <li><strong>Opciones útiles:</strong>
-                        <ul>
-                            <li><code>-a</code>: Muestra archivos ocultos.</li>
-                            <li><code>-h</code>: Tamaños legibles (KB, MB).</li>
-                            <li><code>-R</code>: Lista directorios recursivamente.</li>
-                        </ul>
-                    </li>
-                    <li><strong><code>touch</code></strong>: Crea un archivo vacío.</li>
-                    <li><strong><code>cp</code></strong>: Copia archivos. Usa <code>-r</code> para directorios.</li>
-                    <li><strong><code>mv</code></strong>: Mueve o renombra archivos.</li>
-                    <li><strong><code>rm</code></strong>: Elimina archivos. Usa <code>-r</code> para directorios.</li>
-                    <li><strong><code>mkdir</code></strong>: Crea directorios. Usa <code>-p</code> para crear subdirectorios.</li>
-                    <li><strong><code>rmdir</code></strong>: Elimina directorios vacíos.</li>
+                    <li><strong><code>ls -l</code></strong>: Lista con detalles (permisos, propietario).</li>
+                    <li><strong><code>cp</code></strong>: Copia archivos (<code>-r</code> para directorios).</li>
+                    <li><strong><code>mv</code></strong>: Mueve o renombra.</li>
+                    <li><strong><code>rm</code></strong>: Elimina (<code>-r</code> recursivo).</li>
+                    <li><strong><code>mkdir</code> / <code>rmdir</code></strong>: Crea/Elimina directorios.</li>
                 </ul>
 
-                <h4>Archivos globbing y wildcards</h4>
-                <p>Comodines para coincidir con varios archivos.</p>
+                <h4>Globbing y Wildcards</h4>
                 <ul>
-                    <li><strong><code>*</code></strong>: Coincide con cero o más caracteres.<br>
-                        <em>Ejemplo:</em> <code>ls *.txt</code>.</li>
-                    <li><strong><code>?</code></strong>: Coincide con un solo carácter.<br>
-                        <em>Ejemplo:</em> <code>ls file?.txt</code>.</li>
-                    <li><strong><code>[]</code></strong>: Coincide con un carácter dentro de un rango.<br>
-                        <em>Ejemplo:</em> <code>ls file[1-3].txt</code>.</li>
+                    <li><strong><code>*</code></strong>: Coincide con cualquier cadena.</li>
+                    <li><strong><code>?</code></strong>: Coincide con un carácter.</li>
+                    <li><strong><code>[...]</code></strong>: Coincide con un conjunto o rango.</li>
                 </ul>
 
-                <h4>Cómo encontrar archivos</h4>
-                <p>Usa <code>find</code> para buscar archivos.</p>
+                <h4>Encontrar archivos (<code>find</code>)</h4>
                 <ul>
-                    <li><strong>Por nombre:</strong> <code>find / -name "archivo.txt"</code> (o <code>-iname</code> para ignorar mayúsculas).</li>
-                    <li><strong>Por tipo:</strong> <code>find / -type d</code> (busca directorios).</li>
-                    <li><strong>Por tamaño:</strong> <code>find /home -size +5M</code> (mayores a 5 MB).</li>
-                    <li><strong>Por tiempo:</strong> <code>find /tmp -mtime +2</code> (modificados hace más de 2 días).</li>
-                    <li><strong>Ejecutar acción:</strong> <code>find /var/log -type f -name "*.log" -exec ls -l {} \;</code>.</li>
+                    <li><strong>Por nombre:</strong> <code>find / -name "archivo.txt"</code>.</li>
+                    <li><strong>Por tipo:</strong> <code>find / -type d</code> (directorios).</li>
+                    <li><strong>Por tamaño:</strong> <code>find /home -size +5M</code>.</li>
+                    <li><strong>Ejecutar acción:</strong> <code>find ... -exec comando {} \;</code>.</li>
                 </ul>
 
-                <h4>Archivado de archivos</h4>
-                <p>Usa <code>tar</code> para agrupar archivos.</p>
+                <h4>Archivado (<code>tar</code>)</h4>
                 <ul>
-                    <li><strong>Crear:</strong> <code>tar -cvf archivo.tar archivo1.txt archivo2.txt</code>.</li>
-                    <li><strong>Extraer:</strong> <code>tar -xvf archivo.tar</code>.</li>
-                    <li><strong>Listar:</strong> <code>tar -tvf archivo.tar</code>.</li>
-                    <li><strong>Comprimir con gzip:</strong> <code>tar -czvf comprimido.tar.gz dir1</code>.</li>
-                    <li><strong>Comprimir con bzip2:</strong> <code>tar -cjvf comprimido.tar.bz2 dir1</code>.</li>
+                    <li><strong>Crear:</strong> <code>tar -czvf archivo.tar.gz dir/</code>.</li>
+                    <li><strong>Extraer:</strong> <code>tar -xzvf archivo.tar.gz</code>.</li>
+                    <li><strong>Ver:</strong> <code>tar -tzvf archivo.tar.gz</code>.</li>
                 </ul>
             </section>
 
             <section id="103.4" class="lesson-section">
-                <h3>103.4 Uso de secuencias de texto, tuberías y redireccionamientos</h3>
+                <h3>103.4 Uso de secuencias, tuberías y redirecciones</h3>
                 
-                <h4>Redirecciones</h4>
+                <h4>Redirecciones de E/S</h4>
                 <ul>
-                    <li><strong><code><</code></strong>: Usa un archivo como entrada.<br>
-                        <em>Ejemplo:</em> <code>wc -l < archivo.txt</code>.</li>
-                    <li><strong><code>2></code></strong>: Guarda errores en un archivo.<br>
-                        <em>Ejemplo:</em> <code>ls archivo_inexistente 2> errores.txt</code>.</li>
-                    <li><strong><code>2>></code></strong>: Añade errores a un archivo.</li>
-                    <li><strong><code>&></code></strong> o <strong><code>2>&1</code></strong>: Guarda salida y errores juntos.<br>
-                        <em>Ejemplo:</em> <code>ls archivo_inexistente &> salida.txt</code>.</li>
+                    <li><strong><code><</code></strong>: Entrada desde archivo.</li>
+                    <li><strong><code>></code> / <code>>></code></strong>: Salida estándar (sobrescribir / añadir).</li>
+                    <li><strong><code>2></code> / <code>2>></code></strong>: Salida de error.</li>
+                    <li><strong><code>&></code></strong>: Redirige salida y error juntos.</li>
                 </ul>
 
                 <h4>Here Document y Here String</h4>
                 <ul>
-                    <li><strong>Here Document:</strong> Redirige varias líneas hasta un delimitador.<br>
-                        <em>Ejemplo:</em> <code>wc -c << EOF ... EOF</code>.</li>
-                    <li><strong>Here String:</strong> Pasa una sola línea como entrada.<br>
-                        <em>Ejemplo:</em> <code>wc -c <<< "texto"</code>.</li>
+                    <li><strong>Here Document:</strong> <code>comando << EOF ... EOF</code> (varias líneas).</li>
+                    <li><strong>Here String:</strong> <code>comando <<< "texto"</code> (una línea).</li>
                 </ul>
 
                 <h4>Tuberías (Pipes)</h4>
-                <ul>
-                    <li><strong>Ejemplo 1:</strong> <code>cat /proc/cpuinfo | grep "model name" | uniq | cut -d ":" -f 2</code>.</li>
-                    <li><strong>Ejemplo 2:</strong> <code>ls *.txt | wc -l</code> (cuenta archivos .txt).</li>
-                    <li><strong>Ejemplo 3:</strong> <code>ps aux | grep "python" | sort -k 3 -r | head -n 3</code>.</li>
-                </ul>
+                <p>Conectar salida de un comando con entrada de otro: <code>cmd1 | cmd2</code>.</p>
+                <p>Ejemplo: <code>ps aux | grep python | sort</code>.</p>
 
                 <h4>Sustitución de comando</h4>
                 <ul>
-                    <li><strong>Comillas invertidas <code>` `</code></strong>: <code>archivos=`find . -type f | wc -l`</code>.</li>
-                    <li><strong><code>$( )</code></strong>: <code>echo "El proceso es $(ps ...)"</code>.</li>
-                    <li><strong><code>xargs</code></strong>: Pasa la salida como argumento.<br>
-                        <em>Ejemplo:</em> <code>find . -name "*.log" | xargs rm</code>.</li>
+                    <li><strong>Comillas invertidas:</strong> <code>`comando`</code>.</li>
+                    <li><strong>Dólar paréntesis:</strong> <code>$(comando)</code>.</li>
+                    <li><strong>xargs:</strong> Construye y ejecuta líneas de comando desde la entrada estándar.</li>
                 </ul>
             </section>
 
             <section id="103.5" class="lesson-section">
                 <h3>103.5 Crear, supervisar y matar procesos</h3>
-
+                
                 <h4>Control de trabajos</h4>
                 <ul>
-                    <li><strong><code>jobs</code></strong>: Muestra trabajos corriendo o detenidos. <code>-l</code> incluye el PID.</li>
-                    <li><strong><code>fg</code></strong>: Trae un trabajo a primer plano.<br>
-                        <em>Ejemplo:</em> <code>fg %1</code>.</li>
-                    <li><strong><code>bg</code></strong>: Envía un trabajo a segundo plano.<br>
-                        <em>Ejemplo:</em> <code>bg %1</code>.</li>
-                    <li><strong><code>&</code></strong>: Ejecuta un comando en segundo plano.</li>
-                    <li><strong><code>nohup</code></strong>: Ejecuta un comando que sigue corriendo aunque cierres la sesión.</li>
-                    <li><strong><code>kill</code></strong>: Termina un proceso. <code>-9</code> fuerza la terminación.</li>
+                    <li><strong><code>&</code></strong>: Ejecuta en segundo plano.</li>
+                    <li><strong><code>jobs</code></strong>: Lista trabajos en segundo plano.</li>
+                    <li><strong><code>fg</code> / <code>bg</code></strong>: Trae a primer plano / envía a segundo plano.</li>
+                    <li><strong><code>nohup</code></strong>: Ejecuta inmune a cierres de sesión.</li>
+                    <li><strong><code>kill</code></strong>: Envía señales a procesos (<code>-9</code> para forzar).</li>
                 </ul>
 
-                <h4>Monitoreo de procesos</h4>
+                <h4>Monitoreo</h4>
                 <ul>
-                    <li><strong><code>watch</code></strong>: Ejecuta un comando cada X segundos.<br>
-                        <em>Ejemplo:</em> <code>watch -n 10 free -m</code>.</li>
-                    <li><strong><code>pgrep</code></strong>: Busca procesos por nombre. <code>pkill</code> para terminarlos.</li>
-                    <li><strong><code>top</code></strong>: Muestra procesos en tiempo real. Ordena por CPU (defecto), memoria (<code>M</code>), tiempo (<code>T</code>).</li>
-                    <li><strong><code>ps</code></strong>: Muestra procesos de forma estática.<br>
-                        <em>Ejemplo:</em> <code>ps -aux</code> o <code>ps -ef</code>.</li>
+                    <li><strong><code>top</code></strong>: Vista en tiempo real (teclas: M por memoria, P por CPU).</li>
+                    <li><strong><code>ps</code></strong>: Vista estática (<code>ps aux</code>, <code>ps -ef</code>).</li>
+                    <li><strong><code>pgrep</code> / <code>pkill</code></strong>: Busca y mata por nombre.</li>
                 </ul>
 
-                <h4>Características de los multiplexores terminales</h4>
-                <p>Herramientas como <code>screen</code> y <code>tmux</code> para trabajar con varias ventanas.</p>
-                <ul>
-                    <li><strong>Screen:</strong> <code>Ctrl + a c</code> (crear ventana), <code>Ctrl + a n</code> (siguiente), <code>Ctrl + a d</code> (desconectar).</li>
-                    <li><strong>tmux:</strong> <code>Ctrl + b c</code> (crear ventana), <code>Ctrl + b n</code> (siguiente), <code>Ctrl + b d</code> (desconectar).</li>
-                </ul>
+                <h4>Multiplexores (Screen / Tmux)</h4>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">Acción</th>
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">Screen</th>
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">Tmux</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--card-bg);">
+                        <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Crear ventana</td><td style="padding: 10px;">Ctrl + a c</td><td style="padding: 10px;">Ctrl + b c</td></tr>
+                        <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Cambiar ventana</td><td style="padding: 10px;">Ctrl + a 0-9</td><td style="padding: 10px;">Ctrl + b 0-9</td></tr>
+                        <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Desconectar (Detach)</td><td style="padding: 10px;">Ctrl + a d</td><td style="padding: 10px;">Ctrl + b d</td></tr>
+                        <tr><td style="padding: 10px;">Reconectar</td><td style="padding: 10px;"><code>screen -r</code></td><td style="padding: 10px;"><code>tmux attach</code></td></tr>
+                    </tbody>
+                </table>
             </section>
 
             <section id="103.6" class="lesson-section">
                 <h3>103.6 Modificar la prioridad de ejecución de los procesos</h3>
-
-                <h4>El planificador de Linux</h4>
-                <p>Cada proceso tiene dos atributos:</p>
+                
+                <h4>El planificador y Prioridades</h4>
+                <p>Valores <em>nice</em> van de -20 (alta prioridad) a 19 (baja). Por defecto es 0.</p>
                 <ul>
-                    <li><strong>Prioridad de ejecución (Nice):</strong> Valor de -20 (máxima) a 19 (mínima). Por defecto 0.</li>
-                    <li><strong>Política de programación:</strong> Tiempo real (mayor prioridad) o normales (menor prioridad).</li>
+                    <li><strong>Procesos tiempo real:</strong> Prioridad 0-99.</li>
+                    <li><strong>Procesos normales:</strong> Prioridad 100-139 (nice mapeado aquí).</li>
                 </ul>
 
-                <h4>Prioridades de ejecución</h4>
+                <h4>Gestión de Niceness</h4>
                 <ul>
-                    <li><strong>Tiempo real:</strong> 0 a 99.</li>
-                    <li><strong>Normales:</strong> 100 a 139 (120 es nice 0).</li>
-                </ul>
-                <p>Para verificar prioridades: <code>/proc/[pid]/sched</code>, <code>ps -el</code>, <code>top</code>.</p>
-
-                <h4>Niceness de procesos</h4>
-                <ul>
-                    <li><strong><code>nice</code></strong>: Inicia un proceso con un valor nice específico.<br>
-                        <em>Ejemplo:</em> <code>nice -n 10 sleep 100</code>.</li>
-                    <li><strong><code>renice</code></strong>: Cambia el nice de un proceso en ejecución.<br>
-                        <em>Ejemplo:</em> <code>renice 15 1234</code> (solo root puede usar valores negativos).</li>
+                    <li><strong><code>nice -n 10 comando</code></strong>: Inicia con prioridad 10.</li>
+                    <li><strong><code>renice 15 PID</code></strong>: Cambia prioridad en ejecución.</li>
+                    <li><strong><code>top</code></strong>: Muestra columna PRI/NI.</li>
                 </ul>
             </section>
 
             <section id="103.7" class="lesson-section">
-                <h3>103.7 Realizar búsquedas en archivos de texto usando expresiones regulares</h3>
-
-                <h4>Expresiones regulares básicas</h4>
+                <h3>103.7 Búsquedas con expresiones regulares</h3>
+                
+                <h4>RE Básicas (grep)</h4>
                 <ul>
-                    <li><code>.</code>: Coincide con cualquier carácter.</li>
-                    <li><code>^</code>: Inicio de línea.</li>
-                    <li><code>$</code>: Final de línea.</li>
-                    <li><code>\</code>: Interpreta carácter especial literal.</li>
+                    <li><strong><code>.</code></strong>: Cualquier carácter.</li>
+                    <li><strong><code>^</code></strong>: Inicio de línea.</li>
+                    <li><strong><code>$</code></strong>: Final de línea.</li>
+                    <li><strong><code>[...]</code></strong>: Conjunto de caracteres.</li>
                 </ul>
 
-                <h4>Expresiones de corchetes</h4>
+                <h4>Clases de caracteres</h4>
+                <p><code>[:alpha:]</code> (letras), <code>[:digit:]</code> (números), <code>[:lower:]</code> (minúsculas).</p>
+
+                <h4>Cuantificadores (Extended grep -E)</h4>
                 <ul>
-                    <li><code>[ab]</code>: Coincide con "a" o "b".</li>
-                    <li><code>[a-z]</code>: Cualquier letra minúscula.</li>
-                    <li><strong>Clases:</strong> <code>[:alpha:]</code>, <code>[:digit:]</code>, <code>[:lower:]</code>, <code>[:upper:]</code>, <code>[:blank:]</code>.</li>
+                    <li><strong><code>*</code></strong>: 0 o más.</li>
+                    <li><strong><code>+</code></strong>: 1 o más.</li>
+                    <li><strong><code>?</code></strong>: 0 o 1.</li>
+                    <li><strong><code>{n}</code></strong>: Exactamente n.</li>
                 </ul>
 
-                <h4>Cuantificadores y límites</h4>
+                <h4>Comandos</h4>
                 <ul>
-                    <li><strong><code>*</code></strong>: 0 o más veces.</li>
-                    <li><strong><code>+</code></strong>: 1 o más veces (usa <code>egrep</code> o <code>grep -E</code>).</li>
-                    <li><strong><code>?</code></strong>: 0 o 1 vez (usa <code>egrep</code>).</li>
-                    <li><strong><code>{N}</code></strong>: Exactamente N veces.</li>
-                    <li><strong><code>{N,}</code></strong>: Al menos N veces.</li>
-                    <li><strong><code>{N,M}</code></strong>: Entre N y M veces.</li>
-                </ul>
-
-                <h4>Búsqueda con grep</h4>
-                <ul>
-                    <li><strong><code>-c</code></strong>: Cuenta las coincidencias.</li>
-                    <li><strong><code>-i</code></strong>: Ignora mayúsculas/minúsculas.</li>
-                    <li><strong><code>-n</code></strong>: Muestra el número de línea.</li>
-                    <li><strong><code>-v</code></strong>: Muestra líneas que NO coinciden.</li>
-                    <li><strong><code>-r</code></strong>: Busca recursivamente.</li>
-                    <li><strong><code>egrep</code></strong> o <code>grep -E</code>: Expresiones extendidas.</li>
+                    <li><strong><code>grep</code></strong>: Busca texto.</li>
+                    <li><strong><code>sed</code></strong>: Edita flujos de texto (ej. <code>sed 's/old/new/g'</code>).</li>
+                    <li><strong><code>find -regex</code></strong>: Busca archivos por patrón.</li>
                 </ul>
             </section>
 
             <section id="103.8" class="lesson-section">
                 <h3>103.8 Edición básica de archivos</h3>
-
-                <h4>Modos y comandos básicos de vi</h4>
-                <p><code>vi</code> tiene dos modos principales:</p>
+                
+                <h4>vi / vim</h4>
                 <ul>
-                    <li><strong>Modo normal:</strong> Navegar y ejecutar comandos.</li>
-                    <li><strong>Modo inserción:</strong> Escribir texto (presiona <code>Esc</code> para volver).</li>
-                </ul>
-                <p><strong>Comandos en modo normal:</strong></p>
-                <ul>
-                    <li><code>h</code>, <code>j</code>, <code>k</code>, <code>l</code>: Moverse.</li>
-                    <li><code>0</code>, <code>$</code>: Inicio/Final de línea.</li>
-                    <li><code>1G</code>, <code>G</code>: Inicio/Final del documento.</li>
-                    <li><code>/texto</code>: Buscar "texto".</li>
-                    <li><code>i</code>, <code>a</code>, <code>o</code>: Entrar en modo inserción.</li>
-                    <li><code>x</code>: Eliminar carácter.</li>
-                    <li><code>yy</code>: Copiar línea. <code>p</code>: Pegar.</li>
-                    <li><code>u</code>: Deshacer.</li>
+                    <li><strong>Modos:</strong> Normal (navegar) e Inserción (escribir, tecla <code>i</code>).</li>
+                    <li><strong>Navegación:</strong> <code>h,j,k,l</code>, <code>w</code> (palabra), <code>G</code> (fin).</li>
+                    <li><strong>Acciones:</strong> <code>x</code> (borrar), <code>yy</code> (copiar), <code>p</code> (pegar), <code>u</code> (deshacer).</li>
                 </ul>
 
-                <h4>Comandos colon (:)</h4>
+                <h4>Comandos Colon (:)</h4>
                 <ul>
                     <li><strong><code>:w</code></strong>: Guardar.</li>
                     <li><strong><code>:q</code></strong>: Salir.</li>
                     <li><strong><code>:wq</code></strong>: Guardar y salir.</li>
-                    <li><strong><code>:q!</code></strong>: Salir sin guardar.</li>
-                    <li><strong><code>:s/texto/nuevo/g</code></strong>: Reemplazar en la línea actual.</li>
+                    <li><strong><code>:s/old/new/g</code></strong>: Reemplazar en línea actual.</li>
                 </ul>
 
                 <h4>Editores alternativos</h4>
                 <ul>
-                    <li><strong><code>nano</code></strong>: <code>Ctrl+O</code> (guardar), <code>Ctrl+X</code> (salir).</li>
-                    <li><strong><code>emacs</code></strong>: <code>Ctrl+X Ctrl+S</code> (guardar), <code>Ctrl+X Ctrl+C</code> (salir).</li>
+                    <li><strong>nano:</strong> Simple, menú visual (<code>Ctrl+O</code> guardar, <code>Ctrl+X</code> salir).</li>
+                    <li><strong>emacs:</strong> Potente, personalizable.</li>
                 </ul>
             </section>
 
             <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
                 <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Has terminado la teoría? Repasa los puntos clave antes del examen.</p>
                 <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/103/repaso-tema-103.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
-                    📝 Ver Resumen del Tema
+                    📝 Ver Resumen del Tema 103
                 </a>
             </div>
+
         </div>
+    </div>
+</div>
