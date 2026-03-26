@@ -1,0 +1,174 @@
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">LPIC-1 Examen 110</span>
+        <h1>Seguridad del Sistema</h1>
+        <p>Domina la administración de seguridad, configuración del host, gestión de accesos y cifrado de datos.</p>
+    </header>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h4>Objetivos del bloque</h4>
+            <ul>
+                <li><a href="#110.1">110.1 Tareas de administración de seguridad</a></li>
+                <li><a href="#110.2">110.2 Configuración de la seguridad del sistema</a></li>
+                <li><a href="#110.3">110.3 Protección de datos mediante cifrado</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content">
+            
+            <section id="110.1" class="lesson-section">
+                <h3>110.1 Tareas de administración de seguridad</h3>
+                <p>La administración de seguridad implica auditar permisos especiales, gestionar el ciclo de vida de las cuentas, restringir recursos y controlar la escalada de privilegios.</p>
+                
+                <h4>Auditoría de permisos especiales (SUID, SGID, Sticky Bit)</h4>
+                <p>Es crucial encontrar archivos con permisos especiales para asegurar que no existen vulnerabilidades de escalada de privilegios.</p>
+                <ul>
+                    <li><strong>SUID (Set User ID - 4000):</strong> Permite que un usuario ejecute un archivo con los permisos del propietario del archivo (usualmente root). Común en <code>/usr/bin/passwd</code> o <code>/usr/bin/sudo</code>.<br>
+                        - Identificador: <code>s</code> en el permiso de ejecución del usuario.<br>
+                        - Búsqueda: <code>find / -perm -4000 -user root</code>.</li>
+                    <li><strong>SGID (Set Group ID - 2000):</strong> Permite ejecutar con permisos del grupo. En directorios, fuerza a que los nuevos archivos hereden el grupo del directorio padre.<br>
+                        - Identificador: <code>s</code> en el permiso de ejecución del grupo.<br>
+                        - Búsqueda: <code>find / -perm -2000</code>.</li>
+                    <li><strong>Sticky Bit (1000):</strong> Usado en directorios compartidos (como <code>/tmp</code>). Solo el propietario de un archivo puede borrarlo, incluso si otros tienen permiso de escritura en el directorio.<br>
+                        - Identificador: <code>t</code> en el permiso de ejecución de "otros".<br>
+                        - Aplicar: <code>chmod +t directorio</code> o <code>chmod 1777 directorio</code>.</li>
+                </ul>
+
+                <h4>Gestión de contraseñas y cuentas</h4>
+                <p>El archivo <code>/etc/shadow</code> contiene 8 campos separados por dos puntos: <code>nombre:hash:último_cambio:min:máx:aviso:inactividad:expira</code>.</p>
+                <ul>
+                    <li><strong>chage:</strong> Herramienta principal para la caducidad de contraseñas.<br>
+                        - <code>chage -l usuario</code>: Lista la información de envejecimiento.<br>
+                        - <code>chage -M 90 usuario</code>: Establece el máximo de días de validez a 90.<br>
+                        - <code>chage -W 7 usuario</code>: Avisa 7 días antes de la expiración.<br>
+                        - <code>chage -E 2025-12-31 usuario</code>: Establece una fecha de expiración fija para la cuenta.</li>
+                    <li><strong>Bloqueo de cuentas:</strong><br>
+                        - <code>passwd -l usuario</code>: Bloquea añadiendo un <code>!</code> al hash.<br>
+                        - <code>usermod -L usuario</code>: Bloquea la cuenta.<br>
+                        - <code>usermod -s /sbin/nologin usuario</code>: Cambia el shell para impedir login interactivo.</li>
+                    <li><strong>/etc/nologin:</strong> Si este archivo existe en la raíz, impide el inicio de sesión de todos los usuarios excepto root, mostrando su contenido como mensaje de error.</li>
+                </ul>
+
+                <h4>Límites de recursos (ulimit)</h4>
+                <p>Previene que un usuario o proceso colapse el sistema consumiendo todos los recursos.</p>
+                <ul>
+                    <li><strong>Comandos:</strong><br>
+                        - <code>ulimit -a</code>: Muestra todos los límites actuales.<br>
+                        - <code>ulimit -n 4096</code>: Limita el número de archivos abiertos.<br>
+                        - <code>ulimit -u 100</code>: Limita el número de procesos del usuario.</li>
+                    <li><strong>Configuración persistente:</strong> Se edita en <code>/etc/security/limits.conf</code>.<br>
+                        Formato: <code>&lt;dominio&gt; &lt;tipo&gt; &lt;item&gt; &lt;valor&gt;</code>.<br>
+                        Ejemplo: <code>* hard nproc 50</code> (limita procesos a 50 para todos los usuarios).</li>
+                </ul>
+
+                <h4>Monitoreo y Sudo</h4>
+                <ul>
+                    <li><strong>Usuarios conectados:</strong> <code>who</code> (básico), <code>w</code> (detalle + carga CPU), <code>last</code> (historial <code>/var/log/wtmp</code>), <code>lastb</code> (intentos fallidos <code>/var/log/btmp</code>).</li>
+                    <li><strong>Configuración Sudo (<code>/etc/sudoers</code>):</strong><br>
+                        - Editar siempre con <code>visudo</code>.<br>
+                        - Sintaxis: <code>usuario HOST=(USUARIO:GRUPO) COMANDOS</code>.<br>
+                        - Opciones: <code>NOPASSWD</code> (no pide clave), <code>NOEXEC</code> (evita comandos anidados).<br>
+                        - Alias: <code>User_Alias ADMINS = user1, user2</code>, <code>Cmnd_Alias WEB = /usr/sbin/apachectl</code>.</li>
+                </ul>
+            </section>
+
+            <section id="110.2" class="lesson-section">
+                <h3>110.2 Configuración de la seguridad del sistema</h3>
+                <p>Endurecimiento del sistema mediante la gestión de servicios de red, superdemonios y control de acceso a nivel de aplicación.</p>
+                
+                <h4>Superdemonios (Internet Superserver)</h4>
+                <p>Gestionan conexiones entrantes y lanzan el servicio correspondiente bajo demanda.</p>
+                <ul>
+                    <li><strong>xinetd:</strong><br>
+                        - Archivo principal: <code>/etc/xinetd.conf</code>.<br>
+                        - Configuraciones específicas: <code>/etc/xinetd.d/servicio</code>.<br>
+                        - Directivas clave: <code>disable = yes/no</code>, <code>only_from = 192.168.1.0/24</code>, <code>no_access = 10.0.0.0/8</code>.<br>
+                        - Recargar cambios: <code>systemctl restart xinetd</code>.</li>
+                    <li><strong>systemd.socket:</strong><br>
+                        - Usa unidades de socket (`.socket`) para escuchar puertos y unidades de servicio (`.service`) para ejecutarlos.<br>
+                        - Ejemplo: <code>systemctl start ssh.socket</code> habilita el puerto 22 pero sshd no se ejecuta hasta que llega una conexión.</li>
+                </ul>
+
+                <h4>Gestión de servicios de red</h4>
+                <ul>
+                    <li><strong>Systemd:</strong> <code>systemctl list-units --type=service --state=running</code> para ver activos. <code>systemctl mask servicio</code> impide que se inicie manual o automáticamente.</li>
+                    <li><strong>Netstat/SS:</strong> Para identificar qué servicio está escuchando en un puerto.<br>
+                        - <code>ss -tulpn</code>: Muestra sockets TCP/UDP que escuchan, procesos y números de puerto.</li>
+                </ul>
+
+                <h4>TCP Wrappers</h4>
+                <p>Capa de seguridad que controla el acceso a servicios basándose en la dirección IP del cliente. Los servicios deben estar compilados con soporte <code>libwrap</code>.</p>
+                <ul>
+                    <li><strong>Verificar soporte:</strong> <code>ldd /usr/sbin/sshd | grep libwrap</code>.</li>
+                    <li><strong>/etc/hosts.allow:</strong> Lista de permisos. Se procesa primero.<br>
+                        Sintaxis: <code>servicio : host : acción</code>.<br>
+                        Ej: <code>sshd : 192.168.1.0/24 : ALLOW</code>.</li>
+                    <li><strong>/etc/hosts.deny:</strong> Lista de denegaciones. Se procesa después.<br>
+                        Ej: <code>ALL : ALL</code> (Deniega todo lo que no esté explícitamente permitido en allow).</li>
+                    <li><strong>Expansiones:</strong> Soporta <code>LOCAL</code>, <code>ALL</code>, <code>EXCEPT</code> (ej: <code>ALL EXCEPT 192.168.1.5</code>).</li>
+                    <li><strong>Comandos auxiliares:</strong> <code>spawn</code> (ejecuta comando shell) y <code>twist</code> (reemplaza el servicio por un comando).</li>
+                </ul>
+            </section>
+
+            <section id="110.3" class="lesson-section">
+                <h3>110.3 Protección de datos mediante cifrado</h3>
+                <p>Implementación de comunicación segura (SSH) y protección de datos estáticos (GPG).</p>
+                
+                <h4>OpenSSH Cliente y Llaves</h4>
+                <ul>
+                    <li><strong>ssh-keygen:</strong> Genera claves.<br>
+                        - Tipos: <code>rsa</code> (defecto), <code>ecdsa</code>, <code>ed25519</code> (más seguro y rápido).<br>
+                        - Opciones: <code>-b 4096</code> (bits), <code>-t ecdsa</code> (tipo), <code>-f ~/.ssh/id_nueva</code> (fichero), <code>-C "comentario"</code>.</li>
+                    <li><strong>ssh-agent:</strong> Guarda las claves privadas descifradas en memoria.<br>
+                        - <code>ssh-agent bash</code> inicia el agente.<br>
+                        - <code>ssh-add ~/.ssh/id_rsa</code> añade la clave.</li>
+                    <li><strong>Archivos clave:</strong> <code>~/.ssh/known_hosts</code> (huellas servidores), <code>~/.ssh/authorized_keys</code> (claves públicas permitidas en servidor).</li>
+                </ul>
+
+                <h4>OpenSSH Servidor</h4>
+                <ul>
+                    <li><strong>Configuración:</strong> <code>/etc/ssh/sshd_config</code>.<br>
+                        - Directivas: <code>PermitRootLogin no</code>, <code>PasswordAuthentication no</code> (solo claves), <code>Port 22</code>.</li>
+                    <li><strong>Claves host:</strong> Generadas al instalar. Ubicación: <code>/etc/ssh/ssh_host_*</code>.</li>
+                </ul>
+
+                <h4>Túneles SSH (Port Forwarding)</h4>
+                <p>Canales cifrados para tráfico inseguro.</p>
+                <ul>
+                    <li><strong>Local (-L):</strong> <code>ssh -L [bind_address:]puerto_local:host_remoto:puerto_remoto usuario@servidor</code>.<br>
+                        Redirige tráfico del puerto local al remoto a través del servidor.</li>
+                    <li><strong>Remoto (-R):</strong> <code>ssh -R [bind_address:]puerto_remoto:host_local:puerto_local usuario@servidor</code>.<br>
+                        Permite que alguien en el servidor remoto acceda a un servicio en tu máquina local.</li>
+                    <li><strong>Forwarding X11:</strong> <code>ssh -X usuario@host</code>. Requiere <code>X11Forwarding yes</code> en servidor.</li>
+                </ul>
+
+                <h4>GnuPG (GPG)</h4>
+                <p>Sistema de cifrado híbrido (asimétrico y simétrico) y firmas digitales.</p>
+                <ul>
+                    <li><strong>Gestión de claves:</strong><br>
+                        - Crear: <code>gpg --full-gen-key</code>.<br>
+                        - Listar: <code>gpg --list-keys</code> (públicas), <code>--list-secret-keys</code>.<br>
+                        - Exportar pública: <code>gpg --armor --export usuario > clave.pub</code>.<br>
+                        - Importar: <code>gpg --import clave.pub</code>.</li>
+                    <li><strong>Cifrado y Descifrado:</strong><br>
+                        - Cifrar simétrico (una clave): <code>gpg -c archivo</code>.<br>
+                        - Cifrado asimétrico (clave pública destino): <code>gpg -e -r usuario archivo</code>.<br>
+                        - Descifrar: <code>gpg -d archivo.gpg > archivo</code> o <code>gpg archivo.gpg</code>.</li>
+                    <li><strong>Firma y Verificación:</strong><br>
+                        - Firmar: <code>gpg -s archivo</code> (crea archivo.gpg) o <code>--detach-sig</code> (crea archivo.sig).<br>
+                        - Verificar: <code>gpg --verify archivo.sig archivo</code>.</li>
+                    <li><strong>Confianza:</strong> <code>gpg --edit-key usuario</code> -> comando <code>trust</code> para establecer el nivel de confianza de las claves importadas.</li>
+                </ul>
+            </section>
+
+            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
+                <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Has terminado la teoría? Repasa los puntos clave antes del examen.</p>
+                <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/110/repaso-tema-110.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
+                    📝 Ver Resumen del Tema 110
+                </a>
+            </div>
+
+        </div>
+    </div>
+</div>
