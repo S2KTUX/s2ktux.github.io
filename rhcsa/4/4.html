@@ -117,7 +117,7 @@
                     <li><strong>chrt -r -p PRIORIDAD PID</strong> → Cambia la prioridad real time de un proceso existente</li>
                     <li><strong>chrt -r PRIORIDAD comando</strong> → Ejecuta un comando con prioridad real time</li>
                 </ul>
-                <img src="/images/chrt.png alt="grub line">
+                <img src="/images/chrt.png" alt="grub line">
             </section>
 
             <section id="obj6" class="lesson-section">
@@ -149,7 +149,7 @@ chown root:systemd-journal /var/log/journal
 chmod 2755 /var/log/journal</code></pre>
                 <p>Configurar <code>Storage=persistent</code> en <code>/etc/systemd/journald.conf</code> y reiniciar el servicio.</p>
                 <img src="/images/log-pers.png" alt="logs persistent" loading="lazy">
-                <img src="/images/log-pers2.png" alt="logs persistent" loading="lazy">
+                <img src="/images/log-pers-2.png" alt="logs persistent" loading="lazy">
                 <p> Preferiblemente, siempre que hagamos un cambio a un archivo de configuración de un servicio, reiniciaremos este servicio <code>systemctl restart systemd-journald</code>.</p>
                 <p>No hemos mencionado la rotación de logs, para ello podemos usar</p>
                 <ul>
