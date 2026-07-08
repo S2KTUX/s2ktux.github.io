@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://s2ktux.github.io/sitemap.xml

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<title>Cursos de Linux · RHCSA, LPIC-1 y más · S2KTUX</title>
+<meta name="description" content="Cursos de administración de sistemas Linux: RHCSA, LPIC-1, Docker y Kubernetes. Teoría estructurada y laboratorios prácticos.">
+<meta name="robots" content="index,follow">
+<meta http-equiv="content-language" content="es">
+<meta name="theme-color" content="#f6ecd9">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Cursos de Linux · RHCSA, LPIC-1 y más · S2KTUX">
+<meta property="og:description" content="Cursos de administración de sistemas Linux: RHCSA, LPIC-1, Docker y Kubernetes. Teoría estructurada y laboratorios prácticos.">
+<meta property="og:image" content="favicon.png">
+<meta name="twitter:card" content="summary">
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);font-family:'VT323',monospace;color:var(--text)}
+  :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a}
+  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#d8c6ac;--head:#f2c78f;--muted:#b39a7c;--soft2:#0f0b06}
+  html,body{transition:background-color .25s ease,color .25s ease}
+  svg{stroke:var(--head)}
+  a{color:#d97757;text-decoration:none}
+  a:hover{color:#c2650a}
+  ::selection{background:#d97757;color:#fff}
+  .navlink{color:var(--text);font-size:20px;transition:color .15s}
+  .navlink:hover{color:var(--head)}
+  .pxbtn{transition:transform .08s, box-shadow .08s;cursor:pointer}
+  .pxbtn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line) !important}
+  .coursecard{transition:transform .12s, box-shadow .12s;cursor:pointer}
+  .coursecard:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--surface2)}
+
+  /* --- responsive (móvil) --- */
+  @media(max-width:860px){
+    [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: repeat(2, 1fr)"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: repeat(3, 1fr)"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: repeat(4, 1fr)"]{grid-template-columns:1fr 1fr !important}
+    [style*="grid-template-columns: 230px 1fr"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: 2fr 1fr"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: 1fr 2fr"]{grid-template-columns:1fr !important}
+  }
+  @media(max-width:640px){
+    h1{font-size:20px !important;line-height:1.55 !important}
+    .navlink{font-size:16px !important}
+    [style*="gap: 30px"]{gap:12px !important;flex-wrap:wrap !important}
+    [style*="font-size: 26px"]{font-size:21px !important}
+    [style*="padding: 64px 32px"]{padding:40px 20px !important}
+    [style*="padding: 44px 32px"]{padding:30px 20px !important}
+  }
+</style>
+<script>
+(function(){
+  try{ if(localStorage.getItem('s2ktux-theme')==='dark') document.documentElement.classList.add('dark'); }catch(e){}
+  function updateIcons(){ var dark=document.documentElement.classList.contains('dark'); document.querySelectorAll('[data-theme-icon]').forEach(function(el){ el.textContent=dark?'\u2600':'\u263e'; }); }
+  window.__toggleTheme=function(){ var h=document.documentElement; h.classList.toggle('dark'); var dark=h.classList.contains('dark'); try{ localStorage.setItem('s2ktux-theme', dark?'dark':'light'); }catch(e){} updateIcons(); };
+  if(!window.__s2kThemeInit){ window.__s2kThemeInit=true;
+    document.addEventListener('click', function(e){ var b=e.target && e.target.closest && e.target.closest('[data-theme-toggle]'); if(b){ e.preventDefault(); window.__toggleTheme(); } });
+  }
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateIcons,150); });
+  setTimeout(updateIcons,150); setTimeout(updateIcons,600);
+})();
+</script>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
+  <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
+    <a href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
+    <div style="display:flex;gap:30px;align-items:center">
+      <a class="navlink" href="index.html">Inicio</a>
+      <a class="navlink" href="cursos.html" style="color:var(--head);border-bottom:3px solid #d97757">Cursos</a>
+      <a class="navlink" href="terminal.html">Terminal</a>
+      <a class="navlink" href="proyectos.html">Proyectos</a>
+      <button data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ HEADER ============ -->
+<section style="max-width:1180px;margin:0 auto;padding:64px 32px 40px;text-align:center">
+  <div style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">RUTAS DE APRENDIZAJE</div>
+  <h1 style="font-family:'Press Start 2P',monospace;font-size:30px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:22px">Cursos</h1>
+  <p style="font-size:24px;max-width:580px;margin:0 auto;color:var(--text);line-height:1.35">Cada curso combina teoría estructurada con laboratorios prácticos. Elige tu certificación y empieza a romper cosas.</p>
+</section>
+
+<!-- ============ CURSOS (contenido bloqueado) ============ -->
+<section id="cursos" style="max-width:1180px;margin:0 auto;padding:20px 32px 40px">
+  <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:24px">
+
+    <div class="coursecard" style="background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:30px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+        <span style="font-family:'Press Start 2P',monospace;font-size:9px;background:#d97757;color:#fff;padding:6px 10px">RED HAT</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">10 módulos</span>
+      </div>
+      <div style="font-family:'Press Start 2P',monospace;font-size:16px;color:var(--head);margin:8px 0 12px">RHCSA EX200</div>
+      <div style="font-size:20px;color:var(--text);line-height:1.4;margin-bottom:20px">Domina Linux a nivel profesional. Certificado muy valorado.</div>
+      <a href="curso.html?c=rhcsa" class="pxbtn" style="display:inline-block;background:#d97757;color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;padding:12px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line)">EMPEZAR →</a>
+    </div>
+
+    <div class="coursecard" style="background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:30px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+        <span style="font-family:'Press Start 2P',monospace;font-size:9px;background:#8fa876;color:#2e3d24;padding:6px 10px">LPI</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">10 temas</span>
+      </div>
+      <div style="font-family:'Press Start 2P',monospace;font-size:16px;color:var(--head);margin:8px 0 12px">LPIC-1</div>
+      <div style="font-size:20px;color:var(--text);line-height:1.4;margin-bottom:20px">Fundamentos esenciales de Linux para cualquier distro.</div>
+      <a href="curso.html?c=lpic1" class="pxbtn" style="display:inline-block;background:#8fa876;color:#2e3d24;font-family:'Press Start 2P',monospace;font-size:10px;padding:12px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line)">EMPEZAR →</a>
+    </div>
+
+          <div class="coursecard" style="background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:30px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+          <span style="font-family:'Press Start 2P',monospace;font-size:9px;background:#6b8e9e;color:#fff;padding:6px 10px">DOCKER</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">próximo curso</span>
+        </div>
+        <div style="font-family:'Press Start 2P',monospace;font-size:16px;color:var(--head);margin:8px 0 12px">Docker</div>
+        <div style="font-size:20px;color:var(--text);line-height:1.4;margin-bottom:20px">Contenedores desde cero: imágenes, volúmenes y redes para empaquetar y desplegar apps.</div>
+        <div style="display:inline-flex;gap:9px;align-items:center;background:var(--bg);color:var(--muted);font-family:'Press Start 2P',monospace;font-size:9px;padding:12px 18px;border:3px dashed #b89b78"><span style="width:8px;height:8px;background:#e0a458;display:inline-block;box-shadow:0 0 0 2px #b89b78"></span>PRÓXIMAMENTE</div>
+      </div>
+
+      <div class="coursecard" style="background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:30px">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+          <span style="font-family:'Press Start 2P',monospace;font-size:9px;background:#4a6d8c;color:#fff;padding:6px 10px">K8S</span>
+          <span style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">próximo curso</span>
+        </div>
+        <div style="font-family:'Press Start 2P',monospace;font-size:16px;color:var(--head);margin:8px 0 12px">Kubernetes</div>
+        <div style="font-size:20px;color:var(--text);line-height:1.4;margin-bottom:20px">Orquestación de contenedores: pods, servicios y despliegues a escala.</div>
+        <div style="display:inline-flex;gap:9px;align-items:center;background:var(--bg);color:var(--muted);font-family:'Press Start 2P',monospace;font-size:9px;padding:12px 18px;border:3px dashed #b89b78"><span style="width:8px;height:8px;background:#e0a458;display:inline-block;box-shadow:0 0 0 2px #b89b78"></span>PRÓXIMAMENTE</div>
+      </div>
+
+      <div class="coursecard" style="background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:30px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+        <span style="font-family:'Press Start 2P',monospace;font-size:9px;background:#e0a458;color:#3a2b12;padding:6px 10px">AWS</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">próximamente</span>
+      </div>
+      <div style="font-family:'Press Start 2P',monospace;font-size:16px;color:var(--head);margin:8px 0 12px">AWS Cloud Practitioner</div>
+      <div style="font-size:20px;color:var(--text);line-height:1.4;margin-bottom:20px">El presente y futuro: la nube (sus bases).</div>
+      <div style="display:inline-flex;gap:9px;align-items:center;background:var(--bg);color:var(--muted);font-family:'Press Start 2P',monospace;font-size:9px;padding:12px 18px;border:3px dashed #b89b78"><span style="width:8px;height:8px;background:#e0a458;display:inline-block;box-shadow:0 0 0 2px #b89b78"></span>PRÓXIMAMENTE</div>
+    </div>
+
+    <div class="coursecard" style="background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:30px">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px">
+        <span style="font-family:'Press Start 2P',monospace;font-size:9px;background:#d97757;color:#fff;padding:6px 10px">RED HAT</span>
+        <span style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">próximamente</span>
+      </div>
+      <div style="font-family:'Press Start 2P',monospace;font-size:16px;color:var(--head);margin:8px 0 12px">RHCE</div>
+      <div style="font-size:20px;color:var(--text);line-height:1.4;margin-bottom:20px">Automatización con Ansible. Certificado superior.</div>
+      <div style="display:inline-flex;gap:9px;align-items:center;background:var(--bg);color:var(--muted);font-family:'Press Start 2P',monospace;font-size:9px;padding:12px 18px;border:3px dashed #b89b78"><span style="width:8px;height:8px;background:#e0a458;display:inline-block;box-shadow:0 0 0 2px #b89b78"></span>PRÓXIMAMENTE</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer style="max-width:1180px;width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
+  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
+  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
+  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px">
+    <a href="https://github.com/s2ktux" target="_blank">GitHub</a>
+    <a href="index.html">LinkedIn</a>
+    <a href="index.html">YouTube</a>
+  </div>
+</footer>
+
+</x-dc>
+</body>
+</html>
+</div>
+

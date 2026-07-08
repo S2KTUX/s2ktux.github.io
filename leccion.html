@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<title>Lección · S2KTUX</title>
+<meta name="description" content="Lección completa con teoría, ejemplos e imágenes para preparar tu certificación Linux.">
+<meta name="robots" content="index,follow">
+<meta http-equiv="content-language" content="es">
+<meta name="theme-color" content="#f6ecd9">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Lección · S2KTUX">
+<meta property="og:description" content="Lección completa con teoría, ejemplos e imágenes para preparar tu certificación Linux.">
+<meta property="og:image" content="favicon.png">
+<meta name="twitter:card" content="summary">
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);font-family:'VT323',monospace;color:var(--text)}
+  :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a;--accent:#d97757;--border-color:#4a3627;--card-bg:#fbf3e2;--text-muted:#8a7259}
+  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#d8c6ac;--head:#f2c78f;--muted:#b39a7c;--soft2:#0f0b06;--accent:#e6845f;--border-color:#7a6449;--card-bg:#2a2219;--text-muted:#b39a7c}
+  html,body{transition:background-color .25s ease,color .25s ease}
+  a{color:#d97757;text-decoration:none}
+  a:hover{color:#c2650a}
+  ::selection{background:#d97757;color:#fff}
+  .navlink{color:var(--text);font-size:20px;transition:color .15s}
+  .navlink:hover{color:var(--head)}
+  .pxbtn{transition:transform .08s, box-shadow .08s;cursor:pointer}
+  .pxbtn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line) !important}
+
+  /* ---- estilos del lector de lecciones ---- */
+  #lesson .lesson-wrapper{max-width:1000px;margin:0 auto}
+  #lesson .lesson-header{border-bottom:3px solid var(--line);padding-bottom:26px;margin-bottom:30px}
+  #lesson .lesson-header .badge{display:inline-block;font-family:'Press Start 2P',monospace;font-size:10px;background:var(--accent);color:#fff;padding:8px 12px;margin-bottom:18px}
+  #lesson .lesson-header h1{font-family:'Press Start 2P',monospace;font-size:24px;line-height:1.5;color:var(--head);margin-bottom:14px}
+  #lesson .lesson-header>p{font-size:22px;color:var(--text);line-height:1.35;max-width:680px}
+  #lesson .video-card{display:inline-flex;align-items:center;gap:14px;margin-top:22px;background:var(--surface);border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);padding:14px 18px;text-decoration:none}
+  #lesson .video-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--surface2)}
+  #lesson .video-icon{font-size:26px}
+  #lesson .video-text{display:flex;flex-direction:column;line-height:1.2}
+  #lesson .video-text strong{font-family:'Press Start 2P',monospace;font-size:10px;color:var(--head)}
+  #lesson .video-text span{font-size:18px;color:var(--muted)}
+  #lesson .lesson-layout{display:grid;grid-template-columns:230px 1fr;gap:36px;align-items:start}
+  #lesson .lesson-toc{position:sticky;top:90px;background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:20px}
+  #lesson .lesson-toc h4{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--head);margin-bottom:14px;line-height:1.4}
+  #lesson .lesson-toc ul{list-style:none}
+  #lesson .lesson-toc li{margin-bottom:9px}
+  #lesson .lesson-toc a{font-size:18px;color:var(--text);line-height:1.2;display:block}
+  #lesson .lesson-toc a:hover{color:var(--accent)}
+  #lesson .course-content{min-width:0}
+  #lesson .lesson-section{margin-bottom:38px;padding-bottom:8px}
+  #lesson .lesson-section h3{font-family:'Press Start 2P',monospace;font-size:15px;color:var(--head);line-height:1.5;margin:0 0 18px;padding-top:8px}
+  #lesson h4{font-family:'Share Tech Mono',monospace;font-size:19px;color:var(--accent);margin:22px 0 10px;font-weight:700}
+  #lesson h5{font-family:'Share Tech Mono',monospace;font-size:17px;color:var(--head);margin:16px 0 8px}
+  #lesson p{font-size:20px;line-height:1.5;margin-bottom:14px;color:var(--text)}
+  #lesson ul,#lesson ol{margin:0 0 16px 26px}
+  #lesson li{font-size:19px;line-height:1.5;margin-bottom:8px;color:var(--text)}
+  #lesson code{font-family:'Share Tech Mono',monospace;font-size:16px;background:var(--surface2);color:var(--head);padding:2px 7px;border:1px solid var(--line)}
+  #lesson pre{background:#12100b;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);padding:18px;overflow-x:auto;margin:14px 0}
+  #lesson pre code{background:none;border:none;color:#cdc0a8;font-size:16px;padding:0}
+  #lesson img{max-width:100%;height:auto;border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);margin:16px 0;display:block;background:#fff}
+  #lesson table{width:100%;border-collapse:collapse;margin:18px 0;border:3px solid var(--line);font-size:18px}
+  #lesson th{background:var(--surface2);color:var(--head);text-align:left;padding:12px 14px;border-bottom:3px solid var(--line);font-family:'Share Tech Mono',monospace}
+  #lesson td{padding:12px 14px;border-bottom:2px solid var(--surface2);color:var(--text);vertical-align:top}
+  #lesson .info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:14px 0}
+  #lesson .info-item{background:var(--surface);border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);padding:16px;font-size:17px;line-height:1.35;color:var(--text)}
+  #lesson .info-item strong{color:var(--head);font-family:'Share Tech Mono',monospace}
+  #lesson .lesson-alert{background:var(--surface);border:3px solid var(--line);border-left:8px solid var(--accent) !important;padding:16px 18px;margin:18px 0;font-size:19px;color:var(--text)}
+  #lesson .next-btn{display:inline-block;background:var(--accent);color:#fff;font-family:'Press Start 2P',monospace;font-size:11px;padding:14px 22px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--line);margin-top:10px}
+  @media(max-width:760px){#lesson .lesson-layout{grid-template-columns:1fr}#lesson .lesson-toc{position:static}}
+
+  /* --- responsive (móvil) --- */
+  @media(max-width:860px){
+    [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: repeat(2, 1fr)"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: repeat(3, 1fr)"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: repeat(4, 1fr)"]{grid-template-columns:1fr 1fr !important}
+    [style*="grid-template-columns: 230px 1fr"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: 2fr 1fr"]{grid-template-columns:1fr !important}
+    [style*="grid-template-columns: 1fr 2fr"]{grid-template-columns:1fr !important}
+  }
+  @media(max-width:640px){
+    h1{font-size:20px !important;line-height:1.55 !important}
+    .navlink{font-size:16px !important}
+    [style*="gap: 30px"]{gap:12px !important;flex-wrap:wrap !important}
+    [style*="font-size: 26px"]{font-size:21px !important}
+    [style*="padding: 64px 32px"]{padding:40px 20px !important}
+    [style*="padding: 44px 32px"]{padding:30px 20px !important}
+  }
+</style>
+<script>
+(function(){
+  try{ if(localStorage.getItem('s2ktux-theme')==='dark') document.documentElement.classList.add('dark'); }catch(e){}
+  function updateIcons(){ var dark=document.documentElement.classList.contains('dark'); document.querySelectorAll('[data-theme-icon]').forEach(function(el){ el.textContent=dark?'\u2600':'\u263e'; }); }
+  window.__toggleTheme=function(){ var h=document.documentElement; h.classList.toggle('dark'); var dark=h.classList.contains('dark'); try{ localStorage.setItem('s2ktux-theme', dark?'dark':'light'); }catch(e){} updateIcons(); };
+  window.openReader=function(){}; /* no-op: los repasos se abren aparte */
+  if(!window.__s2kThemeInit){ window.__s2kThemeInit=true;
+    document.addEventListener('click', function(e){ var b=e.target && e.target.closest && e.target.closest('[data-theme-toggle]'); if(b){ e.preventDefault(); window.__toggleTheme(); } });
+  }
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateIcons,150); });
+  setTimeout(updateIcons,150); setTimeout(updateIcons,600);
+})();
+</script>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
+  <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
+    <a href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
+    <div style="display:flex;gap:30px;align-items:center">
+      <a class="navlink" href="index.html">Inicio</a>
+      <a class="navlink" href="cursos.html" style="color:var(--head);border-bottom:3px solid #d97757">Cursos</a>
+      <a class="navlink" href="terminal.html">Terminal</a>
+      <a class="navlink" href="proyectos.html">Proyectos</a>
+      <button data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
+    </div>
+  </div>
+</div>
+
+<section style="max-width:1000px;margin:0 auto;width:100%;padding:26px 32px 6px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
+  <a href="{{ backHref }}" class="navlink" style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--muted)">&larr; {{ backLabel }}</a>
+  <div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">{{ crumb }}</div>
+</section>
+
+<section style="max-width:1000px;margin:0 auto;width:100%;padding:14px 32px 60px">
+  <div id="lesson" ref="{{ lessonRef }}">
+    <div style="text-align:center;padding:80px 0;font-family:'Share Tech Mono',monospace;font-size:19px;color:var(--muted)">{{ status }}</div>
+  </div>
+  <div style="margin-top:30px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap">
+    <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ true }}"><a href="{{ prevHref }}" class="pxbtn" style="display:inline-block;background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:14px 20px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2)">&larr; ANTERIOR</a></sc-if>
+    <span></span>
+    <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ true }}"><a href="{{ nextHref }}" class="pxbtn" style="display:inline-block;background:var(--accent);color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;padding:14px 20px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--line)">SIGUIENTE &rarr;</a></sc-if>
+  </div>
+</section>
+
+<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
+  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
+  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
+  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px">
+    <a href="https://github.com/s2ktux" target="_blank">GitHub</a>
+    <a href="index.html">LinkedIn</a>
+    <a href="index.html">YouTube</a>
+  </div>
+</footer>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { status: "Cargando lección…" };
+  // Rutas reales de los ficheros de lección copiados del repo
+  files = {
+    rhcsa: Array.from({length:10}, (_,i)=>"rhcsa/"+(i+1)+"/"+(i+1)+".html"),
+    lpic1: ["lpic/101/1.html","lpic/102/2.html","lpic/103/3.html","lpic/104/4.html","lpic/105/5.html","lpic/106/106.html","lpic/107/7.html","lpic/108/8.html","lpic/109/9.html","lpic/110/10.html"]
+  };
+  params() {
+    const p = new URLSearchParams(location.search);
+    const c = p.get('c') === 'lpic1' ? 'lpic1' : 'rhcsa';
+    let m = parseInt(p.get('m') || '0', 10); if (isNaN(m) || m < 0) m = 0;
+    const list = this.files[c]; if (m >= list.length) m = list.length - 1;
+    return { c, m, list };
+  }
+  componentDidMount() { this.load(); }
+  async load() {
+    const { c, m, list } = this.params();
+    try {
+      const res = await fetch(list[m]);
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      let html = await res.text();
+      // corregir rutas de imágenes (repo usaba /images/… ; aquí están en la raíz)
+      html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2');
+      // el enlace de "repaso" usaba openReader() — lo dejamos como no-op (definido en helmet)
+      const el = this.lessonEl;
+      if (el) { el.innerHTML = html; }
+    } catch (e) {
+      const el = this.lessonEl;
+      if (el) el.innerHTML = '<div style="text-align:center;padding:70px 0;font-family:\'Share Tech Mono\',monospace;color:#ef8a7a">No se pudo cargar la lección. Vuelve a Cursos e inténtalo de nuevo.</div>';
+    }
+  }
+  renderVals() {
+    const { c, m, list } = this.params();
+    const courseName = c === 'lpic1' ? 'LPIC-1' : 'RHCSA';
+    return {
+      status: this.state.status,
+      lessonRef: (el) => { this.lessonEl = el; },
+      backHref: "curso.html?c=" + c,
+      backLabel: "Volver a " + courseName,
+      crumb: courseName + " · Tema " + (m + 1) + " / " + list.length,
+      hasPrev: m > 0,
+      hasNext: m < list.length - 1,
+      prevHref: "leccion.html?c=" + c + "&m=" + (m - 1),
+      nextHref: "leccion.html?c=" + c + "&m=" + (m + 1)
+    };
+  }
+}
+</script>
+</body>
+</html>

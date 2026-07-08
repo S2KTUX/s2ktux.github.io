@@ -1,62 +1,24 @@
-👨‍💻 S2KTUX | Administrador de Sistemas Linux | Cloud & Automatización
+# S2KTUX
 
-Bienvenido a mi espacio personal.
+Sitio web de S2KTUX — apuntes y laboratorios para aprender administración de sistemas Linux: **RHCSA (EX200)**, **LPIC-1** y Docker, con una terminal Linux simulada en el navegador.
 
-Soy un administrador de sistemas enfocado en Linux, con una fuerte orientación práctica y en continuo aprendizaje hacia automatización e infraestructuras cloud.
+🌐 En vivo: https://s2ktux.github.io/
 
----
+## Estructura
 
- 🚀 Enfoque Profesional
+| Ruta | Descripción |
+|------|-------------|
+| `index.html` | Página de inicio |
+| `cursos.html` | Listado de cursos |
+| `curso.html?c=rhcsa\|lpic1` | Índice de módulos de un curso |
+| `leccion.html?c=…&m=N` | Visor de lección (carga el tema desde `rhcsa/` o `lpic/`) |
+| `terminal.html` | Terminal Linux simulada |
+| `proyectos.html` | Proyectos de homelab |
+| `rhcsa/`, `lpic/` | Contenido HTML de cada tema |
+| `courses-data.js` | Estructura de módulos y temas |
+| `support.js` | Runtime de render (Claude Design) |
+| `*.png` | Imágenes de las lecciones |
 
-* 🐧 Administración de sistemas Linux (entornos basados en RHEL)
-* ☁️ Fundamentos de Cloud (AWS)
-* ⚙️ Automatización con Ansible
-* 🔧 Resolución de problemas en entornos reales
+## Notas
 
----
-
-🏅 Certificaciones
-
-* ✅ LPIC-1 – Administrador de Linux
-* ✅ Red Hat Certified System Administrator (RHCSA)
-
-
----
-
-🛠️ Habilidades Técnicas
-
-* Administración de sistemas Linux (RHEL-based)
-* Gestión de usuarios, permisos y ACLs
-* Almacenamiento (LVM, sistemas de archivos)
-* Redes y configuración de firewall
-* Gestión de servicios con systemd
-* Scripting en shell (nivel básico)
-* Automatización con Ansible (en aprendizaje)
-* Fundamentos de AWS
-
----
-
- 🧠 Forma de Trabajar
-
-Me enfoco en:
-
-* Aprender haciendo
-* Experimentar con escenarios reales
-* Entender el funcionamiento interno de los sistemas
-
----
-
-🎯 Objetivo Profesional
-
-Desarrollarme como **Ingeniero de Sistemas Linux / DevOps**, participando en:
-
-* Automatización de infraestructuras
-* Gestión de entornos productivos
-* Tecnologías cloud
-
----
-
-📬 Contacto
-
-Abierto a mejoras , colaboraciones y aprendizaje continuo.
-
+Las páginas se renderizan en cliente (React/Babel se cargan desde CDN mediante `support.js`), por lo que requieren conexión a internet. `.nojekyll` desactiva el procesado de Jekyll en GitHub Pages para servir los archivos tal cual.
