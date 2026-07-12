@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<title>Homelab monitorizado · Proyectos · S2KTUX</title>
+<meta name="description" content="Homelab con Proxmox VE y Zabbix: próximamente.">
+<meta name="robots" content="index,follow">
+<meta http-equiv="content-language" content="es">
+<meta name="theme-color" content="#f6ecd9">
+<link rel="icon" type="image/png" href="favicon.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Homelab monitorizado · Proyectos · S2KTUX">
+<meta property="og:description" content="Homelab con Proxmox VE y Zabbix: próximamente.">
+<meta property="og:image" content="favicon.png">
+<meta name="twitter:card" content="summary">
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);font-family:'VT323',monospace;color:var(--text)}
+  :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a}
+  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#d8c6ac;--head:#f2c78f;--muted:#b39a7c;--soft2:#0f0b06}
+  html,body{transition:background-color .25s ease,color .25s ease}
+  a{color:#d97757;text-decoration:none}
+  a:hover{color:#c2650a}
+  ::selection{background:#d97757;color:#fff}
+  .navlink{color:var(--text);font-size:20px;transition:color .15s}
+  .navlink:hover{color:var(--head)}
+
+  /* --- responsive (móvil) --- */
+  @media(max-width:860px){
+    [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr !important}
+  }
+  @media(max-width:640px){
+    h1{font-size:20px !important;line-height:1.55 !important}
+    .navlink{font-size:16px !important}
+    [style*="padding: 64px 32px"]{padding:40px 20px !important}
+    [style*="padding: 44px 32px"]{padding:30px 20px !important}
+  }
+</style>
+<script>
+(function(){
+  try{ if(localStorage.getItem('s2ktux-theme')==='dark') document.documentElement.classList.add('dark'); }catch(e){}
+  function updateIcons(){ var dark=document.documentElement.classList.contains('dark'); document.querySelectorAll('[data-theme-icon]').forEach(function(el){ el.textContent=dark?'\u2600':'\u263e'; }); }
+  window.__toggleTheme=function(){ var h=document.documentElement; h.classList.toggle('dark'); var dark=h.classList.contains('dark'); try{ localStorage.setItem('s2ktux-theme', dark?'dark':'light'); }catch(e){} updateIcons(); };
+  if(!window.__s2kThemeInit){ window.__s2kThemeInit=true;
+    document.addEventListener('click', function(e){ var b=e.target && e.target.closest && e.target.closest('[data-theme-toggle]'); if(b){ e.preventDefault(); window.__toggleTheme(); } });
+  }
+  document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateIcons,150); });
+  setTimeout(updateIcons,150); setTimeout(updateIcons,600);
+})();
+</script>
+</helmet>
+
+<div style="min-height:100vh;display:flex;flex-direction:column">
+<div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
+  <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
+    <a href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
+    <div style="display:flex;gap:30px;align-items:center">
+      <a class="navlink" href="index.html">Inicio</a>
+      <a class="navlink" href="cursos.html">Cursos</a>
+      <a class="navlink" href="terminal.html">Terminal</a>
+      <a class="navlink" href="proyectos.html" style="color:var(--head);border-bottom:3px solid #d97757">Proyectos</a>
+      <button data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
+    </div>
+  </div>
+</div>
+
+<section style="max-width:1100px;margin:0 auto;width:100%;padding:40px 32px 10px">
+  <a href="proyectos.html" class="navlink" style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--muted)">&larr; Volver a Proyectos</a>
+</section>
+
+<section style="max-width:1100px;margin:0 auto;width:100%;padding:14px 32px 90px">
+  <span style="font-family:'Press Start 2P',monospace;font-size:10px;background:#e05a2b;color:#fff;padding:8px 12px">PROXMOX + ZABBIX</span>
+  <h1 style="font-family:'Press Start 2P',monospace;font-size:26px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin:22px 0 16px">Homelab monitorizado</h1>
+  <p style="font-size:23px;max-width:680px;color:var(--text);line-height:1.35">Montar un hipervisor Proxmox VE con VMs y contenedores LXC, y monitorizarlo todo con Zabbix: agentes, plantillas, alertas y dashboards en tiempo real.</p>
+
+  <div style="margin-top:44px;background:var(--surface2);border:3px solid var(--line);box-shadow:5px 5px 0 var(--soft2);padding:34px;text-align:center">
+    <div style="font-family:'Press Start 2P',monospace;font-size:13px;color:var(--head);margin-bottom:14px">EN PREPARACIÓN</div>
+    <div style="font-size:20px;color:var(--text);max-width:560px;margin:0 auto 22px;line-height:1.4">Todavía estoy montando este laboratorio en el homelab. En cuanto tenga algo que enseñar, lo documento aquí paso a paso.</div>
+    <div style="display:inline-flex;gap:10px;align-items:center;background:var(--bg);color:var(--muted);font-family:'Press Start 2P',monospace;font-size:11px;padding:15px 24px;border:3px dashed #b89b78"><span style="width:9px;height:9px;background:#e0a458;display:inline-block;box-shadow:0 0 0 2px #b89b78"></span>PRÓXIMAMENTE</div>
+  </div>
+</section>
+
+<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
+  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
+  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
+  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px">
+    <a href="https://github.com/s2ktux" target="_blank">GitHub</a>
+    <a href="index.html">LinkedIn</a>
+    <a href="index.html">YouTube</a>
+  </div>
+</footer>
+</div>
+
+</x-dc>
+</body>
+</html>
