@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js"></script>
+<script src="courses-data.js"></script>
 </head>
 <body>
 <x-dc>
@@ -160,11 +161,12 @@ class Component extends DCLogic {
   // Rutas reales de los ficheros de lección copiados del repo
   files = {
     rhcsa: Array.from({length:10}, (_,i)=>"rhcsa/"+(i+1)+"/"+(i+1)+".html"),
-    lpic1: ["lpic/101/1.html","lpic/102/2.html","lpic/103/3.html","lpic/104/4.html","lpic/105/5.html","lpic/106/106.html","lpic/107/7.html","lpic/108/8.html","lpic/109/9.html","lpic/110/10.html"]
+    lpic1: ["lpic/101/1.html","lpic/102/2.html","lpic/103/3.html","lpic/104/4.html","lpic/105/5.html","lpic/106/106.html","lpic/107/7.html","lpic/108/8.html","lpic/109/9.html","lpic/110/10.html"],
+    docker: ["","",""]
   };
   params() {
     const p = new URLSearchParams(location.search);
-    const c = p.get('c') === 'lpic1' ? 'lpic1' : 'rhcsa';
+    const cp = p.get('c'); const c = (cp === 'lpic1' || cp === 'docker') ? cp : 'rhcsa';
     let m = parseInt(p.get('m') || '0', 10); if (isNaN(m) || m < 0) m = 0;
     const list = this.files[c]; if (m >= list.length) m = list.length - 1;
     return { c, m, list };
@@ -172,12 +174,15 @@ class Component extends DCLogic {
   componentDidMount() { this.load(); }
   async load() {
     const { c, m, list } = this.params();
+    if (c === 'docker') { this.renderComingSoon(m); return; }
     try {
       const res = await fetch(list[m]);
       if (!res.ok) throw new Error("HTTP " + res.status);
       let html = await res.text();
-      // corregir rutas de imágenes (repo usaba /images/… ; aquí están en la raíz)
-      html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2');
+      // usar solo los estilos (theme-aware) de esta página: quitar los del propio fichero de lección
+      html = html.replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<link[^>]*>/gi, '');
+      // corregir rutas de imágenes: en el repo están en la raíz (no en /images)
+      html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/main/');
       // el enlace de "repaso" usaba openReader() — lo dejamos como no-op (definido en helmet)
       const el = this.lessonEl;
       if (el) { el.innerHTML = html; }
@@ -186,15 +191,29 @@ class Component extends DCLogic {
       if (el) el.innerHTML = '<div style="text-align:center;padding:70px 0;font-family:\'Share Tech Mono\',monospace;color:#ef8a7a">No se pudo cargar la lección. Vuelve a Cursos e inténtalo de nuevo.</div>';
     }
   }
+  renderComingSoon(m) {
+    const el = this.lessonEl; if (!el) return;
+    const mod = (((window.S2KTUX_COURSES || {}).docker) || { modules: [] }).modules[m] || {};
+    const title = mod.title || ('Clase ' + (m + 1));
+    const topics = (mod.topics || []).map(t => '<li>' + t + '</li>').join('');
+    el.innerHTML = '<div class="lesson-wrapper"><div class="lesson-header">'
+      + '<span class="badge" style="background:#6b8e9e">DOCKER \u00b7 CLASE ' + (m + 1) + '</span>'
+      + '<h1>' + title + '</h1>'
+      + '<p>Esta clase est\u00e1 en preparaci\u00f3n. Muy pronto tendr\u00e1s aqu\u00ed la teor\u00eda, los ejemplos y los laboratorios.</p></div>'
+      + '<div class="lesson-alert" style="text-align:center;border-left-color:#6b8e9e !important;font-family:\'Press Start 2P\',monospace;font-size:12px;line-height:1.8">\u23f3 PR\u00d3XIMAMENTE</div>'
+      + (topics ? '<div class="lesson-section"><h3>Lo que ver\u00e1s en esta clase</h3><ul>' + topics + '</ul></div>' : '')
+      + '</div>';
+  }
   renderVals() {
     const { c, m, list } = this.params();
-    const courseName = c === 'lpic1' ? 'LPIC-1' : 'RHCSA';
+    const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : 'RHCSA';
+    const unit = c === 'docker' ? 'Clase' : 'Tema';
     return {
       status: this.state.status,
       lessonRef: (el) => { this.lessonEl = el; },
       backHref: "curso.html?c=" + c,
       backLabel: "Volver a " + courseName,
-      crumb: courseName + " · Tema " + (m + 1) + " / " + list.length,
+      crumb: courseName + " · " + unit + " " + (m + 1) + " / " + list.length,
       hasPrev: m > 0,
       hasNext: m < list.length - 1,
       prevHref: "leccion.html?c=" + c + "&m=" + (m - 1),

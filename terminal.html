@@ -111,9 +111,9 @@
 </div>
 
 <section style="max-width:1200px;margin:0 auto;width:100%;padding:44px 32px 14px;text-align:center">
-  <div style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">SANDBOX · BETA v0.5</div>
+  <div style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">SANDBOX · v1.1</div>
   <h1 style="font-family:'Press Start 2P',monospace;font-size:28px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:18px">Terminal S2KTUX</h1>
-  <p style="font-size:22px;max-width:720px;margin:0 auto;color:var(--text);line-height:1.35">Un Linux simulado de verdad: FS raíz, usuarios reales, procesos, servicios, paquetes (<span style="font-family:'Share Tech Mono',monospace;color:#c2650a">dnf</span>), red con estado, un <b>disco vacío <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">/dev/sdb</span></b> para particionar/formatear/montar, Docker/Podman y Kubernetes. Tu sesión se guarda al navegar y se reinicia al refrescar. Escribe <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">help</span>.</p>
+  <p style="font-size:22px;max-width:720px;margin:0 auto;color:var(--text);line-height:1.35">Un Linux simulado de verdad: FS raíz, usuarios reales, procesos, servicios, paquetes (<span style="font-family:'Share Tech Mono',monospace;color:#c2650a">dnf</span>), red con estado, un <b>disco vacío <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">/dev/sdb</span></b> para particionar/formatear/montar, Docker y Podman. Una vez dentro, escribe <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">help</span> o <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">man &lt;comando&gt;</span>.</p>
 </section>
 
 <section style="max-width:1200px;margin:0 auto;width:100%;padding:16px 32px 30px">
@@ -126,113 +126,151 @@
       <span style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#5c5344">S2KTUX OS 7.1.0</span>
     </div>
     <div id="term-body" style="padding:20px;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.55;color:#cdc0a8;height:60vh;min-height:440px;overflow-y:auto;background:#12100b">
-      <div class="term-out" style="color:#8fa876">S2KTUX OS [Version 7.1.0] — entorno de práctica realista</div>
-      <div class="term-out" style="color:#8a7f6a">FS raíz montado. 'help' para comandos · 'man &lt;cmd&gt;' para ayuda · el cheatsheet está abajo.</div>
-      <div style="height:10px"></div>
       <div id="term-input-line" style="display:flex;align-items:center">
         <span id="term-prompt" style="color:#8fa876;margin-right:9px;white-space:nowrap">visitor@s2ktux:~$</span>
         <input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus>
       </div>
     </div>
   </div>
+  <div style="text-align:center;margin-top:14px"><button id="term-reboot" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">⟳ Reiniciar → GRUB (recuperar contraseña)</button></div>
   <div style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">↑ / ↓ historial · <span style="color:#c2650a">Tab</span> autocompleta · <span style="color:#c2650a">|</span> tuberías · <span style="color:#c2650a">clear</span> limpia · <span style="color:#c2650a">reset</span> reinicia el entorno</div>
 </section>
 
 <section style="max-width:1200px;margin:0 auto;width:100%;padding:10px 32px 50px">
   <details class="cs" open>
-    <summary>CHEATSHEET DE COMANDOS</summary>
+    <summary>CHEATSHEET · comandos (usa man para las opciones)</summary>
     <div class="cs-tabs">
       <div class="cs-tab" data-cs-tab="files" data-active="1">Ficheros</div>
-      <div class="cs-tab" data-cs-tab="perms" data-active="0">Permisos</div>
+      <div class="cs-tab" data-cs-tab="perms" data-active="0">Permisos y ACL</div>
       <div class="cs-tab" data-cs-tab="users" data-active="0">Usuarios</div>
-      <div class="cs-tab" data-cs-tab="proc" data-active="0">Procesos/Servicios</div>
+      <div class="cs-tab" data-cs-tab="proc" data-active="0">Procesos y servicios</div>
       <div class="cs-tab" data-cs-tab="pkg" data-active="0">Paquetes</div>
       <div class="cs-tab" data-cs-tab="store" data-active="0">Almacenamiento</div>
       <div class="cs-tab" data-cs-tab="net" data-active="0">Red</div>
+      <div class="cs-tab" data-cs-tab="selinux" data-active="0">SELinux</div>
       <div class="cs-tab" data-cs-tab="cont" data-active="0">Contenedores</div>
+      <div class="cs-tab" data-cs-tab="compose" data-active="0">Docker Compose</div>
+      <div class="cs-tab" data-cs-tab="sys" data-active="0">Sistema</div>
       <div class="cs-tab" data-cs-tab="k8s" data-active="0">Kubernetes</div>
     </div>
 
     <div class="cs-panel" data-cs-panel="files" data-active="1">
-      <div class="csrow"><span class="cscmd">pwd · cd · ls -la</span><span class="csdesc">Ruta actual, cambiar de directorio, listar (oculto/permisos con -la).</span></div>
-      <div class="csrow"><span class="cscmd">cd /</span><span class="csdesc">Ve a la raíz: verás un árbol Linux real (/etc, /var, /usr, /home...).</span></div>
-      <div class="csrow"><span class="cscmd">tree · cat · head · tail</span><span class="csdesc">Árbol; ver contenido; primeras/últimas líneas (-n N).</span></div>
-      <div class="csrow"><span class="cscmd">mkdir · rmdir · touch</span><span class="csdesc">Crear directorio, borrar vacío, crear fichero.</span></div>
-      <div class="csrow"><span class="cscmd">rm -r · cp · mv</span><span class="csdesc">Borrar (recursivo), copiar, mover/renombrar.</span></div>
-      <div class="csrow"><span class="cscmd">echo txt &gt; f · &gt;&gt;</span><span class="csdesc">Escribir en fichero (&gt; sobrescribe, &gt;&gt; añade).</span></div>
-      <div class="csrow"><span class="cscmd">find . -name x · grep</span><span class="csdesc">Buscar ficheros por nombre; buscar texto dentro.</span></div>
-      <div class="csrow"><span class="cscmd">cmd | grep · wc · head</span><span class="csdesc">Tuberías reales: encadena la salida de un comando a otro.</span></div>
-      <div class="csrow"><span class="cscmd">./script.sh</span><span class="csdesc">Ejecuta un script (con permiso +x): corre sus líneas de verdad.</span></div>
+      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">💡 Escribe <span style="color:#d97757">man &lt;comando&gt;</span> en la terminal para ver todas sus opciones. Aquí solo va el comando y para qué sirve.</div>
+      <div class="csrow"><span class="cscmd">pwd · cd · ls</span><span class="csdesc">Ruta actual, cambiar de directorio, listar.</span></div>
+      <div class="csrow"><span class="cscmd">tree · cat · head · tail</span><span class="csdesc">Árbol, ver contenido, principio/final.</span></div>
+      <div class="csrow"><span class="cscmd">mkdir · rmdir · touch</span><span class="csdesc">Crear directorio / borrar vacío / crear fichero.</span></div>
+      <div class="csrow"><span class="cscmd">rm · cp · mv · ln</span><span class="csdesc">Borrar, copiar, mover, enlazar.</span></div>
+      <div class="csrow"><span class="cscmd">find · grep · wc</span><span class="csdesc">Buscar ficheros / texto / contar.</span></div>
+      <div class="csrow"><span class="cscmd">stat · file · which</span><span class="csdesc">Metadatos / tipo / ruta del ejecutable.</span></div>
+      <div class="csrow"><span class="cscmd">sort · uniq · nl</span><span class="csdesc">Ordenar / quitar duplicados / numerar.</span></div>
+      <div class="csrow"><span class="cscmd">echo texto &gt; f · &gt;&gt;</span><span class="csdesc">Escribir en fichero (sobrescribe / añade).</span></div>
+      <div class="csrow"><span class="cscmd">cmd1 | cmd2</span><span class="csdesc">Tuberías: encadena la salida de un comando a otro.</span></div>
+      <div class="csrow"><span class="cscmd">cmd1 &amp;&amp; cmd2 · || · ;</span><span class="csdesc">Encadena por éxito / fallo / siempre.</span></div>
+      <div class="csrow"><span class="cscmd">vi FICHERO · nano FICHERO</span><span class="csdesc">Editores (vi modal; nano con ^O/^X).</span></div>
+      <div class="csrow"><span class="cscmd">./script.sh</span><span class="csdesc">Ejecuta un script con permiso +x.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="perms" data-active="0">
-      <div class="csrow"><span class="cscmd">chmod 755 / u+x</span><span class="csdesc">Cambia permisos; se refleja al instante en ls -l.</span></div>
-      <div class="csrow"><span class="cscmd">chown user:grp f</span><span class="csdesc">Cambia propietario y grupo.</span></div>
-      <div class="csrow"><span class="cscmd">chgrp grp f · umask</span><span class="csdesc">Cambia el grupo / máscara por defecto.</span></div>
+      <div class="csrow"><span class="cscmd">chmod · chown · chgrp</span><span class="csdesc">Permisos, propietario, grupo.</span></div>
+      <div class="csrow"><span class="cscmd">umask</span><span class="csdesc">Máscara de permisos por defecto.</span></div>
+      <div class="csrow"><span class="cscmd">getfacl · setfacl</span><span class="csdesc">Ver / modificar ACL (permisos finos).</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="users" data-active="0">
-      <div class="csrow"><span class="cscmd">whoami · id · groups</span><span class="csdesc">Usuario actual, UID/GID, grupos.</span></div>
-      <div class="csrow"><span class="cscmd">useradd nombre</span><span class="csdesc">Crea usuario: aparece en cat /etc/passwd y se le crea /home.</span></div>
-      <div class="csrow"><span class="cscmd">userdel · usermod -aG</span><span class="csdesc">Borra usuario / añade a un grupo.</span></div>
-      <div class="csrow"><span class="cscmd">groupadd · passwd</span><span class="csdesc">Crea grupo / cambia contraseña.</span></div>
-      <div class="csrow"><span class="cscmd">su - nombre · exit</span><span class="csdesc">Cambia de usuario (prompt pasa a nombre@s2ktux); exit vuelve.</span></div>
-      <div class="csrow"><span class="cscmd">cat /etc/passwd</span><span class="csdesc">Lista de usuarios del sistema (real y actualizada).</span></div>
+      <div class="csrow"><span class="cscmd">whoami · id · groups</span><span class="csdesc">Quién soy, UID/GID, grupos.</span></div>
+      <div class="csrow"><span class="cscmd">useradd · userdel · usermod</span><span class="csdesc">Crear / borrar / modificar usuarios.</span></div>
+      <div class="csrow"><span class="cscmd">groupadd · passwd · chage</span><span class="csdesc">Crear grupo / contraseña / caducidad.</span></div>
+      <div class="csrow"><span class="cscmd">su · exit · getent</span><span class="csdesc">Cambiar de usuario / volver / consultar BD.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="proc" data-active="0">
-      <div class="csrow"><span class="cscmd">ps -ef · ps aux · top</span><span class="csdesc">Todos los procesos con formato Linux real. ps solo = tu terminal.</span></div>
-      <div class="csrow"><span class="cscmd">kill · pgrep</span><span class="csdesc">Terminar un proceso por PID / buscar por nombre.</span></div>
-      <div class="csrow"><span class="cscmd">systemctl start/enable s</span><span class="csdesc">Gestiona servicios; el proceso aparece luego en ps.</span></div>
-      <div class="csrow"><span class="cscmd">systemctl status s</span><span class="csdesc">Estado detallado de un servicio.</span></div>
-      <div class="csrow"><span class="cscmd">journalctl -u s</span><span class="csdesc">Logs de un servicio.</span></div>
-      <div class="csrow"><span class="cscmd">uptime · free -h</span><span class="csdesc">Tiempo encendido / memoria.</span></div>
+      <div class="csrow"><span class="cscmd">ps · top · pgrep · kill</span><span class="csdesc">Ver procesos / en vivo / buscar / matar.</span></div>
+      <div class="csrow"><span class="cscmd">systemctl</span><span class="csdesc">Servicios: status/start/stop/enable/restart.</span></div>
+      <div class="csrow"><span class="cscmd">journalctl</span><span class="csdesc">Logs de servicios y del sistema.</span></div>
+      <div class="csrow"><span class="cscmd">crontab · uptime · free</span><span class="csdesc">Tareas programadas / carga / memoria.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="pkg" data-active="0">
-      <div class="csrow"><span class="cscmd">dnf install p</span><span class="csdesc">Instala un paquete (si existe en el repo). Registra lo instalado.</span></div>
-      <div class="csrow"><span class="cscmd">dnf search · info p</span><span class="csdesc">Busca / muestra información de un paquete.</span></div>
-      <div class="csrow"><span class="cscmd">dnf list installed/available</span><span class="csdesc">Lista lo instalado o lo disponible en el repo.</span></div>
-      <div class="csrow"><span class="cscmd">dnf remove · update</span><span class="csdesc">Desinstala / actualiza paquetes.</span></div>
-      <div class="csrow"><span class="cscmd">rpm -qa · rpm -q p</span><span class="csdesc">Consulta los paquetes rpm instalados.</span></div>
-      <div class="csrow"><span class="cscmd">apt install p</span><span class="csdesc">Gestor de Debian/Ubuntu (equivalente).</span></div>
+      <div class="csrow"><span class="cscmd">dnf</span><span class="csdesc">Instala, elimina, busca y actualiza paquetes.</span></div>
+      <div class="csrow"><span class="cscmd">rpm · apt</span><span class="csdesc">Consulta RPM / gestor de Debian.</span></div>
+      <div class="csrow"><span class="cscmd">yum</span><span class="csdesc">Obsoleto: usa dnf.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="store" data-active="0">
-      <div class="csrow"><span class="cscmd">lsblk · fdisk -l · blkid</span><span class="csdesc">Discos y particiones; tabla; UUIDs. Hay un disco vacío /dev/sdb.</span></div>
-      <div class="csrow"><span class="cscmd">parted /dev/sdb mklabel gpt</span><span class="csdesc">Crea la tabla de particiones en el disco vacío.</span></div>
-      <div class="csrow"><span class="cscmd">parted /dev/sdb mkpart ...</span><span class="csdesc">mkpart primary xfs 0% 100% → crea /dev/sdb1.</span></div>
-      <div class="csrow"><span class="cscmd">mkfs.xfs /dev/sdb1</span><span class="csdesc">Formatea la partición (también mkfs.ext4).</span></div>
-      <div class="csrow"><span class="cscmd">mount /dev/sdb1 /mnt/data</span><span class="csdesc">Monta; aparece en df -h y lsblk. umount para desmontar.</span></div>
-      <div class="csrow"><span class="cscmd">df -h · du -sh · cat /etc/fstab</span><span class="csdesc">Uso de disco / tamaño / montajes persistentes.</span></div>
-      <div class="csrow"><span class="cscmd">pvs · vgs · lvs</span><span class="csdesc">LVM: volúmenes físicos, grupos y lógicos.</span></div>
+      <div class="csrow"><span class="cscmd">lsblk · fdisk · blkid</span><span class="csdesc">Discos, particiones y UUIDs. Hay un /dev/sdb vacío.</span></div>
+      <div class="csrow"><span class="cscmd">parted</span><span class="csdesc">Particionado (también discos grandes / GPT).</span></div>
+      <div class="csrow"><span class="cscmd">mkfs.xfs · mkfs.ext4</span><span class="csdesc">Formatea una partición.</span></div>
+      <div class="csrow"><span class="cscmd">mount · umount · df · du</span><span class="csdesc">Monta / desmonta / uso de disco.</span></div>
+      <div class="csrow"><span class="cscmd">pvs vgs lvs · pvcreate…</span><span class="csdesc">LVM: ver y crear PV / VG / LV.</span></div>
+      <div class="csrow"><span class="cscmd">lvextend · mkswap · swapon</span><span class="csdesc">Ampliar LV / swap.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="net" data-active="0">
-      <div class="csrow"><span class="cscmd">ip a · ip route</span><span class="csdesc">Interfaces y direcciones / tabla de rutas.</span></div>
-      <div class="csrow"><span class="cscmd">ip link set eth0 down/up</span><span class="csdesc">Tumba o levanta la interfaz. ¡Con eth0 down el ping externo falla!</span></div>
-      <div class="csrow"><span class="cscmd">ping host</span><span class="csdesc">Trazas reales una a una; localhost siempre responde.</span></div>
-      <div class="csrow"><span class="cscmd">ss -tuln · nmcli</span><span class="csdesc">Puertos en escucha / gestión de conexiones.</span></div>
-      <div class="csrow"><span class="cscmd">firewall-cmd · hostnamectl</span><span class="csdesc">Firewall (firewalld) / nombre del host.</span></div>
+      <div class="csrow"><span class="cscmd">ip</span><span class="csdesc">Direcciones, rutas e interfaces (link set eth0 up/down).</span></div>
+      <div class="csrow"><span class="cscmd">ifup · ifdown · ping</span><span class="csdesc">Levantar/tumbar eth0 / conectividad.</span></div>
+      <div class="csrow"><span class="cscmd">ss · nmcli</span><span class="csdesc">Puertos en escucha / conexiones de red.</span></div>
+      <div class="csrow"><span class="cscmd">firewall-cmd</span><span class="csdesc">Firewalld: servicios, puertos, zonas.</span></div>
+      <div class="csrow"><span class="cscmd">hostname · hostnamectl</span><span class="csdesc">Nombre e información del host.</span></div>
+    </div>
+
+    <div class="cs-panel" data-cs-panel="selinux" data-active="0">
+      <div class="csrow"><span class="cscmd">getenforce · sestatus</span><span class="csdesc">Modo actual / estado de SELinux.</span></div>
+      <div class="csrow"><span class="cscmd">setenforce 0|1</span><span class="csdesc">Permissive / Enforcing.</span></div>
+      <div class="csrow"><span class="cscmd">getsebool · setsebool</span><span class="csdesc">Ver / cambiar booleanos.</span></div>
+      <div class="csrow"><span class="cscmd">semanage · restorecon · chcon</span><span class="csdesc">Puertos, contextos y su restauración.</span></div>
+      <div class="csrow"><span class="cscmd">ls -Z</span><span class="csdesc">Contexto SELinux de los ficheros.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="cont" data-active="0">
-      <div class="csrow"><span class="cscmd">docker ps -a · images</span><span class="csdesc">Contenedores / imágenes (podman funciona igual).</span></div>
-      <div class="csrow"><span class="cscmd">docker pull · run -d</span><span class="csdesc">Descarga una imagen / crea y arranca un contenedor.</span></div>
-      <div class="csrow"><span class="cscmd">docker start/stop/restart</span><span class="csdesc">Controla el ciclo de vida de un contenedor.</span></div>
-      <div class="csrow"><span class="cscmd">docker logs · inspect · exec</span><span class="csdesc">Logs, detalles y shell dentro de un contenedor.</span></div>
-      <div class="csrow"><span class="cscmd">docker build -t n . · rmi</span><span class="csdesc">Construye una imagen / borra una imagen.</span></div>
-      <div class="csrow"><span class="cscmd">podman ...</span><span class="csdesc">Mismo interfaz que docker, sin daemon (rootless).</span></div>
+      <div class="csrow"><span class="cscmd">docker run · ps · logs</span><span class="csdesc">Arranca contenedores, lista, logs.</span></div>
+      <div class="csrow"><span class="cscmd">start · stop · restart · rm</span><span class="csdesc">Ciclo de vida de un contenedor.</span></div>
+      <div class="csrow"><span class="cscmd">exec · attach · inspect · top</span><span class="csdesc">Entrar, detalles y procesos.</span></div>
+      <div class="csrow"><span class="cscmd">images · pull · search</span><span class="csdesc">Imágenes locales, descargar, buscar.</span></div>
+      <div class="csrow"><span class="cscmd">build · commit · history</span><span class="csdesc">Construir desde Dockerfile / capas.</span></div>
+      <div class="csrow"><span class="cscmd">tag · push · save · load</span><span class="csdesc">Etiquetar, publicar, exportar/importar.</span></div>
+      <div class="csrow"><span class="cscmd">volume · network</span><span class="csdesc">Volúmenes y redes (bridge/host/none/overlay/macvlan).</span></div>
+      <div class="csrow"><span class="cscmd">stats · system df · prune</span><span class="csdesc">Consumo, uso de disco, limpieza.</span></div>
+      <div class="csrow"><span class="cscmd">run -m --cpus --restart</span><span class="csdesc">Límites de recursos y política de reinicio.</span></div>
+      <div class="csrow"><span class="cscmd">podman</span><span class="csdesc">Igual que docker, sin daemon (rootless).</span></div>
+    </div>
+
+    <div class="cs-panel" data-cs-panel="compose" data-active="0">
+      <div class="csrow"><span class="cscmd">docker compose up -d · down</span><span class="csdesc">Arranca / para toda la app multi-contenedor.</span></div>
+      <div class="csrow"><span class="cscmd">compose ps · logs · build</span><span class="csdesc">Estado / logs / construir servicios.</span></div>
+      <div class="csrow"><span class="cscmd">docker-compose</span><span class="csdesc">Forma antigua, equivalente.</span></div>
+      <div style="margin:10px 22px 4px;padding:11px 15px;background:var(--surface2);border:3px dashed #b89b78;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--head);line-height:1.6">Ejemplo docker-compose.yml:<br>services:<br>&nbsp;&nbsp;web:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: nginx<br>&nbsp;&nbsp;&nbsp;&nbsp;ports: ["8080:80"]<br>&nbsp;&nbsp;db:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: mariadb:11<br>&nbsp;&nbsp;&nbsp;&nbsp;environment: ["MARIADB_ROOT_PASSWORD=secreto"]<br>&nbsp;&nbsp;&nbsp;&nbsp;volumes: ["db_data:/var/lib/mysql"]</div>
+    </div>
+
+    <div class="cs-panel" data-cs-panel="sys" data-active="0">
+      <div class="csrow"><span class="cscmd">man · help</span><span class="csdesc">Manual de un comando / índice rápido.</span></div>
+      <div class="csrow"><span class="cscmd">uname · hostnamectl</span><span class="csdesc">Kernel e información del host.</span></div>
+      <div class="csrow"><span class="cscmd">date · timedatectl</span><span class="csdesc">Fecha, hora y zona.</span></div>
+      <div class="csrow"><span class="cscmd">uptime · free · env · history</span><span class="csdesc">Carga, memoria, variables, historial.</span></div>
+      <div class="csrow"><span class="cscmd">tuned-adm · tar · neofetch</span><span class="csdesc">Perfiles, comprimir, resumen del sistema.</span></div>
+      <div class="csrow"><span class="cscmd">clear (Ctrl+L) · reset</span><span class="csdesc">Limpia pantalla / reinicia el entorno.</span></div>
+      <div style="margin:10px 22px 4px;padding:11px 15px;background:var(--surface2);border:3px dashed #b89b78;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--head)">Atajos: ↑/↓ historial · Tab autocompleta · Ctrl+C cancela · Ctrl+U borra la línea · Ctrl+A/E inicio/fin.</div>
     </div>
 
     <div class="cs-panel" data-cs-panel="k8s" data-active="0">
-      <div style="margin:10px 22px 4px;padding:12px 16px;background:var(--surface2);border:3px dashed #b89b78;font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--head)">⏳ El módulo interactivo de Kubernetes llegará muy pronto al sandbox. De momento, esta es la referencia de comandos.</div>
-      <div class="csrow"><span class="cscmd">kubectl get pods/nodes/svc</span><span class="csdesc">Lista recursos del clúster (add -A o -n ns).</span></div>
-      <div class="csrow"><span class="cscmd">kubectl run · create</span><span class="csdesc">Crea un pod / recurso rápidamente.</span></div>
-      <div class="csrow"><span class="cscmd">kubectl apply -f f</span><span class="csdesc">Aplica un manifiesto YAML.</span></div>
-      <div class="csrow"><span class="cscmd">kubectl expose · scale</span><span class="csdesc">Expone un servicio / escala réplicas.</span></div>
-      <div class="csrow"><span class="cscmd">kubectl describe · logs · exec</span><span class="csdesc">Detalle, logs y shell de un pod.</span></div>
-      <div class="csrow"><span class="cscmd">kubectl delete ...</span><span class="csdesc">Elimina recursos.</span></div>
+      <div style="margin:10px 22px 4px;padding:11px 15px;background:var(--surface2);border:3px dashed #b89b78;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--head)">⏳ El módulo interactivo de Kubernetes llegará muy pronto al sandbox.</div>
+    </div>
+    </details>
+</section>
+
+<section style="max-width:1200px;margin:0 auto;width:100%;padding:6px 32px 50px">
+  <details class="cs">
+    <summary>PRÁCTICAS GUIADAS · RHCSA</summary>
+    <div style="padding:20px 22px">
+      <div style="font-size:18px;color:var(--text);line-height:1.4;margin-bottom:16px">Elige un reto, resuélvelo en la terminal de arriba y pulsa <b>Comprobar</b>. El sistema mira el estado real de tu máquina y te dice si lo has conseguido.</div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
+        <div style="position:relative;flex:1;min-width:240px">
+          <select id="chal-select" style="width:100%;appearance:none;-webkit-appearance:none;font-family:'Share Tech Mono',monospace;font-size:16px;padding:12px 40px 12px 14px;background:var(--surface);color:var(--head);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer"></select>
+          <span style="position:absolute;right:15px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--head);font-size:11px">▼</span>
+        </div>
+        <button id="chal-check" class="pxbtn" style="background:#8fa876;color:#2e3d24;font-family:'Press Start 2P',monospace;font-size:11px;padding:14px 22px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">COMPROBAR</button>
+      </div>
+      <div id="chal-body" style="background:var(--surface);border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);padding:20px"></div>
+      <div id="chal-result" style="margin-top:14px;font-size:19px;line-height:1.4;min-height:24px"></div>
     </div>
   </details>
 </section>
@@ -264,7 +302,7 @@ class Component extends DCLogic {
 
     // ---------------- default state builders ----------------
     const defaultUsers = () => ({
-      root:    { uid:0,    gid:0,    home:'/root',          groups:['root'], password:'s2000' },
+      root:    { uid:0,    gid:0,    home:'/root',          groups:['root'], password:'r'+Math.random().toString(36).slice(2,10)+Math.random().toString(36).slice(2,10) },
       visitor: { uid:1000, gid:1000, home:'/home/visitor',  groups:['visitor','wheel'] },
     });
     const defaultFs = () => dir({
@@ -281,6 +319,7 @@ class Component extends DCLogic {
         hosts: file('127.0.0.1   localhost\n192.168.1.50 s2ktux'),
         ssh: dir({ 'sshd_config': file('Port 22\nPermitRootLogin no') }),
         sysconfig: dir({ network: file('NETWORKING=yes') }),
+        httpd: dir({ 'conf.d': dir({}) }),
         systemd: dir({ system: dir({}) }),
       }),
       home: dir({ visitor: dir({
@@ -291,9 +330,9 @@ class Component extends DCLogic {
         }, { owner:'visitor', group:'visitor' }),
         labs: dir({ 'hola.sh': file('#!/bin/bash\n# script de ejemplo\necho "Hola desde el lab de S2KTUX"\necho "Usuario actual:"\nwhoami\necho "Fecha:"\ndate', { mode:'rwxr-xr-x', owner:'visitor', group:'visitor' }) }, { owner:'visitor', group:'visitor' }),
         '.bashrc': file('export PS1="\\u@\\h:\\w$ "\nalias ll="ls -la"\nalias ..="cd .."', { owner:'visitor', group:'visitor' }),
-        '.bash_history': file('ls -la\ncd apuntes\nssh root@s2ktux   # recordar: la clave de root es s2000, cambiarla!!\nclear\nexit', { owner:'visitor', group:'visitor' }),
+        '.bash_history': file('ls -la\ncd apuntes\nsystemctl status sshd\ncat /etc/os-release\nclear\nexit', { owner:'visitor', group:'visitor' }),
       }, { owner:'visitor', group:'visitor' }) }),
-      root: dir({ '.bashrc': file('# root bashrc', { owner:'root' }), 'anaconda-ks.cfg': file('# kickstart', { owner:'root' }), '.credenciales': file('root:s2000\nnota: mover a un gestor de secretos', { mode:'rw-------', owner:'root', group:'root' }) }, { owner:'root', group:'root' }),
+      root: dir({ '.bashrc': file('# root bashrc', { owner:'root' }), 'anaconda-ks.cfg': file('# kickstart', { owner:'root' }), '.credenciales': file('root: (contrase\u00f1a rotada tras el \u00faltimo incidente \u2014 ya no se guarda aqu\u00ed)\nnota: usar un gestor de secretos', { mode:'rw-------', owner:'root', group:'root' }) }, { owner:'root', group:'root' }),
       media: dir({}), mnt: dir({}), opt: dir({}), srv: dir({ www: dir({}) }), run: dir({}),
       proc: dir({ cpuinfo: file('model name : Cozy CPU @ 3.2GHz\ncores : 4'), meminfo: file('MemTotal:  3987654 kB\nMemFree:   1998765 kB') }),
       sys: dir({}), tmp: dir({}),
@@ -334,8 +373,12 @@ class Component extends DCLogic {
     const defaultInstalled = () => ['bash','coreutils','openssh-server','systemd','glibc','NetworkManager','chrony','rsyslog'];
 
     // ---------------- mutable state ----------------
-    let fs, users, nextUid, currentUser, userStack, cwd, history, processes, nextPid, services, installed, images, containers, disks, net, selinux;
+    let fs, users, nextUid, currentUser, userStack, cwd, history, processes, nextPid, services, installed, images, containers, disks, net, selinux, fw;
     let hIdx = -1;
+    let lastFail = false;
+    let recovery = null;
+    let rootRecovered = false;
+    let loggedIn = false;
     const resetState = () => {
       fs = defaultFs(); users = defaultUsers(); nextUid = 1001; currentUser='visitor'; userStack=[];
       cwd = ['home','visitor']; history = []; processes = defaultProcs(); nextPid = 1200; services = {};
@@ -344,7 +387,9 @@ class Component extends DCLogic {
       containers = [];
       disks = defaultDisks();
       net = { eth0:{ up:true, ip:'192.168.1.50', prefix:24, gw:'192.168.1.1' } };
-      selinux = { mode:'Enforcing' };
+      selinux = { mode:'Enforcing', httpPorts:[80,443,8080] };
+      fw = { services:new Set(['ssh','dhcpv6-client','http']), ports:new Set(['8080/tcp']), zone:'public' };
+      recovery = null; rootRecovered = false;
     };
 
     // ---------------- persistence (sessionStorage) ----------------
@@ -352,13 +397,12 @@ class Component extends DCLogic {
     const reloaded = (function(){ try{ const n=performance.getEntriesByType('navigation')[0]; if(n) return n.type==='reload'; return performance.navigation && performance.navigation.type===1; }catch(e){ return false; } })();
     let savedScroll = null;
     resetState();
-    if (reloaded) { try{ sessionStorage.removeItem(STORE); }catch(e){} }
-    else {
+    {
       try{ const s=JSON.parse(sessionStorage.getItem(STORE)||'null');
-        if(s){ fs=s.fs; users=s.users; nextUid=s.nextUid; currentUser=s.currentUser; userStack=s.userStack||[]; cwd=s.cwd; history=s.history||[]; processes=s.processes; nextPid=s.nextPid; services=s.services||{}; installed=new Set(s.installed||[]); images=s.images; containers=s.containers; disks=s.disks; net=s.net; selinux=s.selinux||selinux; savedScroll=s.scroll||null; }
+        if(s){ fs=s.fs; users=s.users; nextUid=s.nextUid; currentUser=s.currentUser; userStack=s.userStack||[]; cwd=s.cwd; history=s.history||[]; processes=s.processes; nextPid=s.nextPid; services=s.services||{}; installed=new Set(s.installed||[]); images=s.images; containers=s.containers; disks=s.disks; net=s.net; selinux=s.selinux||selinux; fw=s.fw?{services:new Set(s.fw.services),ports:new Set(s.fw.ports),zone:s.fw.zone}:fw; rootRecovered=s.rootRecovered||false; recovery=null; savedScroll=null; }
       }catch(e){}
     }
-    const save = () => { try{ const scroll=[...body.querySelectorAll('.term-out')].map(d=>({h:d.innerHTML,c:d.style.color})); sessionStorage.setItem(STORE, JSON.stringify({fs,users,nextUid,currentUser,userStack,cwd,history,processes,nextPid,services,installed:[...installed],images,containers,disks,net,selinux,scroll})); }catch(e){} };
+    const save = () => { try{ const scroll=[...body.querySelectorAll('.term-out')].map(d=>({h:d.innerHTML,c:d.style.color})); sessionStorage.setItem(STORE, JSON.stringify({fs,users,nextUid,currentUser,userStack,cwd,history,processes,nextPid,services,installed:[...installed],images,containers,disks,net,selinux,fw:{services:[...fw.services],ports:[...fw.ports],zone:fw.zone},rootRecovered,loggedIn,scroll})); }catch(e){} };
 
     // ---------------- path helpers ----------------
     const homeSegs = () => users[currentUser].home.split('/').filter(Boolean);
@@ -379,17 +423,17 @@ class Component extends DCLogic {
     const esc = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const out = (t,c) => { if(cap){ cap.push(t==null?'':String(t)); return; } const d=document.createElement('div'); d.className='term-out'; if(c) d.style.color=c; d.innerHTML=(t===''||t==null)?'&nbsp;':esc(t); body.insertBefore(d,line); };
     const outMany = (a,c)=>a.forEach(l=>out(l,c));
-    const err = (t)=>out(t,'#ef8a7a');
+    const err = (t)=>{ lastFail=true; return out(t,'#ef8a7a'); };
     const ok = (t)=>out(t,'#8fa876');
-    const promptStr = () => currentUser+'@s2ktux:'+pretty(cwd)+(currentUser==='root'?'#':'$');
+    const promptStr = () => recovery ? (recovery.kind==='rdbreak' ? (recovery.chrooted?'sh-5.1#':'switch_root:/#') : 'bash-5.1#') : currentUser+'@s2ktux:'+pretty(cwd)+(currentUser==='root'?'#':'$');
     const echoCmd = (raw)=>{ const d=document.createElement('div'); d.className='term-out'; d.innerHTML='<span style="color:'+(currentUser==='root'?'#e08a2e':'#8fa876')+'">'+esc(promptStr())+'</span> <span style="color:#e9ddc7">'+esc(raw)+'</span>'; body.insertBefore(d,line); };
     const scroll=()=>{ body.scrollTop=body.scrollHeight; };
-    const setPrompt=()=>{ promptEl.textContent=promptStr(); promptEl.style.color=currentUser==='root'?'#e08a2e':'#8fa876'; if(titleEl) titleEl.textContent=currentUser+'@s2ktux: '+pretty(cwd); };
+    const setPrompt=()=>{ if(recovery){ setRecoveryPrompt(); return; } promptEl.textContent=promptStr(); promptEl.style.color=currentUser==='root'?'#e08a2e':'#8fa876'; if(titleEl) titleEl.textContent=currentUser+'@s2ktux: '+pretty(cwd); };
 
     // ---------------- entrada interactiva (passwd, fdisk, editor) ----------------
     let interactive = null; // { promptText, masked, onLine, color }
-    const startInteractive = (promptText, masked, onLine, color) => { interactive = { promptText, masked, onLine, color: color||'#e0a458' }; promptEl.textContent = promptText; promptEl.style.color = interactive.color; input.value=''; scroll(); };
-    const endInteractive = () => { interactive = null; setPrompt(); };
+    const startInteractive = (promptText, masked, onLine, color) => { interactive = { promptText, masked, onLine, color: color||'#e0a458' }; promptEl.textContent = promptText; promptEl.style.color = interactive.color; input.value=''; input.style.color = masked ? 'transparent' : ''; scroll(); };
+    const endInteractive = () => { interactive = null; input.style.color=''; setPrompt(); };
     const echoInteractive = (v) => { const shown = interactive.masked ? '' : v; const d=document.createElement('div'); d.className='term-out'; d.innerHTML='<span style="color:'+interactive.color+'">'+esc(interactive.promptText)+'</span> <span style="color:#e9ddc7">'+esc(shown)+'</span>'; body.insertBefore(d,line); };
 
     const octalToSym=(o)=>{ const m=['---','--x','-w-','-wx','r--','r-x','rw-','rwx']; if(!/^[0-7]{3}$/.test(o)) return null; return m[+o[0]]+m[+o[1]]+m[+o[2]]; };
@@ -405,7 +449,12 @@ class Component extends DCLogic {
     const REPO = new Set(['httpd','httpd-tools','mod_ssl','nginx','mariadb','mariadb-server','vsftpd','firewalld','git','vim','vim-enhanced','nano','tmux','htop','tree','wget','curl','podman','buildah','skopeo','docker-ce','nfs-utils','samba','samba-client','bind','bind-utils','chrony','openssh-server','python3','python3-pip','gcc','make','tar','unzip','zip','net-tools','tcpdump','sysstat','cockpit','container-tools','kernel','policycoreutils','setools-console','rsync','lvm2','xfsprogs','e2fsprogs','parted','util-linux','man-db','bash-completion','wireshark','nmap','telnet','lsof','strace']);
     const svcForPkg = { httpd:'httpd', nginx:'nginx', mariadb:'mariadb', 'mariadb-server':'mariadb', vsftpd:'vsftpd', firewalld:'firewalld', 'bind':'named', chrony:'chronyd', 'nfs-utils':'nfs-server' };
 
-    const MAN={ ls:'ls [-l|-a|-la] [ruta] — lista un directorio.', cd:'cd [ruta] — cambia de directorio (.. ~ /).', pwd:'pwd — ruta actual.', cat:'cat <f> — muestra contenido.', chmod:'chmod <octal|u+x> <f> — permisos.', chown:'chown user[:grp] <f> — propietario.', useradd:'useradd <nombre> — crea usuario (aparece en /etc/passwd).', su:'su [-] <usuario> — cambia de usuario. exit vuelve.', systemctl:'systemctl <status|start|stop|enable|disable> <servicio>.', dnf:'dnf <install|remove|search|info|list|update|repolist> <paquete>.', docker:'docker <ps|images|pull|run|build|start|stop|restart|logs|inspect|exec|rm|rmi>.', podman:'podman — igual que docker, rootless.', kubectl:'kubectl <get|run|create|apply|expose|scale|describe|delete|logs|exec>.', parted:'parted /dev/sdX <mklabel gpt | mkpart primary xfs 0% 100% | print>.', mkfs:'mkfs.xfs /dev/sdb1 — formatea una particion.', mount:'mount /dev/sdb1 /mnt/data — monta una particion.', ping:'ping <host> — envia paquetes ICMP. Falla si la red esta caida.', ps:'ps -ef | ps aux — lista procesos.', ip:'ip a | ip route | ip link set eth0 up/down.' };
+    const MAN = {"ls":{"name":"ls - lista el contenido de directorios","sec":"1","s":"ls [OPCIÓN]... [FICHERO]...","d":"Lista información de los FICHEROS (del directorio actual por defecto), ordenados alfabéticamente.","o":[["-l","usa un formato largo: tipo, permisos, propietario, grupo, tamaño y nombre"],["-a","no oculta las entradas que empiezan por punto"],["-la","listado largo incluyendo los ficheros ocultos"]],"e":"ls -la /etc"},"cd":{"name":"cd - cambia el directorio de trabajo","sec":"1","s":"cd [DIRECTORIO]","d":"Cambia el directorio actual. Sin argumento va a $HOME. Acepta rutas absolutas, relativas, .. y ~.","o":null,"e":"cd /var/log\ncd ..\ncd ~"},"pwd":{"name":"pwd - muestra el directorio de trabajo","sec":"1","s":"pwd","d":"Escribe la ruta absoluta completa del directorio de trabajo actual.","o":null,"e":null},"cat":{"name":"cat - concatena y muestra ficheros","sec":"1","s":"cat [FICHERO]...","d":"Muestra el contenido de un fichero por la salida estándar. Falla si no tienes permiso de lectura.","o":null,"e":"cat /etc/passwd"},"head":{"name":"head - muestra el principio de un fichero","sec":"1","s":"head [-n N] FICHERO","d":"Muestra las primeras líneas de un fichero (10 por defecto).","o":[["-n N","muestra las primeras N líneas"]],"e":"head -n 5 /etc/passwd"},"tail":{"name":"tail - muestra el final de un fichero","sec":"1","s":"tail [-n N] FICHERO","d":"Muestra las últimas líneas de un fichero (10 por defecto).","o":[["-n N","muestra las últimas N líneas"]],"e":"tail -n 20 /var/log/messages"},"tree":{"name":"tree - lista el contenido en forma de árbol","sec":"1","s":"tree [DIRECTORIO]","d":"Muestra de forma recursiva el contenido del directorio como un árbol indentado.","o":null,"e":null},"mkdir":{"name":"mkdir - crea directorios","sec":"1","s":"mkdir DIRECTORIO...","d":"Crea uno o más directorios si no existen ya.","o":null,"e":"mkdir proyecto"},"rmdir":{"name":"rmdir - elimina directorios vacíos","sec":"1","s":"rmdir DIRECTORIO...","d":"Elimina directorios, siempre que estén vacíos.","o":null,"e":null},"touch":{"name":"touch - crea ficheros vacíos o actualiza su fecha","sec":"1","s":"touch FICHERO...","d":"Crea el fichero si no existe; si existe, actualiza su marca de tiempo.","o":null,"e":null},"rm":{"name":"rm - elimina ficheros y directorios","sec":"1","s":"rm [-r] [-f] FICHERO...","d":"Borra ficheros. Para borrar un directorio y su contenido se necesita -r.","o":[["-r","borrado recursivo (directorios y su contenido)"],["-f","no pregunta y no avisa de los que no existen"]],"e":"rm -r carpeta"},"cp":{"name":"cp - copia ficheros y directorios","sec":"1","s":"cp ORIGEN DESTINO","d":"Copia ORIGEN en DESTINO. Si DESTINO es un directorio, copia dentro de él.","o":null,"e":"cp fichero.txt /tmp/"},"mv":{"name":"mv - mueve o renombra ficheros","sec":"1","s":"mv ORIGEN DESTINO","d":"Mueve o renombra ficheros y directorios.","o":null,"e":"mv viejo.txt nuevo.txt"},"ln":{"name":"ln - crea enlaces entre ficheros","sec":"1","s":"ln [-s] OBJETIVO NOMBRE","d":"Crea un enlace. Con -s crea un enlace simbólico (blando).","o":[["-s","crea un enlace simbólico en lugar de uno duro"]],"e":"ln -s /opt/app/bin/app /usr/local/bin/app"},"find":{"name":"find - busca ficheros en una jerarquía","sec":"1","s":"find [RUTA] [-name PATRÓN]","d":"Recorre el árbol de directorios buscando ficheros que cumplan la condición.","o":[["-name P","coincide por nombre de fichero"]],"e":"find /etc -name \"*.conf\""},"grep":{"name":"grep - busca patrones en texto","sec":"1","s":"grep [-i] PATRÓN FICHERO","d":"Muestra las líneas del fichero que contienen el patrón. También funciona tras una tubería.","o":[["-i","ignora mayúsculas/minúsculas"],["-v","invierte: muestra las líneas que NO coinciden"],["-c","cuenta las líneas coincidentes"]],"e":"grep -i error /var/log/messages"},"wc":{"name":"wc - cuenta líneas, palabras y bytes","sec":"1","s":"wc [-l] FICHERO","d":"Cuenta líneas, palabras y bytes de un fichero.","o":[["-l","solo cuenta las líneas"]],"e":null},"stat":{"name":"stat - muestra el estado de un fichero","sec":"1","s":"stat FICHERO","d":"Muestra información detallada: tamaño, tipo, permisos, propietario y grupo.","o":null,"e":null},"file":{"name":"file - determina el tipo de un fichero","sec":"1","s":"file FICHERO","d":"Intenta identificar el tipo de contenido de un fichero.","o":null,"e":null},"echo":{"name":"echo - muestra una línea de texto","sec":"1","s":"echo TEXTO [> fichero]","d":"Escribe el texto. Con > redirige a un fichero (sobrescribe) y con >> añade al final.","o":null,"e":"echo \"hola\" > saludo.txt"},"chmod":{"name":"chmod - cambia los permisos de un fichero","sec":"1","s":"chmod MODO FICHERO","d":"Cambia los bits de permiso. El modo puede ser octal (755) o simbólico (u+x).","o":[["755","rwxr-xr-x"],["u+x","añade permiso de ejecución al propietario"]],"e":"chmod 640 secreto.txt\nchmod u+x script.sh"},"chown":{"name":"chown - cambia propietario y grupo","sec":"1","s":"chown USUARIO[:GRUPO] FICHERO","d":"Cambia el propietario (y opcionalmente el grupo) de un fichero.","o":null,"e":"chown ana:equipo informe.txt"},"chgrp":{"name":"chgrp - cambia el grupo de un fichero","sec":"1","s":"chgrp GRUPO FICHERO","d":"Cambia el grupo propietario de un fichero.","o":null,"e":null},"umask":{"name":"umask - máscara de permisos por defecto","sec":"1","s":"umask","d":"Muestra la máscara que determina los permisos por defecto de los ficheros nuevos.","o":null,"e":null},"getfacl":{"name":"getfacl - obtiene las ACL de un fichero","sec":"1","s":"getfacl FICHERO","d":"Muestra las listas de control de acceso (ACL): propietario, grupo, entradas extra y otros.","o":null,"e":"getfacl /srv"},"setfacl":{"name":"setfacl - modifica las ACL de un fichero","sec":"1","s":"setfacl {-m|-x|-b} REGLA FICHERO","d":"Define permisos ACL más finos que ugo/rwx para usuarios o grupos concretos.","o":[["-m","modifica/añade una entrada, p.ej. u:ana:rwx"],["-x","elimina una entrada concreta"],["-b","elimina todas las ACL extendidas"]],"e":"setfacl -m u:ana:rwx /srv"},"whoami":{"name":"whoami - muestra el usuario efectivo","sec":"1","s":"whoami","d":"Escribe el nombre del usuario asociado al identificador efectivo actual.","o":null,"e":null},"id":{"name":"id - muestra UID, GID y grupos","sec":"1","s":"id [USUARIO]","d":"Muestra el identificador de usuario, de grupo y los grupos a los que pertenece.","o":null,"e":null},"useradd":{"name":"useradd - crea una cuenta de usuario","sec":"8","s":"useradd NOMBRE","d":"Crea un usuario nuevo, su UID/GID y su directorio personal. Requiere privilegios.","o":null,"e":"sudo useradd ana"},"userdel":{"name":"userdel - elimina una cuenta de usuario","sec":"8","s":"userdel NOMBRE","d":"Elimina un usuario del sistema.","o":null,"e":null},"usermod":{"name":"usermod - modifica una cuenta de usuario","sec":"8","s":"usermod [-aG GRUPO] NOMBRE","d":"Modifica una cuenta. Con -aG añade el usuario a un grupo secundario sin sacarlo de los demás.","o":[["-aG G","añade (append) el usuario al grupo suplementario G"]],"e":"usermod -aG wheel ana"},"groupadd":{"name":"groupadd - crea un grupo","sec":"8","s":"groupadd NOMBRE","d":"Crea un grupo nuevo en el sistema.","o":null,"e":null},"passwd":{"name":"passwd - cambia la contraseña","sec":"1","s":"passwd [USUARIO]","d":"Cambia la contraseña. Un usuario normal solo puede cambiar la suya; root la de cualquiera.","o":null,"e":null},"su":{"name":"su - cambia de usuario","sec":"1","s":"su [-] [USUARIO]","d":"Inicia una sesión con otro usuario (root por defecto). Con - carga su entorno de login.","o":[["-","simula un inicio de sesión completo (carga entorno y va a su HOME)"]],"e":"su - ana"},"sudo":{"name":"sudo - ejecuta un comando como otro usuario","sec":"8","s":"sudo COMANDO","d":"Ejecuta un comando con privilegios de root. Requiere pertenecer al grupo wheel y la contraseña.","o":[["-i","abre una shell de login como root"],["-l","lista los permisos sudo del usuario"]],"e":"sudo systemctl restart sshd"},"ps":{"name":"ps - informa del estado de los procesos","sec":"1","s":"ps [aux|-ef]","d":"Muestra una instantánea de los procesos en ejecución.","o":[["aux","todos los procesos, formato BSD con %CPU y %MEM"],["-ef","todos los procesos, formato completo con PPID"]],"e":"ps aux"},"top":{"name":"top - procesos en tiempo real","sec":"1","s":"top","d":"Muestra los procesos y el uso de CPU y memoria, ordenados por consumo.","o":null,"e":null},"kill":{"name":"kill - envía una señal a un proceso","sec":"1","s":"kill [-SEÑAL] PID","d":"Envía una señal (TERM por defecto) a un proceso identificado por su PID.","o":null,"e":"kill 1234"},"pgrep":{"name":"pgrep - busca procesos por nombre","sec":"1","s":"pgrep PATRÓN","d":"Muestra los PID de los procesos cuyo nombre coincide con el patrón.","o":null,"e":null},"systemctl":{"name":"systemctl - controla systemd y los servicios","sec":"1","s":"systemctl SUBCOMANDO [SERVICIO]","d":"Gestiona servicios (units): consulta estado, arranca, para, habilita en el arranque.","o":[["status","estado detallado del servicio"],["start / stop","arranca / detiene el servicio ahora"],["enable / disable","lo activa / desactiva en el arranque (--now también lo arranca)"],["restart","reinicia el servicio"]],"e":"systemctl enable --now httpd"},"journalctl":{"name":"journalctl - consulta el registro de systemd","sec":"1","s":"journalctl [-u SERVICIO]","d":"Muestra los mensajes del journal. Con -u filtra por una unidad concreta.","o":[["-u S","muestra solo los logs del servicio S"]],"e":"journalctl -u sshd"},"crontab":{"name":"crontab - gestiona tareas programadas","sec":"1","s":"crontab {-l|-e}","d":"Programa comandos para ejecutarse periódicamente.","o":[["-l","lista las tareas del usuario"],["-e","edita la tabla de tareas"]],"e":null},"dnf":{"name":"dnf - gestor de paquetes","sec":"8","s":"dnf SUBCOMANDO [PAQUETE]","d":"Instala, elimina, busca y actualiza software desde los repositorios.","o":[["install","instala uno o más paquetes"],["remove","desinstala paquetes"],["search","busca paquetes por nombre"],["info","muestra información de un paquete"],["list installed|available","lista paquetes"],["update","actualiza el sistema"]],"e":"dnf install httpd"},"rpm":{"name":"rpm - gestor de paquetes RPM de bajo nivel","sec":"8","s":"rpm {-qa|-q PAQUETE}","d":"Consulta la base de datos de paquetes instalados.","o":[["-qa","lista todos los paquetes instalados"],["-q P","consulta si el paquete P está instalado"]],"e":null},"mount":{"name":"mount - monta un sistema de archivos","sec":"8","s":"mount [DISPOSITIVO PUNTO]","d":"Sin argumentos lista lo montado. Con dispositivo y punto de montaje, lo monta.","o":null,"e":"mount /dev/sdb1 /mnt/data"},"umount":{"name":"umount - desmonta un sistema de archivos","sec":"8","s":"umount {DISPOSITIVO|PUNTO}","d":"Desmonta un sistema de archivos previamente montado.","o":null,"e":null},"lsblk":{"name":"lsblk - lista los dispositivos de bloque","sec":"8","s":"lsblk","d":"Muestra discos y particiones en forma de árbol, con tamaño y punto de montaje.","o":null,"e":null},"fdisk":{"name":"fdisk - manipula la tabla de particiones","sec":"8","s":"fdisk [-l] [DISPOSITIVO]","d":"Con -l lista las particiones; con un disco abre el modo interactivo (m para ayuda).","o":[["-l","lista las tablas de particiones"]],"e":"fdisk /dev/sdb"},"parted":{"name":"parted - editor de particiones","sec":"8","s":"parted DISPOSITIVO ORDEN","d":"Crea y gestiona particiones también en discos grandes (GPT).","o":[["mklabel gpt","crea una tabla de particiones GPT"],["mkpart","crea una partición"],["print","muestra las particiones"],["rm N","elimina la partición N"]],"e":"parted /dev/sdb mklabel gpt"},"mkfs":{"name":"mkfs - crea un sistema de archivos","sec":"8","s":"mkfs.TIPO DISPOSITIVO","d":"Formatea una partición con el sistema de archivos indicado (xfs, ext4...).","o":null,"e":"mkfs.xfs /dev/sdb1"},"df":{"name":"df - espacio libre en disco","sec":"1","s":"df [-h]","d":"Muestra el uso de espacio de los sistemas de archivos montados.","o":[["-h","tamaños legibles (K, M, G)"]],"e":null},"du":{"name":"du - uso de espacio de ficheros","sec":"1","s":"du [-sh] [RUTA]","d":"Estima el espacio ocupado por ficheros y directorios.","o":[["-s","solo el total"],["-h","tamaños legibles"]],"e":null},"ip":{"name":"ip - muestra y configura la red","sec":"8","s":"ip OBJETO [ORDEN]","d":"Gestiona interfaces, direcciones y rutas.","o":[["a / addr","muestra las direcciones IP"],["route","muestra la tabla de rutas"],["link set eth0 up|down","levanta o tumba la interfaz"]],"e":"ip a\nip link set eth0 down"},"ping":{"name":"ping - comprueba la conectividad","sec":"8","s":"ping HOST","d":"Envía paquetes ICMP para comprobar si un host responde. Falla si la red está caída.","o":null,"e":"ping localhost"},"ss":{"name":"ss - muestra sockets y puertos","sec":"8","s":"ss [-tuln]","d":"Muestra los sockets. -tuln lista los puertos TCP/UDP en escucha de forma numérica.","o":null,"e":"ss -tuln"},"nmcli":{"name":"nmcli - controla NetworkManager","sec":"1","s":"nmcli [dev|con] ...","d":"Gestiona conexiones y dispositivos de red.","o":null,"e":null},"firewall-cmd":{"name":"firewall-cmd - gestiona firewalld","sec":"1","s":"firewall-cmd [OPCIONES]","d":"Consulta y modifica las reglas del cortafuegos firewalld.","o":[["--state","indica si firewalld está activo"],["--list-all","muestra la zona activa y sus reglas"],["--add-service=X --permanent","abre un servicio de forma permanente"],["--reload","recarga las reglas"]],"e":"firewall-cmd --add-service=http --permanent"},"getenforce":{"name":"getenforce - muestra el modo de SELinux","sec":"8","s":"getenforce","d":"Escribe el modo actual de SELinux: Enforcing, Permissive o Disabled.","o":null,"e":null},"setenforce":{"name":"setenforce - cambia el modo de SELinux","sec":"8","s":"setenforce {0|1}","d":"Cambia SELinux entre Permissive (0) y Enforcing (1) de forma temporal.","o":null,"e":"setenforce 0"},"sestatus":{"name":"sestatus - estado de SELinux","sec":"8","s":"sestatus","d":"Muestra si SELinux está activo, la política cargada y el modo actual.","o":null,"e":null},"semanage":{"name":"semanage - gestiona la política de SELinux","sec":"8","s":"semanage {port|fcontext} ...","d":"Cambios persistentes de SELinux: etiquetas de puerto y de contexto de fichero.","o":null,"e":"semanage port -l"},"restorecon":{"name":"restorecon - restaura contextos SELinux","sec":"8","s":"restorecon [-Rv] RUTA","d":"Vuelve a aplicar el contexto SELinux por defecto a los ficheros indicados.","o":null,"e":null},"chage":{"name":"chage - caducidad de contraseñas","sec":"1","s":"chage [-l] USUARIO","d":"Muestra o cambia la información de caducidad de la contraseña de un usuario.","o":[["-l","lista la información de caducidad"]],"e":null},"docker":{"name":"docker - gestiona contenedores e imágenes","sec":"1","s":"docker SUBCOMANDO ...","d":"Construye, descarga y ejecuta contenedores. podman usa la misma sintaxis, sin daemon.","o":[["ps [-a]","lista contenedores (todos con -a)"],["images","lista las imágenes locales"],["pull","descarga una imagen"],["run [-d]","crea y arranca un contenedor"],["build -t N .","construye una imagen desde un Dockerfile"],["logs / exec / inspect","logs, shell y detalles de un contenedor"]],"e":"docker run -d --name web nginx"},"tar":{"name":"tar - archiva y comprime ficheros","sec":"1","s":"tar [-czf|-xzf] FICHERO.tar.gz","d":"Crea o extrae archivos comprimidos.","o":[["-czf","crea un archivo comprimido"],["-xzf","extrae un archivo comprimido"]],"e":"tar -czf copia.tar.gz /home/visitor"},"man":{"name":"man - muestra las páginas del manual","sec":"1","s":"man COMANDO","d":"Muestra la documentación de un comando: nombre, sinopsis, descripción y opciones.","o":null,"e":"man chmod"}};
+
+    MAN.vi = { name:'vi - editor de texto modal', sec:'1', s:'vi FICHERO', d:'Editor modal: en modo NORMAL las teclas son órdenes; con i/a/o entras en INSERTAR para escribir; Esc vuelve a NORMAL; con : das órdenes.', o:[['i / a','entra en modo insertar'],['o','abre una línea nueva e inserta'],['Esc','vuelve al modo normal'],['dd','borra la línea'],[':w / :q / :wq','guarda / sale / guarda y sale (:q! fuerza)']], e:'vi notas.txt' };
+    MAN.nano = { name:'nano - editor de texto sencillo', sec:'1', s:'nano FICHERO', d:'Editor sencillo: escribe directamente y usa atajos con Ctrl para guardar y salir.', o:[['^O','guarda (WriteOut)'],['^X','sale'],['^K','corta la línea actual']], e:'nano notas.txt' };
+    const wrapT=(t,w)=>{ const words=String(t).split(' '); const out2=[]; let cur=''; words.forEach(word=>{ if((cur?cur.length+1:0)+word.length>w){ if(cur)out2.push(cur); cur=word; } else cur=cur?cur+' '+word:word; }); if(cur)out2.push(cur); return out2.length?out2:['']; };
+    const renderMan=(key)=>{ const m=MAN[key]; if(!m){ err('No hay ninguna entrada de manual para '+key); out('Prueba con «help» o mira el cheatsheet de abajo.','#8a7f6a'); return; } const sec=m.sec||'1'; const head=key.toUpperCase()+'('+sec+')'; out(head+' '.repeat(Math.max(4,54-head.length))+'Manual del usuario de S2KTUX'+' '.repeat(Math.max(4,54-head.length))+head,'#8fa876'); out(''); out('NOMBRE','#e0a458'); out('       '+(m.name||key)); out(''); out('SINOPSIS','#e0a458'); String(m.s).split('\n').forEach(l=>out('       '+l)); out(''); out('DESCRIPCIÓN','#e0a458'); wrapT(m.d,66).forEach(l=>out('       '+l)); if(m.o&&m.o.length){ out(''); out('OPCIONES','#e0a458'); m.o.forEach(pair=>{ out('       '+pair[0]); wrapT(pair[1],58).forEach(l=>out('              '+l)); }); } if(m.e){ out(''); out('EJEMPLOS','#e0a458'); String(m.e).split('\n').forEach(l=>out('       '+l)); } out(''); out('S2KTUX OS 7.1.0'+' '.repeat(28)+'julio 2026'+' '.repeat(28)+head,'#8a7f6a'); };
 
     // ---------------- ps formatting ----------------
     const psAux = () => { out('USER       PID %CPU %MEM    VSZ   RSS TTY   STAT START   TIME COMMAND'); processes.forEach(p=>out(p.user.padEnd(9)+' '+String(p.pid).padStart(5)+' '+p.cpu.toFixed(1).padStart(4)+' '+p.mem.toFixed(1).padStart(4)+' '+String(p.vsz).padStart(6)+' '+String(p.rss).padStart(5)+' ?     '+p.stat.padEnd(4)+' '+p.start+' '+p.time.padStart(5)+' '+p.cmd)); };
@@ -436,7 +485,18 @@ class Component extends DCLogic {
       disks.forEach(d=>d.parts.forEach(p=>{ if(p.mount && p.mount!=='/boot') out('/dev/'+p.name+' on '+p.mount+' type '+(p.fstype||'xfs')+' (rw,relatime)'); }));
     };
     const blkidView = () => { disks.forEach(d=>d.parts.forEach(p=>{ if(p.fstype) out('/dev/'+p.name+': UUID="'+(p.uuid||'----')+'" TYPE="'+p.fstype+'"'); })); out('/dev/mapper/vg0-root: UUID="11aa-22bb" TYPE="xfs"'); out('/dev/mapper/vg0-home: UUID="33cc-44dd" TYPE="xfs"'); };
-    const fdiskView = () => { disks.forEach(d=>{ out('Disk /dev/'+d.name+': '+d.size+', sectores'); if(d.labeled) out('Disklabel type: gpt'); out(''); if(d.parts.length){ out('Device        Start       End   Sectors Size Type'); d.parts.forEach(p=>out(('/dev/'+p.name).padEnd(13)+'  2048   ...       ...  '+p.size.padStart(4)+' Linux filesystem')); } else { out('(sin particiones — usa parted /dev/'+d.name+' mklabel gpt)'); } out(''); }); };
+    const fsTypeName = (p) => { const t=(p.fstype||'').toLowerCase(); if(t.includes('lvm')) return 'Linux LVM'; if(t==='linux-swap'||t==='swap') return 'Linux swap'; return 'Linux filesystem'; };
+    const niceGiB = (sz) => sz.replace('K',' KiB').replace('M',' MiB').replace('G',' GiB').replace('T',' TiB');
+    const fdiskDisk = (d) => {
+      const bytes = Math.round(sizeToGB(d.size)*1073741824); const sectors = Math.round(bytes/512);
+      out('Disk /dev/'+d.name+': '+niceGiB(d.size)+', '+bytes+' bytes, '+sectors+' sectors');
+      out('Units: sectors of 1 * 512 = 512 bytes');
+      out('Sector size (logical/physical): 512 bytes / 512 bytes');
+      out('I/O size (minimum/optimal): 512 bytes / 512 bytes');
+      if(d.labeled){ out('Disklabel type: gpt'); out('Disk identifier: '+(d.id||('D'+d.name.toUpperCase()+'-1A2B-3C4D-5E6F-7890'))); }
+      if(d.parts.length){ out(''); out('Device'.padEnd(15)+'Start'.padStart(9)+'End'.padStart(11)+'Sectors'.padStart(11)+'Size'.padStart(6)+'  Type'); let start=2048; d.parts.forEach(p=>{ const psec=Math.round(sizeToGB(p.size)*1073741824/512); const end=start+psec-1; out(('/dev/'+p.name).padEnd(15)+String(start).padStart(9)+String(end).padStart(11)+String(psec).padStart(11)+p.size.padStart(6)+'  '+fsTypeName(p)); start=end+1; }); }
+    };
+    const fdiskView = () => { disks.forEach((d,i)=>{ if(i) out(''); fdiskDisk(d); }); };
 
     // ---------------- network state helpers ----------------
     const ifState = () => net.eth0;
@@ -476,7 +536,7 @@ class Component extends DCLogic {
       const work = JSON.parse(JSON.stringify(disk.parts));
       let labeled = disk.labeled; let step='cmd'; let tmp={};
       const prompt = () => startInteractive('Orden (m para obtener ayuda):', false, handle, '#8fa876');
-      const printTable = () => { out('Disco /dev/'+disk.name+': '+disk.size); out('Tipo de etiqueta de disco: '+(labeled?'gpt':'(sin etiqueta)')); out(''); if(work.length){ out('Dispositivo      Tamaño Tipo'); work.forEach(p=>out(('/dev/'+p.name).padEnd(16)+' '+(p.size||'?').padEnd(6)+' '+(p.typeName||'Linux filesystem'))); } else out('(sin particiones)'); };
+      const printTable = () => { const bytes=Math.round(sizeToGB(disk.size)*1073741824); const sectors=Math.round(bytes/512); out('Disco /dev/'+disk.name+': '+niceGiB(disk.size)+', '+bytes+' bytes, '+sectors+' sectores'); out('Unidades: sectores de 1 * 512 = 512 bytes'); out('Tipo de etiqueta de disco: '+(labeled?'gpt':'(sin etiqueta)')); if(work.length){ out(''); out('Dispositivo'.padEnd(15)+'Start'.padStart(9)+'End'.padStart(11)+'Sectors'.padStart(11)+'Size'.padStart(6)+'  Type'); let start=2048; work.forEach(p=>{ const psec=Math.round(sizeToGB(p.size||'0')*1073741824/512); const end=start+psec-1; out(('/dev/'+p.name).padEnd(15)+String(start).padStart(9)+String(end).padStart(11)+String(psec).padStart(11)+(p.size||'?').padStart(6)+'  '+(p.typeName||'Linux filesystem')); start=end+1; }); } };
       const handle = (line) => {
         line = line.trim();
         if(step==='cmd'){
@@ -503,34 +563,260 @@ class Component extends DCLogic {
     };
 
     // ---------------- editor (nano / vi) ----------------
+    const echoEditorLine = (v) => { const d=document.createElement('div'); d.className='term-out'; d.style.color='#e9ddc7'; d.innerHTML=esc(v)||'&nbsp;'; body.insertBefore(d,line); };
     const editorOpen = (kind, path) => {
       const segs=norm(path); const parent=getParent(segs); const fn=segs[segs.length-1];
       if(!parent||parent.type!=='dir'){ err(kind+': no se puede abrir '+path); return; }
       let existing = parent.children[fn];
       if(existing && existing.type==='dir'){ err(kind+': '+path+' es un directorio'); return; }
       const buf = existing && existing.type==='file' ? existing.content.split('\n') : [];
-      out('── '+kind+': '+path+' '+'─'.repeat(Math.max(2,34-path.length)), '#8fa876');
-      if(buf.length && buf.join('')!=='') buf.forEach((l,i)=>out(String(i+1).padStart(4)+'  '+l, '#8a7f6a'));
-      out('[ escribe líneas de texto · :w guarda · :q sale · :wq guarda y sale ]', '#8a7f6a');
       const save2 = () => { if(!parent.children[fn]) parent.children[fn]=file('', {owner:currentUser, group:currentUser}); parent.children[fn].content = buf.join('\n'); };
-      const prompt = () => startInteractive((kind==='vi'?':':'')+'', false, handle, '#e0a458');
-      const handle = (line) => {
-        const t=line.trim();
-        if(t===':wq'||t==='ZZ'||t===':x'){ save2(); ok('"'+path+'" '+buf.length+'L escrito'); endInteractive(); return; }
-        if(t===':w'){ save2(); ok('"'+path+'" '+buf.length+'L escrito'); prompt(); return; }
-        if(t===':q'||t===':q!'){ out('(salido de '+kind+')', '#8a7f6a'); endInteractive(); return; }
-        buf.push(line); prompt();
-      };
-      prompt();
+      out('┌'+'─'.repeat(46), '#8fa876');
+      if(kind==='nano'){
+        out('  GNU nano — '+path, '#8fa876');
+        if(buf.join('')!=='') buf.forEach(l=>out('  '+l, '#8a7f6a'));
+        out('  [ escribe texto y Enter para nueva línea ]', '#8a7f6a');
+        out('  ^O Guardar   ^X Salir   ^K Cortar línea', '#e0a458');
+      } else {
+        out('  vi — '+path+'   ('+buf.length+' líneas)', '#8fa876');
+        if(buf.join('')!=='') buf.forEach((l,i)=>out(String(i+1).padStart(4)+'  '+l, '#8a7f6a'));
+        out('  MODO NORMAL — i insertar · o línea nueva · x borrar · dd borra línea', '#e0a458');
+        out('  : para órdenes — :w guardar · :q salir · :wq guardar y salir · :q! forzar', '#e0a458');
+      }
+      out('└'+'─'.repeat(46), '#8fa876');
+      interactive = { editor: { kind, path, buf, save2, mode: kind==='vi'?'normal':'edit', dirty:false, pendD:false }, color:'#e0a458' };
+      promptEl.textContent = kind==='nano' ? '' : '';
+      input.value=''; scroll();
+    };
+    const editorKey = (e) => {
+      const ed = interactive.editor;
+      if(ed.kind==='nano'){
+        if(e.ctrlKey){ const k=e.key.toLowerCase();
+          if(k==='o'){ e.preventDefault(); if(input.value!==''){ echoEditorLine(input.value); ed.buf.push(input.value); input.value=''; } ed.save2(); out('[ Escritas '+ed.buf.length+' líneas en '+ed.path+' ]','#8fa876'); ed.dirty=false; scroll(); save(); return; }
+          if(k==='x'){ e.preventDefault(); if(input.value!==''){ ed.buf.push(input.value); ed.save2(); } out('[ Salir de nano ]','#8a7f6a'); endInteractive(); return; }
+          if(k==='k'){ e.preventDefault(); ed.buf.pop(); out('[ línea cortada ]','#8a7f6a'); return; }
+          return;
+        }
+        if(e.key==='Enter'){ e.preventDefault(); echoEditorLine(input.value); ed.buf.push(input.value); input.value=''; ed.dirty=true; scroll(); return; }
+        return;
+      }
+      // vi
+      if(e.ctrlKey){ if(e.key.toLowerCase()==='c'){ e.preventDefault(); out('Escribe :q! y Enter para salir sin guardar.','#8a7f6a'); } return; }
+      if(ed.mode==='normal'){
+        if(e.key==='Escape'){ e.preventDefault(); ed.pendD=false; return; }
+        if(e.key.length===1 && !e.metaKey){
+          const k=e.key; e.preventDefault();
+          if(k==='i'||k==='a'){ ed.mode='insert'; out('-- INSERTAR --','#8fa876'); }
+          else if(k==='o'){ ed.buf.push(''); ed.mode='insert'; out('-- INSERTAR --','#8fa876'); }
+          else if(k===':'){ ed.mode='cmd'; input.value=':'; }
+          else if(k==='d'){ if(ed.pendD){ ed.buf.pop(); ed.pendD=false; ed.dirty=true; out('(línea eliminada)','#8a7f6a'); } else ed.pendD=true; }
+          else { ed.pendD=false; }
+          return;
+        }
+        e.preventDefault(); return;
+      }
+      if(ed.mode==='insert'){
+        if(e.key==='Escape'){ e.preventDefault(); if(input.value!==''){ echoEditorLine(input.value); ed.buf.push(input.value); input.value=''; ed.dirty=true; } ed.mode='normal'; out('-- NORMAL --','#8a7f6a'); return; }
+        if(e.key==='Enter'){ e.preventDefault(); echoEditorLine(input.value); ed.buf.push(input.value); input.value=''; ed.dirty=true; scroll(); return; }
+        return;
+      }
+      if(ed.mode==='cmd'){
+        if(e.key==='Enter'){ e.preventDefault(); const t=input.value.trim(); input.value=''; ed.mode='normal';
+          if(t===':wq'||t===':x'){ ed.save2(); out('"'+ed.path+'" '+ed.buf.length+'L escrito','#8fa876'); endInteractive(); return; }
+          if(t===':w'){ ed.save2(); out('"'+ed.path+'" '+ed.buf.length+'L escrito','#8fa876'); ed.dirty=false; return; }
+          if(t===':q'){ if(ed.dirty){ out('E37: no se guardó el último cambio (usa :q! para forzar)','#ef8a7a'); return; } out('(salido de vi)','#8a7f6a'); endInteractive(); return; }
+          if(t===':q!'){ out('(salido de vi sin guardar)','#8a7f6a'); endInteractive(); return; }
+          out('E492: no es una orden del editor: '+t.replace(/^:/,''),'#ef8a7a'); return;
+        }
+        if(e.key==='Escape'){ e.preventDefault(); input.value=''; ed.mode='normal'; return; }
+        return;
+      }
+    };
+
+    // ---------------- docker compose ----------------
+    const composeHandler = (a) => {
+      const sub=a[0];
+      if(!sub||sub==='--help'){ outMany(['Uso: docker compose [-f fichero] COMANDO','','  up [-d]     crea y arranca los servicios (‑d en segundo plano)','  down        para y elimina servicios, redes y (con -v) volúmenes','  ps          lista los servicios en ejecución','  logs [-f]   muestra los logs de los servicios','  build       construye las imágenes de los servicios','  pull        descarga las imágenes de los servicios','','Lee docker-compose.yml del directorio actual.']); return; }
+      if(sub==='up'){ out('[+] Running 3/3'); out(' \u2714 Network app_default   Created'); out(' \u2714 Container app-db-1     Started'); out(' \u2714 Container app-web-1    Started'); if(!a.includes('-d')) out('web-1  | listo, escuchando en :80   (Ctrl-C para parar)','#8a7f6a'); }
+      else if(sub==='down'){ out('[+] Running 3/3'); out(' \u2714 Container app-web-1    Removed'); out(' \u2714 Container app-db-1     Removed'); out(' \u2714 Network app_default   Removed'); }
+      else if(sub==='ps'){ out('NAME        IMAGE          COMMAND                  SERVICE   STATUS         PORTS'); out('app-db-1    mariadb:11     "docker-entrypoint..."   db        Up 12 seconds  3306/tcp'); out('app-web-1   nginx:latest   "nginx -g daemon..."     web       Up 12 seconds  0.0.0.0:8080->80/tcp'); }
+      else if(sub==='logs'){ out('app-db-1   | [Note] mariadbd: ready for connections. port: 3306'); out('app-web-1  | listo, escuchando en :80'); if(a.includes('-f')) out('(sandbox) -f seguiría los logs en vivo…','#8a7f6a'); }
+      else if(sub==='build'){ out('[+] Building 2/2'); out(' \u2714 web  Built'); out(' \u2714 db   Built'); ok('servicios construidos.'); }
+      else if(sub==='pull'){ ok('imágenes de los servicios descargadas.'); }
+      else out("docker compose: '"+sub+"' no reconocido. Usa up | down | ps | logs | build | pull");
+    };
+
+    // ---------------- arranque / GRUB / login / rescate ----------------
+    let grubState=null, awaitReboot=false, loginUser=null, booting=false;
+    const clearBody = () => { [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); };
+    const gline = (txt,color) => { const d=document.createElement('div'); d.className='term-out'; d.style.color=color||'#cdc0a8'; d.innerHTML=(esc(txt)===''?'&nbsp;':esc(txt)); body.insertBefore(d,line); };
+    const stripLinux = (s) => { s=(s||'').trim(); return s.startsWith('linux') ? s.slice(5).trim() : s; };
+    const runSeq = (lines, cb) => {
+      booting=true; promptEl.textContent=''; input.value=''; input.style.color='';
+      let i=0;
+      const step=()=>{ if(i>=lines.length){ booting=false; cb&&cb(); return; } const ln=lines[i++]; const c = ln.startsWith('[  OK  ]')?'#8fa876' : (ln.startsWith('[FAILED]')||ln.startsWith('[ ERROR ]'))?'#ef8a7a' : ln.startsWith('reboot:')?'#a99a86' : '#8a7f6a'; gline(ln,c); scroll(); setTimeout(step, 70+Math.random()*70); };
+      step();
+    };
+    const GRUB_ENTRIES = () => ([
+      { title:'S2KTUX OS (7.1.0-cozy)', editable:true, kind:'normal', lines:[
+        "setparams 'S2KTUX OS (7.1.0-cozy)'", "",
+        "        load_video", "        set gfxpayload=keep", "        insmod gzio",
+        "        insmod part_gpt", "        insmod xfs", "        set root='hd0,gpt2'",
+        "        linux ($root)/vmlinuz-7.1.0-cozy root=/dev/mapper/vg0-root ro rhgb quiet",
+        "        initrd ($root)/initramfs-7.1.0-cozy.img" ]},
+      { title:'S2KTUX OS (7.1.0-cozy) — modo rescate', editable:true, kind:'rescue', lines:[
+        "setparams 'S2KTUX OS (7.1.0-cozy) — modo rescate'", "",
+        "        load_video", "        insmod gzio", "        insmod part_gpt",
+        "        insmod xfs", "        set root='hd0,gpt2'",
+        "        linux ($root)/vmlinuz-7.1.0-cozy root=/dev/mapper/vg0-root ro rhgb quiet systemd.unit=rescue.target",
+        "        initrd ($root)/initramfs-7.1.0-cozy-rescue.img" ]},
+      { title:'Ajustes del firmware del sistema (UEFI)', editable:false, kind:'firmware', lines:null }
+    ]);
+    const startGrub = () => {
+      interactive=null; recovery=null; grubState=null; input.style.color=''; loggedIn=false;
+      clearBody();
+      runSeq(['Se está reiniciando el sistema...','[  OK  ] Removed slice User Slice of root.','[  OK  ] Stopped target Multi-User System.','[  OK  ] Stopped Session 1 of user root.','[  OK  ] Unmounted /home.','[  OK  ] Unmounted /boot.','[  OK  ] Reached target Unmount All Filesystems.','[  OK  ] Reached target Shutdown.','[  OK  ] Reached target Final Step.','reboot: Restarting system','reboot: machine restart','','SeaBIOS (version s2ktux-1.16)','Máquina S2KTUX — POST','Booting from Hard Disk...','GRUB loading...','Welcome to GRUB!',''], ()=>enterGrubMenu());
+    };
+    const bootStart = () => startGrub();
+    const enterGrubMenu = () => {
+      grubState={ phase:'menu', entrySel:0, sel:0, entries:GRUB_ENTRIES(), lines:null, orig:null, kind:null };
+      if(titleEl) titleEl.textContent='GNU GRUB'; input.value=''; input.style.color='';
+      redrawGrub();
+    };
+    const redrawGrub = () => {
+      clearBody(); const g=grubState;
+      if(g.phase==='menu'){
+        gline('                      GNU GRUB  versión 2.06','#8fa876'); gline('');
+        gline('  ┌────────────────────────────────────────────────────────────┐','#8fa876');
+        g.entries.forEach((e,i)=>{ const on=i===g.entrySel; gline('  │ '+(on?'▶ ':'  ')+e.title.padEnd(56)+' │', on?'#e9ddc7':'#a99a86'); });
+        for(let kk=g.entries.length;kk<5;kk++) gline('  │'+' '.repeat(60)+'│','#a99a86');
+        gline('  └────────────────────────────────────────────────────────────┘','#8fa876'); gline('');
+        gline("   Usa las teclas ↑ y ↓ para seleccionar y Enter para arrancar.",'#8a7f6a');
+        gline("   Pulsa  e  para editar los comandos de la entrada seleccionada.",'#8a7f6a');
+      } else {
+        gline('  GNU GRUB  versión 2.06','#8fa876'); gline('');
+        g.lines.forEach((l,i)=>{ if(i===g.sel){ const d=document.createElement('div'); d.className='term-out'; d.style.color='#e9ddc7'; d.innerHTML=(esc(l)||'')+'<span style="animation:blink 1s step-start infinite;color:#e0a458">█</span>'; body.insertBefore(d,line); } else gline(l,'#a99a86'); });
+        for(let kk=g.lines.length;kk<12;kk++) gline('');
+        gline('   Ctrl-X arranca   ·   Retroceso borra   ·   Esc vuelve al menú','#8a7f6a');
+      }
+      scroll();
+    };
+    const grubError = (msg) => { clearBody(); outMany(['',msg,''],'#ef8a7a'); gline('   Pulsa una tecla para volver...','#8a7f6a'); booting=true; setTimeout(()=>{ booting=false; enterGrubMenu(); }, 1600); };
+    const kernelPanic = (params) => {
+      clearBody();
+      runSeq(['[    0.000000] Linux version 7.1.0-cozy','[    0.000000] Kernel command line: '+params,'[    2.104512] VFS: Cannot open root device or unknown-block(0,0)','[    2.104513] Please append a correct "root=" boot option','[ ERROR ] Kernel panic - not syncing: VFS: Unable to mount root fs on unknown-block(0,0)','[    2.104514] ---[ end Kernel panic - not syncing ]---'], ()=>{ outMany(['','No se pudo arrancar: la línea "linux" quedó mal.','','--- Pulsa Enter para reiniciar ---']); awaitReboot=true; promptEl.textContent=''; scroll(); });
+    };
+    const bootUnknownParam = (extra) => {
+      clearBody();
+      runSeq(['[    0.000000] Kernel command line: root=/dev/mapper/vg0-root ro rhgb quiet '+extra,'[    5.402100] dracut-initqueue[812]: Warning: parámetro de arranque no reconocido: '+extra,'[  120.51] dracut-initqueue[812]: Warning: Could not boot.','[ ERROR ] dracut: FATAL: Dropping to emergency shell. No se pudo continuar.'], ()=>{ outMany(['','El arranque ha fallado por un parámetro inválido.','','--- Pulsa Enter para reiniciar ---']); awaitReboot=true; promptEl.textContent=''; scroll(); });
+    };
+    const bootFromLines = (lines, en, orig) => {
+      booting=false;
+      const findLinux = arr => arr.find(l=>l.trim().startsWith('linux '));
+      const lx = findLinux(lines);
+      if(!lx){ grubError('error: you need to load the kernel first.'); return; }
+      const base = orig || en.lines || lines;
+      const origLinux = findLinux(base) || '';
+      let otherChanged=false;
+      for(let i=0;i<lines.length;i++){ const cur=lines[i].trim(); const ref=(base[i]||'').trim(); if(cur!==ref && !cur.startsWith('linux ')){ otherChanged=true; break; } }
+      if(otherChanged){ kernelPanic('(configuración de arranque alterada)'); return; }
+      const cur=lx.trim(), o=origLinux.trim();
+      if(!cur.includes('root=/dev/mapper/vg0-root')){ kernelPanic(stripLinux(cur)); return; }
+      if(!cur.startsWith(o)){ kernelPanic(stripLinux(cur)); return; }
+      const extra = cur.slice(o.length).trim();
+      if(extra===''){ booted(en.kind, null); return; }
+      if(extra==='rd.break'){ booted(en.kind, 'rdbreak'); return; }
+      if(extra==='init=/bin/bash'){ booted(en.kind, 'initbash'); return; }
+      bootUnknownParam(extra);
+    };
+    const grubKey = (e) => {
+      const g=grubState;
+      if(g.phase==='menu'){
+        if(e.key==='ArrowUp'){ e.preventDefault(); g.entrySel=(g.entrySel+g.entries.length-1)%g.entries.length; redrawGrub(); }
+        else if(e.key==='ArrowDown'){ e.preventDefault(); g.entrySel=(g.entrySel+1)%g.entries.length; redrawGrub(); }
+        else if(e.key==='e'||e.key==='E'){ e.preventDefault(); const en=g.entries[g.entrySel]; if(!en.editable){ return; } g.orig=en.lines.slice(); g.lines=en.lines.slice(); g.kind=en.kind; g.sel=0; g.phase='edit'; redrawGrub(); }
+        else if(e.key==='Enter'){ e.preventDefault(); const en=g.entries[g.entrySel]; grubState=null; if(en.kind==='firmware'){ bootFirmware(); return; } bootFromLines(en.lines.slice(), en); }
+        else e.preventDefault();
+        return;
+      }
+      if(e.key==='ArrowUp'){ e.preventDefault(); g.sel=Math.max(0,g.sel-1); redrawGrub(); }
+      else if(e.key==='ArrowDown'){ e.preventDefault(); g.sel=Math.min(g.lines.length-1,g.sel+1); redrawGrub(); }
+      else if(e.key==='Backspace'){ e.preventDefault(); g.lines[g.sel]=g.lines[g.sel].slice(0,-1); redrawGrub(); }
+      else if((e.ctrlKey && (e.key==='x'||e.key==='X'))||e.key==='F10'){ e.preventDefault(); const lines=g.lines.slice(), orig=g.orig.slice(), kind=g.kind; grubState=null; bootFromLines(lines, {kind}, orig); }
+      else if(e.key==='Escape'){ e.preventDefault(); g.phase='menu'; redrawGrub(); }
+      else if(e.key.length===1 && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); g.lines[g.sel]+=e.key; redrawGrub(); }
+      else e.preventDefault();
+    };
+    const bootFirmware = () => { clearBody(); runSeq(['Entrando en la configuración del firmware (UEFI)...','(no disponible en el sandbox)','','Reiniciando...',''], ()=>enterGrubMenu()); };
+    const booted = (entryKind, recoveryKind) => {
+      clearBody();
+      const kern=['Cargando el kernel de Linux 7.1.0-cozy...','Cargando el disco RAM inicial...','[    0.000000] Linux version 7.1.0-cozy','[    1.204100] Freeing unused kernel image memory','[  OK  ] Started udev Kernel Device Manager.',''];
+      if(recoveryKind){ runSeq(kern, ()=>bootEmergency(recoveryKind)); return; }
+      if(entryKind==='rescue'){ runSeq(kern.concat(['[  OK  ] Reached target Rescue Mode.','']), ()=>rescueMaintenance()); return; }
+      runSeq(kern.concat(['[  OK  ] Reached target Local File Systems.','[  OK  ] Started Login Service.','[  OK  ] Reached target Multi-User System.','']), ()=>{ applyFstabAtBoot(()=>startLogin()); });
+    };
+    const rescueMaintenance = () => {
+      interactive=null;
+      outMany(['You are in rescue mode. After logging in, type "journalctl -xb" to view','system logs, "systemctl reboot" to reboot, or "exit" to boot into default mode.','']);
+      const ask=()=>startInteractive('Give root password for maintenance (or press Enter to continue):', true, (pw)=>{ endInteractive(); if(!pw){ applyFstabAtBoot(()=>startLogin()); return; } if(pw===users.root.password){ out(''); doLogin(); } else { out('Login incorrect.','#ef8a7a'); ask(); } });
+      ask();
+    };
+    const setRecoveryPrompt = () => { const p = recovery.kind==='rdbreak' ? (recovery.chrooted?'sh-5.1# ':'switch_root:/# ') : 'bash-5.1# '; promptEl.textContent=p; promptEl.style.color='#e08a2e'; if(titleEl) titleEl.textContent='emergency shell'; };
+    const bootEmergency = (kind) => {
+      interactive=null;
+      if(kind==='rdbreak'){ outMany(['','Generando "/run/initramfs/rdsosreport.txt"','','Entrando en el shell de emergencia. El sistema real está montado en /sysroot','en modo SOLO LECTURA.','Escribe  help  para ver los pasos.','']); recovery={kind:'rdbreak', rw:false, chrooted:false, relabel:false, pw:false}; }
+      else { outMany(['','Kernel arrancado con init=/bin/bash: shell de root, sin servicios.','La raíz "/" está montada en SOLO LECTURA.','Escribe  help  para ver los pasos.','']); recovery={kind:'initbash', rw:false, chrooted:true, relabel:false, pw:false}; }
+      currentUser='root'; setRecoveryPrompt();
+    };
+    const bootFinish = () => { const rel=recovery && recovery.relabel; recovery=null; clearBody(); const seq=['','Reiniciando el sistema...','[  OK  ] Reached target Shutdown.','reboot: Restarting system']; if(rel){ seq.push('*** Warning -- SELinux targeted policy relabel is required. ***'); seq.push('*** Relabeling could take a very long time. ***'); seq.push('[####################] reetiquetado completado.'); } seq.push(''); runSeq(seq, ()=>applyFstabAtBoot(()=>startLogin())); };
+    const recoveryDispatch = (cmd, name, args) => {
+      const r=recovery;
+      const target = r.kind==='rdbreak' ? '/sysroot' : '/';
+      if(name==='mount'){ if(cmd.includes('remount') && cmd.includes('rw')){ if(cmd.includes(target)){ r.rw=true; ok(target+' remontado en modo lectura/escritura.'); } else { out('mount: remonta el objetivo correcto:  mount -o remount,rw '+target); } } else { out('En el rescate:  mount -o remount,rw '+target,'#8a7f6a'); } return; }
+      if(name==='chroot'){ if(r.kind!=='rdbreak'){ out('chroot: no hace falta con init=/bin/bash (ya estás en el sistema real).','#8a7f6a'); return; } if(!r.rw){ err('chroot: primero remonta /sysroot en lectura/escritura.'); return; } if(args[0] && args[0].includes('sysroot')){ r.chrooted=true; setRecoveryPrompt(); ok('chroot a /sysroot: ahora estás dentro del sistema real.'); } else { out('chroot: uso:  chroot /sysroot'); } return; }
+      if(name==='passwd'){ if(r.kind==='rdbreak' && !r.chrooted){ err('passwd: orden no encontrada (primero  chroot /sysroot).'); return; } if(!r.rw){ err('passwd: Authentication token manipulation error (sistema de solo lectura; remonta con rw primero).'); return; } startInteractive('Nueva contraseña de root: ', true, (p1)=>{ if(!p1){ endInteractive(); err('passwd: sin cambios.'); return; } startInteractive('Vuelve a escribirla: ', true, (p2)=>{ endInteractive(); if(p1!==p2){ err('passwd: las contraseñas no coinciden.'); return; } users.root.password=p1; r.pw=true; rootRecovered=true; ok('passwd: contraseña de root actualizada correctamente.'); save(); }); }); return; }
+      if(name==='touch'){ if(cmd.includes('autorelabel')){ r.relabel=true; ok('creado /.autorelabel (SELinux se reetiquetará en el próximo arranque).'); } else { ok(''); } return; }
+      if(name==='ls'){ out('bin  boot  dev  etc  home  proc  root  run  sys  sysroot  usr  var'); return; }
+      if(name==='pwd'){ out('/'); return; }
+      if(name==='cat'||name==='vi'||name==='nano'){ out('('+name+' no disponible en el shell de emergencia)','#8a7f6a'); return; }
+      if(name==='help'){ outMany(['Shell de emergencia — pasos para recuperar la contraseña de root:', r.kind==='rdbreak' ? '  1) mount -o remount,rw /sysroot' : '  1) mount -o remount,rw /', r.kind==='rdbreak' ? '  2) chroot /sysroot' : '  2) (no hace falta chroot con init=/bin/bash)', '  3) passwd', '  4) touch /.autorelabel', '  5) exit'+(r.kind==='rdbreak'?' dos veces (sales del chroot y reinicias)':'  o  reboot')],'#8a7f6a'); return; }
+      if(name==='exit'||name==='logout'){ if(r.kind==='rdbreak' && r.chrooted){ r.chrooted=false; setRecoveryPrompt(); out('(has salido del chroot)','#8a7f6a'); return; } bootFinish(); return; }
+      if(name==='reboot'||name==='poweroff'||cmd.trim()==='exec /sbin/init'){ bootFinish(); return; }
+      err(name+': orden no disponible aquí. Solo  mount, chroot, passwd, touch, exit/reboot. Escribe  help.');
+    };
+    const applyFstabAtBoot = (cb) => {
+      const f=getNode(['etc','fstab']); if(!f){ cb(); return; }
+      const rows=f.content.split('\n').map(l=>l.trim()).filter(l=>l && !l.startsWith('#'));
+      let bad=null;
+      rows.forEach(l=>{ const p=l.split(/\s+/); const dev=p[0], mp=p[1]; if(!dev||!mp||mp==='swap'||mp==='none') return; if(dev.startsWith('/dev/sdb')){ const nm=dev.replace('/dev/',''); let found=null; disks.forEach(d=>d.parts.forEach(pt=>{ if(pt.name===nm) found=pt; })); if(found && found.fstype){ if(!getNode(mp.split('/').filter(Boolean))){ const seg=mp.split('/').filter(Boolean); const par=getNode(seg.slice(0,-1)); if(par&&par.type==='dir') par.children[seg[seg.length-1]]=dir({},{owner:'root'}); } found.mount=mp; } else { bad=dev; } } });
+      if(bad){ outMany(['[FAILED] Failed to mount '+bad+'.','[DEPEND] Dependency failed for Local File Systems.','','Estás en modo de emergencia. El montaje de /etc/fstab ha fallado.','Da la contraseña de root para mantenimiento (o pulsa Enter para continuar):']); interactive=null; startInteractive('', true, (pw)=>{ endInteractive(); if(!pw){ cb(); return; } if(pw===users.root.password){ out('Corrige /etc/fstab (por ejemplo con  vi /etc/fstab ) y reinicia con  reboot.','#8a7f6a'); doLogin(); } else { out('Login incorrect.','#ef8a7a'); applyFstabAtBoot(cb); } }); return; }
+      cb();
+    };
+    const showWelcome = () => { out('S2KTUX OS [Version 7.1.0] — entorno de práctica realista','#8fa876'); out("FS raíz montado. 'help' para comandos · 'man <comando>' para la ayuda de uno · el cheatsheet y las prácticas están abajo.",'#8a7f6a'); out(''); };
+    const doLogin = () => { clearBody(); currentUser='root'; cwd=['root']; loggedIn=true; loginUser=null; grubState=null; recovery=null; interactive=null; input.style.color=''; out('Last login: '+new Date().toString().slice(0,24)+' on tty1','#8a7f6a'); showWelcome(); setPrompt(); save(); };
+    const startLogin = () => {
+      loggedIn=false; recovery=null; grubState=null; awaitReboot=false; interactive=null; input.style.color='';
+      clearBody();
+      outMany(['S2KTUX OS 7.1.0  (kernel 7.1.0-cozy)','','']);
+      out('# Sesión bloqueada. Entra como  root  con tu contraseña.','#6f6250');
+      out('# ¿No la conoces? Pulsa el botón «Reiniciar → GRUB» de abajo (o escribe  reboot  aquí) para recuperarla.','#6f6250');
+      out('');
+      const askUser=()=>startInteractive('s2ktux login:', false, onUser, '#8fa876');
+      const onUser=(v)=>{ const u=(v||'').trim(); if(u==='reboot'||u==='reiniciar'){ endInteractive(); startGrub(); return; } loginUser = u || 'root'; startInteractive('Password:', true, onPass, '#8fa876'); };
+      const onPass=(v)=>{ endInteractive(); if(loginUser==='root' && v===users.root.password){ doLogin(); } else { out('Login incorrect','#ef8a7a'); out(''); askUser(); } };
+      askUser();
     };
 
     // ---------------- dispatch ----------------
     const dispatch = (cmd) => {
       const parts = cmd.split(/\s+/).filter(Boolean); const name=parts[0]; const args=parts.slice(1);
       if(!name) return;
+      if(recovery){ recoveryDispatch(cmd, name, args); return; }
       // route special-name commands
       if(name.startsWith('mkfs')){ const fst=name.includes('.')?name.split('.')[1]:( (args.indexOf('-t')!==-1)?args[args.indexOf('-t')+1]:'xfs'); const dev=args.filter(a=>a.startsWith('/dev/'))[0]; const p=dev?findPart(dev):null; if(!p){ err('mkfs: no existe la particion: '+(dev||'')); return; } p.fstype=fst; p.uuid=Math.random().toString(16).slice(2,6)+'-'+Math.random().toString(16).slice(2,6); ok('meta-data=/'+p.name+'  isize=512'); ok('Filesystem '+fst+' creado en '+dev+'.'); return; }
       if((name.startsWith('./')||name.startsWith('/')||name.startsWith('~'))){ runScript(name, args); return; }
+
+      if(args.includes('--help') && name!=='docker' && name!=='podman'){ const k=name.replace(/\..*/,''); if(MAN[k]){ renderMan(k); } else { out('Uso: '+name+' [OPCIONES]...'); out('(no hay página de manual para «'+name+'»)','#8a7f6a'); } return; }
 
       switch(name){
         case 'help':
@@ -542,11 +828,13 @@ class Component extends DCLogic {
           ok('PAQUETES:     dnf (install/remove/search/info/list/update)  rpm  apt');
           ok('ALMACEN.:     lsblk fdisk blkid parted mkfs.xfs mount umount df du pvs vgs lvs');
           ok('RED:          ip (a/route/link set eth0 up|down)  ss  ping  nmcli  firewall-cmd  hostnamectl');
-          ok('CONTENEDORES: docker · podman   ·   ORQUESTACIÓN: kubectl');
+          ok('CONTENEDORES: docker · podman');
+          ok('OTROS:        man which history env date uptime free uname hostname sudo tar neofetch clear reset');
           out('man <comando> para ayuda concreta · reset reinicia el entorno · el cheatsheet está debajo.', '#8a7f6a'); break;
 
         case 'clear': [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); break;
         case 'reset': resetState(); [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); ok('Entorno reiniciado a su estado inicial.'); setPrompt(); break;
+        case 'reboot': case 'poweroff': case 'shutdown': bootStart(); return;
         case 'pwd': out('/'+cwd.join('/')); break;
         case 'whoami': out(currentUser); break;
         case 'id': { const u=users[currentUser]; out('uid='+u.uid+'('+currentUser+') gid='+u.gid+'('+currentUser+') groups='+u.groups.join(',')); break; }
@@ -559,7 +847,7 @@ class Component extends DCLogic {
         case 'free': outMany(['              total        used        free      shared  buff/cache   available','Mem:          3.8Gi       1.1Gi       1.9Gi       120Mi       800Mi       2.4Gi','Swap:         2.0Gi          0B       2.0Gi']); break;
         case 'env': outMany(['USER='+currentUser,'HOME='+users[currentUser].home,'SHELL=/bin/bash','PATH=/usr/local/bin:/usr/bin:/bin','LANG=es_ES.UTF-8']); break;
         case 'history': history.forEach((h,i)=>out('  '+(i+1)+'  '+h)); break;
-        case 'man': if(!args[0]){err('man: falta el comando');break;} out(MAN[args[0].replace(/\..*/,'')]||MAN[args[0]]||('No hay manual para '+args[0]+'.')); break;
+        case 'man': { const key=(args.filter(a=>!a.startsWith('-')).pop()||'').replace(/\..*/,''); if(!key){ err('¿Qué página de manual desea?'); break; } renderMan(key); break; }
         case 'which': out(args[0]?'/usr/bin/'+args[0]:'which: falta argumento'); break;
         case 'echo': {
           const gt2=cmd.indexOf('>>'); const gt1=gt2===-1?cmd.indexOf('>'):-1;
@@ -574,6 +862,7 @@ class Component extends DCLogic {
           let ks=Object.keys(node.children);
           if(!flags.includes('a')) ks=ks.filter(k=>!k.startsWith('.')); else ks=['.','..'].concat(ks);
           if(ks.length===0) break;
+          if(flags.includes('Z')){ ks.forEach(k=>{ const ch=(k==='.'||k==='..')?{type:'dir'}:node.children[k]; const ctx=ch.type==='dir'?'unconfined_u:object_r:default_t:s0':'unconfined_u:object_r:user_home_t:s0'; out(ctx+' '+k+(ch.type==='dir'?'/':'')); }); break; }
           if(flags.includes('l')){ out('total '+(ks.length*4)); ks.forEach(k=>{ const ch=(k==='.'||k==='..')?{type:'dir',mode:'rwxr-xr-x',owner:'root',group:'root'}:node.children[k]; const isDir=ch.type==='dir'; const size=isDir?4096:(ch.content?ch.content.length:0); out((isDir?'d':'-')+(ch.mode||'rw-r--r--')+'  1 '+(ch.owner||'root').padEnd(7)+' '+(ch.group||'root').padEnd(7)+' '+String(size).padStart(6)+'  '+k+(isDir?'/':'')); }); }
           else out(ks.map(k=>{ const ch=(k==='.'||k==='..')?{type:'dir'}:node.children[k]; return k+(ch.type==='dir'?'/':''); }).join('   ')); break;
         }
@@ -581,6 +870,7 @@ class Component extends DCLogic {
         case 'cat': { if(!args[0]){err('cat: falta el fichero');break;} const n=getNode(norm(args[0])); if(!n){err('cat: '+args[0]+': no existe');break;} if(n.type==='dir'){err('cat: '+args[0]+': es un directorio');break;} if(n.mode&&n.mode[1]==='-'&&currentUser!=='root'){err('cat: '+args[0]+': Permiso denegado');break;} n.content.split('\n').forEach(l=>out(l)); break; }
         case 'head': case 'tail': { let num=10,fi=args[0]; if(args[0]==='-n'){num=+args[1];fi=args[2];} const n=getNode(norm(fi||'')); if(!n||n.type!=='file'){err(name+': '+(fi||'')+': no es un fichero');break;} const L=n.content.split('\n'); (name==='head'?L.slice(0,num):L.slice(-num)).forEach(l=>out(l)); break; }
         case 'wc': { const lf=args.includes('-l'); const fi=args.filter(a=>!a.startsWith('-'))[0]; const n=getNode(norm(fi||'')); if(!n||n.type!=='file'){err('wc: '+(fi||'')+': no es un fichero');break;} const c=n.content; out(lf?c.split('\n').length+' '+fi:c.split('\n').length+' '+c.split(/\s+/).filter(Boolean).length+' '+c.length+' '+fi); break; }
+        case 'sort': case 'uniq': case 'nl': { const fi=args.filter(a=>!a.startsWith('-')).pop(); const n=fi?getNode(norm(fi)):null; if(!n||n.type!=='file'){ err(name+': '+(fi||'')+': no es un fichero'); break; } applyFilter(name+' '+args.filter(a=>a.startsWith('-')).join(' '), n.content.split('\n')).forEach(l=>out(l)); break; }
         case 'mkdir': { const mk=(rel)=>{ const segs=norm(rel); const p=getParent(segs); const nm=segs[segs.length-1]; if(!p||p.type!=='dir'){err('mkdir: ruta no valida: '+rel);return;} if(p.children[nm]){err('mkdir: ya existe: '+rel);return;} p.children[nm]=dir({},{owner:currentUser,group:currentUser}); }; const targets=args.filter(a=>!a.startsWith('-')); if(!targets.length){err('mkdir: falta el nombre');break;} targets.forEach(mk); break; }
         case 'rmdir': { const segs=norm(args[0]||''); const p=getParent(segs); const nm=segs[segs.length-1]; if(!p||!p.children[nm]){err('rmdir: no existe');break;} if(p.children[nm].type!=='dir'){err('rmdir: no es un directorio');break;} if(Object.keys(p.children[nm].children).length){err('rmdir: el directorio no esta vacio');break;} delete p.children[nm]; break; }
         case 'touch': { if(!args[0]){err('touch: falta el nombre');break;} const segs=norm(args[0]); const p=getParent(segs); const nm=segs[segs.length-1]; if(!p||p.type!=='dir'){err('touch: ruta no valida');break;} if(!p.children[nm]) p.children[nm]=file('',{owner:currentUser,group:currentUser}); break; }
@@ -597,19 +887,19 @@ class Component extends DCLogic {
         case 'chmod': { if(args.length<2){err('chmod: uso: chmod <octal|u+x> <fichero>');break;} const n=getNode(norm(args[args.length-1])); if(!n){err('chmod: no existe: '+args[args.length-1]);break;} const oc=octalToSym(args[0]); if(oc) n.mode=oc; else if(/[ugoa]*[+][x]/.test(args[0])) n.mode=addX(n.mode); else if(/^[ugoa]*[+\-][rwxs]+$/.test(args[0])){} else {err('chmod: modo no valido: '+args[0]);break;} break; }
         case 'chown': { if(args.length<2){err('chown: uso: chown user[:grp] fichero');break;} const n=getNode(norm(args[args.length-1])); if(!n){err('chown: no existe: '+args[args.length-1]);break;} const ug=args[0].split(':'); n.owner=ug[0]; if(ug[1]) n.group=ug[1]; break; }
         case 'chgrp': { const n=getNode(norm(args[args.length-1]||'')); if(!n){err('chgrp: no existe');break;} n.group=args[0]; break; }
-        case 'getfacl': { const n=getNode(norm(args[args.length-1]||'')); if(!n){err('getfacl: '+(args[args.length-1]||'')+': no existe');break;} out('# file: '+(args[args.length-1]||'')); out('# owner: '+(n.owner||'root')); out('# group: '+(n.group||'root')); const m=n.mode||'rw-r--r--'; out('user::'+m.slice(0,3)); (n.acl||[]).filter(a=>a.type==='user').forEach(a=>out('user:'+a.name+':'+a.perms)); out('group::'+m.slice(3,6)); (n.acl||[]).filter(a=>a.type==='group').forEach(a=>out('group:'+a.name+':'+a.perms)); if(n.acl&&n.acl.length) out('mask::rwx'); out('other::'+m.slice(6,9)); break; }
+        case 'getfacl': { const tgt=args.filter(a=>!a.startsWith('-'))[0]; if(!tgt){ err('getfacl: uso: getfacl [-aceEsRLPtpndvh] fichero ...'); break; } const n=getNode(norm(tgt)); if(!n){err('getfacl: '+tgt+': No existe el fichero o el directorio');break;} out('# file: '+tgt.replace(/^\//,'')); out('# owner: '+(n.owner||'root')); out('# group: '+(n.group||'root')); const m=n.mode||'rw-r--r--'; out('user::'+m.slice(0,3)); (n.acl||[]).filter(a=>a.type==='user').forEach(a=>out('user:'+a.name+':'+a.perms)); out('group::'+m.slice(3,6)); (n.acl||[]).filter(a=>a.type==='group').forEach(a=>out('group:'+a.name+':'+a.perms)); if(n.acl&&n.acl.length) out('mask::rwx'); out('other::'+m.slice(6,9)); out(''); break; }
         case 'setfacl': { const tgt=args[args.length-1]; const n=getNode(norm(tgt)); if(!n){err('setfacl: '+tgt+': no existe');break;} n.acl=n.acl||[]; if(args.includes('-b')){ n.acl=[]; ok('ACLs eliminadas de '+tgt); break; } const mi=args.indexOf('-m'); const xi=args.indexOf('-x'); if(mi!==-1){ const spec=args[mi+1]; const p=spec.split(':'); const type=p[0]==='u'||p[0]==='user'?'user':'group'; const nm=p[1]; const perms=p[2]||'rwx'; n.acl=n.acl.filter(a=>!(a.type===type&&a.name===nm)); n.acl.push({type,name:nm,perms}); } else if(xi!==-1){ const spec=args[xi+1]; const p=spec.split(':'); const type=p[0]==='u'||p[0]==='user'?'user':'group'; n.acl=n.acl.filter(a=>!(a.type===type&&a.name===p[1])); } else { err('setfacl: usa -m u:usuario:rwx <f>, -x u:usuario <f> o -b <f>'); } break; }
         case 'getenforce': out(selinux.mode); break;
         case 'setenforce': { const v=args[0]; if(v==='0'||/permissive/i.test(v)) selinux.mode='Permissive'; else if(v==='1'||/enforcing/i.test(v)) selinux.mode='Enforcing'; else { err('setenforce: uso: setenforce [ Enforcing | Permissive | 1 | 0 ]'); break; } ok(''); break; }
         case 'sestatus': outMany(['SELinux status:                 enabled','SELinuxfs mount:                /sys/fs/selinux','Loaded policy name:             targeted','Current mode:                   '+selinux.mode.toLowerCase(),'Mode from config file:          enforcing','Policy MLS status:              enabled','Max kernel policy version:      33']); break;
         case 'getsebool': { if(args.includes('-a')){ outMany(['httpd_can_network_connect --> off','httpd_enable_homedirs --> off','ftp_home_dir --> off','ssh_sysadm_login --> off']); } else out((args[0]||'httpd_can_network_connect')+' --> off'); break; }
         case 'setsebool': ok(''); break;
-        case 'semanage': { const t=args[0]; if(t==='port'&&args.includes('-l')){ out('SELinux Port Type              Proto    Port Number'); out('http_port_t                    tcp      80, 443, 8080'); out('ssh_port_t                     tcp      22'); } else if(t==='port'&&args.includes('-a')){ ok('puerto añadido al tipo SELinux (simulado).'); } else if(t==='fcontext'&&args.includes('-a')){ ok('contexto de fichero añadido (simulado). Aplica con restorecon -Rv.'); } else out('semanage: usa port -l | port -a | fcontext -a'); break; }
+        case 'semanage': { const t=args[0]; if(t==='port'&&args.includes('-l')){ out('SELinux Port Type              Proto    Port Number'); out('http_port_t                    tcp      80, 443, 8080'); out('ssh_port_t                     tcp      22'); } else if(t==='port'&&args.includes('-a')){ const portTok=args[args.length-1]; const port=parseInt(portTok); if(port){ selinux.httpPorts=(selinux.httpPorts||[80,443,8080]).concat(port); ok('Puerto '+port+' añadido'+(args.includes('http_port_t')?' al tipo http_port_t':'')+'.'); } else { ok('puerto añadido al tipo SELinux (simulado).'); } } else if(t==='fcontext'&&args.includes('-a')){ ok('contexto de fichero añadido (simulado). Aplica con restorecon -Rv.'); } else out('semanage: usa port -l | port -a | fcontext -a'); break; }
         case 'restorecon': ok('Relabeled '+(args.filter(a=>!a.startsWith('-')).join(' ')||'/ruta')+' (simulado).'); break;
         case 'chcon': ok('contexto cambiado (temporal). Usa semanage+restorecon para hacerlo persistente.'); break;
         case 'ls-z': case 'lsz': out('unconfined_u:object_r:user_home_t:s0'); break;
         case 'chage': { if(args.includes('-l')){ const u=args[args.length-1]; out('Último cambio de contraseña                            : '+new Date().toDateString()); out('La contraseña caduca                                   : nunca'); out('Contraseña inactiva                                    : nunca'); out('La cuenta caduca                                       : nunca'); out('Número mínimo de días entre cambio de contraseña       : 0'); out('Número máximo de días entre cambio de contraseña       : 99999'); out('Número de días de aviso antes de que caduque la contraseña : 7'); } else ok('información de envejecimiento cambiada.'); break; }
-        case 'crontab': { if(args.includes('-l')){ out('# no hay ninguna tarea programada para '+currentUser); } else if(args.includes('-e')){ out('(abriría el editor de crontab — en el sandbox añade tareas con: echo "0 2 * * * /ruta" | crontab)'); } else out('crontab: usa -l (listar) o -e (editar)'); break; }
+        case 'crontab': { const dirSeg=['var','spool','cron']; const ensure=()=>{ let p=getNode(dirSeg); if(!p){ const sp=getNode(['var','spool']); if(sp&&sp.type==='dir'){ sp.children.cron=dir({},{owner:'root'}); p=sp.children.cron; } } return p; }; if(args.includes('-l')){ const n=getNode(dirSeg.concat(currentUser)); if(n&&n.type==='file'&&n.content.trim()){ n.content.split('\n').forEach(l=>out(l)); } else out('no crontab for '+currentUser); } else if(args.includes('-r')){ const p=getNode(dirSeg); if(p&&p.children[currentUser]) delete p.children[currentUser]; ok('crontab de '+currentUser+' eliminado.'); } else if(args.includes('-e')){ ensure(); editorOpen('nano', '/var/spool/cron/'+currentUser); return; } else out('crontab: usa -l (listar), -e (editar) o -r (borrar)'); break; }
         case 'timedatectl': outMany(['               Local time: '+new Date().toString(),'           Universal time: '+new Date().toUTCString(),'                 Time zone: Europe/Madrid (CEST, +0200)','System clock synchronized: yes','              NTP service: active']); break;
         case 'pvcreate': ok('  Physical volume "'+(args[args.length-1]||'/dev/sdb1')+'" successfully created.'); break;
         case 'vgcreate': ok('  Volume group "'+(args[0]||'vg1')+'" successfully created'); break;
@@ -652,7 +942,7 @@ class Component extends DCLogic {
         case 'systemctl': { const nf=args.filter(a=>!a.startsWith('-')); const sub=nf[0]; const svc=(nf[1]||'').replace('.service','');
           if(sub==='status'){ const s=services[svc]; const active=s&&s.active; out('\u25cf '+svc+'.service - '+svc, active?'#8fa876':undefined); out('   Loaded: loaded (/usr/lib/systemd/system/'+svc+'.service; '+((s&&s.enabled)?'enabled':'disabled')+'; preset: disabled)'); out('   Active: '+(active?'active (running)':'inactive (dead)')+(active?' since '+new Date().toLocaleTimeString():''), active?'#8fa876':'#8a7f6a'); if(active&&s.pid) out('   Main PID: '+s.pid+' ('+svc+')'); }
           else if(sub==='daemon-reload'||sub==='daemon-reexec'){ ok(''); }
-          else if(sub==='start'){ const known=['sshd','httpd','nginx','mariadb','firewalld','chronyd','crond','NetworkManager','vsftpd','named','nfs-server','tuned','rsyslog','systemd-journald']; const unitFile=getNode(['etc','systemd','system',svc+'.service'])||getNode(['usr','lib','systemd','system',svc+'.service']); if(!services[svc]&&!known.includes(svc)&&!unitFile){ err('Failed to start '+svc+'.service: Unit '+svc+'.service not found.'); break; } if(!services[svc]) services[svc]={enabled:false}; if(!services[svc].active){ services[svc].active=true; services[svc].pid=nextPid++; processes.push({pid:services[svc].pid,ppid:1,user:'root',cpu:0.1,mem:0.5,vsz:120000,rss:9000,stat:'Ss',start:new Date().toLocaleTimeString().slice(0,5),time:'0:00',cmd:'/usr/sbin/'+svc}); } ok('servicio '+svc+' iniciado.'); }
+          else if(sub==='start'){ if(svc==='httpd'){ const conf=getNode(['etc','httpd','conf.d','custom.conf']); let port=80; if(conf&&conf.type==='file'){ conf.content.split('\n').forEach(l=>{ const w=l.trim().split(/\s+/); if(w[0]&&w[0].toLowerCase()==='listen'&&w[1]) port=parseInt(w[1])||port; }); } if(selinux.mode==='Enforcing' && !(selinux.httpPorts||[80,443,8080]).includes(port)){ err('Job for httpd.service failed because the control process exited with error code.'); err('AVC: denied { name_bind } for port='+port+' comm="httpd" scontext=system_u:system_r:httpd_t:s0 tclass=tcp_socket'); out('SELinux impide a httpd escuchar en el puerto '+port+'. Etiqueta el puerto:  semanage port -a -t http_port_t -p tcp '+port+'  (o pon SELinux en Permissive).','#8a7f6a'); break; } } const known=['sshd','httpd','nginx','mariadb','firewalld','chronyd','crond','NetworkManager','vsftpd','named','nfs-server','tuned','rsyslog','systemd-journald']; const unitFile=getNode(['etc','systemd','system',svc+'.service'])||getNode(['usr','lib','systemd','system',svc+'.service']); if(!services[svc]&&!known.includes(svc)&&!unitFile){ err('Failed to start '+svc+'.service: Unit '+svc+'.service not found.'); break; } if(!services[svc]) services[svc]={enabled:false}; if(!services[svc].active){ services[svc].active=true; services[svc].pid=nextPid++; processes.push({pid:services[svc].pid,ppid:1,user:'root',cpu:0.1,mem:0.5,vsz:120000,rss:9000,stat:'Ss',start:new Date().toLocaleTimeString().slice(0,5),time:'0:00',cmd:'/usr/sbin/'+svc}); } ok('servicio '+svc+' iniciado.'); }
           else if(sub==='stop'){ if(services[svc]){ services[svc].active=false; const i=processes.findIndex(p=>p.cmd.includes('/'+svc)); if(i!==-1)processes.splice(i,1);} ok('servicio '+svc+' detenido.'); }
           else if(sub==='enable'||sub==='disable'){ if(!services[svc])services[svc]={}; services[svc].enabled=sub==='enable'; if(cmd.includes('--now')&&sub==='enable'&&!services[svc].active){ services[svc].active=true; services[svc].pid=nextPid++; processes.push({pid:services[svc].pid,ppid:1,user:'root',cpu:0.1,mem:0.5,vsz:120000,rss:9000,stat:'Ss',start:'now',time:'0:00',cmd:'/usr/sbin/'+svc}); } ok('Created symlink /etc/systemd/system/multi-user.target.wants/'+svc+'.service. ('+(sub==='enable'?'habilitado':'deshabilitado')+')'); }
           else if(sub==='restart'){ ok('servicio '+svc+' reiniciado.'); }
@@ -680,7 +970,7 @@ class Component extends DCLogic {
         case 'du': out('4.0K\t'+(args.filter(a=>!a.startsWith('-'))[0]||'.')); break;
         case 'lsblk': lsblkView(); break;
         case 'blkid': blkidView(); break;
-        case 'fdisk': { if(args.includes('-l')){ fdiskView(); break; } const dev=args.find(a=>a.startsWith('/dev/')); if(!dev){ out('fdisk: uso: fdisk -l  |  fdisk /dev/sdX'); break; } const disk=disks.find(d=>d.name===dev.replace('/dev/','')); if(!disk){ err('fdisk: no se puede abrir '+dev+': No existe el dispositivo'); break; } fdiskRepl(disk); return; }
+        case 'fdisk': { if(args.includes('-l')){ const dv=args.find(a=>a.startsWith('/dev/')); if(dv){ const d=disks.find(x=>x.name===dv.replace('/dev/','')); if(!d){ err('fdisk: no se puede abrir '+dv+': No existe el fichero o el directorio'); break; } fdiskDisk(d); } else fdiskView(); break; } const dev=args.find(a=>a.startsWith('/dev/')); if(!dev){ out('fdisk: uso: fdisk -l [dispositivo]  |  fdisk /dev/sdX'); break; } const disk=disks.find(d=>d.name===dev.replace('/dev/','')); if(!disk){ err('fdisk: no se puede abrir '+dev+': No existe el fichero o el directorio'); break; } fdiskRepl(disk); return; }
         case 'parted': { const dev=args.find(a=>a.startsWith('/dev/')); const disk=dev?disks.find(d=>d.name===dev.replace('/dev/','')):null; if(!disk){err('parted: dispositivo no encontrado. Ej: parted /dev/sdb mklabel gpt');break;} const sub=args[args.indexOf(dev)+1];
           if(sub==='mklabel'||sub==='mktable'){ disk.labeled=true; ok('Información: tabla de particiones '+(args[args.indexOf(dev)+2]||'gpt')+' creada en /dev/'+disk.name+'.'); }
           else if(sub==='mkpart'){ if(!disk.labeled){err('Error: /dev/'+disk.name+' no tiene tabla de particiones. Usa mklabel gpt primero.');break;} const totalGB=sizeToGB(disk.size); const freeGB=totalGB-diskUsedGB(disk.parts); if(freeGB<=0.001){err('Error: no queda espacio libre en /dev/'+disk.name+'.');break;} const num=disk.parts.length+1; const fst=args.find(a=>['xfs','ext4','ext3','btrfs','linux-swap'].includes(a))||''; const szTok=args.find(a=>/^\+?\d+\s*[KMGTP]$/i.test(a)); let sz; if(szTok){ const reqGB=sizeToGB(szTok); if(reqGB>freeGB+0.001){ err('Error: el tamaño solicitado ('+szTok+') supera el espacio libre ('+gbToNice(freeGB)+') en /dev/'+disk.name+'.'); break; } sz=parseSize(szTok); } else { sz=gbToNice(freeGB); } disk.parts.push({name:disk.name+num, size:sz, fstype:'', uuid:'', mount:''}); ok('Información: partición /dev/'+disk.name+num+' ('+sz+') creada. Formatéala con mkfs.'+(fst||'xfs')+' /dev/'+disk.name+num+'.'); }
@@ -694,7 +984,7 @@ class Component extends DCLogic {
         case 'vgs': outMany(['  VG   #PV #LV #SN Attr   VSize   VFree','  vg0    1   2   0 wz--n- <79.00g 11.00g']); break;
         case 'lvs': outMany(['  LV   VG  Attr       LSize  Pool Origin Data%','  root vg0 -wi-ao---- 18.00g','  home vg0 -wi-ao---- 50.00g']); break;
 
-        case 'ip': { const sub=args[0];
+        case 'ip': { if(!args.length){ out('Uso: ip [ OPCIONES ] OBJETO { COMMAND | help }'); out('donde  OBJETO := { link | address | route | neigh }','#8a7f6a'); break; } const sub=args[0];
           if(sub==='link'){ const set=args.indexOf('set'); if(set!==-1){ const dev=args[set+1]; const st=args[set+2]; if(dev==='eth0'){ net.eth0.up=(st==='up'); ok(''); } else err('ip: dispositivo '+dev+' no existe'); } else { out('1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536'); out('2: eth0: <BROADCAST,MULTICAST'+(net.eth0.up?',UP,LOWER_UP':'')+'> mtu 1500 state '+(net.eth0.up?'UP':'DOWN')); } }
           else if(sub==='route'||sub==='r'){ if(net.eth0.up){ out('default via '+net.eth0.gw+' dev eth0 proto dhcp'); out(net.eth0.ip.replace(/\.\d+$/,'.0')+'/'+net.eth0.prefix+' dev eth0 proto kernel scope link src '+net.eth0.ip); } else out('(sin rutas — eth0 está DOWN)'); }
           else { out('1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536'); out('    inet 127.0.0.1/8 scope host lo'); out('2: eth0: <BROADCAST,MULTICAST'+(net.eth0.up?',UP,LOWER_UP':'')+'> mtu 1500 state '+(net.eth0.up?'UP':'DOWN')); out('    link/ether 52:54:00:ab:cd:ef'); if(net.eth0.up) out('    inet '+net.eth0.ip+'/'+net.eth0.prefix+' brd '+net.eth0.ip.replace(/\.\d+$/,'.255')+' scope global eth0'); else out('    (interfaz caída — sin IP activa)'); }
@@ -705,35 +995,75 @@ class Component extends DCLogic {
         case 'ss': outMany(['Netid  State   Local Address:Port   Peer Address:Port','tcp    LISTEN  0.0.0.0:22          0.0.0.0:*','tcp    LISTEN  0.0.0.0:80          0.0.0.0:*','tcp    LISTEN  [::]:22             [::]:*']); break;
         case 'ping': { const flags=args.filter(a=>a.startsWith('-')); const target=args.filter(a=>!a.startsWith('-'))[0]||'localhost'; const loop=(target==='localhost'||target==='127.0.0.1'||target.startsWith('127.')); if(loop){ streamPing(target); } else if(!net.eth0.up){ err('ping: connect: La red es inaccesible'); } else if(!net.eth0.gw){ err('ping: '+target+': Fallo temporal en la resolución del nombre'); } else { streamPing(target); } break; }
         case 'nmcli': { if(cmd.includes('con up')||cmd.includes('connection up')){ net.eth0.up=true; ok('Conexión activada correctamente (eth0).'); } else if(cmd.includes('con down')||cmd.includes('connection down')){ net.eth0.up=false; ok('Conexión "eth0" desactivada correctamente.'); } else if(cmd.includes('dev')){ out('DEVICE  TYPE      STATE                     CONNECTION'); out('eth0    ethernet  '+(net.eth0.up?'connected                 eth0':'disconnected              --')); out('lo      loopback  connected (externally)    lo'); } else { out('NAME  UUID                                  TYPE      DEVICE'); out('eth0  5f2a1b3c-...-a1b2c3d4e5f6              ethernet  '+(net.eth0.up?'eth0':'--')); } break; }
-        case 'firewall-cmd': { if(cmd.includes('--list-all')){ outMany(['public (active)','  target: default','  interfaces: eth0','  services: ssh dhcpv6-client http','  ports: 8080/tcp']); } else if(cmd.includes('--add')){ ok('success'); } else if(cmd.includes('--reload')){ ok('success'); } else if(cmd.includes('--state')){ out('running'); } else out('firewall-cmd: prueba --state, --list-all, --add-service=http --permanent, --reload'); break; }
+        case 'firewall-cmd': { const perm=cmd.includes('--permanent'); const getV=(k)=>{ const m=cmd.match(new RegExp(k+'=([^ ]+)')); return m?m[1]:''; };
+          if(cmd.includes('--state')){ out('running'); }
+          else if(cmd.includes('--get-default-zone')){ out(fw.zone); }
+          else if(cmd.includes('--get-zones')){ out('block dmz drop external home internal public trusted work'); }
+          else if(cmd.includes('--get-active-zones')){ out(fw.zone); out('  interfaces: eth0'); }
+          else if(cmd.includes('--list-services')){ out([...fw.services].join(' ')); }
+          else if(cmd.includes('--list-ports')){ out([...fw.ports].join(' ')); }
+          else if(cmd.includes('--list-all')){ outMany([fw.zone+' (active)','  target: default','  icmp-block-inversion: no','  interfaces: eth0','  sources: ','  services: '+[...fw.services].join(' '),'  ports: '+[...fw.ports].join(' '),'  protocols: ','  forward: yes','  masquerade: no','  forward-ports: ','  source-ports: ','  icmp-blocks: ','  rich rules: ']); }
+          else if(cmd.includes('--add-service')){ fw.services.add(getV('--add-service')); ok('success'); }
+          else if(cmd.includes('--remove-service')){ fw.services.delete(getV('--remove-service')); ok('success'); }
+          else if(cmd.includes('--query-service')){ out(fw.services.has(getV('--query-service'))?'yes':'no'); }
+          else if(cmd.includes('--add-port')){ fw.ports.add(getV('--add-port')); ok('success'); }
+          else if(cmd.includes('--remove-port')){ fw.ports.delete(getV('--remove-port')); ok('success'); }
+          else if(cmd.includes('--reload')||cmd.includes('--runtime-to-permanent')){ ok('success'); }
+          else if(cmd.includes('--help')){ outMany(['Uso: firewall-cmd [OPCIONES]','  --state','  --get-default-zone | --get-zones | --get-active-zones','  --list-all | --list-services | --list-ports','  --add-service=NOMBRE [--permanent]','  --remove-service=NOMBRE','  --add-port=PUERTO/tcp','  --reload | --runtime-to-permanent']); }
+          else out('firewall-cmd: prueba --state, --list-all, --add-service=http --permanent, --reload');
+          if(perm && (cmd.includes('--add')||cmd.includes('--remove'))) out('(regla permanente — usa --reload para aplicarla ahora)','#8a7f6a');
+          break; }
 
         case 'docker': case 'podman': { const engine=name; const sub=args[0];
-          if(sub==='ps'){ out('CONTAINER ID   IMAGE          COMMAND     STATUS          PORTS      NAMES'); const list=args.includes('-a')?containers:containers.filter(c=>c.running); list.forEach(c=>out(c.id+'   '+c.image.padEnd(14)+' "'+c.cmd+'"    '+(c.running?'Up 2 minutes':'Exited (0)').padEnd(14)+'  '+(c.ports||'').padEnd(9)+'  '+c.name)); break; }
-          if(sub==='images'){ out('REPOSITORY                              TAG       IMAGE ID       SIZE'); images.forEach(i=>out(i.repo.padEnd(39)+' '+i.tag.padEnd(9)+' '+i.id+'   '+i.size)); break; }
-          if(sub==='pull'){ const img=args[1]||'image'; out('Trying to pull '+img+'...'); out('Getting image source signatures'); out('Copying blob sha256:'+Math.random().toString(16).slice(2,14)); out('Writing manifest to image destination'); if(!images.find(i=>i.repo===img)) images.push({repo:img,tag:'latest',id:Math.random().toString(16).slice(2,14),size:(50+Math.floor(Math.random()*180))+'MB'}); ok('Status: Downloaded newer image for '+img+':latest'); break; }
-          if(sub==='run'){ const detach=args.includes('-d'); const img=args.filter(a=>!a.startsWith('-')&&a!=='run').pop()||'image'; if(!images.find(i=>i.repo===img)){ out('Unable to find image \''+img+':latest\' locally'); out('latest: Pulling from '+img); images.push({repo:img,tag:'latest',id:Math.random().toString(16).slice(2,14),size:'120MB'}); } const id=Math.random().toString(16).slice(2,14); const nm=(cmd.match(/--name[= ]+(\S+)/)||[])[1]||('cont_'+id.slice(0,5)); containers.push({id,image:img,cmd:'/bin/sh',running:true,name:nm,ports:(cmd.match(/-p[= ]+(\S+)/)||[])[1]||''}); if(detach) out(id); else out('(sandbox) contenedor '+nm+' en primer plano. Ctrl-C para salir.'); break; }
-          if(sub==='build'){ out('STEP 1/3: FROM ubi9'); out('STEP 2/3: COPY . /app'); out('STEP 3/3: CMD ["./app"]'); const ti=args.indexOf('-t'); const tag=ti!==-1?args[ti+1]:'imagen'; images.push({repo:tag,tag:'latest',id:Math.random().toString(16).slice(2,14),size:'88MB'}); ok('Successfully tagged '+tag+':latest'); break; }
-          if(sub==='exec'){ out('(sandbox) abriría una shell dentro del contenedor '+(args.filter(a=>!a.startsWith('-')).pop()||'')+'.'); break; }
-          if(sub==='logs'){ const c=containers.find(c=>c.name===args[args.length-1]||c.id.startsWith(args[args.length-1])); out('[info] contenedor iniciado'); out('[info] '+(c?c.image:'app')+' escuchando en :8080'); break; }
-          if(sub==='inspect'){ const c=containers.find(c=>c.name===args[args.length-1]||c.id.startsWith(args[args.length-1])); if(!c){err(engine+' inspect: no such object');break;} out('[ { "Id": "'+c.id+'", "Image": "'+c.image+'", "State": { "Running": '+c.running+' }, "Name": "/'+c.name+'" } ]'); break; }
-          if(sub==='start'||sub==='stop'||sub==='restart'||sub==='rm'){ const nm=args[args.length-1]; const c=containers.find(c=>c.name===nm||c.id.startsWith(nm)); if(!c){err(engine+' '+sub+': no such container: '+nm);break;} if(sub==='start'||sub==='restart') c.running=true; if(sub==='stop') c.running=false; if(sub==='rm'){ if(c.running){err('Error: cannot remove running container '+nm+' (stop it first, o -f)');break;} containers.splice(containers.indexOf(c),1); } out(nm); break; }
-          if(sub==='rmi'){ const nm=args[args.length-1]; const i=images.findIndex(im=>im.repo===nm||im.id.startsWith(nm)); if(i===-1){err(engine+' rmi: no such image: '+nm);break;} images.splice(i,1); out('Untagged: '+nm); break; }
-          if(sub==='version'){ out(engine+' version '+(engine==='podman'?'4.9.0':'24.0.7')); break; }
-          if(sub==='top'){ out('UID    PID    PPID   C   STIME   TTY   TIME    CMD'); out('root   1      0      0   10:00   ?     0:00    /bin/sh'); break; }
-          if(sub==='stats'){ out('CONTAINER   CPU %   MEM USAGE / LIMIT   MEM %   NET I/O'); containers.filter(c=>c.running).forEach(c=>out(c.name.padEnd(11)+' '+(Math.random()*3).toFixed(2)+'%   '+(20+Math.floor(Math.random()*60))+'MiB / 512MiB   '+(Math.random()*15).toFixed(1)+'%   1.2kB / 800B')); break; }
-          if(sub==='cp'){ ok('copiado '+(args[1]||'')+' -> '+(args[2]||'')+' (simulado).'); break; }
-          if(sub==='port'){ const c=containers.find(c=>c.name===args[1]||c.id.startsWith(args[1]||'')); out(c&&c.ports?c.ports:'(sin puertos publicados)'); break; }
-          if(sub==='rename'){ const c=containers.find(c=>c.name===args[1]); if(c){ c.name=args[2]; ok('renombrado a '+args[2]); } else err(engine+' rename: no such container'); break; }
-          if(sub==='pause'||sub==='unpause'||sub==='kill'){ const c=containers.find(c=>c.name===args[1]||c.id.startsWith(args[1]||'')); if(!c){ err(engine+' '+sub+': no such container: '+(args[1]||'')); break; } if(sub==='kill') c.running=false; out(args[1]); break; }
-          if(sub==='commit'){ const tag=args[2]||'nueva-imagen'; images.push({repo:tag,tag:'latest',id:Math.random().toString(16).slice(2,14),size:'96MB'}); ok('sha256:'+Math.random().toString(16).slice(2,20)); break; }
-          if(sub==='tag'){ const src=images.find(i=>i.repo===args[1]); if(args[2]) images.push({repo:args[2].split(':')[0],tag:(args[2].split(':')[1]||'latest'),id:(src?src.id:Math.random().toString(16).slice(2,14)),size:src?src.size:'100MB'}); ok(''); break; }
-          if(sub==='network'){ const s2=args[1]; if(s2==='ls'){ out('NETWORK ID     NAME      DRIVER    SCOPE'); out('a1b2c3d4e5f6   bridge    bridge    local'); out('b2c3d4e5f6a1   host      host      local'); } else if(s2==='create'){ ok(Math.random().toString(16).slice(2,14)); } else if(s2==='rm'){ ok(args[2]||''); } else out(engine+' network: usa ls, create, rm'); break; }
-          if(sub==='volume'){ const s2=args[1]; if(s2==='ls'){ out('DRIVER    VOLUME NAME'); out('local     datos'); out('local     db_data'); } else if(s2==='create'){ ok(args[2]||'nuevo_volumen'); } else if(s2==='rm'){ ok(args[2]||''); } else out(engine+' volume: usa ls, create, rm'); break; }
-          if(sub==='info'){ outMany(['Client: '+engine,' Version: '+(engine==='podman'?'4.9.0':'24.0.7'),'Server:',' Containers: '+containers.length,'  Running: '+containers.filter(c=>c.running).length,' Images: '+images.length,' Storage Driver: overlay2','Registry: registry.access.redhat.com']); break; }
-          if(sub==='system'){ if(args[1]==='df'){ out('TYPE      TOTAL   ACTIVE   SIZE'); out('Images    '+images.length+'       '+images.length+'        420MB'); out('Containers '+containers.length+'      '+containers.filter(c=>c.running).length+'        12MB'); } else if(args[1]==='prune'){ ok('Total reclaimed space: 0B'); } else out(engine+' system: usa df, prune'); break; }
-          if(sub==='login'||sub==='logout'){ ok(sub==='login'?'Login Succeeded':'Removing login credentials'); break; }
-          out(engine+': usa ps, images, pull, run, build, exec, logs, inspect, start, stop, restart, rm, rmi, cp, top, stats, port, rename, pause, unpause, kill, commit, tag, network, volume, info, system df, version'); break;
+          const findC=(ref)=>containers.find(c=>c.name===ref||c.id.startsWith(ref||'~'));
+          if(!sub||sub==='--help'||sub==='help'){ outMany(['Uso:  '+engine+' [OPCIONES] COMANDO','','Gestión de contenedores e imágenes'+(engine==='podman'?' (rootless, sin daemon)':'')+'.','','Comandos comunes:','  run       Crea y arranca un contenedor desde una imagen','  ps        Lista contenedores (-a incluye los parados)','  images    Lista imágenes locales','  pull      Descarga una imagen de un registro','  build     Construye una imagen desde un Dockerfile','  exec      Ejecuta un comando dentro de un contenedor','  logs      Muestra los logs de un contenedor','  compose   Define y ejecuta apps multi-contenedor','',"Ejecuta '"+engine+" COMANDO --help' para más información."]); break; }
+          if(sub==='ps'){ out('CONTAINER ID   IMAGE           COMMAND        STATUS               PORTS                    NAMES'); const list=args.includes('-a')?containers:containers.filter(c=>c.running); if(!list.length){ break; } list.forEach(c=>out(c.id+'   '+c.image.padEnd(15)+' "'+(c.cmd||'/bin/sh').slice(0,12)+'"  '+(c.running?'Up 2 minutes':'Exited (0) 1 min ago').padEnd(20)+' '+(c.ports||'').padEnd(24)+' '+c.name)); break; }
+          if(sub==='images'||(sub==='image'&&args[1]==='ls')){ out('REPOSITORY                              TAG       IMAGE ID       SIZE'); images.forEach(i=>out(i.repo.padEnd(39)+' '+i.tag.padEnd(9)+' '+i.id+'   '+i.size)); break; }
+          if(sub==='search'){ const q=args[1]||''; const cat={mariadb:['MariaDB is a community-developed fork of MySQL','5.1K','[OK]'],mysql:['MySQL open source relational database','14K','[OK]'],nginx:['Official build of Nginx','19K','[OK]'],httpd:['The Apache HTTP Server','4.5K','[OK]'],redis:['Redis in-memory data store','12K','[OK]'],postgres:['The PostgreSQL object-relational DB','13K','[OK]'],python:['Python programming language','9K','[OK]'],node:['Node.js JavaScript runtime','13K','[OK]'],ubuntu:['Ubuntu base image','17K','[OK]'],alpine:['A minimal image based on Alpine Linux','11K','[OK]']}; out('NAME'.padEnd(24)+'DESCRIPTION'.padEnd(46)+'STARS   OFFICIAL'); const keys=Object.keys(cat).filter(k=>k.includes(q)); if(!keys.length){ out('(sin resultados para "'+q+'")','#8a7f6a'); break; } keys.slice(0,8).forEach(k=>out(k.padEnd(24)+cat[k][0].slice(0,45).padEnd(46)+cat[k][1].padEnd(8)+cat[k][2])); break; }
+          if(sub==='pull'){ let img=args.filter(a=>!a.startsWith('-')&&a!=='pull').pop()||'image'; const tag=img.includes(':')?img.split(':')[1]:'latest'; const repo=img.split(':')[0]; out('Trying to pull docker.io/library/'+repo+':'+tag+'...'); out('Getting image source signatures'); ['e2a8cd','7b41c9','c0ffee'].forEach(b=>out('Copying blob sha256:'+b+Math.random().toString(16).slice(2,10))); out('Copying config sha256:'+Math.random().toString(16).slice(2,14)); out('Writing manifest to image destination'); if(!images.find(i=>i.repo===repo&&i.tag===tag)) images.push({repo,tag,id:Math.random().toString(16).slice(2,14),size:(50+Math.floor(Math.random()*180))+'MB'}); ok('Status: Downloaded newer image for '+repo+':'+tag); break; }
+          if(sub==='run'){ const has=(f)=>args.includes(f); const valOf=(...fs)=>{ for(const f of fs){ const i=args.indexOf(f); if(i!==-1&&args[i+1]) return args[i+1]; const eq=args.find(a=>a.startsWith(f+'=')); if(eq) return eq.split('=').slice(1).join('='); } return ''; };
+            const detach=has('-d')||has('--detach'); const rm=has('--rm'); const it=has('-it')||has('-i')||has('-t');
+            const nameV=valOf('--name'), portV=valOf('-p','--publish'), volV=valOf('-v','--volume'), envV=valOf('-e','--env'), restartV=valOf('--restart'), memV=valOf('-m','--memory'), cpuV=valOf('--cpus'), netV=valOf('--network','--net');
+            const consumed=new Set([nameV,portV,volV,envV,restartV,memV,cpuV,netV].filter(Boolean));
+            const img=args.filter(a=>!a.startsWith('-')&&a!=='run'&&!consumed.has(a)).pop()||'image';
+            const repo=img.split(':')[0]; if(!images.find(i=>i.repo===repo)){ out('Unable to find image \''+img+'\' locally'); out((img.split(':')[1]||'latest')+': Pulling from library/'+repo); images.push({repo,tag:(img.split(':')[1]||'latest'),id:Math.random().toString(16).slice(2,14),size:'120MB'}); }
+            const id=Math.random().toString(16).slice(2,14); const nm=nameV||(repo.replace(/[^a-z0-9]/gi,'_')+'_'+id.slice(0,4));
+            const c={id,image:img,cmd:'/bin/sh',running:true,name:nm,ports:portV,restart:restartV||'no',mem:memV,cpus:cpuV,net:netV||'bridge',rm}; containers.push(c);
+            if(detach){ out(id); } else if(it){ out('(sandbox) shell interactiva en '+nm+'. Escribe exit para salir.'); if(rm){ containers.splice(containers.indexOf(c),1); } } else { out('(sandbox) '+nm+' en primer plano — Ctrl-C para salir.'); if(rm){ containers.splice(containers.indexOf(c),1); } } break; }
+          if(sub==='create'){ const nmeq=args.indexOf('--name'); const img=args.filter(a=>!a.startsWith('-')&&a!=='create'&&a!==(nmeq!==-1?args[nmeq+1]:'')).pop()||'image'; const id=Math.random().toString(16).slice(2,14); const nm=(nmeq!==-1?args[nmeq+1]:'')||('cont_'+id.slice(0,4)); containers.push({id,image:img,cmd:'/bin/sh',running:false,name:nm,ports:'',restart:'no'}); out(id); break; }
+          if(sub==='start'||sub==='stop'||sub==='restart'||sub==='pause'||sub==='unpause'||sub==='kill'||sub==='wait'){ const nm=args.filter(a=>!a.startsWith('-')).pop(); const c=findC(nm); if(!c){err('Error: No such container: '+nm);break;} if(sub==='start'||sub==='restart'||sub==='unpause') c.running=true; if(sub==='stop'||sub==='kill'||sub==='pause') c.running=false; out(sub==='wait'?'0':nm); break; }
+          if(sub==='rm'){ const force=args.includes('-f'); const nm=args.filter(a=>!a.startsWith('-')).pop(); const c=findC(nm); if(!c){err('Error: No such container: '+nm);break;} if(c.running&&!force){err('Error response from daemon: cannot remove a running container '+nm+' — detenlo o usa -f');break;} containers.splice(containers.indexOf(c),1); out(nm); break; }
+          if(sub==='attach'){ const c=findC(args[args.length-1]); if(!c){err('Error: No such container: '+(args[args.length-1]||''));break;} if(!c.running){err('You cannot attach to a stopped container, start it first');break;} out('(sandbox) conectado a '+c.name+'. Ctrl-C desconecta (y para el contenedor si es su proceso principal). Con exec no pasa eso.'); break; }
+          if(sub==='exec'){ const c=findC(args.filter(a=>!a.startsWith('-'))[1]); if(!c){err('Error: No such container');break;} if(!c.running){err('Error: container '+(args.filter(a=>!a.startsWith('-'))[1])+' is not running');break;} out('(sandbox) comando ejecutado en '+c.name+' sin tocar su proceso principal. Con -it abrirías una shell.'); break; }
+          if(sub==='logs'){ const c=findC(args.filter(a=>!a.startsWith('-')).pop()); out('[info] contenedor iniciado'); out('[info] '+(c?c.image.split(':')[0]:'app')+' escuchando'); if(args.includes('-f')||args.includes('--follow')) out('(sandbox) -f seguiría el log en tiempo real…','#8a7f6a'); break; }
+          if(sub==='inspect'){ const c=findC(args[args.length-1]); if(!c){err('Error: No such object: '+(args[args.length-1]||''));break;} outMany(['[ {','  "Id": "'+c.id+'",','  "Image": "'+c.image+'",','  "State": { "Running": '+c.running+', "RestartPolicy": "'+(c.restart||'no')+'" },','  "HostConfig": { "Memory": "'+(c.mem||'0')+'", "NanoCpus": "'+(c.cpus||'0')+'", "NetworkMode": "'+(c.net||'bridge')+'" },','  "Name": "/'+c.name+'"','} ]']); break; }
+          if(sub==='top'){ out('UID    PID   PPID   C   STIME   TTY   TIME    CMD'); out('root   1     0      0   10:00   ?     0:00    /bin/sh'); break; }
+          if(sub==='stats'){ out('CONTAINER   CPU %   MEM USAGE / LIMIT     MEM %   NET I/O       BLOCK I/O'); const run2=containers.filter(c=>c.running); if(!run2.length){ out('(no hay contenedores en ejecución)','#8a7f6a'); break; } run2.forEach(c=>{ const lim=c.mem||'512MiB'; out(c.name.slice(0,11).padEnd(11)+' '+(Math.random()*3).toFixed(2)+'%   '+(20+Math.floor(Math.random()*60))+'MiB / '+String(lim).padEnd(9)+' '+(Math.random()*15).toFixed(1)+'%   1.2kB / 800B   0B / 0B'); }); break; }
+          if(sub==='update'){ const c=findC(args[args.length-1]); if(c){ const mi=args.indexOf('--memory'); if(mi!==-1)c.mem=args[mi+1]; const ci=args.indexOf('--cpus'); if(ci!==-1)c.cpus=args[ci+1]; out(c.name); } else err('Error: No such container'); break; }
+          if(sub==='build'){ const ti=args.indexOf('-t'); const tag=ti!==-1?args[ti+1]:'imagen:latest'; out('STEP 1/5: FROM ubi9'); out('STEP 2/5: WORKDIR /app'); out('STEP 3/5: COPY . .'); out('STEP 4/5: RUN dnf install -y ...'); out('  --> Using cache'); out('STEP 5/5: CMD ["./app"]'); const repo=tag.split(':')[0]; const tg=tag.split(':')[1]||'latest'; images.push({repo,tag:tg,id:Math.random().toString(16).slice(2,14),size:'88MB'}); ok('Successfully tagged '+repo+':'+tg); break; }
+          if(sub==='commit'){ const tag=args[args.length-1]||'nueva-imagen'; const repo=tag.split(':')[0]; images.push({repo,tag:(tag.split(':')[1]||'latest'),id:Math.random().toString(16).slice(2,14),size:'96MB'}); out('sha256:'+Math.random().toString(16).slice(2,20)); break; }
+          if(sub==='tag'){ const src=images.find(i=>i.repo===(args[1]||'').split(':')[0]); if(args[2]){ const repo=args[2].split(':')[0]; images.push({repo,tag:(args[2].split(':')[1]||'latest'),id:(src?src.id:Math.random().toString(16).slice(2,14)),size:src?src.size:'100MB'}); } ok(''); break; }
+          if(sub==='push'){ const ref=args[args.length-1]||'usuario/imagen'; out('The push refers to repository [docker.io/'+(ref.includes('/')?'':'library/')+ref.split(':')[0]+']'); ['a1b2c3','d4e5f6','7890ab'].forEach(l=>out(l+Math.random().toString(16).slice(2,6)+': Pushed')); out((ref.split(':')[1]||'latest')+': digest: sha256:'+Math.random().toString(16).slice(2,18)+' size: 1573'); break; }
+          if(sub==='save'){ const oi=args.indexOf('-o'); const f=oi!==-1?args[oi+1]:'imagen.tar'; ok('imagen guardada en '+f+' (docker save, simulado).'); break; }
+          if(sub==='load'){ const ii=args.indexOf('-i'); const f=ii!==-1?args[ii+1]:'imagen.tar'; out('Loaded image: imagen:latest'); ok('imagen cargada desde '+f+' (docker load, simulado).'); break; }
+          if(sub==='history'){ out('IMAGE          CREATED       CREATED BY                     SIZE'); out('a1b2c3d4e5f6   2 days ago    CMD ["./app"]                  0B'); out('<missing>      2 days ago    COPY . /app                    12MB'); out('<missing>      3 days ago    RUN dnf install -y ...         76MB'); out('<missing>      3 days ago    FROM ubi9                      214MB'); break; }
+          if(sub==='rmi'||(sub==='image'&&args[1]==='rm')){ const nm=(sub==='image'?args[2]:args[args.length-1])||''; const i=images.findIndex(im=>im.repo===nm.split(':')[0]||im.id.startsWith(nm)); if(i===-1){err('Error: No such image: '+nm);break;} images.splice(i,1); out('Untagged: '+nm); break; }
+          if(sub==='cp'){ out((args[1]||'')+' -> '+(args[2]||'')); ok('copiado entre host y contenedor (simulado).'); break; }
+          if(sub==='port'){ const c=findC(args[1]); out(c&&c.ports?c.ports:'(sin puertos publicados)'); break; }
+          if(sub==='rename'){ const c=findC(args[1]); if(c){ c.name=args[2]; out(''); } else err('Error: No such container: '+(args[1]||'')); break; }
+          if(sub==='network'){ const s2=args[1]; if(s2==='ls'){ out('NETWORK ID     NAME      DRIVER    SCOPE'); out('a1b2c3d4e5f6   bridge    bridge    local'); out('b2c3d4e5f6a1   host      host      local'); out('c3d4e5f6a1b2   none      null      local'); } else if(s2==='create'){ const di=args.indexOf('--driver'); const drv=di!==-1?args[di+1]:'bridge'; out(Math.random().toString(16).slice(2,14)); ok('red '+(args[args.length-1])+' creada (driver '+drv+').'); } else if(s2==='inspect'){ out('[ { "Name": "'+(args[2]||'bridge')+'", "Driver": "bridge", "Scope": "local" } ]'); } else if(s2==='rm'){ out(args[2]||''); } else if(s2==='prune'){ ok('Total reclaimed space: 0B'); } else out(engine+' network: usa ls | create --driver bridge|host|none|overlay|macvlan NOMBRE | inspect | rm | prune'); break; }
+          if(sub==='volume'){ const s2=args[1]; if(s2==='ls'){ out('DRIVER    VOLUME NAME'); out('local     datos'); out('local     db_data'); } else if(s2==='create'){ ok(args[args.length-1]||'nuevo_volumen'); } else if(s2==='inspect'){ out('[ { "Name": "'+(args[2]||'datos')+'", "Driver": "local", "Mountpoint": "/var/lib/'+engine+'/volumes/'+(args[2]||'datos')+'/_data" } ]'); } else if(s2==='rm'){ out(args[2]||''); } else if(s2==='prune'){ ok('Total reclaimed space: 0B'); } else out(engine+' volume: usa ls | create NOMBRE | inspect | rm | prune'); break; }
+          if(sub==='container'&&args[1]==='prune'){ const n=containers.filter(c=>!c.running).length; containers=containers.filter(c=>c.running); ok('Deleted Containers: '+n+'. Total reclaimed space: '+(n*12)+'MB'); break; }
+          if(sub==='image'&&args[1]==='prune'){ ok('Total reclaimed space: 0B'); break; }
+          if(sub==='system'){ if(args[1]==='df'){ out('TYPE            TOTAL     ACTIVE    SIZE      RECLAIMABLE'); out('Images          '+images.length+'         '+images.length+'         420MB     120MB (28%)'); out('Containers      '+containers.length+'         '+containers.filter(c=>c.running).length+'         12MB      6MB (50%)'); out('Local Volumes   2         1         48MB      24MB (50%)'); } else if(args[1]==='prune'){ const n=containers.filter(c=>!c.running).length; containers=containers.filter(c=>c.running); ok('Total reclaimed space: '+(n*12+120)+'MB'); } else out(engine+' system: usa df | prune'); break; }
+          if(sub==='prune'){ ok('Total reclaimed space: 0B'); break; }
+          if(sub==='login'||sub==='logout'){ ok(sub==='login'?'Login Succeeded':'Removing login credentials for docker.io'); break; }
+          if(sub==='version'){ out(engine.charAt(0).toUpperCase()+engine.slice(1)+' version '+(engine==='podman'?'4.9.0':'24.0.7')+', build cozy'); break; }
+          if(sub==='info'){ outMany(['Client: '+engine,' Version: '+(engine==='podman'?'4.9.0':'24.0.7'),'Server:',' Containers: '+containers.length,'  Running: '+containers.filter(c=>c.running).length,'  Stopped: '+containers.filter(c=>!c.running).length,' Images: '+images.length,' Storage Driver: overlay2',' Registries: registry.access.redhat.com, docker.io']); break; }
+          if(sub==='compose'){ composeHandler(args.slice(1)); break; }
+          out(engine+": '"+sub+"' no es un comando de "+engine+".  Prueba '"+engine+" --help'."); break;
         }
+        case 'docker-compose': { composeHandler(args); break; }
         case 'kubectl': { out('kubectl: el módulo de Kubernetes llegará muy pronto al sandbox. Por ahora tienes la referencia completa en el cheatsheet de abajo.','#eab86a'); break;
           const sub=args[0]; const res=args[1]||'';
           if(sub==='get'){ if(res.startsWith('pod')){ out('NAME                    READY   STATUS    RESTARTS   AGE'); out('web-7d9f-abcde          1/1     Running   0          2d'); out('db-5c8b-fghij           1/1     Running   0          2d'); } else if(res.startsWith('node')){ out('NAME       STATUS   ROLES           AGE   VERSION'); out('cp-1       Ready    control-plane   9d    v1.29.0'); out('worker-1   Ready    <none>          9d    v1.29.0'); } else if(res.startsWith('svc')||res.startsWith('service')){ out('NAME    TYPE        CLUSTER-IP    EXTERNAL-IP  PORT(S)   AGE'); out('web     ClusterIP   10.96.0.10    <none>       80/TCP    2d'); } else if(res.startsWith('deploy')){ out('NAME   READY   UP-TO-DATE   AVAILABLE   AGE'); out('web    3/3     3            3           2d'); } else if(res.startsWith('ns')||res.startsWith('namespace')){ out('NAME              STATUS   AGE'); out('default           Active   9d'); out('kube-system       Active   9d'); } else if(res==='all'){ out('NAME                        READY   STATUS    AGE'); out('pod/web-7d9f-abcde          1/1     Running   2d'); out(''); out('NAME          TYPE        CLUSTER-IP   PORT(S)'); out('service/web   ClusterIP   10.96.0.10   80/TCP'); } else err('error: el tipo de recurso "'+res+'" no existe'); break; }
@@ -765,7 +1095,8 @@ class Component extends DCLogic {
           });
           return;
         }
-        case 'vi': case 'vim': case 'nano': { const f=args.filter(a=>!a.startsWith('-'))[0]; if(!f){ out(name+': uso: '+name+' <fichero>'); break; } editorOpen(name==='vim'?'vi':name, f); return; }
+        case 'vi': case 'nano': { const f=args.filter(a=>!a.startsWith('-'))[0]; if(!f){ out(name+': uso: '+name+' <fichero>'); break; } editorOpen(name, f); return; }
+        case 'systemd-run': { let sec=5; const oa=args.find(a=>a.startsWith('--on-active=')); if(oa){ const v=oa.split('=')[1]; sec=parseInt(v)||5; } const runCmd=args.filter(a=>!a.startsWith('--')).join(' '); if(!runCmd){ out('systemd-run: uso: systemd-run --on-active=5s <comando>'); break; } const unit='run-r'+Math.random().toString(16).slice(2,7); const wait=Math.min(sec,8); out('Running as unit: '+unit+'.service'); out('Se ejecutará mediante el temporizador '+unit+'.timer en ~'+wait+'s.','#8a7f6a'); setTimeout(()=>{ out('[timer] '+unit+' disparado → '+runCmd,'#8fa876'); dispatch(runCmd); scroll(); save(); }, wait*1000); break; }
         case 'tar': out('tar: operación simulada ('+args.join(' ')+'). -czf crea, -xzf extrae.'); break;
         case 'neofetch': outMany(['        _nnnn_         '+currentUser+'@s2ktux','       dGGGGMMb        ---------------','      @p~qp~~qMb       OS: S2KTUX OS 7.1.0','      M|@||@) M|       Kernel: 7.1.0-cozy','      @,----.JM|       Shell: bash (sim)','     JS^\\__/  qKL      Packages: '+installed.size+' (dnf)','    dZP        qKRb    CPU: Cozy CPU x4','   dZP          qKKb   Mem: 1123MiB / 3894MiB'],'#8fa876'); break;
         default: err(name+': orden no encontrada. Escribe \'help\' o mira el cheatsheet.');
@@ -786,29 +1117,149 @@ class Component extends DCLogic {
       const cmd = raw.trim(); if(!cmd){ save(); return; }
       if(history[history.length-1]!==cmd) history.push(cmd);
       hIdx = history.length;
-      const chain = cmd.split(/\s*(?:&&|;)\s*/).filter(Boolean);
-      chain.forEach(seg=>{
-        const stages = seg.split('|').map(s=>s.trim()).filter(Boolean);
-        if(stages.length>1){ cap=[]; dispatch(stages[0]); let buf=cap; cap=null; for(let i=1;i<stages.length;i++) buf=applyFilter(stages[i],buf); buf.forEach(l=>out(l)); }
-        else dispatch(seg.trim());
-      });
+      const tokens = cmd.split(/\s*(;|&&|\|\|)\s*/).filter(s=>s!=='');
+      let prevOp=null;
+      for(let i=0;i<tokens.length;i++){
+        const t=tokens[i];
+        if(t===';'||t==='&&'||t==='||'){ prevOp=t; continue; }
+        if(prevOp==='&&'&&lastFail){ prevOp=null; continue; }
+        if(prevOp==='||'&&!lastFail){ prevOp=null; continue; }
+        prevOp=null; lastFail=false;
+        const stages = t.split('|').map(s=>s.trim()).filter(Boolean);
+        if(stages.length>1){ cap=[]; dispatch(stages[0]); let buf=cap; cap=null; for(let j=1;j<stages.length;j++) buf=applyFilter(stages[j],buf); buf.forEach(l=>out(l)); }
+        else dispatch(t.trim());
+      }
       save();
     };
 
     // ---------------- restore scrollback ----------------
-    if(savedScroll){ [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); savedScroll.forEach(it=>{ const d=document.createElement('div'); d.className='term-out'; if(it.c) d.style.color=it.c; d.innerHTML=it.h; body.insertBefore(d,line); }); }
+    if(savedScroll && loggedIn){ [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); savedScroll.forEach(it=>{ const d=document.createElement('div'); d.className='term-out'; if(it.c) d.style.color=it.c; d.innerHTML=it.h; body.insertBefore(d,line); }); }
 
+    const CMDS = ['help','clear','reset','pwd','whoami','id','groups','uname','hostname','hostnamectl','date','uptime','free','env','history','man','which','echo','ls','cd','cat','head','tail','wc','sort','uniq','nl','mkdir','rmdir','touch','rm','cp','mv','ln','find','grep','stat','file','tree','umask','chmod','chown','chgrp','getfacl','setfacl','getenforce','setenforce','sestatus','getsebool','setsebool','semanage','restorecon','chcon','chage','crontab','timedatectl','tuned-adm','pvcreate','vgcreate','lvcreate','lvextend','mkswap','swapon','getent','visudo','useradd','userdel','usermod','groupadd','passwd','su','exit','logout','ps','top','pgrep','kill','systemctl','journalctl','dnf','yum','apt','rpm','df','du','lsblk','blkid','fdisk','parted','mkfs.xfs','mkfs.ext4','mount','umount','pvs','vgs','lvs','ip','ifup','ifdown','ss','ping','nmcli','firewall-cmd','docker','podman','docker-compose','kubectl','sudo','vi','nano','tar','neofetch','reboot','poweroff','chroot','systemd-run'].sort();
+    const COMPLETIONS = {
+      journalctl:['-u','-f','-b','-n','-p','-k','-x','--since','--no-pager'],
+      systemctl:['status','start','stop','restart','reload','enable','disable','--now','is-active','is-enabled','list-units','list-unit-files','daemon-reload'],
+      'firewall-cmd':['--state','--reload','--permanent','--get-default-zone','--get-zones','--get-active-zones','--list-all','--list-services','--list-ports','--add-service=','--remove-service=','--query-service=','--add-port=','--remove-port=','--runtime-to-permanent','--help'],
+      dnf:['install','remove','search','info','list','update','upgrade','repolist','provides','clean','installed','available'],
+      docker:['run','ps','images','pull','build','exec','logs','inspect','start','stop','restart','rm','rmi','tag','push','commit','save','load','history','search','network','volume','system','compose','stats','top','port','rename','prune','create','attach','update','login','logout','version','info','--help'],
+      podman:['run','ps','images','pull','build','exec','logs','inspect','start','stop','restart','rm','rmi','tag','push','commit','save','load','history','search','network','volume','system','compose','stats','top','port','rename','prune','create','attach','update','login','logout','version','info','--help'],
+      'docker-compose':['up','down','ps','logs','build','pull'],
+      ip:['a','addr','link','route','neigh'],
+      parted:['mklabel','mkpart','print','rm','unit','resizepart'],
+      nmcli:['dev','con','connection','general','networking','radio'],
+      semanage:['port','fcontext','user','login','boolean'],
+      'tuned-adm':['active','list','profile'],
+      kubectl:['get','run','create','apply','expose','scale','describe','delete','logs','exec','version'],
+      crontab:['-l','-e','-r'],
+      ps:['aux','-ef','-e','-f'],
+      chage:['-l','-M','-m','-E','-W'],
+      rpm:['-qa','-q','-ql','-qf','-V'],
+      apt:['install','remove','update','upgrade','search'],
+      setenforce:['0','1','Enforcing','Permissive'],
+      getsebool:['-a'],
+      chmod:['u+x','g+x','o+x','+x','755','644','700','640'],
+      lvcreate:['-n','-L','-l']
+    };
+    Object.keys(MAN).forEach(k=>{ const o=(MAN[k].o||[]).map(p=>String(p[0]).split(/[ \/]/)[0]).filter(x=>x&&x!=='755'||true).filter(Boolean); if(o.length){ COMPLETIONS[k]=Array.from(new Set([...(COMPLETIONS[k]||[]), ...o])); } });
     input.addEventListener('keydown', (e) => {
+      if(booting){ e.preventDefault(); return; }
+      if(awaitReboot){ if(e.key==='Enter'){ e.preventDefault(); awaitReboot=false; startGrub(); } else { e.preventDefault(); } return; }
+      if(grubState){ grubKey(e); return; }
+      if(interactive && interactive.editor){ editorKey(e); return; }
+      if(e.ctrlKey && !e.altKey){ const k=e.key.toLowerCase();
+        if(k==='l'){ e.preventDefault(); [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); return; }
+        if(k==='c'){ e.preventDefault(); if(interactive){ echoInteractive(input.value); endInteractive(); } else { echoCmd(input.value+'^C'); } input.value=''; scroll(); return; }
+        if(k==='u'){ e.preventDefault(); input.value=''; return; }
+        if(k==='a'){ e.preventDefault(); input.setSelectionRange(0,0); return; }
+        if(k==='e'){ e.preventDefault(); const L=input.value.length; input.setSelectionRange(L,L); return; }
+      }
       if(interactive){ if(e.key==='Enter'){ const v=input.value; echoInteractive(v); input.value=''; const cb=interactive.onLine; cb(v); scroll(); save(); } else if(e.key==='ArrowUp'||e.key==='ArrowDown'||e.key==='Tab'){ e.preventDefault(); } return; }
       if(e.key==='Enter'){ run(input.value); input.value=''; scroll(); }
       else if(e.key==='ArrowUp'){ e.preventDefault(); if(history.length&&hIdx>0){ hIdx--; input.value=history[hIdx]; } }
       else if(e.key==='ArrowDown'){ e.preventDefault(); if(hIdx<history.length-1){ hIdx++; input.value=history[hIdx]; } else { hIdx=history.length; input.value=''; } }
-      else if(e.key==='Tab'){ e.preventDefault(); const val=input.value; const tok=val.split(/\s+/).pop(); const seg=tok.replace(/^\.\//,''); const node=getNode(cwd); if(node&&node.type==='dir'&&seg){ const m=Object.keys(node.children).filter(k=>k.startsWith(seg)); if(m.length===1){ const ch=node.children[m[0]]; const prefix=val.slice(0,val.length-tok.length); const dotslash=tok.startsWith('./')?'./':''; input.value=prefix+dotslash+m[0]+(ch.type==='dir'?'/':' '); } else if(m.length>1){ out(m.join('   ')); scroll(); } } }
+      else if(e.key==='Tab'){ e.preventDefault(); const val=input.value; if(val.trim()===''){ return; } const parts=val.split(/\s+/); const endsSpace=/\s$/.test(val); const tok=endsSpace?'':parts[parts.length-1]; const cmd=parts[0];
+        if(parts.length<=1 && !endsSpace){ const m=CMDS.filter(c=>c.startsWith(tok)); if(m.length===1){ input.value=m[0]+' '; } else if(m.length>1){ out(m.join('   ')); scroll(); } return; }
+        const opts=COMPLETIONS[cmd]; if(opts){ const m=opts.filter(o=>o.startsWith(tok)); if(m.length===1){ const base=endsSpace?val:val.slice(0,val.length-tok.length); input.value=base+m[0]+(m[0].endsWith('=')?'':' '); return; } else if(m.length>0){ out(m.join('   ')); scroll(); return; } }
+        const seg=tok.replace(/^\.\//,''); const node=getNode(cwd); if(node&&node.type==='dir'&&seg){ const m=Object.keys(node.children).filter(k=>k.startsWith(seg)); if(m.length===1){ const ch=node.children[m[0]]; const prefix=val.slice(0,val.length-tok.length); const dotslash=tok.startsWith('./')?'./':''; input.value=prefix+dotslash+m[0]+(ch.type==='dir'?'/':' '); } else if(m.length>1){ out(m.join('   ')); scroll(); } } }
     });
     body.addEventListener('click', ()=>input.focus());
+    { const rb=document.querySelector('#term-reboot'); if(rb) rb.addEventListener('click', ()=>{ if(!grubState){ startGrub(); } input.focus(); }); }
 
-    setPrompt();
+    if(loggedIn){ setPrompt(); } else { startLogin(); }
     setTimeout(()=>{ input.focus(); scroll(); },100);
+
+    // ---------------- prácticas guiadas ----------------
+    const challenges = [
+      { badge:'RESCATE', title:'Recupera el acceso de root (has perdido la contraseña)',
+        goal:'Nadie conoce la contraseña de root y no está apuntada en ninguna parte. Reinicia, entra por el modo de emergencia desde el arranque y pon una contraseña nueva.',
+        hint:'Pista: la contraseña se recupera desde el arranque. Reinicia (botón de abajo) y observa bien el menú de GRUB.',
+        check:()=> rootRecovered ? {ok:true,msg:'Has recuperado root: la contraseña es ahora la que tú pusiste.'} : {ok:false,msg:'Aún no has cambiado la contraseña de root desde el rescate. Empieza con  reboot.'} },
+      { badge:'USUARIOS', title:'Crea el usuario ana',
+        goal:'Crea una cuenta de usuario llamada <code>ana</code>.',
+        hint:'Pista: hay una herramienta para dar de alta usuarios, pero crear cuentas requiere privilegios.',
+        check:()=> users.ana ? {ok:true,msg:'Usuario ana creado correctamente.'} : {ok:false,msg:'No existe el usuario ana todavía.'} },
+      { badge:'USUARIOS', title:'Consigue que ana pueda usar sudo',
+        goal:'Haz que <code>ana</code> pueda ejecutar comandos con sudo.',
+        hint:'Pista: en este sistema, el poder de sudo lo da la pertenencia a cierto grupo. Añade a ana a ese grupo sin sacarla de los suyos.',
+        check:()=> (users.ana && users.ana.groups.includes('wheel')) ? {ok:true,msg:'ana ya pertenece al grupo wheel.'} : {ok:false,msg: users.ana ? 'ana existe, pero aún no puede usar sudo.' : 'Primero crea el usuario ana.'} },
+      { badge:'SERVICIOS', title:'Deja el servidor web listo y arrancado',
+        goal:'Instala el servidor web de Apache, arráncalo y haz que se inicie también en cada arranque.',
+        hint:'Pista: primero el paquete (se llama como el demonio de Apache), luego el gestor de servicios para activarlo ahora y de forma permanente.',
+        check:()=> (services.httpd && services.httpd.active && services.httpd.enabled) ? {ok:true,msg:'httpd está activo y habilitado.'} : {ok:false,msg:'httpd todavía no está activo y habilitado.'} },
+      { badge:'ALMACENAMIENTO', title:'Prepara el disco nuevo y móntalo en /mnt/data',
+        goal:'En el disco vacío <code>/dev/sdb</code>: crea una partición, formatéala en <b>xfs</b> y móntala en <code>/mnt/data</code>.',
+        hint:'Pista: el orden importa — tabla de particiones, partición, sistema de archivos y por último el montaje. Empieza mirando qué discos hay.',
+        check:()=>{ let ok=false; disks.forEach(d=>d.parts.forEach(p=>{ if((p.fstype||'').toLowerCase()==='xfs' && p.mount==='/mnt/data') ok=true; })); return ok ? {ok:true,msg:'Partición xfs montada en /mnt/data.'} : {ok:false,msg:'Aún no hay una partición xfs montada en /mnt/data.'}; } },
+      { badge:'PERMISOS Y ACL', title:'Da acceso total a ana solo sobre /srv',
+        goal:'Concede a <code>ana</code> permisos de lectura, escritura y ejecución sobre <code>/srv</code> — sin cambiar el propietario ni el grupo.',
+        hint:'Pista: los permisos clásicos ugo/rwx no sirven para un único usuario extra. Necesitas las listas de control de acceso.',
+        check:()=>{ const n=getNode(['srv']); const a=((n&&n.acl)||[]).find(x=>x.type==='user'&&x.name==='ana'); return (a && /r/.test(a.perms)&&/w/.test(a.perms)&&/x/.test(a.perms)) ? {ok:true,msg:'ana tiene ACL rwx sobre /srv.'} : {ok:false,msg:'ana aún no tiene una ACL rwx sobre /srv.'}; } },
+      { badge:'FICHEROS', title:'Crea el mensaje del día',
+        goal:'Escribe un mensaje en <code>/etc/motd</code> (el que se muestra al iniciar sesión).',
+        hint:'Pista: no hace falta un editor; puedes volcar texto a un fichero redirigiendo la salida.',
+        check:()=>{ const n=getNode(['etc','motd']); return (n&&n.type==='file'&&n.content.trim()!=='') ? {ok:true,msg:'/etc/motd creado con un mensaje.'} : {ok:false,msg:'/etc/motd no existe o está vacío.'}; } },
+      { badge:'ALMACENAMIENTO', title:'Haz que el montaje sobreviva a un reinicio',
+        goal:'Declara el montaje de <code>/dev/sdb1</code> para que persista al reiniciar.',
+        hint:'Pista: un mount normal se pierde al apagar. Lo permanente se define en el fichero que lista los sistemas de archivos (está en /etc).',
+        check:()=>{ const n=getNode(['etc','fstab']); return (n&&/sdb/.test(n.content)) ? {ok:true,msg:'El montaje aparece en /etc/fstab.'} : {ok:false,msg:'Todavía no has declarado /dev/sdb en /etc/fstab.'}; } },
+      { badge:'ALMACENAMIENTO', title:'Segunda partición en ext4 sobre /srv/data',
+        goal:'Crea otra partición en <code>/dev/sdb</code>, formatéala en <b>ext4</b> y móntala en <code>/srv/data</code>.',
+        hint:'Pista: el disco admite varias particiones. Repite el proceso pero cambiando el tipo de sistema de archivos y el punto de montaje.',
+        check:()=>{ let ok=false; disks.forEach(d=>d.parts.forEach(p=>{ if((p.fstype||'').toLowerCase()==='ext4' && p.mount==='/srv/data') ok=true; })); return ok ? {ok:true,msg:'Partición ext4 montada en /srv/data.'} : {ok:false,msg:'Aún no hay una partición ext4 montada en /srv/data.'}; } },
+      { badge:'FIREWALL', title:'Abre el puerto 443/tcp en el firewall',
+        goal:'Permite el tráfico HTTPS abriendo el <b>puerto</b> 443/tcp (no el servicio) de forma permanente.',
+        hint:'Pista: firewalld distingue entre abrir por servicio y abrir por puerto. Aquí quieres por puerto, permanente, y recargar.',
+        check:()=> fw.ports.has('443/tcp') ? {ok:true,msg:'El puerto 443/tcp está abierto.'} : {ok:false,msg:'El puerto 443/tcp todavía no está abierto.'} },
+      { badge:'SELINUX', title:'Pon SELinux en modo Permissive',
+        goal:'Cambia SELinux al modo que avisa pero no bloquea.',
+        hint:'Pista: no hace falta editar ficheros para el cambio temporal; hay un comando para fijar el modo. Compruébalo después.',
+        check:()=> selinux.mode==='Permissive' ? {ok:true,msg:'SELinux está en Permissive.'} : {ok:false,msg:'SELinux está en '+selinux.mode+'.'} },
+      { badge:'GRUPOS', title:'Crea el grupo devops y añade a ana',
+        goal:'Crea un grupo llamado <code>devops</code> y haz que <code>ana</code> sea miembro secundario de ese grupo.',
+        hint:'Pista: primero se crea el grupo; luego se modifica la cuenta de ana para añadirla a ese grupo sin sacarla de los suyos. Compruébalo con  id ana.',
+        check:()=> (users.ana && users.ana.groups.includes('devops')) ? {ok:true,msg:'ana pertenece al grupo devops.'} : {ok:false,msg: users.ana ? 'ana existe pero aún no está en devops.' : 'Primero crea el usuario ana.'} },
+      { badge:'SELINUX', title:'Haz que httpd escuche en el puerto 8404',
+        goal:'Configura httpd para escuchar en el puerto <code>8404</code> y arráncalo. SELinux lo bloqueará hasta que etiquetes el puerto.',
+        hint:'Pista: pon un  Listen 8404  en un fichero dentro de /etc/httpd/conf.d/, intenta arrancar httpd (fallará por SELinux) y etiqueta el puerto para http antes de volver a arrancar.',
+        check:()=>{ const conf=getNode(['etc','httpd','conf.d','custom.conf']); const has8404 = conf && conf.type==='file' && conf.content.includes('8404'); const labeled = (selinux.httpPorts||[]).includes(8404); return (has8404 && services.httpd && services.httpd.active && labeled) ? {ok:true,msg:'httpd escucha en 8404 con el puerto etiquetado.'} : {ok:false,msg:'Aún no: necesitas Listen 8404, etiquetar el puerto con semanage y arrancar httpd.'}; } },
+      { badge:'SCRIPTS', title:'Crea un script que registre un mensaje',
+        goal:'Crea un script <code>/root/tarea.sh</code> que, al ejecutarse, escriba una línea en <code>/var/log/tarea.log</code>. Dale permisos de ejecución y pruébalo.',
+        hint:'Pista: un script empieza por #!/bin/bash; para escribir en un fichero puedes redirigir la salida con >>. Recuerda darle permiso de ejecución y lanzarlo con ./tarea.sh',
+        check:()=>{ const s=getNode(['root','tarea.sh']); const okScript = s && s.type==='file' && s.mode && s.mode[2]==='x' && s.content.includes('echo'); const log=getNode(['var','log','tarea.log']); const okLog = log && log.type==='file' && log.content.trim()!==''; return (okScript && okLog) ? {ok:true,msg:'El script existe, es ejecutable y ha escrito en /var/log/tarea.log.'} : {ok:false,msg: !okScript ? 'Falta /root/tarea.sh ejecutable con un echo.' : 'El script existe pero /var/log/tarea.log está vacío (¿lo ejecutaste?).'}; } },
+      { badge:'CRON', title:'Programa el script con cron (root)',
+        goal:'Añade una tarea de cron para <code>root</code> que ejecute <code>/root/tarea.sh</code> periódicamente (por ejemplo, cada día).',
+        hint:'Pista: edita el crontab de root con  crontab -e. Una línea de cron son 5 campos de tiempo seguidos del comando — aquí, la ruta del script. Compruébalo con  crontab -l.',
+        check:()=>{ const n=getNode(['var','spool','cron','root']); if(!(n&&n.type==='file')) return {ok:false,msg:'Aún no hay crontab para root (edita con  crontab -e).'}; const has=n.content.split('\n').some(l=>{ l=l.trim(); if(!l||l.startsWith('#'))return false; return l.includes('tarea.sh') && l.split(/\s+/).length>=6; }); return has?{ok:true,msg:'cron ejecutará /root/tarea.sh.'}:{ok:false,msg:'El crontab de root aún no ejecuta /root/tarea.sh (5 campos + la ruta del script).'}; } }
+    ];
+    const selEl=document.querySelector('#chal-select'), bodyEl=document.querySelector('#chal-body'), resEl=document.querySelector('#chal-result'), btnEl=document.querySelector('#chal-check');
+    if(selEl && bodyEl && btnEl){
+      const CHKEY='s2ktux-chal-done-v3'; let chalDone={}; try{ chalDone=JSON.parse(localStorage.getItem(CHKEY)||'{}')||{}; }catch(e){}
+      challenges.forEach((c,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=(chalDone[i]?'✔ ':'')+(i+1)+'. '+c.title; selEl.appendChild(o); });
+      const showResult=(r)=>{ resEl.innerHTML='<span style="font-family:\'Press Start 2P\',monospace;font-size:11px;color:'+(r.ok?'#5a8a3c':'#c0392b')+'">'+(r.ok?'✔ CONSEGUIDO':'✗ TODAVÍA NO')+'</span> &nbsp;<span style="color:var(--text)">'+r.msg+'</span>'; };
+      const renderChal=()=>{ const i=selEl.value; const c=challenges[i]; bodyEl.innerHTML='<div style="font-family:\'Press Start 2P\',monospace;font-size:9px;color:#d97757;margin-bottom:12px">'+c.badge+(chalDone[i]?'  ✔ completado':'')+'</div><div style="font-family:\'Press Start 2P\',monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">'+c.title+'</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">'+c.goal+'</div><div style="font-size:17px;color:var(--muted);line-height:1.4">'+c.hint+'</div>'; if(chalDone[i]){ showResult({ok:true,msg:'Ya lo conseguiste antes.'}); } else { resEl.innerHTML=''; } };
+      selEl.addEventListener('change', renderChal); renderChal();
+      btnEl.addEventListener('click', ()=>{ const i=selEl.value; const c=challenges[i]; let r; try{ r=c.check(); }catch(e){ r={ok:false,msg:'no se pudo comprobar.'}; } if(r.ok && !chalDone[i]){ chalDone[i]=true; try{ localStorage.setItem(CHKEY, JSON.stringify(chalDone)); }catch(e){} selEl.options[i].textContent='✔ '+(Number(i)+1)+'. '+c.title; } showResult(r); });
+    }
   }
 }
 </script>

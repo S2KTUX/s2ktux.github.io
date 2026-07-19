@@ -59,5 +59,21 @@ window.S2KTUX_COURSES = {
       { n: "110", title: "Seguridad del Sistema", desc: "Administración de seguridad, host y cifrado.", video: "",
         topics: ["110.1 Tareas de administración de seguridad", "110.2 Configuración de la seguridad del sistema", "110.3 Protección de datos mediante cifrado (SSH/GPG)"] }
     ]
+  },
+  docker: {
+    id: "docker",
+    badge: "DOCKER",
+    badgeColor: "#6b8e9e",
+    title: "Docker",
+    subtitle: "Contenedores desde cero: de los fundamentos al uso profesional, en 3 clases.",
+    note: "Contenedores desde cero: imágenes, volúmenes y redes para empaquetar y desplegar apps.",
+    modules: [
+      { n: "01", title: "Clase 1 — Fundamentos de Docker", desc: "Qué es un contenedor, instalación y primeros pasos.", video: "",
+        topics: ["Contenedores vs máquinas virtuales", "Instalar Docker / Podman", "Imágenes vs contenedores", "Docker Hub y docker pull", "Ejecutar contenedores (run / ps / stop / rm)", "Ciclo de vida de un contenedor"] },
+      { n: "02", title: "Clase 2 — Docker para el día a día", desc: "Persistencia, redes y construcción de imágenes.", video: "",
+        topics: ["Volúmenes y bind mounts", "Redes de contenedores y publicación de puertos", "Variables de entorno y configuración", "Logs, exec y depuración", "Escribir un Dockerfile", "Construir y etiquetar imágenes (build / tag)"] },
+      { n: "03", title: "Clase 3 — Docker profesional", desc: "Compose, buenas prácticas y despliegue.", video: "",
+        topics: ["Docker Compose y multi-servicio", "Multi-stage builds", "Buenas prácticas y optimización de imágenes", "Seguridad y usuarios no-root", "Registries privados", "Del contenedor a producción"] }
+    ]
   }
 };
