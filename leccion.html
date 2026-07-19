@@ -181,8 +181,8 @@ class Component extends DCLogic {
       let html = await res.text();
       // usar solo los estilos (theme-aware) de esta página: quitar los del propio fichero de lección
       html = html.replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<link[^>]*>/gi, '');
-      // corregir rutas de imágenes: en el repo están en la raíz (no en /images)
-      html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/main/');
+      // corregir rutas de imágenes: en el repo están en /images
+      html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/main/images/');
       // el enlace de "repaso" usaba openReader() — lo dejamos como no-op (definido en helmet)
       const el = this.lessonEl;
       if (el) { el.innerHTML = html; }
