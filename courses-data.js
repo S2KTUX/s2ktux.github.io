@@ -27,7 +27,9 @@ window.S2KTUX_COURSES = {
       { n: "09", title: "Administrar usuarios y grupos", desc: "Cuentas locales, políticas de contraseña y sudo.", video: "https://youtu.be/3N-B_vGKTYQ",
         topics: ["Crear, eliminar y modificar cuentas", "Contraseñas y envejecimiento (chage)", "Crear, eliminar y modificar grupos", "Configurar el acceso privilegiado (sudo)"] },
       { n: "10", title: "Administrar la seguridad", desc: "Firewall, permisos, SSH y hardening con SELinux.", video: "https://youtu.be/mDqQq9ZGehA",
-        topics: ["Configurar el firewall (firewalld / rich rules / NAT)", "Permisos predeterminados (umask)", "Autenticación SSH mediante claves", "Modos de SELinux", "Contextos SELinux", "Restaurar contextos predeterminados", "Etiquetas de puerto SELinux", "Booleanos SELinux"] }
+        topics: ["Configurar el firewall (firewalld / rich rules / NAT)", "Permisos predeterminados (umask)", "Autenticación SSH mediante claves", "Modos de SELinux", "Contextos SELinux", "Restaurar contextos predeterminados", "Etiquetas de puerto SELinux", "Booleanos SELinux"] },
+      { n: "11", title: "Clase Extra", desc: "Podman, contenedores como servicio, find avanzado, reset de root, SSH y entorno del examen.", video: "https://youtu.be/T7jPRmBA9_g",
+        topics: ["Podman: buscar, descargar y gestionar imágenes", "Crear contenedores con puertos y volúmenes", "Contenedor como servicio systemd (root y rootless)", "loginctl enable-linger y systemctl --user", "find avanzado (-perm, -mmin, -exec)", "Reset de contraseña de root paso a paso", "Usuario SSH con sudo para el examen", "Metodología y entorno de la certificación"] }
     ]
   },
   lpic1: {

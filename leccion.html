@@ -207,7 +207,7 @@ class Component extends DCLogic {
   state = { status: "Cargando lección…" };
   // Rutas reales de los ficheros de lección copiados del repo
   files = {
-    rhcsa: Array.from({length:10}, (_,i)=>"rhcsa/"+(i+1)+"/"+(i+1)+".html"),
+    rhcsa: Array.from({length:11}, (_,i)=> i<10 ? "rhcsa/"+(i+1)+"/"+(i+1)+".html" : "rhcsa/11/11.html"),
     lpic1: ["lpic/101/1.html","lpic/102/2.html","lpic/103/3.html","lpic/104/4.html","lpic/105/5.html","lpic/106/106.html","lpic/107/7.html","lpic/108/8.html","lpic/109/9.html","lpic/110/10.html"],
     docker: ["","",""]
   };
