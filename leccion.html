@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,27 +11,50 @@
 <helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <title>Lección · S2KTUX</title>
 <meta name="description" content="Lección completa con teoría, ejemplos e imágenes para preparar tu certificación Linux.">
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
 <link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<link rel="canonical" href="https://s2ktux.github.io/leccion.html">
+<meta property="og:url" content="https://s2ktux.github.io/leccion.html">
+<meta property="og:site_name" content="S2KTUX">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:title" content="Lección · S2KTUX">
+<meta name="twitter:description" content="Lección completa con teoría, ejemplos e imágenes para preparar tu certificación Linux.">
+<meta name="author" content="S2KTUX">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Lección · S2KTUX">
 <meta property="og:description" content="Lección completa con teoría, ejemplos e imágenes para preparar tu certificación Linux.">
-<meta property="og:image" content="favicon.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
   <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{background:var(--bg);font-family:'VT323',monospace;color:var(--text)}
   :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a;--accent:#d97757;--border-color:#4a3627;--card-bg:#fbf3e2;--text-muted:#8a7259}
-  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#d8c6ac;--head:#f2c78f;--muted:#b39a7c;--soft2:#0f0b06;--accent:#e6845f;--border-color:#7a6449;--card-bg:#2a2219;--text-muted:#b39a7c}
+  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#e6d5b8;--head:#f8cf90;--muted:#c4ab89;--soft2:#0f0b06;--accent:#ef8a5f;--border-color:#7a6449;--card-bg:#2a2219;--text-muted:#c4ab89}
   html,body{transition:background-color .25s ease,color .25s ease}
   a{color:#d97757;text-decoration:none}
   a:hover{color:#c2650a}
+  html.dark a{color:#ef8a5f}
+  html.dark a:hover{color:#f2a071}
+  a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #d97757;outline-offset:2px}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+  #backtop{position:fixed;right:20px;bottom:20px;z-index:90;display:none;align-items:center;justify-content:center;width:46px;height:46px;background:var(--surface);color:var(--head);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer;font-size:20px;line-height:1}
+  #backtop.show{display:flex}
+  #lesson .codewrap{position:relative}
+  #lesson .copybtn{position:absolute;top:8px;right:8px;font-family:'Share Tech Mono',monospace;font-size:13px;background:var(--surface2);color:var(--head);border:2px solid var(--line);padding:4px 9px;cursor:pointer;opacity:.85}
+  #lesson .copybtn:hover{opacity:1}
   ::selection{background:#d97757;color:#fff}
   .navlink{color:var(--text);font-size:20px;transition:color .15s}
   .navlink:hover{color:var(--head)}
@@ -43,7 +66,7 @@
   #lesson .lesson-header{border-bottom:3px solid var(--line);padding-bottom:26px;margin-bottom:30px}
   #lesson .lesson-header .badge{display:inline-block;font-family:'Press Start 2P',monospace;font-size:10px;background:var(--accent);color:#fff;padding:8px 12px;margin-bottom:18px}
   #lesson .lesson-header h1{font-family:'Press Start 2P',monospace;font-size:24px;line-height:1.5;color:var(--head);margin-bottom:14px}
-  #lesson .lesson-header>p{font-size:22px;color:var(--text);line-height:1.35;max-width:680px}
+  #lesson .lesson-header>p{font-family:'Space Mono',monospace;font-size:18px;color:var(--text);line-height:1.5;max-width:680px}
   #lesson .video-card{display:inline-flex;align-items:center;gap:14px;margin-top:22px;background:var(--surface);border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);padding:14px 18px;text-decoration:none}
   #lesson .video-card:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--surface2)}
   #lesson .video-icon{font-size:26px}
@@ -62,13 +85,21 @@
   #lesson .lesson-section h3{font-family:'Press Start 2P',monospace;font-size:15px;color:var(--head);line-height:1.5;margin:0 0 18px;padding-top:8px}
   #lesson h4{font-family:'Share Tech Mono',monospace;font-size:19px;color:var(--accent);margin:22px 0 10px;font-weight:700}
   #lesson h5{font-family:'Share Tech Mono',monospace;font-size:17px;color:var(--head);margin:16px 0 8px}
-  #lesson p{font-size:20px;line-height:1.5;margin-bottom:14px;color:var(--text)}
+  #lesson p{font-family:'Space Mono',monospace;font-size:16.5px;line-height:1.62;margin-bottom:15px;color:var(--text)}
   #lesson ul,#lesson ol{margin:0 0 16px 26px}
-  #lesson li{font-size:19px;line-height:1.5;margin-bottom:8px;color:var(--text)}
+  #lesson li{font-family:'Space Mono',monospace;font-size:16px;line-height:1.6;margin-bottom:9px;color:var(--text)}
+  #lesson td{font-family:'Space Mono',monospace}
+  @keyframes s2kpulse{0%,100%{opacity:.35}50%{opacity:.7}}
+  .lesson-skel{max-width:1000px;margin:0 auto}
+  .lesson-skel div{background:var(--surface2);animation:s2kpulse 1.2s ease-in-out infinite}
   #lesson code{font-family:'Share Tech Mono',monospace;font-size:16px;background:var(--surface2);color:var(--head);padding:2px 7px;border:1px solid var(--line)}
   #lesson pre{background:#12100b;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);padding:18px;overflow-x:auto;margin:14px 0}
   #lesson pre code{background:none;border:none;color:#cdc0a8;font-size:16px;padding:0}
-  #lesson img{max-width:100%;height:auto;border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);margin:16px 0;display:block;background:#fff}
+  #lesson img{max-width:100%;height:auto;border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);margin:16px 0;display:block;background:#fff;cursor:zoom-in}
+  #img-lightbox{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(18,16,11,.9);cursor:zoom-out;padding:24px}
+  #img-lightbox.open{display:flex}
+  #img-lightbox img{max-width:95vw;max-height:92vh;border:3px solid var(--line);box-shadow:8px 8px 0 rgba(0,0,0,.5);background:#fff}
+  #img-lightbox .lb-close{position:absolute;top:18px;right:22px;font-family:'Press Start 2P',monospace;font-size:16px;color:#f6ecd9;background:none;border:none;cursor:pointer}
   #lesson table{width:100%;border-collapse:collapse;margin:18px 0;border:3px solid var(--line);font-size:18px}
   #lesson th{background:var(--surface2);color:var(--head);text-align:left;padding:12px 14px;border-bottom:3px solid var(--line);font-family:'Share Tech Mono',monospace}
   #lesson td{padding:12px 14px;border-bottom:2px solid var(--surface2);color:var(--text);vertical-align:top}
@@ -109,6 +140,7 @@
   }
   document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateIcons,150); });
   setTimeout(updateIcons,150); setTimeout(updateIcons,600);
+  (function(){ function upd(){ var b=document.getElementById('backtop'); if(b) b.classList.toggle('show', window.pageYOffset>400); } window.addEventListener('scroll',upd,{passive:true}); document.addEventListener('DOMContentLoaded',function(){setTimeout(upd,300);}); setTimeout(upd,500); setTimeout(upd,1200); })();
 })();
 </script>
 </helmet>
@@ -134,12 +166,24 @@
 
 <section style="max-width:1000px;margin:0 auto;width:100%;padding:14px 32px 60px">
   <div id="lesson" ref="{{ lessonRef }}">
-    <div style="text-align:center;padding:80px 0;font-family:'Share Tech Mono',monospace;font-size:19px;color:var(--muted)">{{ status }}</div>
+    <div class="lesson-skel">
+      <div style="height:34px;width:180px;margin-bottom:22px"></div>
+      <div style="height:40px;width:70%;margin-bottom:14px"></div>
+      <div style="height:20px;width:90%;margin-bottom:10px"></div>
+      <div style="height:20px;width:80%;margin-bottom:30px"></div>
+      <div style="height:220px;width:100%;margin-bottom:20px"></div>
+      <div style="height:20px;width:95%;margin-bottom:10px"></div>
+      <div style="height:20px;width:88%"></div>
+      <div style="text-align:center;padding:26px 0 0;font-family:'Share Tech Mono',monospace;font-size:17px;color:var(--muted);animation:none">{{ status }}</div>
+    </div>
   </div>
   <div style="margin-top:30px;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap">
     <sc-if value="{{ hasPrev }}" hint-placeholder-val="{{ true }}"><a href="{{ prevHref }}" class="pxbtn" style="display:inline-block;background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:14px 20px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2)">&larr; ANTERIOR</a></sc-if>
     <span></span>
     <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ true }}"><a href="{{ nextHref }}" class="pxbtn" style="display:inline-block;background:var(--accent);color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;padding:14px 20px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--line)">SIGUIENTE &rarr;</a></sc-if>
+  </div>
+  <div style="margin-top:22px;text-align:center">
+    <button id="lesson-read" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:13px 20px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);cursor:pointer">Marcar como leída</button>
   </div>
 </section>
 
@@ -147,12 +191,15 @@
   <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
   <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
   <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px">
-    <a href="https://github.com/s2ktux" target="_blank">GitHub</a>
-    <a href="index.html">LinkedIn</a>
-    <a href="index.html">YouTube</a>
+    <a href="sobre.html">Sobre</a>
+    <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a>
   </div>
+  <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 </div>
+<button id="backtop" aria-label="Volver arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+<script>(function(){var b;function upd(){b=b||document.getElementById('backtop');if(b)b.classList.toggle('show',window.pageYOffset>400);}window.addEventListener('scroll',upd);setTimeout(upd,300);})();</script>
 
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -171,21 +218,112 @@ class Component extends DCLogic {
     const list = this.files[c]; if (m >= list.length) m = list.length - 1;
     return { c, m, list };
   }
-  componentDidMount() { this.load(); }
+  componentDidMount() { this.load(); this.wireReadButton(); let n = 0; const iv = setInterval(() => { this.setMeta(); if (++n >= 10) clearInterval(iv); }, 150); }
+  setMeta() {
+    try {
+      const { c, m, list } = this.params();
+      const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : 'RHCSA';
+      const unit = c === 'docker' ? 'Clase' : 'Tema';
+      const t = courseName + ' · ' + unit + ' ' + (m + 1) + ' de ' + list.length + ' · S2KTUX';
+      const desc = 'Lección ' + (m + 1) + ' del curso ' + courseName + ': teoría, ejemplos e imágenes para preparar tu certificación Linux.';
+      const base = 'https://s2ktux.github.io/leccion.html?c=' + c + '&m=' + m;
+      document.title = t;
+      setTimeout(() => { try { document.title = t; } catch (e) {} }, 80);
+      const set = (sel, attr, val) => { const el = document.querySelector(sel); if (el) el.setAttribute(attr, val); };
+      set('link[rel="canonical"]', 'href', base);
+      set('meta[property="og:url"]', 'content', base);
+      set('meta[property="og:title"]', 'content', t);
+      set('meta[name="twitter:title"]', 'content', t);
+      set('meta[name="description"]', 'content', desc);
+      set('meta[property="og:description"]', 'content', desc);
+      set('meta[name="twitter:description"]', 'content', desc);
+      // Datos estructurados: Course + VideoObject + BreadcrumbList
+      try {
+        const mod = ((window.S2KTUX_COURSES || {})[c === 'lpic1' ? 'lpic1' : c] || { modules: [] }).modules[m] || {};
+        const video = mod.video || '';
+        const home = 'https://s2ktux.github.io/';
+        const ld = {
+          "@context": "https://schema.org", "@graph": [
+            { "@type": "Course", "name": (mod.title || (unit + ' ' + (m + 1))) + ' — ' + courseName, "description": (mod.desc || desc), "inLanguage": "es", "url": base,
+              "provider": { "@type": "Organization", "name": "S2KTUX", "url": home } },
+            { "@type": "BreadcrumbList", "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Inicio", "item": home },
+              { "@type": "ListItem", "position": 2, "name": "Cursos", "item": home + "cursos.html" },
+              { "@type": "ListItem", "position": 3, "name": courseName, "item": home + "curso.html?c=" + c },
+              { "@type": "ListItem", "position": 4, "name": unit + ' ' + (m + 1), "item": base } ] }
+          ]
+        };
+        if (video) ld["@graph"].push({ "@type": "VideoObject", "name": (mod.title || courseName) + ' — vídeo', "description": (mod.desc || desc), "thumbnailUrl": home + "assets/og.png", "uploadDate": "2024-01-01", "contentUrl": video, "embedUrl": video.replace('youtu.be/', 'www.youtube.com/embed/') });
+        let s = document.getElementById('lesson-jsonld');
+        if (!s) { s = document.createElement('script'); s.type = 'application/ld+json'; s.id = 'lesson-jsonld'; document.head.appendChild(s); }
+        s.textContent = JSON.stringify(ld);
+      } catch (e) {}
+    } catch (e) {}
+  }
+  wireReadButton() {
+    try {
+      const { c, m } = this.params();
+      const KEY = 's2ktux-read';
+      const btn = document.getElementById('lesson-read');
+      if (!btn) return;
+      const getMap = () => { try { return JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { return {}; } };
+      const id = c + ':' + m;
+      const paint = () => { const done = !!getMap()[id]; btn.textContent = done ? '✔ Leída' : 'Marcar como leída'; btn.style.background = done ? '#5a8a3c' : 'var(--surface)'; btn.style.color = done ? '#fff' : 'var(--head)'; };
+      btn.addEventListener('click', () => { const map = getMap(); if (map[id]) delete map[id]; else map[id] = true; try { localStorage.setItem(KEY, JSON.stringify(map)); } catch (e) {} paint(); });
+      paint();
+    } catch (e) {}
+  }
+  wireImageZoom() {
+    try {
+      const el = this.lessonEl; if (!el) return;
+      let lb = document.getElementById('img-lightbox');
+      if (!lb) {
+        lb = document.createElement('div'); lb.id = 'img-lightbox';
+        lb.innerHTML = '<button class="lb-close" aria-label="Cerrar">\u2715</button><img alt="">';
+        document.body.appendChild(lb);
+        const close = () => lb.classList.remove('open');
+        lb.addEventListener('click', close);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+      }
+      const big = lb.querySelector('img');
+      el.querySelectorAll('img').forEach((im) => {
+        im.addEventListener('click', () => { big.src = im.src; big.alt = im.alt || ''; lb.classList.add('open'); });
+      });
+    } catch (e) {}
+  }
+  addCopyButtons() {
+    try {
+      const el = this.lessonEl; if (!el) return;
+      el.querySelectorAll('pre').forEach((pre) => {
+        if (pre.parentElement && pre.parentElement.classList.contains('codewrap')) return;
+        const wrap = document.createElement('div'); wrap.className = 'codewrap';
+        pre.parentNode.insertBefore(wrap, pre); wrap.appendChild(pre);
+        const b = document.createElement('button'); b.className = 'copybtn'; b.type = 'button'; b.textContent = 'Copiar'; b.setAttribute('aria-label', 'Copiar código');
+        b.addEventListener('click', () => { const txt = pre.innerText; const done = () => { b.textContent = '✔ Copiado'; setTimeout(() => { b.textContent = 'Copiar'; }, 1400); }; if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(txt).then(done, done); } else { try { const ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); } catch (e) {} done(); } });
+        wrap.appendChild(b);
+      });
+    } catch (e) {}
+  }
   async load() {
     const { c, m, list } = this.params();
     if (c === 'docker') { this.renderComingSoon(m); return; }
     try {
-      const res = await fetch(list[m]);
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      let html = await res.text();
-      // usar solo los estilos (theme-aware) de esta página: quitar los del propio fichero de lección
-      html = html.replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<link[^>]*>/gi, '');
-      // corregir rutas de imágenes: en el repo están en /images
-      html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/main/images/');
-      // el enlace de "repaso" usaba openReader() — lo dejamos como no-op (definido en helmet)
+      const CDN = 'https://cdn.jsdelivr.net/gh/S2KTUX/s2ktux.github.io@main/images/';
+      let html;
+      const CACHE = 's2ktux-lesson:' + list[m];
+      try { html = sessionStorage.getItem(CACHE) || null; } catch (e) { html = null; }
+      if (html == null) {
+        const res = await fetch(list[m]);
+        if (!res.ok) throw new Error("HTTP " + res.status);
+        html = await res.text();
+        html = html.replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<link[^>]*>/gi, '');
+        // imágenes servidas por CDN (jsDelivr) + carga diferida
+        html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2' + CDN);
+        html = html.replace(/<img /gi, '<img loading="lazy" decoding="async" ');
+        try { sessionStorage.setItem(CACHE, html); } catch (e) {}
+      }
       const el = this.lessonEl;
-      if (el) { el.innerHTML = html; }
+      if (el) { el.innerHTML = html; setTimeout(() => { this.addCopyButtons(); this.wireImageZoom(); }, 120); }
     } catch (e) {
       const el = this.lessonEl;
       if (el) el.innerHTML = '<div style="text-align:center;padding:70px 0;font-family:\'Share Tech Mono\',monospace;color:#ef8a7a">No se pudo cargar la lección. Vuelve a Cursos e inténtalo de nuevo.</div>';

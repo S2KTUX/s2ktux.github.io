@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,29 +13,52 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=VT323&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet">
 <title>S2KTUX · Aprende Linux, RHCSA y LPIC-1</title>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"S2KTUX","url":"https://s2ktux.github.io/","description":"Aprende administración de sistemas Linux: RHCSA, LPIC-1 y Docker, con terminal simulada y apuntes claros.","inLanguage":"es","publisher":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/","logo":"https://s2ktux.github.io/favicon.png","description":"Formación gratuita de administración de sistemas Linux: RHCSA, LPIC-1, Docker y Kubernetes.","sameAs":["https://www.youtube.com/@S2KTUX","https://www.linkedin.com/in/alai-molina-delgado-563b70184"]}</script>
 <meta name="description" content="Aprende administración de sistemas Linux con apuntes claros, una terminal simulada y cursos para RHCSA, LPIC-1 y Docker. Teoría y práctica real, gratis.">
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
 <link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<link rel="canonical" href="https://s2ktux.github.io/">
+<meta property="og:url" content="https://s2ktux.github.io/">
+<meta property="og:site_name" content="S2KTUX">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:title" content="S2KTUX · Aprende Linux, RHCSA y LPIC-1">
+<meta name="twitter:description" content="Aprende administración de sistemas Linux con apuntes claros, una terminal simulada y cursos para RHCSA, LPIC-1 y Docker. Teoría y práctica real, gratis.">
+<meta name="author" content="S2KTUX">
 <meta property="og:type" content="website">
 <meta property="og:title" content="S2KTUX · Aprende Linux, RHCSA y LPIC-1">
 <meta property="og:description" content="Aprende administración de sistemas Linux con apuntes claros, una terminal simulada y cursos para RHCSA, LPIC-1 y Docker. Teoría y práctica real, gratis.">
-<meta property="og:image" content="favicon.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
   <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{background:var(--bg);font-family:'VT323',monospace;color:var(--text)}
   :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a}
-  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#d8c6ac;--head:#f2c78f;--muted:#b39a7c;--soft2:#0f0b06}
+  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#e6d5b8;--head:#f8cf90;--muted:#c4ab89;--soft2:#0f0b06}
   html,body{transition:background-color .25s ease,color .25s ease}
   svg{stroke:var(--head)}
   a{color:#d97757;text-decoration:none}
   a:hover{color:#c2650a}
+  html.dark a{color:#ef8a5f}
+  html.dark a:hover{color:#f2a071}
   ::selection{background:#d97757;color:#fff}
+  a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #d97757;outline-offset:2px}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
   @keyframes blink{50%{opacity:0}}
   @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  @keyframes heroFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  @keyframes heroBlink{50%{opacity:0}}
+  .hero-badge{animation:heroFloat 3.5s ease-in-out infinite}
+  .hero-caret{display:inline-block;width:.62ch;background:var(--head);margin-left:4px;animation:heroBlink 1.05s step-start infinite;vertical-align:baseline}
   .navlink{color:var(--text);font-size:20px;transition:color .15s}
   .navlink:hover{color:var(--head)}
   .pxbtn{transition:transform .08s, box-shadow .08s;cursor:pointer}
@@ -96,16 +119,17 @@
 
 <!-- ============ HERO ============ -->
 <section style="max-width:1180px;margin:0 auto;padding:70px 32px 50px;text-align:center">
-  <div style="display:inline-flex;gap:9px;align-items:center;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:8px 15px;margin-bottom:30px">
+  <div class="hero-badge" style="display:inline-flex;gap:9px;align-items:center;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:8px 15px;margin-bottom:30px">
     <span style="width:9px;height:9px;background:#8fa876;display:inline-block;box-shadow:0 0 0 2px var(--line)"></span>
     <span style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--text)">administración de sistemas linux · RHEL y SUSE</span>
   </div>
-  <h1 style="font-family:'Press Start 2P',monospace;font-size:30px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:26px">Domina Linux.<br>Sin límites.</h1>
+  <h1 style="font-family:'Press Start 2P',monospace;font-size:30px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:26px">Domina Linux.<br>Sin límites.<span class="hero-caret">&nbsp;</span></h1>
   <p style="font-size:26px;max-width:600px;margin:0 auto 34px;color:var(--text);line-height:1.35">tu escritorio favorito para aprender administración de sistemas — con calma, práctica real y sin prisa~</p>
   <div style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap">
-    <a href="cursos.html" class="pxbtn" style="background:#d97757;color:#fff;font-family:'Press Start 2P',monospace;font-size:12px;padding:17px 28px;border:3px solid var(--line);box-shadow:5px 5px 0 var(--line)">VER CURSOS</a>
+    <a href="cursos.html" class="pxbtn" style="background:#d97757;color:#fff;font-family:'Press Start 2P',monospace;font-size:12px;padding:17px 28px;border:3px solid var(--line);box-shadow:5px 5px 0 var(--line)">EMPEZAR GRATIS →</a>
     <a href="terminal.html" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:12px;padding:17px 28px;border:3px solid var(--line);box-shadow:5px 5px 0 var(--line)">PROBAR TERMINAL</a>
   </div>
+  <div style="margin-top:20px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">Gratis · sin registro · en español · RHCSA · LPIC-1 · Docker</div>
 </section>
 
 <!-- ============ MARQUEE (certificados) ============ -->
@@ -185,10 +209,11 @@
   <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
   <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
   <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px">
-    <a href="https://github.com/s2ktux" target="_blank">GitHub</a>
-    <a href="index.html">LinkedIn</a>
-    <a href="index.html">YouTube</a>
+    <a href="sobre.html">Sobre</a>
+    <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a>
   </div>
+  <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 
 </x-dc>

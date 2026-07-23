@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,21 +17,39 @@
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
 <link rel="icon" type="image/png" href="favicon.png">
+<link rel="apple-touch-icon" href="favicon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
+<link rel="canonical" href="https://s2ktux.github.io/proyecto-kubernetes.html">
+<meta property="og:url" content="https://s2ktux.github.io/proyecto-kubernetes.html">
+<meta property="og:site_name" content="S2KTUX">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:title" content="Plataforma Kubernetes · Proyectos · S2KTUX">
+<meta name="twitter:description" content="Laboratorio de una plataforma Kubernetes sobre RKE2: app + PostgreSQL, Ingress, observabilidad, logs, Rancher y almacenamiento distribuido, construida por fases.">
+<meta name="author" content="S2KTUX">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Plataforma Kubernetes · Proyectos · S2KTUX">
 <meta property="og:description" content="Laboratorio de una plataforma Kubernetes sobre RKE2, construida por fases.">
-<meta property="og:image" content="favicon.png">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
   <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
   body{background:var(--bg);font-family:'VT323',monospace;color:var(--text)}
   :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a}
-  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#d8c6ac;--head:#f2c78f;--muted:#b39a7c;--soft2:#0f0b06}
+  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#e6d5b8;--head:#f8cf90;--muted:#c4ab89;--soft2:#0f0b06}
   html,body{transition:background-color .25s ease,color .25s ease}
   a{color:#d97757;text-decoration:none}
   a:hover{color:#c2650a}
+  html.dark a{color:#ef8a5f}
+  html.dark a:hover{color:#f2a071}
   ::selection{background:#d97757;color:#fff}
+  a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #d97757;outline-offset:2px}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
   .navlink{color:var(--text);font-size:20px;transition:color .15s}
   .navlink:hover{color:var(--head)}
   .pxbtn{transition:transform .08s, box-shadow .08s;cursor:pointer}
@@ -236,10 +254,11 @@
   <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
   <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
   <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px">
-    <a href="https://github.com/s2ktux" target="_blank">GitHub</a>
-    <a href="index.html">LinkedIn</a>
-    <a href="index.html">YouTube</a>
+    <a href="sobre.html">Sobre</a>
+    <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a>
   </div>
+  <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 </div>
 
