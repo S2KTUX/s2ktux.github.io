@@ -71,11 +71,11 @@ window.S2KTUX_COURSES = {
     note: "Contenedores desde cero: imágenes, volúmenes y redes para empaquetar y desplegar apps.",
     modules: [
       { n: "01", title: "Clase 1 — Fundamentos de Docker", desc: "Qué es un contenedor, instalación y primeros pasos.", video: "",
-        topics: ["Contenedores vs máquinas virtuales", "Instalar Docker / Podman", "Imágenes vs contenedores", "Docker Hub y docker pull", "Ejecutar contenedores (run / ps / stop / rm)", "Ciclo de vida de un contenedor"] },
-      { n: "02", title: "Clase 2 — Docker para el día a día", desc: "Persistencia, redes y construcción de imágenes.", video: "",
-        topics: ["Volúmenes y bind mounts", "Redes de contenedores y publicación de puertos", "Variables de entorno y configuración", "Logs, exec y depuración", "Escribir un Dockerfile", "Construir y etiquetar imágenes (build / tag)"] },
-      { n: "03", title: "Clase 3 — Docker profesional", desc: "Compose, buenas prácticas y despliegue.", video: "",
-        topics: ["Docker Compose y multi-servicio", "Multi-stage builds", "Buenas prácticas y optimización de imágenes", "Seguridad y usuarios no-root", "Registries privados", "Del contenedor a producción"] }
+        topics: ["Qué es Docker", "Máquina virtual vs contenedor", "Contenedor, imagen, Dockerfile y DockerHub", "Instalar Docker en Linux", "Primeros pasos: run, ps, stop, rm, logs", "Ciclo de vida de un contenedor", "Imágenes y capas", "Primer Dockerfile (CMD vs ENTRYPOINT)"] },
+      { n: "02", title: "Clase 2 — Docker para el día a día", desc: "Gestionar y compartir imágenes, volúmenes, redes y Docker Compose.", video: "",
+        topics: ["Gestionar imágenes: commit, save y load", "Etiquetas (docker tag)", "Compartir imágenes: push, pull y registros", "Volúmenes y bind mounts", "Copiar ficheros con docker cp", "Redes y drivers (bridge, host, overlay…)", "Docker Compose: up, ps, logs, down", "Volúmenes y redes en Compose"] },
+      { n: "03", title: "Clase 3 — Docker profesional", desc: "Recursos, imágenes ligeras y paso a producción.", video: "",
+        topics: ["Controlar los recursos de un contenedor (CPU, memoria)", "Reducir el tamaño de las imágenes con multi-stage", "Distroless: qué es y cuándo usarlo", "Preparar un contenedor para producción"] }
     ]
   }
 };

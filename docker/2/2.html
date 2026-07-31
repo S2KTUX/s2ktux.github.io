@@ -1,0 +1,204 @@
+<div class="lesson-wrapper">
+
+    <header class="lesson-header">
+        <span class="badge">DOCKER Clase 2</span>
+        <h1>Docker para el día a día</h1>
+        <p>Gestionar y compartir imágenes, persistir datos con volúmenes, conectar contenedores en red y levantarlo todo con Docker Compose</p>
+    </header>
+
+    <div class="lesson-layout">
+
+        <aside class="lesson-toc">
+            <h4>Contenido</h4>
+            <ul>
+                <li><a href="#obj1">1. Gestionar imágenes</a></li>
+                <li><a href="#obj2">2. Etiquetas (tag)</a></li>
+                <li><a href="#obj3">3. Compartir imágenes</a></li>
+                <li><a href="#obj4">4. Volúmenes</a></li>
+                <li><a href="#obj5">5. Copiar ficheros con cp</a></li>
+                <li><a href="#obj6">6. Redes</a></li>
+                <li><a href="#obj7">7. Docker Compose</a></li>
+                <li><a href="#obj8">8. Volúmenes y redes en Compose</a></li>
+            </ul>
+        </aside>
+
+        <div class="content">
+
+            <section id="obj1" class="lesson-section">
+                <h3>1. Gestionar imágenes: crear y exportar</h3>
+                <p>En la Clase 1 ya creamos imágenes con <code>docker build</code> y las vimos con <code>docker images</code>. Ahora toca lo que hacemos con ellas: etiquetarlas, compartirlas y moverlas de una máquina a otra.</p>
+                <p>Si ya tenemos un contenedor en ejecución, podemos crear una imagen a partir de su estado actual con <code>docker commit</code>:</p>
+                <pre><code>docker commit ID-CONTENEDOR NOMBRE-IMAGEN</code></pre>
+                <p>Todas las imágenes —creadas, descargadas o commiteadas— se pueden exportar a un fichero <code>.tar</code> para llevarlas a otro sistema:</p>
+                <pre><code>docker save -o fichero.tar imagen</code></pre>
+                <img src="/images/commit-save-1.png" alt="docker commit y docker save">
+                <p>Y para importarlas en la máquina de destino:</p>
+                <pre><code>docker load -i fichero.tar</code></pre>
+                <p><strong>Idea clave:</strong> <code>save</code>/<code>load</code> trabajan con <em>imágenes</em> en forma de fichero. Es la forma de mover una imagen sin pasar por un repositorio (por ejemplo, a un servidor sin acceso a internet).</p>
+            </section>
+
+            <section id="obj2" class="lesson-section">
+                <h3>2. Etiquetas: el tag de una imagen</h3>
+                <p>Una imagen se identifica con <code>nombre:version</code>. Esa versión es la <strong>etiqueta</strong> (tag), y la podemos indicar al construir con el argumento <code>-t</code> del <code>docker build</code>.</p>
+                <p>También podemos añadir un nombre y etiqueta nuevos a una imagen ya existente:</p>
+                <pre><code>docker tag &lt;nombre_imagen&gt;:&lt;etiqueta&gt; &lt;nuevo_nombre&gt;:&lt;nueva_etiqueta&gt;</code></pre>
+                <img src="/images/commit-tag.png" alt="docker tag">
+                <p><strong>Nota:</strong> <code>docker tag</code> no duplica la imagen, solo le añade otro nombre que apunta a la misma. Si no indicamos etiqueta, Docker asume <code>:latest</code>.</p>
+            </section>
+
+            <section id="obj3" class="lesson-section">
+                <h3>3. Compartir imágenes: push y pull</h3>
+                <p>Para compartir una imagen la subimos a <strong>DockerHub</strong>, el repositorio donde hay miles de imágenes públicas. Se sube con:</p>
+                <pre><code>docker push USUARIO/imagen:tag</code></pre>
+                <p><strong>Importante:</strong> el usuario debe ser el mismo con el que nos hemos registrado, y hay que haber iniciado sesión antes con <code>docker login</code>. Es decir, la imagen debe llamarse ya <code>usuario/imagen:tag</code> (si no, la renombramos con <code>docker tag</code>).</p>
+                <p>A partir de ahí, cualquiera la descarga igual que hicimos con las imágenes públicas en la Clase 1:</p>
+                <pre><code>docker pull usuario/miweb:1.0</code></pre>
+                <p>También se pueden subir a otros repositorios remotos; en ese caso el nombre debe incluir la dirección del registro, por ejemplo con GitHub:</p>
+                <img src="/images/docker-pull-github.png" alt="Subir y descargar imágenes desde un registro de GitHub">
+            </section>
+
+            <section id="obj4" class="lesson-section">
+                <h3>4. Volúmenes: que los datos sobrevivan</h3>
+                <p>Hay que entender una cosa clave: <strong>un contenedor no guarda su estado</strong>. Todo lo que se escribe dentro vive solo mientras el contenedor existe; en cuanto lo borras, esos datos desaparecen. Para una base de datos o cualquier fichero que deba sobrevivir, eso no vale.</p>
+                <p>La solución son los <strong>volúmenes</strong>: almacenamiento que vive fuera del contenedor y que montamos dentro. Así podemos borrar y recrear el contenedor, pero los datos permanecen.</p>
+                <pre><code>docker volume create mi-vol
+docker volume ls
+docker volume inspect mi-vol</code></pre>
+                <img src="/images/volumen-crear.png" alt="Crear e inspeccionar un volumen">
+                <p>Para montarlos usamos el argumento <code>-v</code> al lanzar <code>docker run</code>, y hay dos formas:</p>
+                <table class="lesson-table">
+                    <thead>
+                        <tr><th>Tipo</th><th>Sintaxis</th><th>Para qué</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Volumen</td><td><code>-v nombre:/ruta</code></td><td>Almacenamiento gestionado por Docker. El habitual para datos.</td></tr>
+                        <tr><td>Bind mount</td><td><code>-v /ruta/host:/ruta/contenedor</code></td><td>Monta una carpeta real de tu máquina dentro del contenedor.</td></tr>
+                    </tbody>
+                </table>
+                <p>El <strong>volumen</strong> lo gestiona Docker y es el que usarás para persistir datos de verdad (la base de datos, por ejemplo). El <strong>bind mount</strong> apunta a una carpeta concreta de tu host y es cómodo para desarrollo: editas un fichero en tu máquina y el contenedor lo ve al instante.</p>
+                <p>Un ejemplo con volumen:</p>
+                <pre><code>docker volume create datos
+docker run -d --name db -v datos:/var/lib/mysql mariadb</code></pre>
+                <img src="/images/volumen-docker.png" alt="Contenedor con un volumen montado">
+                <p>Aunque borremos el contenedor <code>db</code>, el volumen <code>datos</code> sigue ahí con la información, listo para montarlo en otro.</p>
+                <p>Y un ejemplo con bind mount:</p>
+                <img src="/images/volumen-bindmount.png" alt="Contenedor con un bind mount">
+                <p>Para borrar un volumen que ya no usamos:</p>
+                <pre><code>docker volume rm mi-vol</code></pre>
+            </section>
+
+            <section id="obj5" class="lesson-section">
+                <h3>5. Copiar ficheros puntuales con docker cp</h3>
+                <p>Si lo único que quieres es sacar o meter un fichero concreto en un contenedor, no hace falta montar un volumen. Para eso está <code>docker cp</code>, que copia igual que el <code>cp</code> de siempre pero entre tu máquina y el contenedor:</p>
+                <pre><code>docker cp db:/etc/mysql/my.cnf .      # del contenedor a tu carpeta
+docker cp ./config.txt db:/tmp/       # de tu carpeta al contenedor</code></pre>
+                <img src="/images/volumen-cp.png" alt="docker cp entre host y contenedor">
+                <p><strong>Ojo:</strong> lo que copies así vive dentro del contenedor y se pierde al borrarlo. Para datos que deben durar, volúmenes.</p>
+            </section>
+
+            <section id="obj6" class="lesson-section">
+                <h3>6. Redes</h3>
+                <p>Por defecto, cada contenedor está aislado. Cuando tenemos varios que deben hablar entre sí (una web y su base de datos, por ejemplo), los ponemos en la <strong>misma red</strong>.</p>
+                <pre><code>docker network create red
+docker network create --driver bridge red
+docker network ls</code></pre>
+                <img src="/images/network-create.png" alt="Crear y listar redes">
+                <p>Los drivers más habituales son:</p>
+                <table class="lesson-table">
+                    <thead>
+                        <tr><th>Driver</th><th>Qué hace</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>bridge</code></td><td>Red predeterminada que conecta contenedores dentro de una misma máquina.</td></tr>
+                        <tr><td><code>host</code></td><td>El contenedor usa directamente la red del anfitrión. Más rápido, pero menos aislamiento.</td></tr>
+                        <tr><td><code>overlay</code></td><td>Conecta contenedores que se ejecutan en máquinas diferentes.</td></tr>
+                        <tr><td><code>macvlan</code></td><td>El contenedor aparece en la red como un dispositivo independiente, con su propia MAC.</td></tr>
+                        <tr><td><code>none</code></td><td>Desactiva la red del contenedor, dejándolo sin conexión externa.</td></tr>
+                    </tbody>
+                </table>
+                <p>Esta red la podemos usar al lanzar el contenedor:</p>
+                <pre><code>docker run -d --name web --network red nginx</code></pre>
+                <p>También podemos conectar una red a un contenedor ya existente (tanto la red como el contenedor deben existir previamente):</p>
+                <pre><code>docker network connect mi-red mi-contenedor
+docker network disconnect mi-red mi-contenedor</code></pre>
+                <img src="/images/network-run.png" alt="Contenedor conectado a una red">
+                <p><strong>La ventaja de una red propia:</strong> dentro de ella los contenedores se encuentran <strong>por su nombre</strong>, sin necesidad de saber su IP.</p>
+                <p>Por último, podemos inspeccionar una red o borrarla:</p>
+                <pre><code>docker network inspect red
+docker network rm red</code></pre>
+                <img src="/images/network-final.png" alt="Inspeccionar y borrar una red">
+            </section>
+
+            <section id="obj7" class="lesson-section">
+                <h3>7. Docker Compose</h3>
+                <p>Hasta ahora, para levantar una web con su base de datos hemos tenido que lanzar varios <code>docker run</code>, crear la red, crear el volumen… a mano y en orden. <strong>Docker Compose</strong> nos permite describir todo eso en un único fichero y levantarlo con un solo comando.</p>
+                <p>El fichero se llama <code>compose.yaml</code> y describe los servicios (contenedores), sus volúmenes y su configuración. Un ejemplo con la web y la base de datos de antes:</p>
+                <pre><code>services:
+  db:
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: ejemplo
+    volumes:
+      - datos:/var/lib/mysql
+
+  web:
+    image: miweb
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+
+volumes:
+  datos:</code></pre>
+                <p>Tenemos dos servicios (<code>db</code> y <code>web</code>): <code>db</code> usa <code>mariadb</code> con una variable de entorno y un volumen, y <code>web</code> usa nuestra propia imagen, publicando el puerto 80 del contenedor en el 8080 del host y declarando que depende de <code>db</code>. Abajo queda definido el volumen.</p>
+                <p>Levantamos todos los servicios de una vez:</p>
+                <pre><code>docker compose up -d</code></pre>
+                <p>Si el <code>compose.yaml</code> está en otra ruta, se lo indicamos con <code>-f RUTA</code>.</p>
+                <img src="/images/compose-up.png" alt="docker compose up">
+                <p>Una vez levantado con Compose, dejamos de usar <code>docker ps</code> o <code>docker logs</code> y tiramos de los del propio Compose, que actúan sobre todos los servicios del fichero a la vez:</p>
+                <pre><code>docker compose ps
+docker compose logs -f
+docker compose exec web sh</code></pre>
+                <img src="/images/compose-check.png" alt="docker compose ps y logs">
+                <p>Para parar y eliminar todo lo que levantamos (contenedores y red):</p>
+                <pre><code>docker compose down</code></pre>
+                <p>Si además queremos borrar los volúmenes, usamos <code>docker compose down -v</code>.</p>
+                <img src="/images/compose-down.png" alt="docker compose down">
+            </section>
+
+            <section id="obj8" class="lesson-section">
+                <h3>8. Volúmenes y redes en Compose</h3>
+                <p>Los volúmenes y las redes se declaran en su propia sección y luego se referencian en cada servicio que los use. Un ejemplo completo con ambos:</p>
+                <pre><code>services:
+  wordpress:
+    image: wordpress
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: bd
+      WORDPRESS_DB_PASSWORD: ejemplo
+    networks:
+      - red_wp
+
+  bd:
+    image: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ejemplo
+    volumes:
+      - wp_data:/var/lib/mysql
+    networks:
+      - red_wp
+
+volumes:
+  wp_data:
+
+networks:
+  red_wp:</code></pre>
+                <p>Abajo declaramos el volumen <code>wp_data</code> y la red <code>red_wp</code>. Al volumen lo referencia <code>bd</code>, indicando la ruta donde se monta dentro del contenedor (<code>/var/lib/mysql</code>, donde mysql guarda sus datos). La red <code>red_wp</code> la comparten los dos servicios, y por eso <code>wordpress</code> puede encontrar a la base de datos <strong>por su nombre</strong>, <code>bd</code> — fíjate en que es justo lo que le pasamos en <code>WORDPRESS_DB_HOST</code>.</p>
+                <p>Al declararlos solo con el nombre, Docker los crea con sus valores por defecto: un volumen normal gestionado por él y una red de tipo <code>bridge</code>. Se pueden personalizar, pero para la mayoría de casos con esto sobra.</p>
+                <p>De hecho, si no declaramos ninguna red, Compose <strong>crea una automáticamente</strong> y mete todos los servicios dentro — por eso el primer ejemplo ya funcionaba sin escribir nada de redes.</p>
+            </section>
+
+        </div>
+    </div>
+</div>

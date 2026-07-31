@@ -92,10 +92,12 @@
   @keyframes s2kpulse{0%,100%{opacity:.35}50%{opacity:.7}}
   .lesson-skel{max-width:1000px;margin:0 auto}
   .lesson-skel div{background:var(--surface2);animation:s2kpulse 1.2s ease-in-out infinite}
-  #lesson code{font-family:'Share Tech Mono',monospace;font-size:16px;background:var(--surface2);color:var(--head);padding:2px 7px;border:1px solid var(--line)}
+  #lesson code{font-family:'Share Tech Mono',monospace;font-size:16px;background:var(--surface2);color:var(--head);padding:1px 6px;border:1px solid var(--line);white-space:pre-wrap;overflow-wrap:break-word;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+  #lesson p{line-height:1.8}
+  #lesson li{line-height:1.75}
   #lesson pre{background:#12100b;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);padding:18px;overflow-x:auto;margin:14px 0}
-  #lesson pre code{background:none;border:none;color:#cdc0a8;font-size:16px;padding:0}
-  #lesson img{max-width:100%;height:auto;border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);margin:16px 0;display:block;background:#fff;cursor:zoom-in}
+  #lesson pre code{background:none;border:none;color:#cdc0a8;font-size:16px;padding:0;white-space:pre;display:block;line-height:1.6}
+  #lesson img{width:100%;max-width:100%;height:auto;border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);margin:22px 0;display:block;background:#12100b;cursor:zoom-in}
   #img-lightbox{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;background:rgba(18,16,11,.9);cursor:zoom-out;padding:24px}
   #img-lightbox.open{display:flex}
   #img-lightbox img{max-width:95vw;max-height:92vh;border:3px solid var(--line);box-shadow:8px 8px 0 rgba(0,0,0,.5);background:#fff}
@@ -209,7 +211,7 @@ class Component extends DCLogic {
   files = {
     rhcsa: Array.from({length:11}, (_,i)=> i<10 ? "rhcsa/"+(i+1)+"/"+(i+1)+".html" : "rhcsa/11/11.html"),
     lpic1: ["lpic/101/1.html","lpic/102/2.html","lpic/103/3.html","lpic/104/4.html","lpic/105/5.html","lpic/106/106.html","lpic/107/7.html","lpic/108/8.html","lpic/109/9.html","lpic/110/10.html"],
-    docker: ["","",""]
+    docker: ["docker/1/1.html","docker/2/2.html",""]
   };
   params() {
     const p = new URLSearchParams(location.search);
@@ -306,21 +308,21 @@ class Component extends DCLogic {
   }
   async load() {
     const { c, m, list } = this.params();
-    if (c === 'docker') { this.renderComingSoon(m); return; }
+    if (c === 'docker' && !list[m]) { this.renderComingSoon(m); return; }
     try {
       const CDN = 'https://cdn.jsdelivr.net/gh/S2KTUX/s2ktux.github.io@main/images/';
       let html;
-      const CACHE = 's2ktux-lesson:' + list[m];
-      try { html = sessionStorage.getItem(CACHE) || null; } catch (e) { html = null; }
+      const CACHE = 's2ktux-lesson:v2:' + list[m];
+      try { const raw = sessionStorage.getItem(CACHE); if (raw) { const o = JSON.parse(raw); if (o && o.ts && (Date.now() - o.ts) < 300000) html = o.html; } } catch (e) { html = null; }
       if (html == null) {
-        const res = await fetch(list[m]);
+        const res = await fetch(list[m], { cache: 'no-cache' });
         if (!res.ok) throw new Error("HTTP " + res.status);
         html = await res.text();
         html = html.replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<link[^>]*>/gi, '');
         // imágenes servidas por CDN (jsDelivr) + carga diferida
         html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2' + CDN);
         html = html.replace(/<img /gi, '<img loading="lazy" decoding="async" ');
-        try { sessionStorage.setItem(CACHE, html); } catch (e) {}
+        try { sessionStorage.setItem(CACHE, JSON.stringify({ ts: Date.now(), html: html })); } catch (e) {}
       }
       const el = this.lessonEl;
       if (el) { el.innerHTML = html; setTimeout(() => { this.addCopyButtons(); this.wireImageZoom(); }, 120); }
