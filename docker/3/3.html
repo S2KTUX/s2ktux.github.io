@@ -1,0 +1,142 @@
+<div class="lesson-wrapper">
+
+    <header class="lesson-header">
+        <span class="badge">DOCKER Clase 3</span>
+        <h1>Docker profesional</h1>
+        <p>Limitar recursos, adelgazar imágenes con multi-stage y distroless, y dejar un contenedor listo para producción</p>
+    </header>
+
+    <div class="lesson-layout">
+
+        <aside class="lesson-toc">
+            <h4>Contenido</h4>
+            <ul>
+                <li><a href="#obj1">1. Controlar los recursos</a></li>
+                <li><a href="#obj2">2. Multi-stage</a></li>
+                <li><a href="#obj3">3. Distroless</a></li>
+                <li><a href="#obj4">4. Preparar para producción</a></li>
+            </ul>
+        </aside>
+
+        <div class="content">
+
+            <section id="obj1" class="lesson-section">
+                <h3>1. Controlar los recursos de un contenedor (CPU, memoria)</h3>
+                <p>Por defecto, un contenedor puede usar toda la CPU y toda la memoria de la máquina. El problema es evidente: un solo contenedor que se desmadre —una fuga de memoria, un proceso disparado— puede tumbar el servidor entero y llevarse por delante a los demás. En un servidor de verdad esto no vale, así que les ponemos límites.</p>
+                <p>Los dos que usarás casi siempre van en el <code>docker run</code>:</p>
+                <table class="lesson-table">
+                    <thead>
+                        <tr><th>Parámetro</th><th>Para qué sirve</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td><code>--memory</code> (<code>-m</code>)</td><td>Memoria máxima que puede usar el contenedor.</td></tr>
+                        <tr><td><code>--cpus</code></td><td>Núcleos (o fracción) que puede usar.</td></tr>
+                    </tbody>
+                </table>
+                <p>Por ejemplo, un contenedor limitado a medio núcleo y 256 MB:</p>
+                <pre><code>docker run -d --name limitado --memory 256m --cpus 0.5 nginx</code></pre>
+                <p>Aquí hay una diferencia de fondo que conviene entender bien, porque no se comportan igual. La <strong>memoria es un límite duro</strong>: si el contenedor intenta pasarse, Docker lo mata en el acto — es el famoso <strong>OOM</strong> (out of memory), y lo verás como un contenedor que muere con código de salida <code>137</code>. La <strong>CPU es un límite blando</strong>: no lo mata, simplemente lo frena para que no pase de su cuota. Uno es una pared; el otro, un freno.</p>
+                <p>Para ver el consumo en vivo de lo que está corriendo:</p>
+                <pre><code>docker stats</code></pre>
+                <p>Nos muestra, contenedor a contenedor, cuánta CPU y memoria gasta en tiempo real. Es lo primero que mirarás cuando algo vaya lento.</p>
+                <img src="/images/recursos-stats.png" alt="docker stats mostrando el consumo en vivo">
+                <p>Existe una imagen en DockerHub llamada <code>polinux/stress</code>, pensada justo para forzar a un contenedor a consumir recursos. Le ponemos un límite de 128 MB y le pedimos que intente reservar 200 —más de lo permitido— para ver cómo Docker lo corta:</p>
+                <pre><code>docker run --rm -it --memory 128m polinux/stress stress --vm 1 --vm-bytes 200M</code></pre>
+                <p>El <code>--vm 1 --vm-bytes 200M</code> es simplemente "arranca un proceso que intente ocupar 200 MB". Al pasarse de los 128, Docker lo mata con el OOM que acabamos de ver.</p>
+                <img src="/images/recursos-stress.png" alt="Contenedor cortado por el límite de memoria (OOM)">
+            </section>
+
+            <section id="obj2" class="lesson-section">
+                <h3>2. Reducir el tamaño de las imágenes con Multi-stage</h3>
+                <p>Cuando construimos una imagen, muchas veces necesitamos herramientas para preparar la aplicación —compiladores, librerías de desarrollo, paquetes que solo hacen falta durante la construcción— que después, para ejecutarla, no usamos para nada. Si lo dejamos todo en la misma imagen, acabamos arrastrando cientos de megas de cosas que en producción sobran.</p>
+                <p>El <strong>multi-stage</strong> lo resuelve partiendo el Dockerfile en dos fases:</p>
+                <ol>
+                    <li>En una primera fase, con todas las herramientas, construimos la aplicación.</li>
+                    <li>En una segunda fase, que empieza limpia y vacía, copiamos únicamente el producto ya terminado de la primera. Todo lo que hizo falta para construir se queda fuera de la imagen final.</li>
+                </ol>
+                <p>La clave que lo hace posible es que podemos tener <strong>varios <code>FROM</code></strong> en un mismo Dockerfile; cada uno abre una etapa.</p>
+                <pre><code>FROM golang:1.22 AS build
+WORKDIR /app
+COPY . .
+RUN go build -o miapp
+
+FROM alpine
+COPY --from=build /app/miapp /miapp
+CMD ["/miapp"]</code></pre>
+                <p>La primera línea, <code>FROM golang:1.22 AS build</code>, abre una etapa y le pone nombre: <code>build</code>. Ese nombre nos hará falta luego. Aquí usamos la imagen oficial de Go —un lenguaje que se compila: escribimos código y una herramienta lo convierte en un único fichero ejecutable, el binario—. Esa imagen de Go trae todo el kit de compilación, que son cientos de megas. Con <code>COPY . .</code> metemos nuestro código dentro (el primer punto es "todo lo de mi carpeta", el segundo es "a la carpeta de trabajo de la imagen") y con <code>RUN go build</code> lo compilamos: obtenemos el binario <code>miapp</code>.</p>
+                <p>Un segundo <code>FROM alpine</code> abre una etapa nueva, mínima y vacía. Y con <code>COPY --from=build /app/miapp /miapp</code> copiamos, desde la etapa <code>build</code>, solo el binario ya compilado. El kit de Go, el código fuente y todo lo demás se quedan en la primera etapa, que se descarta. La imagen final es un <code>alpine</code> diminuto con un único binario dentro.</p>
+                <img src="/images/multistage-build.png" alt="Construcción multi-stage de una imagen">
+                <p>El resultado lo vemos al mirar <code>docker images</code>: la misma aplicación que pesaba, por ejemplo, 800 MB en una sola etapa, baja a apenas 15-20 MB.</p>
+                <img src="/images/multistage-images.png" alt="Comparación de tamaños con docker images">
+            </section>
+
+            <section id="obj3" class="lesson-section">
+                <h3>3. Distroless: qué es y cuándo usar</h3>
+                <p>Con <code>alpine</code> hemos llegado a una imagen pequeña. Se puede ir un paso más allá con <strong>distroless</strong>.</p>
+                <p>Distroless es una familia de imágenes base que publica Google (bajo <code>gcr.io/distroless/</code>) a las que se les ha quitado todo lo que no es imprescindible para ejecutar nuestra aplicación. No hay gestor de paquetes, no hay shell, no hay <code>ls</code>, ni <code>cat</code>, ni <code>bash</code>. Solo la aplicación y las librerías justas para arrancar.</p>
+                <p>No existe una única imagen distroless, sino varias: cada lenguaje necesita cosas distintas para funcionar. Si nuestra app es un binario ya compilado (como el de Go del ejemplo anterior) no necesita nada más, y usamos <code>gcr.io/distroless/static</code>. Si es una app de Java, necesita la máquina virtual de Java para ejecutarse, así que hay una imagen distroless que la incluye. Solo tenemos que elegir la que corresponda a lo que vayamos a ejecutar.</p>
+                <p>Existe incluso un paso más extremo: la imagen <code>scratch</code>, que está literalmente vacía — cero ficheros. Solo sirve para binarios totalmente autónomos, y por eso distroless suele ser la opción más práctica.</p>
+                <p>Esto da dos ventajas. La primera, <strong>tamaño</strong>: son aún más pequeñas que alpine. La segunda, y la importante, <strong>seguridad</strong>: si un atacante se cuela dentro, se encuentra un sitio vacío — no hay shell que abrir, no hay herramientas con las que moverse, no hay gestor de paquetes para instalar nada.</p>
+                <p>Se usan como cualquier base, típicamente como etapa final de un multi-stage:</p>
+                <pre><code>FROM golang:1.22 AS build
+WORKDIR /app
+COPY . .
+RUN go build -o miapp
+
+FROM gcr.io/distroless/static
+COPY --from=build /app/miapp /miapp
+CMD ["/miapp"]</code></pre>
+                <p>¿Cuándo usarla? En <strong>producción</strong>, para aplicaciones ya compiladas y estables. ¿Cuándo no? Mientras desarrollamos y depuramos, porque esa misma falta de shell hace que no podamos entrar con <code>docker exec ... sh</code> a cotillear — no hay <code>sh</code> que ejecutar.</p>
+                <img src="/images/distroless-images.png" alt="Tamaño de una imagen distroless">
+            </section>
+
+            <section id="obj4" class="lesson-section">
+                <h3>4. Preparar un contenedor para producción</h3>
+                <p>Ya sabemos limitar recursos y adelgazar la imagen. Falta el paso principal: que el contenedor se comporte como un servicio serio, profesional y seguro.</p>
+
+                <h4>No ejecutar como root</h4>
+                <p>Por defecto, el proceso dentro del contenedor corre como <code>root</code>. Si alguien se cuela, es root dentro del contenedor — un riesgo innecesario. En el Dockerfile podemos crear un usuario y cambiar a él con <code>USER</code>:</p>
+                <pre><code>RUN useradd -r appuser
+USER appuser</code></pre>
+                <img src="/images/ROOT-1.png" alt="Contenedor ejecutándose con un usuario sin privilegios">
+                <p>Un concepto importante es tener en cuenta que pondremos el <code>RUN</code> y el <code>USER</code> antes del <code>CMD</code>.</p>
+
+                <h4>Configuración por variables de entorno</h4>
+                <p>Una imagen debe ser <strong>inmutable y reutilizable</strong>: la misma imagen tiene que valer para desarrollo, preproducción y producción. La configuración no va dentro de la imagen — se inyecta desde fuera al arrancar, con variables de entorno.</p>
+                <p>Por ejemplo: el <code>MARIADB_ROOT_PASSWORD</code>, el <code>WORDPRESS_DB_HOST</code>… son variables que la imagen lee al arrancar. Nunca metas una contraseña o una URL dentro de la imagen; se pasa por fuera.</p>
+                <p>Esta idea es la base de los <strong>ConfigMaps</strong> y <strong>Secrets</strong> de Kubernetes.</p>
+                <img src="/images/CONFIG-1.png" alt="Variables de entorno inyectadas al arrancar el contenedor">
+
+                <h4>Healthcheck</h4>
+                <p>Que un contenedor esté "corriendo" no significa que la aplicación funcione. El proceso puede estar vivo pero la app colgada, sin responder a nadie. Docker, por defecto, solo sabe si el proceso vive, no si la aplicación responde. Un <code>HEALTHCHECK</code> cubre justo esa diferencia — le enseña a Docker cómo preguntarle a la app si está realmente viva. Es una instrucción más del Dockerfile, que se suele poner cerca del final, junto al <code>CMD</code>.</p>
+                <p>La comprobación depende del tipo de servicio: a una web se le pide una página, a una base de datos se le hace un ping, y a cualquier otra cosa se le comprueba como tenga sentido:</p>
+                <pre><code># Web (nginx, apache, una API…)
+HEALTHCHECK CMD curl -f http://localhost/ || exit 1
+
+# MariaDB / MySQL
+HEALTHCHECK CMD mariadb-admin ping -h localhost || exit 1
+
+# PostgreSQL
+HEALTHCHECK CMD pg_isready -U postgres || exit 1
+
+# Redis
+HEALTHCHECK CMD redis-cli ping || exit 1</code></pre>
+                <p>La lógica es siempre la misma: un comando que devuelve éxito si todo va bien, y el <code>|| exit 1</code> que marca el contenedor como enfermo si falla.</p>
+                <p>Con esto, <code>docker ps</code> ya no dice solo "Up", sino "Up (healthy)" o "(unhealthy)".</p>
+
+                <h4>Política de reinicio</h4>
+                <p>Ya vimos <code>--restart</code> en la Clase 1; en producción es donde cobra sentido. Con <code>--restart unless-stopped</code>, si el contenedor se cae o reinicias el servidor, vuelve a levantarse solo. Es lo que convierte un contenedor en un servicio que no tienes que vigilar.</p>
+
+                <h4>.dockerignore</h4>
+                <p>Un fichero hermano del <code>.gitignore</code>: lista lo que no queremos que entre en la imagen al construir. Sin él, un <code>COPY . .</code> se traga todo el directorio — engorda la imagen y puede colar dentro cosas que no deberían estar, como esas credenciales que justo acabamos de decir que van por fuera.</p>
+                <pre><code>.git
+node_modules
+*.log
+.env
+Dockerfile
+.dockerignore</code></pre>
+            </section>
+
+        </div>
+    </div>
+</div>

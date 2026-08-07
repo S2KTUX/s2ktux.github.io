@@ -73,9 +73,41 @@ window.S2KTUX_COURSES = {
       { n: "01", title: "Clase 1 — Fundamentos de Docker", desc: "Qué es un contenedor, instalación y primeros pasos.", video: "",
         topics: ["Qué es Docker", "Máquina virtual vs contenedor", "Contenedor, imagen, Dockerfile y DockerHub", "Instalar Docker en Linux", "Primeros pasos: run, ps, stop, rm, logs", "Ciclo de vida de un contenedor", "Imágenes y capas", "Primer Dockerfile (CMD vs ENTRYPOINT)"] },
       { n: "02", title: "Clase 2 — Docker para el día a día", desc: "Gestionar y compartir imágenes, volúmenes, redes y Docker Compose.", video: "",
-        topics: ["Gestionar imágenes: commit, save y load", "Etiquetas (docker tag)", "Compartir imágenes: push, pull y registros", "Volúmenes y bind mounts", "Copiar ficheros con docker cp", "Redes y drivers (bridge, host, overlay…)", "Docker Compose: up, ps, logs, down", "Volúmenes y redes en Compose"] },
+        topics: ["Gestionar imágenes: commit, save y load", "Etiquetas (docker tag)", "Compartir imágenes: push, pull y registros", "Volúmenes y bind mounts", "Persistencia y docker cp", "Redes y resolución por nombre", "Docker Compose: up, ps, logs, down", "Build desde Compose y ejemplo completo"] },
       { n: "03", title: "Clase 3 — Docker profesional", desc: "Recursos, imágenes ligeras y paso a producción.", video: "",
         topics: ["Controlar los recursos de un contenedor (CPU, memoria)", "Reducir el tamaño de las imágenes con multi-stage", "Distroless: qué es y cuándo usarlo", "Preparar un contenedor para producción"] }
+    ]
+  },
+  kubernetes: {
+    id: "kubernetes",
+    badge: "CKA",
+    badgeColor: "#5b7fa6",
+    title: "Kubernetes",
+    subtitle: "Orquestación de contenedores desde cero, orientado a la certificación CKA, en 11 clases.",
+    note: "Del contenedor al clúster: pods, despliegues, red, almacenamiento y administración.",
+    modules: [
+      { n: "01", title: "Clase 1 — Introducción y arquitectura", desc: "Qué es Kubernetes y montar el entorno.", video: "",
+        topics: ["El puente desde Docker: qué resuelve un orquestador", "Qué no puede hacer Docker Compose", "Arquitectura del clúster: control plane y nodos", "API server, etcd y scheduler", "kubelet y los nodos de trabajo", "Levantar el entorno con minikube o kind", "Primer kubectl: get y describe", "El pod como unidad mínima"] },
+      { n: "02", title: "Clase 2 — Pods, Deployments y el modelo declarativo", desc: "YAML, réplicas, rollouts y rollbacks.", video: "",
+        topics: ["El YAML de Kubernetes: describir el estado deseado", "Pods en detalle", "ReplicaSets", "Deployments", "El ciclo de reconciliación", "kubectl apply y gestión declarativa", "Escalar réplicas", "Rollouts y rollbacks"] },
+      { n: "03", title: "Clase 3 — Configuración y recursos", desc: "ConfigMaps, Secrets, requests y limits.", video: "",
+        topics: ["De las variables de Docker a Kubernetes", "Crear y usar ConfigMaps", "Secrets: qué son y sus límites", "Inyectar como variables de entorno", "Montar configuración como ficheros", "Requests y limits de CPU y memoria", "QoS y desalojos (OOMKilled)", "Buenas prácticas y errores típicos"] },
+      { n: "04", title: "Clase 4 — Scheduling", desc: "nodeSelector, afinidad, taints y tolerations.", video: "",
+        topics: ["Cómo decide el scheduler", "nodeSelector y etiquetas de nodo", "Node affinity", "Pod affinity y anti-affinity", "Taints y tolerations", "DaemonSets y casos de uso", "Pods estáticos"] },
+      { n: "05", title: "Clase 5 — Almacenamiento", desc: "PV, PVC y StorageClasses.", video: "",
+        topics: ["Volúmenes en pods", "PersistentVolumes (PV)", "PersistentVolumeClaims (PVC)", "Modos de acceso y políticas de reclamación", "StorageClasses", "Aprovisionamiento dinámico", "StatefulSets: introducción"] },
+      { n: "06", title: "Clase 6 — Servicios y descubrimiento", desc: "Services y CoreDNS.", video: "",
+        topics: ["El modelo de red de Kubernetes", "Por qué no se accede a los pods directamente", "Service ClusterIP", "Service NodePort", "Service LoadBalancer", "Endpoints y selectores", "CoreDNS y descubrimiento por nombre"] },
+      { n: "07", title: "Clase 7 — Exposición y red", desc: "Ingress, Gateway API y NetworkPolicies.", video: "",
+        topics: ["Ingress y controladores de Ingress", "Reglas de enrutado por host y ruta", "TLS en Ingress", "Gateway API: el nuevo estándar", "Gateway, HTTPRoute y diferencias con Ingress", "NetworkPolicies: aislar el tráfico", "Políticas de entrada y salida"] },
+      { n: "08", title: "Clase 8 — Seguridad y acceso", desc: "RBAC y ServiceAccounts.", video: "",
+        topics: ["Autenticación y autorización en Kubernetes", "Roles y ClusterRoles", "RoleBindings y ClusterRoleBindings", "ServiceAccounts", "Permisos de los pods", "kubectl auth can-i", "Buenas prácticas de mínimo privilegio"] },
+      { n: "09", title: "Clase 9 — Administración del clúster", desc: "kubeadm, upgrades, etcd, Helm y Kustomize.", video: "",
+        topics: ["Bootstrap de un clúster con kubeadm", "Unir nodos al clúster", "Actualizar la versión del clúster", "Backup y restore de etcd", "Certificados y kubeconfig", "Helm: charts y releases", "Kustomize: overlays"] },
+      { n: "10", title: "Clase 10 — Troubleshooting", desc: "Pods, nodos, red y control plane.", video: "",
+        topics: ["Metodología de diagnóstico", "Pods que no arrancan: Pending, CrashLoopBackOff, ImagePullBackOff", "Logs, events y describe", "Nodos NotReady", "Control plane caído", "Fallos de DNS y de red", "Problemas de almacenamiento"] },
+      { n: "11", title: "Clase 11 — Cierre", desc: "Estrategia de examen, kubectl esencial y práctica.", video: "",
+        topics: ["Cómo es el examen CKA por dentro", "Gestión del tiempo y orden de las tareas", "kubectl esencial: los comandos que salvan", "Trucos de imperativo vs declarativo", "Uso de la documentación permitida", "Práctica con killer.sh", "Checklist final antes del examen"] }
     ]
   }
 };

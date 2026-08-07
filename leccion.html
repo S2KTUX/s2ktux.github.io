@@ -211,11 +211,12 @@ class Component extends DCLogic {
   files = {
     rhcsa: Array.from({length:11}, (_,i)=> i<10 ? "rhcsa/"+(i+1)+"/"+(i+1)+".html" : "rhcsa/11/11.html"),
     lpic1: ["lpic/101/1.html","lpic/102/2.html","lpic/103/3.html","lpic/104/4.html","lpic/105/5.html","lpic/106/106.html","lpic/107/7.html","lpic/108/8.html","lpic/109/9.html","lpic/110/10.html"],
-    docker: ["docker/1/1.html","docker/2/2.html",""]
+    docker: ["docker/1/1.html","docker/2/2.html","docker/3/3.html"],
+    kubernetes: ["","","","","","","","","","",""]
   };
   params() {
     const p = new URLSearchParams(location.search);
-    const cp = p.get('c'); const c = (cp === 'lpic1' || cp === 'docker') ? cp : 'rhcsa';
+    const cp = p.get('c'); const c = (cp === 'lpic1' || cp === 'docker' || cp === 'kubernetes') ? cp : 'rhcsa';
     let m = parseInt(p.get('m') || '0', 10); if (isNaN(m) || m < 0) m = 0;
     const list = this.files[c]; if (m >= list.length) m = list.length - 1;
     return { c, m, list };
@@ -224,8 +225,8 @@ class Component extends DCLogic {
   setMeta() {
     try {
       const { c, m, list } = this.params();
-      const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : 'RHCSA';
-      const unit = c === 'docker' ? 'Clase' : 'Tema';
+      const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : c === 'kubernetes' ? 'Kubernetes' : 'RHCSA';
+      const unit = (c === 'docker' || c === 'kubernetes') ? 'Clase' : 'Tema';
       const t = courseName + ' · ' + unit + ' ' + (m + 1) + ' de ' + list.length + ' · S2KTUX';
       const desc = 'Lección ' + (m + 1) + ' del curso ' + courseName + ': teoría, ejemplos e imágenes para preparar tu certificación Linux.';
       const base = 'https://s2ktux.github.io/leccion.html?c=' + c + '&m=' + m;
@@ -308,7 +309,7 @@ class Component extends DCLogic {
   }
   async load() {
     const { c, m, list } = this.params();
-    if (c === 'docker' && !list[m]) { this.renderComingSoon(m); return; }
+    if ((c === 'docker' || c === 'kubernetes') && !list[m]) { this.renderComingSoon(m); return; }
     try {
       const CDN = 'https://cdn.jsdelivr.net/gh/S2KTUX/s2ktux.github.io@main/images/';
       let html;
@@ -333,11 +334,13 @@ class Component extends DCLogic {
   }
   renderComingSoon(m) {
     const el = this.lessonEl; if (!el) return;
-    const mod = (((window.S2KTUX_COURSES || {}).docker) || { modules: [] }).modules[m] || {};
+    const { c } = this.params();
+    const mod = (((window.S2KTUX_COURSES || {})[c]) || { modules: [] }).modules[m] || {};
     const title = mod.title || ('Clase ' + (m + 1));
-    const topics = (mod.topics || []).map(t => '<li>' + t + '</li>').join('');
+    const topics = (c === 'kubernetes') ? '' : (mod.topics || []).map(t => '<li>' + t + '</li>').join('');
+    const badgeTxt = (c === 'kubernetes') ? 'CKA' : 'DOCKER';
     el.innerHTML = '<div class="lesson-wrapper"><div class="lesson-header">'
-      + '<span class="badge" style="background:#6b8e9e">DOCKER \u00b7 CLASE ' + (m + 1) + '</span>'
+      + '<span class="badge" style="background:#6b8e9e">' + badgeTxt + ' \u00b7 CLASE ' + (m + 1) + '</span>'
       + '<h1>' + title + '</h1>'
       + '<p>Esta clase est\u00e1 en preparaci\u00f3n. Muy pronto tendr\u00e1s aqu\u00ed la teor\u00eda, los ejemplos y los laboratorios.</p></div>'
       + '<div class="lesson-alert" style="text-align:center;border-left-color:#6b8e9e !important;font-family:\'Press Start 2P\',monospace;font-size:12px;line-height:1.8">\u23f3 PR\u00d3XIMAMENTE</div>'
@@ -346,8 +349,8 @@ class Component extends DCLogic {
   }
   renderVals() {
     const { c, m, list } = this.params();
-    const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : 'RHCSA';
-    const unit = c === 'docker' ? 'Clase' : 'Tema';
+    const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : c === 'kubernetes' ? 'Kubernetes' : 'RHCSA';
+    const unit = (c === 'docker' || c === 'kubernetes') ? 'Clase' : 'Tema';
     return {
       status: this.state.status,
       lessonRef: (el) => { this.lessonEl = el; },
