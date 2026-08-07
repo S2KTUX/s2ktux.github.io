@@ -311,17 +311,15 @@ class Component extends DCLogic {
     const { c, m, list } = this.params();
     if ((c === 'docker' || c === 'kubernetes') && !list[m]) { this.renderComingSoon(m); return; }
     try {
-      const CDN = 'https://cdn.jsdelivr.net/gh/S2KTUX/s2ktux.github.io@main/images/';
       let html;
-      const CACHE = 's2ktux-lesson:v2:' + list[m];
+      const CACHE = 's2ktux-lesson:v3:' + list[m];
       try { const raw = sessionStorage.getItem(CACHE); if (raw) { const o = JSON.parse(raw); if (o && o.ts && (Date.now() - o.ts) < 300000) html = o.html; } } catch (e) { html = null; }
       if (html == null) {
         const res = await fetch(list[m], { cache: 'no-cache' });
         if (!res.ok) throw new Error("HTTP " + res.status);
         html = await res.text();
         html = html.replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<link[^>]*>/gi, '');
-        // imágenes servidas por CDN (jsDelivr) + carga diferida
-        html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2' + CDN);
+        // imágenes servidas desde el propio dominio (/images/) + carga diferida
         html = html.replace(/<img /gi, '<img loading="lazy" decoding="async" ');
         try { sessionStorage.setItem(CACHE, JSON.stringify({ ts: Date.now(), html: html })); } catch (e) {}
       }
