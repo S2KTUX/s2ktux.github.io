@@ -62,7 +62,7 @@ docker info</code></pre>
                 <pre><code>sudo usermod -aG docker $USER</code></pre>
                 <p>Y lanzamos una imagen de prueba:</p>
                 <pre><code>docker run hello-world</code></pre>
-                <img src="/images/Instalacion-Docker.png" alt="Instalación de Docker">
+                <img src="/images/Instalacion-Docker.png" width="812" height="659" alt="Instalación de Docker">
             </section>
 
             <section id="obj5" class="lesson-section">
@@ -72,12 +72,12 @@ docker info</code></pre>
                 <p>Esto nos devuelve una lista de imágenes disponibles en DockerHub. Es solo una consulta: no podemos ejecutar un resultado directamente. Para ejecutar la imagen:</p>
                 <pre><code>docker run nginx</code></pre>
                 <p>Si no tenemos la imagen en local, Docker hace un <code>pull</code>, la descarga y ejecuta el contenedor en primer plano. Se queda escuchando, pero no podremos escribir nada ni acceder desde el navegador, porque no hemos publicado ningún puerto.</p>
-                <img src="/images/Primer-paso-run.png" alt="Primer docker run">
+                <img src="/images/Primer-paso-run.png" width="1009" height="989" alt="Primer docker run">
                 <p>Si abrimos otra terminal y lanzamos <code>docker ps</code>, veremos que está corriendo.</p>
                 <p>Para poder verlo desde el navegador y dejarlo en segundo plano:</p>
                 <pre><code>docker run -d --name TEST -p 8080:80 nginx</code></pre>
                 <p>Con <code>-d</code> lo mandamos a segundo plano y con <code>-p 8080:80</code> hacemos que el puerto 8080 del host apunte al puerto 80 del contenedor, de modo que podamos acceder desde fuera. El orden es siempre <strong>host:contenedor</strong>.</p>
-                <img src="/images/primer-paso-2doplano.png" alt="Contenedor en segundo plano">
+                <img src="/images/primer-paso-2doplano.png" width="1238" height="182" alt="Contenedor en segundo plano">
                 <p>Iremos viendo todos los parámetros, pero los principales son:</p>
                 <table>
                     <thead>
@@ -114,18 +114,18 @@ docker rm TEST          # también vale el CONTAINER ID
 docker container prune  # borra todos los contenedores parados</code></pre>
                 <p>Por último, es interesante conocer los logs de nuestro contenedor. El <code>-f</code> (follow) nos deja verlos en vivo, según se van generando:</p>
                 <pre><code>docker logs -f ID-CONTENEDOR</code></pre>
-                <img src="/images/primer-paso-final.png" alt="docker ps y logs">
+                <img src="/images/primer-paso-final.png" width="1402" height="954" alt="docker ps y logs">
             </section>
 
             <section id="obj6" class="lesson-section">
                 <h3>6. Ciclo de vida de un contenedor</h3>
                 <p>Para entender el ciclo de vida hay que distinguir primero entre contenedores de <strong>aplicaciones</strong> (web, base de datos…) y contenedores con un <strong>sistema Linux mínimo</strong> (alpine, ubuntu).</p>
                 <p>Un contenedor vive mientras vive su proceso principal. Por eso, si lanzamos <code>docker run alpine</code> a secas, no encuentra nada que hacer y finaliza al instante. Para que no muera hay que darle un proceso, y lo indicamos al final del comando:</p>
-                <img src="/images/ciclo-1.png" alt="Ciclo de vida de un contenedor">
+                <img src="/images/ciclo-1.png" width="1004" height="291" alt="Ciclo de vida de un contenedor">
                 <p>El problema es que ejecuta ese comando y muere. Podemos usar un comando que lo mantenga "vivo", como <code>sleep</code> (sin olvidar el <code>-d</code> para lanzarlo en segundo plano), y entrar después al contenedor si lo necesitamos:</p>
                 <pre><code>docker run -d --name PRUEBA alpine sleep 3600
 docker exec -it PRUEBA sh</code></pre>
-                <img src="/images/ciclo-2.png" alt="docker exec en un contenedor vivo">
+                <img src="/images/ciclo-2.png" width="738" height="298" alt="docker exec en un contenedor vivo">
                 <p>Si lo que queremos es lanzar el Linux mínimo directamente en modo interactivo, lo hacemos todo en un solo comando (siendo <code>sh</code> la shell desde la que ejecutaremos los comandos):</p>
                 <pre><code>docker run -it alpine sh</code></pre>
                 <p>Tenemos que entender claramente la diferencia: <strong><code>run</code> crea un contenedor nuevo</strong> y <strong><code>exec</code> entra en uno que ya está en marcha</strong>.</p>
@@ -144,14 +144,14 @@ docker kill NAME    # fuerza la parada</code></pre>
                 <pre><code>docker pull mariadb
 docker images
 docker history mariadb</code></pre>
-                <img src="/images/do-image-1.png" alt="docker pull e images">
-                <img src="/images/do-image-2.png" alt="docker history">
+                <img src="/images/do-image-1.png" width="814" height="548" alt="docker pull e images">
+                <img src="/images/do-image-2.png" width="1007" height="535" alt="docker history">
                 <p>Y como vimos antes, podemos buscar imágenes desde la terminal con <code>docker search mariadb</code>.</p>
                 <p>Para borrar imágenes tenemos <code>docker rmi</code>, o <code>docker image prune</code> para eliminar las que nadie usa. Si la imagen está en uso no se borrará, a no ser que usemos <code>-f</code>. Para borrar también las que no están etiquetadas —el caso más habitual— añadimos <code>-a</code>:</p>
                 <pre><code>docker rmi mariadb
 docker image prune
 docker image prune -a</code></pre>
-                <img src="/images/do-image-3.png" alt="docker image prune">
+                <img src="/images/do-image-3.png" width="917" height="994" alt="docker image prune">
             </section>
 
             <section id="obj8" class="lesson-section">
@@ -182,13 +182,13 @@ RUN zypper -n install nginx
 COPY index.html /srv/www/htdocs/
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]</code></pre>
-                <img src="/images/Docker-build-1.png" alt="Dockerfile de ejemplo">
-                <img src="/images/Docker-build-2.png" alt="Construcción de la imagen">
+                <img src="/images/Docker-build-1.png" width="1101" height="887" alt="Dockerfile de ejemplo">
+                <img src="/images/Docker-build-2.png" width="960" height="721" alt="Construcción de la imagen">
                 <p>En este Dockerfile partimos de openSUSE Leap (<code>FROM</code>), instalamos nginx durante la construcción con zypper (<code>RUN</code>) y copiamos el <code>index.html</code> a donde nginx sirve las páginas (<code>COPY</code>). <code>EXPOSE</code> solo informa del puerto 80 —para publicarlo sigue haciendo falta el <code>-p</code>—, y <code>CMD</code> arranca nginx con <code>daemon off;</code> en primer plano, para que el proceso no muera y el contenedor siga vivo.</p>
                 <p>Una vez escrito el Dockerfile, construimos la imagen y la lanzamos. El punto final del <code>build</code> indica el contexto, es decir, el directorio donde está el Dockerfile:</p>
                 <pre><code>docker build -t NAME .
 docker run -d --name TEST -p 8080:80 NAME</code></pre>
-                <img src="/images/Docker-build-3.png" alt="docker build y run">
+                <img src="/images/Docker-build-3.png" width="1676" height="214" alt="docker build y run">
 
                 <h4>Orden de las instrucciones</h4>
                 <p>Docker construye por capas y las cachea. Poner arriba lo que menos cambia y abajo lo que más cambia hace que las reconstrucciones sean mucho más rápidas.</p>
