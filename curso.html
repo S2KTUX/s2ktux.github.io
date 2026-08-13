@@ -127,6 +127,7 @@
 </section>
 
 <section style="max-width:1100px;margin:0 auto;width:100%;padding:6px 32px 50px;display:flex;flex-direction:column;gap:20px">
+  <sc-if value="{{ hasModules }}" hint-placeholder-val="{{ true }}">
   <sc-for list="{{ modules }}" as="mod" hint-placeholder-count="6">
     <a href="{{ mod.href }}" class="modcard" style="display:block;background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);text-decoration:none">
       <div style="display:flex;align-items:center;gap:18px;padding:24px 26px">
@@ -140,6 +141,13 @@
       </div>
     </a>
   </sc-for>
+  </sc-if>
+  <sc-if value="{{ noModules }}" hint-placeholder-val="{{ false }}">
+    <div style="background:var(--surface);border:3px dashed #b89b78;padding:40px 30px;text-align:center">
+      <div style="font-family:'Press Start 2P',monospace;font-size:16px;color:var(--head);margin-bottom:14px">PRÓXIMAMENTE</div>
+      <div style="font-size:19px;color:var(--muted)">Este curso está en preparación. Vuelve pronto.</div>
+    </div>
+  </sc-if>
 </section>
 
 <footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
@@ -206,6 +214,8 @@ class Component extends DCLogic {
       title: data.title, subtitle: data.subtitle,
       moduleCount: data.modules.length, topicCount,
       readLabel: readCount + "/" + data.modules.length + " leídas",
+      hasModules: data.modules.length > 0,
+      noModules: data.modules.length === 0,
       modules
     };
   }

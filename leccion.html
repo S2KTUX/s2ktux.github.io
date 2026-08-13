@@ -216,7 +216,7 @@ class Component extends DCLogic {
   };
   params() {
     const p = new URLSearchParams(location.search);
-    const cp = p.get('c'); const c = (cp === 'lpic1' || cp === 'docker' || cp === 'kubernetes') ? cp : 'rhcsa';
+    const cp = p.get('c'); const c = (cp === 'lpic1' || cp === 'docker' || cp === 'kubernetes' || cp === 'aws' || cp === 'rhce') ? cp : 'rhcsa';
     let m = parseInt(p.get('m') || '0', 10); if (isNaN(m) || m < 0) m = 0;
     const list = this.files[c]; if (m >= list.length) m = list.length - 1;
     return { c, m, list };
@@ -311,15 +311,17 @@ class Component extends DCLogic {
     const { c, m, list } = this.params();
     if ((c === 'docker' || c === 'kubernetes') && !list[m]) { this.renderComingSoon(m); return; }
     try {
+      const CDN = 'https://cdn.jsdelivr.net/gh/S2KTUX/s2ktux.github.io@main/images/';
       let html;
-      const CACHE = 's2ktux-lesson:v3:' + list[m];
+      const CACHE = 's2ktux-lesson:v2:' + list[m];
       try { const raw = sessionStorage.getItem(CACHE); if (raw) { const o = JSON.parse(raw); if (o && o.ts && (Date.now() - o.ts) < 300000) html = o.html; } } catch (e) { html = null; }
       if (html == null) {
         const res = await fetch(list[m], { cache: 'no-cache' });
         if (!res.ok) throw new Error("HTTP " + res.status);
         html = await res.text();
         html = html.replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<link[^>]*>/gi, '');
-        // imágenes servidas desde el propio dominio (/images/) + carga diferida
+        // imágenes servidas por CDN (jsDelivr) + carga diferida
+        html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2' + CDN);
         html = html.replace(/<img /gi, '<img loading="lazy" decoding="async" ');
         try { sessionStorage.setItem(CACHE, JSON.stringify({ ts: Date.now(), html: html })); } catch (e) {}
       }

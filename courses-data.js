@@ -111,3 +111,19 @@ window.S2KTUX_COURSES = {
     ]
   }
 };
+
+window.S2KTUX_COURSES.aws = {
+  id: "aws", badge: "AWS", badgeColor: "#e0a458",
+  title: "AWS Cloud Practitioner",
+  subtitle: "El presente y futuro: la nube (sus bases).",
+  note: "Próximamente.",
+  modules: []
+};
+
+window.S2KTUX_COURSES.rhce = {
+  id: "rhce", badge: "RED HAT", badgeColor: "#d97757",
+  title: "RHCE",
+  subtitle: "Automatización con Ansible. Certificado superior.",
+  note: "Próximamente.",
+  modules: []
+};

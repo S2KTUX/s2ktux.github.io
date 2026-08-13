@@ -111,8 +111,45 @@
   document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateIcons,150); });
   setTimeout(updateIcons,150); setTimeout(updateIcons,600);
 })();
+(function(){
+  function applyModeUI(){
+    var sel=document.getElementById('mode-select');
+    var mode=null; try{ mode=localStorage.getItem('s2ktux-term-mode'); }catch(e){}
+    if(sel) sel.style.display = mode ? 'none' : 'flex';
+  }
+  document.addEventListener('click', function(e){
+    var b = e.target && e.target.closest && e.target.closest('[data-pick-mode]');
+    if(b){ try{ localStorage.setItem('s2ktux-term-mode', b.getAttribute('data-pick-mode')); }catch(err){} location.reload(); return; }
+    var cm = e.target && e.target.closest && e.target.closest('[data-change-mode]');
+    if(cm){ try{ localStorage.removeItem('s2ktux-term-mode'); }catch(err){} location.reload(); }
+  });
+  document.addEventListener('DOMContentLoaded', applyModeUI);
+  applyModeUI();
+  var __modeTries=0; var __modeIv=setInterval(function(){ __modeTries++; var sel=document.getElementById('mode-select'); if(sel || __modeTries>100){ applyModeUI(); clearInterval(__modeIv); } }, 50);
+})();
 </script>
 </helmet>
+
+<div id="mode-select" style="position:fixed;inset:0;z-index:500;background:var(--bg);display:none;align-items:center;justify-content:center;padding:24px">
+  <div style="max-width:800px;width:100%;text-align:center">
+    <div style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">SANDBOX · elige qué practicar</div>
+    <h1 style="font-family:'Press Start 2P',monospace;font-size:22px;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:34px">¿Qué terminal quieres abrir?</h1>
+    <div style="display:flex;gap:22px;justify-content:center;flex-wrap:wrap">
+      <button data-pick-mode="linux" class="pxbtn" style="width:210px;background:var(--surface);border:3px solid var(--line);box-shadow:6px 6px 0 var(--surface2);padding:28px 18px;cursor:pointer;text-align:center">
+        <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head);margin-bottom:10px">LINUX</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">RHCSA · LPIC-1<br>usuarios, permisos, LVM, red…</div>
+      </button>
+      <button data-pick-mode="docker" class="pxbtn" style="width:210px;background:var(--surface);border:3px solid var(--line);box-shadow:6px 6px 0 var(--surface2);padding:28px 18px;cursor:pointer;text-align:center">
+        <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head);margin-bottom:10px">DOCKER</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">Contenedores · Podman<br>imágenes, volúmenes, compose…</div>
+      </button>
+      <button data-pick-mode="kubernetes" class="pxbtn" style="width:210px;background:var(--surface);border:3px solid var(--line);box-shadow:6px 6px 0 var(--surface2);padding:28px 18px;cursor:pointer;text-align:center">
+        <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head);margin-bottom:10px">KUBERNETES</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">CKA<br>cheatsheet y prácticas — motor próximamente</div>
+      </button>
+    </div>
+  </div>
+</div>
 
 <div style="min-height:100vh;display:flex;flex-direction:column">
 <div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
@@ -123,6 +160,7 @@
       <a class="navlink" href="cursos.html">Cursos</a>
       <a class="navlink" href="terminal.html" style="color:var(--head);border-bottom:3px solid #d97757">Terminal</a>
       <a class="navlink" href="proyectos.html">Proyectos</a>
+      <button data-change-mode class="pxbtn" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'Share Tech Mono',monospace;font-size:15px;padding:6px 12px">Cambiar modo</button>
       <button data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
     </div>
   </div>
@@ -158,19 +196,27 @@
   <details class="cs" open>
     <summary>CHEATSHEET · comandos (usa man para las opciones)</summary>
     <div class="cs-tabs">
-      <div class="cs-tab" data-cs-tab="files" data-active="1">Ficheros</div>
-      <div class="cs-tab" data-cs-tab="perms" data-active="0">Permisos y ACL</div>
-      <div class="cs-tab" data-cs-tab="users" data-active="0">Usuarios</div>
-      <div class="cs-tab" data-cs-tab="proc" data-active="0">Procesos y servicios</div>
-      <div class="cs-tab" data-cs-tab="pkg" data-active="0">Paquetes</div>
-      <div class="cs-tab" data-cs-tab="store" data-active="0">Almacenamiento</div>
-      <div class="cs-tab" data-cs-tab="net" data-active="0">Red</div>
-      <div class="cs-tab" data-cs-tab="selinux" data-active="0">SELinux</div>
-      <div class="cs-tab" data-cs-tab="cont" data-active="0">Contenedores</div>
-      <div class="cs-tab" data-cs-tab="compose" data-active="0">Docker Compose</div>
-      <div class="cs-tab" data-cs-tab="sys" data-active="0">Sistema</div>
-      <div class="cs-tab" data-cs-tab="lab" data-active="0">Red del lab</div>
-      <div class="cs-tab" data-cs-tab="k8s" data-active="0">Kubernetes</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="files" data-active="1">Ficheros</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="perms" data-active="0">Permisos y ACL</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="users" data-active="0">Usuarios</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="proc" data-active="0">Procesos y servicios</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="pkg" data-active="0">Paquetes</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="store" data-active="0">Almacenamiento</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="net" data-active="0">Red</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="selinux" data-active="0">SELinux</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="cont" data-active="0">Contenedores</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="compose" data-active="0">Docker Compose</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="sys" data-active="0">Sistema</div>
+      <div class="cs-tab" data-modes="linux,docker" data-cs-tab="lab" data-active="0">Red del lab</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-cluster" data-active="0">Clúster y Pods</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-work" data-active="0">Workloads</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-cfg" data-active="0">Config</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-sched" data-active="0">Scheduling</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-store" data-active="0">Storage</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-net" data-active="0">Servicios y Red</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-rbac" data-active="0">RBAC</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-admin" data-active="0">Administración</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-trouble" data-active="0">Troubleshooting</div>
     </div>
 
     <div class="cs-panel" data-cs-panel="files" data-active="1">
@@ -302,8 +348,78 @@
       <div class="csrow"><span class="cscmd">node1 · 192.168.1.12</span><span class="csdesc">Próximamente: nodo para Ansible y Kubernetes.</span></div>
     </div>
     </div>
-    <div class="cs-panel" data-cs-panel="k8s" data-active="0">
-      <div style="margin:10px 22px 4px;padding:11px 15px;background:var(--surface2);border:3px dashed #b89b78;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--head)">⏳ El módulo interactivo de Kubernetes llegará muy pronto al sandbox.</div>
+    <div class="cs-panel" data-cs-panel="k8s-cluster" data-active="0">
+      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">⏳ El motor interactivo de <span style="color:#d97757">kubectl</span> llega próximamente. De momento, esta es la referencia CKA completa.</div>
+      <div class="csrow"><span class="cscmd">kubectl cluster-info</span><span class="csdesc">Info del control plane.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl get nodes -o wide</span><span class="csdesc">Nodos del clúster y su estado.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl get pods -A</span><span class="csdesc">Todos los pods, todos los namespaces.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl describe pod NOMBRE</span><span class="csdesc">Detalle completo + eventos.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl explain pod.spec</span><span class="csdesc">Documentación de un campo del API.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl config get-contexts / use-context</span><span class="csdesc">Ver y cambiar de clúster/contexto.</span></div>
+      <div class="csrow"><span class="cscmd">minikube start · kind create cluster</span><span class="csdesc">Levantar un clúster de práctica local.</span></div>
+    </div>
+    <div class="cs-panel" data-cs-panel="k8s-work" data-active="0">
+      <div class="csrow"><span class="cscmd">kubectl run NOMBRE --image=IMG</span><span class="csdesc">Pod suelto (debug rápido).</span></div>
+      <div class="csrow"><span class="cscmd">kubectl create deployment NOMBRE --image=IMG</span><span class="csdesc">Deployment con su ReplicaSet.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl scale deployment NOMBRE --replicas=N</span><span class="csdesc">Escalar réplicas.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl rollout status/history/undo deployment NOMBRE</span><span class="csdesc">Estado, historial y rollback.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl apply -f fichero.yaml</span><span class="csdesc">Aplica el estado declarado (YAML).</span></div>
+      <div class="csrow"><span class="cscmd">kubectl edit deployment NOMBRE</span><span class="csdesc">Edita el recurso en caliente.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl delete -f fichero.yaml</span><span class="csdesc">Elimina lo declarado en el fichero.</span></div>
+    </div>
+    <div class="cs-panel" data-cs-panel="k8s-cfg" data-active="0">
+      <div class="csrow"><span class="cscmd">kubectl create configmap N --from-literal=k=v</span><span class="csdesc">Configuración no sensible.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl create secret generic N --from-literal=k=v</span><span class="csdesc">Configuración sensible (base64, no cifrado).</span></div>
+      <div class="csrow"><span class="cscmd">envFrom / valueFrom.configMapKeyRef</span><span class="csdesc">Inyectar como variables de entorno del Pod.</span></div>
+      <div class="csrow"><span class="cscmd">volumeMounts + configMap/secret como volumen</span><span class="csdesc">Inyectar como ficheros dentro del contenedor.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl get secret N -o jsonpath='{.data.k}' | base64 -d</span><span class="csdesc">Leer el valor real de un secret.</span></div>
+    </div>
+    <div class="cs-panel" data-cs-panel="k8s-sched" data-active="0">
+      <div class="csrow"><span class="cscmd">resources.requests / resources.limits</span><span class="csdesc">Reserva mínima y techo de CPU/memoria por contenedor.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl describe node NODO</span><span class="csdesc">Capacidad del nodo y lo ya reservado.</span></div>
+      <div class="csrow"><span class="cscmd">nodeSelector: disktype: ssd</span><span class="csdesc">Fuerza el pod a nodos con esa etiqueta.</span></div>
+      <div class="csrow"><span class="cscmd">affinity / anti-affinity</span><span class="csdesc">Reglas finas de "cerca de" / "lejos de" otros pods o nodos.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl taint NODO clave=valor:Effect</span><span class="csdesc">El nodo repele pods salvo que los toleren.</span></div>
+      <div class="csrow"><span class="cscmd">tolerations</span><span class="csdesc">Permite a un pod aceptar un taint concreto.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl cordon/drain/uncordon NODO</span><span class="csdesc">Sacar un nodo de servicio para mantenimiento.</span></div>
+    </div>
+    <div class="cs-panel" data-cs-panel="k8s-store" data-active="0">
+      <div class="csrow"><span class="cscmd">PersistentVolume (PV)</span><span class="csdesc">Almacenamiento real, lo provee el clúster/admin.</span></div>
+      <div class="csrow"><span class="cscmd">PersistentVolumeClaim (PVC)</span><span class="csdesc">Petición de almacenamiento que hace una app.</span></div>
+      <div class="csrow"><span class="cscmd">StorageClass</span><span class="csdesc">Plantilla para aprovisionar PVs de forma dinámica.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl get pv,pvc</span><span class="csdesc">Ver volúmenes y sus peticiones.</span></div>
+      <div class="csrow"><span class="cscmd">accessModes: RWO / ROX / RWX</span><span class="csdesc">Cómo se puede montar (uno, varios en lectura, varios en escritura).</span></div>
+    </div>
+    <div class="cs-panel" data-cs-panel="k8s-net" data-active="0">
+      <div class="csrow"><span class="cscmd">Service ClusterIP</span><span class="csdesc">IP estable interna para un grupo de pods (por defecto).</span></div>
+      <div class="csrow"><span class="cscmd">Service NodePort / LoadBalancer</span><span class="csdesc">Exposición hacia fuera del clúster.</span></div>
+      <div class="csrow"><span class="cscmd">CoreDNS</span><span class="csdesc">Resuelve Services por nombre (servicio.namespace).</span></div>
+      <div class="csrow"><span class="cscmd">Ingress</span><span class="csdesc">Enruta HTTP/HTTPS por host/ruta a varios Services.</span></div>
+      <div class="csrow"><span class="cscmd">Gateway API</span><span class="csdesc">El sucesor de Ingress (GatewayClass, Gateway, HTTPRoute).</span></div>
+      <div class="csrow"><span class="cscmd">NetworkPolicy</span><span class="csdesc">Reglas de firewall entre pods.</span></div>
+    </div>
+    <div class="cs-panel" data-cs-panel="k8s-rbac" data-active="0">
+      <div class="csrow"><span class="cscmd">Role / ClusterRole</span><span class="csdesc">Permisos dentro de un namespace / en todo el clúster.</span></div>
+      <div class="csrow"><span class="cscmd">RoleBinding / ClusterRoleBinding</span><span class="csdesc">Asigna un Role a un usuario o ServiceAccount.</span></div>
+      <div class="csrow"><span class="cscmd">ServiceAccount</span><span class="csdesc">"Usuario" para procesos que corren dentro del clúster (pods).</span></div>
+      <div class="csrow"><span class="cscmd">kubectl auth can-i VERBO RECURSO</span><span class="csdesc">Comprueba si tienes permiso para algo.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl create token SERVICEACCOUNT</span><span class="csdesc">Genera un token de acceso.</span></div>
+    </div>
+    <div class="cs-panel" data-cs-panel="k8s-admin" data-active="0">
+      <div class="csrow"><span class="cscmd">kubeadm init / kubeadm join</span><span class="csdesc">Arrancar el control plane / unir un nodo nuevo.</span></div>
+      <div class="csrow"><span class="cscmd">kubeadm upgrade plan/apply</span><span class="csdesc">Subir de versión el clúster.</span></div>
+      <div class="csrow"><span class="cscmd">etcdctl snapshot save/restore</span><span class="csdesc">Copia de seguridad y restauración de etcd.</span></div>
+      <div class="csrow"><span class="cscmd">helm install/upgrade/uninstall</span><span class="csdesc">Gestor de paquetes de Kubernetes (charts).</span></div>
+      <div class="csrow"><span class="cscmd">kustomize build · kubectl apply -k</span><span class="csdesc">Variantes de manifiestos sin plantillas.</span></div>
+    </div>
+    <div class="cs-panel" data-cs-panel="k8s-trouble" data-active="0">
+      <div class="csrow"><span class="cscmd">kubectl get events --sort-by=.lastTimestamp</span><span class="csdesc">Qué ha pasado últimamente en el clúster.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl logs POD -c CONTENEDOR --previous</span><span class="csdesc">Logs del contenedor, incluso si reinició.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl describe pod POD</span><span class="csdesc">Motivo real de un Pending/CrashLoopBackOff.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl get pods -o wide</span><span class="csdesc">En qué nodo está y su IP.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl exec -it POD -- sh</span><span class="csdesc">Entrar a inspeccionar desde dentro.</span></div>
+      <div class="csrow"><span class="cscmd">systemctl status kubelet (en el nodo)</span><span class="csdesc">Diagnóstico cuando un nodo está NotReady.</span></div>
+    </div>
     </div>
     </details>
 </section>
@@ -350,6 +466,19 @@ class Component extends DCLogic {
     const promptEl = document.querySelector('#term-prompt');
     const titleEl = document.querySelector('#term-title');
     if (!body || !input) return;
+
+    let MODE = 'linux'; try{ MODE = localStorage.getItem('s2ktux-term-mode') || 'linux'; }catch(e){}
+    { const sel=document.getElementById('mode-select'); if(sel){ let m=null; try{ m=localStorage.getItem('s2ktux-term-mode'); }catch(e){} sel.style.display = m?'none':'flex'; if(!m) input.disabled = true; } }
+    document.querySelectorAll('.cs-tab').forEach(t=>{ const modes=(t.getAttribute('data-modes')||'').split(','); const show=modes.indexOf(MODE)!==-1; t.style.display = show?'':'none'; });
+    { const tabs=[...document.querySelectorAll('.cs-tab')].filter(t=>t.style.display!=='none'); const panels=[...document.querySelectorAll('.cs-panel')];
+      tabs.forEach((t,i)=>t.setAttribute('data-active', i===0?'1':'0'));
+      const firstKey = tabs[0] && tabs[0].getAttribute('data-cs-tab');
+      panels.forEach(p=>p.setAttribute('data-active', p.getAttribute('data-cs-panel')===firstKey?'1':'0'));
+    }
+    if(MODE==='kubernetes'){
+      document.querySelectorAll('#term-reboot,#term-rebootm,#term-reset,#term-solved').forEach(b=>{ if(b) b.style.display='none'; });
+      const h1=document.querySelector('h1'); if(h1 && h1.textContent.indexOf('Terminal')!==-1) h1.textContent='Terminal S2KTUX · Kubernetes';
+    }
 
     const dir = (children, o) => ({ type:'dir', children:children||{}, mode:'rwxr-xr-x', owner:(o&&o.owner)||'root', group:(o&&o.group)||'root' });
     const file = (content, o) => ({ type:'file', content:content||'', mode:(o&&o.mode)||'rw-r--r--', owner:(o&&o.owner)||'root', group:(o&&o.group)||'root' });
@@ -1863,7 +1992,7 @@ class Component extends DCLogic {
     // ---------------- restore scrollback ----------------
     if(savedScroll && loggedIn){ [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); savedScroll.forEach(it=>{ const d=document.createElement('div'); d.className='term-out'; if(it.c) d.style.color=it.c; d.innerHTML=it.h; body.insertBefore(d,line); }); }
 
-    const CMDS = ['help','clear','reset','pwd','whoami','id','groups','uname','hostname','hostnamectl','date','uptime','free','env','history','man','which','echo','ls','cd','cat','head','tail','wc','sort','uniq','nl','mkdir','rmdir','touch','rm','cp','mv','ln','find','grep','stat','file','tree','umask','chmod','chown','chgrp','getfacl','setfacl','getenforce','setenforce','sestatus','getsebool','setsebool','semanage','restorecon','chcon','chage','crontab','timedatectl','tuned-adm','pvcreate','vgcreate','vgextend','lvcreate','lvextend','lvresize','lvremove','vgremove','pvremove','xfs_growfs','resize2fs','mkswap','swapon','getent','visudo','useradd','userdel','usermod','groupadd','passwd','su','exit','logout','ps','top','pgrep','kill','systemctl','journalctl','dnf','yum','apt','rpm','df','du','lsblk','blkid','fdisk','parted','mkfs.xfs','mkfs.ext4','mount','umount','pvs','vgs','lvs','ip','ifup','ifdown','ss','ping','nmcli','firewall-cmd','docker','podman','docker-compose','kubectl','sudo','vi','nano','tar','neofetch','reboot','poweroff','chroot','systemd-run','ssh','ssh-keygen','ssh-copy-id','scp','nice','renice','chronyc','labhosts','lvreduce','at','atq','atrm','sed','awk','loginctl','nmtui','gzip','gunzip','bzip2','bunzip2','logger','curl','wget'].sort();
+    const CMDS = ['help','clear','reset','pwd','whoami','id','groups','uname','hostname','hostnamectl','date','uptime','free','env','history','man','which','echo','ls','cd','cat','head','tail','wc','sort','uniq','nl','mkdir','rmdir','touch','rm','cp','mv','ln','find','grep','stat','file','tree','umask','chmod','chown','chgrp','getfacl','setfacl','getenforce','setenforce','sestatus','getsebool','setsebool','semanage','restorecon','chcon','chage','crontab','timedatectl','tuned-adm','pvcreate','vgcreate','vgextend','lvcreate','lvextend','lvresize','lvremove','vgremove','pvremove','xfs_growfs','resize2fs','mkswap','swapon','getent','visudo','useradd','userdel','usermod','groupadd','passwd','su','exit','logout','ps','top','pgrep','kill','systemctl','journalctl','dnf','yum','apt','rpm','df','du','lsblk','blkid','fdisk','parted','mkfs.xfs','mkfs.ext4','mount','umount','pvs','vgs','lvs','ip','ifup','ifdown','ss','ping','nmcli','firewall-cmd','docker','podman','docker-compose','kubectl','sudo','vi','nano','tar','neofetch','reboot','poweroff','chroot','systemd-run','ssh','ssh-keygen','ssh-copy-id','scp','nice','renice','chronyc','labhosts','lvreduce','at','atq','atrm','sed','awk','loginctl','nmtui','gzip','gunzip','bzip2','bunzip2','logger','curl','wget'].filter(k=>{ if(MODE==='linux') return ['docker','podman','docker-compose','kubectl'].indexOf(k)===-1; if(MODE==='docker') return k!=='kubectl'; return true; }).sort();
     CMDS.forEach(k=>{ const kk=k.replace(/\..*/,''); if(!MAN[kk]) MAN[kk]={ name:kk, sec:'1', s:kk+' [OPCIONES]...', d:'Orden de S2KTUX OS. Usa '+kk+' --help o consulta el cheatsheet de abajo para ver su uso.', o:[] }; });
     const COMPLETIONS = {
       journalctl:['-u','-f','-b','-n','-p','-k','-x','--since','--no-pager'],
@@ -2014,7 +2143,11 @@ class Component extends DCLogic {
       let pct=0; const iv=setInterval(()=>{ pct+=Math.floor(5+Math.random()*10); if(pct>100)pct=100; const f=Math.round(pct/5); bar.textContent='['+'#'.repeat(f)+'.'.repeat(20-f)+'] '+String(pct).padStart(3)+'%'; lbl.textContent=pasos[Math.min(pasos.length-1, Math.floor(pct/(100/pasos.length)))]; scroll(); if(pct>=100){ clearInterval(iv); setTimeout(()=>{ try{ localStorage.removeItem(STORE); localStorage.removeItem('s2ktux-chal-done-v7'); localStorage.removeItem('s2ktux-chal-manual-v7'); }catch(e){} location.reload(); }, 550); } }, 170);
       input.focus(); }); }
 
-    if(loggedIn){ setPrompt(); } else { startLogin(); }
+    if(MODE==='kubernetes'){
+      out('kubectl no está disponible todavía en el sandbox.','#e0a458');
+      out('Usa la cheatsheet CKA y las prácticas guiadas de aquí abajo mientras lo desarrollamos.','#a2957d');
+      currentUser='root'; loggedIn=true; setPrompt();
+    } else if(loggedIn){ setPrompt(); } else { startLogin(); }
     setTimeout(()=>{ input.focus(); scroll(); },100);
 
     // ---------------- prácticas guiadas ----------------
@@ -2083,17 +2216,40 @@ class Component extends DCLogic {
         goal:'Como el usuario <b>hermes</b> (créalo y accede por SSH): descarga <code>httpd</code>, crea el contenedor <b>webapp</b> mapeando <code>/opt/entrada</code>→<code>/data/in</code> y <code>/opt/salida</code>→<code>/data/out</code>, genera su servicio systemd de usuario, habilita <b>linger</b> y déjalo activo con <code>systemctl --user enable --now</code> para que arranque solo tras reiniciar.',
         check:()=>{ const ling=!!linger['hermes']; const uu=userUnits['hermes']||{}; const anyEnabled=Object.keys(uu).some(k=>uu[k]&&uu[k].enabled&&uu[k].active); return (ling&&anyEnabled)?{ok:true,msg:'Servicio rootless de hermes activo con linger.'}:{ok:false,msg:'Aún no lo has conseguido.'}; } }
     ];
+    const k8sChallenges = [
+      { badge:'CKA · CLÚSTER', title:'Inspecciona el estado del clúster',
+        goal:'Comprueba el estado del control plane y lista todos los nodos con su rol y versión de kubelet.' },
+      { badge:'CKA · WORKLOADS', title:'Despliega y escala una aplicación',
+        goal:'Crea un Deployment con 3 réplicas de una imagen dada, expórtalo con un Service, y practica un rollout (actualiza la imagen y haz un rollback).' },
+      { badge:'CKA · CONFIGURACIÓN', title:'Inyecta configuración sin tocar la imagen',
+        goal:'Crea un ConfigMap y un Secret, e inyecta ambos en un Pod: uno como variables de entorno y otro como ficheros montados.' },
+      { badge:'CKA · SCHEDULING', title:'Controla dónde corren tus pods',
+        goal:'Define requests/limits en un Pod, fuerza su ubicación con nodeSelector, y practica un taint con su toleration correspondiente.' },
+      { badge:'CKA · STORAGE', title:'Persistencia con PV y PVC',
+        goal:'Crea una StorageClass, una PersistentVolumeClaim que la use, y monta ese almacenamiento en un Pod.' },
+      { badge:'CKA · RED', title:'Expón un servicio y restringe el tráfico',
+        goal:'Publica un Deployment con un Service ClusterIP, añade un Ingress que lo enrute por host, y crea una NetworkPolicy que solo permita tráfico desde un namespace concreto.' },
+      { badge:'CKA · RBAC', title:'Da acceso limitado a un ServiceAccount',
+        goal:'Crea un ServiceAccount, un Role con permisos de solo lectura sobre pods, y un RoleBinding que los una. Comprueba el resultado con kubectl auth can-i.' },
+      { badge:'CKA · ADMINISTRACIÓN', title:'Sube de versión y respalda etcd',
+        goal:'Simula el flujo de un upgrade de clúster con kubeadm y realiza una copia de seguridad de etcd con etcdctl.' },
+      { badge:'CKA · TROUBLESHOOTING', title:'Diagnostica un pod que no arranca',
+        goal:'Un Pod está en CrashLoopBackOff. Usa describe, logs y events para encontrar la causa y corregirla.' },
+      { badge:'CKA · TROUBLESHOOTING', title:'Recupera un nodo NotReady',
+        goal:'Un nodo aparece como NotReady. Revisa el estado de kubelet en ese nodo y los eventos del clúster para diagnosticar el problema.' }
+    ];
     const selEl=document.querySelector('#chal-select'), bodyEl=document.querySelector('#chal-body'), resEl=document.querySelector('#chal-result'), btnEl=document.querySelector('#chal-check');
     if(selEl && bodyEl && btnEl){
-      const CHKEY='s2ktux-chal-done-v7'; let chalDone={}; try{ chalDone=JSON.parse(localStorage.getItem(CHKEY)||'{}')||{}; }catch(e){}
-      const updateProgress=()=>{ const pr=document.querySelector('#chal-progress'); if(!pr) return; const total=challenges.length; let done=0; for(let i=0;i<total;i++){ if(chalDone[i]) done++; } const pct=Math.round(done/total*100); pr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;font-family:&quot;Press Start 2P&quot;,monospace;font-size:10px;color:var(--head);margin-bottom:8px"><span>PROGRESO</span><span style="color:#8fa876">'+done+' / '+total+'  ('+pct+'%)</span></div><div style="height:16px;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:2px"><div style="height:100%;width:'+pct+'%;background:repeating-linear-gradient(90deg,#8fa876 0 10px,#7d9866 10px 12px);transition:width .3s"></div></div>'; };
-      challenges.forEach((c,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=(chalDone[i]?'✔ ':'')+(i+1)+'. '+c.title; selEl.appendChild(o); });
+      const CH = (MODE==='kubernetes') ? k8sChallenges : challenges;
+      const CHKEY='s2ktux-chal-done-v7'+(MODE==='kubernetes'?'-k8s':''); let chalDone={}; try{ chalDone=JSON.parse(localStorage.getItem(CHKEY)||'{}')||{}; }catch(e){}
+      const updateProgress=()=>{ const pr=document.querySelector('#chal-progress'); if(!pr) return; const total=CH.length; let done=0; for(let i=0;i<total;i++){ if(chalDone[i]) done++; } const pct=Math.round(done/total*100); pr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;font-family:&quot;Press Start 2P&quot;,monospace;font-size:10px;color:var(--head);margin-bottom:8px"><span>PROGRESO</span><span style="color:#8fa876">'+done+' / '+total+'  ('+pct+'%)</span></div><div style="height:16px;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:2px"><div style="height:100%;width:'+pct+'%;background:repeating-linear-gradient(90deg,#8fa876 0 10px,#7d9866 10px 12px);transition:width .3s"></div></div>'; };
+      CH.forEach((c,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=(chalDone[i]?'✔ ':'')+(i+1)+'. '+c.title; selEl.appendChild(o); });
       const showResult=(r)=>{ resEl.innerHTML='<span style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:11px;color:'+(r.ok?'#5a8a3c':'#c0392b')+'">'+(r.ok?'✔ CONSEGUIDO':'✗ TODAVÍA NO')+'</span> &nbsp;<span style="color:var(--text)">'+r.msg+'</span>'; };
-      const renderChal=()=>{ const i=selEl.value; const c=challenges[i]; bodyEl.innerHTML='<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">'+c.badge+(chalDone[i]?'  ✔ completado':'')+'</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">'+c.title+'</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">'+c.goal+'</div>'; if(chalDone[i]){ showResult({ok:true,msg:'Ya lo conseguiste antes.'}); } else { resEl.innerHTML=''; } };
+      const renderChal=()=>{ const i=selEl.value; const c=CH[i]; bodyEl.innerHTML='<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">'+c.badge+(chalDone[i]?'  ✔ completado':'')+'</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">'+c.title+'</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">'+c.goal+'</div>'; if(chalDone[i]){ showResult({ok:true,msg:'Ya lo conseguiste antes.'}); } else { resEl.innerHTML=''; } };
       selEl.addEventListener('change', renderChal); renderChal(); updateProgress();
-      const MKEY='s2ktux-chal-manual-v7'; let manualDone={}; try{ manualDone=JSON.parse(localStorage.getItem(MKEY)||'{}')||{}; }catch(e){}
-      const congrats=()=>{ const total=challenges.length; let m=0; for(let i=0;i<total;i++) if(manualDone[i]) m++; if(m>=total){ const d=document.querySelector('#chal-congrats'); if(d){ d.style.display='block'; d.innerHTML='<div style="margin-top:18px;padding:20px 22px;background:#1a2410;border:3px solid #8fa876;box-shadow:5px 5px 0 var(--line);text-align:center"><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:15px;color:#8fa876;line-height:1.6">🏆 FELICIDADES</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:12px;color:#e9ddc7;line-height:1.7;margin-top:12px">ESTÁS PREPARADO PARA RHCSA V9</div><div style="font-family:&quot;Share Tech Mono&quot;,monospace;font-size:15px;color:#a2957d;margin-top:12px">Has completado las 21 prácticas por tu cuenta.</div></div>'; } } };
-      btnEl.addEventListener('click', ()=>{ const i=selEl.value; const c=challenges[i]; let r; try{ r=c.check(); }catch(e){ r={ok:false,msg:'no se pudo comprobar.'}; } if(r.ok && !chalDone[i]){ chalDone[i]=true; manualDone[i]=true; try{ localStorage.setItem(CHKEY, JSON.stringify(chalDone)); localStorage.setItem(MKEY, JSON.stringify(manualDone)); }catch(e){} selEl.options[i].textContent='✔ '+(Number(i)+1)+'. '+c.title; updateProgress(); congrats(); } showResult(r); });
+      const MKEY='s2ktux-chal-manual-v7'+(MODE==='kubernetes'?'-k8s':''); let manualDone={}; try{ manualDone=JSON.parse(localStorage.getItem(MKEY)||'{}')||{}; }catch(e){}
+      const congrats=()=>{ const total=CH.length; let m=0; for(let i=0;i<total;i++) if(manualDone[i]) m++; if(m>=total){ const d=document.querySelector('#chal-congrats'); if(d){ d.style.display='block'; d.innerHTML='<div style="margin-top:18px;padding:20px 22px;background:#1a2410;border:3px solid #8fa876;box-shadow:5px 5px 0 var(--line);text-align:center"><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:15px;color:#8fa876;line-height:1.6">🏆 FELICIDADES</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:12px;color:#e9ddc7;line-height:1.7;margin-top:12px">'+(MODE==='kubernetes'?'ESTÁS PREPARADO PARA EL CKA':'ESTÁS PREPARADO PARA RHCSA V9')+'</div><div style="font-family:&quot;Share Tech Mono&quot;,monospace;font-size:15px;color:#a2957d;margin-top:12px">Has completado las '+total+' prácticas por tu cuenta.</div></div>'; } } };
+      btnEl.addEventListener('click', ()=>{ const i=selEl.value; const c=CH[i]; let r; if(MODE==='kubernetes'){ r={ok:false,msg:'El simulador de kubectl está en desarrollo — de momento usa esta ficha como guía de estudio.'}; } else { try{ r=c.check(); }catch(e){ r={ok:false,msg:'no se pudo comprobar.'}; } } if(r.ok && !chalDone[i]){ chalDone[i]=true; manualDone[i]=true; try{ localStorage.setItem(CHKEY, JSON.stringify(chalDone)); localStorage.setItem(MKEY, JSON.stringify(manualDone)); }catch(e){} selEl.options[i].textContent='✔ '+(Number(i)+1)+'. '+c.title; updateProgress(); congrats(); } showResult(r); });
       congrats();
     }
   }
