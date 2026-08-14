@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <script src="./support.js" defer></script>
+<script src="./terminal-docs.js" defer></script>
 </head>
 <body>
 <x-dc>
@@ -75,8 +76,40 @@
   .csrow{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:9px 22px;border-top:2px solid var(--surface2);align-items:baseline}
   .cscmd{font-family:'Share Tech Mono',monospace;font-size:16px;color:#d97757;word-break:break-word}
   .csdesc{font-size:18px;color:var(--text);line-height:1.3}
+  .skip-link{position:fixed;left:12px;top:-60px;z-index:1000;background:#d97757;color:#fff;padding:12px 16px;border:3px solid var(--line);font-family:'Press Start 2P',monospace;font-size:9px}
+  .skip-link:focus{top:12px;color:#fff}
+  .workbench{background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);margin-bottom:18px;padding:14px 16px}
+  .workbench-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .workbench-label{font-family:'Press Start 2P',monospace;font-size:9px;color:var(--head);margin-right:4px}
+  .pixel-select,.pixel-input{background:var(--surface);color:var(--head);border:2px solid var(--line);font-family:'Share Tech Mono',monospace;font-size:15px;padding:8px 10px;min-height:38px}
+  .mini-btn{background:var(--surface2);color:var(--head);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);font-family:'Press Start 2P',monospace;font-size:8px;padding:9px 11px;cursor:pointer;min-height:38px}
+  .status-chip{margin-left:auto;display:inline-flex;gap:7px;align-items:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted)}
+  .status-dot{width:10px;height:10px;background:#8fa876;border:2px solid var(--line);display:inline-block}
+  .status-chip[data-offline="1"] .status-dot{background:#d97757}
+  .topology{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px;padding-top:14px;border-top:2px solid var(--surface2)}
+  .topo-node{position:relative;background:var(--surface2);border:2px solid var(--line);padding:11px 12px;min-height:76px}
+  .topo-node::before{content:'';position:absolute;left:50%;top:-16px;width:2px;height:14px;background:var(--line)}
+  .topo-title{font-family:'Press Start 2P',monospace;font-size:8px;color:var(--head);line-height:1.5;margin-bottom:5px}
+  .topo-meta{font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);line-height:1.25}
+  .topo-ok{color:#5a8a3c}.topo-warn{color:#c2650a}
+  .learning-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .toolbox{background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2)}
+  .toolbox>summary{list-style:none;cursor:pointer;padding:16px 18px;font-family:'Press Start 2P',monospace;font-size:10px;color:var(--head)}
+  .toolbox>summary::-webkit-details-marker{display:none}.toolbox>summary::after{content:' +';color:#d97757}.toolbox[open]>summary::after{content:' −'}
+  .toolbox-body{padding:0 18px 18px;border-top:2px solid var(--surface2)}
+  .report-card{padding:12px 0;border-bottom:2px solid var(--surface2);font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--text);line-height:1.4}
+  .score-bar{height:13px;border:2px solid var(--line);background:var(--surface2);margin-top:6px;padding:1px}.score-fill{height:100%;background:#8fa876}
+  .history-list{max-height:250px;overflow:auto;margin-top:10px;border:2px solid var(--line);background:var(--bg)}
+  .history-command{display:block;width:100%;text-align:left;background:transparent;border:0;border-bottom:1px solid var(--surface2);padding:8px 10px;color:var(--text);font-family:'Share Tech Mono',monospace;font-size:14px;cursor:pointer}
+  .history-command:hover,.history-command:focus{background:var(--surface2)}
+  .docs-results{max-height:310px;overflow:auto;margin-top:10px}
+  .doc-entry{padding:10px 0;border-bottom:2px solid var(--surface2)}.doc-entry code{color:#d97757;font-family:'Share Tech Mono',monospace}.doc-entry p{font-size:17px;line-height:1.35;margin-top:4px}
+  .exam-panel{display:none;background:#1a2410;border:3px solid #8fa876;box-shadow:4px 4px 0 var(--line);padding:16px;margin-bottom:18px;color:#e9ddc7}
+  .exam-panel[data-show="1"]{display:block}.exam-running{color:#e0a458;font-family:'Share Tech Mono',monospace;font-size:19px}
+  .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   @media(min-width:901px){details.cs[data-mode="linux"] .cs-tabs{flex-wrap:nowrap}details.cs[data-mode="linux"] .cs-tab{flex:1 1 auto;min-width:0;padding:11px 7px;font-size:13px;text-align:center;white-space:nowrap}}
-  @media(max-width:640px){.csrow{grid-template-columns:1fr;gap:2px}}
+  @media(max-width:760px){.learning-grid{grid-template-columns:1fr}.topology{grid-template-columns:1fr}.topo-node::before{display:none}.status-chip{margin-left:0;width:100%}}
+  @media(max-width:640px){.csrow{grid-template-columns:1fr;gap:2px}.workbench{padding:12px}.workbench-row>*{flex:1 1 auto}.workbench-label{flex-basis:100%}}
 
   /* --- responsive (móvil) --- */
   @media(max-width:860px){
@@ -152,6 +185,8 @@
   </div>
 </div>
 
+<a class="skip-link" href="#term-input">Saltar a la terminal</a>
+
 <div style="min-height:100vh;display:flex;flex-direction:column">
 <div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
   <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
@@ -177,6 +212,16 @@
     <div id="term-machine-label" style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--muted)">MÁQUINA · RHCSA-LAB</div>
     <button data-change-mode class="pxbtn" style="background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer;color:var(--head);font-family:'Press Start 2P',monospace;font-size:9px;padding:10px 14px">← Cambiar terminal</button>
   </div>
+  <div class="workbench" aria-label="Controles de la máquina virtual">
+    <div class="workbench-row">
+      <label class="workbench-label" for="session-select">SESIÓN</label>
+      <select id="session-select" class="pixel-select" aria-label="Máquina guardada"></select>
+      <button id="session-new" class="mini-btn pxbtn" type="button">+ NUEVA</button>
+      <button id="session-delete" class="mini-btn pxbtn" type="button">BORRAR</button>
+      <span id="connection-status" class="status-chip" role="status"><span class="status-dot"></span><span>Disponible sin conexión</span></span>
+    </div>
+    <div id="topology" class="topology" aria-label="Mapa del entorno" aria-live="polite"></div>
+  </div>
   <div style="background:#12100b;border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)">
     <div style="background:#241d13;padding:12px 16px;border-bottom:3px solid var(--line);display:flex;align-items:center;gap:8px">
       <span style="width:12px;height:12px;background:#ef4444;display:inline-block"></span>
@@ -185,15 +230,37 @@
       <span id="term-title" style="font-family:'Share Tech Mono',monospace;font-size:14px;color:#8fa876;margin-left:12px">visitor@s2ktux: ~</span>
       <span id="term-os-label" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#5c5344">Rocky Linux 9 · RHCSA lab</span>
     </div>
-    <div id="term-body" style="padding:20px;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.55;color:#d8cbad;height:60vh;min-height:440px;overflow-y:auto;background:#12100b">
+    <div id="term-body" role="log" aria-label="Salida de la terminal" aria-live="polite" aria-relevant="additions" style="padding:20px;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.55;color:#d8cbad;height:60vh;min-height:440px;overflow-y:auto;background:#12100b">
       <div id="term-input-line" style="display:flex;align-items:center">
         <span id="term-prompt" style="color:#8fa876;margin-right:9px;white-space:nowrap">visitor@s2ktux:~$</span>
-        <input id="term-input" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus>
+        <label class="sr-only" for="term-input">Escribe un comando</label><input id="term-input" aria-label="Comando de terminal" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus>
       </div>
     </div>
   </div>
   <div id="term-actions" style="text-align:center;margin-top:14px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button id="term-reboot" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">⟳ Reiniciar → GRUB</button><button id="term-rebootm" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↻ Reiniciar máquina</button><button id="term-reset" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↺ Resetear terminal</button><button id="term-solved" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">✓ Máquina resuelta</button></div>
   <div style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">↑ / ↓ historial · <span style="color:#c2650a">Tab</span> autocompleta · <span style="color:#c2650a">|</span> tuberías · <span style="color:#c2650a">clear</span> limpia · <span style="color:#c2650a">reset</span> reinicia el entorno</div>
+</section>
+
+<section style="max-width:1200px;margin:0 auto;width:100%;padding:0 32px 34px" aria-label="Herramientas de aprendizaje">
+  <div class="learning-grid">
+    <details class="toolbox" id="activity-tool">
+      <summary>INFORME E HISTORIAL</summary>
+      <div class="toolbox-body">
+        <div id="report-summary" class="report-card">Aún no has comprobado ninguna práctica en esta sesión.</div>
+        <div id="report-detail"></div>
+        <div class="report-card"><b>Historial reproducible</b><br><span style="color:var(--muted)">Pulsa un comando para volver a colocarlo en la terminal.</span></div>
+        <div id="history-replay" class="history-list" aria-label="Comandos ejecutados"></div>
+      </div>
+    </details>
+    <details class="toolbox" id="docs-tool">
+      <summary>DOCUMENTACIÓN LOCAL</summary>
+      <div class="toolbox-body">
+        <label for="docs-search" style="display:block;font-size:17px;margin:12px 0 6px">Busca sin salir del entorno:</label>
+        <input id="docs-search" class="pixel-input" style="width:100%" type="search" placeholder="Ej.: volumen, systemctl, rollout" autocomplete="off">
+        <div id="docs-results" class="docs-results" aria-live="polite"></div>
+      </div>
+    </details>
+  </div>
 </section>
 
 <section style="max-width:1200px;margin:0 auto;width:100%;padding:10px 32px 50px">
@@ -535,6 +602,11 @@
   <details class="cs">
     <summary id="practice-title">PRÁCTICAS GUIADAS · RHCSA</summary>
     <div style="padding:20px 22px">
+      <div id="exam-panel" class="exam-panel">
+        <div style="font-family:'Press Start 2P',monospace;font-size:11px;line-height:1.6;color:#8fa876">SIMULACRO CKA</div>
+        <div style="font-size:18px;line-height:1.4;margin:8px 0 12px">Dos horas, objetivos visibles y sin validaciones durante el examen. Al finalizar recibirás puntuación y un informe por tareas.</div>
+        <div class="workbench-row"><button id="exam-start" class="mini-btn pxbtn" type="button">INICIAR 2H</button><button id="exam-finish" class="mini-btn pxbtn" type="button" style="display:none">FINALIZAR</button><span id="exam-clock" class="exam-running"></span></div>
+      </div>
       <div style="font-size:18px;color:var(--text);line-height:1.4;margin-bottom:16px">Elige un reto, resuélvelo en la terminal de arriba y pulsa <b>Comprobar</b>. El sistema mira el estado real de tu máquina y te dice si lo has conseguido.</div>
       <div id="chal-progress" style="margin-bottom:16px"></div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
@@ -575,6 +647,13 @@ class Component extends DCLogic {
     if (!body || !input) return;
 
     let MODE = new URLSearchParams(location.search).get('mode') || 'linux'; if(!['linux','docker','kubernetes'].includes(MODE)) MODE='linux';
+    const SESSION_LIST_KEY='s2ktux-sessions-v1-'+MODE;
+    let sessionList=[]; try{ sessionList=JSON.parse(localStorage.getItem(SESSION_LIST_KEY)||'[]')||[]; }catch(e){}
+    if(!sessionList.length) sessionList=[{id:'principal',name:'Principal',created:Date.now()}];
+    const requestedSession=new URLSearchParams(location.search).get('session');
+    let SESSION_ID=(requestedSession&&sessionList.some(s=>s.id===requestedSession))?requestedSession:(localStorage.getItem('s2ktux-active-session-'+MODE)||'principal');
+    if(!sessionList.some(s=>s.id===SESSION_ID)) SESSION_ID=sessionList[0].id;
+    try{ localStorage.setItem(SESSION_LIST_KEY,JSON.stringify(sessionList)); localStorage.setItem('s2ktux-active-session-'+MODE,SESSION_ID); }catch(e){}
     const ENV = {
       linux:{ eyebrow:'SANDBOX · LINUX / RHCSA', heading:'Terminal Linux · RHCSA', machine:'MÁQUINA · RHCSA-LAB', os:'Rocky Linux 9 · RHCSA lab', cheat:'CHEATSHEET · LINUX / RHCSA', practice:'PRÁCTICAS GUIADAS · RHCSA', host:'s2ktux', description:'Una máquina Linux completa para practicar el RHCSA: recuperación mediante GRUB, usuarios, permisos, SELinux, systemd, red y almacenamiento.' },
       docker:{ eyebrow:'SANDBOX · DOCKER', heading:'Terminal Docker', machine:'MÁQUINA · DOCKER-HOST', os:'Rocky Linux 9 · Docker host', cheat:'CHEATSHEET · DOCKER', practice:'PRÁCTICAS GUIADAS · DOCKER', host:'docker-host', description:'Un host Linux limpio para instalar Docker y practicar contenedores, imágenes, Dockerfiles, redes, volúmenes, recursos y Compose.' },
@@ -583,7 +662,7 @@ class Component extends DCLogic {
     const setText=(id,value)=>{ const el=document.getElementById(id); if(el) el.textContent=value; };
     setText('term-eyebrow',ENV.eyebrow); setText('term-heading',ENV.heading); setText('term-machine-label',ENV.machine); setText('term-os-label',ENV.os); setText('cheatsheet-title',ENV.cheat); setText('practice-title',ENV.practice);
     { const cs=document.querySelector('details.cs'); if(cs) cs.setAttribute('data-mode',MODE); }
-    { const d=document.getElementById('term-description'); if(d) d.textContent=ENV.description; document.title=new URLSearchParams(location.search).get('mode')?(ENV.heading+' · S2KTUX'):'Terminales Linux, Docker y Kubernetes · S2KTUX'; }
+    { const d=document.getElementById('term-description'); if(d) d.textContent=ENV.description; const pageTitle=new URLSearchParams(location.search).get('mode')?(ENV.heading+' · S2KTUX'):'Terminales Linux, Docker y Kubernetes · S2KTUX'; document.title=pageTitle; setTimeout(()=>{document.title=pageTitle;},500); }
     { const sel=document.getElementById('mode-select'); if(sel){ const m=new URLSearchParams(location.search).get('mode'); sel.style.display = m?'none':'flex'; input.disabled=!m; } }
     document.querySelectorAll('.cs-tab').forEach(t=>{ const modes=(t.getAttribute('data-modes')||'').split(','); const show=modes.indexOf(MODE)!==-1; t.style.display = show?'':'none'; });
     { const tabs=[...document.querySelectorAll('.cs-tab')].filter(t=>t.style.display!=='none'); const panels=[...document.querySelectorAll('.cs-panel')];
@@ -708,6 +787,8 @@ class Component extends DCLogic {
     let dockerInstalled, dockerNetworks, dockerVolumes, composeProjects, k8s;
     let hIdx = -1;
     let lastFail = false;
+    let lastStatus = 0;
+    let expansionStatus = 0;
     let recovery = null;
     let rootRecovered = false;
     let loggedIn = false;
@@ -825,16 +906,17 @@ class Component extends DCLogic {
     };
 
     // ---------------- persistence (localStorage: sobrevive a F5 / recarga) ----------------
-    const STORE = 's2ktux-term-state-v9-'+MODE;
+    const STORE = 's2ktux-term-state-v10-'+MODE+'-'+SESSION_ID;
+    const LEGACY_STORE = 's2ktux-term-state-v9-'+MODE;
     let savedScroll = null;
     resetState();
     {
-      try{ const s=JSON.parse(localStorage.getItem(STORE)||'null');
+      try{ const raw=localStorage.getItem(STORE)||(SESSION_ID==='principal'?localStorage.getItem(LEGACY_STORE):null); const s=JSON.parse(raw||'null');
         if(s){ fs=s.fs; users=s.users; nextUid=s.nextUid; currentUser=s.currentUser; if(!users||!users[currentUser]) currentUser='root'; userStack=s.userStack||[]; cwd=s.cwd; history=s.history||[]; processes=s.processes; nextPid=s.nextPid; services=s.services||{}; installed=new Set(s.installed||[]); images=s.images||[]; containers=s.containers||[]; disks=s.disks; net=s.net; selinux=s.selinux||selinux; fw=s.fw?{services:new Set(s.fw.services),ports:new Set(s.fw.ports),zone:s.fw.zone}:fw; lvm=s.lvm||lvm; rootRecovered=s.rootRecovered||false; shadowMislabeled=s.shadowMislabeled||false; loggedIn=s.loggedIn||MODE!=='linux'; if(s.tunedProfile)tunedProfile=s.tunedProfile; if(s.sshdCfg)sshdCfg=s.sshdCfg; dnfUpdated=s.dnfUpdated||false; dockerInstalled=!!s.dockerInstalled; dockerNetworks=s.dockerNetworks||dockerNetworks; dockerVolumes=s.dockerVolumes||dockerVolumes; composeProjects=s.composeProjects||{}; k8s=s.k8s||k8s; recovery=null; savedScroll=s.scroll||null; }
       }catch(e){}
       syncMounts();
     }
-    const save = () => { try{ const scroll=[...body.querySelectorAll('.term-out')].slice(-180).map(d=>({h:d.innerHTML,c:d.style.color})); localStorage.setItem(STORE, JSON.stringify({fs,users,nextUid,currentUser,userStack,cwd,history:history.slice(-500),processes,nextPid,services,installed:[...installed],images,containers,disks,net,selinux,fw:{services:[...fw.services],ports:[...fw.ports],zone:fw.zone},lvm,rootRecovered,shadowMislabeled,loggedIn,tunedProfile,sshdCfg,dnfUpdated,dockerInstalled,dockerNetworks,dockerVolumes,composeProjects,k8s,scroll})); }catch(e){} };
+    const save = () => { try{ const scroll=[...body.querySelectorAll('.term-out')].slice(-180).map(d=>({h:d.innerHTML,c:d.style.color})); localStorage.setItem(STORE, JSON.stringify({fs,users,nextUid,currentUser,userStack,cwd,history:history.slice(-500),processes,nextPid,services,installed:[...installed],images,containers,disks,net,selinux,fw:{services:[...fw.services],ports:[...fw.ports],zone:fw.zone},lvm,rootRecovered,shadowMislabeled,loggedIn,tunedProfile,sshdCfg,dnfUpdated,dockerInstalled,dockerNetworks,dockerVolumes,composeProjects,k8s,scroll})); if(window.__s2kRefresh) window.__s2kRefresh(); }catch(e){} };
 
     // ---------------- path helpers ----------------
     const homeSegs = () => (users[currentUser]?.home||'/root').split('/').filter(Boolean);
@@ -855,7 +937,7 @@ class Component extends DCLogic {
     const esc = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const out = (t,c) => { if(cap){ cap.push(t==null?'':String(t)); return; } const d=document.createElement('div'); d.className='term-out'; if(c) d.style.color=c; d.innerHTML=(t===''||t==null)?'&nbsp;':esc(t); body.insertBefore(d,line); };
     const outMany = (a,c)=>a.forEach(l=>out(l,c));
-    const err = (t)=>{ lastFail=true; return out(t,'#ef8a7a'); };
+    const err = (t)=>{ lastFail=true; lastStatus=1; return out(t,'#ef8a7a'); };
     const ok = (t)=>out(t,'#8fa876');
     const remotePretty = () => { const h=remoteHost; let p=h.cwd; const home=h.user==='root'?'/root':'/home/'+h.user; if(p===home) p='~'; else if(p.indexOf(home+'/')===0) p='~'+p.slice(home.length); return p; };
     const promptStr = () => recovery ? (recovery.kind==='rdbreak' ? (recovery.chrooted?'sh-5.1#':'switch_root:/#') : 'bash-5.1#') : remoteHost ? (remoteHost.user+'@'+remoteHost.name+':'+remotePretty()+(remoteHost.user==='root'?'#':'$')) : currentUser+'@'+ENV.host+':'+pretty(cwd)+(currentUser==='root'?'#':'$');
@@ -1633,7 +1715,7 @@ class Component extends DCLogic {
       if(!name) return;
       if(remoteHost){ remoteDispatch(cmd, name, args); return; }
       if(recovery){ recoveryDispatch(cmd, name, args); return; }
-      if(MODE!=='linux'&&!CMDS.includes(name)&&!(name.startsWith('./')||name.startsWith('/')||name.startsWith('~'))){err('-bash: '+name+': orden no encontrada');return;}
+      if(MODE!=='linux'&&!CMDS.includes(name)&&!(name.startsWith('./')||name.startsWith('/')||name.startsWith('~'))){err('-bash: '+name+': orden no encontrada');const suggestion=typeof closestCmd==='function'?closestCmd(name):'';if(suggestion)out('¿Quisiste decir «'+suggestion+'»?','#a2957d');return;}
       // route special-name commands
       if(name.startsWith('mkfs')){ const fst=name.includes('.')?name.split('.')[1]:( (args.indexOf('-t')!==-1)?args[args.indexOf('-t')+1]:'xfs'); const dev=args.filter(a=>a.startsWith('/dev/'))[0]; const p=dev?resolveDev(dev):null; if(!p){ err('mkfs: no existe el dispositivo: '+(dev||'')); return; } if(p.mount){ err('mkfs.'+fst+': '+dev+' está montado en '+p.mount+'; está EN USO. Desmóntalo con  umount  antes de formatear (así se protege el sistema).'); return; } if((dev||'').indexOf('/dev/sda')===0){ err('mkfs.'+fst+': '+dev+' pertenece al DISCO DEL SISTEMA. Formatearlo destruiría el sistema; usa el disco de prácticas /dev/sdb.'); return; } p.fstype=fst; p.data=null; p.uuid=Math.random().toString(16).slice(2,6)+'-'+Math.random().toString(16).slice(2,6); ok('meta-data='+(dev)+'  isize=512, agcount=4, agsize='+Math.round(sizeToGB(p.size)*65536)+' blks'); ok('Filesystem '+fst+' creado en '+dev+' (todos los datos anteriores se han borrado).'); return; }
       if((name.startsWith('./')||name.startsWith('/')||name.startsWith('~'))){ runScript(name, args); return; }
@@ -1658,8 +1740,8 @@ class Component extends DCLogic {
         case 'whoami': out(currentUser); break;
         case 'id': { const tgt=args.filter(a=>!a.startsWith('-'))[0]||currentUser; const u=users[tgt]; if(!u){err("id: '"+tgt+"': no existe ese usuario");break;} const gl=[...new Set([tgt,...u.groups])]; out('uid='+u.uid+'('+tgt+') gid='+u.gid+'('+tgt+') grupos='+u.uid+'('+tgt+')'+(gl.filter(g=>g!==tgt).length?','+gl.filter(g=>g!==tgt).map(g=>g).join(','):'')); break; }
         case 'groups': { const tgt=args[0]||currentUser; const u=users[tgt]; if(!u){err("groups: '"+tgt+"': no existe ese usuario");break;} out([...new Set([tgt,...u.groups])].join(' ')); break; }
-        case 'uname': out('Linux s2ktux 7.1.0-cozy #1 SMP x86_64 GNU/Linux'); break;
-        case 'hostname': out('s2ktux'); break;
+        case 'uname': out('Linux '+ENV.host+' 5.14.0-427.el9.x86_64 #1 SMP PREEMPT_DYNAMIC x86_64 GNU/Linux'); break;
+        case 'hostname': out(((getNode(['etc','hostname'])||{}).content||ENV.host).trim()); break;
         case 'hostnamectl': { if(args[0]==='set-hostname'){ const hn=args.filter(a=>!a.startsWith('-'))[1]; if(!hn){ err('hostnamectl: falta el nombre'); break; } const f=getNode(['etc','hostname']); if(f)f.content=hn; else { const e=getNode(['etc']); if(e)e.children.hostname=file(hn,{owner:'root'}); } break; } const hn=(getNode(['etc','hostname'])||{content:'s2ktux'}).content.trim(); outMany(['   Static hostname: '+hn,'         Icon name: computer-vm','   Operating System: S2KTUX OS 7.1.0','            Kernel: Linux 7.1.0-cozy','      Architecture: x86-64']); break; }
         case 'date': out(new Date().toString()); break;
         case 'uptime': out(' '+new Date().toLocaleTimeString()+'  up 3 days,  2:14,  1 user,  load average: 0.08, 0.03, 0.01'); break;
@@ -1671,7 +1753,7 @@ class Component extends DCLogic {
         case 'echo': {
           const gt2=cmd.indexOf('>>'); const gt1=gt2===-1?cmd.indexOf('>'):-1;
           if(gt2!==-1||gt1!==-1){ const idx=gt2!==-1?gt2:gt1; let text=cmd.slice(4,idx).trim(); const e=/^-e(\s|$)/.test(text); if(e) text=text.replace(/^-e\s*/,''); text=text.replace(/^"([\s\S]*)"$/,'$1').replace(/^'([\s\S]*)'$/,'$1'); if(e) text=text.replace(/\\n/g,'\n').replace(/\\t/g,'\t'); const target=cmd.slice(idx+(gt2!==-1?2:1)).trim(); const segs=norm(target); const p=getParent(segs); const fn=segs[segs.length-1]; if(!p||p.type!=='dir'){err('echo: ruta no valida');break;} const ex=p.children[fn]; if(ex&&ex.type==='dir'){err('echo: '+fn+' es un directorio');break;} const prev=(gt2!==-1&&ex&&ex.type==='file')?ex.content+'\n':''; p.children[fn]=file(prev+text,{owner:currentUser,group:currentUser}); }
-          else { let s=cmd.slice(4).trim(); const e=/^-e(\s|$)/.test(s); if(e) s=s.replace(/^-e\s*/,''); s=s.replace(/^"([\s\S]*)"$/,'$1').replace(/^'([\s\S]*)'$/,'$1'); if(e) s=s.replace(/\\n/g,'\n').replace(/\\t/g,'\t'); s.split('\n').forEach(l=>out(l)); } break;
+          else { let s=cmd.slice(4).trim(); const e=/^-e(\s|$)/.test(s); if(e) s=s.replace(/^-e\s*/,''); s=s.replace(/^"([\s\S]*)"$/,'$1').replace(/^'([\s\S]*)'$/,'$1').replace(/\$\?/g,String(expansionStatus)); if(e) s=s.replace(/\\n/g,'\n').replace(/\\t/g,'\t'); s.split('\n').forEach(l=>out(l)); } break;
         }
         case 'ls': {
           const flags=args.filter(a=>a.startsWith('-')).join(''); const rest=args.filter(a=>!a.startsWith('-'));
@@ -2168,7 +2250,7 @@ class Component extends DCLogic {
         case 'bzip2': { const f=args.filter(a=>!a.startsWith('-'))[0]; const n=f?getNode(norm(f)):null; if(!n||n.type!=='file'){ err('bzip2: '+(f||'')+': No existe el fichero o el directorio'); break; } const seg=norm(f); const par=getParent(seg); const nm=seg[seg.length-1]; if(args.includes('-d')){ if(!nm.endsWith('.bz2')){ err('bzip2: '+f+' is not a bzip2 file.'); break; } par.children[nm.replace(/\.bz2$/,'')]=par.children[nm]; delete par.children[nm]; } else { par.children[nm+'.bz2']=par.children[nm]; delete par.children[nm]; if(args.includes('-k')) par.children[nm]=file(par.children[nm+'.bz2'].content,{owner:currentUser}); } break; }
         case 'bunzip2': { const f=args.filter(a=>!a.startsWith('-'))[0]; const n=f?getNode(norm(f)):null; if(!n){ err('bunzip2: '+(f||'')+': No existe el fichero o el directorio'); break; } const seg=norm(f); const par=getParent(seg); const nm=seg[seg.length-1]; if(!nm.endsWith('.bz2')){ err('bunzip2: '+f+' is not a bzip2 file.'); break; } par.children[nm.replace(/\.bz2$/,'')]=par.children[nm]; delete par.children[nm]; break; }
         case 'neofetch': outMany(['        _nnnn_         '+currentUser+'@s2ktux','       dGGGGMMb        ---------------','      @p~qp~~qMb       OS: S2KTUX OS 7.1.0','      M|@||@) M|       Kernel: 7.1.0-cozy','      @,----.JM|       Shell: bash (sim)','     JS^\\__/  qKL      Packages: '+installed.size+' (dnf)','    dZP        qKRb    CPU: Cozy CPU x4','   dZP          qKKb   Mem: 1123MiB / 3894MiB'],'#8fa876'); break;
-        default: err(name+': orden no encontrada. Escribe \'help\' o mira el cheatsheet.');
+        default: { const suggestion=typeof closestCmd==='function'?closestCmd(name):''; err('-bash: '+name+': orden no encontrada'); if(suggestion)out('¿Quisiste decir «'+suggestion+'»?','#a2957d'); }
       }
     };
 
@@ -2194,6 +2276,8 @@ class Component extends DCLogic {
       if(!cmd){ save(); return; }
       if(history[history.length-1]!==cmd) history.push(cmd);
       hIdx = history.length;
+      expansionStatus=lastStatus;
+      lastFail=false; lastStatus=0;
       if(MODE==='docker' && /^curl\s+.*https:\/\/get\.docker\.com\s*\|\s*(?:sudo\s+)?sh\s*$/.test(cmd)){
         out('# Executing docker install script, commit: 4a7d3f2','#a2957d');
         out('+ dnf -y install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin');
@@ -2209,7 +2293,7 @@ class Component extends DCLogic {
         if(t===';'||t==='&&'||t==='||'){ prevOp=t; continue; }
         if(prevOp==='&&'&&lastFail){ prevOp=null; continue; }
         if(prevOp==='||'&&!lastFail){ prevOp=null; continue; }
-        prevOp=null; lastFail=false;
+        prevOp=null; lastFail=false; lastStatus=0;
         let seg=t.trim(); let redir=null;
         const rm=seg.match(/\s(>>?)\s*(\S+)\s*$/);
         if(rm && !/^echo\b/.test(seg)){ redir={append:rm[1]==='>>', target:rm[2]}; seg=seg.slice(0,rm.index).trim(); }
@@ -2220,6 +2304,7 @@ class Component extends DCLogic {
         else { dispatch(seg); }
         if(redir){ const segs=norm(redir.target); const p=getParent(segs); const fn=segs[segs.length-1]; if(!p||p.type!=='dir'){ err('bash: '+redir.target+': No existe el fichero o el directorio'); } else { const ex=p.children[fn]; if(ex&&ex.type==='dir'){ err('bash: '+redir.target+': Es un directorio'); } else { const prev=(redir.append&&ex&&ex.type==='file')?(ex.content+(ex.content?'\n':'')):''; p.children[fn]=file(prev+(buf||[]).join('\n'),{owner:currentUser,group:currentUser}); } } }
         else if(buf){ buf.forEach(l=>out(l)); }
+        expansionStatus=lastStatus;
       }
       save();
     };
@@ -2231,6 +2316,8 @@ class Component extends DCLogic {
     const LINUX_EXTRA=['getfacl','setfacl','getenforce','setenforce','sestatus','getsebool','setsebool','semanage','restorecon','chcon','chage','crontab','timedatectl','tuned-adm','pvcreate','vgcreate','vgextend','lvcreate','lvextend','lvresize','lvremove','vgremove','pvremove','xfs_growfs','resize2fs','mkswap','swapon','getent','visudo','useradd','userdel','usermod','groupadd','passwd','su','exit','logout','yum','apt','blkid','fdisk','parted','mkfs.xfs','mkfs.ext4','mount','umount','pvs','vgs','lvs','ifup','ifdown','firewall-cmd','chroot','systemd-run','ssh-keygen','ssh-copy-id','nice','renice','chronyc','labhosts','lvreduce','at','atq','atrm','loginctl','nmtui','bzip2','bunzip2','logger'];
     const MODE_CMDS=MODE==='linux'?COMMON_CMDS.concat(LINUX_EXTRA):MODE==='docker'?COMMON_CMDS.concat(['docker','docker-compose']):COMMON_CMDS.concat(['kubectl','kubeadm','etcdctl']);
     const CMDS=[...new Set(MODE_CMDS)].sort();
+    const editDistance=(a,b)=>{ const m=Array.from({length:b.length+1},(_,i)=>i); for(let i=1;i<=a.length;i++){let prev=m[0];m[0]=i;for(let j=1;j<=b.length;j++){const old=m[j];m[j]=Math.min(m[j]+1,m[j-1]+1,prev+(a[i-1]===b[j-1]?0:1));prev=old;}}return m[b.length];};
+    const closestCmd=(name)=>{ let best='',dist=4; CMDS.forEach(c=>{const d=editDistance(name,c);if(d<dist){dist=d;best=c;}});return dist<=2?best:''; };
     CMDS.forEach(k=>{ const kk=k.replace(/\..*/,''); if(!MAN[kk]) MAN[kk]={ name:kk, sec:'1', s:kk+' [OPCIONES]...', d:'Orden de S2KTUX OS. Usa '+kk+' --help o consulta el cheatsheet de abajo para ver su uso.', o:[] }; });
     const COMPLETIONS = {
       journalctl:['-u','-f','-b','-n','-p','-k','-x','--since','--no-pager'],
@@ -2356,7 +2443,7 @@ class Component extends DCLogic {
       history = ['nmcli con mod eth0 ipv4.method manual ipv4.addresses 192.168.1.20/24 ipv4.gateway 192.168.1.1 ipv4.dns 192.168.1.254','nmcli con up eth0','hostnamectl set-hostname nodo1.lab.local','groupadd olimpo','useradd -G olimpo zeus','useradd -G olimpo hera','useradd -s /sbin/nologin ares','useradd -u 4120 apolo','mkdir -p /datos/olimpo','chgrp olimpo /datos/olimpo','chmod 2770 /datos/olimpo','crontab -e -u hera','tar -cjf /root/varlog-backup.tar.bz2 /var/log','cp /etc/hosts /var/tmp/hosts','chmod 640 /var/tmp/hosts','setfacl -m u:zeus:rw /var/tmp/hosts','setfacl -m u:ares:0 /var/tmp/hosts','systemctl enable --now chronyd','find / -user hera -exec cp -r {} /root/herafiles \\;','grep rich /usr/share/dict/words > /root/coincidencias','echo "zeus ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/zeus','vgcreate datavg /dev/sdb1','lvcreate -n appvol -l 60 datavg','mkfs.ext4 /dev/datavg/appvol','mount /dev/datavg/appvol /mnt/appvol','mkswap /dev/sdb2','swapon /dev/sdb2','tuned-adm profile throughput-performance','vi /usr/local/bin/saludo','chmod 755 /usr/local/bin/saludo','semanage port -a -t http_port_t -p tcp 8090','firewall-cmd --add-service=http --permanent','systemctl enable --now httpd','loginctl enable-linger hermes'];
       hIdx=history.length;
       currentUser='root'; cwd=['root']; loggedIn=true; recovery=null;
-      try{ const done={}; for(let i=0;i<21;i++)done[i]=true; localStorage.setItem('s2ktux-chal-done-v10-linux',JSON.stringify(done)); }catch(e){}
+      try{ const done={}; for(let i=0;i<21;i++)done[i]=true; localStorage.setItem('s2ktux-chal-done-v11-linux-'+SESSION_ID,JSON.stringify(done)); }catch(e){}
       const selE=document.querySelector('#chal-select'); if(selE){ [...selE.options].forEach((o)=>{ if(!o.textContent.startsWith('✔')) o.textContent='✔ '+o.textContent; }); }
       { const pr=document.querySelector('#chal-progress'); if(pr) pr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;font-family:&quot;Press Start 2P&quot;,monospace;font-size:10px;color:var(--head);margin-bottom:8px"><span>PROGRESO</span><span style="color:#8fa876">21 / 21  (100%)</span></div><div style="height:16px;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:2px"><div style="height:100%;width:100%;background:repeating-linear-gradient(90deg,#8fa876 0 10px,#7d9866 10px 12px)"></div></div>'; const cg=document.querySelector('#chal-congrats'); if(cg){ cg.style.display='none'; cg.innerHTML=''; } }
       clearBody();
@@ -2378,7 +2465,7 @@ class Component extends DCLogic {
       const pasos=['Deteniendo servicios del sistema...','Cerrando sesiones de usuario...','Desmontando sistemas de archivos...','Borrando datos de /home y /root...','Restableciendo la configuración...','Reinicializando el disco de prácticas...','Máquina restaurada a fábrica.'];
       const bar=document.createElement('div'); bar.className='term-out'; bar.style.color='#8fa876'; body.insertBefore(bar,line);
       const lbl=document.createElement('div'); lbl.className='term-out'; lbl.style.color='#a2957d'; body.insertBefore(lbl,line);
-      let pct=0; const iv=setInterval(()=>{ pct+=Math.floor(5+Math.random()*10); if(pct>100)pct=100; const f=Math.round(pct/5); bar.textContent='['+'#'.repeat(f)+'.'.repeat(20-f)+'] '+String(pct).padStart(3)+'%'; lbl.textContent=pasos[Math.min(pasos.length-1, Math.floor(pct/(100/pasos.length)))]; scroll(); if(pct>=100){ clearInterval(iv); setTimeout(()=>{ try{ localStorage.removeItem(STORE); localStorage.removeItem('s2ktux-chal-done-v10-'+MODE); localStorage.removeItem('s2ktux-chal-manual-v10-'+MODE); }catch(e){} location.reload(); }, 550); } }, 170);
+      let pct=0; const iv=setInterval(()=>{ pct+=Math.floor(5+Math.random()*10); if(pct>100)pct=100; const f=Math.round(pct/5); bar.textContent='['+'#'.repeat(f)+'.'.repeat(20-f)+'] '+String(pct).padStart(3)+'%'; lbl.textContent=pasos[Math.min(pasos.length-1, Math.floor(pct/(100/pasos.length)))]; scroll(); if(pct>=100){ clearInterval(iv); setTimeout(()=>{ try{ localStorage.removeItem(STORE); localStorage.removeItem('s2ktux-chal-done-v11-'+MODE+'-'+SESSION_ID); localStorage.removeItem('s2ktux-chal-manual-v11-'+MODE+'-'+SESSION_ID); localStorage.removeItem('s2ktux-reports-v1-'+MODE+'-'+SESSION_ID); }catch(e){} location.reload(); }, 550); } }, 170);
       input.focus(); }); }
 
     if(MODE==='linux'){
@@ -2498,19 +2585,75 @@ class Component extends DCLogic {
       {badge:'CKA · UPGRADE',title:'Planifica y aplica un upgrade',goal:'Ejecuta <code>kubeadm upgrade plan</code>, aplica la versión propuesta y comprueba después las versiones de los nodos.',check:()=>k8s.upgraded&&k8s.actions.includes('upgrade-plan')&&k8s.actions.includes('get-nodes')?{ok:true,msg:'Upgrade planificado, aplicado y comprobado.'}:{ok:false,msg:'Falta plan, apply o comprobar nodos.'}},
       {badge:'CKA · EXAMEN FINAL',title:'Audita el clúster completo',goal:'Lista todos los Pods, Deployments, Services y eventos; consulta top de nodos y Pods. Debes terminar sin api-broken ni worker-2 averiados.',check:()=>{const p=k8s.pods.find(x=>x.name==='api-broken'),n=k8s.nodes.find(x=>x.name==='worker-2');return p&&p.status==='Running'&&n&&n.status==='Ready'&&k8s.actions.includes('get-pods')&&k8s.actions.includes('events')&&history.some(h=>/^kubectl get all/.test(h))&&history.some(h=>/^kubectl top nodes/.test(h))&&history.some(h=>/^kubectl top pods/.test(h))?{ok:true,msg:'Auditoría final superada.'}:{ok:false,msg:'Falta recuperar recursos o completar la auditoría.'};}}
     ];
+    // ---------------- puesto de aprendizaje: sesiones, mapa, docs e informes ----------------
+    const sessionEl=document.querySelector('#session-select');
+    const sessionUrl=(id,extra)=>'terminal.html?mode='+encodeURIComponent(MODE)+'&session='+encodeURIComponent(id)+(extra||'');
+    if(sessionEl){
+      sessionList.forEach(s=>{ const o=document.createElement('option'); o.value=s.id; o.textContent=s.name; o.selected=s.id===SESSION_ID; sessionEl.appendChild(o); });
+      sessionEl.addEventListener('change',()=>{ try{localStorage.setItem('s2ktux-active-session-'+MODE,sessionEl.value);}catch(e){} location.href=sessionUrl(sessionEl.value); });
+    }
+    { const b=document.querySelector('#session-new'); if(b)b.addEventListener('click',()=>{ const id='maquina-'+Date.now().toString(36); const base=MODE==='kubernetes'?'Clúster':MODE==='docker'?'Host':'Máquina'; const item={id,name:base+' '+(sessionList.length+1),created:Date.now()}; sessionList.push(item); try{localStorage.setItem(SESSION_LIST_KEY,JSON.stringify(sessionList));localStorage.setItem('s2ktux-active-session-'+MODE,id);}catch(e){} location.href=sessionUrl(id); }); }
+    { const b=document.querySelector('#session-delete'); if(b){ b.disabled=sessionList.length<=1; b.style.opacity=sessionList.length<=1?'.45':'1'; b.addEventListener('click',()=>{ if(sessionList.length<=1||!confirm('¿Borrar esta sesión y todo su estado simulado?'))return; const next=sessionList.find(s=>s.id!==SESSION_ID); sessionList=sessionList.filter(s=>s.id!==SESSION_ID); try{ localStorage.setItem(SESSION_LIST_KEY,JSON.stringify(sessionList)); localStorage.setItem('s2ktux-active-session-'+MODE,next.id); localStorage.removeItem(STORE); localStorage.removeItem('s2ktux-chal-done-v11-'+MODE+'-'+SESSION_ID); localStorage.removeItem('s2ktux-chal-manual-v11-'+MODE+'-'+SESSION_ID); localStorage.removeItem('s2ktux-reports-v1-'+MODE+'-'+SESSION_ID); localStorage.removeItem('s2ktux-exam-v1-'+SESSION_ID); }catch(e){} location.href=sessionUrl(next.id); }); } }
+
+    const connectionEl=document.querySelector('#connection-status');
+    const renderConnection=()=>{ if(!connectionEl)return; const offline=!navigator.onLine; connectionEl.dataset.offline=offline?'1':'0'; connectionEl.lastElementChild.textContent=offline?'Sin conexión · entorno operativo':'Disponible sin conexión'; };
+    addEventListener('online',renderConnection); addEventListener('offline',renderConnection); renderConnection();
+
+    const topologyEl=document.querySelector('#topology');
+    const renderTopology=()=>{ if(!topologyEl)return; let cards=[];
+      if(MODE==='linux'){
+        const active=Object.keys(services||{}).filter(k=>services[k]&&services[k].active).length;
+        cards=[['RHCSA-LAB',currentUser+' · SELinux '+(selinux.mode||'Enforcing'),'ok'],['RED ETH0',net.eth0.ip?(net.eth0.ip+'/'+net.eth0.prefix):'sin configurar',net.eth0.ip?'ok':'warn'],['SISTEMA',active+' servicios activos · '+(lvm.lvs||[]).length+' LV','ok']];
+      } else if(MODE==='docker'){
+        cards=[['DOCKER-HOST',net.eth0.ip+'/'+net.eth0.prefix,'ok'],['DOCKER ENGINE',!dockerInstalled?'no instalado':services.docker&&services.docker.active?'activo':'detenido',dockerInstalled&&services.docker&&services.docker.active?'ok':'warn'],['RECURSOS',images.length+' imágenes · '+containers.filter(c=>c.running).length+'/'+containers.length+' contenedores','ok']];
+      } else {
+        cards=(k8s.nodes||[]).map(n=>[n.name,n.status+' · '+n.version+' · '+(n.schedulable?'programable':'cordon'),n.status==='Ready'?'ok':'warn']);
+      }
+      topologyEl.innerHTML=cards.map(c=>'<div class="topo-node"><div class="topo-title">'+esc(c[0])+'</div><div class="topo-meta topo-'+c[2]+'">'+esc(c[1])+'</div></div>').join('');
+    };
+
+    const docsEl=document.querySelector('#docs-results'), docsSearch=document.querySelector('#docs-search');
+    let docs=(window.S2K_TERMINAL_DOCS&&window.S2K_TERMINAL_DOCS[MODE])||[];
+    const renderDocs=()=>{ if(!docsEl)return; const q=(docsSearch&&docsSearch.value||'').trim().toLowerCase(); const rows=docs.filter(d=>!q||(d.title+' '+d.command+' '+d.text).toLowerCase().includes(q)).slice(0,12); docsEl.innerHTML=rows.length?rows.map(d=>'<article class="doc-entry"><b>'+esc(d.title)+'</b><br><code>'+esc(d.command)+'</code><p>'+esc(d.text)+'</p></article>').join(''):'<div class="report-card">No hay coincidencias. Prueba con una palabra más corta.</div>'; };
+    if(docsSearch)docsSearch.addEventListener('input',renderDocs); renderDocs();
+    addEventListener('s2k-docs-ready',()=>{docs=(window.S2K_TERMINAL_DOCS&&window.S2K_TERMINAL_DOCS[MODE])||[];renderDocs();},{once:true});
+
+    const REPORT_KEY='s2ktux-reports-v1-'+MODE+'-'+SESSION_ID; let reports=[]; try{reports=JSON.parse(localStorage.getItem(REPORT_KEY)||'[]')||[];}catch(e){}
+    const scoreChallenge=(c,r)=>{ if(r&&r.ok)return 100; const div=document.createElement('div');div.innerHTML=c.goal; const targets=[...div.querySelectorAll('code,b')].map(x=>x.textContent.trim().toLowerCase()).filter(x=>x.length>1); const log=history.join('\n').toLowerCase(); const hits=targets.filter(t=>log.includes(t)||log.includes(t.split(/[\s/:]/)[0])).length; const prefix=MODE==='kubernetes'?'kubectl':MODE==='docker'?'docker':''; const relevant=history.slice(-30).filter(h=>!prefix||h.startsWith(prefix)||h.startsWith('systemctl')||h.startsWith('curl ')).length; const activity=Math.min(60,relevant*15); const evidence=targets.length?Math.round((hits/targets.length)*8)*10:0; return Math.min(80,Math.max(activity,evidence)); };
+    const saveReports=()=>{ try{localStorage.setItem(REPORT_KEY,JSON.stringify(reports.slice(-80)));}catch(e){} };
+    const reportSummary=document.querySelector('#report-summary'),reportDetail=document.querySelector('#report-detail'),historyReplay=document.querySelector('#history-replay');
+    const renderReport=()=>{ if(reportSummary){ const attempts=reports.filter(r=>r.type==='practice'); const best={}; attempts.forEach(r=>{best[r.index]=Math.max(best[r.index]||0,r.score||0);}); const vals=Object.values(best); const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0; const passed=vals.filter(x=>x===100).length; reportSummary.innerHTML=vals.length?'<b>Resumen de esta sesión</b><br>'+passed+' prácticas validadas · '+avg+'% de avance medio en '+vals.length+' revisadas<div class="score-bar"><div class="score-fill" style="width:'+avg+'%"></div></div>':'Aún no has comprobado ninguna práctica en esta sesión.'; }
+      if(reportDetail){ reportDetail.innerHTML=reports.slice(-5).reverse().map(r=>'<div class="report-card"><b>'+esc(r.title)+'</b> · <span class="'+(r.score===100?'topo-ok':'topo-warn')+'">'+r.score+'%</span><br>'+esc(r.message||'')+'<div class="score-bar"><div class="score-fill" style="width:'+r.score+'%"></div></div></div>').join(''); }
+      if(historyReplay){ const rows=history.slice(-80).reverse(); historyReplay.innerHTML=rows.length?rows.map((h,i)=>'<button type="button" class="history-command" data-history-index="'+i+'"><span style="color:var(--muted)">$</span> '+esc(h)+'</button>').join(''):'<div class="report-card">Todavía no hay comandos en esta sesión.</div>'; }
+    };
+    if(historyReplay)historyReplay.addEventListener('click',e=>{ const b=e.target.closest('[data-history-index]'); if(!b)return; const h=history.slice(-80).reverse()[Number(b.dataset.historyIndex)]; if(h!=null){input.value=h;input.focus();body.scrollIntoView({behavior:'smooth',block:'center'});} });
+    renderReport();
+    window.__s2kRefresh=()=>{renderTopology();renderReport();}; renderTopology();
+    document.addEventListener('keydown',e=>{ if(!e.altKey)return; const k=e.key.toLowerCase(); if(k==='d'){e.preventDefault();const d=document.querySelector('#docs-tool');if(d){d.open=true;docsSearch&&docsSearch.focus();}} if(k==='h'){e.preventDefault();const d=document.querySelector('#activity-tool');if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'});}} });
+
     const selEl=document.querySelector('#chal-select'), bodyEl=document.querySelector('#chal-body'), resEl=document.querySelector('#chal-result'), btnEl=document.querySelector('#chal-check');
     if(selEl && bodyEl && btnEl){
       const CH = MODE==='kubernetes'?k8sChallenges:MODE==='docker'?dockerChallenges:challenges;
-      const CHKEY='s2ktux-chal-done-v10-'+MODE; let chalDone={}; try{ chalDone=JSON.parse(localStorage.getItem(CHKEY)||'{}')||{}; }catch(e){}
+      const examPanel=document.querySelector('#exam-panel'),examStart=document.querySelector('#exam-start'),examFinish=document.querySelector('#exam-finish'),examClock=document.querySelector('#exam-clock');
+      const EXAM_KEY='s2ktux-exam-v1-'+SESSION_ID; let examState=null,examTimer=null; try{examState=JSON.parse(localStorage.getItem(EXAM_KEY)||'null');}catch(e){}
+      if(MODE==='kubernetes'&&examPanel)examPanel.dataset.show='1';
+      if(MODE==='kubernetes'&&new URLSearchParams(location.search).get('exam')==='1'&&!examState){ examState={active:true,started:Date.now(),ends:Date.now()+7200000}; try{localStorage.setItem(EXAM_KEY,JSON.stringify(examState));}catch(e){} }
+      let examActive=!!(examState&&examState.active);
+      const finishExam=(automatic)=>{ if(!examState)return; const results=CH.map((c,i)=>{let r;try{r=c.check();}catch(e){r={ok:false,msg:'No se pudo validar esta tarea.'};}return{type:'exam',index:i,title:c.title,score:scoreChallenge(c,r),message:r.msg,at:Date.now()};}); const total=Math.round(results.reduce((a,r)=>a+r.score,0)/results.length); reports=reports.concat(results); reports.push({type:'exam-summary',index:-1,title:'Simulacro CKA',score:total,message:(automatic?'Tiempo agotado. ':'')+(total>=74?'Resultado orientativo: aprobado.':'Resultado orientativo: sigue practicando las tareas pendientes.'),at:Date.now()}); saveReports(); examState.active=false;examState.finished=Date.now();examState.score=total;try{localStorage.setItem(EXAM_KEY,JSON.stringify(examState));}catch(e){} examActive=false;if(examTimer)clearInterval(examTimer);btnEl.style.display='';if(examFinish)examFinish.style.display='none';if(examStart)examStart.style.display='';if(examClock)examClock.textContent='Resultado: '+total+'%';resEl.innerHTML='<span style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:11px;color:#8fa876">SIMULACRO FINALIZADO · '+total+'%</span>';renderReport(); };
+      const tickExam=()=>{ if(!examState||!examState.active)return; const left=Math.max(0,examState.ends-Date.now()); const h=Math.floor(left/3600000),m=Math.floor(left%3600000/60000),s=Math.floor(left%60000/1000); if(examClock)examClock.textContent='Tiempo restante · '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); if(left<=0)finishExam(true); };
+      const syncExamUI=()=>{ if(MODE!=='kubernetes')return; if(examActive){btnEl.style.display='none';if(examStart)examStart.style.display='none';if(examFinish)examFinish.style.display='';tickExam();examTimer=setInterval(tickExam,1000);} else if(examState&&examState.score!=null&&examClock)examClock.textContent='Último resultado · '+examState.score+'%'; };
+      if(examStart)examStart.addEventListener('click',()=>{ if(!confirm('El simulacro se abrirá en un clúster nuevo e independiente. Tendrás dos horas y las comprobaciones quedarán ocultas hasta el final.'))return; const id='exam-'+Date.now().toString(36);sessionList.push({id,name:'Simulacro CKA '+new Date().toLocaleDateString(),created:Date.now()});try{localStorage.setItem(SESSION_LIST_KEY,JSON.stringify(sessionList));localStorage.setItem('s2ktux-active-session-'+MODE,id);}catch(e){}location.href=sessionUrl(id,'&exam=1'); });
+      if(examFinish)examFinish.addEventListener('click',()=>{if(confirm('¿Finalizar y corregir ahora el simulacro?'))finishExam(false);});
+      const CHKEY='s2ktux-chal-done-v11-'+MODE+'-'+SESSION_ID; let chalDone={}; try{ const legacy=SESSION_ID==='principal'?localStorage.getItem('s2ktux-chal-done-v10-'+MODE):null; chalDone=JSON.parse(localStorage.getItem(CHKEY)||legacy||'{}')||{}; }catch(e){}
       const updateProgress=()=>{ const pr=document.querySelector('#chal-progress'); if(!pr) return; const total=CH.length; let done=0; for(let i=0;i<total;i++){ if(chalDone[i]) done++; } const pct=Math.round(done/total*100); pr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;font-family:&quot;Press Start 2P&quot;,monospace;font-size:10px;color:var(--head);margin-bottom:8px"><span>PROGRESO</span><span style="color:#8fa876">'+done+' / '+total+'  ('+pct+'%)</span></div><div style="height:16px;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:2px"><div style="height:100%;width:'+pct+'%;background:repeating-linear-gradient(90deg,#8fa876 0 10px,#7d9866 10px 12px);transition:width .3s"></div></div>'; };
       CH.forEach((c,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=(chalDone[i]?'✔ ':'')+(i+1)+'. '+c.title; selEl.appendChild(o); });
       const showResult=(r)=>{ resEl.innerHTML='<span style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:11px;color:'+(r.ok?'#5a8a3c':'#c0392b')+'">'+(r.ok?'✔ CONSEGUIDO':'✗ TODAVÍA NO')+'</span> &nbsp;<span style="color:var(--text)">'+r.msg+'</span>'; };
-      const renderChal=()=>{ const i=selEl.value; const c=CH[i]; bodyEl.innerHTML='<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">'+c.badge+(chalDone[i]?'  ✔ completado':'')+'</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">'+c.title+'</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">'+c.goal+'</div>'; if(chalDone[i]){ showResult({ok:true,msg:'Ya lo conseguiste antes.'}); } else { resEl.innerHTML=''; } };
+      const renderChal=()=>{ const i=selEl.value; const c=CH[i]; bodyEl.innerHTML='<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">'+c.badge+(chalDone[i]?'  ✔ completado':'')+'</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">'+c.title+'</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">'+c.goal+'</div>'; if(examActive){resEl.innerHTML='<span style="color:var(--muted)">Validación oculta durante el simulacro.</span>';}else if(chalDone[i]){ showResult({ok:true,msg:'Ya lo conseguiste antes.'}); } else { resEl.innerHTML=''; } };
       selEl.addEventListener('change', renderChal); renderChal(); updateProgress();
-      const MKEY='s2ktux-chal-manual-v10-'+MODE; let manualDone={}; try{ manualDone=JSON.parse(localStorage.getItem(MKEY)||'{}')||{}; }catch(e){}
+      const MKEY='s2ktux-chal-manual-v11-'+MODE+'-'+SESSION_ID; let manualDone={}; try{ const legacy=SESSION_ID==='principal'?localStorage.getItem('s2ktux-chal-manual-v10-'+MODE):null; manualDone=JSON.parse(localStorage.getItem(MKEY)||legacy||'{}')||{}; }catch(e){}
       const congrats=()=>{ const total=CH.length; let m=0; for(let i=0;i<total;i++) if(manualDone[i]) m++; if(m>=total){ const d=document.querySelector('#chal-congrats'); if(d){ d.style.display='block'; const cert=MODE==='kubernetes'?'ESTÁS PREPARADO PARA EL CKA':MODE==='docker'?'DOMINAS LOS FUNDAMENTOS DE DOCKER':'ESTÁS PREPARADO PARA RHCSA V9'; d.innerHTML='<div style="margin-top:18px;padding:20px 22px;background:#1a2410;border:3px solid #8fa876;box-shadow:5px 5px 0 var(--line);text-align:center"><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:15px;color:#8fa876;line-height:1.6">🏆 FELICIDADES</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:12px;color:#e9ddc7;line-height:1.7;margin-top:12px">'+cert+'</div><div style="font-family:&quot;Share Tech Mono&quot;,monospace;font-size:15px;color:#a2957d;margin-top:12px">Has completado las '+total+' prácticas por tu cuenta.</div></div>'; } } };
-      btnEl.addEventListener('click', ()=>{ const i=selEl.value; const c=CH[i]; let r; try{ r=c.check(); }catch(e){ r={ok:false,msg:'No se pudo comprobar esta práctica.'}; } if(r.ok && !chalDone[i]){ chalDone[i]=true; manualDone[i]=true; try{ localStorage.setItem(CHKEY, JSON.stringify(chalDone)); localStorage.setItem(MKEY, JSON.stringify(manualDone)); }catch(e){} selEl.options[i].textContent='✔ '+(Number(i)+1)+'. '+c.title; updateProgress(); congrats(); } showResult(r); });
-      congrats();
+      btnEl.addEventListener('click', ()=>{ if(examActive)return; const i=selEl.value; const c=CH[i]; let r; try{ r=c.check(); }catch(e){ r={ok:false,msg:'No se pudo comprobar esta práctica.'}; } const score=scoreChallenge(c,r); reports.push({type:'practice',index:Number(i),title:c.title,score,message:r.msg,at:Date.now()}); saveReports(); renderReport(); if(r.ok && !chalDone[i]){ chalDone[i]=true; manualDone[i]=true; try{ localStorage.setItem(CHKEY, JSON.stringify(chalDone)); localStorage.setItem(MKEY, JSON.stringify(manualDone)); }catch(e){} selEl.options[i].textContent='✔ '+(Number(i)+1)+'. '+c.title; updateProgress(); congrats(); } showResult(r); });
+      congrats(); syncExamUI(); renderChal();
     }
   }
 }
