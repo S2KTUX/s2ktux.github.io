@@ -77,18 +77,21 @@
   .exam-panel{display:none;background:#1a2410;border:3px solid #8fa876;box-shadow:4px 4px 0 var(--line);padding:16px;margin-bottom:18px;color:#e9ddc7}
   .exam-panel[data-show="1"]{display:block}.exam-running{color:#e0a458;font-family:'Share Tech Mono',monospace;font-size:19px}
   .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-  .mode-select{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
-  .mode-world{max-width:980px;width:100%;text-align:center;position:relative;padding:28px 20px 34px}
-  .mode-world::before,.mode-world::after{content:'';position:absolute;width:8px;height:8px;background:#d97757;box-shadow:16px 8px 0 var(--soft2),32px -5px 0 var(--head);opacity:.7}.mode-world::before{left:2%;top:12%}.mode-world::after{right:3%;bottom:10%;transform:scaleX(-1)}
-  .mode-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:stretch}
-  .mode-card{appearance:none;min-width:0;background:var(--surface);border:4px solid var(--line);box-shadow:8px 8px 0 var(--surface2);padding:0;cursor:pointer;text-align:left;color:var(--text);overflow:hidden;position:relative;transition:transform .12s,box-shadow .12s}.mode-card:hover,.mode-card:focus-visible{transform:translate(-3px,-3px);box-shadow:11px 11px 0 var(--surface2)}
-  .mode-scene{height:132px;background:var(--surface2);border-bottom:4px solid var(--line);position:relative;overflow:hidden;image-rendering:pixelated}.mode-scene::after{content:'';position:absolute;left:0;right:0;bottom:0;height:18px;background:var(--soft2);border-top:3px solid var(--line)}
-  .px-screen{position:absolute;left:50%;top:25px;width:96px;height:61px;transform:translateX(-50%);background:#12100b;border:5px solid var(--line);box-shadow:6px 6px 0 rgba(74,54,39,.25)}.px-screen::before{content:'> _';position:absolute;left:12px;top:13px;color:#8fa876;font:22px 'VT323',monospace;animation:pixelBlink 1.2s steps(2,end) infinite}.px-screen::after{content:'';position:absolute;left:39px;bottom:-18px;width:18px;height:14px;background:var(--line);box-shadow:-13px 13px 0 -3px var(--line),13px 13px 0 -3px var(--line)}
-  .px-box{position:absolute;width:48px;height:34px;background:#d97757;border:4px solid var(--line);bottom:21px;z-index:2}.px-box::before,.px-box::after{content:'';position:absolute;background:var(--surface)}.px-box::before{width:18px;height:4px;left:11px;top:8px}.px-box::after{width:5px;height:5px;right:5px;bottom:5px}.docker-scene .px-box:nth-child(1){left:26px}.docker-scene .px-box:nth-child(2){left:50%;transform:translateX(-50%);bottom:34px;background:#e0a458}.docker-scene .px-box:nth-child(3){right:26px;background:#8fa876}
-  .k8s-hub{position:absolute;left:50%;top:17px;transform:translateX(-50%);width:42px;height:42px;background:#d97757;border:4px solid var(--line);z-index:2}.k8s-node{position:absolute;width:41px;height:31px;background:#8fa876;border:4px solid var(--line);bottom:25px;z-index:2}.k8s-node:nth-child(2){left:26px}.k8s-node:nth-child(3){right:26px}.k8s-node::after{content:'';position:absolute;width:4px;height:31px;background:var(--line);top:-25px}.k8s-node:nth-child(2)::after{right:-33px;transform:rotate(-55deg)}.k8s-node:nth-child(3)::after{left:-33px;transform:rotate(55deg)}
-  .mode-copy{padding:23px 21px 25px;min-height:154px}.mode-title{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--head);margin:0 0 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}.mode-status{font:12px 'Share Tech Mono',monospace;color:#8fa876;border:2px solid currentColor;padding:2px 5px}.mode-desc{font:17px/1.35 'Share Tech Mono',monospace;color:var(--muted);margin:0}.mode-enter{display:block;margin-top:15px;color:#d97757;font:15px 'Share Tech Mono',monospace}
-  @keyframes pixelBlink{50%{opacity:.35}}
-  @media(max-width:760px){.mode-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}.mode-world{padding-top:60px}.mode-scene{height:112px}.mode-copy{min-height:0}.mode-select{align-items:flex-start}.mode-world::before,.mode-world::after{display:none}}
+  .mode-select{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:26px;overflow:auto}
+  .selector-wrap{width:min(900px,100%);position:relative}
+  .selector-heading{text-align:center;margin-bottom:25px}.selector-kicker{font-family:'Press Start 2P',monospace;font-size:9px;color:#d97757;letter-spacing:1px;margin-bottom:13px}.selector-heading h1{font-family:'Press Start 2P',monospace;font-size:20px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin:0}
+  .selector-console{background:var(--surface2);border:4px solid var(--line);box-shadow:9px 9px 0 var(--soft2);padding:13px;position:relative}
+  .selector-console::before,.selector-console::after{content:'';position:absolute;width:8px;height:8px;background:var(--line)}.selector-console::before{left:7px;top:7px}.selector-console::after{right:7px;bottom:7px}
+  .selector-bar{height:34px;border:3px solid var(--line);border-bottom:0;background:var(--surface);display:flex;align-items:center;padding:0 12px;gap:7px;font:14px 'Share Tech Mono',monospace;color:var(--muted)}.selector-led{width:9px;height:9px;background:#d97757;box-shadow:15px 0 0 #e0a458,30px 0 0 #8fa876;margin-right:31px}.selector-bar strong{font-weight:normal;color:var(--head)}.selector-clock{margin-left:auto;color:#8fa876}
+  .selector-screen{position:relative;background:#12100b;border:3px solid var(--line);padding:22px 24px 17px;overflow:hidden}.selector-screen::after{content:'';pointer-events:none;position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 4px)}
+  .selector-prompt{font:16px 'Share Tech Mono',monospace;color:#8fa876;margin:0 0 15px}.selector-prompt span{color:#e0a458}.selector-list{display:grid;gap:8px;position:relative;z-index:1}
+  .terminal-slot{appearance:none;width:100%;display:grid;grid-template-columns:70px 1fr auto;gap:17px;align-items:center;background:#1b1710;border:2px solid #514334;color:#d8cbad;padding:12px 15px;cursor:pointer;text-align:left;transition:background .08s,border-color .08s,transform .08s}.terminal-slot::before{content:' ';position:absolute}.terminal-slot:hover,.terminal-slot:focus-visible,.terminal-slot[data-selected="1"]{background:#292116;border-color:#e0a458;transform:translateX(4px);outline:0}.terminal-slot:hover .slot-arrow,.terminal-slot:focus-visible .slot-arrow,.terminal-slot[data-selected="1"] .slot-arrow{color:#e0a458;opacity:1}
+  .slot-art{width:64px;height:48px;position:relative;image-rendering:pixelated}.slot-copy{min-width:0}.slot-copy>span{display:block}.slot-title{font-family:'Press Start 2P',monospace;font-size:11px;color:#e9ddc7;margin-bottom:7px}.slot-meta{font:15px/1.25 'Share Tech Mono',monospace;color:#a99a86}.slot-side{text-align:right;min-width:82px}.slot-status{font:11px 'Share Tech Mono',monospace;color:#8fa876;border:1px solid #61744e;padding:2px 6px}.slot-arrow{display:block;margin-top:7px;color:#a99a86;font:17px 'Share Tech Mono',monospace;opacity:.55}
+  .linux-art::before{content:'>_';position:absolute;left:6px;top:4px;width:43px;height:27px;background:#070706;border:3px solid #8fa876;color:#8fa876;font:17px 'VT323',monospace;padding:3px 0 0 6px}.linux-art::after{content:'';position:absolute;left:27px;top:38px;width:14px;height:4px;background:#8fa876;box-shadow:-8px 5px 0 -1px #8fa876,8px 5px 0 -1px #8fa876}
+  .docker-art::before{content:'';position:absolute;left:3px;bottom:5px;width:18px;height:15px;background:#d97757;box-shadow:22px 0 0 #e0a458,44px 0 0 #8fa876,22px -19px 0 #d97757}.docker-art::after{content:'';position:absolute;left:8px;bottom:11px;width:8px;height:3px;background:#f6ecd9;box-shadow:22px 0 0 #f6ecd9,44px 0 0 #f6ecd9,22px -19px 0 #f6ecd9}
+  .k8s-art::before{content:'';position:absolute;left:25px;top:2px;width:18px;height:18px;background:#d97757;border:3px solid #e0a458;box-shadow:-22px 25px 0 -2px #8fa876,22px 25px 0 -2px #8fa876}.k8s-art::after{content:'';position:absolute;left:15px;top:23px;width:38px;height:3px;background:#a99a86;transform:rotate(24deg);box-shadow:0 0 0 #a99a86}
+  .selector-footer{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:15px;font:14px 'Share Tech Mono',monospace;color:#756856}.selector-footer strong{color:#d97757;font-weight:normal}.selector-plant{position:absolute;right:-31px;top:-28px;width:26px;height:27px;background:#8fa876;border:3px solid var(--line);box-shadow:-12px 9px 0 -5px #8fa876,12px 9px 0 -5px #8fa876}.selector-plant::after{content:'';position:absolute;left:2px;top:25px;width:22px;height:16px;background:#d97757;border:3px solid var(--line)}
+  @media(max-width:680px){.mode-select{align-items:flex-start;padding:20px 14px}.selector-wrap{padding-top:24px}.selector-heading h1{font-size:16px}.selector-console{padding:8px;box-shadow:6px 6px 0 var(--soft2)}.selector-screen{padding:15px 12px}.terminal-slot{grid-template-columns:54px 1fr;padding:11px 10px;gap:11px}.slot-art{transform:scale(.78);transform-origin:left center;width:50px}.slot-side{grid-column:2;text-align:left;display:flex;align-items:center;gap:10px}.slot-arrow{display:inline;margin:0}.selector-footer{font-size:12px;flex-direction:column;align-items:flex-start}.selector-plant{display:none}}
   @media(min-width:901px){details.cs[data-mode="linux"] .cs-tabs{flex-wrap:nowrap}details.cs[data-mode="linux"] .cs-tab{flex:1 1 auto;min-width:0;padding:11px 7px;font-size:13px;text-align:center;white-space:nowrap}}
   @media(max-width:640px){.csrow{grid-template-columns:1fr;gap:2px}}
 
@@ -128,6 +131,7 @@
 })();
 (function(){
   var MODE_KEY='s2ktux-terminal-mode';
+  var INTERNAL_RELOAD_KEY='s2ktux-terminal-internal-reload';
   function applyModeUI(){
     var sel=document.getElementById('mode-select');
     var params=new URLSearchParams(location.search), mode=params.get('mode');
@@ -136,6 +140,10 @@
   }
   try{
     var params=new URLSearchParams(location.search), active=params.get('mode');
+    var nav=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];
+    var internalReload=sessionStorage.getItem(INTERNAL_RELOAD_KEY)==='1';
+    if(internalReload)sessionStorage.removeItem(INTERNAL_RELOAD_KEY);
+    if(active&&nav&&nav.type==='reload'&&!internalReload){sessionStorage.removeItem(MODE_KEY);location.replace('terminal.html?choose=1');return;}
     if(active) sessionStorage.setItem(MODE_KEY,active);
     else if(params.get('choose')!=='1'){
       var remembered=sessionStorage.getItem(MODE_KEY);
@@ -148,7 +156,14 @@
     var cm = e.target && e.target.closest && e.target.closest('[data-change-mode]');
     if(cm){ try{sessionStorage.removeItem(MODE_KEY);}catch(x){} location.href='terminal.html?choose=1'; }
   });
-  document.addEventListener('DOMContentLoaded', applyModeUI);
+  function initSelectorKeyboard(){
+    var slots=[].slice.call(document.querySelectorAll('.terminal-slot')),selected=0;
+    function choose(i,focus){selected=(i+slots.length)%slots.length;slots.forEach(function(s,n){var on=n===selected;s.setAttribute('data-selected',on?'1':'0');s.setAttribute('aria-selected',on?'true':'false');});if(focus&&slots[selected])slots[selected].focus();}
+    slots.forEach(function(s,i){s.addEventListener('mouseenter',function(){choose(i,false);});s.addEventListener('focus',function(){choose(i,false);});});
+    document.addEventListener('keydown',function(e){var sel=document.getElementById('mode-select');if(!sel||sel.style.display==='none'||!slots.length)return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();choose(selected+1,true);}else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();choose(selected-1,true);}else if(e.key==='Enter'){e.preventDefault();slots[selected].click();}});
+    if(slots.length)choose(0,false);
+  }
+  document.addEventListener('DOMContentLoaded', function(){applyModeUI();initSelectorKeyboard();});
   applyModeUI();
   var __modeTries=0; var __modeIv=setInterval(function(){ __modeTries++; applyModeUI(); if(__modeTries>100) clearInterval(__modeIv); }, 50);
 })();
@@ -156,25 +171,35 @@
 </head>
 <body>
 <div id="mode-select" class="mode-select">
-  <div class="mode-world">
-    <div style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">SANDBOX · elige qué practicar</div>
-    <h1 style="font-family:'Press Start 2P',monospace;font-size:22px;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:34px">¿Qué terminal quieres abrir?</h1>
-    <div class="mode-grid">
-      <button data-pick-mode="linux" class="mode-card">
-        <div class="mode-scene linux-scene" aria-hidden="true"><span class="px-screen"></span></div>
-        <div class="mode-copy"><div class="mode-title">LINUX <span class="mode-status">READY</span></div>
-        <p class="mode-desc">Máquina RHCSA con arranque GRUB, SELinux, LVM, red y systemd.</p><span class="mode-enter">Abrir máquina →</span></div>
-      </button>
-      <button data-pick-mode="docker" class="mode-card">
-        <div class="mode-scene docker-scene" aria-hidden="true"><span class="px-box"></span><span class="px-box"></span><span class="px-box"></span></div>
-        <div class="mode-copy"><div class="mode-title">DOCKER <span class="mode-status">READY</span></div>
-        <p class="mode-desc">Host Linux para instalar Docker y trabajar con imágenes, redes y Compose.</p><span class="mode-enter">Abrir host →</span></div>
-      </button>
-      <button data-pick-mode="kubernetes" class="mode-card">
-        <div class="mode-scene k8s-scene" aria-hidden="true"><span class="k8s-hub"></span><span class="k8s-node"></span><span class="k8s-node"></span></div>
-        <div class="mode-copy"><div class="mode-title">K8S <span class="mode-status">READY</span></div>
-        <p class="mode-desc">Clúster de práctica CKA con workloads, red, storage y RBAC.</p><span class="mode-enter">Abrir clúster →</span></div>
-      </button>
+  <div class="selector-wrap">
+    <span class="selector-plant" aria-hidden="true"></span>
+    <header class="selector-heading">
+      <div class="selector-kicker">S2KTUX · SALA DE MÁQUINAS</div>
+      <h1>Selecciona tu entorno</h1>
+    </header>
+    <div class="selector-console">
+      <div class="selector-bar"><span class="selector-led" aria-hidden="true"></span><strong>sandbox-selector</strong><span class="selector-clock">3 sistemas online</span></div>
+      <div class="selector-screen">
+        <p class="selector-prompt"><span>visitor@s2ktux:~$</span> select-machine --interactive</p>
+        <div class="selector-list" role="listbox" aria-label="Entornos disponibles">
+          <button data-pick-mode="linux" class="terminal-slot" role="option" aria-selected="false">
+            <span class="slot-art linux-art" aria-hidden="true"></span>
+            <span class="slot-copy"><span class="slot-title">LINUX / RHCSA</span><span class="slot-meta">Arranque, usuarios, SELinux, systemd, red y LVM.</span></span>
+            <span class="slot-side"><span class="slot-status">ONLINE</span><span class="slot-arrow">abrir →</span></span>
+          </button>
+          <button data-pick-mode="docker" class="terminal-slot" role="option" aria-selected="false">
+            <span class="slot-art docker-art" aria-hidden="true"></span>
+            <span class="slot-copy"><span class="slot-title">DOCKER LAB</span><span class="slot-meta">Motor, imágenes, contenedores, redes y Compose.</span></span>
+            <span class="slot-side"><span class="slot-status">ONLINE</span><span class="slot-arrow">abrir →</span></span>
+          </button>
+          <button data-pick-mode="kubernetes" class="terminal-slot" role="option" aria-selected="false">
+            <span class="slot-art k8s-art" aria-hidden="true"></span>
+            <span class="slot-copy"><span class="slot-title">KUBERNETES / CKA</span><span class="slot-meta">Workloads, scheduling, storage, red, RBAC y clúster.</span></span>
+            <span class="slot-side"><span class="slot-status">ONLINE</span><span class="slot-arrow">abrir →</span></span>
+          </button>
+        </div>
+        <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> abrir</span><span>El progreso de cada máquina se guarda por separado.</span></div>
+      </div>
     </div>
   </div>
 </div>

@@ -14,8 +14,8 @@ const contracts = [
   ['Kubernetes reconciliation', /ContainerCreating/.test(core) && /Pod became Running/.test(core)],
   ['Interactive container shells', /enterContainerShell/.test(core) && /containerDispatch/.test(core)],
   ['Here-document input', /const hd=cmd\.match/.test(core) && /startInteractive\('>'/.test(core)],
-  ['Session-scoped selector', /sessionStorage\.setItem\(MODE_KEY/.test(page) && /choose/.test(page)],
-  ['Pixel selector scenes', /mode-scene/.test(page) && /k8s-hub/.test(page)],
+  ['Session-scoped selector', /sessionStorage\.setItem\(MODE_KEY/.test(page) && /nav\.type==='reload'/.test(page) && /choose/.test(page)],
+  ['Pixel selector console', /selector-console/.test(page) && /terminal-slot/.test(page) && /k8s-art/.test(page)],
 ];
 
 for (const [name, passed] of contracts) assert.ok(passed, `Terminal contract failed: ${name}`);
