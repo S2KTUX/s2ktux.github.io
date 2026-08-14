@@ -77,6 +77,18 @@
   .exam-panel{display:none;background:#1a2410;border:3px solid #8fa876;box-shadow:4px 4px 0 var(--line);padding:16px;margin-bottom:18px;color:#e9ddc7}
   .exam-panel[data-show="1"]{display:block}.exam-running{color:#e0a458;font-family:'Share Tech Mono',monospace;font-size:19px}
   .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+  .mode-select{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px;overflow:auto}
+  .mode-world{max-width:980px;width:100%;text-align:center;position:relative;padding:28px 20px 34px}
+  .mode-world::before,.mode-world::after{content:'';position:absolute;width:8px;height:8px;background:#d97757;box-shadow:16px 8px 0 var(--soft2),32px -5px 0 var(--head);opacity:.7}.mode-world::before{left:2%;top:12%}.mode-world::after{right:3%;bottom:10%;transform:scaleX(-1)}
+  .mode-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;align-items:stretch}
+  .mode-card{appearance:none;min-width:0;background:var(--surface);border:4px solid var(--line);box-shadow:8px 8px 0 var(--surface2);padding:0;cursor:pointer;text-align:left;color:var(--text);overflow:hidden;position:relative;transition:transform .12s,box-shadow .12s}.mode-card:hover,.mode-card:focus-visible{transform:translate(-3px,-3px);box-shadow:11px 11px 0 var(--surface2)}
+  .mode-scene{height:132px;background:var(--surface2);border-bottom:4px solid var(--line);position:relative;overflow:hidden;image-rendering:pixelated}.mode-scene::after{content:'';position:absolute;left:0;right:0;bottom:0;height:18px;background:var(--soft2);border-top:3px solid var(--line)}
+  .px-screen{position:absolute;left:50%;top:25px;width:96px;height:61px;transform:translateX(-50%);background:#12100b;border:5px solid var(--line);box-shadow:6px 6px 0 rgba(74,54,39,.25)}.px-screen::before{content:'> _';position:absolute;left:12px;top:13px;color:#8fa876;font:22px 'VT323',monospace;animation:pixelBlink 1.2s steps(2,end) infinite}.px-screen::after{content:'';position:absolute;left:39px;bottom:-18px;width:18px;height:14px;background:var(--line);box-shadow:-13px 13px 0 -3px var(--line),13px 13px 0 -3px var(--line)}
+  .px-box{position:absolute;width:48px;height:34px;background:#d97757;border:4px solid var(--line);bottom:21px;z-index:2}.px-box::before,.px-box::after{content:'';position:absolute;background:var(--surface)}.px-box::before{width:18px;height:4px;left:11px;top:8px}.px-box::after{width:5px;height:5px;right:5px;bottom:5px}.docker-scene .px-box:nth-child(1){left:26px}.docker-scene .px-box:nth-child(2){left:50%;transform:translateX(-50%);bottom:34px;background:#e0a458}.docker-scene .px-box:nth-child(3){right:26px;background:#8fa876}
+  .k8s-hub{position:absolute;left:50%;top:17px;transform:translateX(-50%);width:42px;height:42px;background:#d97757;border:4px solid var(--line);z-index:2}.k8s-node{position:absolute;width:41px;height:31px;background:#8fa876;border:4px solid var(--line);bottom:25px;z-index:2}.k8s-node:nth-child(2){left:26px}.k8s-node:nth-child(3){right:26px}.k8s-node::after{content:'';position:absolute;width:4px;height:31px;background:var(--line);top:-25px}.k8s-node:nth-child(2)::after{right:-33px;transform:rotate(-55deg)}.k8s-node:nth-child(3)::after{left:-33px;transform:rotate(55deg)}
+  .mode-copy{padding:23px 21px 25px;min-height:154px}.mode-title{font-family:'Press Start 2P',monospace;font-size:13px;color:var(--head);margin:0 0 12px;display:flex;justify-content:space-between;gap:8px;align-items:center}.mode-status{font:12px 'Share Tech Mono',monospace;color:#8fa876;border:2px solid currentColor;padding:2px 5px}.mode-desc{font:17px/1.35 'Share Tech Mono',monospace;color:var(--muted);margin:0}.mode-enter{display:block;margin-top:15px;color:#d97757;font:15px 'Share Tech Mono',monospace}
+  @keyframes pixelBlink{50%{opacity:.35}}
+  @media(max-width:760px){.mode-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}.mode-world{padding-top:60px}.mode-scene{height:112px}.mode-copy{min-height:0}.mode-select{align-items:flex-start}.mode-world::before,.mode-world::after{display:none}}
   @media(min-width:901px){details.cs[data-mode="linux"] .cs-tabs{flex-wrap:nowrap}details.cs[data-mode="linux"] .cs-tab{flex:1 1 auto;min-width:0;padding:11px 7px;font-size:13px;text-align:center;white-space:nowrap}}
   @media(max-width:640px){.csrow{grid-template-columns:1fr;gap:2px}}
 
@@ -115,16 +127,26 @@
   setTimeout(updateIcons,150); setTimeout(updateIcons,600);
 })();
 (function(){
+  var MODE_KEY='s2ktux-terminal-mode';
   function applyModeUI(){
     var sel=document.getElementById('mode-select');
-    var mode=new URLSearchParams(location.search).get('mode');
+    var params=new URLSearchParams(location.search), mode=params.get('mode');
     if(sel) sel.style.display = mode ? 'none' : 'flex';
+    document.documentElement.style.overflow=mode?'':'hidden';
   }
+  try{
+    var params=new URLSearchParams(location.search), active=params.get('mode');
+    if(active) sessionStorage.setItem(MODE_KEY,active);
+    else if(params.get('choose')!=='1'){
+      var remembered=sessionStorage.getItem(MODE_KEY);
+      if(/^(linux|docker|kubernetes)$/.test(remembered||'')){ location.replace('terminal.html?mode='+encodeURIComponent(remembered)); return; }
+    }
+  }catch(e){}
   document.addEventListener('click', function(e){
     var b = e.target && e.target.closest && e.target.closest('[data-pick-mode]');
-    if(b){ location.href='terminal.html?mode='+encodeURIComponent(b.getAttribute('data-pick-mode')); return; }
+    if(b){ var selected=b.getAttribute('data-pick-mode'); try{sessionStorage.setItem(MODE_KEY,selected);}catch(x){} location.href='terminal.html?mode='+encodeURIComponent(selected); return; }
     var cm = e.target && e.target.closest && e.target.closest('[data-change-mode]');
-    if(cm){ location.href='terminal.html'; }
+    if(cm){ try{sessionStorage.removeItem(MODE_KEY);}catch(x){} location.href='terminal.html?choose=1'; }
   });
   document.addEventListener('DOMContentLoaded', applyModeUI);
   applyModeUI();
@@ -133,22 +155,25 @@
 </script>
 </head>
 <body>
-<div id="mode-select" style="position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:24px">
-  <div style="max-width:800px;width:100%;text-align:center">
+<div id="mode-select" class="mode-select">
+  <div class="mode-world">
     <div style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">SANDBOX · elige qué practicar</div>
     <h1 style="font-family:'Press Start 2P',monospace;font-size:22px;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:34px">¿Qué terminal quieres abrir?</h1>
-    <div style="display:flex;gap:22px;justify-content:center;flex-wrap:wrap">
-      <button data-pick-mode="linux" class="pxbtn" style="width:210px;background:var(--surface);border:3px solid var(--line);box-shadow:6px 6px 0 var(--surface2);padding:28px 18px;cursor:pointer;text-align:center">
-        <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head);margin-bottom:10px">LINUX</div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">Máquina RHCSA<br>GRUB, SELinux, LVM, red…</div>
+    <div class="mode-grid">
+      <button data-pick-mode="linux" class="mode-card">
+        <div class="mode-scene linux-scene" aria-hidden="true"><span class="px-screen"></span></div>
+        <div class="mode-copy"><div class="mode-title">LINUX <span class="mode-status">READY</span></div>
+        <p class="mode-desc">Máquina RHCSA con arranque GRUB, SELinux, LVM, red y systemd.</p><span class="mode-enter">Abrir máquina →</span></div>
       </button>
-      <button data-pick-mode="docker" class="pxbtn" style="width:210px;background:var(--surface);border:3px solid var(--line);box-shadow:6px 6px 0 var(--surface2);padding:28px 18px;cursor:pointer;text-align:center">
-        <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head);margin-bottom:10px">DOCKER</div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">Linux base + Docker<br>instalación, imágenes, compose…</div>
+      <button data-pick-mode="docker" class="mode-card">
+        <div class="mode-scene docker-scene" aria-hidden="true"><span class="px-box"></span><span class="px-box"></span><span class="px-box"></span></div>
+        <div class="mode-copy"><div class="mode-title">DOCKER <span class="mode-status">READY</span></div>
+        <p class="mode-desc">Host Linux para instalar Docker y trabajar con imágenes, redes y Compose.</p><span class="mode-enter">Abrir host →</span></div>
       </button>
-      <button data-pick-mode="kubernetes" class="pxbtn" style="width:210px;background:var(--surface);border:3px solid var(--line);box-shadow:6px 6px 0 var(--surface2);padding:28px 18px;cursor:pointer;text-align:center">
-        <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head);margin-bottom:10px">KUBERNETES</div>
-        <div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">Clúster CKA<br>workloads, red, storage, RBAC…</div>
+      <button data-pick-mode="kubernetes" class="mode-card">
+        <div class="mode-scene k8s-scene" aria-hidden="true"><span class="k8s-hub"></span><span class="k8s-node"></span><span class="k8s-node"></span></div>
+        <div class="mode-copy"><div class="mode-title">K8S <span class="mode-status">READY</span></div>
+        <p class="mode-desc">Clúster de práctica CKA con workloads, red, storage y RBAC.</p><span class="mode-enter">Abrir clúster →</span></div>
       </button>
     </div>
   </div>
@@ -197,7 +222,7 @@
     </div>
   </div>
   <div id="term-actions" style="text-align:center;margin-top:14px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button id="term-reboot" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">⟳ Reiniciar → GRUB</button><button id="term-rebootm" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↻ Reiniciar máquina</button><button id="term-reset" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↺ Resetear terminal</button><button id="term-solved" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">✓ Máquina resuelta</button></div>
-  <div style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">↑ / ↓ historial · <span style="color:#c2650a">Ctrl+R</span> busca · <span style="color:#c2650a">Tab</span> autocompleta · <span style="color:#c2650a">|</span> tuberías · <span style="color:#c2650a">clear</span> limpia · <span style="color:#c2650a">reset</span> restablece la pantalla</div>
+  <div style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">↑ / ↓ historial · <span style="color:#c2650a">Ctrl+R</span> busca · <span style="color:#c2650a">Tab</span> completa · <span style="color:#c2650a">Ctrl+C / Z / D</span> señal, pausa y EOF · <span style="color:#c2650a">| &gt; 2&gt;</span> tuberías y redirecciones</div>
 </section>
 
 <section style="max-width:1200px;margin:0 auto;width:100%;padding:10px 32px 50px">
