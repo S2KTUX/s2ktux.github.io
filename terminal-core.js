@@ -11,14 +11,15 @@ export function startTerminal(engine) {
     const ENV=engine.environment;
     const setText=(id,value)=>{ const el=document.getElementById(id); if(el) el.textContent=value; };
     setText('term-eyebrow',ENV.eyebrow); setText('term-heading',ENV.heading); setText('term-machine-label',ENV.machine); setText('term-os-label',ENV.os); setText('cheatsheet-title',ENV.cheat); setText('practice-title',ENV.practice);
-    { const cs=document.querySelector('details.cs'); if(cs) cs.setAttribute('data-mode',MODE); }
+    { const cs=document.querySelector('details.cs'); if(cs) cs.setAttribute('data-mode',MODE); const practice=document.getElementById('practice-panel'); if(practice) practice.open=true; }
     { const d=document.getElementById('term-description'); if(d) d.textContent=ENV.description; const pageTitle=new URLSearchParams(location.search).get('mode')?(ENV.heading+' · S2KTUX'):'Terminales Linux, Docker y Kubernetes · S2KTUX'; document.title=pageTitle; setTimeout(()=>{document.title=pageTitle;},500); }
     { const sel=document.getElementById('mode-select'); if(sel){ const m=new URLSearchParams(location.search).get('mode'); sel.style.display = m?'none':'flex'; input.disabled=!m; } }
-    document.querySelectorAll('.cs-tab').forEach(t=>{ const modes=(t.getAttribute('data-modes')||'').split(','); const show=modes.indexOf(MODE)!==-1; t.style.display = show?'':'none'; });
-    { const tabs=[...document.querySelectorAll('.cs-tab')].filter(t=>t.style.display!=='none'); const panels=[...document.querySelectorAll('.cs-panel')];
+    document.querySelectorAll('.cs-tab').forEach(t=>{ const modes=(t.getAttribute('data-modes')||'').split(','); const show=modes.indexOf(MODE)!==-1; t.hidden=!show; t.style.display=show?'':'none'; });
+    { const tabs=[...document.querySelectorAll('.cs-tab')].filter(t=>!t.hidden); const panels=[...document.querySelectorAll('.cs-panel')];
       tabs.forEach((t,i)=>t.setAttribute('data-active', i===0?'1':'0'));
       const firstKey = tabs[0] && tabs[0].getAttribute('data-cs-tab');
-      panels.forEach(p=>p.setAttribute('data-active', p.getAttribute('data-cs-panel')===firstKey?'1':'0'));
+      const allowed=new Set(tabs.map(t=>t.getAttribute('data-cs-tab')));
+      panels.forEach(p=>{ const key=p.getAttribute('data-cs-panel'); p.hidden=!allowed.has(key); p.setAttribute('aria-hidden',allowed.has(key)?'false':'true'); p.setAttribute('data-active',key===firstKey?'1':'0'); });
     }
     if(MODE!=='linux') document.querySelectorAll('#term-reboot,#term-solved').forEach(b=>{ if(b) b.style.display='none'; });
 
@@ -271,41 +272,7 @@ export function startTerminal(engine) {
       }catch(e){}
       syncMounts();
     }
-    let renderMap = () => {};
-    const save = () => { try{ const scroll=[...body.querySelectorAll('.term-out')].slice(-180).map(d=>({h:d.innerHTML,c:d.style.color})); localStorage.setItem(STORE, JSON.stringify({fs,users,nextUid,currentUser,userStack,cwd,history:history.slice(-500),processes,nextPid,services,installed:[...installed],images,containers,disks,net,selinux,fw:{services:[...fw.services],ports:[...fw.ports],zone:fw.zone},lvm,rootRecovered,shadowMislabeled,loggedIn,tunedProfile,sshdCfg,dnfUpdated,dockerInstalled,dockerNetworks,dockerVolumes,composeProjects,k8s,shellVars,exportedVars:[...exportedVars],jobs,nextJob,journal:journal.slice(-300),scroll})); }catch(e){} renderMap(); };
-
-    // El mapa no es decorativo: resume el mismo estado que consultan los comandos.
-    renderMap = () => {
-      const world=document.getElementById('map-world'); if(!world)return;
-      world.dataset.mode=MODE;
-      document.querySelectorAll('[data-map-pick]').forEach(z=>z.setAttribute('data-active',z.getAttribute('data-map-pick')===MODE?'1':'0'));
-      const light=(id,state)=>{const el=document.getElementById(id);if(el)el.dataset.state=state;};
-      ['map-linux-service','map-linux-network','map-linux-storage','map-linux-selinux','map-docker-daemon','map-docker-web','map-docker-api','map-kube-control','map-kube-node-0','map-kube-node-1','map-kube-node-2'].forEach(id=>light(id,'off'));
-      let caption='';
-      if(MODE==='linux'){
-        const serviceUp=processes.some(p=>/sshd|NetworkManager|chronyd/.test(p.cmd));
-        light('map-linux-service',serviceUp?'ok':'warn'); light('map-linux-network',net.eth0&&net.eth0.up&&net.eth0.ip?'ok':'warn');
-        light('map-linux-storage',lvm&&lvm.lvs&&lvm.lvs.length?'ok':'warn'); light('map-linux-selinux',selinux.mode==='Enforcing'?'ok':selinux.mode==='Permissive'?'warn':'off');
-        caption='SALA RHCSA · red '+(net.eth0&&net.eth0.ip?net.eth0.ip:'sin configurar')+' · '+(lvm.lvs||[]).length+' volúmenes LVM · SELinux '+selinux.mode;
-      } else if(MODE==='docker'){
-        const daemon=services.docker&&services.docker.active;
-        light('map-docker-daemon',daemon?'ok':services.docker&&services.docker.failed?'warn':'off');
-        const running=containers.filter(c=>c.running); light('map-docker-web',running[0]?'ok':'off'); light('map-docker-api',running[1]?'ok':'off');
-        caption='TALLER DOCKER · daemon '+(daemon?'activo':services.docker&&services.docker.failed?'fallando':'detenido')+' · '+running.length+' contenedor(es) en ejecución';
-      } else {
-        light('map-kube-control',services.kubelet&&services.kubelet.active?'ok':'warn');
-        (k8s.nodes||[]).slice(0,3).forEach((n,i)=>light('map-kube-node-'+i,n.status==='Ready'?'ok':'warn'));
-        const ready=(k8s.nodes||[]).filter(n=>n.status==='Ready').length;
-        caption='CENTRO CKA · '+ready+'/'+(k8s.nodes||[]).length+' nodos Ready · namespace '+k8s.namespace;
-      }
-      const cap=document.getElementById('map-caption'); if(cap)cap.textContent=caption;
-    };
-    document.querySelectorAll('[data-map-pick]').forEach(zone=>zone.addEventListener('click',()=>{
-      const next=zone.getAttribute('data-map-pick');
-      if(next===MODE){input.focus();return;}
-      location.href='terminal.html?mode='+encodeURIComponent(next);
-    }));
-    renderMap();
+    const save = () => { try{ const scroll=[...body.querySelectorAll('.term-out')].slice(-180).map(d=>({h:d.innerHTML,c:d.style.color})); localStorage.setItem(STORE, JSON.stringify({fs,users,nextUid,currentUser,userStack,cwd,history:history.slice(-500),processes,nextPid,services,installed:[...installed],images,containers,disks,net,selinux,fw:{services:[...fw.services],ports:[...fw.ports],zone:fw.zone},lvm,rootRecovered,shadowMislabeled,loggedIn,tunedProfile,sshdCfg,dnfUpdated,dockerInstalled,dockerNetworks,dockerVolumes,composeProjects,k8s,shellVars,exportedVars:[...exportedVars],jobs,nextJob,journal:journal.slice(-300),scroll})); }catch(e){} };
 
     // ---------------- path helpers ----------------
     const homeSegs = () => (users[currentUser]?.home||'/root').split('/').filter(Boolean);
@@ -2038,13 +2005,6 @@ export function startTerminal(engine) {
     const REPORT_KEY='s2ktux-reports-v2-'+MODE+(IS_EXAM?'-exam':''); let reports=[]; try{reports=JSON.parse(localStorage.getItem(REPORT_KEY)||'[]')||[];}catch(e){}
     const scoreChallenge=(c,r)=>{ if(r&&r.ok)return 100; const div=document.createElement('div');div.innerHTML=c.goal; const targets=[...div.querySelectorAll('code,b')].map(x=>x.textContent.trim().toLowerCase()).filter(x=>x.length>1); const log=history.join('\n').toLowerCase(); const hits=targets.filter(t=>log.includes(t)||log.includes(t.split(/[\s/:]/)[0])).length; const prefix=MODE==='kubernetes'?'kubectl':MODE==='docker'?'docker':''; const relevant=history.slice(-30).filter(h=>!prefix||h.startsWith(prefix)||h.startsWith('systemctl')||h.startsWith('curl ')).length; const activity=Math.min(60,relevant*15); const evidence=targets.length?Math.round((hits/targets.length)*8)*10:0; return Math.min(80,Math.max(activity,evidence)); };
     const saveReports=()=>{ try{localStorage.setItem(REPORT_KEY,JSON.stringify(reports.slice(-80)));}catch(e){} };
-    const reportSummary=document.querySelector('#report-summary'),reportDetail=document.querySelector('#report-detail');
-    const renderReport=()=>{ if(reportSummary){ const attempts=reports.filter(r=>r.type==='practice'); const best={}; attempts.forEach(r=>{best[r.index]=Math.max(best[r.index]||0,r.score||0);}); const vals=Object.values(best); const avg=vals.length?Math.round(vals.reduce((a,b)=>a+b,0)/vals.length):0; const passed=vals.filter(x=>x===100).length; reportSummary.innerHTML=vals.length?'<b>Resumen del entorno</b><br>'+passed+' prácticas validadas · '+avg+'% de avance medio en '+vals.length+' revisadas<div class="score-bar"><div class="score-fill" style="width:'+avg+'%"></div></div>':'Aún no has comprobado ninguna práctica en este entorno.'; }
-      if(reportDetail){ reportDetail.innerHTML=reports.slice(-5).reverse().map(r=>'<div class="report-card"><b>'+esc(r.title)+'</b> · <span style="color:'+(r.score===100?'#5a8a3c':'#c2650a')+'">'+r.score+'%</span><br>'+esc(r.message||'')+'<div class="score-bar"><div class="score-fill" style="width:'+r.score+'%"></div></div></div>').join(''); }
-    };
-    renderReport();
-    document.addEventListener('keydown',e=>{ if(e.altKey&&e.key.toLowerCase()==='h'){e.preventDefault();const d=document.querySelector('#activity-tool');if(d){d.open=true;d.scrollIntoView({behavior:'smooth',block:'center'});}} });
-
     const selEl=document.querySelector('#chal-select'), bodyEl=document.querySelector('#chal-body'), resEl=document.querySelector('#chal-result'), btnEl=document.querySelector('#chal-check');
     if(selEl && bodyEl && btnEl){
       const CH = MODE==='kubernetes'?k8sChallenges:MODE==='docker'?dockerChallenges:challenges;
@@ -2053,21 +2013,22 @@ export function startTerminal(engine) {
       if(MODE==='kubernetes'&&examPanel)examPanel.dataset.show='1';
       if(MODE==='kubernetes'&&new URLSearchParams(location.search).get('exam')==='1'&&!examState){ examState={active:true,started:Date.now(),ends:Date.now()+7200000}; try{localStorage.setItem(EXAM_KEY,JSON.stringify(examState));}catch(e){} }
       let examActive=!!(examState&&examState.active);
-      const finishExam=(automatic)=>{ if(!examState)return; const results=CH.map((c,i)=>{let r;try{r=c.check();}catch(e){r={ok:false,msg:'No se pudo validar esta tarea.'};}return{type:'exam',index:i,title:c.title,score:scoreChallenge(c,r),message:r.msg,at:Date.now()};}); const total=Math.round(results.reduce((a,r)=>a+r.score,0)/results.length); reports=reports.concat(results); reports.push({type:'exam-summary',index:-1,title:'Simulacro CKA',score:total,message:(automatic?'Tiempo agotado. ':'')+(total>=74?'Resultado orientativo: aprobado.':'Resultado orientativo: sigue practicando las tareas pendientes.'),at:Date.now()}); saveReports(); examState.active=false;examState.finished=Date.now();examState.score=total;try{localStorage.setItem(EXAM_KEY,JSON.stringify(examState));}catch(e){} examActive=false;if(examTimer)clearInterval(examTimer);btnEl.style.display='';if(examFinish)examFinish.style.display='none';if(examStart)examStart.style.display='';if(examClock)examClock.textContent='Resultado: '+total+'%';resEl.innerHTML='<span style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:11px;color:#8fa876">SIMULACRO FINALIZADO · '+total+'%</span>';renderReport(); };
+      const finishExam=(automatic)=>{ if(!examState)return; const results=CH.map((c,i)=>{let r;try{r=c.check();}catch(e){r={ok:false,msg:'No se pudo validar esta tarea.'};}return{type:'exam',index:i,title:c.title,score:scoreChallenge(c,r),message:r.msg,at:Date.now()};}); const total=Math.round(results.reduce((a,r)=>a+r.score,0)/results.length); reports=reports.concat(results); reports.push({type:'exam-summary',index:-1,title:'Simulacro CKA',score:total,message:(automatic?'Tiempo agotado. ':'')+(total>=74?'Resultado orientativo: aprobado.':'Resultado orientativo: sigue practicando las tareas pendientes.'),at:Date.now()}); saveReports(); examState.active=false;examState.finished=Date.now();examState.score=total;try{localStorage.setItem(EXAM_KEY,JSON.stringify(examState));}catch(e){} examActive=false;if(examTimer)clearInterval(examTimer);btnEl.style.display='';if(examFinish)examFinish.style.display='none';if(examStart)examStart.style.display='';if(examClock)examClock.textContent='Resultado: '+total+'%';resEl.innerHTML='<span style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:11px;color:#8fa876">SIMULACRO FINALIZADO · '+total+'%</span>'; };
       const tickExam=()=>{ if(!examState||!examState.active)return; const left=Math.max(0,examState.ends-Date.now()); const h=Math.floor(left/3600000),m=Math.floor(left%3600000/60000),s=Math.floor(left%60000/1000); if(examClock)examClock.textContent='Tiempo restante · '+String(h).padStart(2,'0')+':'+String(m).padStart(2,'0')+':'+String(s).padStart(2,'0'); if(left<=0)finishExam(true); };
       const syncExamUI=()=>{ if(MODE!=='kubernetes')return; if(examActive){btnEl.style.display='none';if(examStart)examStart.style.display='none';if(examFinish)examFinish.style.display='';tickExam();examTimer=setInterval(tickExam,1000);} else if(examState&&examState.score!=null&&examClock)examClock.textContent='Último resultado · '+examState.score+'%'; };
       if(examStart)examStart.addEventListener('click',()=>{ if(!confirm('El simulacro abrirá un clúster limpio. Tendrás dos horas y las comprobaciones quedarán ocultas hasta el final.'))return; try{localStorage.removeItem('s2ktux-term-state-v11-kubernetes-exam');localStorage.removeItem('s2ktux-chal-done-v12-kubernetes-exam');localStorage.removeItem('s2ktux-chal-manual-v12-kubernetes-exam');localStorage.removeItem(REPORT_KEY);localStorage.removeItem(EXAM_KEY);}catch(e){}location.href='terminal.html?mode=kubernetes&exam=1'; });
       if(examFinish)examFinish.addEventListener('click',()=>{if(confirm('¿Finalizar y corregir ahora el simulacro?'))finishExam(false);});
       const CHKEY='s2ktux-chal-done-v12-'+MODE+(IS_EXAM?'-exam':''); let chalDone={}; try{ const legacy=!IS_EXAM?(localStorage.getItem('s2ktux-chal-done-v11-'+MODE+'-principal')||localStorage.getItem('s2ktux-chal-done-v10-'+MODE)):null; chalDone=JSON.parse(localStorage.getItem(CHKEY)||legacy||'{}')||{}; }catch(e){}
       const updateProgress=()=>{ const pr=document.querySelector('#chal-progress'); if(!pr) return; const total=CH.length; let done=0; for(let i=0;i<total;i++){ if(chalDone[i]) done++; } const pct=Math.round(done/total*100); pr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;font-family:&quot;Press Start 2P&quot;,monospace;font-size:10px;color:var(--head);margin-bottom:8px"><span>PROGRESO</span><span style="color:#8fa876">'+done+' / '+total+'  ('+pct+'%)</span></div><div style="height:16px;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:2px"><div style="height:100%;width:'+pct+'%;background:repeating-linear-gradient(90deg,#8fa876 0 10px,#7d9866 10px 12px);transition:width .3s"></div></div>'; };
+      selEl.replaceChildren();
       CH.forEach((c,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=(chalDone[i]?'✔ ':'')+(i+1)+'. '+c.title; selEl.appendChild(o); });
       const publicResult=(r)=>r.ok?r:{ok:false,msg:MODE==='linux'?r.msg:'El estado actual todavía no cumple todos los requisitos del enunciado.'};
       const showResult=(r)=>{ r=publicResult(r); resEl.innerHTML='<span style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:11px;color:'+(r.ok?'#5a8a3c':'#c0392b')+'">'+(r.ok?'✔ CONSEGUIDO':'✗ TODAVÍA NO')+'</span> &nbsp;<span style="color:var(--text)">'+r.msg+'</span>'; };
-      const renderChal=()=>{ const i=selEl.value; const c=CH[i]; bodyEl.innerHTML='<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">'+c.badge+(chalDone[i]?'  ✔ completado':'')+'</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">'+c.title+'</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">'+c.goal+'</div>'; if(examActive){resEl.innerHTML='<span style="color:var(--muted)">Validación oculta durante el simulacro.</span>';}else if(chalDone[i]){ showResult({ok:true,msg:'Ya lo conseguiste antes.'}); } else { resEl.innerHTML=''; } };
+      const renderChal=()=>{ const i=selEl.value||'0'; const c=CH[Number(i)]; if(!c){ bodyEl.textContent='No se han podido cargar las prácticas de este entorno.'; btnEl.disabled=true; return; } bodyEl.innerHTML='<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">'+c.badge+(chalDone[i]?'  ✔ completado':'')+'</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">'+c.title+'</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">'+c.goal+'</div>'; if(examActive){resEl.innerHTML='<span style="color:var(--muted)">Validación oculta durante el simulacro.</span>';}else if(chalDone[i]){ showResult({ok:true,msg:'Ya lo conseguiste antes.'}); } else { resEl.innerHTML=''; } };
       selEl.addEventListener('change', renderChal); renderChal(); updateProgress();
       const MKEY='s2ktux-chal-manual-v12-'+MODE+(IS_EXAM?'-exam':''); let manualDone={}; try{ const legacy=!IS_EXAM?(localStorage.getItem('s2ktux-chal-manual-v11-'+MODE+'-principal')||localStorage.getItem('s2ktux-chal-manual-v10-'+MODE)):null; manualDone=JSON.parse(localStorage.getItem(MKEY)||legacy||'{}')||{}; }catch(e){}
       const congrats=()=>{ const total=CH.length; let m=0; for(let i=0;i<total;i++) if(manualDone[i]) m++; if(m>=total){ const d=document.querySelector('#chal-congrats'); if(d){ d.style.display='block'; const cert=MODE==='kubernetes'?'ESTÁS PREPARADO PARA EL CKA':MODE==='docker'?'DOMINAS LOS FUNDAMENTOS DE DOCKER':'ESTÁS PREPARADO PARA RHCSA V9'; d.innerHTML='<div style="margin-top:18px;padding:20px 22px;background:#1a2410;border:3px solid #8fa876;box-shadow:5px 5px 0 var(--line);text-align:center"><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:15px;color:#8fa876;line-height:1.6">🏆 FELICIDADES</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:12px;color:#e9ddc7;line-height:1.7;margin-top:12px">'+cert+'</div><div style="font-family:&quot;Share Tech Mono&quot;,monospace;font-size:15px;color:#a2957d;margin-top:12px">Has completado las '+total+' prácticas por tu cuenta.</div></div>'; } } };
-      btnEl.addEventListener('click', ()=>{ if(examActive)return; const i=selEl.value; const c=CH[i]; let r; try{ r=c.check(); }catch(e){ r={ok:false,msg:'No se pudo comprobar esta práctica.'}; } const score=scoreChallenge(c,r), visible=publicResult(r); reports.push({type:'practice',index:Number(i),title:c.title,score,message:visible.msg,at:Date.now()}); saveReports(); renderReport(); if(r.ok && !chalDone[i]){ chalDone[i]=true; manualDone[i]=true; try{ localStorage.setItem(CHKEY, JSON.stringify(chalDone)); localStorage.setItem(MKEY, JSON.stringify(manualDone)); }catch(e){} selEl.options[i].textContent='✔ '+(Number(i)+1)+'. '+c.title; updateProgress(); congrats(); } showResult(visible); });
+      btnEl.addEventListener('click', ()=>{ if(examActive)return; const i=selEl.value; const c=CH[i]; if(!c)return; let r; try{ r=c.check(); }catch(e){ r={ok:false,msg:'No se pudo comprobar esta práctica.'}; } const score=scoreChallenge(c,r), visible=publicResult(r); reports.push({type:'practice',index:Number(i),title:c.title,score,message:visible.msg,at:Date.now()}); saveReports(); if(r.ok && !chalDone[i]){ chalDone[i]=true; manualDone[i]=true; try{ localStorage.setItem(CHKEY, JSON.stringify(chalDone)); localStorage.setItem(MKEY, JSON.stringify(manualDone)); }catch(e){} selEl.options[i].textContent='✔ '+(Number(i)+1)+'. '+c.title; updateProgress(); congrats(); } showResult(visible); });
       congrats(); syncExamUI(); renderChal();
     }
 }
