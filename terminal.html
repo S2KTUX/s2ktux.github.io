@@ -75,6 +75,7 @@
   .csrow{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:9px 22px;border-top:2px solid var(--surface2);align-items:baseline}
   .cscmd{font-family:'Share Tech Mono',monospace;font-size:16px;color:#d97757;word-break:break-word}
   .csdesc{font-size:18px;color:var(--text);line-height:1.3}
+  @media(min-width:901px){details.cs[data-mode="linux"] .cs-tabs{flex-wrap:nowrap}details.cs[data-mode="linux"] .cs-tab{flex:1 1 auto;min-width:0;padding:11px 7px;font-size:13px;text-align:center;white-space:nowrap}}
   @media(max-width:640px){.csrow{grid-template-columns:1fr;gap:2px}}
 
   /* --- responsive (móvil) --- */
@@ -125,7 +126,7 @@
   });
   document.addEventListener('DOMContentLoaded', applyModeUI);
   applyModeUI();
-  var __modeTries=0; var __modeIv=setInterval(function(){ __modeTries++; var sel=document.getElementById('mode-select'); if(sel || __modeTries>100){ applyModeUI(); clearInterval(__modeIv); } }, 50);
+  var __modeTries=0; var __modeIv=setInterval(function(){ __modeTries++; applyModeUI(); if(__modeTries>100) clearInterval(__modeIv); }, 50);
 })();
 </script>
 </helmet>
@@ -207,11 +208,13 @@
       <div class="cs-tab" data-modes="linux" data-cs-tab="store" data-active="0">Almacenamiento</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="net" data-active="0">Red</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="selinux" data-active="0">SELinux</div>
-      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-host" data-active="0">Linux básico</div>
-      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-install" data-active="0">Instalación</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-host" data-active="0">Inicio y daemon</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-images" data-active="0">Imágenes y build</div>
       <div class="cs-tab" data-modes="docker" data-cs-tab="cont" data-active="0">Contenedores</div>
-      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-data" data-active="0">Redes y volúmenes</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-data" data-active="0">Volúmenes</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-network" data-active="0">Redes</div>
       <div class="cs-tab" data-modes="docker" data-cs-tab="compose" data-active="0">Docker Compose</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-ops" data-active="0">Operación</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="sys" data-active="0">Sistema</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="lab" data-active="0">Red del lab</div>
       <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-linux" data-active="0">Linux y YAML</div>
@@ -320,34 +323,39 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-host" data-active="0">
-      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">El host es un Linux mínimo de trabajo. Incluye solo las herramientas necesarias para preparar ficheros, instalar Docker y observar el sistema.</div>
-      <div class="csrow"><span class="cscmd">pwd · cd · ls · tree</span><span class="csdesc">Moverse por el sistema y listar el contenido.</span></div>
-      <div class="csrow"><span class="cscmd">cat · head · tail · grep</span><span class="csdesc">Leer y buscar dentro de ficheros y logs.</span></div>
-      <div class="csrow"><span class="cscmd">mkdir · touch · cp · mv · rm</span><span class="csdesc">Preparar contextos de construcción y proyectos Compose.</span></div>
-      <div class="csrow"><span class="cscmd">vi · nano · echo &gt; fichero</span><span class="csdesc">Crear Dockerfiles, HTML y compose.yaml.</span></div>
-      <div class="csrow"><span class="cscmd">ps · top · free · df</span><span class="csdesc">Observar procesos y recursos del host.</span></div>
+      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">Flujo inicial del motor Docker: instalación, daemon, diagnóstico y primera ejecución. Este cheatsheet no mezcla objetivos RHCSA.</div>
+      <div class="csrow"><span class="cscmd">curl -fsSL https://get.docker.com | sh</span><span class="csdesc">Instala Engine, CLI, containerd, Buildx y el plugin Compose.</span></div>
+      <div class="csrow"><span class="cscmd">systemctl enable --now docker</span><span class="csdesc">Arranca el daemon ahora y en los siguientes reinicios.</span></div>
       <div class="csrow"><span class="cscmd">systemctl status docker</span><span class="csdesc">Estado realista del daemon de Docker.</span></div>
+      <div class="csrow"><span class="cscmd">docker version · docker info</span><span class="csdesc">Comprueba cliente, servidor, almacenamiento y estado.</span></div>
+      <div class="csrow"><span class="cscmd">docker run hello-world</span><span class="csdesc">Verificación completa: pull, create, start y salida.</span></div>
+      <div class="csrow"><span class="cscmd">journalctl -u docker</span><span class="csdesc">Logs de arranque y errores del daemon.</span></div>
+      <div class="csrow"><span class="cscmd">/etc/docker/daemon.json</span><span class="csdesc">Configuración persistente del daemon: logs, storage y registries.</span></div>
     </div>
 
-    <div class="cs-panel" data-cs-panel="docker-install" data-active="0">
-      <div class="csrow"><span class="cscmd">curl -fsSL https://get.docker.com | sh</span><span class="csdesc">Instalación rápida siguiendo el curso.</span></div>
-      <div class="csrow"><span class="cscmd">systemctl enable --now docker</span><span class="csdesc">Habilita y arranca el daemon.</span></div>
-      <div class="csrow"><span class="cscmd">docker version · docker info</span><span class="csdesc">Comprueba cliente, servidor, almacenamiento y estado.</span></div>
-      <div class="csrow"><span class="cscmd">usermod -aG docker visitor</span><span class="csdesc">Permite usar Docker sin sudo tras renovar la sesión.</span></div>
-      <div class="csrow"><span class="cscmd">docker run hello-world</span><span class="csdesc">Verificación completa: pull, create, start y salida.</span></div>
+    <div class="cs-panel" data-cs-panel="docker-images" data-active="0">
+      <div class="csrow"><span class="cscmd">docker search TERM · docker pull IMG</span><span class="csdesc">Busca y descarga imágenes desde un registry.</span></div>
+      <div class="csrow"><span class="cscmd">docker images · image ls</span><span class="csdesc">Lista repositorio, tag, ID y tamaño local.</span></div>
+      <div class="csrow"><span class="cscmd">docker inspect IMG · history IMG</span><span class="csdesc">Metadatos completos y capas de construcción.</span></div>
+      <div class="csrow"><span class="cscmd">docker build -t miapp:v1 .</span><span class="csdesc">Construye una imagen desde el Dockerfile del contexto actual.</span></div>
+      <div class="csrow"><span class="cscmd">docker build --no-cache -t IMG .</span><span class="csdesc">Reconstruye todas las capas sin reutilizar caché.</span></div>
+      <div class="csrow"><span class="cscmd">docker tag ORIG usuario/app:v1</span><span class="csdesc">Añade una referencia lista para publicar.</span></div>
+      <div class="csrow"><span class="cscmd">docker login · docker push IMG</span><span class="csdesc">Autenticación y publicación en el registry.</span></div>
+      <div class="csrow"><span class="cscmd">docker save -o img.tar IMG · load -i img.tar</span><span class="csdesc">Exporta e importa imágenes sin registry.</span></div>
+      <div class="csrow"><span class="cscmd">docker rmi IMG · image prune</span><span class="csdesc">Elimina imágenes concretas o capas sin uso.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="cont" data-active="0">
       <div class="csrow"><span class="cscmd">docker run · ps · logs</span><span class="csdesc">Arranca contenedores, lista, logs.</span></div>
+      <div class="csrow"><span class="cscmd">docker run -d --name web -p 8080:80 nginx</span><span class="csdesc">Nombre, segundo plano y publicación de puertos.</span></div>
       <div class="csrow"><span class="cscmd">start · stop · restart · rm</span><span class="csdesc">Ciclo de vida de un contenedor.</span></div>
       <div class="csrow"><span class="cscmd">exec · attach · inspect · top</span><span class="csdesc">Entrar, detalles y procesos.</span></div>
-      <div class="csrow"><span class="cscmd">images · pull · search</span><span class="csdesc">Imágenes locales, descargar, buscar.</span></div>
-      <div class="csrow"><span class="cscmd">build · commit · history</span><span class="csdesc">Construir desde Dockerfile / capas.</span></div>
-      <div class="csrow"><span class="cscmd">tag · push · save · load</span><span class="csdesc">Etiquetar, publicar, exportar/importar.</span></div>
-      <div class="csrow"><span class="cscmd">volume · network</span><span class="csdesc">Volúmenes y redes (bridge/host/none/overlay/macvlan).</span></div>
-      <div class="csrow"><span class="cscmd">stats · system df · prune</span><span class="csdesc">Consumo, uso de disco, limpieza.</span></div>
+      <div class="csrow"><span class="cscmd">docker logs -f --tail 100 CONT</span><span class="csdesc">Sigue logs y limita las líneas iniciales.</span></div>
+      <div class="csrow"><span class="cscmd">docker exec -it CONT sh</span><span class="csdesc">Ejecuta una shell dentro de un contenedor activo.</span></div>
+      <div class="csrow"><span class="cscmd">docker cp CONT:/ruta ./destino</span><span class="csdesc">Copia ficheros entre contenedor y host.</span></div>
+      <div class="csrow"><span class="cscmd">docker create · start -a</span><span class="csdesc">Separa la creación del arranque y adjunta la salida.</span></div>
       <div class="csrow"><span class="cscmd">run -m --cpus --restart</span><span class="csdesc">Límites de recursos y política de reinicio.</span></div>
-      <div class="csrow"><span class="cscmd">podman</span><span class="csdesc">Igual que docker, sin daemon (rootless).</span></div>
+      <div class="csrow"><span class="cscmd">docker stats · docker top CONT</span><span class="csdesc">CPU, memoria, red, bloque y procesos del contenedor.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-data" data-active="0">
@@ -355,15 +363,39 @@
       <div class="csrow"><span class="cscmd">docker run -v datos:/ruta IMG</span><span class="csdesc">Monta un volumen con nombre dentro del contenedor.</span></div>
       <div class="csrow"><span class="cscmd">docker run -v /host:/contenedor IMG</span><span class="csdesc">Bind mount desde un directorio del host.</span></div>
       <div class="csrow"><span class="cscmd">docker cp ORIGEN DESTINO</span><span class="csdesc">Copia ficheros entre host y contenedor.</span></div>
+      <div class="csrow"><span class="cscmd">docker volume rm · volume prune</span><span class="csdesc">Borra volúmenes concretos o los que no están en uso.</span></div>
+      <div class="csrow"><span class="cscmd">--mount type=volume,src=datos,dst=/data</span><span class="csdesc">Sintaxis explícita recomendada para montajes complejos.</span></div>
+    </div>
+
+    <div class="cs-panel" data-cs-panel="docker-network" data-active="0">
       <div class="csrow"><span class="cscmd">docker network create · ls · inspect</span><span class="csdesc">Redes bridge propias con DNS entre contenedores.</span></div>
+      <div class="csrow"><span class="cscmd">docker run --network labnet --name api IMG</span><span class="csdesc">Inicia el contenedor directamente en una red propia.</span></div>
       <div class="csrow"><span class="cscmd">docker network connect · disconnect</span><span class="csdesc">Conecta o retira un contenedor de una red.</span></div>
+      <div class="csrow"><span class="cscmd">bridge · host · none</span><span class="csdesc">Drivers integrados: NAT aislado, pila del host o sin red.</span></div>
+      <div class="csrow"><span class="cscmd">-p 127.0.0.1:8080:80</span><span class="csdesc">Publica un puerto solo en la interfaz local.</span></div>
+      <div class="csrow"><span class="cscmd">docker port CONT</span><span class="csdesc">Muestra los mapeos de puertos efectivos.</span></div>
+      <div class="csrow"><span class="cscmd">docker network rm · network prune</span><span class="csdesc">Limpia redes propias sin contenedores conectados.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="compose" data-active="0">
       <div class="csrow"><span class="cscmd">docker compose up -d · down</span><span class="csdesc">Arranca / para toda la app multi-contenedor.</span></div>
-      <div class="csrow"><span class="cscmd">compose ps · logs · build</span><span class="csdesc">Estado / logs / construir servicios.</span></div>
-      <div class="csrow"><span class="cscmd">docker-compose</span><span class="csdesc">Forma antigua, equivalente.</span></div>
+      <div class="csrow"><span class="cscmd">docker compose ps · logs -f</span><span class="csdesc">Estado de servicios y logs agregados.</span></div>
+      <div class="csrow"><span class="cscmd">docker compose build · pull</span><span class="csdesc">Construye servicios propios o actualiza imágenes.</span></div>
+      <div class="csrow"><span class="cscmd">docker compose up -d --scale web=3</span><span class="csdesc">Escala un servicio durante el despliegue.</span></div>
+      <div class="csrow"><span class="cscmd">docker compose exec web sh</span><span class="csdesc">Ejecuta un comando dentro de un servicio.</span></div>
+      <div class="csrow"><span class="cscmd">docker compose down -v</span><span class="csdesc">Elimina contenedores, red y volúmenes del proyecto.</span></div>
       <div style="margin:10px 22px 4px;padding:11px 15px;background:var(--surface2);border:3px dashed #b89b78;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--head);line-height:1.6">Ejemplo docker-compose.yml:<br>services:<br>&nbsp;&nbsp;web:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: nginx<br>&nbsp;&nbsp;&nbsp;&nbsp;ports: ["8080:80"]<br>&nbsp;&nbsp;db:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: mariadb:11<br>&nbsp;&nbsp;&nbsp;&nbsp;environment: ["MARIADB_ROOT_PASSWORD=secreto"]<br>&nbsp;&nbsp;&nbsp;&nbsp;volumes: ["db_data:/var/lib/mysql"]</div>
+    </div>
+
+    <div class="cs-panel" data-cs-panel="docker-ops" data-active="0">
+      <div class="csrow"><span class="cscmd">docker stats · docker events</span><span class="csdesc">Métricas en vivo y eventos del daemon.</span></div>
+      <div class="csrow"><span class="cscmd">docker system df</span><span class="csdesc">Espacio usado por imágenes, contenedores y volúmenes.</span></div>
+      <div class="csrow"><span class="cscmd">docker container/image/volume/network prune</span><span class="csdesc">Limpieza selectiva por tipo de objeto.</span></div>
+      <div class="csrow"><span class="cscmd">docker system prune -a --volumes</span><span class="csdesc">Limpieza global agresiva; revisa antes qué está en uso.</span></div>
+      <div class="csrow"><span class="cscmd">--restart no|on-failure|always|unless-stopped</span><span class="csdesc">Políticas de recuperación del contenedor.</span></div>
+      <div class="csrow"><span class="cscmd">--memory 256m --cpus 0.5</span><span class="csdesc">Límites para evitar que un contenedor agote el host.</span></div>
+      <div class="csrow"><span class="cscmd">docker inspect --format '{{...}}'</span><span class="csdesc">Extrae campos concretos para scripts y diagnóstico.</span></div>
+      <div class="csrow"><span class="cscmd">docker logs · inspect · exec · top</span><span class="csdesc">Secuencia básica de troubleshooting operativo.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="sys" data-active="0">
@@ -381,14 +413,16 @@
       <div class="csrow"><span class="cscmd">web1 · 192.168.1.10</span><span class="csdesc">Servidor web (Apache) para practicar conectividad, ssh y curl.</span></div>
       <div class="csrow"><span class="cscmd">node1 · 192.168.1.12</span><span class="csdesc">Próximamente: nodo para Ansible y Kubernetes.</span></div>
     </div>
-    </div>
     <div class="cs-panel" data-cs-panel="k8s-linux" data-active="0">
-      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">El nodo incluye un Linux mínimo para inspeccionar kubelet y trabajar con manifiestos. La administración RHCSA queda fuera de este entorno.</div>
+      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">Herramientas de nodo y edición declarativa que sí aparecen en tareas CKA. La administración RHCSA avanzada queda fuera de este entorno.</div>
       <div class="csrow"><span class="cscmd">pwd · cd · ls · cat · grep</span><span class="csdesc">Navegar, leer YAML y filtrar logs.</span></div>
       <div class="csrow"><span class="cscmd">mkdir · touch · cp · mv · rm</span><span class="csdesc">Gestionar manifiestos y copias de seguridad.</span></div>
       <div class="csrow"><span class="cscmd">vi · nano</span><span class="csdesc">Editar recursos declarativos.</span></div>
       <div class="csrow"><span class="cscmd">systemctl status kubelet</span><span class="csdesc">Diagnóstico del agente del nodo.</span></div>
       <div class="csrow"><span class="cscmd">journalctl -u kubelet</span><span class="csdesc">Logs del nodo cuando está NotReady.</span></div>
+      <div class="csrow"><span class="cscmd">/etc/kubernetes/manifests</span><span class="csdesc">Static Pods del control plane administrados por kubelet.</span></div>
+      <div class="csrow"><span class="cscmd">/etc/kubernetes/admin.conf</span><span class="csdesc">Kubeconfig administrativo creado por kubeadm.</span></div>
+      <div class="csrow"><span class="cscmd">KUBECONFIG=/ruta/config</span><span class="csdesc">Selecciona un kubeconfig para kubectl.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-cluster" data-active="0">
       <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">El clúster responde a comandos y conserva sus recursos. Usa <span style="color:#d97757">kubectl explain</span> y <span style="color:#d97757">--help</span> como en una máquina real.</div>
@@ -398,7 +432,9 @@
       <div class="csrow"><span class="cscmd">kubectl describe pod NOMBRE</span><span class="csdesc">Detalle completo + eventos.</span></div>
       <div class="csrow"><span class="cscmd">kubectl explain pod.spec</span><span class="csdesc">Documentación de un campo del API.</span></div>
       <div class="csrow"><span class="cscmd">kubectl config get-contexts / use-context</span><span class="csdesc">Ver y cambiar de clúster/contexto.</span></div>
-      <div class="csrow"><span class="cscmd">minikube start · kind create cluster</span><span class="csdesc">Levantar un clúster de práctica local.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl api-resources · api-versions</span><span class="csdesc">Recursos disponibles, nombres cortos, grupos y versiones.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl get RESOURCE -o yaml|json</span><span class="csdesc">Inspección declarativa completa del objeto.</span></div>
+      <div class="csrow"><span class="cscmd">-n NS · -A · --context CONTEXTO</span><span class="csdesc">Ámbito de namespace, todos los namespaces o contexto concreto.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-work" data-active="0">
       <div class="csrow"><span class="cscmd">kubectl run NOMBRE --image=IMG</span><span class="csdesc">Pod suelto (debug rápido).</span></div>
@@ -408,6 +444,10 @@
       <div class="csrow"><span class="cscmd">kubectl apply -f fichero.yaml</span><span class="csdesc">Aplica el estado declarado (YAML).</span></div>
       <div class="csrow"><span class="cscmd">kubectl edit deployment NOMBRE</span><span class="csdesc">Edita el recurso en caliente.</span></div>
       <div class="csrow"><span class="cscmd">kubectl delete -f fichero.yaml</span><span class="csdesc">Elimina lo declarado en el fichero.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl set image deploy/app c=IMG</span><span class="csdesc">Actualiza la imagen de un contenedor del Deployment.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl rollout restart deploy/app</span><span class="csdesc">Fuerza un nuevo rollout sin cambiar la plantilla funcional.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl create job · create cronjob</span><span class="csdesc">Trabajo finito o ejecución programada.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl autoscale deployment</span><span class="csdesc">Crea un HPA basado en métricas.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-cfg" data-active="0">
       <div class="csrow"><span class="cscmd">kubectl create configmap N --from-literal=k=v</span><span class="csdesc">Configuración no sensible.</span></div>
@@ -415,6 +455,10 @@
       <div class="csrow"><span class="cscmd">envFrom / valueFrom.configMapKeyRef</span><span class="csdesc">Inyectar como variables de entorno del Pod.</span></div>
       <div class="csrow"><span class="cscmd">volumeMounts + configMap/secret como volumen</span><span class="csdesc">Inyectar como ficheros dentro del contenedor.</span></div>
       <div class="csrow"><span class="cscmd">kubectl get secret N -o jsonpath='{.data.k}' | base64 -d</span><span class="csdesc">Leer el valor real de un secret.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl create configmap N --from-file=RUTA</span><span class="csdesc">Construye un ConfigMap desde uno o varios ficheros.</span></div>
+      <div class="csrow"><span class="cscmd">command / args / env</span><span class="csdesc">Sobrescribe ENTRYPOINT, CMD y variables del contenedor.</span></div>
+      <div class="csrow"><span class="cscmd">livenessProbe · readinessProbe · startupProbe</span><span class="csdesc">Salud, disponibilidad para tráfico y arranque lento.</span></div>
+      <div class="csrow"><span class="cscmd">securityContext</span><span class="csdesc">Usuario, grupo, privilegios y capacidades del Pod/contenedor.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-sched" data-active="0">
       <div class="csrow"><span class="cscmd">resources.requests / resources.limits</span><span class="csdesc">Reserva mínima y techo de CPU/memoria por contenedor.</span></div>
@@ -424,6 +468,9 @@
       <div class="csrow"><span class="cscmd">kubectl taint NODO clave=valor:Effect</span><span class="csdesc">El nodo repele pods salvo que los toleren.</span></div>
       <div class="csrow"><span class="cscmd">tolerations</span><span class="csdesc">Permite a un pod aceptar un taint concreto.</span></div>
       <div class="csrow"><span class="cscmd">kubectl cordon/drain/uncordon NODO</span><span class="csdesc">Sacar un nodo de servicio para mantenimiento.</span></div>
+      <div class="csrow"><span class="cscmd">priorityClassName · preemptionPolicy</span><span class="csdesc">Prioridad y posible desalojo de Pods menos importantes.</span></div>
+      <div class="csrow"><span class="cscmd">topologySpreadConstraints</span><span class="csdesc">Distribuye réplicas entre zonas, hosts u otros dominios.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl top nodes · top pods</span><span class="csdesc">Consumo actual para decisiones de scheduling.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-store" data-active="0">
       <div class="csrow"><span class="cscmd">PersistentVolume (PV)</span><span class="csdesc">Almacenamiento real, lo provee el clúster/admin.</span></div>
@@ -431,6 +478,9 @@
       <div class="csrow"><span class="cscmd">StorageClass</span><span class="csdesc">Plantilla para aprovisionar PVs de forma dinámica.</span></div>
       <div class="csrow"><span class="cscmd">kubectl get pv,pvc</span><span class="csdesc">Ver volúmenes y sus peticiones.</span></div>
       <div class="csrow"><span class="cscmd">accessModes: RWO / ROX / RWX</span><span class="csdesc">Cómo se puede montar (uno, varios en lectura, varios en escritura).</span></div>
+      <div class="csrow"><span class="cscmd">reclaimPolicy: Delete|Retain</span><span class="csdesc">Qué ocurre con el volumen cuando se elimina el claim.</span></div>
+      <div class="csrow"><span class="cscmd">volumeMode: Filesystem|Block</span><span class="csdesc">Entrega un sistema de ficheros o un dispositivo de bloque crudo.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl describe pvc NOMBRE</span><span class="csdesc">Diagnostica Pending, clase, eventos y binding.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-net" data-active="0">
       <div class="csrow"><span class="cscmd">Service ClusterIP</span><span class="csdesc">IP estable interna para un grupo de pods (por defecto).</span></div>
@@ -439,6 +489,10 @@
       <div class="csrow"><span class="cscmd">Ingress</span><span class="csdesc">Enruta HTTP/HTTPS por host/ruta a varios Services.</span></div>
       <div class="csrow"><span class="cscmd">Gateway API</span><span class="csdesc">El sucesor de Ingress (GatewayClass, Gateway, HTTPRoute).</span></div>
       <div class="csrow"><span class="cscmd">NetworkPolicy</span><span class="csdesc">Reglas de firewall entre pods.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl expose deploy APP --port=80 --target-port=8080</span><span class="csdesc">Crea un Service que selecciona el Deployment.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl get endpoints · endpointslices</span><span class="csdesc">Comprueba si el selector del Service encuentra backends.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl port-forward svc/app 8080:80</span><span class="csdesc">Acceso temporal local sin cambiar el Service.</span></div>
+      <div class="csrow"><span class="cscmd">nslookup servicio.namespace</span><span class="csdesc">Comprueba el DNS interno desde un Pod de diagnóstico.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-rbac" data-active="0">
       <div class="csrow"><span class="cscmd">Role / ClusterRole</span><span class="csdesc">Permisos dentro de un namespace / en todo el clúster.</span></div>
@@ -446,6 +500,9 @@
       <div class="csrow"><span class="cscmd">ServiceAccount</span><span class="csdesc">"Usuario" para procesos que corren dentro del clúster (pods).</span></div>
       <div class="csrow"><span class="cscmd">kubectl auth can-i VERBO RECURSO</span><span class="csdesc">Comprueba si tienes permiso para algo.</span></div>
       <div class="csrow"><span class="cscmd">kubectl create token SERVICEACCOUNT</span><span class="csdesc">Genera un token de acceso.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl auth can-i --list -n NS</span><span class="csdesc">Enumera las acciones permitidas en un namespace.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl auth can-i get pods --as system:serviceaccount:NS:SA</span><span class="csdesc">Simula la autorización de un ServiceAccount.</span></div>
+      <div class="csrow"><span class="cscmd">verbs · apiGroups · resources · resourceNames</span><span class="csdesc">Campos principales de una regla RBAC precisa.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-admin" data-active="0">
       <div class="csrow"><span class="cscmd">kubeadm init / kubeadm join</span><span class="csdesc">Arrancar el control plane / unir un nodo nuevo.</span></div>
@@ -453,6 +510,10 @@
       <div class="csrow"><span class="cscmd">etcdctl snapshot save/restore</span><span class="csdesc">Copia de seguridad y restauración de etcd.</span></div>
       <div class="csrow"><span class="cscmd">helm install/upgrade/uninstall</span><span class="csdesc">Gestor de paquetes de Kubernetes (charts).</span></div>
       <div class="csrow"><span class="cscmd">kustomize build · kubectl apply -k</span><span class="csdesc">Variantes de manifiestos sin plantillas.</span></div>
+      <div class="csrow"><span class="cscmd">kubeadm certs check-expiration</span><span class="csdesc">Revisa la caducidad de certificados del control plane.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl drain NODO --ignore-daemonsets</span><span class="csdesc">Preparación segura del nodo antes de mantenimiento o upgrade.</span></div>
+      <div class="csrow"><span class="cscmd">etcdctl endpoint health · status</span><span class="csdesc">Salud y estado del almacén del clúster.</span></div>
+      <div class="csrow"><span class="cscmd">crictl ps · crictl logs ID</span><span class="csdesc">Diagnóstico directo del runtime cuando kubectl no basta.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-trouble" data-active="0">
       <div class="csrow"><span class="cscmd">kubectl get events --sort-by=.lastTimestamp</span><span class="csdesc">Qué ha pasado últimamente en el clúster.</span></div>
@@ -461,7 +522,11 @@
       <div class="csrow"><span class="cscmd">kubectl get pods -o wide</span><span class="csdesc">En qué nodo está y su IP.</span></div>
       <div class="csrow"><span class="cscmd">kubectl exec -it POD -- sh</span><span class="csdesc">Entrar a inspeccionar desde dentro.</span></div>
       <div class="csrow"><span class="cscmd">systemctl status kubelet (en el nodo)</span><span class="csdesc">Diagnóstico cuando un nodo está NotReady.</span></div>
-    </div>
+      <div class="csrow"><span class="cscmd">kubectl get pod POD -o jsonpath='{.status...}'</span><span class="csdesc">Extrae condiciones y mensajes exactos para aislar el fallo.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl debug POD -it --image=busybox</span><span class="csdesc">Añade un contenedor efímero de diagnóstico.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl debug node/NODO -it</span><span class="csdesc">Abre un entorno de diagnóstico sobre el nodo.</span></div>
+      <div class="csrow"><span class="cscmd">crictl pods · ps -a · inspect</span><span class="csdesc">Comprueba sandboxes y contenedores directamente con CRI.</span></div>
+      <div class="csrow"><span class="cscmd">journalctl -u kubelet --since -15m</span><span class="csdesc">Acota los logs al intervalo del incidente.</span></div>
     </div>
     </details>
 </section>
@@ -517,6 +582,7 @@ class Component extends DCLogic {
     }[MODE];
     const setText=(id,value)=>{ const el=document.getElementById(id); if(el) el.textContent=value; };
     setText('term-eyebrow',ENV.eyebrow); setText('term-heading',ENV.heading); setText('term-machine-label',ENV.machine); setText('term-os-label',ENV.os); setText('cheatsheet-title',ENV.cheat); setText('practice-title',ENV.practice);
+    { const cs=document.querySelector('details.cs'); if(cs) cs.setAttribute('data-mode',MODE); }
     { const d=document.getElementById('term-description'); if(d) d.textContent=ENV.description; document.title=new URLSearchParams(location.search).get('mode')?(ENV.heading+' · S2KTUX'):'Terminales Linux, Docker y Kubernetes · S2KTUX'; }
     { const sel=document.getElementById('mode-select'); if(sel){ const m=new URLSearchParams(location.search).get('mode'); sel.style.display = m?'none':'flex'; input.disabled=!m; } }
     document.querySelectorAll('.cs-tab').forEach(t=>{ const modes=(t.getAttribute('data-modes')||'').split(','); const show=modes.indexOf(MODE)!==-1; t.style.display = show?'':'none'; });
@@ -2042,7 +2108,7 @@ class Component extends DCLogic {
           if(sub==='label'&&res==='nodes'){ const n=k8s.nodes.find(x=>x.name===args[2]); const kv=args[3]||''; if(!n||!kv.includes('=')){err('error: node and label key=value required');break;} const z=kv.split('=');n.labels[z[0]]=z.slice(1).join('=');ok('node/'+n.name+' labeled');act('label-node');break; }
           if(sub==='taint'&&res==='nodes'){ const n=k8s.nodes.find(x=>x.name===args[2]); if(!n){err('Error from server (NotFound): node not found');break;} n.taints=n.taints||[]; n.taints.push(args[3]); ok('node/'+n.name+' tainted'); act('taint-node'); break; }
           if(['cordon','uncordon','drain'].includes(sub)){ const n=k8s.nodes.find(x=>x.name===args[1]); if(!n){err('Error from server (NotFound): nodes "'+(args[1]||'')+'" not found');break;} n.schedulable=sub==='uncordon'; out('node/'+n.name+(sub==='uncordon'?' uncordoned':sub==='cordon'?' cordoned':' cordoned')); if(sub==='drain')out('node/'+n.name+' drained'); act(sub); break; }
-          if(sub==='describe'){ const kind=aliases[args[1]]||args[1], nm=args[2]; if(kind==='pods'){ const p=k8s.pods.find(x=>x.name===nm&&x.namespace===ns); if(!p){err('Error from server (NotFound): pods "'+nm+'" not found');break;} out('Name:         '+p.name);out('Namespace:    '+p.namespace);out('Node:         '+p.node);out('Status:       '+p.status);out('IP:           '+p.ip);out('Containers:   '+p.image);out('Events:'); if(p.status==='CrashLoopBackOff')out('  Warning  BackOff  Back-off restarting failed container api','#ef8a7a'); else out('  Normal   Pulled   Container image already present on machine'); act('describe-pod'); } else if(kind==='nodes'){ const n=k8s.nodes.find(x=>x.name===nm); if(!n){err('node not found');break;} out('Name: '+n.name);out('Roles: '+n.role);out('Conditions:');out('  Ready  '+(n.status==='Ready'?'True':'False'),n.status==='Ready'?'#8fa876':'#ef8a7a');out('Unschedulable: '+(!n.schedulable)); act('describe-node'); } break; }
+          if(sub==='describe'){ const kind=aliases[args[1]]||args[1], nm=args[2]; if(kind==='pods'){ const p=k8s.pods.find(x=>x.name===nm&&x.namespace===ns); if(!p){err('Error from server (NotFound): pods "'+nm+'" not found');break;} out('Name:         '+p.name);out('Namespace:    '+p.namespace);out('Node:         '+p.node);out('Status:       '+p.status);out('IP:           '+p.ip);out('Containers:   '+p.image);out('Events:'); if(p.status==='CrashLoopBackOff')out('  Warning  BackOff  Back-off restarting failed container api','#ef8a7a'); else out('  Normal   Pulled   Container image already present on machine'); act('describe-pod'); } else if(kind==='nodes'){ const n=k8s.nodes.find(x=>x.name===nm); if(!n){err('node not found');break;} out('Name: '+n.name);out('Roles: '+n.role);out('Labels: '+Object.entries(n.labels||{}).map(x=>x[0]+'='+x[1]).join(','));out('Taints: '+((n.taints||[]).join(',')||'<none>'));out('Conditions:');out('  Ready  '+(n.status==='Ready'?'True':'False'),n.status==='Ready'?'#8fa876':'#ef8a7a');out('Unschedulable: '+(!n.schedulable)); act('describe-node'); } else if(kind==='services'){ const s=k8s.services.find(x=>x.name===nm&&x.namespace===ns);if(!s){err('Error from server (NotFound): services "'+nm+'" not found');break;}out('Name:              '+s.name);out('Namespace:         '+s.namespace);out('Type:              '+s.type);out('IP:                '+s.clusterIp);out('Port:              <unset>  '+s.port);out('Selector:          '+Object.entries(s.selector||{}).map(x=>x.join('=')).join(','));out('Endpoints:         '+(k8s.pods.some(p=>p.name.startsWith(nm+'-'))?'10.244.1.10:80,10.244.1.11:80':'<none>'));out('Events:            <none>'); } else if(kind==='pvcs'){ const p=k8s.pvcs.find(x=>x.name===nm&&x.namespace===ns);if(!p){err('Error from server (NotFound): persistentvolumeclaims "'+nm+'" not found');break;}out('Name:          '+p.name);out('Namespace:     '+p.namespace);out('StorageClass:  '+p.storageClass);out('Status:        '+p.status);out('Volume:        '+p.volume);out('Capacity:      '+p.capacity);out('Access Modes:  RWO');out('Events:        Normal  ProvisioningSucceeded  Successfully provisioned volume'); } else if(kind==='deployments'){ const d=k8s.deployments.find(x=>x.name===nm&&x.namespace===ns);if(!d){err('Error from server (NotFound): deployments.apps "'+nm+'" not found');break;}out('Name:                   '+d.name);out('Namespace:              '+d.namespace);out('Replicas:               '+d.replicas+' desired | '+d.replicas+' updated | '+d.replicas+' available');out('Pod Template:');out('  Containers:  '+d.image);out('Conditions:');out('  Available  True  MinimumReplicasAvailable'); } else err('error: the server doesn\'t have a resource type "'+(args[1]||'')+'"'); break; }
           if(sub==='logs'){ const nm=args.filter(a=>!a.startsWith('-'))[1],p=k8s.pods.find(x=>x.name===nm&&x.namespace===ns); if(!p){err('Error from server (NotFound): pods "'+(nm||'')+'" not found');break;} if(p.status==='CrashLoopBackOff'){out('FATAL: required environment variable DATABASE_URL is not set','#ef8a7a');}else{out(new Date().toISOString()+' INFO server started on :8080');} act('logs'); break; }
           if(sub==='exec'){ const nm=args.filter(a=>!a.startsWith('-'))[1],p=k8s.pods.find(x=>x.name===nm&&x.namespace===ns); if(!p){err('Error from server (NotFound): pods "'+(nm||'')+'" not found');break;} out('Defaulted container "app" out of: app');out('root@'+p.name+':/# (sesión simulada; ejecuta el comando tras --)'); act('exec'); break; }
           if(sub==='auth'&&args[1]==='can-i'){ const verb=args[2],resource=args[3],as=val('--as',''); const sa=as.split(':').pop(); const bindings=k8s.rolebindings.filter(b=>b.namespace===ns&&(!sa||b.serviceaccount===sa||b.serviceaccount.endsWith(':'+sa))); const allowed=bindings.some(b=>{const r=k8s.roles.find(x=>x.name===b.role&&x.namespace===ns);return r&&(r.verbs.includes(verb)||r.verbs.includes('*'))&&(r.resources.includes(resource)||r.resources.includes('*'));}); out(allowed?'yes':'no'); act('auth'); break; }
@@ -2290,7 +2356,7 @@ class Component extends DCLogic {
       history = ['nmcli con mod eth0 ipv4.method manual ipv4.addresses 192.168.1.20/24 ipv4.gateway 192.168.1.1 ipv4.dns 192.168.1.254','nmcli con up eth0','hostnamectl set-hostname nodo1.lab.local','groupadd olimpo','useradd -G olimpo zeus','useradd -G olimpo hera','useradd -s /sbin/nologin ares','useradd -u 4120 apolo','mkdir -p /datos/olimpo','chgrp olimpo /datos/olimpo','chmod 2770 /datos/olimpo','crontab -e -u hera','tar -cjf /root/varlog-backup.tar.bz2 /var/log','cp /etc/hosts /var/tmp/hosts','chmod 640 /var/tmp/hosts','setfacl -m u:zeus:rw /var/tmp/hosts','setfacl -m u:ares:0 /var/tmp/hosts','systemctl enable --now chronyd','find / -user hera -exec cp -r {} /root/herafiles \\;','grep rich /usr/share/dict/words > /root/coincidencias','echo "zeus ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/zeus','vgcreate datavg /dev/sdb1','lvcreate -n appvol -l 60 datavg','mkfs.ext4 /dev/datavg/appvol','mount /dev/datavg/appvol /mnt/appvol','mkswap /dev/sdb2','swapon /dev/sdb2','tuned-adm profile throughput-performance','vi /usr/local/bin/saludo','chmod 755 /usr/local/bin/saludo','semanage port -a -t http_port_t -p tcp 8090','firewall-cmd --add-service=http --permanent','systemctl enable --now httpd','loginctl enable-linger hermes'];
       hIdx=history.length;
       currentUser='root'; cwd=['root']; loggedIn=true; recovery=null;
-      try{ const done={}; for(let i=0;i<21;i++)done[i]=true; localStorage.setItem('s2ktux-chal-done-v9-linux',JSON.stringify(done)); }catch(e){}
+      try{ const done={}; for(let i=0;i<21;i++)done[i]=true; localStorage.setItem('s2ktux-chal-done-v10-linux',JSON.stringify(done)); }catch(e){}
       const selE=document.querySelector('#chal-select'); if(selE){ [...selE.options].forEach((o)=>{ if(!o.textContent.startsWith('✔')) o.textContent='✔ '+o.textContent; }); }
       { const pr=document.querySelector('#chal-progress'); if(pr) pr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;font-family:&quot;Press Start 2P&quot;,monospace;font-size:10px;color:var(--head);margin-bottom:8px"><span>PROGRESO</span><span style="color:#8fa876">21 / 21  (100%)</span></div><div style="height:16px;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:2px"><div style="height:100%;width:100%;background:repeating-linear-gradient(90deg,#8fa876 0 10px,#7d9866 10px 12px)"></div></div>'; const cg=document.querySelector('#chal-congrats'); if(cg){ cg.style.display='none'; cg.innerHTML=''; } }
       clearBody();
@@ -2312,7 +2378,7 @@ class Component extends DCLogic {
       const pasos=['Deteniendo servicios del sistema...','Cerrando sesiones de usuario...','Desmontando sistemas de archivos...','Borrando datos de /home y /root...','Restableciendo la configuración...','Reinicializando el disco de prácticas...','Máquina restaurada a fábrica.'];
       const bar=document.createElement('div'); bar.className='term-out'; bar.style.color='#8fa876'; body.insertBefore(bar,line);
       const lbl=document.createElement('div'); lbl.className='term-out'; lbl.style.color='#a2957d'; body.insertBefore(lbl,line);
-      let pct=0; const iv=setInterval(()=>{ pct+=Math.floor(5+Math.random()*10); if(pct>100)pct=100; const f=Math.round(pct/5); bar.textContent='['+'#'.repeat(f)+'.'.repeat(20-f)+'] '+String(pct).padStart(3)+'%'; lbl.textContent=pasos[Math.min(pasos.length-1, Math.floor(pct/(100/pasos.length)))]; scroll(); if(pct>=100){ clearInterval(iv); setTimeout(()=>{ try{ localStorage.removeItem(STORE); localStorage.removeItem('s2ktux-chal-done-v9-'+MODE); localStorage.removeItem('s2ktux-chal-manual-v9-'+MODE); }catch(e){} location.reload(); }, 550); } }, 170);
+      let pct=0; const iv=setInterval(()=>{ pct+=Math.floor(5+Math.random()*10); if(pct>100)pct=100; const f=Math.round(pct/5); bar.textContent='['+'#'.repeat(f)+'.'.repeat(20-f)+'] '+String(pct).padStart(3)+'%'; lbl.textContent=pasos[Math.min(pasos.length-1, Math.floor(pct/(100/pasos.length)))]; scroll(); if(pct>=100){ clearInterval(iv); setTimeout(()=>{ try{ localStorage.removeItem(STORE); localStorage.removeItem('s2ktux-chal-done-v10-'+MODE); localStorage.removeItem('s2ktux-chal-manual-v10-'+MODE); }catch(e){} location.reload(); }, 550); } }, 170);
       input.focus(); }); }
 
     if(MODE==='linux'){
@@ -2397,38 +2463,51 @@ class Component extends DCLogic {
         check:()=>{ const ling=!!linger['hermes']; const uu=userUnits['hermes']||{}; const anyEnabled=Object.keys(uu).some(k=>uu[k]&&uu[k].enabled&&uu[k].active); return (ling&&anyEnabled)?{ok:true,msg:'Servicio rootless de hermes activo con linger.'}:{ok:false,msg:'Aún no lo has conseguido.'}; } }
     ];
     const dockerChallenges = [
-      {badge:'DOCKER · INSTALACIÓN',title:'Instala Docker Engine',goal:'Instala Docker con el script oficial simulado: <code>curl -fsSL https://get.docker.com | sh</code>.',check:()=>dockerInstalled?{ok:true,msg:'Docker Engine está instalado.'}:{ok:false,msg:'Docker todavía no está instalado.'}},
-      {badge:'DOCKER · SYSTEMD',title:'Activa el daemon',goal:'Habilita Docker para el arranque y deja el servicio activo con <code>systemctl enable --now docker</code>.',check:()=>services.docker&&services.docker.active&&services.docker.enabled?{ok:true,msg:'docker.service está activo y habilitado.'}:{ok:false,msg:'El daemon no está activo y habilitado.'}},
-      {badge:'DOCKER · PRIMER CONTENEDOR',title:'Ejecuta hello-world',goal:'Ejecuta la imagen <code>hello-world</code> y comprueba el ciclo completo de descarga y creación.',check:()=>images.some(i=>i.repo==='hello-world')&&containers.some(c=>c.image.startsWith('hello-world'))?{ok:true,msg:'hello-world se ejecutó correctamente.'}:{ok:false,msg:'Aún no has creado el contenedor hello-world.'}},
-      {badge:'DOCKER · PUERTOS',title:'Publica nginx en el puerto 8080',goal:'Crea un contenedor en segundo plano llamado <b>web</b> con <code>nginx</code>, publicando <b>8080:80</b>.',check:()=>containers.some(c=>c.name==='web'&&c.running&&c.image.startsWith('nginx')&&c.ports.includes('8080:80'))?{ok:true,msg:'nginx está publicado en 8080.'}:{ok:false,msg:'Falta el contenedor web con el puerto correcto.'}},
-      {badge:'DOCKER · IMÁGENES',title:'Construye tu propia imagen',goal:'Desde un Dockerfile, construye una imagen etiquetada como <code>miapp:v1</code>.',check:()=>images.some(i=>i.repo==='miapp'&&i.tag==='v1')?{ok:true,msg:'La imagen miapp:v1 existe.'}:{ok:false,msg:'Construye la imagen con docker build -t miapp:v1 .'}},
-      {badge:'DOCKER · DATOS',title:'Usa un volumen persistente',goal:'Crea el volumen <code>datos</code> y móntalo en algún contenedor.',check:()=>dockerVolumes.some(v=>v.name==='datos')&&containers.some(c=>c.volume==='datos')?{ok:true,msg:'El volumen datos está montado.'}:{ok:false,msg:'Falta crear o montar el volumen datos.'}},
-      {badge:'DOCKER · RED',title:'Aísla contenedores en una red',goal:'Crea una red bridge llamada <code>labnet</code> y conecta al menos un contenedor.',check:()=>dockerNetworks.some(n=>n.name==='labnet')&&containers.some(c=>c.net==='labnet')?{ok:true,msg:'La red labnet tiene un contenedor.'}:{ok:false,msg:'Crea labnet y conecta un contenedor.'}},
-      {badge:'DOCKER · RECURSOS',title:'Limita y reinicia un servicio',goal:'Ejecuta un contenedor con límite de memoria, CPU y política <code>unless-stopped</code>.',check:()=>containers.some(c=>c.mem&&c.cpus&&c.restart==='unless-stopped')?{ok:true,msg:'Hay un contenedor con límites y reinicio configurados.'}:{ok:false,msg:'Usa --memory, --cpus y --restart unless-stopped.'}},
-      {badge:'DOCKER · COMPOSE',title:'Levanta una aplicación Compose',goal:'Usa el fichero incluido y ejecuta <code>docker compose up -d</code>.',check:()=>composeProjects.app&&composeProjects.app.running?{ok:true,msg:'El proyecto Compose está en ejecución.'}:{ok:false,msg:'El proyecto Compose todavía no está activo.'}}
+      {badge:'NIVEL 1 · INSTALACIÓN',title:'Instala Docker Engine',goal:'Instala Docker con <code>curl -fsSL https://get.docker.com | sh</code>. Antes prueba <code>docker version</code> y observa el error real del host limpio.',check:()=>dockerInstalled?{ok:true,msg:'Docker Engine está instalado.'}:{ok:false,msg:'Docker todavía no está instalado.'}},
+      {badge:'NIVEL 1 · DAEMON',title:'Activa y verifica el daemon',goal:'Habilita Docker con <code>systemctl enable --now docker</code> y verifica cliente y servidor con <code>docker version</code> y <code>docker info</code>.',check:()=>services.docker&&services.docker.active&&services.docker.enabled&&history.some(h=>/^docker (version|info)/.test(h))?{ok:true,msg:'Daemon activo, habilitado y comprobado.'}:{ok:false,msg:'Activa el daemon y consulta version o info.'}},
+      {badge:'NIVEL 1 · EJECUCIÓN',title:'Completa el hello-world',goal:'Ejecuta <code>hello-world</code> y revisa después los contenedores detenidos con <code>docker ps -a</code>.',check:()=>images.some(i=>i.repo==='hello-world')&&containers.some(c=>c.image.startsWith('hello-world'))&&history.some(h=>/^docker ps .*a/.test(h))?{ok:true,msg:'Has completado y revisado el primer contenedor.'}:{ok:false,msg:'Ejecuta hello-world y consulta docker ps -a.'}},
+      {badge:'NIVEL 2 · CICLO DE VIDA',title:'Practica start, stop y restart',goal:'Crea un contenedor llamado <b>ciclo</b>, detenlo, arráncalo de nuevo y reinícialo. Debe terminar activo.',check:()=>containers.some(c=>c.name==='ciclo'&&c.running)&&['stop','start','restart'].every(op=>history.some(h=>h.startsWith('docker '+op+' ciclo')))?{ok:true,msg:'Ciclo de vida completo.'}:{ok:false,msg:'Falta algún paso stop/start/restart sobre ciclo.'}},
+      {badge:'NIVEL 2 · PUERTOS',title:'Publica un servidor nginx',goal:'Ejecuta en segundo plano un contenedor <b>web</b> con nginx y publica <b>8080:80</b>. Comprueba el mapeo con <code>docker port web</code>.',check:()=>containers.some(c=>c.name==='web'&&c.running&&c.image.startsWith('nginx')&&c.ports.includes('8080:80'))&&history.some(h=>h==='docker port web')?{ok:true,msg:'nginx está activo y su puerto está comprobado.'}:{ok:false,msg:'Falta web, el mapeo 8080:80 o docker port web.'}},
+      {badge:'NIVEL 2 · DIAGNÓSTICO',title:'Inspecciona un contenedor',goal:'Sobre <b>web</b>, ejecuta <code>docker inspect</code>, <code>docker logs</code>, <code>docker top</code> y un <code>docker exec</code>.',check:()=>['inspect','logs','top','exec'].every(op=>history.some(h=>h.startsWith('docker '+op+' web')))?{ok:true,msg:'Has aplicado las cuatro herramientas de diagnóstico.'}:{ok:false,msg:'Falta inspect, logs, top o exec sobre web.'}},
+      {badge:'NIVEL 3 · DOCKERFILE',title:'Construye miapp:v1',goal:'Examina el Dockerfile de <code>/root/containers</code> y construye allí la imagen <code>miapp:v1</code>. Consulta después sus capas.',check:()=>images.some(i=>i.repo==='miapp'&&i.tag==='v1')&&history.some(h=>/^docker history miapp(:v1)?/.test(h))?{ok:true,msg:'Imagen construida y capas inspeccionadas.'}:{ok:false,msg:'Construye miapp:v1 y usa docker history.'}},
+      {badge:'NIVEL 3 · VERSIONADO',title:'Etiqueta y exporta una imagen',goal:'Crea la etiqueta <code>alumno/miapp:1.0</code> a partir de miapp:v1 y expórtala a <code>/root/miapp.tar</code> con docker save.',check:()=>images.some(i=>i.repo==='alumno/miapp'&&i.tag==='1.0')&&history.some(h=>/^docker save .*miapp/.test(h))?{ok:true,msg:'Imagen etiquetada y exportada.'}:{ok:false,msg:'Falta la etiqueta alumno/miapp:1.0 o docker save.'}},
+      {badge:'NIVEL 3 · VOLÚMENES',title:'Haz persistente el contenido',goal:'Crea el volumen <code>datos</code>, inspecciónalo y móntalo en <code>/data</code> dentro de un contenedor llamado <b>persistente</b>.',check:()=>dockerVolumes.some(v=>v.name==='datos')&&containers.some(c=>c.name==='persistente'&&c.volume==='datos')&&history.some(h=>h==='docker volume inspect datos')?{ok:true,msg:'Volumen creado, inspeccionado y montado.'}:{ok:false,msg:'Falta crear, inspeccionar o montar datos.'}},
+      {badge:'NIVEL 3 · BIND MOUNT',title:'Publica contenido del host',goal:'Crea un contenedor <b>bindweb</b> que monte una ruta absoluta del host dentro del contenedor y publique un puerto.',check:()=>containers.some(c=>c.name==='bindweb'&&c.bind&&c.ports)?{ok:true,msg:'Bind mount y publicación configurados.'}:{ok:false,msg:'Usa -v /ruta/host:/ruta/contenedor junto con -p.'}},
+      {badge:'NIVEL 4 · REDES',title:'Crea una red de aplicación',goal:'Crea <code>labnet</code> y conecta dos contenedores llamados <b>frontend</b> y <b>backend</b>. Inspecciona después la red.',check:()=>dockerNetworks.some(n=>n.name==='labnet')&&['frontend','backend'].every(n=>containers.some(c=>c.name===n&&c.net==='labnet'))&&history.some(h=>h==='docker network inspect labnet')?{ok:true,msg:'Aplicación de dos capas conectada a labnet.'}:{ok:false,msg:'Faltan los dos contenedores en labnet o su inspección.'}},
+      {badge:'NIVEL 4 · RECURSOS',title:'Protege los recursos del host',goal:'Ejecuta <b>limitado</b> con memoria, CPU y política <code>unless-stopped</code>. Comprueba su consumo con <code>docker stats</code>.',check:()=>containers.some(c=>c.name==='limitado'&&c.mem&&c.cpus&&c.restart==='unless-stopped')&&history.some(h=>h.startsWith('docker stats'))?{ok:true,msg:'Recursos y reinicio configurados y observados.'}:{ok:false,msg:'Faltan límites, política o docker stats.'}},
+      {badge:'NIVEL 4 · COMPOSE',title:'Despliega la aplicación Compose',goal:'Desde <code>/root/containers</code>, levanta la aplicación con <code>docker compose up -d</code>, consulta ps y logs.',check:()=>composeProjects.app&&composeProjects.app.running&&history.some(h=>/^docker compose ps/.test(h))&&history.some(h=>/^docker compose logs/.test(h))?{ok:true,msg:'Stack Compose activo y diagnosticado.'}:{ok:false,msg:'Falta up -d, ps o logs del proyecto.'}},
+      {badge:'NIVEL 5 · REGISTRY',title:'Prepara y publica una release',goal:'Etiqueta una imagen como <code>alumno/miapp:release</code>, inicia sesión y simula su push al registry.',check:()=>images.some(i=>i.repo==='alumno/miapp'&&i.tag==='release')&&history.some(h=>h.startsWith('docker login'))&&history.some(h=>/^docker push alumno\/miapp:release/.test(h))?{ok:true,msg:'Release etiquetada y publicada.'}:{ok:false,msg:'Falta tag, login o push de la release.'}},
+      {badge:'NIVEL 5 · MANTENIMIENTO',title:'Audita y limpia sin romper lo activo',goal:'Consulta <code>docker system df</code>, elimina contenedores detenidos con container prune y limpia imágenes no utilizadas.',check:()=>history.some(h=>h==='docker system df')&&history.some(h=>h.includes('container prune'))&&history.some(h=>h.includes('image prune'))?{ok:true,msg:'Auditoría y limpieza selectiva completadas.'}:{ok:false,msg:'Falta system df, container prune o image prune.'}}
     ];
     const k8sChallenges = [
-      {badge:'CKA · CLÚSTER',title:'Inspecciona el estado del clúster',goal:'Ejecuta <code>kubectl cluster-info</code> y lista todos los nodos.',check:()=>k8s.actions.includes('cluster-info')&&k8s.actions.includes('get-nodes')?{ok:true,msg:'Has inspeccionado el control plane y los nodos.'}:{ok:false,msg:'Aún falta revisar cluster-info o get nodes.'}},
-      {badge:'CKA · WORKLOADS',title:'Despliega y escala una aplicación',goal:'Crea un Deployment con 3 réplicas, expónlo con un Service y actualiza su imagen.',check:()=>k8s.deployments.some(d=>d.replicas===3)&&k8s.services.length>1&&k8s.actions.includes('rollout')?{ok:true,msg:'Deployment, Service y rollout completados.'}:{ok:false,msg:'Falta el despliegue a 3 réplicas, el Service o el rollout.'}},
-      {badge:'CKA · CONFIGURACIÓN',title:'Inyecta configuración sin tocar la imagen',goal:'Crea un ConfigMap y un Secret; después aplica <code>/root/manifests/pod-config.yaml</code>.',check:()=>k8s.configmaps.length&&k8s.secrets.length&&k8s.actions.includes('apply-pod')?{ok:true,msg:'Configuración y Pod aplicados.'}:{ok:false,msg:'Falta el ConfigMap, el Secret o aplicar el Pod.'}},
-      {badge:'CKA · SCHEDULING',title:'Controla dónde corren tus pods',goal:'Etiqueta un nodo y añade un taint para practicar scheduling.',check:()=>k8s.actions.includes('label-node')&&k8s.actions.includes('taint-node')?{ok:true,msg:'Label y taint configurados.'}:{ok:false,msg:'Falta etiquetar o aplicar el taint.'}},
-      {badge:'CKA · STORAGE',title:'Persistencia con PV y PVC',goal:'Aplica <code>/root/manifests/storage.yaml</code> y examina los recursos creados.',check:()=>k8s.actions.includes('storageclass')&&k8s.actions.includes('pvc')?{ok:true,msg:'StorageClass y PVC disponibles.'}:{ok:false,msg:'Falta aplicar la StorageClass o el PVC.'}},
-      {badge:'CKA · RED',title:'Expón y restringe el tráfico',goal:'Crea un Service y aplica <code>/root/manifests/network.yaml</code> para añadir Ingress y NetworkPolicy.',check:()=>k8s.services.length>1&&k8s.ingresses.length&&k8s.networkpolicies.length?{ok:true,msg:'Red de la aplicación configurada.'}:{ok:false,msg:'Falta Service, Ingress o NetworkPolicy.'}},
-      {badge:'CKA · RBAC',title:'Da acceso limitado a un ServiceAccount',goal:'Crea ServiceAccount, Role y RoleBinding; comprueba con <code>kubectl auth can-i</code>.',check:()=>k8s.serviceaccounts.length>1&&k8s.roles.length&&k8s.rolebindings.length&&k8s.actions.includes('auth')?{ok:true,msg:'RBAC comprobado.'}:{ok:false,msg:'Falta algún recurso RBAC o su comprobación.'}},
-      {badge:'CKA · ADMINISTRACIÓN',title:'Sube de versión y respalda etcd',goal:'Ejecuta el flujo de <code>kubeadm upgrade</code> y guarda un snapshot con <code>etcdctl</code>.',check:()=>k8s.upgraded&&k8s.etcdSnapshot?{ok:true,msg:'Upgrade y snapshot completados.'}:{ok:false,msg:'Falta el upgrade o el snapshot de etcd.'}},
-      {badge:'CKA · TROUBLESHOOTING',title:'Recupera api-broken',goal:'Usa describe, logs y events; corrige la imagen de <code>api-broken</code> con <code>kubectl set image pod/api-broken api=demo/api:v1</code>.',check:()=>{const p=k8s.pods.find(x=>x.name==='api-broken');return p&&p.status==='Running'&&k8s.actions.includes('describe-pod')&&k8s.actions.includes('logs')&&k8s.actions.includes('events')?{ok:true,msg:'El pod vuelve a estar Running.'}:{ok:false,msg:'Diagnostica el pod y corrige su imagen.'};}},
-      {badge:'CKA · TROUBLESHOOTING',title:'Recupera worker-2',goal:'Describe <code>worker-2</code>, entra con <code>ssh root@worker-2</code> (contraseña <b>cka</b>), revisa kubelet y reinícialo.',check:()=>{const n=k8s.nodes.find(x=>x.name==='worker-2');return n&&n.status==='Ready'&&k8s.actions.includes('describe-node')&&k8s.actions.includes('restart-kubelet')?{ok:true,msg:'worker-2 está Ready.'}:{ok:false,msg:'Aún falta diagnosticar o reiniciar kubelet.'};}}
+      {badge:'CKA · CONTEXTO',title:'Orienta tu sesión de examen',goal:'Consulta el contexto actual, los contextos disponibles, cluster-info y todos los nodos. No modifiques nada todavía.',check:()=>history.some(h=>h==='kubectl config current-context')&&history.some(h=>h==='kubectl config get-contexts')&&k8s.actions.includes('cluster-info')&&k8s.actions.includes('get-nodes')?{ok:true,msg:'Contexto y clúster identificados.'}:{ok:false,msg:'Falta revisar contexto, cluster-info o nodos.'}},
+      {badge:'CKA · NAMESPACES',title:'Trabaja en un namespace aislado',goal:'Crea el namespace <b>cka-lab</b> y ejecuta dentro un Pod <b>shell</b> con nginx.',check:()=>k8s.namespaces.includes('cka-lab')&&k8s.pods.some(p=>p.name==='shell'&&p.namespace==='cka-lab')?{ok:true,msg:'Namespace y Pod aislados correctamente.'}:{ok:false,msg:'Falta cka-lab o el Pod shell dentro de él.'}},
+      {badge:'CKA · WORKLOADS',title:'Despliega una aplicación altamente disponible',goal:'Crea <b>frontend</b> con nginx, escálalo a <b>3 réplicas</b> y expónlo mediante un Service en el namespace default.',check:()=>k8s.deployments.some(d=>d.name==='frontend'&&d.replicas===3)&&k8s.services.some(s=>s.name==='frontend')?{ok:true,msg:'Frontend desplegado, escalado y expuesto.'}:{ok:false,msg:'Falta Deployment, réplicas o Service frontend.'}},
+      {badge:'CKA · ROLLOUT',title:'Actualiza y revierte una versión',goal:'Actualiza la imagen de <b>frontend</b>, consulta rollout status e history y ejecuta un rollback.',check:()=>k8s.actions.includes('rollout')&&history.some(h=>/^kubectl rollout status .*frontend/.test(h))&&history.some(h=>/^kubectl rollout history .*frontend/.test(h))&&history.some(h=>/^kubectl rollout undo .*frontend/.test(h))?{ok:true,msg:'Rollout inspeccionado y revertido.'}:{ok:false,msg:'Falta actualizar, consultar o deshacer el rollout.'}},
+      {badge:'CKA · CONFIGURACIÓN',title:'Configura una aplicación sin reconstruirla',goal:'Crea <b>app-config</b> y <b>app-secret</b> desde literales; después aplica <code>/root/manifests/pod-config.yaml</code>.',check:()=>k8s.configmaps.some(x=>x.name==='app-config')&&k8s.secrets.some(x=>x.name==='app-secret')&&k8s.pods.some(x=>x.name==='app-configurada')?{ok:true,msg:'ConfigMap, Secret y Pod configurado creados.'}:{ok:false,msg:'Falta alguno de los tres recursos.'}},
+      {badge:'CKA · DECLARATIVO',title:'Corrige un manifiesto antes de aplicarlo',goal:'Examina y edita el Pod de ejemplo para usar una imagen válida; aplícalo y verifica que queda Running.',check:()=>{const p=k8s.pods.find(x=>x.name==='app-configurada');return p&&p.status==='Running'&&k8s.actions.includes('apply-pod')?{ok:true,msg:'Manifiesto válido aplicado.'}:{ok:false,msg:'El Pod todavía no está aplicado y Running.'};}},
+      {badge:'CKA · SCHEDULING',title:'Etiqueta y tainta un nodo',goal:'Etiqueta <b>worker-1</b> con <code>entorno=produccion</code> y aplica un taint a <b>worker-2</b>. Comprueba ambos nodos con describe.',check:()=>{const w=k8s.nodes.find(n=>n.name==='worker-1');return w&&w.labels.entorno==='produccion'&&k8s.actions.includes('taint-node')&&k8s.actions.includes('describe-node')?{ok:true,msg:'Labels, taint y comprobación completados.'}:{ok:false,msg:'Falta label, taint o describe.'};}},
+      {badge:'CKA · MANTENIMIENTO',title:'Drena y devuelve un nodo al servicio',goal:'Haz cordon y drain de <b>worker-1</b>; después uncordon. El nodo debe quedar programable.',check:()=>{const n=k8s.nodes.find(x=>x.name==='worker-1');return n&&n.schedulable&&['cordon','drain','uncordon'].every(a=>k8s.actions.includes(a))?{ok:true,msg:'Mantenimiento del nodo completado.'}:{ok:false,msg:'Falta cordon, drain, uncordon o el nodo sigue cerrado.'};}},
+      {badge:'CKA · STORAGE',title:'Aprovisiona almacenamiento persistente',goal:'Aplica <code>/root/manifests/storage.yaml</code>. Lista PV, PVC y StorageClass y describe el claim <b>datos-app</b>.',check:()=>k8s.pvcs.some(x=>x.name==='datos-app'&&x.status==='Bound')&&k8s.storageclasses.some(x=>x.name==='cka-local')&&history.some(h=>/^kubectl get pv/.test(h))&&history.some(h=>/^kubectl describe pvc datos-app/.test(h))?{ok:true,msg:'Almacenamiento creado y comprobado.'}:{ok:false,msg:'Falta aplicar, listar o describir el almacenamiento.'}},
+      {badge:'CKA · SERVICIOS',title:'Diagnostica el acceso a frontend',goal:'Inspecciona el Service <b>frontend</b>, lista sus recursos y confirma que selecciona el Deployment correcto.',check:()=>k8s.services.some(s=>s.name==='frontend')&&history.some(h=>/^kubectl get (svc|service|services)/.test(h))&&history.some(h=>/^kubectl describe (svc|service) frontend/.test(h))?{ok:true,msg:'Service frontend inspeccionado.'}:{ok:false,msg:'Falta get o describe del Service frontend.'}},
+      {badge:'CKA · INGRESS Y POLICIES',title:'Publica y restringe la aplicación',goal:'Aplica <code>/root/manifests/network.yaml</code> y comprueba Ingress y NetworkPolicy con kubectl get.',check:()=>k8s.ingresses.some(x=>x.name==='app-ingress')&&k8s.networkpolicies.some(x=>x.name==='solo-lab')&&history.some(h=>/^kubectl get (ing|ingress)/.test(h))&&history.some(h=>/^kubectl get (netpol|networkpolicy)/.test(h))?{ok:true,msg:'Ingress y política de red aplicados y comprobados.'}:{ok:false,msg:'Falta aplicar o consultar algún recurso de red.'}},
+      {badge:'CKA · RBAC',title:'Concede solo lectura sobre Pods',goal:'Crea ServiceAccount <b>auditor</b>, Role <b>pod-reader</b> con get/list sobre pods y RoleBinding <b>auditor-read</b>. Valida con auth can-i como ese ServiceAccount.',check:()=>k8s.serviceaccounts.some(x=>x.name==='auditor')&&k8s.roles.some(x=>x.name==='pod-reader'&&x.resources.includes('pods'))&&k8s.rolebindings.some(x=>x.name==='auditor-read')&&k8s.actions.includes('auth')?{ok:true,msg:'RBAC mínimo creado y validado.'}:{ok:false,msg:'Falta ServiceAccount, Role, Binding o auth can-i.'}},
+      {badge:'CKA · TROUBLESHOOTING POD',title:'Recupera api-broken',goal:'Usa describe, logs y events para localizar el fallo. Corrige su imagen y deja <b>api-broken</b> en Running.',check:()=>{const p=k8s.pods.find(x=>x.name==='api-broken');return p&&p.status==='Running'&&['describe-pod','logs','events'].every(a=>k8s.actions.includes(a))?{ok:true,msg:'Pod diagnosticado y recuperado.'}:{ok:false,msg:'Falta diagnóstico o recuperación del Pod.'};}},
+      {badge:'CKA · TROUBLESHOOTING NODO',title:'Recupera worker-2',goal:'Describe worker-2, entra por SSH como root (contraseña <b>cka</b>), revisa kubelet y reinícialo. Confirma que vuelve a Ready.',check:()=>{const n=k8s.nodes.find(x=>x.name==='worker-2');return n&&n.status==='Ready'&&k8s.actions.includes('describe-node')&&k8s.actions.includes('restart-kubelet')?{ok:true,msg:'worker-2 recuperado.'}:{ok:false,msg:'Falta diagnosticar, reiniciar kubelet o confirmar Ready.'};}},
+      {badge:'CKA · ETCD',title:'Respalda el estado del clúster',goal:'Comprueba la salud de etcd, guarda el snapshot en <code>/root/etcd-cka.db</code> y consulta su estado.',check:()=>k8s.etcdSnapshot&&history.some(h=>/^etcdctl endpoint health/.test(h))&&history.some(h=>/^etcdctl snapshot status/.test(h))?{ok:true,msg:'etcd comprobado y respaldado.'}:{ok:false,msg:'Falta health, snapshot save o snapshot status.'}},
+      {badge:'CKA · UPGRADE',title:'Planifica y aplica un upgrade',goal:'Ejecuta <code>kubeadm upgrade plan</code>, aplica la versión propuesta y comprueba después las versiones de los nodos.',check:()=>k8s.upgraded&&k8s.actions.includes('upgrade-plan')&&k8s.actions.includes('get-nodes')?{ok:true,msg:'Upgrade planificado, aplicado y comprobado.'}:{ok:false,msg:'Falta plan, apply o comprobar nodos.'}},
+      {badge:'CKA · EXAMEN FINAL',title:'Audita el clúster completo',goal:'Lista todos los Pods, Deployments, Services y eventos; consulta top de nodos y Pods. Debes terminar sin api-broken ni worker-2 averiados.',check:()=>{const p=k8s.pods.find(x=>x.name==='api-broken'),n=k8s.nodes.find(x=>x.name==='worker-2');return p&&p.status==='Running'&&n&&n.status==='Ready'&&k8s.actions.includes('get-pods')&&k8s.actions.includes('events')&&history.some(h=>/^kubectl get all/.test(h))&&history.some(h=>/^kubectl top nodes/.test(h))&&history.some(h=>/^kubectl top pods/.test(h))?{ok:true,msg:'Auditoría final superada.'}:{ok:false,msg:'Falta recuperar recursos o completar la auditoría.'};}}
     ];
     const selEl=document.querySelector('#chal-select'), bodyEl=document.querySelector('#chal-body'), resEl=document.querySelector('#chal-result'), btnEl=document.querySelector('#chal-check');
     if(selEl && bodyEl && btnEl){
       const CH = MODE==='kubernetes'?k8sChallenges:MODE==='docker'?dockerChallenges:challenges;
-      const CHKEY='s2ktux-chal-done-v9-'+MODE; let chalDone={}; try{ chalDone=JSON.parse(localStorage.getItem(CHKEY)||'{}')||{}; }catch(e){}
+      const CHKEY='s2ktux-chal-done-v10-'+MODE; let chalDone={}; try{ chalDone=JSON.parse(localStorage.getItem(CHKEY)||'{}')||{}; }catch(e){}
       const updateProgress=()=>{ const pr=document.querySelector('#chal-progress'); if(!pr) return; const total=CH.length; let done=0; for(let i=0;i<total;i++){ if(chalDone[i]) done++; } const pct=Math.round(done/total*100); pr.innerHTML='<div style="display:flex;justify-content:space-between;align-items:baseline;font-family:&quot;Press Start 2P&quot;,monospace;font-size:10px;color:var(--head);margin-bottom:8px"><span>PROGRESO</span><span style="color:#8fa876">'+done+' / '+total+'  ('+pct+'%)</span></div><div style="height:16px;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:2px"><div style="height:100%;width:'+pct+'%;background:repeating-linear-gradient(90deg,#8fa876 0 10px,#7d9866 10px 12px);transition:width .3s"></div></div>'; };
       CH.forEach((c,i)=>{ const o=document.createElement('option'); o.value=i; o.textContent=(chalDone[i]?'✔ ':'')+(i+1)+'. '+c.title; selEl.appendChild(o); });
       const showResult=(r)=>{ resEl.innerHTML='<span style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:11px;color:'+(r.ok?'#5a8a3c':'#c0392b')+'">'+(r.ok?'✔ CONSEGUIDO':'✗ TODAVÍA NO')+'</span> &nbsp;<span style="color:var(--text)">'+r.msg+'</span>'; };
       const renderChal=()=>{ const i=selEl.value; const c=CH[i]; bodyEl.innerHTML='<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">'+c.badge+(chalDone[i]?'  ✔ completado':'')+'</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">'+c.title+'</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">'+c.goal+'</div>'; if(chalDone[i]){ showResult({ok:true,msg:'Ya lo conseguiste antes.'}); } else { resEl.innerHTML=''; } };
       selEl.addEventListener('change', renderChal); renderChal(); updateProgress();
-      const MKEY='s2ktux-chal-manual-v9-'+MODE; let manualDone={}; try{ manualDone=JSON.parse(localStorage.getItem(MKEY)||'{}')||{}; }catch(e){}
+      const MKEY='s2ktux-chal-manual-v10-'+MODE; let manualDone={}; try{ manualDone=JSON.parse(localStorage.getItem(MKEY)||'{}')||{}; }catch(e){}
       const congrats=()=>{ const total=CH.length; let m=0; for(let i=0;i<total;i++) if(manualDone[i]) m++; if(m>=total){ const d=document.querySelector('#chal-congrats'); if(d){ d.style.display='block'; const cert=MODE==='kubernetes'?'ESTÁS PREPARADO PARA EL CKA':MODE==='docker'?'DOMINAS LOS FUNDAMENTOS DE DOCKER':'ESTÁS PREPARADO PARA RHCSA V9'; d.innerHTML='<div style="margin-top:18px;padding:20px 22px;background:#1a2410;border:3px solid #8fa876;box-shadow:5px 5px 0 var(--line);text-align:center"><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:15px;color:#8fa876;line-height:1.6">🏆 FELICIDADES</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:12px;color:#e9ddc7;line-height:1.7;margin-top:12px">'+cert+'</div><div style="font-family:&quot;Share Tech Mono&quot;,monospace;font-size:15px;color:#a2957d;margin-top:12px">Has completado las '+total+' prácticas por tu cuenta.</div></div>'; } } };
       btnEl.addEventListener('click', ()=>{ const i=selEl.value; const c=CH[i]; let r; try{ r=c.check(); }catch(e){ r={ok:false,msg:'No se pudo comprobar esta práctica.'}; } if(r.ok && !chalDone[i]){ chalDone[i]=true; manualDone[i]=true; try{ localStorage.setItem(CHKEY, JSON.stringify(chalDone)); localStorage.setItem(MKEY, JSON.stringify(manualDone)); }catch(e){} selEl.options[i].textContent='✔ '+(Number(i)+1)+'. '+c.title; updateProgress(); congrats(); } showResult(r); });
       congrats();
