@@ -14,6 +14,9 @@ const contracts = [
   ['Kubernetes reconciliation', /ContainerCreating/.test(core) && /Pod became Running/.test(core)],
   ['Interactive container shells', /enterContainerShell/.test(core) && /containerDispatch/.test(core)],
   ['Here-document input', /const hd=cmd\.match/.test(core) && /startInteractive\('>'/.test(core)],
+  ['Async command prompt recovery', /const runCommandSeq/.test(core) && (core.match(/runCommandSeq\(seq/g)||[]).length===2 && /setPrompt\(\); input\.focus\(\)/.test(core)],
+  ['Foreground input ownership', /foregroundProcess && !\(e\.ctrlKey/.test(core) && /foregroundProcess=\{pid,cmd:'ping '[^\n]+promptEl\.textContent='';/.test(core)],
+  ['Single-line terminal input', /#term-input-line\{[^}]*flex-wrap:nowrap[^}]*min-width:0/.test(page) && /#term-input\{[^}]*width:1px[^}]*min-width:0/.test(page)],
   ['Session-scoped selector', /sessionStorage\.setItem\(MODE_KEY/.test(page) && /nav\.type==='reload'/.test(page) && /choose/.test(page)],
   ['Pixel selector console', /selector-console/.test(page) && /terminal-slot/.test(page) && /k8s-art/.test(page)],
 ];

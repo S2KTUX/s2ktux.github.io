@@ -1,4 +1,4 @@
-const C='s2ktux-v9';
+const C='s2ktux-v10';
 // Los motores de terminal se guardan en caché solo al entrar en su entorno.
 // Así la pantalla de selección no los descarga por adelantado.
 const CORE=['./','index.html','cursos.html','curso.html','leccion.html','terminal.html','terminal-bootstrap.js','proyectos.html','sobre.html','404.html','favicon.png','assets/og.png','assets/icon-192.png','assets/icon-512.png','courses-data.js','support.js','manifest.webmanifest'];

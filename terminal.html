@@ -51,7 +51,9 @@
   .navlink:hover{color:var(--head)}
   .pxbtn{transition:transform .08s, box-shadow .08s;cursor:pointer}
   .pxbtn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line) !important}
-  #term-input{background:transparent;border:none;color:#e9ddc7;font-family:'Share Tech Mono',monospace;font-size:17px;outline:none;flex:1;caret-color:#e0a458;min-width:4ch}
+  #term-input-line{display:flex;align-items:baseline;flex-wrap:nowrap;width:100%;min-width:0}
+  #term-prompt{flex:0 0 auto}
+  #term-input{background:transparent;border:none;color:#e9ddc7;font-family:'Share Tech Mono',monospace;font-size:17px;outline:none;flex:1 1 auto;width:1px;min-width:0;caret-color:#e0a458}
   #term-body::-webkit-scrollbar{width:12px}
   #term-body::-webkit-scrollbar-track{background:#161009}
   #term-body::-webkit-scrollbar-thumb{background:#3a3226;border:2px solid #161009}
@@ -240,7 +242,7 @@
       <span id="term-os-label" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#5c5344">Rocky Linux 9 · RHCSA lab</span>
     </div>
     <div id="term-body" role="log" aria-label="Salida de la terminal" aria-live="polite" aria-relevant="additions" style="padding:20px;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.55;color:#d8cbad;height:60vh;min-height:440px;overflow-y:auto;background:#12100b">
-      <div id="term-input-line" style="display:flex;align-items:center">
+      <div id="term-input-line">
         <span id="term-prompt" style="color:#8fa876;margin-right:9px;white-space:nowrap">visitor@s2ktux:~$</span>
         <label class="sr-only" for="term-input">Escribe un comando</label><input id="term-input" aria-label="Comando de terminal" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus>
       </div>
