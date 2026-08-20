@@ -51,7 +51,9 @@
   .navlink:hover{color:var(--head)}
   .pxbtn{transition:transform .08s, box-shadow .08s;cursor:pointer}
   .pxbtn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line) !important}
-  #term-input{background:transparent;border:none;color:#e9ddc7;font-family:'Share Tech Mono',monospace;font-size:17px;outline:none;flex:1;caret-color:#e0a458;min-width:4ch}
+  #term-input-line{display:flex;align-items:baseline;flex-wrap:nowrap;width:100%;min-width:0}
+  #term-prompt{flex:0 0 auto}
+  #term-input{background:transparent;border:none;color:#e9ddc7;font-family:'Share Tech Mono',monospace;font-size:17px;outline:none;flex:1 1 auto;width:1px;min-width:0;caret-color:#e0a458}
   #term-body::-webkit-scrollbar{width:12px}
   #term-body::-webkit-scrollbar-track{background:#161009}
   #term-body::-webkit-scrollbar-thumb{background:#3a3226;border:2px solid #161009}
@@ -77,21 +79,19 @@
   .exam-panel{display:none;background:#1a2410;border:3px solid #8fa876;box-shadow:4px 4px 0 var(--line);padding:16px;margin-bottom:18px;color:#e9ddc7}
   .exam-panel[data-show="1"]{display:block}.exam-running{color:#e0a458;font-family:'Share Tech Mono',monospace;font-size:19px}
   .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-  .mode-select{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;align-items:center;justify-content:center;padding:26px;overflow:auto}
-  .selector-wrap{width:min(900px,100%);position:relative}
-  .selector-heading{text-align:center;margin-bottom:25px}.selector-kicker{font-family:'Press Start 2P',monospace;font-size:9px;color:#d97757;letter-spacing:1px;margin-bottom:13px}.selector-heading h1{font-family:'Press Start 2P',monospace;font-size:20px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin:0}
-  .selector-console{background:var(--surface2);border:4px solid var(--line);box-shadow:9px 9px 0 var(--soft2);padding:13px;position:relative}
-  .selector-console::before,.selector-console::after{content:'';position:absolute;width:8px;height:8px;background:var(--line)}.selector-console::before{left:7px;top:7px}.selector-console::after{right:7px;bottom:7px}
-  .selector-bar{height:34px;border:3px solid var(--line);border-bottom:0;background:var(--surface);display:flex;align-items:center;padding:0 12px;gap:7px;font:14px 'Share Tech Mono',monospace;color:var(--muted)}.selector-led{width:9px;height:9px;background:#d97757;box-shadow:15px 0 0 #e0a458,30px 0 0 #8fa876;margin-right:31px}.selector-bar strong{font-weight:normal;color:var(--head)}.selector-clock{margin-left:auto;color:#8fa876}
-  .selector-screen{position:relative;background:#12100b;border:3px solid var(--line);padding:22px 24px 17px;overflow:hidden}.selector-screen::after{content:'';pointer-events:none;position:absolute;inset:0;background:repeating-linear-gradient(0deg,rgba(255,255,255,.018) 0,rgba(255,255,255,.018) 1px,transparent 1px,transparent 4px)}
-  .selector-prompt{font:16px 'Share Tech Mono',monospace;color:#8fa876;margin:0 0 15px}.selector-prompt span{color:#e0a458}.selector-list{display:grid;gap:8px;position:relative;z-index:1}
-  .terminal-slot{appearance:none;width:100%;display:grid;grid-template-columns:70px 1fr auto;gap:17px;align-items:center;background:#1b1710;border:2px solid #514334;color:#d8cbad;padding:12px 15px;cursor:pointer;text-align:left;transition:background .08s,border-color .08s,transform .08s}.terminal-slot::before{content:' ';position:absolute}.terminal-slot:hover,.terminal-slot:focus-visible,.terminal-slot[data-selected="1"]{background:#292116;border-color:#e0a458;transform:translateX(4px);outline:0}.terminal-slot:hover .slot-arrow,.terminal-slot:focus-visible .slot-arrow,.terminal-slot[data-selected="1"] .slot-arrow{color:#e0a458;opacity:1}
-  .slot-art{width:64px;height:48px;position:relative;image-rendering:pixelated}.slot-copy{min-width:0}.slot-copy>span{display:block}.slot-title{font-family:'Press Start 2P',monospace;font-size:11px;color:#e9ddc7;margin-bottom:7px}.slot-meta{font:15px/1.25 'Share Tech Mono',monospace;color:#a99a86}.slot-side{text-align:right;min-width:82px}.slot-status{font:11px 'Share Tech Mono',monospace;color:#8fa876;border:1px solid #61744e;padding:2px 6px}.slot-arrow{display:block;margin-top:7px;color:#a99a86;font:17px 'Share Tech Mono',monospace;opacity:.55}
+  .mode-select{position:fixed;inset:0;z-index:500;background-color:var(--bg);background-image:linear-gradient(90deg,rgba(208,181,138,.18) 1px,transparent 1px),linear-gradient(rgba(208,181,138,.18) 1px,transparent 1px);background-size:24px 24px;display:flex;align-items:center;justify-content:center;padding:30px;overflow:auto}
+  .selector-wrap{width:min(980px,100%);position:relative}
+  .selector-heading{text-align:center;margin-bottom:24px}.selector-kicker{font-family:'Press Start 2P',monospace;font-size:9px;color:#d97757;letter-spacing:1px;margin-bottom:13px}.selector-heading h1{font-family:'Press Start 2P',monospace;font-size:21px;line-height:1.55;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin:0}.selector-heading p{font:19px 'VT323',monospace;color:var(--muted);margin:12px auto 0;max-width:590px}
+  .selector-room{background:var(--surface);border:4px solid var(--line);box-shadow:9px 9px 0 var(--soft2);padding:25px 25px 20px;position:relative}.selector-room::before{content:'';position:absolute;left:18px;right:18px;bottom:58px;height:5px;background:var(--line);box-shadow:0 8px 0 var(--surface2)}
+  .selector-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;position:relative;z-index:1}
+  .terminal-slot{appearance:none;width:100%;min-height:292px;display:flex;flex-direction:column;align-items:stretch;background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);color:var(--text);padding:15px;cursor:pointer;text-align:left;transition:transform .08s,box-shadow .08s,border-color .08s}.terminal-slot:hover,.terminal-slot:focus-visible,.terminal-slot[data-selected="1"]{border-color:#d97757;transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--surface2);outline:0}.terminal-slot[data-selected="1"] .slot-action{background:#d97757;color:#fff}
+  .slot-scene{height:112px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:3px solid var(--line);background:#e8d7b8;margin-bottom:16px}.terminal-slot[data-pick-mode="linux"] .slot-scene{background:#dfe6c8}.terminal-slot[data-pick-mode="docker"] .slot-scene{background:#efd5bd}.terminal-slot[data-pick-mode="kubernetes"] .slot-scene{background:#d8d7e3}.slot-scene::before{content:'';position:absolute;left:0;right:0;bottom:0;height:19px;background:#b68a61;border-top:3px solid var(--line)}.slot-scene::after{content:'';position:absolute;right:14px;bottom:20px;width:17px;height:20px;background:#8fa876;border:3px solid var(--line);box-shadow:-8px -9px 0 -5px #8fa876,8px -13px 0 -5px #8fa876}
+  .slot-art{width:64px;height:48px;position:relative;z-index:1;image-rendering:pixelated;transform:scale(1.25);transform-origin:center}.slot-copy{min-width:0}.slot-copy>span{display:block}.slot-title{font-family:'Press Start 2P',monospace;font-size:11px;line-height:1.45;color:var(--head);margin-bottom:8px}.slot-meta{font:17px/1.25 'VT323',monospace;color:var(--text)}.slot-focus{font:14px/1.25 'Share Tech Mono',monospace;color:var(--muted);margin-top:8px}.slot-action{display:block;margin-top:auto;padding:9px 10px 7px;background:var(--surface2);border:2px solid var(--line);color:var(--head);font:16px 'VT323',monospace;text-align:center;transition:background .08s,color .08s}
   .linux-art::before{content:'>_';position:absolute;left:6px;top:4px;width:43px;height:27px;background:#070706;border:3px solid #8fa876;color:#8fa876;font:17px 'VT323',monospace;padding:3px 0 0 6px}.linux-art::after{content:'';position:absolute;left:27px;top:38px;width:14px;height:4px;background:#8fa876;box-shadow:-8px 5px 0 -1px #8fa876,8px 5px 0 -1px #8fa876}
   .docker-art::before{content:'';position:absolute;left:3px;bottom:5px;width:18px;height:15px;background:#d97757;box-shadow:22px 0 0 #e0a458,44px 0 0 #8fa876,22px -19px 0 #d97757}.docker-art::after{content:'';position:absolute;left:8px;bottom:11px;width:8px;height:3px;background:#f6ecd9;box-shadow:22px 0 0 #f6ecd9,44px 0 0 #f6ecd9,22px -19px 0 #f6ecd9}
   .k8s-art::before{content:'';position:absolute;left:25px;top:2px;width:18px;height:18px;background:#d97757;border:3px solid #e0a458;box-shadow:-22px 25px 0 -2px #8fa876,22px 25px 0 -2px #8fa876}.k8s-art::after{content:'';position:absolute;left:15px;top:23px;width:38px;height:3px;background:#a99a86;transform:rotate(24deg);box-shadow:0 0 0 #a99a86}
-  .selector-footer{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:15px;font:14px 'Share Tech Mono',monospace;color:#756856}.selector-footer strong{color:#d97757;font-weight:normal}.selector-plant{position:absolute;right:-31px;top:-28px;width:26px;height:27px;background:#8fa876;border:3px solid var(--line);box-shadow:-12px 9px 0 -5px #8fa876,12px 9px 0 -5px #8fa876}.selector-plant::after{content:'';position:absolute;left:2px;top:25px;width:22px;height:16px;background:#d97757;border:3px solid var(--line)}
-  @media(max-width:680px){.mode-select{align-items:flex-start;padding:20px 14px}.selector-wrap{padding-top:24px}.selector-heading h1{font-size:16px}.selector-console{padding:8px;box-shadow:6px 6px 0 var(--soft2)}.selector-screen{padding:15px 12px}.terminal-slot{grid-template-columns:54px 1fr;padding:11px 10px;gap:11px}.slot-art{transform:scale(.78);transform-origin:left center;width:50px}.slot-side{grid-column:2;text-align:left;display:flex;align-items:center;gap:10px}.slot-arrow{display:inline;margin:0}.selector-footer{font-size:12px;flex-direction:column;align-items:flex-start}.selector-plant{display:none}}
+  .selector-footer{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:25px;position:relative;z-index:1;font:14px 'Share Tech Mono',monospace;color:var(--muted)}.selector-footer strong{color:#d97757;font-weight:normal}.selector-note{background:#f3df9b;color:#6b543f;border:3px solid var(--line);box-shadow:4px 4px 0 var(--soft2);padding:9px 13px;transform:rotate(-1deg)}.selector-plant{position:absolute;right:-25px;top:-31px;width:26px;height:27px;background:#8fa876;border:3px solid var(--line);box-shadow:-12px 9px 0 -5px #8fa876,12px 9px 0 -5px #8fa876}.selector-plant::after{content:'';position:absolute;left:2px;top:25px;width:22px;height:16px;background:#d97757;border:3px solid var(--line)}
+  @media(max-width:760px){.mode-select{align-items:flex-start;padding:20px 14px}.selector-wrap{padding-top:24px}.selector-heading h1{font-size:16px}.selector-room{padding:16px 13px;box-shadow:6px 6px 0 var(--soft2)}.selector-room::before{display:none}.selector-list{grid-template-columns:1fr}.terminal-slot{min-height:0;display:grid;grid-template-columns:82px 1fr;gap:12px;padding:11px}.slot-scene{width:82px;height:82px;margin:0;grid-row:1 / span 2}.slot-art{transform:scale(.82)}.slot-scene::after{display:none}.slot-title{font-size:10px}.slot-action{grid-column:2;margin-top:0}.selector-footer{font-size:12px;flex-direction:column;align-items:flex-start}.selector-plant{display:none}}
   @media(min-width:901px){details.cs[data-mode="linux"] .cs-tabs{flex-wrap:nowrap}details.cs[data-mode="linux"] .cs-tab{flex:1 1 auto;min-width:0;padding:11px 7px;font-size:13px;text-align:center;white-space:nowrap}}
   @media(max-width:640px){.csrow{grid-template-columns:1fr;gap:2px}}
 
@@ -174,32 +174,29 @@
   <div class="selector-wrap">
     <span class="selector-plant" aria-hidden="true"></span>
     <header class="selector-heading">
-      <div class="selector-kicker">S2KTUX · SALA DE MÁQUINAS</div>
-      <h1>Selecciona tu entorno</h1>
+      <div class="selector-kicker">S2KTUX · RINCÓN DE PRÁCTICA</div>
+      <h1>¿Qué quieres practicar hoy?</h1>
+      <p>Cada rincón conserva su propia máquina, ejercicios y apuntes.</p>
     </header>
-    <div class="selector-console">
-      <div class="selector-bar"><span class="selector-led" aria-hidden="true"></span><strong>sandbox-selector</strong><span class="selector-clock">3 sistemas online</span></div>
-      <div class="selector-screen">
-        <p class="selector-prompt"><span>visitor@s2ktux:~$</span> select-machine --interactive</p>
-        <div class="selector-list" role="listbox" aria-label="Entornos disponibles">
+    <div class="selector-room">
+      <div class="selector-list" role="listbox" aria-label="Entornos disponibles">
           <button data-pick-mode="linux" class="terminal-slot" role="option" aria-selected="false">
-            <span class="slot-art linux-art" aria-hidden="true"></span>
-            <span class="slot-copy"><span class="slot-title">LINUX / RHCSA</span><span class="slot-meta">Arranque, usuarios, SELinux, systemd, red y LVM.</span></span>
-            <span class="slot-side"><span class="slot-status">ONLINE</span><span class="slot-arrow">abrir →</span></span>
+            <span class="slot-scene"><span class="slot-art linux-art" aria-hidden="true"></span></span>
+            <span class="slot-copy"><span class="slot-title">LINUX · RHCSA</span><span class="slot-meta">Administra una máquina Rocky Linux completa.</span><span class="slot-focus">GRUB · usuarios · SELinux · systemd · red · LVM</span></span>
+            <span class="slot-action">Sentarme a practicar →</span>
           </button>
           <button data-pick-mode="docker" class="terminal-slot" role="option" aria-selected="false">
-            <span class="slot-art docker-art" aria-hidden="true"></span>
-            <span class="slot-copy"><span class="slot-title">DOCKER LAB</span><span class="slot-meta">Motor, imágenes, contenedores, redes y Compose.</span></span>
-            <span class="slot-side"><span class="slot-status">ONLINE</span><span class="slot-arrow">abrir →</span></span>
+            <span class="slot-scene"><span class="slot-art docker-art" aria-hidden="true"></span></span>
+            <span class="slot-copy"><span class="slot-title">DOCKER</span><span class="slot-meta">Construye, conecta y opera tus contenedores.</span><span class="slot-focus">instalación · imágenes · volúmenes · redes · Compose</span></span>
+            <span class="slot-action">Sentarme a practicar →</span>
           </button>
           <button data-pick-mode="kubernetes" class="terminal-slot" role="option" aria-selected="false">
-            <span class="slot-art k8s-art" aria-hidden="true"></span>
-            <span class="slot-copy"><span class="slot-title">KUBERNETES / CKA</span><span class="slot-meta">Workloads, scheduling, storage, red, RBAC y clúster.</span></span>
-            <span class="slot-side"><span class="slot-status">ONLINE</span><span class="slot-arrow">abrir →</span></span>
+            <span class="slot-scene"><span class="slot-art k8s-art" aria-hidden="true"></span></span>
+            <span class="slot-copy"><span class="slot-title">KUBERNETES · CKA</span><span class="slot-meta">Resuelve incidencias dentro de un clúster vivo.</span><span class="slot-focus">workloads · scheduling · storage · red · RBAC</span></span>
+            <span class="slot-action">Sentarme a practicar →</span>
           </button>
-        </div>
-        <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> abrir</span><span>El progreso de cada máquina se guarda por separado.</span></div>
       </div>
+      <div class="selector-footer"><span><strong>← ↑ ↓ →</strong> elegir · <strong>Enter</strong> entrar</span><span class="selector-note">Tu progreso se queda guardado en cada rincón.</span></div>
     </div>
   </div>
 </div>
@@ -240,7 +237,7 @@
       <span id="term-os-label" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#5c5344">Rocky Linux 9 · RHCSA lab</span>
     </div>
     <div id="term-body" role="log" aria-label="Salida de la terminal" aria-live="polite" aria-relevant="additions" style="padding:20px;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.55;color:#d8cbad;height:60vh;min-height:440px;overflow-y:auto;background:#12100b">
-      <div id="term-input-line" style="display:flex;align-items:center">
+      <div id="term-input-line">
         <span id="term-prompt" style="color:#8fa876;margin-right:9px;white-space:nowrap">visitor@s2ktux:~$</span>
         <label class="sr-only" for="term-input">Escribe un comando</label><input id="term-input" aria-label="Comando de terminal" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus>
       </div>
