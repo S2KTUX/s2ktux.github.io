@@ -19,6 +19,9 @@ const contracts = [
   ['Single-line terminal input', /#term-input-line\{[^}]*flex-wrap:nowrap[^}]*min-width:0/.test(page) && /#term-input\{[^}]*width:1px[^}]*min-width:0/.test(page)],
   ['Session-scoped selector', /sessionStorage\.setItem\(MODE_KEY/.test(page) && /nav\.type==='reload'/.test(page) && /choose/.test(page)],
   ['Cozy pixel selector', /selector-room/.test(page) && /slot-scene/.test(page) && /selector-note/.test(page) && /k8s-art/.test(page)],
+  ['SELinux causal diagnostics', /avcAudit/.test(core) && /case 'ausearch'/.test(core) && /case 'sealert'/.test(core)],
+  ['Docker lifecycle state', /OOMKilled/.test(core) && /containerStatus/.test(core) && /restart policy activated/.test(core)],
+  ['Kubernetes desired state', /endpointsFor/.test(core) && /readyForDeployment/.test(core) && /Deployment restored desired state/.test(core)],
 ];
 
 for (const [name, passed] of contracts) assert.ok(passed, `Terminal contract failed: ${name}`);
