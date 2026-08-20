@@ -103,7 +103,7 @@ CMD ["/miapp"]</code></pre>
                 <p>El segundo <code>FROM</code> abre una etapa nueva y vacía, y con <code>COPY --from=build</code> traemos de la anterior únicamente ese binario. El compilador, el código fuente y todo lo demás se quedan atrás y se descartan. La imagen final es un alpine diminuto con un solo fichero dentro.</p>
                 <img src="/images/Docker-multi1.png" alt="Construcción multi-stage de una imagen">
                 <p>El resultado lo vemos al mirar <code>docker images</code>: la misma aplicación que pesaba X ha reducido considerablemente su peso.</p>
-                <img src="/images/multistage-images.png" alt="Comparación de tamaños con docker images">
+                <img src="/images/Docker-multi2.png" alt="Comparación de tamaños con docker images">
                 <p>Un detalle práctico de multi-stage: no estás obligado a construir hasta el final. Con <code>--target</code> puedes parar en la etapa que quieras:</p>
                 <pre><code>docker build --target build -t miapp-dev .</code></pre>
                 <p>Con ese comando, Docker construye hasta la etapa llamada <code>build</code> y se detiene ahí: la imagen que obtenemos es la de esa etapa, no la del final del fichero. Del mismo Dockerfile podríamos sacar varias imágenes distintas.</p>
