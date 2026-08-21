@@ -70,11 +70,11 @@ window.S2KTUX_COURSES = {
     subtitle: "Contenedores desde cero: de los fundamentos al uso profesional, en 3 clases.",
     note: "Contenedores desde cero: imágenes, volúmenes y redes para empaquetar y desplegar apps.",
     modules: [
-      { n: "01", title: "Clase 1 — Fundamentos de Docker", desc: "Qué es un contenedor, instalación y primeros pasos.", video: "",
+      { n: "01", title: "Clase 1 — Fundamentos de Docker", desc: "Qué es un contenedor, instalación y primeros pasos.", video: "https://www.youtube.com/watch?v=BML40ZpS6zc",
         topics: ["Qué es Docker", "Máquina virtual vs contenedor", "Contenedor, imagen, Dockerfile y DockerHub", "Instalar Docker en Linux", "Primeros pasos: run, ps, stop, rm, logs", "Ciclo de vida de un contenedor", "Imágenes y capas", "Primer Dockerfile (CMD vs ENTRYPOINT)"] },
-      { n: "02", title: "Clase 2 — Docker para el día a día", desc: "Gestionar y compartir imágenes, volúmenes, redes y Docker Compose.", video: "",
+      { n: "02", title: "Clase 2 — Docker para el día a día", desc: "Gestionar y compartir imágenes, volúmenes, redes y Docker Compose.", video: "https://www.youtube.com/watch?v=15_TPrR1cSA",
         topics: ["Gestionar imágenes: commit, save y load", "Etiquetas (docker tag)", "Compartir imágenes: push, pull y registros", "Volúmenes y bind mounts", "Persistencia y docker cp", "Redes y resolución por nombre", "Docker Compose: up, ps, logs, down", "Build desde Compose y ejemplo completo"] },
-      { n: "03", title: "Clase 3 — Docker profesional", desc: "Recursos, imágenes ligeras y paso a producción.", video: "",
+      { n: "03", title: "Clase 3 — Docker profesional", desc: "Recursos, imágenes ligeras y paso a producción.", video: "https://www.youtube.com/watch?v=OxdRl8Yiy5I",
         topics: ["Controlar los recursos de un contenedor (CPU, memoria)", "Reducir el tamaño de las imágenes con multi-stage", "Distroless: qué es y cuándo usarlo", "Preparar un contenedor para producción"] }
     ]
   },

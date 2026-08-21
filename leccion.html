@@ -256,7 +256,12 @@ class Component extends DCLogic {
               { "@type": "ListItem", "position": 4, "name": unit + ' ' + (m + 1), "item": base } ] }
           ]
         };
-        if (video) ld["@graph"].push({ "@type": "VideoObject", "name": (mod.title || courseName) + ' — vídeo', "description": (mod.desc || desc), "thumbnailUrl": home + "assets/og.png", "uploadDate": "2024-01-01", "contentUrl": video, "embedUrl": video.replace('youtu.be/', 'www.youtube.com/embed/') });
+        if (video) {
+          const embedVideo = video.includes('youtu.be/')
+            ? video.replace('youtu.be/', 'www.youtube.com/embed/')
+            : video.replace('www.youtube.com/watch?v=', 'www.youtube.com/embed/');
+          ld["@graph"].push({ "@type": "VideoObject", "name": (mod.title || courseName) + ' — vídeo', "description": (mod.desc || desc), "thumbnailUrl": home + "assets/og.png", "uploadDate": "2024-01-01", "contentUrl": video, "embedUrl": embedVideo });
+        }
         let s = document.getElementById('lesson-jsonld');
         if (!s) { s = document.createElement('script'); s.type = 'application/ld+json'; s.id = 'lesson-jsonld'; document.head.appendChild(s); }
         s.textContent = JSON.stringify(ld);
