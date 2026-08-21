@@ -31,4 +31,17 @@ for (const htmlPath of await htmlFiles(root)) {
 }
 
 assert.deepEqual(missing, [], `Broken local images:\n${missing.join('\n')}`);
-console.log('site assets: all local images exist');
+
+const dockerVideos = [
+  ['docker/1/1.html', 'https://www.youtube.com/watch?v=BML40ZpS6zc'],
+  ['docker/2/2.html', 'https://www.youtube.com/watch?v=15_TPrR1cSA'],
+  ['docker/3/3.html', 'https://www.youtube.com/watch?v=OxdRl8Yiy5I'],
+];
+const courseData = await readFile(join(root, 'courses-data.js'), 'utf8');
+for (const [path, url] of dockerVideos) {
+  const html = await readFile(join(root, path), 'utf8');
+  assert.ok(html.includes(`href="${url}"`) && html.includes('class="video-card"'), `Missing Docker video card: ${path}`);
+  assert.ok(courseData.includes(`video: "${url}"`), `Missing Docker video metadata: ${url}`);
+}
+
+console.log('site assets: all local images and Docker videos are valid');
