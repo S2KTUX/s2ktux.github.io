@@ -80,18 +80,15 @@
   .exam-panel[data-show="1"]{display:block}.exam-running{color:#e0a458;font-family:'Share Tech Mono',monospace;font-size:19px}
   .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
   .mode-select{position:fixed;inset:0;z-index:500;background-color:var(--bg);background-image:linear-gradient(90deg,rgba(208,181,138,.18) 1px,transparent 1px),linear-gradient(rgba(208,181,138,.18) 1px,transparent 1px);background-size:24px 24px;display:flex;align-items:center;justify-content:center;padding:30px;overflow:auto}
-  .selector-wrap{width:min(980px,100%);position:relative}
+  .selector-wrap{width:min(820px,100%);position:relative}
   .selector-heading{text-align:center;margin-bottom:24px}.selector-kicker{font-family:'Press Start 2P',monospace;font-size:9px;color:#d97757;letter-spacing:1px;margin-bottom:13px}.selector-heading h1{font-family:'Press Start 2P',monospace;font-size:21px;line-height:1.55;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin:0}.selector-heading p{font:19px 'VT323',monospace;color:var(--muted);margin:12px auto 0;max-width:590px}
-  .selector-room{background:var(--surface);border:4px solid var(--line);box-shadow:9px 9px 0 var(--soft2);padding:25px 25px 20px;position:relative}.selector-room::before{content:'';position:absolute;left:18px;right:18px;bottom:58px;height:5px;background:var(--line);box-shadow:0 8px 0 var(--surface2)}
-  .selector-list{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:17px;position:relative;z-index:1}
-  .terminal-slot{appearance:none;width:100%;min-height:292px;display:flex;flex-direction:column;align-items:stretch;background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);color:var(--text);padding:15px;cursor:pointer;text-align:left;transition:transform .08s,box-shadow .08s,border-color .08s}.terminal-slot:hover,.terminal-slot:focus-visible,.terminal-slot[data-selected="1"]{border-color:#d97757;transform:translate(-3px,-3px);box-shadow:8px 8px 0 var(--surface2);outline:0}.terminal-slot[data-selected="1"] .slot-action{background:#d97757;color:#fff}
-  .slot-scene{height:112px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border:3px solid var(--line);background:#e8d7b8;margin-bottom:16px}.terminal-slot[data-pick-mode="linux"] .slot-scene{background:#dfe6c8}.terminal-slot[data-pick-mode="docker"] .slot-scene{background:#efd5bd}.terminal-slot[data-pick-mode="kubernetes"] .slot-scene{background:#d8d7e3}.slot-scene::before{content:'';position:absolute;left:0;right:0;bottom:0;height:19px;background:#b68a61;border-top:3px solid var(--line)}.slot-scene::after{content:'';position:absolute;right:14px;bottom:20px;width:17px;height:20px;background:#8fa876;border:3px solid var(--line);box-shadow:-8px -9px 0 -5px #8fa876,8px -13px 0 -5px #8fa876}
-  .slot-art{width:64px;height:48px;position:relative;z-index:1;image-rendering:pixelated;transform:scale(1.25);transform-origin:center}.slot-copy{min-width:0}.slot-copy>span{display:block}.slot-title{font-family:'Press Start 2P',monospace;font-size:11px;line-height:1.45;color:var(--head);margin-bottom:8px}.slot-meta{font:17px/1.25 'VT323',monospace;color:var(--text)}.slot-focus{font:14px/1.25 'Share Tech Mono',monospace;color:var(--muted);margin-top:8px}.slot-action{display:block;margin-top:auto;padding:9px 10px 7px;background:var(--surface2);border:2px solid var(--line);color:var(--head);font:16px 'VT323',monospace;text-align:center;transition:background .08s,color .08s}
-  .linux-art::before{content:'>_';position:absolute;left:6px;top:4px;width:43px;height:27px;background:#070706;border:3px solid #8fa876;color:#8fa876;font:17px 'VT323',monospace;padding:3px 0 0 6px}.linux-art::after{content:'';position:absolute;left:27px;top:38px;width:14px;height:4px;background:#8fa876;box-shadow:-8px 5px 0 -1px #8fa876,8px 5px 0 -1px #8fa876}
-  .docker-art::before{content:'';position:absolute;left:3px;bottom:5px;width:18px;height:15px;background:#d97757;box-shadow:22px 0 0 #e0a458,44px 0 0 #8fa876,22px -19px 0 #d97757}.docker-art::after{content:'';position:absolute;left:8px;bottom:11px;width:8px;height:3px;background:#f6ecd9;box-shadow:22px 0 0 #f6ecd9,44px 0 0 #f6ecd9,22px -19px 0 #f6ecd9}
-  .k8s-art::before{content:'';position:absolute;left:25px;top:2px;width:18px;height:18px;background:#d97757;border:3px solid #e0a458;box-shadow:-22px 25px 0 -2px #8fa876,22px 25px 0 -2px #8fa876}.k8s-art::after{content:'';position:absolute;left:15px;top:23px;width:38px;height:3px;background:#a99a86;transform:rotate(24deg);box-shadow:0 0 0 #a99a86}
-  .selector-footer{display:flex;justify-content:space-between;gap:18px;align-items:center;margin-top:25px;position:relative;z-index:1;font:14px 'Share Tech Mono',monospace;color:var(--muted)}.selector-footer strong{color:#d97757;font-weight:normal}.selector-note{background:#f3df9b;color:#6b543f;border:3px solid var(--line);box-shadow:4px 4px 0 var(--soft2);padding:9px 13px;transform:rotate(-1deg)}.selector-plant{position:absolute;right:-25px;top:-31px;width:26px;height:27px;background:#8fa876;border:3px solid var(--line);box-shadow:-12px 9px 0 -5px #8fa876,12px 9px 0 -5px #8fa876}.selector-plant::after{content:'';position:absolute;left:2px;top:25px;width:22px;height:16px;background:#d97757;border:3px solid var(--line)}
-  @media(max-width:760px){.mode-select{align-items:flex-start;padding:20px 14px}.selector-wrap{padding-top:24px}.selector-heading h1{font-size:16px}.selector-room{padding:16px 13px;box-shadow:6px 6px 0 var(--soft2)}.selector-room::before{display:none}.selector-list{grid-template-columns:1fr}.terminal-slot{min-height:0;display:grid;grid-template-columns:82px 1fr;gap:12px;padding:11px}.slot-scene{width:82px;height:82px;margin:0;grid-row:1 / span 2}.slot-art{transform:scale(.82)}.slot-scene::after{display:none}.slot-title{font-size:10px}.slot-action{grid-column:2;margin-top:0}.selector-footer{font-size:12px;flex-direction:column;align-items:flex-start}.selector-plant{display:none}}
+  .selector-room{background:var(--surface);border:4px solid var(--line);box-shadow:9px 9px 0 var(--soft2);position:relative;overflow:hidden}
+  .selector-machinebar{min-height:40px;box-sizing:border-box;display:grid;grid-template-columns:130px 1fr auto;align-items:center;padding:0 14px;background:#2c2218;color:#b5a58a;border-bottom:3px solid var(--line);font:13px 'Share Tech Mono',monospace}.selector-machinebar>span:last-child{color:#76654e}.selector-lights{display:flex;gap:8px}.selector-lights i{display:block;width:10px;height:10px;background:#e95d45}.selector-lights i:nth-child(2){background:#e4a72c}.selector-lights i:nth-child(3){background:#4cbd6a}
+  .selector-current{min-height:70px;box-sizing:border-box;display:flex;align-items:center;gap:8px;padding:14px 19px;background:#17150f;color:#d8c8aa;border-bottom:3px solid var(--line);font:18px 'VT323',monospace}.selector-current-prompt{color:#d97757}.selector-command-wrap{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.selector-current b{color:#9bb879;font-weight:normal}.selector-cursor{display:inline-block;width:8px;height:18px;background:#9bb879}.selector-current small{margin-left:auto;color:#9d9078;font:12px 'Share Tech Mono',monospace;white-space:nowrap}.selector-current small i{display:inline-block;width:7px;height:7px;margin-right:5px;background:#8fa876;border:1px solid #455132;font-style:normal}
+  .selector-list{display:grid;grid-template-columns:1fr}
+  .terminal-slot{appearance:none;width:100%;min-height:84px;display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:14px;padding:16px 20px;background:var(--surface);color:var(--text);border:0;border-bottom:2px solid var(--surface2);cursor:pointer;text-align:left}.terminal-slot:last-child{border-bottom:0}.terminal-slot:hover,.terminal-slot:focus-visible{background:var(--bg);outline:0}.terminal-slot[data-selected="1"]{position:relative;background:var(--bg);box-shadow:inset 6px 0 0 #d97757}.terminal-slot[data-selected="1"]::before{content:'>';position:absolute;left:15px;color:#d97757;font:18px 'VT323',monospace}.slot-index{color:#b69b7e;font:15px 'Share Tech Mono',monospace;text-align:right}.terminal-slot[data-selected="1"] .slot-index{color:#d97757}.slot-copy{display:grid;gap:8px;min-width:0}.slot-copy>span{display:block}.slot-title{color:var(--head);font:11px/1.4 'Press Start 2P',monospace}.slot-focus{color:var(--muted);font:15px 'Share Tech Mono',monospace}.slot-action{visibility:hidden;padding:8px 10px 6px;background:#d97757;color:#fff;border:2px solid var(--line);box-shadow:3px 3px 0 var(--soft2);font:14px 'VT323',monospace;white-space:nowrap}.terminal-slot[data-selected="1"] .slot-action{visibility:visible}
+  .selector-footer{display:flex;justify-content:space-between;gap:20px;padding:12px 17px;background:var(--surface2);color:var(--muted);border-top:3px solid var(--line);font:13px 'Share Tech Mono',monospace}.selector-footer strong{color:#d97757;font-weight:normal}
+  @media(max-width:760px){.mode-select{align-items:flex-start;padding:20px 14px}.selector-wrap{padding-top:24px}.selector-heading h1{font-size:16px}.selector-room{box-shadow:6px 6px 0 var(--soft2)}.selector-machinebar{grid-template-columns:auto 1fr;gap:9px}.selector-machinebar>span:last-child{display:none}.selector-current{display:grid;grid-template-columns:auto auto 1fr;gap:5px}.selector-current small{grid-column:1/4;margin:2px 0 0}.terminal-slot{grid-template-columns:31px 1fr;padding:15px 12px;gap:10px}.terminal-slot[data-selected="1"]::before{left:6px}.slot-title{font-size:10px}.slot-action{display:none}.selector-footer{font-size:12px;flex-direction:column;align-items:flex-start}}
   @media(min-width:901px){details.cs[data-mode="linux"] .cs-tabs{flex-wrap:nowrap}details.cs[data-mode="linux"] .cs-tab{flex:1 1 auto;min-width:0;padding:11px 7px;font-size:13px;text-align:center;white-space:nowrap}}
   @media(max-width:640px){.csrow{grid-template-columns:1fr;gap:2px}}
 
@@ -158,7 +155,9 @@
   });
   function initSelectorKeyboard(){
     var slots=[].slice.call(document.querySelectorAll('.terminal-slot')),selected=0;
-    function choose(i,focus){selected=(i+slots.length)%slots.length;slots.forEach(function(s,n){var on=n===selected;s.setAttribute('data-selected',on?'1':'0');s.setAttribute('aria-selected',on?'true':'false');});if(focus&&slots[selected])slots[selected].focus();}
+    var command=document.getElementById('selector-current-command'),status=document.getElementById('selector-current-status');
+    var info={linux:['linux-rhcsa','Rocky Linux 9 · preparado'],docker:['docker-host','Docker Engine · preparado'],kubernetes:['kubernetes-cka','Clúster CKA · preparado']};
+    function choose(i,focus){selected=(i+slots.length)%slots.length;slots.forEach(function(s,n){var on=n===selected;s.setAttribute('data-selected',on?'1':'0');s.setAttribute('aria-selected',on?'true':'false');});var mode=slots[selected]&&slots[selected].getAttribute('data-pick-mode'),data=info[mode];if(data&&command)command.textContent=data[0];if(data&&status){var led=status.querySelector('i');status.textContent=' '+data[1];if(led)status.insertBefore(led,status.firstChild);}if(focus&&slots[selected])slots[selected].focus();}
     slots.forEach(function(s,i){s.addEventListener('mouseenter',function(){choose(i,false);});s.addEventListener('focus',function(){choose(i,false);});});
     document.addEventListener('keydown',function(e){var sel=document.getElementById('mode-select');if(!sel||sel.style.display==='none'||!slots.length)return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();choose(selected+1,true);}else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();choose(selected-1,true);}else if(e.key==='Enter'){e.preventDefault();slots[selected].click();}});
     if(slots.length)choose(0,false);
@@ -170,33 +169,43 @@
 </script>
 </head>
 <body>
-<div id="mode-select" class="mode-select">
+  <div id="mode-select" class="mode-select">
   <div class="selector-wrap">
-    <span class="selector-plant" aria-hidden="true"></span>
     <header class="selector-heading">
       <div class="selector-kicker">S2KTUX · RINCÓN DE PRÁCTICA</div>
       <h1>¿Qué quieres practicar hoy?</h1>
       <p>Cada rincón conserva su propia máquina, ejercicios y apuntes.</p>
     </header>
     <div class="selector-room">
+      <div class="selector-machinebar">
+        <span class="selector-lights" aria-hidden="true"><i></i><i></i><i></i></span>
+        <span>selector@s2ktux: ~</span>
+        <span>elige un entorno</span>
+      </div>
+      <div class="selector-current" aria-live="polite">
+        <span class="selector-current-prompt">s2ktux@lab:~$</span>
+        <span>launch</span>
+        <span class="selector-command-wrap"><b id="selector-current-command">linux-rhcsa</b><i class="selector-cursor" aria-hidden="true"></i></span>
+        <small id="selector-current-status"><i aria-hidden="true"></i> Rocky Linux 9 · preparado</small>
+      </div>
       <div class="selector-list" role="listbox" aria-label="Entornos disponibles">
           <button data-pick-mode="linux" class="terminal-slot" role="option" aria-selected="false">
-            <span class="slot-scene"><span class="slot-art linux-art" aria-hidden="true"></span></span>
-            <span class="slot-copy"><span class="slot-title">LINUX · RHCSA</span><span class="slot-meta">Administra una máquina Rocky Linux completa.</span><span class="slot-focus">GRUB · usuarios · SELinux · systemd · red · LVM</span></span>
-            <span class="slot-action">Sentarme a practicar →</span>
+            <span class="slot-index">01</span>
+            <span class="slot-copy"><span class="slot-title">LINUX · RHCSA</span><span class="slot-focus">GRUB · usuarios · SELinux · systemd · red · LVM</span></span>
+            <span class="slot-action">ENTRAR ↵</span>
           </button>
           <button data-pick-mode="docker" class="terminal-slot" role="option" aria-selected="false">
-            <span class="slot-scene"><span class="slot-art docker-art" aria-hidden="true"></span></span>
-            <span class="slot-copy"><span class="slot-title">DOCKER</span><span class="slot-meta">Construye, conecta y opera tus contenedores.</span><span class="slot-focus">instalación · imágenes · volúmenes · redes · Compose</span></span>
-            <span class="slot-action">Sentarme a practicar →</span>
+            <span class="slot-index">02</span>
+            <span class="slot-copy"><span class="slot-title">DOCKER</span><span class="slot-focus">instalación · imágenes · volúmenes · redes · Compose</span></span>
+            <span class="slot-action">ENTRAR ↵</span>
           </button>
           <button data-pick-mode="kubernetes" class="terminal-slot" role="option" aria-selected="false">
-            <span class="slot-scene"><span class="slot-art k8s-art" aria-hidden="true"></span></span>
-            <span class="slot-copy"><span class="slot-title">KUBERNETES · CKA</span><span class="slot-meta">Resuelve incidencias dentro de un clúster vivo.</span><span class="slot-focus">workloads · scheduling · storage · red · RBAC</span></span>
-            <span class="slot-action">Sentarme a practicar →</span>
+            <span class="slot-index">03</span>
+            <span class="slot-copy"><span class="slot-title">KUBERNETES · CKA</span><span class="slot-focus">workloads · scheduling · storage · red · RBAC</span></span>
+            <span class="slot-action">ENTRAR ↵</span>
           </button>
       </div>
-      <div class="selector-footer"><span><strong>← ↑ ↓ →</strong> elegir · <strong>Enter</strong> entrar</span><span class="selector-note">Tu progreso se queda guardado en cada rincón.</span></div>
+      <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> entrar</span><span>El progreso se guarda por separado.</span></div>
     </div>
   </div>
 </div>
