@@ -34,7 +34,7 @@
                         </ul>
                     </li>
                     <li><strong>Máscara de red:</strong> Define qué parte es red y qué parte es host (ej. `255.255.0.0` /24).</li>
-                    <li><strong>Reservados (Privados):** No enrutables en internet.
+                    <li><strong>Reservados (privados):</strong> No enrutables en internet.
                         <ul>
                             <li>10.0.0.0/8: Redes grandes (10.0.0.0 a 10.255.255.255).</li>
                             <li>172.16.0.0/12: Redes medianas (172.16.0.0 a 172.31.255.255).</li>
@@ -61,7 +61,7 @@
                 <p>IPv6 usa direcciones de 128 bits.</p>
                 <ul>
                     <li><strong>Formato:</strong> 8 grupos de 16 bits en hexadecimal (ej. `2001:db8:3241::1`).</li>
-                    <li><strong>Tipos:</strong> Unicast (Una interfaz), Multicast (Grupo), Anycast (Grupo).
+                    <li><strong>Tipos:</strong> Unicast (una interfaz), Multicast (grupo), Anycast (grupo).</li>
                     <li><strong>Diferencias:</strong>
                         <ul>
                             <li>Puertos: IPv6 usa corchetes `[]` (ej. `[2001:0db8::1]:443`).</li>
@@ -99,7 +99,7 @@
                 <ul>
                     <li><strong>Nombre host:</strong> `/etc/hostname` define el nombre estático. Cambio permanente: <code>hostnamectl set-hostname nuevo-nombre</code>.</li>
                     <li><strong>Mapeo local:</strong> `/etc/hosts` (ej. `127.0.0.1 localhost`).</li>
-                    <li><strong>Resolución:</strong> `/etc/nsswitch.conf` define el orden (ej. `hosts: files dns`).
+                    <li><strong>Resolución:</strong> <code>/etc/nsswitch.conf</code> define el orden (ej. <code>hosts: files dns</code>).</li>
                     <li><strong>DNS:</strong> `/etc/resolv.conf` define `nameserver 8.8.8.8` y `search lpi.org`.</li>
                 </ul>
 
@@ -134,7 +134,7 @@
                     <li><strong>Tabla de enrutamiento:</strong> <code>ip route</code>.</li>
                     <li>Ejemplo de salida: `default via 10.0.2.2 dev enp0s3 proto dhcp metric 100`.</li>
                     <li><strong>Añadir ruta:</strong> <code>ip route add 192.168.10.0/24 via 192.168.1.1</code>.</li>
-                    <li><strong>IPv6:</strong> <code>ip -6 route` (muestra prefijos de red como `2001:db8::/64`).</li>
+                    <li><strong>IPv6:</strong> <code>ip -6 route</code> (muestra prefijos de red como <code>2001:db8::/64</code>).</li>
                 </ul>
 
                 <h4>Ver conexiones con netstat y ss</h4>
@@ -165,16 +165,9 @@
                 <ul>
                     <li><strong>host:</strong> Consultas simples. Ej: `host google.com` (muestra IP).</li>
                     <li><strong>dig:</strong> Consultas detalladas. Ej: `dig google.com` (muestra IP, TTL, servidores).</li>
-                    <li><strong>getent:</strong> Busca según <code>/etc/nsswitch.conf`. Ej: `getent hosts google.com` (muestra IP encontrada).</li>
+                    <li><strong>getent:</strong> Busca según <code>/etc/nsswitch.conf</code>. Ej.: <code>getent hosts google.com</code> (muestra la IP encontrada).</li>
                 </ul>
             </section>
-
-            <div style="margin-top: 4rem; <padding-top: 2rem; <li style="border-top: 1px dashed var(--border-color); margin-bottom: 1rem;"></li>
-                <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Has terminado la teoría? Repasa los puntos clave antes del examen.</p>
-                <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/9/repaso-tema-109.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
-                    📝 Ver Resumen del Tema 109
-                </a>
-            </div>
 
         </div>
     </div>

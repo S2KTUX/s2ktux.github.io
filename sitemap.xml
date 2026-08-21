@@ -37,6 +37,12 @@
     <priority>0.5</priority>
   </url>
   <url>
+    <loc>https://s2ktux.github.io/sobre.html</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
     <loc>https://s2ktux.github.io/curso.html?c=rhcsa</loc>
     <lastmod>2026-07-22</lastmod>
     <changefreq>weekly</changefreq>
@@ -121,6 +127,12 @@
     <priority>0.6</priority>
   </url>
   <url>
+    <loc>https://s2ktux.github.io/leccion.html?c=rhcsa&amp;m=10</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
     <loc>https://s2ktux.github.io/leccion.html?c=lpic1&amp;m=0</loc>
     <lastmod>2026-07-22</lastmod>
     <changefreq>monthly</changefreq>
@@ -177,6 +189,24 @@
   <url>
     <loc>https://s2ktux.github.io/leccion.html?c=lpic1&amp;m=9</loc>
     <lastmod>2026-07-22</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://s2ktux.github.io/leccion.html?c=docker&amp;m=0</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://s2ktux.github.io/leccion.html?c=docker&amp;m=1</loc>
+    <lastmod>2026-08-21</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://s2ktux.github.io/leccion.html?c=docker&amp;m=2</loc>
+    <lastmod>2026-08-21</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>

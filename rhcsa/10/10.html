@@ -5,7 +5,7 @@
         <h1>Administrar la seguridad</h1>
         <p>Firewall, permisos, autenticación SSH y hardening con SELinux</p>
 
-        <a href="https://youtu.be/mDqQq9ZGehA" target="_blank" class="video-card">
+        <a href="https://youtu.be/mDqQq9ZGehA" target="_blank" rel="noopener" class="video-card">
             <div class="video-icon">🎬</div>
             <div class="video-text">
                 <strong>VER VIDEO YOUTUBE - CLASE 10</strong>
@@ -56,8 +56,6 @@
                 <p>El valor máximo es 666 para archivos y 777 para directorios (ya que x no se aplica por seguridad).Es decir, la regla o la suma es  Permisos totales - UMASK = Permisos reales. Si el umask es 022, el archivo se crea con 644 (666-022) y el directorio con 755 (777-022).</p>
                 <p>Puede aplicarse temporalmente con <code>umask</code> o permanentemente en <code>/etc/profile</code> para global o <code>~/.bashrc</code> para un usuario en especifico.</p>
             </section>
-            </section>
-
             <section id="obj3" class="lesson-section">
                 <h3>3. Autenticación SSH mediante claves</h3>
                 <p>Permite acceso seguro sin contraseña usando criptografía pública/privada. La clave pública se copia al servidor y la privada nunca se comparte.</p>
@@ -123,7 +121,7 @@
                 <img src="/images/selinux-booleans.png" alt="Booleanos SELinux">
                 <p>Se listan con <code>getsebool -a</code> y se modifican con <code>setsebool</code>. Para hacerlo persistente usamos <code>-P</code>.</p>
                 <img src="/images/selinux-booleans2.png" alt="Booleanos SELinux">
-                <p>No es necesario memorizar booleanos concretos, sino saber identificarlos con <code>getsebool</code> o <code>getsebool -a</code> y activarlos correctamente usando <code>setsebool</code> o <code>setsebool -P</code> cuando SELinux bloquea un servicio.</p
+                <p>No es necesario memorizar booleanos concretos, sino saber identificarlos con <code>getsebool</code> o <code>getsebool -a</code> y activarlos correctamente usando <code>setsebool</code> o <code>setsebool -P</code> cuando SELinux bloquea un servicio.</p>
                 <p>Ejemplos comunes:</p>
                 <ul>
                     <li><code>httpd_can_network_connect</code></li>

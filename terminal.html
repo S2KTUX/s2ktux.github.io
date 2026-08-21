@@ -6,6 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./site-shell.css">
 <title>Terminales Linux, Docker y Kubernetes · S2KTUX</title>
 <meta name="description" content="Practica Linux para RHCSA, Docker y Kubernetes para CKA en tres terminales simuladas, rápidas e independientes dentro del navegador.">
 <meta name="robots" content="index,follow">
@@ -88,7 +89,7 @@
   .selector-list{display:grid;grid-template-columns:1fr}
   .terminal-slot{appearance:none;width:100%;min-height:84px;display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:14px;padding:16px 20px;background:var(--surface);color:var(--text);border:0;border-bottom:2px solid var(--surface2);cursor:pointer;text-align:left}.terminal-slot:last-child{border-bottom:0}.terminal-slot:hover,.terminal-slot:focus-visible{background:var(--bg);outline:0}.terminal-slot[data-selected="1"]{position:relative;background:var(--bg);box-shadow:inset 6px 0 0 #d97757}.terminal-slot[data-selected="1"]::before{content:'>';position:absolute;left:15px;color:#d97757;font:18px 'VT323',monospace}.slot-index{color:#b69b7e;font:15px 'Share Tech Mono',monospace;text-align:right}.terminal-slot[data-selected="1"] .slot-index{color:#d97757}.slot-copy{display:grid;gap:8px;min-width:0}.slot-copy>span{display:block}.slot-title{color:var(--head);font:11px/1.4 'Press Start 2P',monospace}.slot-focus{color:var(--muted);font:15px 'Share Tech Mono',monospace}.slot-action{visibility:hidden;padding:8px 10px 6px;background:#d97757;color:#fff;border:2px solid var(--line);box-shadow:3px 3px 0 var(--soft2);font:14px 'VT323',monospace;white-space:nowrap}.terminal-slot[data-selected="1"] .slot-action{visibility:visible}
   .selector-footer{display:flex;justify-content:space-between;gap:20px;padding:12px 17px;background:var(--surface2);color:var(--muted);border-top:3px solid var(--line);font:13px 'Share Tech Mono',monospace}.selector-footer strong{color:#d97757;font-weight:normal}
-  @media(max-width:760px){.mode-select{align-items:flex-start;padding:20px 14px}.selector-wrap{padding-top:24px}.selector-heading h1{font-size:16px}.selector-room{box-shadow:6px 6px 0 var(--soft2)}.selector-machinebar{grid-template-columns:auto 1fr;gap:9px}.selector-machinebar>span:last-child{display:none}.selector-current{display:grid;grid-template-columns:auto auto 1fr;gap:5px}.selector-current small{grid-column:1/4;margin:2px 0 0}.terminal-slot{grid-template-columns:31px 1fr;padding:15px 12px;gap:10px}.terminal-slot[data-selected="1"]::before{left:6px}.slot-title{font-size:10px}.slot-action{display:none}.selector-footer{font-size:12px;flex-direction:column;align-items:flex-start}}
+  @media(max-width:760px){.mode-select{align-items:flex-start;padding:20px 14px}.selector-wrap{padding-top:24px}.selector-heading h1{font-size:16px}.selector-room{box-shadow:6px 6px 0 var(--soft2)}.selector-machinebar{grid-template-columns:auto 1fr;gap:9px}.selector-machinebar>span:last-child{display:none}.selector-current{display:grid;grid-template-columns:auto auto 1fr;gap:5px}.selector-current small{grid-column:1/4;margin:2px 0 0}.terminal-slot{grid-template-columns:31px 1fr;padding:15px 12px;gap:10px}.terminal-slot[data-selected="1"]::before{left:6px}.slot-title{font-size:10px}.slot-action{display:none}.selector-footer{font-size:12px;flex-direction:column;align-items:flex-start}#term-prompt{flex:0 1 auto;max-width:58%;min-width:0;overflow:hidden;text-overflow:ellipsis}#term-input-line{overflow:hidden}}
   @media(min-width:901px){details.cs[data-mode="linux"] .cs-tabs{flex-wrap:nowrap}details.cs[data-mode="linux"] .cs-tab{flex:1 1 auto;min-width:0;padding:11px 7px;font-size:13px;text-align:center;white-space:nowrap}}
   @media(max-width:640px){.csrow{grid-template-columns:1fr;gap:2px}}
 
@@ -127,31 +128,31 @@
   setTimeout(updateIcons,150); setTimeout(updateIcons,600);
 })();
 (function(){
-  var MODE_KEY='s2ktux-terminal-mode';
   var INTERNAL_RELOAD_KEY='s2ktux-terminal-internal-reload';
+  var VALID_MODE=/^(linux|docker|kubernetes)$/;
+  function selectionUrl(){ return 'terminal.html?choose=1'; }
+  function getMode(params){ var mode=params.get('mode'); return VALID_MODE.test(mode||'')?mode:''; }
   function applyModeUI(){
     var sel=document.getElementById('mode-select');
-    var params=new URLSearchParams(location.search), mode=params.get('mode');
+    var shell=document.getElementById('terminal-shell');
+    var params=new URLSearchParams(location.search), mode=getMode(params);
     if(sel) sel.style.display = mode ? 'none' : 'flex';
+    if(shell){ if(mode){ shell.removeAttribute('inert'); shell.removeAttribute('aria-hidden'); } else { shell.setAttribute('inert',''); shell.setAttribute('aria-hidden','true'); } }
     document.documentElement.style.overflow=mode?'':'hidden';
   }
-  try{
-    var params=new URLSearchParams(location.search), active=params.get('mode');
-    var nav=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];
-    var internalReload=sessionStorage.getItem(INTERNAL_RELOAD_KEY)==='1';
-    if(internalReload)sessionStorage.removeItem(INTERNAL_RELOAD_KEY);
-    if(active&&nav&&nav.type==='reload'&&!internalReload){sessionStorage.removeItem(MODE_KEY);location.replace('terminal.html?choose=1');return;}
-    if(active) sessionStorage.setItem(MODE_KEY,active);
-    else if(params.get('choose')!=='1'){
-      var remembered=sessionStorage.getItem(MODE_KEY);
-      if(/^(linux|docker|kubernetes)$/.test(remembered||'')){ location.replace('terminal.html?mode='+encodeURIComponent(remembered)); return; }
-    }
-  }catch(e){}
+  var params=new URLSearchParams(location.search), rawMode=params.get('mode'), active=getMode(params);
+  if(rawMode&&!active){ location.replace(selectionUrl()); return; }
+  var internalReload=false;
+  try{ internalReload=sessionStorage.getItem(INTERNAL_RELOAD_KEY)==='1'; if(internalReload)sessionStorage.removeItem(INTERNAL_RELOAD_KEY); }catch(e){}
+  var explicitEntry=params.get('enter')==='1';
+  if(active&&!explicitEntry&&!internalReload){ location.replace(selectionUrl()); return; }
+  if(explicitEntry){ params.delete('enter'); history.replaceState(history.state,'','terminal.html?'+params.toString()); }
+  window.addEventListener('pageshow',function(e){ if(e.persisted&&getMode(new URLSearchParams(location.search))){ location.replace(selectionUrl()); } });
   document.addEventListener('click', function(e){
     var b = e.target && e.target.closest && e.target.closest('[data-pick-mode]');
-    if(b){ var selected=b.getAttribute('data-pick-mode'); try{sessionStorage.setItem(MODE_KEY,selected);}catch(x){} location.href='terminal.html?mode='+encodeURIComponent(selected); return; }
+    if(b){ var selected=b.getAttribute('data-pick-mode'); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
     var cm = e.target && e.target.closest && e.target.closest('[data-change-mode]');
-    if(cm){ try{sessionStorage.removeItem(MODE_KEY);}catch(x){} location.href='terminal.html?choose=1'; }
+    if(cm){ location.href=selectionUrl(); }
   });
   function initSelectorKeyboard(){
     var slots=[].slice.call(document.querySelectorAll('.terminal-slot')),selected=0;
@@ -160,7 +161,7 @@
     function choose(i,focus){selected=(i+slots.length)%slots.length;slots.forEach(function(s,n){var on=n===selected;s.setAttribute('data-selected',on?'1':'0');s.setAttribute('aria-selected',on?'true':'false');});var mode=slots[selected]&&slots[selected].getAttribute('data-pick-mode'),data=info[mode];if(data&&command)command.textContent=data[0];if(data&&status){var led=status.querySelector('i');status.textContent=' '+data[1];if(led)status.insertBefore(led,status.firstChild);}if(focus&&slots[selected])slots[selected].focus();}
     slots.forEach(function(s,i){s.addEventListener('mouseenter',function(){choose(i,false);});s.addEventListener('focus',function(){choose(i,false);});});
     document.addEventListener('keydown',function(e){var sel=document.getElementById('mode-select');if(!sel||sel.style.display==='none'||!slots.length)return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();choose(selected+1,true);}else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();choose(selected-1,true);}else if(e.key==='Enter'){e.preventDefault();slots[selected].click();}});
-    if(slots.length)choose(0,false);
+    if(slots.length)choose(0,!getMode(new URLSearchParams(location.search)));
   }
   document.addEventListener('DOMContentLoaded', function(){applyModeUI();initSelectorKeyboard();});
   applyModeUI();
@@ -169,11 +170,11 @@
 </script>
 </head>
 <body>
-  <div id="mode-select" class="mode-select">
+  <div id="mode-select" class="mode-select" role="dialog" aria-modal="true" aria-labelledby="selector-title">
   <div class="selector-wrap">
     <header class="selector-heading">
       <div class="selector-kicker">S2KTUX · RINCÓN DE PRÁCTICA</div>
-      <h1>¿Qué quieres practicar hoy?</h1>
+      <h1 id="selector-title">¿Qué quieres practicar hoy?</h1>
       <p>Cada rincón conserva su propia máquina, ejercicios y apuntes.</p>
     </header>
     <div class="selector-room">
@@ -210,18 +211,17 @@
   </div>
 </div>
 
+<div id="terminal-shell" class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
 <a class="skip-link" href="#term-input">Saltar a la terminal</a>
-
-<div style="min-height:100vh;display:flex;flex-direction:column">
 <div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div style="display:flex;gap:30px;align-items:center">
-      <a class="navlink" href="index.html">Inicio</a>
+  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
+    <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
+    <div class="site-nav" style="display:flex;gap:30px;align-items:center">
+      <a class="navlink nav-home" href="index.html">Inicio</a>
       <a class="navlink" href="cursos.html">Cursos</a>
       <a class="navlink" href="terminal.html" style="color:var(--head);border-bottom:3px solid #d97757">Terminal</a>
       <a class="navlink" href="proyectos.html">Proyectos</a>
-      <button data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
+      <button class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
     </div>
   </div>
 </div>
@@ -607,7 +607,7 @@
       <div id="chal-progress" style="margin-bottom:16px"></div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
         <div style="position:relative;flex:1;min-width:240px">
-          <select id="chal-select" style="width:100%;appearance:none;-webkit-appearance:none;font-family:'Share Tech Mono',monospace;font-size:16px;padding:12px 40px 12px 14px;background:var(--surface);color:var(--head);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer"></select>
+          <label class="sr-only" for="chal-select">Práctica guiada</label><select id="chal-select" style="width:100%;appearance:none;-webkit-appearance:none;font-family:'Share Tech Mono',monospace;font-size:16px;padding:12px 40px 12px 14px;background:var(--surface);color:var(--head);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer"></select>
           <span style="position:absolute;right:15px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--head);font-size:11px">▼</span>
         </div>
         <button id="chal-check" class="pxbtn" style="background:#8fa876;color:#2e3d24;font-family:'Press Start 2P',monospace;font-size:11px;padding:14px 22px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">COMPROBAR</button>
