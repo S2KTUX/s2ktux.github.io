@@ -4,7 +4,7 @@
         <h1>Crear y configurar sistemas de archivos</h1>
         <p>Formateo, montaje, NFS, autofs y diagnóstico de permisos</p>
         
-        <a href="https://youtu.be/gaYlseO7kus" target="_blank" class="video-card">
+        <a href="https://youtu.be/gaYlseO7kus" target="_blank" rel="noopener" class="video-card">
             <div class="video-icon">🎬</div>
             <div class="video-text">
                 <strong>VER VIDEO YOUTUBE - CLASE 6</strong>
@@ -30,7 +30,7 @@
 
            <section id="obj1" class="lesson-section">
                 <h3>1. Crear, montar y desmontar sistemas de archivos locales</h3>
-                 <p>Linux soporta distintos sistemas de archivos. Como vimos en la clase anterior, los más comunes son <strong>ext4</strong>, <strong>xfs</strong> y <strong>vfat</strong>.</p>>
+                 <p>Linux soporta distintos sistemas de archivos. Como vimos en la clase anterior, los más comunes son <strong>ext4</strong>, <strong>xfs</strong> y <strong>vfat</strong>.</p>
                 <ul>
                     <li><strong>ext4</strong> → Sistema estándar en Linux.</li>
                     <li><strong>xfs</strong> → Optimizado para grandes volúmenes (no permite reducción).</li>
@@ -55,7 +55,7 @@
                 <p><strong>Configuración en el CLIENTE:</strong> instalar cliente NFS, crear punto de montaje y montar manualmente o mediante <code>/etc/fstab</code>.</p>
                 <img src="/images/nfs-client.png" alt="mount nfs client">
                 <p>También pueden pedir realizar todo localmente:</p>
-                <img src="/images/nfs-local.png" alt="mount nfs local" w>
+                <img src="/images/nfs-local.png" alt="mount nfs local">
                 <p>El error <em>stale file handle</em> aparece cuando el recurso cambia sin desmontar previamente. Soluciones:</p>
                 <ul>
                     <li><strong>exportfs -au</strong> y luego <code>exportfs -ar</code></li>
@@ -84,8 +84,6 @@
                 <img src="/images/auto-ejemplo.png" alt="Resultado autofs">
                 <p>Tras cualquier cambio recuerda reiniciar el servicio con <code>systemctl restart autofs</code>Evita usar mapas directo e indirecto en la misma ruta. En el examen normalmente se espera dominio del mapa indirecto.</p>
             </section>
-            </section>
-
             <section id="obj4" class="lesson-section">
                 <h3>4. Ampliar volúmenes lógicos existentes</h3>
                 <p>Este punto continúa lo aprendido en la clase 5. Para ampliar almacenamiento sin pérdida de datos usamos <code>lvextend</code>.</p>

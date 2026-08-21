@@ -7,11 +7,27 @@ if (!requested || !allowed.has(requested)) {
   document.documentElement.dataset.terminalState = 'selector';
 } else {
   const mode = requested;
-
-  const [{ default: engine }, { startTerminal }] = await Promise.all([
-    import(`./terminal-engine-${mode}.js`),
-    import('./terminal-core.js')
-  ]);
-
-  startTerminal(engine);
+  try {
+    const [{ default: engine }, { startTerminal }] = await Promise.all([
+      import(`./terminal-engine-${mode}.js`),
+      import('./terminal-core.js')
+    ]);
+    startTerminal(engine);
+  } catch (error) {
+    console.error('No se pudo cargar el motor de terminal.', error);
+    document.documentElement.dataset.terminalState = 'error';
+    const body = document.getElementById('term-body');
+    const line = document.getElementById('term-input-line');
+    const input = document.getElementById('term-input');
+    const prompt = document.getElementById('term-prompt');
+    if (body && line) {
+      const message = document.createElement('div');
+      message.className = 'term-out';
+      message.style.color = '#ef8a7a';
+      message.textContent = 'No se pudo cargar esta máquina. Comprueba la conexión y vuelve a intentarlo.';
+      body.insertBefore(message, line);
+    }
+    if (prompt) prompt.textContent = '';
+    if (input) { input.disabled = true; input.removeAttribute('autofocus'); }
+  }
 }

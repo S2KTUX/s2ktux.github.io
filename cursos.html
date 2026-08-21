@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="./site-shell.css">
 <script src="./support.js"></script>
 </head>
 <body>
@@ -92,16 +93,16 @@
 </script>
 </helmet>
 
-<div style="min-height:100vh;display:flex;flex-direction:column">
+<div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
 <div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div style="display:flex;gap:30px;align-items:center">
-      <a class="navlink" href="index.html">Inicio</a>
+  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
+    <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
+    <div class="site-nav" style="display:flex;gap:30px;align-items:center">
+      <a class="navlink nav-home" href="index.html">Inicio</a>
       <a class="navlink" href="cursos.html" style="color:var(--head);border-bottom:3px solid #d97757">Cursos</a>
       <a class="navlink" href="terminal.html">Terminal</a>
       <a class="navlink" href="proyectos.html">Proyectos</a>
-      <button data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
+      <button class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
     </div>
   </div>
 </div>
@@ -192,8 +193,7 @@
   <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 
+</div>
 </x-dc>
 </body>
 </html>
-</div>
-

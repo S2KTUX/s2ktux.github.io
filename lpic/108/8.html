@@ -53,7 +53,7 @@
                 <h4>Gestión con rsyslog</h4>
                 <p>rsyslog usa modelo cliente-servidor. Configuración en <code>/etc/rsyslog.conf</code>. Registros en <code>/var/log/</code>.</p>
                 <ul>
-                    <li><strong><code>/etc/rsyslog.conf</code>: Define reglas (<code>&lt;facilidad&gt;.&lt;prioridad&gt; &lt;acción&gt;</code>).</li>
+                    <li><strong><code>/etc/rsyslog.conf</code>:</strong> Define reglas (<code>&lt;facilidad&gt;.&lt;prioridad&gt; &lt;acción&gt;</code>).</li>
                     <li><strong>Directorios <code>/var/log/</code>:</strong>
                         <ul>
                             <li><code>syslog</code>: Mensajes generales.</li>
@@ -62,7 +62,7 @@
                             <li><code>messages</code>: Diversos (destino por defecto).</li>
                         </ul>
                     </li>
-                    <li><strong><code>logger</strong>:</strong> Añade mensajes manualmente (ej. <code>logger "Mensaje de prueba"</code>).</li>
+                    <li><strong><code>logger</code>:</strong> Añade mensajes manualmente (ej. <code>logger "Mensaje de prueba"</code>).</li>
                 </ul>
 
                 <h4>Rotación con logrotate</h4>
@@ -75,9 +75,9 @@
                 <h4>Gestión con systemd-journald</h4>
                 <p>Centraliza registros en formato binario. Almacenamiento en <code>/run/log/journal/</code> (volátil) o <code>/var/log/journal/</code> (persistente).</p>
                 <ul>
-                    <li><strong><code>journalctl</code>: Consulta el journal (filtros: <code>--since</code>, <code>-u</code>, <code>-b</code>).</li>
-                    <li><strong><code>systemd-cat</strong>: Envía mensajes al journal (ej. <code>echo "Mensaje" | systemd-cat</code>).</li>
-                    <li><strong><code>/etc/systemd/journald.conf</code>: Configura ubicación (<code>Storage=</code>) y límites.</li>
+                    <li><strong><code>journalctl</code>:</strong> Consulta el journal (filtros: <code>--since</code>, <code>-u</code>, <code>-b</code>).</li>
+                    <li><strong><code>systemd-cat</code>:</strong> Envía mensajes al journal (ej. <code>echo "Mensaje" | systemd-cat</code>).</li>
+                    <li><strong><code>/etc/systemd/journald.conf</code>:</strong> Configura ubicación (<code>Storage=</code>) y límites.</li>
                 </ul>
             </section>
 
@@ -103,8 +103,8 @@
 
                 <h4>Personalización de la entrega</h4>
                 <ul>
-                    <li><strong><code>~/.forward</strong>:</strong> Archivo en el directorio personal para reenviar correos. No necesita `newaliases` y debe ser escribible solo por el propietario.</li>
-                    <li><strong><code>/etc/aliases</code>:</strong> Alias del sistema (ej. `postmaster: carol`). Requiere `newaliases`.</li>
+                    <li><strong><code>~/.forward</code>:</strong> Archivo en el directorio personal para reenviar correos. No necesita <code>newaliases</code> y debe ser escribible solo por el propietario.</li>
+                    <li><strong><code>/etc/aliases</code>:</strong> Alias del sistema (ej. <code>postmaster: carol</code>). Requiere <code>newaliases</code>.</li>
                 </ul>
             </section>
 
@@ -117,9 +117,9 @@
                 <p>Configuración en <code>/etc/cups/</code>:</p>
                 <ul>
                     <li><strong><code>cupsd.conf</code>:</strong> Configura servicio, acceso web (<code>WebInterface Yes</code>).</li>
-                    <li><strong><code>printers.conf</strong>: Configuración de impresoras (no editar estando activo).</li>
-                    <li><strong><code>printcap</code>: Archivo legacy LPD, enlace a <code>/run/cups/printcap</code>.</li>
-                    <li><strong><code>ppd/</code>: Archivos de descripción de impresora.</li>
+                    <li><strong><code>printers.conf</code>:</strong> Configuración de impresoras (no editar estando activo).</li>
+                    <li><strong><code>printcap</code>:</strong> Archivo legacy LPD, enlace a <code>/run/cups/printcap</code>.</li>
+                    <li><strong><code>ppd/</code>:</strong> Archivos de descripción de impresora.</li>
                 </ul>
                 <p>Logs en <code>/var/log/cups/</code>. Interfaz web en http://localhost:631.</p>
 
@@ -131,13 +131,6 @@
                     <li><strong><code>lpstat</strong>:</strong> Estado de impresoras (ej. <code>lpstat -p</code> disponibles).</li>
                 </ul>
             </section>
-
-            <div style="margin-top: 4rem; padding-top: 2rem; border-top: 1px dashed var(--border-color); text-align: center;">
-                <p style="margin-bottom: 1rem; color: var(--text-muted);">¿Has terminado la teoría? Repasa los puntos clave antes del examen.</p>
-                <a href="javascript:void(0)" onclick="openReader('/cursos/lpic/108/repaso-tema-108.html')" class="next-btn" style="display: inline-block; cursor: pointer;">
-                    📝 Ver Resumen del Tema 108
-                </a>
-            </div>
 
         </div>
     </div>
