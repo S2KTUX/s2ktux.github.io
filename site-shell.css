@@ -113,6 +113,75 @@ html:not(.dark) .mode-select [style*="background:#d97757"] {
   flex: 0 0 auto;
 }
 
+/* Iconos pixel propios: evitan que el sistema los convierta en emoji. */
+.site-theme-toggle [data-theme-icon] {
+  position: relative;
+  display: block;
+  width: 16px;
+  height: 16px;
+  color: var(--head) !important;
+  font-size: 0 !important;
+}
+
+.site-theme-toggle [data-theme-icon]::before,
+.site-theme-toggle [data-theme-icon]::after {
+  content: "";
+  position: absolute;
+  display: block;
+}
+
+/* En tema claro se muestra una luna: la acción disponible es oscurecer. */
+.site-theme-toggle [data-theme-icon]::before {
+  top: 0;
+  left: 6px;
+  width: 3px;
+  height: 3px;
+  background: currentColor;
+  box-shadow:
+    3px 0 0 currentColor,
+    -3px 3px 0 currentColor,
+    0 3px 0 currentColor,
+    3px 3px 0 currentColor,
+    -6px 6px 0 currentColor,
+    -3px 6px 0 currentColor,
+    0 6px 0 currentColor,
+    -3px 9px 0 currentColor,
+    0 9px 0 currentColor,
+    3px 9px 0 currentColor,
+    0 12px 0 currentColor,
+    3px 12px 0 currentColor;
+}
+
+.site-theme-toggle [data-theme-icon]::after {
+  display: none;
+}
+
+/* En tema oscuro se muestra un sol pixel: la acción disponible es aclarar. */
+html.dark .site-theme-toggle [data-theme-icon]::before {
+  top: 4px;
+  left: 4px;
+  width: 8px;
+  height: 8px;
+  box-shadow: none;
+}
+
+html.dark .site-theme-toggle [data-theme-icon]::after {
+  display: block;
+  top: 0;
+  left: 7px;
+  width: 2px;
+  height: 2px;
+  background: currentColor;
+  box-shadow:
+    0 14px 0 currentColor,
+    -7px 7px 0 currentColor,
+    7px 7px 0 currentColor,
+    -5px 2px 0 currentColor,
+    5px 2px 0 currentColor,
+    -5px 12px 0 currentColor,
+    5px 12px 0 currentColor;
+}
+
 .site-page-shell,
 .site-page-shell > * {
   min-width: 0;
@@ -176,25 +245,52 @@ html:not(.dark) .mode-select [style*="background:#d97757"] {
 
 @media (max-width: 640px) {
   .site-header-inner {
-    gap: 10px;
-    padding: 12px 14px !important;
+    position: relative;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+    gap: 0 !important;
+    padding: 10px 14px 9px !important;
   }
 
   .site-logo {
+    display: flex;
+    align-items: center;
+    min-height: 34px;
     font-size: 12px !important;
   }
 
   .site-header-inner .site-nav {
-    gap: 8px !important;
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    flex: 1 0 100%;
+    order: 2;
+    width: 100%;
+    gap: 0 !important;
+    margin-top: 5px;
+    padding-top: 5px;
+    border-top: 2px solid var(--soft2);
+    white-space: normal;
   }
 
   .site-nav .navlink {
-    font-size: 14px !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
+    min-height: 32px;
+    padding: 6px 2px 5px;
+    font-size: 15px !important;
+    line-height: 1;
+    text-align: center;
   }
 
   .site-theme-toggle {
-    width: 36px !important;
-    height: 36px !important;
+    position: absolute;
+    top: 9px;
+    right: 14px;
+    width: 34px !important;
+    height: 34px !important;
   }
 
   .site-page-shell > section[style*="32px"] {
@@ -242,15 +338,18 @@ html:not(.dark) .mode-select [style*="background:#d97757"] {
 
 @media (max-width: 370px) {
   .site-header-inner {
-    gap: 8px;
     padding-inline: 10px !important;
   }
 
   .site-logo {
-    font-size: 11px !important;
+    font-size: 12px !important;
   }
 
-  .site-nav .nav-home {
-    display: none;
+  .site-nav .navlink {
+    font-size: 14px !important;
+  }
+
+  .site-theme-toggle {
+    right: 10px;
   }
 }

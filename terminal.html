@@ -6,7 +6,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="./site-shell.css">
+<link rel="stylesheet" href="./site-shell.css?v=20260822-header4">
 <title>Terminales Linux, Docker y Kubernetes · S2KTUX</title>
 <meta name="description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas, rápidas e independientes dentro del navegador.">
 <meta name="robots" content="index,follow">
@@ -114,7 +114,7 @@
 <script>
 (function(){
   try{ if(localStorage.getItem('s2ktux-theme')==='dark') document.documentElement.classList.add('dark'); }catch(e){}
-  function updateIcons(){ var dark=document.documentElement.classList.contains('dark'); document.querySelectorAll('[data-theme-icon]').forEach(function(el){ el.textContent=dark?'\u2600':'\u263e'; }); }
+  function updateIcons(){ var dark=document.documentElement.classList.contains('dark'),label=dark?'Activar tema claro':'Activar tema oscuro'; document.querySelectorAll('[data-theme-icon]').forEach(function(el){ el.textContent=dark?'\u2600':'\u263e'; }); document.querySelectorAll('[data-theme-toggle]').forEach(function(el){ el.setAttribute('aria-label',label); el.setAttribute('title',label); }); }
   window.__toggleTheme=function(){ var h=document.documentElement; h.classList.toggle('dark'); var dark=h.classList.contains('dark'); try{ localStorage.setItem('s2ktux-theme', dark?'dark':'light'); }catch(e){} updateIcons(); };
   if(!window.__s2kThemeInit){ window.__s2kThemeInit=true;
     document.addEventListener('click', function(e){
