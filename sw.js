@@ -1,4 +1,4 @@
-const VERSION = 'v17';
+const VERSION = 'v18';
 const CACHE_PREFIX = 's2ktux-';
 const STATIC_CACHE = `${CACHE_PREFIX}static-${VERSION}`;
 const PAGE_CACHE = `${CACHE_PREFIX}pages-${VERSION}`;
@@ -12,8 +12,8 @@ const PRECACHE = [
   'index.html',
   'site-shell.css?v=20260822-header4',
   'fonts.css?v=20260822-local',
-  'learning-pages.css?v=20260822-static1',
-  'learning-pages.js?v=20260822-static1',
+  'learning-pages.css?v=20260822-static2',
+  'learning-pages.js?v=20260822-static2',
   'support.js',
   'manifest.webmanifest',
   'assets/icon-192.png',

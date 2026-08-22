@@ -107,6 +107,27 @@
     [style*="font-size: 26px"]{font-size:21px !important}
     [style*="padding: 64px 32px"]{padding:40px 20px !important}
     [style*="padding: 44px 32px"]{padding:30px 20px !important}
+    .terminal-hero{padding:28px 16px 10px!important}
+    .terminal-stage{padding:12px 14px 26px!important}
+    .terminal-panel-section{padding:7px 14px 30px!important}
+    #term-heading{font-size:18px!important;margin-bottom:12px!important}
+    #term-description{font-size:18px!important;line-height:1.3!important}
+    .terminal-chrome{padding:9px 10px!important;gap:6px!important}
+    .terminal-chrome>span:not(#term-title):not(#term-os-label):not(.terminal-toolbar){width:9px!important;height:9px!important}
+    #term-title{margin-left:5px!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    #term-os-label{max-width:38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px!important}
+    #term-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px!important}
+    #term-actions button{width:100%;min-width:0;padding:10px 8px!important;font-size:8px!important;line-height:1.45}
+    #terminal-keyboard-help{font-size:13px!important;line-height:1.35;margin-top:12px!important}
+    details.cs>summary{padding:15px 14px;font-size:10px;line-height:1.55;gap:12px}
+    details.cs>summary::after{font-size:19px}
+    #practice-panel>div{padding:15px 14px!important}
+    #chal-body{padding:15px!important}
+    #chal-check{width:100%}
+  }
+  @media(max-width:420px){
+    #term-actions{grid-template-columns:1fr}
+    #term-os-label{display:none}
   }
 </style>
 <script>
@@ -164,6 +185,18 @@
   var VALID_MODE=/^(linux|docker|kubernetes)$/;
   function selectionUrl(){ return 'terminal.html?choose=1'; }
   function getMode(params){ var mode=params.get('mode'); return VALID_MODE.test(mode||'')?mode:''; }
+  function clearModeSession(mode){
+    if(!VALID_MODE.test(mode||''))return;
+    try{
+      var remove=[];
+      for(var i=0;i<localStorage.length;i++){
+        var key=localStorage.key(i)||'';
+        if(/^s2ktux-(?:term-state|chal-done|chal-manual|reports)-/.test(key)&&key.indexOf('-'+mode)!==-1)remove.push(key);
+      }
+      remove.forEach(function(key){localStorage.removeItem(key);});
+      if(mode==='kubernetes')localStorage.removeItem('s2ktux-exam-v2');
+    }catch(e){}
+  }
   function applyModeUI(){
     var sel=document.getElementById('mode-select');
     var shell=document.getElementById('terminal-shell');
@@ -175,11 +208,11 @@
   var params=new URLSearchParams(location.search), rawMode=params.get('mode'), active=getMode(params);
   if(rawMode&&!active){ location.replace(selectionUrl()); return; }
   var internalReload=false;
-  try{ internalReload=sessionStorage.getItem(INTERNAL_RELOAD_KEY)==='1'; if(internalReload)sessionStorage.removeItem(INTERNAL_RELOAD_KEY); }catch(e){}
+  try{ var rawInternal=sessionStorage.getItem(INTERNAL_RELOAD_KEY); sessionStorage.removeItem(INTERNAL_RELOAD_KEY); var internalData=rawInternal?JSON.parse(rawInternal):null; internalReload=!!(internalData&&internalData.mode===active&&Date.now()-internalData.at<10000); }catch(e){}
   var explicitEntry=params.get('enter')==='1';
-  if(active&&!explicitEntry&&!internalReload){ location.replace(selectionUrl()); return; }
+  if(active&&!explicitEntry&&!internalReload){ clearModeSession(active); location.replace(selectionUrl()); return; }
   if(explicitEntry){ params.delete('enter'); history.replaceState(history.state,'','terminal.html?'+params.toString()); }
-  window.addEventListener('pageshow',function(e){ if(e.persisted&&getMode(new URLSearchParams(location.search))){ location.replace(selectionUrl()); } });
+  window.addEventListener('pageshow',function(e){ var restored=getMode(new URLSearchParams(location.search)); if(e.persisted&&restored){ clearModeSession(restored); location.replace(selectionUrl()); } });
   document.addEventListener('click', function(e){
     var b = e.target && e.target.closest && e.target.closest('[data-pick-mode]');
     if(b){ var selected=b.getAttribute('data-pick-mode'); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
@@ -238,7 +271,7 @@
             <span class="slot-action">ENTRAR ↵</span>
           </button>
       </div>
-      <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> entrar</span><span>El progreso se guarda por separado.</span></div>
+      <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> entrar</span><span>Sesión efímera · F5 crea una máquina limpia.</span></div>
     </div>
   </div>
 </div>
@@ -259,19 +292,19 @@
 </div>
 
 <main id="main-content">
-<section style="max-width:1200px;margin:0 auto;width:100%;padding:44px 32px 14px;text-align:center">
+<section class="terminal-hero" style="max-width:1200px;margin:0 auto;width:100%;padding:44px 32px 14px;text-align:center">
   <div id="term-eyebrow" style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">SANDBOX · LINUX / RHCSA 9</div>
   <h1 id="term-heading" style="font-family:'Press Start 2P',monospace;font-size:28px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:18px">Terminal Linux · RHCSA 9</h1>
   <p id="term-description" style="font-size:22px;max-width:780px;margin:0 auto;color:var(--text);line-height:1.35">Una máquina Rocky Linux 9.4 para practicar RHCSA 9: recuperación mediante GRUB, usuarios, permisos, SELinux, systemd, red y almacenamiento. Escribe <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">help</span> o <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">man &lt;comando&gt;</span>.</p>
 </section>
 
-<section style="max-width:1200px;margin:0 auto;width:100%;padding:16px 32px 30px">
+<section class="terminal-stage" style="max-width:1200px;margin:0 auto;width:100%;padding:16px 32px 30px">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px">
     <div id="term-machine-label" style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--muted)">MÁQUINA · RHCSA9-LAB</div>
     <button data-change-mode class="pxbtn" style="background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer;color:var(--head);font-family:'Press Start 2P',monospace;font-size:9px;padding:10px 14px">← Cambiar terminal</button>
   </div>
   <div class="terminal-window" style="background:#12100b;border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)">
-    <div style="background:#241d13;padding:12px 16px;border-bottom:3px solid var(--line);display:flex;align-items:center;gap:8px">
+    <div class="terminal-chrome" style="background:#241d13;padding:12px 16px;border-bottom:3px solid var(--line);display:flex;align-items:center;gap:8px">
       <span style="width:12px;height:12px;background:#ef4444;display:inline-block"></span>
       <span style="width:12px;height:12px;background:#eab308;display:inline-block"></span>
       <span style="width:12px;height:12px;background:#22c55e;display:inline-block"></span>
@@ -286,17 +319,21 @@
         <label class="sr-only" for="term-input">Escribe un comando</label><input id="term-input" aria-label="Comando de terminal" aria-describedby="terminal-keyboard-help" autocomplete="off" autocapitalize="off" autocorrect="off" enterkeyhint="send" spellcheck="false">
       </div>
     </div>
-    <div class="terminal-mobile-keys" aria-label="Teclas especiales de terminal">
-      <button type="button" class="terminal-key" data-term-key="ESC">ESC</button><button type="button" class="terminal-key" data-term-key="CTRL" aria-pressed="false">CTRL</button><button type="button" class="terminal-key" data-term-key="TAB">TAB</button><button type="button" class="terminal-key" data-term-key="UP">↑</button><button type="button" class="terminal-key" data-term-key="DOWN">↓</button><button type="button" class="terminal-key" data-term-key="LEFT">←</button><button type="button" class="terminal-key" data-term-key="RIGHT">→</button><button type="button" class="terminal-key" data-term-key="FULLSCREEN">⛶</button>
+    <div class="terminal-mobile-tools">
+      <button id="terminal-keys-toggle" type="button" class="terminal-keys-toggle" aria-expanded="false" aria-controls="terminal-mobile-keys">TECLAS DE TERMINAL <span aria-hidden="true">+</span></button>
+      <div class="terminal-mobile-keys" id="terminal-mobile-keys" aria-label="Teclas especiales de terminal" hidden>
+        <button type="button" class="terminal-key" data-term-key="CTRLC">CTRL+C</button><button type="button" class="terminal-key" data-term-key="TAB">TAB</button><button type="button" class="terminal-key" data-term-key="ESC">ESC</button><button type="button" class="terminal-key" data-term-key="UP">↑</button><button type="button" class="terminal-key" data-term-key="DOWN">↓</button><button type="button" class="terminal-key" data-term-key="LEFT">←</button><button type="button" class="terminal-key" data-term-key="RIGHT">→</button>
+        <p class="terminal-keys-help">Ctrl+C cancela · Tab completa · ↑↓ recupera el historial · Esc sale de editores y menús.</p>
+      </div>
     </div>
     <div id="term-a11y-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   </div>
   <div id="term-actions" style="text-align:center;margin-top:14px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button id="term-reboot" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">⟳ Reiniciar → GRUB</button><button id="term-rebootm" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↻ Reiniciar máquina</button><button id="term-reset" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↺ Resetear terminal</button><button id="term-solved" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">✓ Máquina resuelta</button></div>
-  <div id="terminal-keyboard-help" style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">↑ / ↓ historial · <span style="color:#c2650a">Ctrl+R</span> busca · <span style="color:#c2650a">Tab</span> completa · <span style="color:#c2650a">Ctrl+C / Z / D</span> señal, pausa y EOF · <span style="color:#c2650a">Ctrl+Mayús+M</span> sale del teclado · <span style="color:#c2650a">| &gt; 2&gt;</span> tuberías y redirecciones</div>
+  <div id="terminal-keyboard-help" style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)"><span style="color:#c2650a">↑ ↓</span> recuperan comandos · <span style="color:#c2650a">Tab</span> completa órdenes y rutas · <span style="color:#c2650a">Ctrl+C</span> cancela · <span style="color:#c2650a">Ctrl+Z</span> pausa · <span style="color:#c2650a">Ctrl+D</span> cierra · <span style="color:#c2650a">Ctrl+R</span> busca en el historial · <span style="color:#c2650a">| &gt; 2&gt;</span> conectan y redirigen</div>
 </section>
 
-<section style="max-width:1200px;margin:0 auto;width:100%;padding:10px 32px 50px">
-  <details class="cs" open>
+<section class="terminal-panel-section" style="max-width:1200px;margin:0 auto;width:100%;padding:10px 32px 50px">
+  <details class="cs">
     <summary id="cheatsheet-title">CHEATSHEET · LINUX / RHCSA 9</summary>
     <div class="cs-tabs">
       <div class="cs-tab" data-modes="linux" data-cs-tab="files" data-active="1">Ficheros</div>
@@ -633,8 +670,8 @@
     </details>
 </section>
 
-<section style="max-width:1200px;margin:0 auto;width:100%;padding:6px 32px 50px">
-  <details class="cs" id="practice-panel" open>
+<section class="terminal-panel-section" style="max-width:1200px;margin:0 auto;width:100%;padding:6px 32px 50px">
+  <details class="cs" id="practice-panel">
     <summary id="practice-title">PRÁCTICAS GUIADAS · RHCSA 9</summary>
     <div style="padding:20px 22px">
       <div id="exam-panel" class="exam-panel">
@@ -671,6 +708,6 @@
   <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 </div>
-<script type="module" src="./terminal-bootstrap.js?v=20260822-2"></script>
+<script type="module" src="./terminal-bootstrap.js?v=20260822-3"></script>
 </body>
 </html>

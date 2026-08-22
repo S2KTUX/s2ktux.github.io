@@ -40,4 +40,11 @@ for (const route of Object.values(routes.lessons)) {
   assert.doesNotMatch(html, /support\.js|fetch\(/, `${route} no debe necesitar renderizado cliente para mostrar la lección`);
 }
 
+for (const course of ['docker','kubernetes-cka','lpic-1','rhcsa-9']) {
+  const html = text(path.join('cursos', course, 'index.html'));
+  assert.match(html, /class="module-list"/, `${course} debe presentar los módulos como una lista`);
+  assert.match(html, /class="module-row/, `${course} debe incluir filas de módulo`);
+  assert.doesNotMatch(html, /class="module-grid"|class="module-card/, `${course} no debe volver al grid de tarjetas`);
+}
+
 console.log('Performance budgets and static learning pages: OK');
