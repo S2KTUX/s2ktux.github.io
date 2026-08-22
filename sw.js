@@ -1,4 +1,4 @@
-const VERSION = 'v15';
+const VERSION = 'v16';
 const CACHE_PREFIX = 's2ktux-';
 const STATIC_CACHE = `${CACHE_PREFIX}static-${VERSION}`;
 const PAGE_CACHE = `${CACHE_PREFIX}pages-${VERSION}`;
@@ -11,7 +11,7 @@ const CURRENT_CACHES = new Set([STATIC_CACHE, PAGE_CACHE, MEDIA_CACHE, EXTERNAL_
 const PRECACHE = [
   './',
   'index.html',
-  'site-shell.css',
+  'site-shell.css?v=20260822-header4',
   'support.js',
   'manifest.webmanifest',
   'assets/icon-192.png',
