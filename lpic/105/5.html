@@ -7,20 +7,20 @@
 
     <div class="lesson-layout">
         <aside class="lesson-toc">
-            <h4>Objetivos del bloque</h4>
+            <h2>Objetivos del bloque</h2>
             <ul>
                 <li><a href="#105.1">105.1 Personalizar y usar el entorno de shell</a></li>
                 <li><a href="#105.2">105.2 Personalizar y escribir scripts sencillos</a></li>
             </ul>
         </aside>
 
-        <div class="course-content">
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
             
             <section id="105.1" class="lesson-section">
-                <h3>105.1 Personalizar y usar el entorno de shell</h3>
+                <h2>105.1 Personalizar y usar el entorno de shell</h2>
                 <p>La shell es una interfaz poderosa entre el usuario y el kernel en Linux. Personalizarla te ayuda a trabajar de forma más eficiente.</p>
                 
-                <h4>Archivos de configuración de la shell</h4>
+                <h3>Archivos de configuración de la shell</h3>
                 <p>Los archivos de configuración globales están en <code>/etc</code>, mientras que los locales están en el directorio personal del usuario.</p>
                 <ul>
                     <li><strong>Configuración global:</strong>
@@ -48,7 +48,7 @@
                     <li><strong>SKEL:</strong> Variable definida en <code>/etc/adduser.conf</code>. Apunta a un directorio plantilla para nuevos usuarios.</li>
                 </ul>
 
-                <h4>Variables</h4>
+                <h3>Variables</h3>
                 <p>Las variables son nombres que contienen valores. Pueden incluir letras, números y guiones, pero no empezar por números ni contener espacios.</p>
                 <ul>
                     <li><strong>Definir y mostrar:</strong>
@@ -95,7 +95,7 @@
                     </li>
                 </ul>
 
-                <h4>Alias y funciones</h4>
+                <h3>Alias y funciones</h3>
                 <p>Los alias y funciones simplifican comandos repetitivos en el shell.</p>
                 <ul>
                     <li><strong>Alias:</strong> Sustituto de un comando. Usamos comillas si contiene parámetros o espacios.<br>
@@ -120,10 +120,10 @@ miFuncion() {
             </section>
 
             <section id="105.2" class="lesson-section">
-                <h3>105.2 Personalizar y escribir scripts sencillos</h3>
+                <h2>105.2 Personalizar y escribir scripts sencillos</h2>
                 <p>Un script es una lista de comandos que un programa, como el intérprete de comandos bash, ejecuta en un orden específico. Personalizarlos te permite automatizar tareas de manera eficiente en Linux.</p>
                 
-                <h4>Estructura y ejecución del script</h4>
+                <h3>Estructura y ejecución del script</h3>
                 <p>La primera línea, conocida como shebang (ej. <code>#!/bin/bash</code>), indica qué intérprete debe usarse. El archivo debe ser ejecutable con <code>chmod +x nombre_script.sh</code>.</p>
                 
                 <ul>
@@ -138,7 +138,7 @@ miFuncion() {
                         - Con incremento: <code>seq 1 5 20</code> → 1, 6, 11, 16.</li>
                 </ul>
 
-                <h4>Variables especiales en scripts</h4>
+                <h3>Variables especiales en scripts</h3>
                 <ul>
                     <li><strong><code>$*</code> y <code>$@</code>:</strong> Todos los argumentos pasados al script.</li>
                     <li><strong><code>$#</code>:</strong> Cantidad total de argumentos pasados.</li>
@@ -147,20 +147,20 @@ miFuncion() {
                     <li><strong><code>$?</code>:</strong> Código de salida del último comando (0 éxito).</li>
                 </ul>
 
-                <h4>Expresiones aritméticas</h4>
+                <h3>Expresiones aritméticas</h3>
                 <ul>
                     <li><strong><code>expr</code>:</strong> <code>SUM=`expr 5 + 3`</code>.</li>
                     <li><strong><code>$(( ))</code>:</strong> <code>result=$((5 * 3))</code>.</li>
                     <li>Comparadores: <code>-eq</code> (igual), <code>-ne</code> (no igual), <code>-lt</code> (menor), <code>-gt</code> (mayor).</li>
                 </ul>
 
-                <h4>Ejecución condicional</h4>
+                <h3>Ejecución condicional</h3>
                 <p>Basada en el código de estado (0 éxito, != 0 error).</p>
                 <ul>
                     <li><strong>Operadores lógicos:</strong>
                         <ul>
-                            <li><code>&&</code>: Ejecuta derecha si izquierda es éxito.<br>
-                                <code>[ -f archivo ] && echo "Existe"</code>.</li>
+                            <li><code>&amp;&amp;</code>: Ejecuta derecha si izquierda es éxito.<br>
+                                <code>[ -f archivo ] &amp;&amp; echo "Existe"</code>.</li>
                             <li><code>||</code>: Ejecuta derecha si izquierda falla.</li>
                         </ul>
                     </li>
@@ -182,14 +182,14 @@ esac
                     </li>
                 </ul>
 
-                <h4>Pruebas ampliadas</h4>
+                <h3>Pruebas ampliadas</h3>
                 <ul>
                     <li><strong>Texto:</strong> <code>=</code> / <code>==</code> (igual), <code>!=</code> (desigual), <code>-z</code> (vacío).</li>
                     <li><strong>Número:</strong> <code>-eq</code>, <code>-ne</code>, <code>-lt</code>, <code>-gt</code>, <code>-le</code>, <code>-ge</code>.</li>
                     <li><strong>Archivos:</strong> <code>-f</code> (archivo regular), <code>-d</code> (directorio).</li>
                 </ul>
 
-                <h4>Construcciones de bucle</h4>
+                <h3>Construcciones de bucle</h3>
                 <ul>
                     <li><strong><code>for</code>:</strong>
                         <pre>

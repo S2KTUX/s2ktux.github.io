@@ -7,7 +7,7 @@
 
     <div class="lesson-layout">
         <aside class="lesson-toc">
-            <h4>Objetivos del bloque</h4>
+            <h2>Objetivos del bloque</h2>
             <ul>
                 <li><a href="#110.1">110.1 Tareas de administración de seguridad</a></li>
                 <li><a href="#110.2">110.2 Configuración de la seguridad del sistema</a></li>
@@ -15,13 +15,13 @@
             </ul>
         </aside>
 
-        <div class="course-content">
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
             
             <section id="110.1" class="lesson-section">
-                <h3>110.1 Tareas de administración de seguridad</h3>
+                <h2>110.1 Tareas de administración de seguridad</h2>
                 <p>La administración de seguridad implica auditar permisos especiales, gestionar el ciclo de vida de las cuentas, restringir recursos y controlar la escalada de privilegios.</p>
                 
-                <h4>Auditoría de permisos especiales (SUID, SGID, Sticky Bit)</h4>
+                <h3>Auditoría de permisos especiales (SUID, SGID, Sticky Bit)</h3>
                 <p>Es crucial encontrar archivos con permisos especiales para asegurar que no existen vulnerabilidades de escalada de privilegios.</p>
                 <ul>
                     <li><strong>SUID (Set User ID - 4000):</strong> Permite que un usuario ejecute un archivo con los permisos del propietario del archivo (usualmente root). Común en <code>/usr/bin/passwd</code> o <code>/usr/bin/sudo</code>.<br>
@@ -35,7 +35,7 @@
                         - Aplicar: <code>chmod +t directorio</code> o <code>chmod 1777 directorio</code>.</li>
                 </ul>
 
-                <h4>Gestión de contraseñas y cuentas</h4>
+                <h3>Gestión de contraseñas y cuentas</h3>
                 <p>El archivo <code>/etc/shadow</code> contiene 8 campos separados por dos puntos: <code>nombre:hash:último_cambio:min:máx:aviso:inactividad:expira</code>.</p>
                 <ul>
                     <li><strong>chage:</strong> Herramienta principal para la caducidad de contraseñas.<br>
@@ -50,7 +50,7 @@
                     <li><strong>/etc/nologin:</strong> Si este archivo existe en la raíz, impide el inicio de sesión de todos los usuarios excepto root, mostrando su contenido como mensaje de error.</li>
                 </ul>
 
-                <h4>Límites de recursos (ulimit)</h4>
+                <h3>Límites de recursos (ulimit)</h3>
                 <p>Previene que un usuario o proceso colapse el sistema consumiendo todos los recursos.</p>
                 <ul>
                     <li><strong>Comandos:</strong><br>
@@ -62,7 +62,7 @@
                         Ejemplo: <code>* hard nproc 50</code> (limita procesos a 50 para todos los usuarios).</li>
                 </ul>
 
-                <h4>Monitoreo y Sudo</h4>
+                <h3>Monitoreo y Sudo</h3>
                 <ul>
                     <li><strong>Usuarios conectados:</strong> <code>who</code> (básico), <code>w</code> (detalle + carga CPU), <code>last</code> (historial <code>/var/log/wtmp</code>), <code>lastb</code> (intentos fallidos <code>/var/log/btmp</code>).</li>
                     <li><strong>Configuración Sudo (<code>/etc/sudoers</code>):</strong><br>
@@ -74,10 +74,10 @@
             </section>
 
             <section id="110.2" class="lesson-section">
-                <h3>110.2 Configuración de la seguridad del sistema</h3>
+                <h2>110.2 Configuración de la seguridad del sistema</h2>
                 <p>Endurecimiento del sistema mediante la gestión de servicios de red, superdemonios y control de acceso a nivel de aplicación.</p>
                 
-                <h4>Superdemonios (Internet Superserver)</h4>
+                <h3>Superdemonios (Internet Superserver)</h3>
                 <p>Gestionan conexiones entrantes y lanzan el servicio correspondiente bajo demanda.</p>
                 <ul>
                     <li><strong>xinetd:</strong><br>
@@ -90,14 +90,14 @@
                         - Ejemplo: <code>systemctl start ssh.socket</code> habilita el puerto 22 pero sshd no se ejecuta hasta que llega una conexión.</li>
                 </ul>
 
-                <h4>Gestión de servicios de red</h4>
+                <h3>Gestión de servicios de red</h3>
                 <ul>
                     <li><strong>Systemd:</strong> <code>systemctl list-units --type=service --state=running</code> para ver activos. <code>systemctl mask servicio</code> impide que se inicie manual o automáticamente.</li>
                     <li><strong>Netstat/SS:</strong> Para identificar qué servicio está escuchando en un puerto.<br>
                         - <code>ss -tulpn</code>: Muestra sockets TCP/UDP que escuchan, procesos y números de puerto.</li>
                 </ul>
 
-                <h4>TCP Wrappers</h4>
+                <h3>TCP Wrappers</h3>
                 <p>Capa de seguridad que controla el acceso a servicios basándose en la dirección IP del cliente. Los servicios deben estar compilados con soporte <code>libwrap</code>.</p>
                 <ul>
                     <li><strong>Verificar soporte:</strong> <code>ldd /usr/sbin/sshd | grep libwrap</code>.</li>
@@ -112,10 +112,10 @@
             </section>
 
             <section id="110.3" class="lesson-section">
-                <h3>110.3 Protección de datos mediante cifrado</h3>
+                <h2>110.3 Protección de datos mediante cifrado</h2>
                 <p>Implementación de comunicación segura (SSH) y protección de datos estáticos (GPG).</p>
                 
-                <h4>OpenSSH Cliente y Llaves</h4>
+                <h3>OpenSSH Cliente y Llaves</h3>
                 <ul>
                     <li><strong>ssh-keygen:</strong> Genera claves.<br>
                         - Tipos: <code>rsa</code> (defecto), <code>ecdsa</code>, <code>ed25519</code> (más seguro y rápido).<br>
@@ -126,14 +126,14 @@
                     <li><strong>Archivos clave:</strong> <code>~/.ssh/known_hosts</code> (huellas servidores), <code>~/.ssh/authorized_keys</code> (claves públicas permitidas en servidor).</li>
                 </ul>
 
-                <h4>OpenSSH Servidor</h4>
+                <h3>OpenSSH Servidor</h3>
                 <ul>
                     <li><strong>Configuración:</strong> <code>/etc/ssh/sshd_config</code>.<br>
                         - Directivas: <code>PermitRootLogin no</code>, <code>PasswordAuthentication no</code> (solo claves), <code>Port 22</code>.</li>
                     <li><strong>Claves host:</strong> Generadas al instalar. Ubicación: <code>/etc/ssh/ssh_host_*</code>.</li>
                 </ul>
 
-                <h4>Túneles SSH (Port Forwarding)</h4>
+                <h3>Túneles SSH (Port Forwarding)</h3>
                 <p>Canales cifrados para tráfico inseguro.</p>
                 <ul>
                     <li><strong>Local (-L):</strong> <code>ssh -L [bind_address:]puerto_local:host_remoto:puerto_remoto usuario@servidor</code>.<br>
@@ -143,7 +143,7 @@
                     <li><strong>Forwarding X11:</strong> <code>ssh -X usuario@host</code>. Requiere <code>X11Forwarding yes</code> en servidor.</li>
                 </ul>
 
-                <h4>GnuPG (GPG)</h4>
+                <h3>GnuPG (GPG)</h3>
                 <p>Sistema de cifrado híbrido (asimétrico y simétrico) y firmas digitales.</p>
                 <ul>
                     <li><strong>Gestión de claves:</strong><br>

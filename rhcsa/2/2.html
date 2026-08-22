@@ -15,7 +15,7 @@
 
     <div class="lesson-layout">
         <aside class="lesson-toc">
-            <h4>Objetivos del bloque</h4>
+            <h2>Objetivos del bloque</h2>
             <ul>
                 <li><a href="#obj1">1. Repositorios RPM</a></li>
                 <li><a href="#obj2">2. Gestión de paquetes RPM</a></li>
@@ -24,17 +24,17 @@
             </ul>
         </aside>
 
-        <div class="course-content">
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
             
             <div class="lesson-alert" style="background: rgba(255,165,0,0.1); border-left: 4px solid #ffa500; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
                 <strong>⚠️ ATENCIÓN:</strong> Los puntos 3 y 4 solo aplican a <strong>RHCSA v10</strong>. En  <strong>RHCSA v9</strong> no forman parte del examen.
             </div>
 
             <section id="obj1" class="lesson-section">
-                <h3>1. Configurar el acceso a los repositorios de RPM</h3>
+                <h2>1. Configurar el acceso a los repositorios de RPM</h2>
                 <p>Los repositorios son fuentes de software que se definen mediante archivos <code>.repo</code> en <code>/etc/yum.repos.d/</code>. Son esenciales para que <strong>dnf</strong> pueda resolver dependencias automáticamente.</p>
                 
-                <img src="/images/repo-rpm.png" alt="Estructura de un archivo .repo">
+                <img src="/images/repo-rpm.png" alt="Estructura de un archivo .repo" width="748" height="165" style="max-width:100%;height:auto">
                 <p>Donde cada campo significa:</p>
                 <ul>
                     <li><strong>[id-del-repo]</strong> → Identificador del repositorio.</li>
@@ -50,7 +50,7 @@
                     <li><code>dnf makecache</code> → Regenera la caché.</li>
                     <li><code>dnf repolist</code> → Comprueba los repositorios activos.</li>
                 </ul>
-                <img src="/images/recargar-repo-rpm.png" alt="Refrescar repositorios">
+                <img src="/images/recargar-repo-rpm.png" alt="Refrescar repositorios" width="1269" height="374" style="max-width:100%;height:auto">
                 <p>Por último, podríamos gestionar repositorios a través de comandos:</p>
                 <ul>
                     <li><strong>dnf config-manager --add-repo=URL</strong> → Añade un nuevo repositorio desde una URL.</li>
@@ -61,7 +61,7 @@
             </section>
 
             <section id="obj2" class="lesson-section">
-                <h3>2. Instalar y eliminar paquetes de software RPM</h3>
+                <h2>2. Instalar y eliminar paquetes de software RPM</h2>
                 <p>Los gestores de paquetes principales en sistemas modernos son <strong>RPM y DNF</strong>. RPM permite gestionar paquetes pero no resuelve dependencias automáticamente, mientras que DNF sí lo hace. Yum está obsoleto.</p>
                 <p>Comandos más utilizados de <strong>RPM</strong>:</p>
                 <ul>
@@ -88,13 +88,13 @@
                     <li><strong>dnf provides</strong> → Indica qué paquete pertenece a un comando o archivo (similar a qf).</li>
                 </ul>
                 <p>Dentro de dnf podemos ver su historial con <code>dnf history</code> y deshacer acciones con <code>dnf history undo Nº</code>.</p>
-                <img src="/images/history-rpm.png" alt="Historial DNF">
+                <img src="/images/history-rpm.png" alt="Historial DNF" width="754" height="147" style="max-width:100%;height:auto">
                 <p>Para extraer archivos concretos de un paquete RPM usamos <code>rpm2cpio</code> junto con <code>cpio -idv</code>:</p>
-                <img src="/images/recuperar-archivo-rpm.png" alt="Uso de rpm2cpio">
+                <img src="/images/recuperar-archivo-rpm.png" alt="Uso de rpm2cpio" width="1245" height="373" style="max-width:100%;height:auto">
             </section>
 
             <section id="obj3" class="lesson-section">
-                <h3>3. Configurar el acceso a los repositorios de Flatpak</h3>
+                <h2>3. Configurar el acceso a los repositorios de Flatpak</h2>
                 <p>Flatpak es un sistema de distribución de aplicaciones aisladas mediante contenedores de usuario. Los repositorios pueden añadirse mediante:</p>
                 <ul>
                     <li><strong>flatpak remote-add --if-not-exists flathub URL</strong> → Añadir repositorios</li>
@@ -103,12 +103,12 @@
                 </ul>
                 <p>Esto se crea para el usuario actual; para todos los usuarios añadiremos <code>--system</code>.</p>
                 <p> En el examen RHCSA nos podrían pedir añadir un repositorio oficial de RED HAT :</p>
-                <img src="/images/flatpak-redhat.png" alt="Configurar repo oficial Red Hat">
+                <img src="/images/flatpak-redhat.png" alt="Configurar repo oficial Red Hat" width="864" height="237" style="max-width:100%;height:auto">
                 <p>Si <code>--auth-file</code> falla, usamos la configuración manual: <code>cp $XDG_RUNTIME_DIR/containers/auth.json /etc/flatpak/oci-auth.json</code> y <code>chmod 644 /etc/flatpak/oci-auth.json</code>.</p>
             </section>
 
             <section id="obj4" class="lesson-section">
-                <h3>4. Instalar y eliminar paquetes de software Flatpak</h3>
+                <h2>4. Instalar y eliminar paquetes de software Flatpak</h2>
                 <p>Una vez configurado un repositorio Flatpak, podemos gestionar aplicaciones de forma sencilla y segura. Las aplicaciones Flatpak usan nombres de dominio invertidos (ej: <code>org.mozilla.firefox</code>) para su gestión.</p>
 
                 <ul>
@@ -121,7 +121,7 @@
                     <li><strong>flatpak uninstall app</strong> → Eliminar una aplicación</li>
                     <li><strong>flatpak search app</strong> → Buscar una aplicación</li>
                 </ul>
-                <img src="/images/flatpak-install.png" alt="Instalación Flatpak">
+                <img src="/images/flatpak-install.png" alt="Instalación Flatpak" width="1273" height="789" style="max-width:100%;height:auto">
             </section>
 
         </div>

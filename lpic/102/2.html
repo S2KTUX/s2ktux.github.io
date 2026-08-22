@@ -8,7 +8,7 @@
 
     <div class="lesson-layout">
         <aside class="lesson-toc">
-            <h4>Objetivos del bloque</h4>
+            <h2>Objetivos del bloque</h2>
             <ul>
                 <li><a href="#102.1">102.1 Esquema de particionado</a></li>
                 <li><a href="#102.2">102.2 Gestor de arranque</a></li>
@@ -19,14 +19,14 @@
             </ul>
         </aside>
 
-        <div class="course-content">
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
             <section id="102.1" class="lesson-section">
-                <h3>102.1 Diseño del esquema de particionado</h3>
+                <h2>102.1 Diseño del esquema de particionado</h2>
                 
-                <h4>Puntos de montaje</h4>
+                <h3>Puntos de montaje</h3>
                 <p>Para acceder a un sistema de archivos, este debe estar montado en un directorio. Históricamente se usaba <code>/mnt</code>, hoy <code>/media</code> es más común para montajes automáticos (ej. USB en <code>/media/USER/ETIQUETA</code>). Para montajes manuales, <code>/mnt</code> sigue siendo la práctica estándar.</p>
 
-                <h4>Manteniendo las cosas separadas</h4>
+                <h3>Manteniendo las cosas separadas</h3>
                 <div class="info-grid">
                     <div class="info-item">
                         <strong>/boot</strong><br>
@@ -45,14 +45,14 @@
                     </div>
                 </div>
 
-                <h4>Partición de intercambio (SWAP)</h4>
+                <h3>Partición de intercambio (SWAP)</h3>
                 <p>La partición <strong>SWAP</strong> intercambia páginas de memoria RAM a disco. No se monta como un sistema de archivos normal. Se configura con <code>mkswap</code> y se activa con <code>swapon</code>.</p>
                 <ul>
                     <li><strong>Tamaño:</strong> Igual a RAM si ≤ 8GB; mínimo 4GB si > 8GB.</li>
                     <li>Linux también admite archivos de intercambio.</li>
                 </ul>
 
-                <h4>LVM (Logical Volume Manager)</h4>
+                <h3>LVM (Logical Volume Manager)</h3>
                 <p>Permite una gestión flexible del almacenamiento:</p>
                 <ul>
                     <li><strong>PV (Physical Volume):</strong> Partición o disco físico.</li>
@@ -63,9 +63,9 @@
             </section>
 
             <section id="102.2" class="lesson-section">
-                <h3>102.2 Instalar un gestor de arranque</h3>
+                <h2>102.2 Instalar un gestor de arranque</h2>
 
-                <h4>GRUB Legacy vs. GRUB 2</h4>
+                <h3>GRUB Legacy vs. GRUB 2</h3>
                 <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <thead>
                         <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
@@ -88,10 +88,10 @@
                     </tbody>
                 </table>
 
-                <h4>Ubicación del cargador</h4>
+                <h3>Ubicación del cargador</h3>
                 <p>En sistemas <strong>MBR</strong>, el código de arranque reside en los primeros 512 bytes y carga el gestor secundario. En <strong>GPT</strong> (soluciona límites de 2TB y 4 particiones), en BIOS se usa una partición de arranque especial; en UEFI, GRUB se carga desde la partición EFI (ESP) usando archivos <code>.efi</code>.</p>
 
-                <h4>La partición /boot</h4>
+                <h3>La partición /boot</h3>
                 <p>Contiene los archivos esenciales para el arranque (Kernel, initrd, configuración GRUB). Archivos clave:</p>
                 <ul>
                     <li><code>vmlinuz-version</code>: Núcleo comprimido.</li>
@@ -100,7 +100,7 @@
                     <li><code>/boot/grub/</code>: Archivos del gestor (ej. <code>grub.cfg</code>, <code>lvm.mod</code>).</li>
                 </ul>
 
-                <h4>Configuración de GRUB 2</h4>
+                <h3>Configuración de GRUB 2</h3>
                 <p>No editar <code>/boot/grub/grub.cfg</code> directamente. Editar <code>/etc/default/grub</code> y ejecutar <code>update-grub</code> o <code>grub-mkconfig</code>.</p>
                 <ul>
                     <li><code>GRUB_DEFAULT</code>: Entrada por defecto.</li>
@@ -111,19 +111,19 @@
             </section>
 
             <section id="102.3" class="lesson-section">
-                <h3>102.3 Gestión de librerías compartidas</h3>
+                <h2>102.3 Gestión de librerías compartidas</h2>
                 
-                <h4>Conceptos</h4>
+                <h3>Conceptos</h3>
                 <ul>
                     <li><strong>Estáticas:</strong> Compiladas dentro del programa (sin dependencias externas, tamaño mayor).</li>
                     <li><strong>Dinámicas (.so):</strong> Compartidas entre programas (menos tamaño, dependencias externas).</li>
                 </ul>
 
-                <h4>Nomenclatura y Rutas</h4>
+                <h3>Nomenclatura y Rutas</h3>
                 <p>Formato: <code>libnombre.so.version</code>.</p>
                 <p>Ubicaciones estándar: <code>/lib</code>, <code>/lib64</code>, <code>/usr/lib</code>, <code>/usr/local/lib</code>.</p>
 
-                <h4>Configuración y Gestión</h4>
+                <h3>Configuración y Gestión</h3>
                 <ul>
                     <li><strong><code>ld.so.conf</code></strong> y <code>/etc/ld.so.conf.d/</code>: Definen rutas de búsqueda.</li>
                     <li><strong><code>ldconfig</code></strong>: Actualiza la caché de enlaces a librerías tras modificar la configuración.</li>
@@ -133,9 +133,9 @@
             </section>
 
             <section id="102.4" class="lesson-section">
-                <h3>102.4 Gestión de paquetes Debian</h3>
+                <h2>102.4 Gestión de paquetes Debian</h2>
                 
-                <h4>dpkg (Bajo nivel)</h4>
+                <h3>dpkg (Bajo nivel)</h3>
                 <p>Gestiona archivos <code>.deb</code> individualmente. No resuelve dependencias automáticamente.</p>
                 <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <thead>
@@ -152,7 +152,7 @@
                     </tbody>
                 </table>
 
-                <h4>apt (Alto nivel)</h4>
+                <h3>apt (Alto nivel)</h3>
                 <p>Gestiona repositorios y resuelve dependencias.</p>
                 <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <thead>
@@ -173,9 +173,9 @@
             </section>
 
             <section id="102.5" class="lesson-section">
-                <h3>102.5 Gestión de paquetes RPM y YUM</h3>
+                <h2>102.5 Gestión de paquetes RPM y YUM</h2>
                 
-                <h4>RPM (Bajo nivel)</h4>
+                <h3>RPM (Bajo nivel)</h3>
                 <p>Usado en Red Hat, Fedora, SUSE. No resuelve dependencias complejas.</p>
                 <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <thead>
@@ -192,7 +192,7 @@
                     </tbody>
                 </table>
 
-                <h4>YUM / DNF (Alto nivel)</h4>
+                <h3>YUM / DNF (Alto nivel)</h3>
                 <p><strong>YUM</strong> (Yellowdog Updater Modified) y su sucesor <strong>DNF</strong> manejan repositorios y dependencias.</p>
                 <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.85rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <thead>
@@ -209,29 +209,29 @@
                     </tbody>
                 </table>
 
-                <h4>Zypper (SUSE)</h4>
+                <h3>Zypper (SUSE)</h3>
                 <p>Herramienta equivalente para openSUSE/SLES. Comandos: <code>zypper install</code>, <code>zypper update</code>, <code>zypper remove</code>.</p>
                 <p>Repositorios en <code>/etc/yum.repos.d/</code> (YUM/DNF) o gestionados con <code>zypper addrepo</code>.</p>
             </section>
 
             <section id="102.6" class="lesson-section">
-                <h3>102.6 Linux como sistema virtualizado</h3>
+                <h2>102.6 Linux como sistema virtualizado</h2>
                 
-                <h4>Conceptos de Virtualización</h4>
+                <h3>Conceptos de Virtualización</h3>
                 <p>Permite ejecutar múltiples sistemas operativos (máquinas virtuales o "guests") sobre un único hardware físico ("host") mediante un hipervisor.</p>
                 <ul>
                     <li><strong>Hipervisores Tipo 1 (Bare Metal):</strong> Corren directamente sobre el hardware (ej. Xen).</li>
                     <li><strong>Hipervisores Tipo 2 (Hospedados):</strong> Corren como una aplicación sobre un SO anfitrión (ej. KVM - integrado en kernel Linux, VirtualBox).</li>
                 </ul>
 
-                <h4>Tipos de Máquinas Virtuales</h4>
+                <h3>Tipos de Máquinas Virtuales</h3>
                 <ul>
                     <li><strong>Totalmente virtualizadas:</strong> El sistema operativo invitado ignora que es virtual. Requiere soporte de hardware (Intel VT-x / AMD-V).</li>
                     <li><strong>Paravirtualizadas:</strong> El SO invitado sabe que es virtual y usa controladores específicos para mejor rendimiento.</li>
                     <li><strong>Híbridas:</strong> Combinación de ambos (hardware virtualizado con controladores paravirtualizados).</li>
                 </ul>
 
-                <h4>Plantillas y Nube</h4>
+                <h3>Plantillas y Nube</h3>
                 <p>Las <strong>plantillas</strong> son imágenes preconfiguradas para despliegues rápidos. Es crítico verificar el <strong>D-Bus Machine ID</strong> único tras clonar.</p>
                 <p>En entornos de <strong>Nube (IaaS)</strong> como AWS o Azure, gestionamos instancias, almacenamiento y redes. El acceso es vía SSH y la configuración inicial se automatiza a menudo con <strong>cloud-init</strong>.</p>
             </section>

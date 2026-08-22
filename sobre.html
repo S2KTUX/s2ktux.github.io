@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./site-shell.css">
 <script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -17,8 +13,8 @@
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
@@ -77,22 +73,26 @@
   setTimeout(updateIcons,150); setTimeout(updateIcons,600);
 })();
 </script>
-</helmet>
+</head>
+<body>
+<x-dc>
 
 <div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
-<div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
   <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
     <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div class="site-nav" style="display:flex;gap:30px;align-items:center">
+    <div class="site-nav" role="navigation" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
       <a class="navlink nav-home" href="index.html">Inicio</a>
       <a class="navlink" href="cursos.html">Cursos</a>
       <a class="navlink" href="terminal.html">Terminal</a>
       <a class="navlink" href="proyectos.html">Proyectos</a>
-      <button class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
     </div>
   </div>
 </div>
 
+<main id="main-content">
 <section style="max-width:1100px;margin:0 auto;width:100%;padding:40px 32px 10px">
   <a href="index.html" class="navlink" style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--muted)">&larr; Volver al inicio</a>
 </section>
@@ -100,7 +100,7 @@
 <section style="max-width:900px;margin:0 auto;width:100%;padding:14px 32px 70px">
   <span style="font-family:'Press Start 2P',monospace;font-size:10px;background:#d97757;color:#fff;padding:8px 12px">SOBRE</span>
   <h1 style="font-family:'Press Start 2P',monospace;font-size:24px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin:22px 0 16px">Sobre S2KTUX</h1>
-  <p style="font-family:'Space Mono',monospace;font-size:18px;max-width:680px;color:var(--text);line-height:1.6">S2KTUX es un cuaderno público de administración de sistemas Linux: apuntes, laboratorios y una terminal simulada para practicar RHCSA, LPIC-1, Docker y, más adelante, Kubernetes y Ansible. Todo gratis, en español y sin registro.</p>
+  <p style="font-family:'Space Mono',monospace;font-size:18px;max-width:680px;color:var(--text);line-height:1.6">S2KTUX es un cuaderno público de administración de sistemas Linux: apuntes, laboratorios y terminales simuladas para practicar RHCSA 9, LPIC-1, Docker y Kubernetes/CKA. Todo gratis, en español y sin registro.</p>
 
   <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:34px">
     <div style="background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:22px 24px">
@@ -128,6 +128,8 @@
     <p><b>Contenido de terceros.</b> Los vídeos enlazados se alojan en YouTube y se rigen por sus términos.</p>
   </div>
 </section>
+</main>
+
 <footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
   <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
   <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>

@@ -1,3 +1,99 @@
+.site-page-shell,
+.mode-select {
+  --muted: #765b43 !important;
+  --text-muted: #765b43 !important;
+}
+
+.skip-link {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 10000;
+  padding: 10px 14px;
+  color: #f6ecd9;
+  background: #4a3627;
+  border: 3px solid #f6ecd9;
+  box-shadow: 3px 3px 0 #d97757;
+  font-family: "Share Tech Mono", monospace;
+  transform: translateY(-160%);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+html:not(.dark) .site-page-shell,
+html:not(.dark) .mode-select {
+  --accent: #a94f35 !important;
+}
+
+html:not(.dark) .site-page-shell a {
+  color: #a94f35;
+}
+
+html:not(.dark) .site-page-shell ::selection,
+html:not(.dark) .mode-select ::selection {
+  color: #fff;
+  background: #a94f35;
+}
+
+html:not(.dark) .site-page-shell :focus-visible,
+html:not(.dark) .mode-select :focus-visible {
+  outline-color: #a94f35 !important;
+}
+
+html:not(.dark) .site-page-shell .skip-link,
+html:not(.dark) .mode-select .slot-action {
+  color: #fff !important;
+  background: #a94f35 !important;
+}
+
+html:not(.dark) .site-page-shell .cscmd,
+html:not(.dark) .site-page-shell details.cs > summary::after,
+html:not(.dark) .site-page-shell #term-eyebrow,
+html:not(.dark) .mode-select .selector-kicker,
+html:not(.dark) .mode-select .selector-current-prompt,
+html:not(.dark) .mode-select .selector-footer strong,
+html:not(.dark) .mode-select .terminal-slot[data-selected="1"]::before,
+html:not(.dark) .mode-select .terminal-slot[data-selected="1"] .slot-index {
+  color: #a94f35 !important;
+}
+
+html:not(.dark) .mode-select .terminal-slot[data-selected="1"] {
+  box-shadow: inset 6px 0 0 #a94f35;
+}
+
+html.dark .site-page-shell ::selection,
+html.dark .mode-select ::selection {
+  color: #1e1811;
+  background: #ef8a5f;
+}
+
+html.dark .site-page-shell .skip-link,
+html.dark .mode-select .slot-action {
+  color: #1e1811 !important;
+  background: #ef8a5f !important;
+}
+
+html.dark .site-page-shell .badge,
+html.dark .site-page-shell [style*="background:#d97757"][style*="color:#fff"] {
+  color: #1e1811 !important;
+}
+
+html.dark .site-page-shell [style*="background:#d97757"] {
+  background: #ef8a5f !important;
+}
+
+html:not(.dark) .site-page-shell [style*="color:#d97757"],
+html:not(.dark) .mode-select [style*="color:#d97757"] {
+  color: #a94f35 !important;
+}
+
+html:not(.dark) .site-page-shell [style*="background:#d97757"],
+html:not(.dark) .mode-select [style*="background:#d97757"] {
+  background: #a94f35 !important;
+}
+
 .site-header-inner {
   gap: 18px;
 }
@@ -20,6 +116,55 @@
 .site-page-shell,
 .site-page-shell > * {
   min-width: 0;
+}
+
+.site-page-shell {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+.site-page-shell main,
+.site-page-shell [role="main"],
+.site-page-shell section,
+.site-page-shell footer,
+.site-page-shell .coursecard,
+.site-page-shell .pxcard,
+.site-page-shell .modcard,
+.site-page-shell .modcard-row,
+.site-page-shell .modcard-copy,
+.site-page-shell .acc,
+.site-page-shell .acc summary,
+.site-page-shell .acc summary > * {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.site-page-shell img,
+.site-page-shell video,
+.site-page-shell iframe {
+  max-width: 100%;
+}
+
+.site-page-shell table {
+  display: block;
+  width: max-content;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.site-page-shell pre {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.site-page-shell a,
+.site-page-shell code,
+.site-page-shell td,
+.site-page-shell th {
+  overflow-wrap: anywhere;
 }
 
 @media (max-width: 860px) {
@@ -53,6 +198,43 @@
   }
 
   .site-page-shell > section[style*="32px"] {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .site-page-shell main > section[style*="32px"],
+  .site-page-shell [role="main"] > section[style*="32px"],
+  .site-page-shell footer[style*="32px"] {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+  }
+
+  .site-page-shell .coursecard,
+  .site-page-shell .pxcard {
+    padding: 22px !important;
+  }
+
+  .site-page-shell .modcard-row {
+    flex-wrap: wrap;
+    padding: 20px 18px !important;
+  }
+
+  .site-page-shell .modcard-copy {
+    flex: 1 1 calc(100% - 78px) !important;
+  }
+
+  .site-page-shell .modcard-action {
+    display: none !important;
+  }
+
+  .site-page-shell .acc summary {
+    display: grid !important;
+    grid-template-columns: auto auto minmax(0, 1fr);
+    gap: 10px !important;
+    padding: 16px 14px !important;
+  }
+
+  .site-page-shell .acc > div {
     padding-left: 16px !important;
     padding-right: 16px !important;
   }

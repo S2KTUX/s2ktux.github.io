@@ -5,11 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./site-shell.css">
 <script src="./support.js"></script>
-<script src="courses-data.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
+<script defer src="courses-data.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -18,8 +14,8 @@
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
@@ -38,6 +34,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<script>(function(){var p=new URLSearchParams(location.search),rawC=p.get('c'),names={rhcsa:'RHCSA 9',lpic1:'LPIC-1',docker:'Docker',kubernetes:'Kubernetes / CKA'},limits={rhcsa:11,lpic1:10,docker:3,kubernetes:0},validC=rawC===null||Object.prototype.hasOwnProperty.call(names,rawC),c=validC?(rawC||'rhcsa'):'rhcsa',rawM=p.get('m'),validM=rawM===null||/^(0|[1-9]\d*)$/.test(rawM),m=Math.max(0,parseInt(rawM||'0',10)||0),indexable=validC&&validM&&m<limits[c],unit=(c==='docker'||c==='kubernetes')?'Clase':'Tema';if(limits[c]>0&&m>=limits[c])m=limits[c]-1;var canonical='https://s2ktux.github.io/leccion.html?c='+encodeURIComponent(c)+'&m='+m,title=names[c]+' · '+unit+' '+(m+1)+' · S2KTUX';document.title=title;document.querySelector('link[rel="canonical"]').href=canonical;document.querySelector('meta[name="robots"]').content=indexable?'index,follow':'noindex,follow';document.querySelector('meta[property="og:url"]').content=canonical;document.querySelector('meta[property="og:title"]').content=title;document.querySelector('meta[name="twitter:title"]').content=title;})();</script>
   <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -76,21 +73,22 @@
   #lesson .video-text span{font-size:18px;color:var(--muted)}
   #lesson .lesson-layout{display:grid;grid-template-columns:230px 1fr;gap:36px;align-items:start}
   #lesson .lesson-toc{position:sticky;top:90px;background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:20px}
-  #lesson .lesson-toc h4{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--head);margin-bottom:14px;line-height:1.4}
+  #lesson .lesson-toc h2{font-family:'Press Start 2P',monospace;font-size:11px;color:var(--head);margin-bottom:14px;line-height:1.4}
   #lesson .lesson-toc ul{list-style:none}
   #lesson .lesson-toc li{margin-bottom:9px}
   #lesson .lesson-toc a{font-size:18px;color:var(--text);line-height:1.2;display:block}
   #lesson .lesson-toc a:hover{color:var(--accent)}
   #lesson .course-content,#lesson .lesson-layout>div{min-width:0}
-  #lesson .lesson-section{margin-bottom:38px;padding-bottom:8px}
-  #lesson .lesson-section h3{font-family:'Press Start 2P',monospace;font-size:15px;color:var(--head);line-height:1.5;margin:0 0 18px;padding-top:8px}
-  #lesson h4{font-family:'Share Tech Mono',monospace;font-size:19px;color:var(--accent);margin:22px 0 10px;font-weight:700}
-  #lesson h5{font-family:'Share Tech Mono',monospace;font-size:17px;color:var(--head);margin:16px 0 8px}
+  #lesson .lesson-section{margin-bottom:38px;padding-bottom:8px;scroll-margin-top:80px}
+  #lesson .lesson-section>h2{font-family:'Press Start 2P',monospace;font-size:15px;color:var(--head);line-height:1.5;margin:0 0 18px;padding-top:8px}
+  #lesson .lesson-section h3{font-family:'Share Tech Mono',monospace;font-size:19px;color:var(--accent);margin:22px 0 10px;font-weight:700}
+  #lesson .lesson-section h4{font-family:'Share Tech Mono',monospace;font-size:17px;color:var(--head);margin:16px 0 8px}
   #lesson p{font-family:'Space Mono',monospace;font-size:16.5px;line-height:1.62;margin-bottom:15px;color:var(--text)}
   #lesson ul,#lesson ol{margin:0 0 16px 26px}
   #lesson li{font-family:'Space Mono',monospace;font-size:16px;line-height:1.6;margin-bottom:9px;color:var(--text)}
   #lesson td{font-family:'Space Mono',monospace}
   #lesson p,#lesson li,#lesson td,#lesson th,#lesson a{overflow-wrap:anywhere}
+  #lesson h1,#lesson h2,#lesson h3,#lesson h4{overflow-wrap:anywhere;word-break:normal}
   @keyframes s2kpulse{0%,100%{opacity:.35}50%{opacity:.7}}
   .lesson-skel{max-width:1000px;margin:0 auto}
   .lesson-skel div{background:var(--surface2);animation:s2kpulse 1.2s ease-in-out infinite}
@@ -150,22 +148,26 @@
   (function(){ function upd(){ var b=document.getElementById('backtop'); if(b) b.classList.toggle('show', window.pageYOffset>400); } window.addEventListener('scroll',upd,{passive:true}); document.addEventListener('DOMContentLoaded',function(){setTimeout(upd,300);}); setTimeout(upd,500); setTimeout(upd,1200); })();
 })();
 </script>
-</helmet>
+</head>
+<body>
+<x-dc>
 
 <div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
-<div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
   <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
     <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div class="site-nav" style="display:flex;gap:30px;align-items:center">
+    <div class="site-nav" role="navigation" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
       <a class="navlink nav-home" href="index.html">Inicio</a>
       <a class="navlink" href="cursos.html" style="color:var(--head);border-bottom:3px solid #d97757">Cursos</a>
       <a class="navlink" href="terminal.html">Terminal</a>
       <a class="navlink" href="proyectos.html">Proyectos</a>
-      <button class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
     </div>
   </div>
 </div>
 
+<main id="main-content">
 <section style="max-width:1000px;margin:0 auto;width:100%;padding:26px 32px 6px;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap">
   <a href="{{ backHref }}" class="navlink" style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--muted)">&larr; {{ backLabel }}</a>
   <div style="font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">{{ crumb }}</div>
@@ -190,9 +192,11 @@
     <sc-if value="{{ hasNext }}" hint-placeholder-val="{{ true }}"><a href="{{ nextHref }}" class="pxbtn" style="display:inline-block;background:var(--accent);color:#fff;font-family:'Press Start 2P',monospace;font-size:10px;padding:14px 20px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--line)">SIGUIENTE &rarr;</a></sc-if>
   </div>
   <div style="margin-top:22px;text-align:center">
-    <button id="lesson-read" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:13px 20px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);cursor:pointer">Marcar como leída</button>
+    <button type="button" id="lesson-read" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:13px 20px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);cursor:pointer">Marcar como leída</button>
   </div>
 </section>
+
+</main>
 
 <footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
   <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
@@ -205,8 +209,7 @@
   <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 </div>
-<button id="backtop" aria-label="Volver arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script>(function(){var b;function upd(){b=b||document.getElementById('backtop');if(b)b.classList.toggle('show',window.pageYOffset>400);}window.addEventListener('scroll',upd);setTimeout(upd,300);})();</script>
+<button type="button" id="backtop" aria-label="Volver arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -221,19 +224,25 @@ class Component extends DCLogic {
   };
   params() {
     const p = new URLSearchParams(location.search);
-    const cp = p.get('c'); const c = (cp === 'lpic1' || cp === 'docker' || cp === 'kubernetes' || cp === 'aws' || cp === 'rhce') ? cp : 'rhcsa';
-    let m = parseInt(p.get('m') || '0', 10); if (isNaN(m) || m < 0) m = 0;
-    const list = this.files[c]; if (m >= list.length) m = list.length - 1;
-    return { c, m, list };
+    const cp = p.get('c');
+    const courseIsValid = cp === null || cp === 'rhcsa' || cp === 'lpic1' || cp === 'docker' || cp === 'kubernetes';
+    const c = courseIsValid ? (cp || 'rhcsa') : 'rhcsa';
+    const rawM = p.get('m');
+    const indexIsValid = rawM === null || /^(?:0|[1-9]\d*)$/.test(rawM);
+    const requestedM = indexIsValid ? Number(rawM || 0) : 0;
+    const list = this.files[c] || this.files.rhcsa;
+    let m = requestedM; if (m < 0) m = 0; if (m >= list.length) m = list.length - 1;
+    const indexable = courseIsValid && indexIsValid && requestedM < list.length && Boolean(list[requestedM]);
+    return { c, m, list, indexable };
   }
   componentDidMount() { this.load(); this.wireReadButton(); let n = 0; const iv = setInterval(() => { this.setMeta(); if (++n >= 10) clearInterval(iv); }, 150); }
   setMeta() {
     try {
-      const { c, m, list } = this.params();
-      const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : c === 'kubernetes' ? 'Kubernetes' : 'RHCSA';
+      const { c, m, list, indexable } = this.params();
+      const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : c === 'kubernetes' ? 'Kubernetes / CKA' : 'RHCSA 9';
       const unit = (c === 'docker' || c === 'kubernetes') ? 'Clase' : 'Tema';
       const t = courseName + ' · ' + unit + ' ' + (m + 1) + ' de ' + list.length + ' · S2KTUX';
-      const desc = 'Lección ' + (m + 1) + ' del curso ' + courseName + ': teoría, ejemplos e imágenes para preparar tu certificación Linux.';
+      const desc = 'Lección ' + (m + 1) + ' del curso ' + courseName + ': teoría, ejemplos y práctica de administración de sistemas en español.';
       const base = 'https://s2ktux.github.io/leccion.html?c=' + c + '&m=' + m;
       document.title = t;
       setTimeout(() => { try { document.title = t; } catch (e) {} }, 80);
@@ -245,15 +254,16 @@ class Component extends DCLogic {
       set('meta[name="description"]', 'content', desc);
       set('meta[property="og:description"]', 'content', desc);
       set('meta[name="twitter:description"]', 'content', desc);
-      // Datos estructurados: Course + VideoObject + BreadcrumbList
+      set('meta[name="robots"]', 'content', indexable ? 'index,follow' : 'noindex,follow');
+      if (!indexable) { const stale = document.getElementById('lesson-jsonld'); if (stale) stale.remove(); return; }
+      // Datos estructurados verificables: curso gratuito + navegación.
       try {
         const mod = ((window.S2KTUX_COURSES || {})[c === 'lpic1' ? 'lpic1' : c] || { modules: [] }).modules[m] || {};
-        const video = mod.video || '';
         const home = 'https://s2ktux.github.io/';
         const ld = {
           "@context": "https://schema.org", "@graph": [
             { "@type": "Course", "name": (mod.title || (unit + ' ' + (m + 1))) + ' — ' + courseName, "description": (mod.desc || desc), "inLanguage": "es", "url": base,
-              "provider": { "@type": "Organization", "name": "S2KTUX", "url": home } },
+              "isAccessibleForFree": true, "learningResourceType": "lesson", "provider": { "@type": "Organization", "name": "S2KTUX", "url": home } },
             { "@type": "BreadcrumbList", "itemListElement": [
               { "@type": "ListItem", "position": 1, "name": "Inicio", "item": home },
               { "@type": "ListItem", "position": 2, "name": "Cursos", "item": home + "cursos.html" },
@@ -261,12 +271,6 @@ class Component extends DCLogic {
               { "@type": "ListItem", "position": 4, "name": unit + ' ' + (m + 1), "item": base } ] }
           ]
         };
-        if (video) {
-          const embedVideo = video.includes('youtu.be/')
-            ? video.replace('youtu.be/', 'www.youtube.com/embed/')
-            : video.replace('www.youtube.com/watch?v=', 'www.youtube.com/embed/');
-          ld["@graph"].push({ "@type": "VideoObject", "name": (mod.title || courseName) + ' — vídeo', "description": (mod.desc || desc), "thumbnailUrl": home + "assets/og.png", "uploadDate": "2024-01-01", "contentUrl": video, "embedUrl": embedVideo });
-        }
         let s = document.getElementById('lesson-jsonld');
         if (!s) { s = document.createElement('script'); s.type = 'application/ld+json'; s.id = 'lesson-jsonld'; document.head.appendChild(s); }
         s.textContent = JSON.stringify(ld);
@@ -292,15 +296,21 @@ class Component extends DCLogic {
       let lb = document.getElementById('img-lightbox');
       if (!lb) {
         lb = document.createElement('div'); lb.id = 'img-lightbox';
-        lb.innerHTML = '<button class="lb-close" aria-label="Cerrar">\u2715</button><img alt="">';
+        lb.setAttribute('role', 'dialog'); lb.setAttribute('aria-modal', 'true');
+        lb.setAttribute('aria-label', 'Vista ampliada de la imagen'); lb.setAttribute('aria-hidden', 'true');
+        lb.innerHTML = '<button type="button" class="lb-close" aria-label="Cerrar">\u2715</button><img alt="">';
         document.body.appendChild(lb);
-        const close = () => lb.classList.remove('open');
-        lb.addEventListener('click', close);
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+        let returnFocus = null;
+        const close = () => { if (!lb.classList.contains('open')) return; lb.classList.remove('open'); lb.setAttribute('aria-hidden', 'true'); document.body.style.overflow = ''; if (returnFocus) returnFocus.focus(); };
+        lb.__openFor = (source) => { const zoomed = lb.querySelector('img'); returnFocus = source; zoomed.src = source.src; zoomed.alt = source.alt || ''; lb.classList.add('open'); lb.setAttribute('aria-hidden', 'false'); document.body.style.overflow = 'hidden'; lb.querySelector('.lb-close').focus(); };
+        lb.addEventListener('click', (e) => { if (e.target === lb || e.target.closest('.lb-close')) close(); });
+        document.addEventListener('keydown', (e) => { if (!lb.classList.contains('open')) return; if (e.key === 'Escape') { e.preventDefault(); close(); } else if (e.key === 'Tab') { e.preventDefault(); lb.querySelector('.lb-close').focus(); } });
       }
-      const big = lb.querySelector('img');
       el.querySelectorAll('img').forEach((im) => {
-        im.addEventListener('click', () => { big.src = im.src; big.alt = im.alt || ''; lb.classList.add('open'); });
+        im.tabIndex = 0; im.setAttribute('role', 'button'); im.setAttribute('aria-label', 'Ampliar imagen' + (im.alt ? ': ' + im.alt : ''));
+        const open = () => lb.__openFor(im);
+        im.addEventListener('click', open);
+        im.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
       });
     } catch (e) {}
   }
@@ -321,22 +331,26 @@ class Component extends DCLogic {
     const { c, m, list } = this.params();
     if ((c === 'docker' || c === 'kubernetes') && !list[m]) { this.renderComingSoon(m); return; }
     try {
-      const CDN = 'https://cdn.jsdelivr.net/gh/S2KTUX/s2ktux.github.io@main/images/';
       let html;
-      const CACHE = 's2ktux-lesson:v2:' + list[m];
+      const CACHE = 's2ktux-lesson:v4:' + list[m];
       try { const raw = sessionStorage.getItem(CACHE); if (raw) { const o = JSON.parse(raw); if (o && o.ts && (Date.now() - o.ts) < 300000) html = o.html; } } catch (e) { html = null; }
       if (html == null) {
         const res = await fetch(list[m], { cache: 'no-cache' });
         if (!res.ok) throw new Error("HTTP " + res.status);
         html = await res.text();
         html = html.replace(/<style[\s\S]*?<\/style>/gi, '').replace(/<script[\s\S]*?<\/script>/gi, '').replace(/<link[^>]*>/gi, '');
-        // imágenes servidas por CDN (jsDelivr) + carga diferida
-        html = html.replace(/(src|href)=(["'])\/images\//g, '$1=$2' + CDN);
-        html = html.replace(/<img /gi, '<img loading="lazy" decoding="async" ');
         try { sessionStorage.setItem(CACHE, JSON.stringify({ ts: Date.now(), html: html })); } catch (e) {}
       }
       const el = this.lessonEl;
-      if (el) { el.innerHTML = html; setTimeout(() => { this.addCopyButtons(); this.wireImageZoom(); }, 120); }
+      if (el) {
+        el.innerHTML = html;
+        el.querySelectorAll('img').forEach((image, index) => {
+          image.decoding = 'async';
+          if (index === 0) { image.loading = 'eager'; image.fetchPriority = 'high'; }
+          else image.loading = 'lazy';
+        });
+        setTimeout(() => { this.addCopyButtons(); this.wireImageZoom(); }, 120);
+      }
     } catch (e) {
       const el = this.lessonEl;
       if (el) el.innerHTML = '<div style="text-align:center;padding:70px 0;font-family:\'Share Tech Mono\',monospace;color:#ef8a7a">No se pudo cargar la lección. Vuelve a Cursos e inténtalo de nuevo.</div>';
@@ -354,12 +368,12 @@ class Component extends DCLogic {
       + '<h1>' + title + '</h1>'
       + '<p>Esta clase est\u00e1 en preparaci\u00f3n. Muy pronto tendr\u00e1s aqu\u00ed la teor\u00eda, los ejemplos y los laboratorios.</p></div>'
       + '<div class="lesson-alert" style="text-align:center;border-left-color:#6b8e9e !important;font-family:\'Press Start 2P\',monospace;font-size:12px;line-height:1.8">\u23f3 PR\u00d3XIMAMENTE</div>'
-      + (topics ? '<div class="lesson-section"><h3>Lo que ver\u00e1s en esta clase</h3><ul>' + topics + '</ul></div>' : '')
+      + (topics ? '<div class="lesson-section"><h2>Lo que ver\u00e1s en esta clase</h2><ul>' + topics + '</ul></div>' : '')
       + '</div>';
   }
   renderVals() {
     const { c, m, list } = this.params();
-    const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : c === 'kubernetes' ? 'Kubernetes' : 'RHCSA';
+    const courseName = c === 'lpic1' ? 'LPIC-1' : c === 'docker' ? 'Docker' : c === 'kubernetes' ? 'Kubernetes / CKA' : 'RHCSA 9';
     const unit = (c === 'docker' || c === 'kubernetes') ? 'Clase' : 'Tema';
     return {
       status: this.state.status,

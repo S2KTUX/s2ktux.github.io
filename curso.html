@@ -5,21 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./site-shell.css">
 <script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<script src="courses-data.js"></script>
+<script defer src="courses-data.js"></script>
 <title>Curso · S2KTUX</title>
 <meta name="description" content="Módulos y temas del curso, con teoría y laboratorios prácticos de Linux.">
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
@@ -38,6 +34,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<script>(function(){var p=new URLSearchParams(location.search),c=p.get('c')||'rhcsa',names={rhcsa:'RHCSA 9 · EX200',lpic1:'LPIC-1',docker:'Docker',kubernetes:'Kubernetes / CKA'};if(!names[c])c='rhcsa';var canonical='https://s2ktux.github.io/curso.html?c='+encodeURIComponent(c),title=names[c]+' · Curso · S2KTUX';document.title=title;document.querySelector('link[rel="canonical"]').href=canonical;document.querySelector('meta[property="og:url"]').content=canonical;document.querySelector('meta[property="og:title"]').content=title;document.querySelector('meta[name="twitter:title"]').content=title;})();</script>
   <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -98,22 +95,26 @@
   (function(){ function upd(){ var b=document.getElementById('backtop'); if(b) b.classList.toggle('show', window.pageYOffset>400); } window.addEventListener('scroll',upd,{passive:true}); document.addEventListener('DOMContentLoaded',function(){setTimeout(upd,300);}); setTimeout(upd,500); setTimeout(upd,1200); })();
 })();
 </script>
-</helmet>
+</head>
+<body>
+<x-dc>
 
 <div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
-<div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
   <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
     <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div class="site-nav" style="display:flex;gap:30px;align-items:center">
+    <div class="site-nav" role="navigation" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
       <a class="navlink nav-home" href="index.html">Inicio</a>
       <a class="navlink" href="cursos.html" style="color:var(--head);border-bottom:3px solid #d97757">Cursos</a>
       <a class="navlink" href="terminal.html">Terminal</a>
       <a class="navlink" href="proyectos.html">Proyectos</a>
-      <button class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
     </div>
   </div>
 </div>
 
+<main id="main-content">
 <section style="max-width:1100px;margin:0 auto;width:100%;padding:40px 32px 10px">
   <a href="cursos.html" class="navlink" style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--muted)">&larr; Volver a Cursos</a>
 </section>
@@ -122,6 +123,7 @@
   <span style="font-family:'Press Start 2P',monospace;font-size:10px;background:{{ badgeColor }};color:#fff;padding:8px 12px">{{ badge }}</span>
   <h1 style="font-family:'Press Start 2P',monospace;font-size:26px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin:22px 0 16px">{{ title }}</h1>
   <p style="font-size:23px;max-width:640px;color:var(--text);line-height:1.35">{{ subtitle }}</p>
+  <p style="font-family:'Share Tech Mono',monospace;font-size:16px;max-width:720px;color:var(--muted);line-height:1.45;margin-top:12px">{{ note }}</p>
   <div style="display:flex;gap:22px;flex-wrap:wrap;margin-top:22px;font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--muted)">
     <span>▸ {{ moduleCount }} módulos</span>
     <span>▸ {{ topicCount }} temas</span>
@@ -154,6 +156,8 @@
   </sc-if>
 </section>
 
+</main>
+
 <footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
   <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
   <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
@@ -165,8 +169,7 @@
   <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 </div>
-<button id="backtop" aria-label="Volver arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-<script>(function(){var b;function upd(){b=b||document.getElementById('backtop');if(b)b.classList.toggle('show',window.pageYOffset>400);}window.addEventListener('scroll',upd);setTimeout(upd,300);})();</script>
+<button type="button" id="backtop" aria-label="Volver arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 </x-dc>
 <script type="text/x-dc" data-dc-script>
@@ -183,7 +186,7 @@ class Component extends DCLogic {
       if (data && data.subtitle) { set('meta[name="description"]', 'content', data.subtitle); set('meta[property="og:description"]', 'content', data.subtitle); set('meta[name="twitter:description"]', 'content', data.subtitle); }
     } catch (e) {}
   }
-  _meta() { try { const key = new URLSearchParams(location.search).get('c') || 'rhcsa'; const data = (window.S2KTUX_COURSES || {})[key]; if (data) this.setMeta(data, key); } catch (e) {} }
+  _meta() { try { const raw = new URLSearchParams(location.search).get('c'); const key = (raw === 'lpic1' || raw === 'docker' || raw === 'kubernetes') ? raw : 'rhcsa'; const data = (window.S2KTUX_COURSES || {})[key]; if (data) this.setMeta(data, key); } catch (e) {} }
   componentDidMount() {
     let n = 0; const mv = setInterval(() => { this._meta(); if (++n >= 12) clearInterval(mv); }, 150);
     const tryLoad = () => {
@@ -197,12 +200,13 @@ class Component extends DCLogic {
   }
   renderVals() {
     const params = new URLSearchParams(location.search);
-    const key = params.get('c') || 'rhcsa';
+    const raw = params.get('c');
+    const key = (raw === 'lpic1' || raw === 'docker' || raw === 'kubernetes') ? raw : 'rhcsa';
     let read = {}; try { read = JSON.parse(localStorage.getItem('s2ktux-read') || '{}') || {}; } catch (e) {}
     const data = (window.S2KTUX_COURSES || {})[key];
     if (data) this.setMeta(data, key);
     if (!data) {
-      return { badge: "", badgeColor: "#d97757", title: "Cargando…", subtitle: "", moduleCount: "", topicCount: "", readLabel: "", modules: [] };
+      return { badge: "", badgeColor: "#d97757", title: "Cargando…", subtitle: "", note: "", moduleCount: "", topicCount: "", readLabel: "", modules: [] };
     }
     const modules = data.modules.map((m, i) => ({
       n: m.n, title: m.title, desc: m.desc,
@@ -215,7 +219,7 @@ class Component extends DCLogic {
     const topicCount = data.modules.reduce((s, m) => s + m.topics.length, 0);
     return {
       badge: data.badge, badgeColor: data.badgeColor,
-      title: data.title, subtitle: data.subtitle,
+      title: data.title, subtitle: data.subtitle, note: data.note || "",
       moduleCount: data.modules.length, topicCount,
       readLabel: readCount + "/" + data.modules.length + " leídas",
       hasModules: data.modules.length > 0,

@@ -15,7 +15,7 @@
 
     <div class="lesson-layout">
         <aside class="lesson-toc">
-            <h4>Objetivos del bloque</h4>
+            <h2>Objetivos del bloque</h2>
             <ul>
                 <li><a href="#101.1">101.1 Determinar y configurar hardware</a></li>
                 <li><a href="#101.2">101.2 Arranque del Sistema</a></li>
@@ -23,18 +23,18 @@
             </ul>
         </aside>
 
-        <div class="course-content">
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
             
             <section id="101.1" class="lesson-section">
-                <h3>101.1 Determinar y configurar los ajustes de hardware</h3>
+                <h2>101.1 Determinar y configurar los ajustes de hardware</h2>
                 
-                <h4>Activación de Dispositivos</h4>
+                <h3>Activación de Dispositivos</h3>
                 <p>BIOS se presenta al presionar una tecla durante el arranque (F1, F2, Esc...). Aquí podemos habilitar/deshabilitar periféricos integrados, activar protección básica contra errores y cambiar configuraciones como DMA y IRQ.</p>
 
-                <h4>Inspección de dispositivos en Linux</h4>
+                <h3>Inspección de dispositivos en Linux</h3>
                 <p>Podemos identificar recursos de hardware de dos formas: usando comandos o leyendo archivos específicos.</p>
                 
-                <h5>Comandos:</h5>
+                <h4>Comandos:</h4>
                 <ul>
                     <li><strong><code>lspci</code></strong>: Muestra los dispositivos conectados al bus PCI.
                         <br>Para más información: <code>lspci -s 01:00.0 -v</code> o <code>lspci -s 04:02.0 -k</code> (más detallado).
@@ -48,7 +48,7 @@
                     </li>
                 </ul>
                 
-                <h5>Archivos:</h5>
+                <h4>Archivos:</h4>
                 <div class="info-grid">
                     <div class="info-item">
                         <strong>/proc</strong><br>
@@ -67,7 +67,7 @@
                 </div>
                 <p><strong>Udev</strong> gestiona dispositivos (coldplugs/hotplugs) usando reglas en <code>/etc/udev/rules.d/</code>. <strong>acpid</strong> gestiona eventos de energía.</p>
 
-                <h4>Dispositivos de almacenamiento</h4>
+                <h3>Dispositivos de almacenamiento</h3>
                 <p>Nomenclatura de dispositivos de bloques:</p>
                 <pre><code>/dev/hdX    # Canales IDE
 /dev/fdX    # Disquetes
@@ -77,10 +77,10 @@
             </section>
 
             <section id="101.2" class="lesson-section">
-                <h3>101.2 Arranque del Sistema</h3>
+                <h2>101.2 Arranque del Sistema</h2>
                 <p>Para controlar un equipo, el núcleo (kernel) debe cargarse mediante un programa llamado bootloader, y este a su vez lo carga el firmware.</p>
 
-                <h4>BIOS vs UEFI</h4>
+                <h3>BIOS vs UEFI</h3>
                 <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <thead>
                         <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
@@ -109,7 +109,7 @@
                 </table>
                 <p><strong>Detalles UEFI:</strong> No se basa en MBR. Usa partición ESP (EFI System Partition), admite Secure Boot y sistemas de archivos FAT12/16/32. Almacenado en GPT.</p>
 
-                <h4>El Cargador de Arranque (GRUB 2)</h4>
+                <h3>El Cargador de Arranque (GRUB 2)</h3>
                 <p>Presiona <strong>Shift</strong> (BIOS) o <strong>Esc</strong> (UEFI) para invocar el menú. Parámetros del kernel comunes:</p>
                 <ul>
                     <li><code>init:</code> Establece un iniciador alternativo (ej. init=/bin/bash)</li>
@@ -123,12 +123,12 @@
                 <p>Para persistir cambios: editar <code>/etc/default/grub</code> en la línea <code>GRUB_CMDLINE_LINUX</code> y ejecutar <code>grub-mkconfig</code> o <code>update-grub</code>.</p>
                 <p>Archivos clave: <code>/boot/grub/grub.cfg</code> (configuración principal), <code>/boot/grub/i386-pc/lvm.mod</code>. Instalar en MBR: <code>grub-install /dev/sdX</code>.</p>
 
-                <h4>Inicialización del sistema</h4>
+                <h3>Inicialización del sistema</h3>
                 <p>El kernel abre <strong>initramfs</strong> (sistema de archivos raíz temporal comprimido), monta <code>/etc/fstab</code> y ejecuta el primer programa (init), que gestiona scripts y demonios.</p>
                 <p>Una vez cargado init, initramfs se elimina de la RAM. Init puede ser SysVinit, Systemd o Upstart (obsoleto).</p>
                 <p>En <strong>SysVinit</strong>, el primer programa es <code>/sbin/init</code> (PID 1). El nivel de ejecución se configura en <code>/etc/inittab</code>. Los scripts de arranque en <code>/etc/rcX.d/</code> usan prefijos <code>S</code> (Start) y <code>K</code> (Kill).</p>
 
-                <h4>Inspección de inicialización</h4>
+                <h3>Inspección de inicialización</h3>
                 <p>Los mensajes del kernel se guardan en el <strong>kernel ring buffer</strong> (se pierden al apagar o con <code>dmesg --clear</code>).</p>
                 <ul>
                     <li><code>dmesg</code>: Muestra mensajes actuales.</li>
@@ -139,9 +139,9 @@
             </section>
 
             <section id="101.3" class="lesson-section">
-                <h3>101.3 Cambiar los niveles de ejecución / objetivos de arranque y apagar o reiniciar el sistema</h3>
+                <h2>101.3 Cambiar los niveles de ejecución / objetivos de arranque y apagar o reiniciar el sistema</h2>
 
-                <h4>Estándar SysVinit</h4>
+                <h3>Estándar SysVinit</h3>
                 <p>Proporciona estados de sistema llamados <strong>runlevels</strong>. El responsable es <code>/sbin/init</code>, que identifica el nivel en <code>/etc/inittab</code> y carga scripts en <code>/etc/init.d/</code>.</p>
                 <p>Sintaxis <code>/etc/inittab</code>: <code>id:runlevels:action:process</code>.</p>
                 
@@ -155,7 +155,7 @@
                 <p><strong>Acciones:</strong> <code>boot</code>, <code>bootwait</code>, <code>sysinit</code>, <code>wait</code>, <code>respawn</code>, <code>ctrlaltdel</code>.</p>
                 <p>Comandos: <code>telinit q</code> (recargar inittab), <code>runlevel</code> (ver nivel), <code>telinit N</code> (cambiar).</p>
 
-                <h4>Systemd</h4>
+                <h3>Systemd</h3>
                 <p>Utiliza <strong>unidades</strong>. Tipos: <code>service</code>, <code>socket</code>, <code>device</code>, <code>mount</code>, <code>automount</code>, <code>target</code>, <code>snapshot</code>.</p>
                 <p>Comandos <code>systemctl</code>:</p>
                 <pre><code>start/stop/restart unit.service
@@ -168,10 +168,10 @@ is-enabled unit.service</code></pre>
 systemctl set-default graphical.target # Establecer por defecto</code></pre>
                 <p>Nota: Systemd <strong>no</strong> utiliza <code>/etc/fstab</code>. Archivos de configuración en <code>/lib/systemd/system</code>. Listar: <code>systemctl list-unit-files --type=tipo</code>.</p>
 
-                <h4>Upstart (Obsoleto)</h4>
+                <h3>Upstart (Obsoleto)</h3>
                 <p>Scripts en <code>/etc/init/</code>. Comandos: <code>initctl list</code>, <code>start</code>, <code>status</code>, <code>stop</code>.</p>
 
-                <h4>Apagado y Reinicio</h4>
+                <h3>Apagado y Reinicio</h3>
                 <p><code>shutdown [option] time [message]</code>.</p>
                 <ul>
                     <li>Opciones: <code>-h</code> (apagar), <code>-r</code> (reiniciar).</li>

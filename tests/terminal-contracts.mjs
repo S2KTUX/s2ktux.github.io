@@ -1,9 +1,16 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { describeDescriptorFlow, parseRedirections } from '../terminal-shell-parser.js';
 
 const core = await readFile(new URL('../terminal-core.js', import.meta.url), 'utf8');
+const runtimeLinux = await readFile(new URL('../terminal-runtime-linux.js', import.meta.url), 'utf8');
+const runtimeDocker = await readFile(new URL('../terminal-runtime-docker.js', import.meta.url), 'utf8');
+const runtimeKubernetes = await readFile(new URL('../terminal-runtime-kubernetes.js', import.meta.url), 'utf8');
 const page = await readFile(new URL('../terminal.html', import.meta.url), 'utf8');
 const bootstrap = await readFile(new URL('../terminal-bootstrap.js', import.meta.url), 'utf8');
+const joinedFlow = describeDescriptorFlow(parseRedirections('demo >out 2>&1').redirections);
+const splitFlow = describeDescriptorFlow(parseRedirections('demo 2>&1 >out').redirections);
+const redirectionForms = parseRedirections('cat <in >>out 2>>errors &>all').redirections;
 
 const contracts = [
   ['TTY signals', /suspendForeground/.test(core) && /endForeground\(130,'C'\)/.test(core)],
@@ -26,6 +33,26 @@ const contracts = [
   ['SELinux causal diagnostics', /avcAudit/.test(core) && /case 'ausearch'/.test(core) && /case 'sealert'/.test(core)],
   ['Docker lifecycle state', /OOMKilled/.test(core) && /containerStatus/.test(core) && /restart policy activated/.test(core)],
   ['Kubernetes desired state', /endpointsFor/.test(core) && /readyForDeployment/.test(core) && /Deployment restored desired state/.test(core)],
+  ['Complete persistence schema', /state-v14-/.test(core) && /schema:14/.test(core) && /state-v13-/.test(core) && /groupsDb:\[\.\.\.groupsDb\]/.test(core) && /linger,userUnits,labHosts,defaultTarget/.test(core) && /dnfCache/.test(core)],
+  ['Reload state repair', /transientPids/.test(core) && /processes=\(processes\|\|\[\]\)\.filter/.test(core) && /p\.status==='Pending'\|\|p\.status==='ContainerCreating'/.test(core) && /p\.status==='ErrImagePull'/.test(core) && /recovering desired state/.test(core) && /reconcilePackages/.test(core)],
+  ['Effective-root authorization', /const rootMutation=/.test(core) && /currentUser!=='root'&&rootMutation/.test(core) && /dockerd/.test(core) && /groups\|\|\[\]\)\.includes\('docker'\)/.test(core)],
+  ['Package-backed commands', /const COMMAND_PACKAGES=/.test(core) && /const commandAvailable=/.test(core) && /finalizeDockerInstall\(\);out\('Eliminado:'/.test(core) && /docker-ce-cli/.test(core)],
+  ['Coherent identity databases', /const groupRows=/.test(core) && /const rebuildGroup=/.test(core) && /db==='group'/.test(core) && /rebuildPasswd\(\); rebuildGroup\(\)/.test(core)],
+  ['Unknown systemd units', /const unitExists=/.test(core) && /LoadState=not-found/.test(core) && /Unit '\+svc\+'\.service could not be found/.test(core) && /const unitNames=/.test(core)],
+  ['Flexible kubectl namespace flags', /scanEnd=args\.indexOf\('--'\)/.test(core) && /a\.startsWith\('--namespace='\)/.test(core) && /args\.splice\(i,count\)/.test(core) && /args\.splice\(i,1\)/.test(core)],
+  ['Remote SSH identity', /const promptIsRoot=/.test(core) && /remoteHost\.user\+'@'\+remoteHost\.name\+'\: '/.test(core) && /Connection to '\+closed\+' closed/.test(core)],
+  ['Packaged Kubernetes utilities', /crictl\(\{args\}\)/.test(runtimeKubernetes) && /kubelet\(\{args\}\)/.test(runtimeKubernetes) && /const jqFilter=/.test(core)],
+  ['Ordered shell redirections', /import \{ parseRedirections \}/.test(core) && /const prepareRedirections=|const prepareRedirections =/.test(core) && /routeRedirectEvents/.test(core) && /ioEvents/.test(core) && !/let redir=null|writeRedirect|mergeErr|errRedir|inputRedir/.test(core) && joinedFlow[1] === 'file:out:truncate' && joinedFlow[2] === 'file:out:truncate' && splitFlow[1] === 'file:out:truncate' && splitFlow[2] === 'terminal:stdout'],
+  ['Shell redirection forms and failures', redirectionForms.some(item=>item.fd===0&&item.operator==='<') && redirectionForms.some(item=>item.fd===1&&item.append) && redirectionForms.some(item=>item.fd===2&&item.append) && redirectionForms.some(item=>item.fd==='both') && /noclobber/.test(core) && /descriptor de fichero incorrecto/.test(core) && /Es un directorio/.test(core)],
+  ['Engine-backed Rocky identity', /const SYSTEM=engine\.system/.test(core) && /const OS_NAME=/.test(core) && /syncSystemIdentity/.test(core) && /Operating System: '\+OS_NAME/.test(core) && /Kernel: Linux '\+KERNEL/.test(core) && /CERTIFICATION\|\|'RHCSA 9'/.test(core)],
+  ['Engine-backed platform versions', /DOCKER_VERSION=SYSTEM\.docker\|\|'29\.7\.2'/.test(core) && /K8S_VERSION=SYSTEM\.kubernetes\|\|'1\.35\.0'/.test(core) && /Docker version '\+DOCKER_VERSION/.test(core) && /Client Version: '\+K8S_FULL/.test(core)],
+  ['No obsolete simulated OS versions', !/S2KTUX OS|7\.1\.0-cozy|v1\.30(?:\.\d+)?|v1\.31(?:\.\d+)?|29\.6\.1/.test(core)],
+  ['Cheatsheet and long-command accessibility', /window\.__syncCheatTabs/.test(core) && /#term-a11y-status/.test(core) && /Comando finalizado\. El prompt vuelve a estar disponible\./.test(core)],
+  ['Reset command semantics', /reset:\['reinicializa la pantalla de la terminal'/.test(core) && /No borra ficheros ni reinicia la máquina/.test(core) && /case 'reset': \[\.\.\.body\.querySelectorAll/.test(core)],
+  ['Runtime-owned practice catalogs', /createChallenges\(ctx\)/.test(runtimeLinux) && /createChallenges\(ctx\)/.test(runtimeDocker) && /createChallenges\(ctx\)/.test(runtimeKubernetes) && !/const (?:dockerChallenges|k8sChallenges|challenges)\s*=/.test(core)],
+  ['Runtime-owned manuals and completions', /manuals:\s*\{/.test(runtimeLinux) && /manuals:\s*\{/.test(runtimeDocker) && /manuals:\s*\{/.test(runtimeKubernetes) && /runtime\.manuals/.test(core) && /runtime\.completions/.test(core)],
+  ['Selected runtime loading', /import\(`\.\/terminal-runtime-\$\{mode\}\.js`\)/.test(bootstrap) && /startTerminal\(engine, runtime\)/.test(bootstrap) && !/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]/.test(bootstrap)],
+  ['Runtime command hooks', /runtime\.createCommands/.test(core) && !/case '(?:dockerd|kubelet|crictl|kubeadm|etcdctl)'/.test(core) && /dockerd\(\{args\}\)/.test(runtimeDocker) && /kubeadm\(\{args\}\)/.test(runtimeKubernetes) && /etcdctl\(\{args\}\)/.test(runtimeKubernetes)],
 ];
 
 for (const [name, passed] of contracts) assert.ok(passed, `Terminal contract failed: ${name}`);

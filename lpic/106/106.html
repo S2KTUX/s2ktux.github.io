@@ -7,7 +7,7 @@
 
     <div class="lesson-layout">
         <aside class="lesson-toc">
-            <h4>Objetivos del bloque</h4>
+            <h2>Objetivos del bloque</h2>
             <ul>
                 <li><a href="#106.1">106.1 Instalar y configurar X11</a></li>
                 <li><a href="#106.2">106.2 Escritorios gráficos</a></li>
@@ -15,13 +15,13 @@
             </ul>
         </aside>
 
-        <div class="course-content">
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
             
             <section id="106.1" class="lesson-section">
-                <h3>106.1 Instalar y configurar X11</h3>
+                <h2>106.1 Instalar y configurar X11</h2>
                 <p>El Sistema X Window (X11) es la base para interfaces gráficas en Linux, proporcionando una arquitectura cliente-servidor para mostrar texto y gráficos.</p>
                 
-                <h4>Arquitectura de X11</h4>
+                <h3>Arquitectura de X11</h3>
                 <p>X11 utiliza una arquitectura cliente-servidor:</p>
                 <ul>
                     <li><strong>Clientes X:</strong> Aplicaciones (terminales, juegos) que solicitan al servidor dibujar ventanas.</li>
@@ -30,7 +30,7 @@
                 <p>X11 permite configuraciones en red. Cada servidor X tiene un nombre de pantalla (<code>hostname:displaynumber.screennumber</code>), almacenado en la variable <code>DISPLAY</code> (ej. <code>:0</code> local, <code>localhost:10.0</code> remoto). Gestores de pantalla como GDM, SDDM o LightDM inician sesiones X y autentican usuarios.</p>
                 <p>Extensiones como <code>libXrandr</code>, <code>libXcursor</code> o <code>libX11</code> añaden funcionalidades.</p>
 
-                <h4>Configuración del servidor X</h4>
+                <h3>Configuración del servidor X</h3>
                 <p>El archivo principal es <code>/etc/X11/xorg.conf</code>, aunque en distros modernas se autoconfigura. El archivo se divide en secciones <code>Section "Nombre"</code> ... <code>EndSection</code>.</p>
                 <ul>
                     <li>Archivos adicionales en <code>/etc/X11/xorg.conf.d/</code> (usuario) y <code>/usr/share/X11/xorg.conf.d/</code> (distribución).</li>
@@ -42,7 +42,7 @@
                     <li><strong>Teclado permanente:</strong> <code>localectl set-x11-keymap "gr(polytonic)" chromebook</code>.</li>
                 </ul>
 
-                <h4>Herramientas y archivos clave</h4>
+                <h3>Herramientas y archivos clave</h3>
                 <ul>
                     <li><strong><code>~/.xsession-errors</code>:</strong> Log de errores de sesiones X.</li>
                     <li><strong><code>xhost</code>:</strong> Controla acceso (ej. <code>xhost +local:</code> permite locales).</li>
@@ -50,15 +50,15 @@
                     <li><strong><code>xdpyinfo</code>:</strong> Muestra info del servidor (pantalla, versión, extensiones).</li>
                 </ul>
 
-                <h4>Wayland</h4>
+                <h3>Wayland</h3>
                 <p>Protocolo moderno que reemplaza X11. Más ligero; los clientes renderizan directamente y un compositor gestiona E/S. Usa variable <code>WAYLAND_DISPLAY</code>. Aplicaciones X11 pueden correr en <code>XWayland</code>.</p>
             </section>
 
             <section id="106.2" class="lesson-section">
-                <h3>106.2 Escritorios gráficos</h3>
+                <h2>106.2 Escritorios gráficos</h2>
                 <p>Los escritorios gráficos en Linux se basan en X11 y ofrecen interfaces visuales con entornos como Gnome, KDE y Xfce.</p>
 
-                <h4>Sistema X Window</h4>
+                <h3>Sistema X Window</h3>
                 <ul>
                     <li>Maneja eventos de entrada (ratón, teclado).</li>
                     <li>Copia y pega entre aplicaciones.</li>
@@ -67,7 +67,7 @@
                 </ul>
                 <p>La variable <code>DISPLAY</code> indica qué servidor X usar. El archivo <code>xorg.conf</code> organiza ajustes en secciones (Monitor, Device, Screen).</p>
 
-                <h4>Ambientes de escritorio</h4>
+                <h3>Ambientes de escritorio</h3>
                 <p>Incluyen:</p>
                 <ul>
                     <li><strong>Gestor de ventanas:</strong> Controla posición, barras y botones.</li>
@@ -76,7 +76,7 @@
                 </ul>
                 <p>Ofrecen coherencia visual.</p>
 
-                <h4>Entornos populares</h4>
+                <h3>Entornos populares</h3>
                 <ul>
                     <li><strong>Gnome:</strong> Fedora, Ubuntu. Usa Gnome Shell (pantalla completa) o Classic.</li>
                     <li><strong>KDE:</strong> openSUSE, Kubuntu. Usa KDE Plasma (basado en Qt).</li>
@@ -84,7 +84,7 @@
                 </ul>
                 <p>Otros: Cinnamon, MATE, LXDE.</p>
 
-                <h4>Acceso remoto</h4>
+                <h3>Acceso remoto</h3>
                 <ul>
                     <li><strong>XDMCP:</strong> Protocolo pantallas remotas (poco usado, alto ancho banda/inseguro).</li>
                     <li><strong>VNC:</strong> Usa RFB, puertos 5900+, sin cifrado nativo (requiere SSH/VPN).</li>
@@ -95,10 +95,10 @@
             </section>
 
             <section id="106.3" class="lesson-section">
-                <h3>106.3 Accesibilidad</h3>
+                <h2>106.3 Accesibilidad</h2>
                 <p>La accesibilidad en Linux permite ajustar el sistema para usuarios con necesidades especiales.</p>
 
-                <h4>Configuración de accesibilidad</h4>
+                <h3>Configuración de accesibilidad</h3>
                 <ul>
                     <li><strong>Gnome:</strong> Acceso universal (menú esquina superior).</li>
                     <li><strong>KDE:</strong> Configuración del sistema → Accesibilidad.</li>
@@ -106,7 +106,7 @@
                 </ul>
                 <p>Gestores de pantalla (XDM, KDM, GDM) inician el entorno y gestionan el login, permitiendo activar funciones como lectores de pantalla o alto contraste.</p>
 
-                <h4>Asistencia de teclado y mouse</h4>
+                <h3>Asistencia de teclado y mouse</h3>
                 <ul>
                     <li><strong>Teclas pegajosas:</strong> Atajos uno a uno (ej. Ctrl, luego C).</li>
                     <li><strong>Teclas lentas:</strong> Mantener tecla para aceptar.</li>
@@ -119,7 +119,7 @@
                 </ul>
                 <p>Estas opciones están en <strong>AccessX</strong> (extensión X11), ajustables con <code>xkbset</code>.</p>
 
-                <h4>Deficiencias visuales</h4>
+                <h3>Deficiencias visuales</h3>
                 <ul>
                     <li><strong>Temas de alto contraste/impresión grande:</strong> Colores nítidos y texto grande.</li>
                     <li><strong>Lupa de pantalla:</strong> Zoom (Gnome: Zoom; KDE: KMagnifier; Xfce: Alt + rueda).</li>
