@@ -43,6 +43,7 @@ const contracts = [
   ['Effective-root authorization', /const rootMutation=/.test(core) && /currentUser!=='root'&&rootMutation/.test(core) && /dockerd/.test(core) && /groups\|\|\[\]\)\.includes\('docker'\)/.test(core)],
   ['Package-backed commands', /const COMMAND_PACKAGES=/.test(core) && /const commandAvailable=/.test(core) && /finalizeDockerInstall\(\);out\('Eliminado:'/.test(core) && /docker-ce-cli/.test(core)],
   ['Bash builtins bypass packages', /const SHELL_BUILTINS=new Set/.test(core) && /SHELL_BUILTINS\.has\(name\).*commandAvailable/.test(core) && /echo es una orden interna del shell|es una orden interna del shell/.test(core) && /case 'command'/.test(core) && /case 'test': case '\['/.test(core)],
+  ['Paste-safe builtins and multiline input', /normalizeCommandInput/.test(core) && /[\\u200B-\\u200D\\u2060\\uFEFF]/.test(core) && /normalizeTerminalPaste/.test(xtermRenderer) && /insertFromPaste/.test(xtermRenderer) && /clean\.split\('\\n'\)/.test(xtermRenderer) && /term\.hasSelection\(\)/.test(xtermRenderer)],
   ['Realistic Docker repository flow', /!installed\.has\('dnf-plugins-core'\)/.test(core) && /No such command: config-manager/.test(core) && /dockerRepoConfigured\(\)/.test(core) && /Unable to find a match/.test(core)],
   ['Everyday filesystem semantics', /const numbered=args\.includes\('-n'\)/.test(core) && /path==='\/proc\/uptime'/.test(core) && /se omite el directorio/.test(core) && /const rec=args\.some/.test(core) && /targets\.forEach\(tgt/.test(core)],
   ['Coherent identity databases', /const groupRows=/.test(core) && /const rebuildGroup=/.test(core) && /db==='group'/.test(core) && /rebuildPasswd\(\); rebuildGroup\(\)/.test(core)],
@@ -61,6 +62,7 @@ const contracts = [
   ['Runtime-owned manuals and completions', /manuals:\s*\{/.test(runtimeLinux) && /manuals:\s*\{/.test(runtimeDocker) && /manuals:\s*\{/.test(runtimeKubernetes) && /runtime\.manuals/.test(core) && /runtime\.completions/.test(core)],
   ['Selected runtime loading', /import\(`\.\/terminal-runtime-\$\{mode\}\.js`\)/.test(bootstrap) && /startTerminal\(engine, runtime\)/.test(bootstrap) && !/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]/.test(bootstrap)],
   ['Mode-specific boot immersion', /const systemBootLines/.test(core) && /systemd 252 running in system mode/.test(core) && /systemd-udevd\.service/.test(core) && /NetworkManager-wait-online\.service/.test(core) && /sshd\.service - OpenSSH server daemon/.test(core) && /docker\.service - Docker Application Container Engine/.test(core) && /kubelet\.service - kubelet/.test(core) && /login: root/.test(core)],
+  ['Fast non-progressive boot', /const QUICK_BOOT=\{batch:6,delay:18\}/.test(core) && /systemBootLines\(\),\(\)=>\{/.test(core) && /\},QUICK_BOOT\)/.test(core)],
   ['Runtime command hooks', /runtime\.createCommands/.test(core) && !/case '(?:dockerd|kubelet|crictl|kubeadm|etcdctl)'/.test(core) && /dockerd\(\{args\}\)/.test(runtimeDocker) && /kubeadm\(\{args\}\)/.test(runtimeKubernetes) && /etcdctl\(\{args\}\)/.test(runtimeKubernetes)],
 ];
 

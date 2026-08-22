@@ -50,6 +50,14 @@ function deleteBackward(input) {
   else if (start > 0) input.setRangeText('', start - 1, start, 'end');
 }
 
+function normalizeTerminalPaste(value) {
+  return String(value ?? '')
+    .replace(/\x1b\[(?:200|201)~/g, '')
+    .replace(/\r\n?/g, '\n')
+    .replace(/[\u200B-\u200D\u2060\uFEFF]/g, '')
+    .replace(/\u00A0/g, ' ');
+}
+
 export async function attachTerminalRenderer() {
   const windowEl = document.querySelector('.terminal-window');
   const host = document.getElementById('term-xterm');
@@ -129,12 +137,29 @@ export async function attachTerminalRenderer() {
     const controls = { '\x03':'c', '\x04':'d', '\x0c':'l', '\x12':'r', '\x1a':'z', '\x01':'a', '\x05':'e', '\x0b':'k', '\x15':'u', '\x17':'w', '\x19':'y' };
     if (controls[data]) { dispatchKey(controls[data], { ctrlKey:true }); return; }
     if (data === '\x1b') { dispatchKey('Escape'); return; }
-    if (data.startsWith('\x1b')) return;
-    if (!beforeInput(data, 'insertText')) return;
-    insertText(input, data); drawPrompt();
+    const clean = normalizeTerminalPaste(data);
+    if (clean.startsWith('\x1b')) return;
+    if (!clean) return;
+    // xterm entrega un pegado como un único bloque. Procesar sus saltos como
+    // Enter evita incrustarlos en el input oculto y conserva los comandos.
+    const chunks = clean.split('\n');
+    chunks.forEach((chunk, index) => {
+      if (chunk && beforeInput(chunk, 'insertFromPaste')) insertText(input, chunk);
+      if (index < chunks.length - 1) {
+        term.write('\r\x1b[2K');
+        dispatchKey('Enter');
+      }
+    });
+    drawPrompt();
   };
   term.onData(handleData);
   term.onSelectionChange(() => {});
+  term.attachCustomKeyEventHandler?.((event) => {
+    // Con una selección, Ctrl/Cmd+C pertenece al portapapeles. Sin selección,
+    // xterm seguirá enviando ^C al proceso como una terminal real.
+    if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'c' && term.hasSelection()) return false;
+    return true;
+  });
   host.addEventListener('click', () => term.focus());
 
   const originalFocus = input.focus.bind(input);

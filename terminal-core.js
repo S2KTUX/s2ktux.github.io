@@ -912,12 +912,15 @@ export function startTerminal(engine, runtime = {}) {
     const clearBody = () => { [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); };
     const gline = (txt,color) => { const d=document.createElement('div'); d.className='term-out'; d.style.color=color||'#d8cbad'; d.innerHTML=(esc(txt)===''?'&nbsp;':esc(txt)); body.insertBefore(d,line); };
     const stripLinux = (s) => { s=(s||'').trim(); return s.startsWith('linux') ? s.slice(5).trim() : s; };
-    const runSeq = (lines, cb) => {
+    const runSeq = (lines, cb, options={}) => {
       booting=true; input.readOnly=true; input.setAttribute('aria-busy','true'); promptEl.textContent=''; input.value=''; input.style.color='';
       let i=0;
-      const step=()=>{ if(i>=lines.length){ booting=false; input.readOnly=false; input.removeAttribute('aria-busy'); cb&&cb(); return; } const ln=lines[i++]; const c = ln.startsWith('[  OK  ]')?'#8fa876' : (ln.startsWith('[FAILED]')||ln.startsWith('[ ERROR ]'))?'#ef8a7a' : ln.startsWith('reboot:')?'#a99a86' : '#a2957d'; gline(ln,c); scroll(); setTimeout(step, 70+Math.random()*70); };
+      const batch=Math.max(1,Number(options.batch)||1);
+      const delay=Number.isFinite(options.delay)?Math.max(0,options.delay):null;
+      const step=()=>{ if(i>=lines.length){ booting=false; input.readOnly=false; input.removeAttribute('aria-busy'); cb&&cb(); return; } for(let n=0;n<batch&&i<lines.length;n++){const ln=lines[i++]; const c = ln.startsWith('[  OK  ]')?'#8fa876' : (ln.startsWith('[FAILED]')||ln.startsWith('[ ERROR ]'))?'#ef8a7a' : ln.startsWith('reboot:')?'#a99a86' : '#a2957d'; gline(ln,c);} scroll(); setTimeout(step,delay===null?70+Math.random()*70:delay); };
       step();
     };
+    const QUICK_BOOT={batch:6,delay:18};
     const runCommandSeq = (lines, cb) => runSeq(lines, ()=>{
       cb&&cb();
       if(!booting&&!grubState&&!awaitReboot&&!interactive&&!pagerState&&!nmtuiState&&!foregroundProcess){ setPrompt(); input.focus(); }
@@ -1007,7 +1010,7 @@ export function startTerminal(engine, runtime = {}) {
       persistBoot(); beginNewBoot();
       const finish=()=>{ if(MODE==='linux') applyFstabAtBoot(()=>startLogin()); else { loggedIn=true; currentUser='root'; cwd=['root']; loginRecords.push({user:'root',tty:'tty1',host:'',login:Date.now(),active:true}); setPrompt(); save(); } };
       const shutdown=['','Broadcast message from root@'+localHostname()+' on pts/0:','The system will reboot now!','','[  OK  ] Stopped target multi-user.target - Multi-User System.','[  OK  ] Stopped target network.target - Network.','[  OK  ] Unmounted /home.','[  OK  ] Reached target shutdown.target - System Shutdown.','reboot: Restarting system','','SeaBIOS (version s2ktux-1.16)','Booting from Hard Disk...'];
-      runSeq(shutdown.concat(MODE==='linux'?['Cargando '+OS_NAME+'...','[  OK  ] Reached target Local File Systems.','[  OK  ] Reached target Multi-User System.','']:systemBootLines()), finish);
+      runSeq(shutdown.concat(MODE==='linux'?['Cargando '+OS_NAME+'...','[  OK  ] Reached target Local File Systems.','[  OK  ] Reached target Multi-User System.','']:systemBootLines()), finish, QUICK_BOOT);
     };
     const bootStart = () => startGrub();
     const enterGrubMenu = () => {
@@ -1943,7 +1946,13 @@ export function startTerminal(engine, runtime = {}) {
         sink.needsSeparator=false;sink.wrote=true;
       });
     };
+    const normalizeCommandInput=(value)=>String(value??'')
+      .replace(/\x1b\[(?:200|201)~/g,'')
+      .replace(/[\u200B-\u200D\u2060\uFEFF]/g,'')
+      .replace(/\u00A0/g,' ')
+      .replace(/[\u2028\u2029]/g,'\n');
     const run = (raw) => {
+      raw=normalizeCommandInput(raw);
       let cmd = raw.trim();
       if(cmd[0]==='!' && !recovery){ const ex=expandBang(cmd); if(ex===null){ echoCmd(raw); err('bash: '+cmd+': event not found'); save(); return; } cmd=ex; }
       const hd=cmd.match(/<<-?\s*(['"]?)([A-Za-z_][A-Za-z0-9_]*)\1/);
@@ -2192,7 +2201,7 @@ export function startTerminal(engine, runtime = {}) {
           if(MODE==='docker'){ out('Docker Lab · '+localHostname(),'#e0a458'); out(dockerInstalled?'Docker Engine '+DOCKER_VERSION+' instalado.':'Docker Engine no está instalado. Prepara el host desde la práctica guiada o consulta el cheatsheet del entorno.','#a2957d'); }
           else { out('CKA Lab · control-plane','#e0a458'); out('Cluster activo: 3 nodos · avisos pendientes en worker-2 y pod/api-broken.','#a2957d'); out('Inspecciona el estado del clúster y decide por dónde empezar.','#a2957d'); }
           out('');setPrompt();save();input.focus();scroll();
-        });
+        },QUICK_BOOT);
       } else {
         setPrompt(); save();
       }
