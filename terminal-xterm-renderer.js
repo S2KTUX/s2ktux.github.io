@@ -115,6 +115,10 @@ export async function attachTerminalRenderer() {
     queueMicrotask(drawPrompt);
   });
   observer.observe(body, { childList:true });
+  body.addEventListener('terminal-clear', () => {
+    term.clear();
+    term.write('\x1b[2J\x1b[H');
+  });
   new MutationObserver(() => drawPrompt()).observe(prompt, { childList:true, characterData:true, subtree:true, attributes:true });
 
   const dispatchKey = (key, options = {}) => {

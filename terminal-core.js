@@ -909,18 +909,15 @@ export function startTerminal(engine, runtime = {}) {
 
     // ---------------- arranque / GRUB / login / rescate ----------------
     let grubState=null, awaitReboot=false, loginUser=null, booting=false;
-    const clearBody = () => { [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); };
+    const clearBody = () => { body.dispatchEvent(new CustomEvent('terminal-clear')); [...body.querySelectorAll('.term-out')].forEach(d=>d.remove()); };
     const gline = (txt,color) => { const d=document.createElement('div'); d.className='term-out'; d.style.color=color||'#d8cbad'; d.innerHTML=(esc(txt)===''?'&nbsp;':esc(txt)); body.insertBefore(d,line); };
     const stripLinux = (s) => { s=(s||'').trim(); return s.startsWith('linux') ? s.slice(5).trim() : s; };
-    const runSeq = (lines, cb, options={}) => {
+    const runSeq = (lines, cb) => {
       booting=true; input.readOnly=true; input.setAttribute('aria-busy','true'); promptEl.textContent=''; input.value=''; input.style.color='';
       let i=0;
-      const batch=Math.max(1,Number(options.batch)||1);
-      const delay=Number.isFinite(options.delay)?Math.max(0,options.delay):null;
-      const step=()=>{ if(i>=lines.length){ booting=false; input.readOnly=false; input.removeAttribute('aria-busy'); cb&&cb(); return; } for(let n=0;n<batch&&i<lines.length;n++){const ln=lines[i++]; const c = ln.startsWith('[  OK  ]')?'#8fa876' : (ln.startsWith('[FAILED]')||ln.startsWith('[ ERROR ]'))?'#ef8a7a' : ln.startsWith('reboot:')?'#a99a86' : '#a2957d'; gline(ln,c);} scroll(); setTimeout(step,delay===null?70+Math.random()*70:delay); };
+      const step=()=>{ if(i>=lines.length){ booting=false; input.readOnly=false; input.removeAttribute('aria-busy'); cb&&cb(); return; } const ln=lines[i++]; const c = ln.startsWith('[  OK  ]')?'#8fa876' : (ln.startsWith('[FAILED]')||ln.startsWith('[ ERROR ]'))?'#ef8a7a' : ln.startsWith('reboot:')?'#a99a86' : '#a2957d'; gline(ln,c); scroll(); setTimeout(step,70+Math.random()*70); };
       step();
     };
-    const QUICK_BOOT={batch:6,delay:18};
     const runCommandSeq = (lines, cb) => runSeq(lines, ()=>{
       cb&&cb();
       if(!booting&&!grubState&&!awaitReboot&&!interactive&&!pagerState&&!nmtuiState&&!foregroundProcess){ setPrompt(); input.focus(); }
@@ -944,8 +941,8 @@ export function startTerminal(engine, runtime = {}) {
     ]);
     const startGrub = () => {
       interactive=null; recovery=null; grubState=null; input.style.color=''; loggedIn=false;
-      clearBody();
-      runSeq(['Se está reiniciando el sistema...','[  OK  ] Removed slice User Slice of root.','[  OK  ] Stopped target Multi-User System.','[  OK  ] Stopped Session 1 of user root.','[  OK  ] Unmounted /home.','[  OK  ] Unmounted /boot.','[  OK  ] Reached target Unmount All Filesystems.','[  OK  ] Reached target Shutdown.','[  OK  ] Reached target Final Step.','reboot: Restarting system','reboot: machine restart','','SeaBIOS (version s2ktux-1.16)','Máquina S2KTUX — POST','Booting from Hard Disk...','GRUB loading...','Welcome to GRUB!',''], ()=>enterGrubMenu());
+      clearBody(); promptEl.textContent=''; input.value='';
+      enterGrubMenu();
     };
     const persistBoot = () => {
       const f=getNode(['etc','fstab']); const fst=(f&&f.type==='file')?f.content:'';
@@ -964,58 +961,35 @@ export function startTerminal(engine, runtime = {}) {
       const runDir=getNode(['run']); if(runDir&&runDir.type==='dir')runDir.children={lock:dir({}),log:dir({}),user:dir({})};
       processes=defaultProcs(); nextPid=1200;
       Object.keys(services).forEach(s=>{ const svc=services[s]; svc.active=!!svc.enabled; svc.failed=false; svc.error=''; if(svc.active){svc.pid=nextPid++;processes.push({pid:svc.pid,ppid:1,user:'root',cpu:0.1,mem:0.4,vsz:90000,rss:7000,stat:'Ss',start:new Date().toLocaleTimeString().slice(0,5),time:'0:00',cmd:'/usr/sbin/'+s});}else svc.pid=null; });
-      containers.forEach(c=>{c.running=['always','unless-stopped','on-failure'].includes(c.restart||''); if(c.running)eventAdd('docker','start','container start',{id:c.id,name:c.name,reason:'restart-policy'});});
+      if(MODE==='docker'&&dockerInstalled){ const configError=dockerConfigError(); if(configError&&services.docker)failService('docker',configError); }
+      containers.forEach(c=>{c.running=!!(services.docker&&services.docker.active)&&['always','unless-stopped','on-failure'].includes(c.restart||''); if(c.running)eventAdd('docker','start','container start',{id:c.id,name:c.name,reason:'restart-policy'});});
       if(MODE==='kubernetes') k8s.pods.forEach(p=>{ if(p.status!=='CrashLoopBackOff'){p.status='Pending';p.ready='0/1';setTimeout(()=>{p.status='Running';p.ready='1/1';k8s.events.push({reason:'Started',object:'pod/'+p.name,message:'Started container '+p.name});eventAdd('kubernetes','reconcile','Pod became Running',{pod:p.name});save();},900);}});
       journalAdd('systemd','Linux boot '+bootId+' started.',6); journalAdd('systemd','Reached target Multi-User System.',6); eventAdd('kernel','boot','System boot completed',{bootId});
     };
-    const systemBootLines = () => {
-      const lines=[
-        '[    0.000000] Linux version '+KERNEL+' (mockbuild@rocky) ('+ARCH+')',
-        '[    0.000000] Command line: BOOT_IMAGE=/vmlinuz-'+KERNEL+' root=/dev/mapper/rl-root ro quiet',
-        '[    0.218431] x86/cpu: VMX enabled; initializing virtual CPUs',
-        '[    0.394802] Memory: 3894M available (12288K kernel code, 4821K rwdata)',
-        '[    0.621553] systemd[1]: systemd 252 running in system mode.',
-        '[    0.628914] systemd[1]: Detected virtualization kvm.',
-        '[  OK  ] Created slice system-getty.slice - Slice /system/getty.',
-        '[  OK  ] Started systemd-journald.service - Journal Service.',
-        '[  OK  ] Started systemd-udevd.service - Rule-based Manager for Device Events and Files.',
-        '[  OK  ] Reached target local-fs-pre.target - Preparation for Local File Systems.',
-        '[  OK  ] Mounted boot.mount - /boot.',
-        '[  OK  ] Reached target local-fs.target - Local File Systems.',
-        '[  OK  ] Started dbus-broker.service - D-Bus System Message Bus.',
-        '[  OK  ] Started chronyd.service - NTP client/server.',
-        '[  OK  ] Started firewalld.service - firewalld - dynamic firewall daemon.',
-        '[  OK  ] Started NetworkManager.service - Network Manager.',
-        '[  OK  ] Finished NetworkManager-wait-online.service - Network Manager Wait Online.',
-        '[  OK  ] Started sshd.service - OpenSSH server daemon.',
-        '[  OK  ] Started crond.service - Command Scheduler.'
-      ];
-      if(MODE==='docker'&&dockerInstalled){
-        const error=dockerConfigError();
-        if(error){if(services.docker&&!services.docker.failed)failService('docker',error);lines.push('[FAILED] Failed to start docker.service - Docker Application Container Engine.');}
-        else if(services.containerd&&services.containerd.active)lines.push('[  OK  ] Started containerd.service - containerd container runtime.');
-        if(!error&&services.docker&&services.docker.active)lines.push('[  OK  ] Started docker.service - Docker Application Container Engine.');
+    const showEnvironmentBanner = () => {
+      if(MODE==='docker'){
+        out('Docker Lab · '+localHostname(),'#e0a458');
+        out(dockerInstalled?'Docker Engine '+DOCKER_VERSION+' instalado.':'Docker Engine no está instalado. Prepara el host desde la práctica guiada o consulta el cheatsheet del entorno.','#a2957d');
+      } else if(MODE==='kubernetes'){
+        out('CKA Lab · control-plane','#e0a458');
+        out('Cluster activo: 3 nodos · avisos pendientes en worker-2 y pod/api-broken.','#a2957d');
+        out('Inspecciona el estado del clúster y decide por dónde empezar.','#a2957d');
       }
-      if(MODE==='kubernetes'){
-        lines.push('[  OK  ] Started containerd.service - containerd container runtime.');
-        lines.push(services.kubelet&&services.kubelet.active?'[  OK  ] Started kubelet.service - kubelet: The Kubernetes Node Agent.':'[FAILED] Failed to start kubelet.service - kubelet: The Kubernetes Node Agent.');
-      }
-      lines.push('[  OK  ] Started getty@tty1.service - Getty on tty1.');
-      lines.push('[  OK  ] Reached target multi-user.target - Multi-User System.');
-      lines.push('',OS_NAME,'Kernel '+KERNEL+' on an '+ARCH,'',localHostname()+' login: root','Last login: '+new Date().toString().slice(0,24)+' on tty1','');
-      return lines;
+      out(''); setPrompt(); save(); input.focus(); scroll();
     };
     const rebootMachine = () => {
       booting=true; recovery=null; grubState=null; interactive=null; loggedIn=false; clearBody(); promptEl.textContent=''; input.value='';
       persistBoot(); beginNewBoot();
-      const finish=()=>{ if(MODE==='linux') applyFstabAtBoot(()=>startLogin()); else { loggedIn=true; currentUser='root'; cwd=['root']; loginRecords.push({user:'root',tty:'tty1',host:'',login:Date.now(),active:true}); setPrompt(); save(); } };
-      const shutdown=['','Broadcast message from root@'+localHostname()+' on pts/0:','The system will reboot now!','','[  OK  ] Stopped target multi-user.target - Multi-User System.','[  OK  ] Stopped target network.target - Network.','[  OK  ] Unmounted /home.','[  OK  ] Reached target shutdown.target - System Shutdown.','reboot: Restarting system','','SeaBIOS (version s2ktux-1.16)','Booting from Hard Disk...'];
-      runSeq(shutdown.concat(MODE==='linux'?['Cargando '+OS_NAME+'...','[  OK  ] Reached target Local File Systems.','[  OK  ] Reached target Multi-User System.','']:systemBootLines()), finish, QUICK_BOOT);
+      booting=false;
+      if(MODE==='linux'){ applyFstabAtBoot(()=>startLogin()); return; }
+      loggedIn=true; currentUser='root'; cwd=['root'];
+      loginRecords.push({user:'root',tty:'tty1',host:'',login:Date.now(),active:true});
+      showEnvironmentBanner();
     };
     const bootStart = () => startGrub();
     const enterGrubMenu = () => {
       grubState={ phase:'menu', entrySel:0, sel:0, entries:GRUB_ENTRIES(), lines:null, orig:null, kind:null, count:5 };
-      if(titleEl) titleEl.textContent='GNU GRUB'; input.value=''; input.style.color='';
+      if(titleEl) titleEl.textContent='GNU GRUB'; promptEl.textContent=''; input.value=''; input.style.color='';
       redrawGrub();
       grubState.timer=setInterval(()=>{ if(!grubState||grubState.phase!=='menu'){ return; } grubState.count--; if(grubState.count<=0){ clearInterval(grubState.timer); const en=grubState.entries[0]; grubState=null; bootFromLines(en.lines.slice(), en); } else redrawGrub(); }, 1000);
     };
@@ -1085,13 +1059,12 @@ export function startTerminal(engine, runtime = {}) {
       else if(e.key.length===1 && !e.ctrlKey && !e.metaKey && !e.altKey){ e.preventDefault(); g.lines[g.sel]+=e.key; redrawGrub(); }
       else e.preventDefault();
     };
-    const bootFirmware = () => { clearBody(); runSeq(['Entrando en la configuración del firmware (UEFI)...','(no disponible en el sandbox)','','Reiniciando...',''], ()=>enterGrubMenu()); };
+    const bootFirmware = () => { clearBody(); out('(El firmware UEFI no está disponible en este laboratorio.)','#a2957d'); setTimeout(()=>enterGrubMenu(),250); };
     const booted = (entryKind, recoveryKind) => {
       clearBody();
-      const kern=['Cargando el kernel de Linux '+KERNEL+'...','Cargando el disco RAM inicial...','[    0.000000] Linux version '+KERNEL,'[    1.204100] Freeing unused kernel image memory','[  OK  ] Started udev Kernel Device Manager.',''];
-      if(recoveryKind){ runSeq(kern, ()=>bootEmergency(recoveryKind)); return; }
-      if(entryKind==='rescue'){ runSeq(kern.concat(['[  OK  ] Reached target Rescue Mode.','']), ()=>rescueMaintenance()); return; }
-      runSeq(kern.concat(['[  OK  ] Reached target Local File Systems.','[  OK  ] Started Login Service.','[  OK  ] Reached target Multi-User System.','']), ()=>{ applyFstabAtBoot(()=>startLogin()); });
+      if(recoveryKind){ bootEmergency(recoveryKind); return; }
+      if(entryKind==='rescue'){ rescueMaintenance(); return; }
+      applyFstabAtBoot(()=>startLogin());
     };
     const rescueMaintenance = () => {
       interactive=null;
@@ -1106,7 +1079,7 @@ export function startTerminal(engine, runtime = {}) {
       else { outMany(['','Kernel arrancado con init=/bin/bash: shell de root, sin servicios.','La raíz "/" está montada en SOLO LECTURA.','Escribe  help  para ver los pasos.','']); recovery={kind:'initbash', rw:false, chrooted:true, relabel:false, pw:false}; }
       currentUser='root'; setRecoveryPrompt();
     };
-    const bootFinish = () => { const rel=recovery && recovery.relabel; if(rel) shadowMislabeled=false; recovery=null; clearBody(); const seq=['','Reiniciando el sistema...','[  OK  ] Reached target Shutdown.','reboot: Restarting system']; if(rel){ seq.push('*** Warning -- SELinux targeted policy relabel is required. ***'); seq.push('*** Relabeling could take a very long time. ***'); seq.push('[####################] reetiquetado completado.'); } seq.push(''); runSeq(seq, ()=>applyFstabAtBoot(()=>startLogin())); };
+    const bootFinish = () => { const rel=recovery && recovery.relabel; if(rel) shadowMislabeled=false; recovery=null; clearBody(); if(rel)out('SELinux: reetiquetado del sistema completado.','#8fa876'); applyFstabAtBoot(()=>startLogin()); };
     const recoveryDispatch = (cmd, name, args) => {
       const r=recovery;
       const target = r.kind==='rdbreak' ? '/sysroot' : '/';
@@ -2197,11 +2170,7 @@ export function startTerminal(engine, runtime = {}) {
     } else {
       currentUser='root'; loggedIn=true;
       if(!savedScroll){
-        runSeq(systemBootLines(),()=>{
-          if(MODE==='docker'){ out('Docker Lab · '+localHostname(),'#e0a458'); out(dockerInstalled?'Docker Engine '+DOCKER_VERSION+' instalado.':'Docker Engine no está instalado. Prepara el host desde la práctica guiada o consulta el cheatsheet del entorno.','#a2957d'); }
-          else { out('CKA Lab · control-plane','#e0a458'); out('Cluster activo: 3 nodos · avisos pendientes en worker-2 y pod/api-broken.','#a2957d'); out('Inspecciona el estado del clúster y decide por dónde empezar.','#a2957d'); }
-          out('');setPrompt();save();input.focus();scroll();
-        },QUICK_BOOT);
+        showEnvironmentBanner();
       } else {
         setPrompt(); save();
       }
