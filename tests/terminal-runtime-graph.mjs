@@ -56,7 +56,10 @@ dockerCommands.dockerd({args:['--validate']});
 assert.deepEqual(output,['configuration OK']);
 
 const coreRaw=Buffer.byteLength(core), coreGzip=gzipSync(core).byteLength;
-assert.ok(coreRaw<405000,'El core volvió a absorber catálogos de runtime');
+// El shell ganó PS2, control de trabajos y causalidad de contenedores sin
+// volver a absorber los catálogos. El límite comprimido sigue siendo el gate
+// de red; este margen en bruto solo cubre lógica ejecutable.
+assert.ok(coreRaw<412000,'El core volvió a absorber catálogos de runtime');
 assert.ok(coreGzip<128000,'El core comprimido volvió a crecer por encima del presupuesto');
 for(const name of names){
   const selectedGzip=gzipSync(core).byteLength+gzipSync(engines[name]).byteLength+gzipSync(sources[name]).byteLength;

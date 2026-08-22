@@ -4,6 +4,66 @@
 
 const isSpace = value => /\s/.test(value || '');
 
+// Bash no ejecuta una orden incompleta: cambia de PS1 a PS2 y continúa
+// leyendo líneas. Este analizador solo decide si falta entrada; la expansión
+// y la ejecución siguen perteneciendo al motor principal.
+export function analyzeShellInput(source) {
+  source = String(source ?? '');
+  let quote = '';
+  let escaped = false;
+  let commandSubstitution = 0;
+  let parameterExpansion = 0;
+  let parens = 0;
+  let braces = 0;
+  let lastOperator = '';
+
+  for (let index = 0; index < source.length; index += 1) {
+    const char = source[index];
+    const next = source[index + 1] || '';
+    if (escaped) { escaped = false; continue; }
+    if (char === '\\' && quote !== "'") { escaped = true; continue; }
+    if (quote) {
+      if (char === quote) quote = '';
+      continue;
+    }
+    if (char === '"' || char === "'") { quote = char; continue; }
+    if (char === '$' && next === '(') { commandSubstitution += 1; index += 1; continue; }
+    if (char === '$' && next === '{') { parameterExpansion += 1; index += 1; continue; }
+    if (commandSubstitution && char === '(') { commandSubstitution += 1; continue; }
+    if (commandSubstitution && char === ')') { commandSubstitution -= 1; continue; }
+    if (parameterExpansion && char === '}') { parameterExpansion -= 1; continue; }
+    if (!commandSubstitution && !parameterExpansion) {
+      if (char === '(') parens += 1;
+      else if (char === ')' && parens) parens -= 1;
+      else if (char === '{') braces += 1;
+      else if (char === '}' && braces) braces -= 1;
+    }
+  }
+
+  const tail = source.trimEnd();
+  if (escaped && tail.endsWith('\\')) return { complete:false, reason:'backslash' };
+  if (quote) return { complete:false, reason:quote === "'" ? 'single-quote' : 'double-quote' };
+  if (commandSubstitution) return { complete:false, reason:'command-substitution' };
+  if (parameterExpansion) return { complete:false, reason:'parameter-expansion' };
+  if (parens) return { complete:false, reason:'parenthesis' };
+  if (braces) return { complete:false, reason:'brace' };
+
+  // Un operador de control al final necesita otro pipeline. Un único '&'
+  // lanza en segundo plano y sí constituye una orden completa.
+  const operatorMatch = tail.match(/(?:\|\||&&|\|)\s*$/);
+  const escapedOperator = operatorMatch
+    ? ((tail.slice(0, operatorMatch.index).match(/\\+$/)?.[0].length || 0) % 2 === 1)
+    : false;
+  const operator = operatorMatch && !escapedOperator ? operatorMatch[0].trim() : '';
+  lastOperator = operator;
+  if (lastOperator) return { complete:false, reason:'operator', operator:lastOperator };
+  return { complete:true, reason:'' };
+}
+
+export function joinShellLines(lines) {
+  return (lines || []).join('\n').replace(/\\\n/g, '');
+}
+
 function readShellWord(source, start) {
   let raw = '';
   let cooked = '';

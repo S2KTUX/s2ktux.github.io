@@ -197,6 +197,9 @@
       if(mode==='kubernetes')localStorage.removeItem('s2ktux-exam-v2');
     }catch(e){}
   }
+  function clearAllTerminalSessions(){
+    ['linux','docker','kubernetes'].forEach(clearModeSession);
+  }
   function applyModeUI(){
     var sel=document.getElementById('mode-select');
     var shell=document.getElementById('terminal-shell');
@@ -210,9 +213,9 @@
   var internalReload=false;
   try{ var rawInternal=sessionStorage.getItem(INTERNAL_RELOAD_KEY); sessionStorage.removeItem(INTERNAL_RELOAD_KEY); var internalData=rawInternal?JSON.parse(rawInternal):null; internalReload=!!(internalData&&internalData.mode===active&&Date.now()-internalData.at<10000); }catch(e){}
   var explicitEntry=params.get('enter')==='1';
-  if(active&&!explicitEntry&&!internalReload){ clearModeSession(active); location.replace(selectionUrl()); return; }
+  if(active&&!explicitEntry&&!internalReload){ clearAllTerminalSessions(); location.replace(selectionUrl()); return; }
   if(explicitEntry){ params.delete('enter'); history.replaceState(history.state,'','terminal.html?'+params.toString()); }
-  window.addEventListener('pageshow',function(e){ var restored=getMode(new URLSearchParams(location.search)); if(e.persisted&&restored){ clearModeSession(restored); location.replace(selectionUrl()); } });
+  window.addEventListener('pageshow',function(e){ var restored=getMode(new URLSearchParams(location.search)); if(e.persisted&&restored){ clearAllTerminalSessions(); location.replace(selectionUrl()); } });
   document.addEventListener('click', function(e){
     var b = e.target && e.target.closest && e.target.closest('[data-pick-mode]');
     if(b){ var selected=b.getAttribute('data-pick-mode'); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
@@ -708,6 +711,6 @@
   <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 </div>
-<script type="module" src="./terminal-bootstrap.js?v=20260822-4"></script>
+<script type="module" src="./terminal-bootstrap.js?v=20260822-5"></script>
 </body>
 </html>

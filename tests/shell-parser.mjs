@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import { describeDescriptorFlow, parseRedirections } from '../terminal-shell-parser.js';
+import { analyzeShellInput, describeDescriptorFlow, joinShellLines, parseRedirections } from '../terminal-shell-parser.js';
 
 const first = parseRedirections('orden > salida.log 2>&1');
 assert.equal(first.command, 'orden');
@@ -37,5 +37,15 @@ assert.deepEqual(describeDescriptorFlow(both.redirections), {
 });
 
 assert.match(parseRedirections('echo hola >').error, /falta el destino/);
-console.log('shell parser: redirections preserve Bash left-to-right descriptor order');
+
+assert.equal(analyzeShellInput('echo "hola').complete, false);
+assert.equal(analyzeShellInput("printf '%s\\n' 'hola'").complete, true);
+assert.equal(analyzeShellInput('printf hola |').reason, 'operator');
+assert.equal(analyzeShellInput('echo uno \\').reason, 'backslash');
+assert.equal(analyzeShellInput('echo $(date').reason, 'command-substitution');
+assert.equal(analyzeShellInput('echo ${USER').reason, 'parameter-expansion');
+assert.equal(analyzeShellInput('sleep 1 &').complete, true);
+assert.equal(analyzeShellInput('echo \\|').complete, true);
+assert.equal(joinShellLines(['printf "%s\\n" \\', 'hola']), 'printf "%s\\n" hola');
+console.log('shell parser: descriptor order and Bash PS2 continuation contracts pass');
 
