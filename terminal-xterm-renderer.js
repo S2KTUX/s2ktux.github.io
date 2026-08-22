@@ -128,6 +128,34 @@ export async function attachTerminalRenderer() {
     return allowed;
   };
   const beforeInput = (data, inputType) => input.dispatchEvent(new InputEvent('beforeinput', { data, inputType, bubbles:true, cancelable:true }));
+  const pasteQueue = [];
+  let pasteDrainTimer = null;
+  const drainPasteQueue = () => {
+    pasteDrainTimer = null;
+    if (!pasteQueue.length || destroyed) return;
+    // Durante dnf, ping, diálogos o editores el dueño de stdin no es el
+    // prompt. Esperar evita perder las líneas restantes de un pegado largo.
+    if (input.readOnly || input.disabled) {
+      pasteDrainTimer = setTimeout(drainPasteQueue, 24);
+      return;
+    }
+    const item = pasteQueue.shift();
+    if (item.text && beforeInput(item.text, 'insertFromPaste')) insertText(input, item.text);
+    drawPrompt();
+    if (item.enter) {
+      term.write('\r\x1b[2K');
+      dispatchKey('Enter');
+    }
+    pasteDrainTimer = setTimeout(drainPasteQueue, 12);
+  };
+  const enqueuePaste = (clean) => {
+    const chunks = clean.split('\n');
+    chunks.forEach((text, index) => {
+      const enter = index < chunks.length - 1;
+      if (text || enter) pasteQueue.push({ text, enter });
+    });
+    if (pasteDrainTimer === null) drainPasteQueue();
+  };
   const handleData = (data) => {
     if (data === '\r' || data === '\n') { term.write('\r\x1b[2K'); dispatchKey('Enter'); return; }
     if (data === '\x7f') { const allowed = dispatchKey('Backspace'); if (allowed && beforeInput(null, 'deleteContentBackward')) deleteBackward(input); drawPrompt(); return; }
@@ -138,22 +166,16 @@ export async function attachTerminalRenderer() {
     if (data === '\x1b[D') { const allowed = dispatchKey('ArrowLeft'); if (allowed) { const p = input.selectionStart ?? 0; input.setSelectionRange(Math.max(0, p - 1), Math.max(0, p - 1)); drawPrompt(); } return; }
     if (data === '\x1b[H' || data === '\x1bOH') { dispatchKey('Home'); input.setSelectionRange(0, 0); drawPrompt(); return; }
     if (data === '\x1b[F' || data === '\x1bOF') { dispatchKey('End'); input.setSelectionRange(input.value.length, input.value.length); drawPrompt(); return; }
-    const controls = { '\x03':'c', '\x04':'d', '\x0c':'l', '\x12':'r', '\x1a':'z', '\x01':'a', '\x05':'e', '\x0b':'k', '\x15':'u', '\x17':'w', '\x19':'y' };
+    const controls = { '\x03':'c', '\x04':'d', '\x07':'g', '\x0c':'l', '\x0f':'o', '\x12':'r', '\x18':'x', '\x1a':'z', '\x01':'a', '\x05':'e', '\x0b':'k', '\x15':'u', '\x17':'w', '\x19':'y' };
     if (controls[data]) { dispatchKey(controls[data], { ctrlKey:true }); return; }
     if (data === '\x1b') { dispatchKey('Escape'); return; }
     const clean = normalizeTerminalPaste(data);
     if (clean.startsWith('\x1b')) return;
     if (!clean) return;
-    // xterm entrega un pegado como un único bloque. Procesar sus saltos como
-    // Enter evita incrustarlos en el input oculto y conserva los comandos.
-    const chunks = clean.split('\n');
-    chunks.forEach((chunk, index) => {
-      if (chunk && beforeInput(chunk, 'insertFromPaste')) insertText(input, chunk);
-      if (index < chunks.length - 1) {
-        term.write('\r\x1b[2K');
-        dispatchKey('Enter');
-      }
-    });
+    // Un bloque pegado puede contener varias órdenes y alguna de ellas puede
+    // quedarse ejecutando. La cola entrega cada línea cuando vuelve PS1/PS2.
+    if (clean.includes('\n')) enqueuePaste(clean);
+    else if (beforeInput(clean, 'insertFromPaste')) insertText(input, clean);
     drawPrompt();
   };
   term.onData(handleData);
@@ -197,6 +219,6 @@ export async function attachTerminalRenderer() {
   document.addEventListener('fullscreenchange', syncFullscreen);
   const resize = new ResizeObserver(() => { try { fit.fit(); drawPrompt(); } catch (_) {} });
   resize.observe(host);
-  addEventListener('beforeunload', () => { destroyed = true; observer.disconnect(); resize.disconnect(); term.dispose(); }, { once:true });
+  addEventListener('beforeunload', () => { destroyed = true; if(pasteDrainTimer!==null)clearTimeout(pasteDrainTimer); observer.disconnect(); resize.disconnect(); term.dispose(); }, { once:true });
   term.focus();
 }
