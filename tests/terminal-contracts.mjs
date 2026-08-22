@@ -61,8 +61,10 @@ const contracts = [
   ['Runtime-owned practice catalogs', /createChallenges\(ctx\)/.test(runtimeLinux) && /createChallenges\(ctx\)/.test(runtimeDocker) && /createChallenges\(ctx\)/.test(runtimeKubernetes) && !/const (?:dockerChallenges|k8sChallenges|challenges)\s*=/.test(core)],
   ['Runtime-owned manuals and completions', /manuals:\s*\{/.test(runtimeLinux) && /manuals:\s*\{/.test(runtimeDocker) && /manuals:\s*\{/.test(runtimeKubernetes) && /runtime\.manuals/.test(core) && /runtime\.completions/.test(core)],
   ['Selected runtime loading', /import\(`\.\/terminal-runtime-\$\{mode\}\.js`\)/.test(bootstrap) && /startTerminal\(engine, runtime\)/.test(bootstrap) && !/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]/.test(bootstrap)],
-  ['Mode-specific boot immersion', /const systemBootLines/.test(core) && /systemd 252 running in system mode/.test(core) && /systemd-udevd\.service/.test(core) && /NetworkManager-wait-online\.service/.test(core) && /sshd\.service - OpenSSH server daemon/.test(core) && /docker\.service - Docker Application Container Engine/.test(core) && /kubelet\.service - kubelet/.test(core) && /login: root/.test(core)],
-  ['Fast non-progressive boot', /const QUICK_BOOT=\{batch:6,delay:18\}/.test(core) && /systemBootLines\(\),\(\)=>\{/.test(core) && /\},QUICK_BOOT\)/.test(core)],
+  ['Immediate environment entry', /const showEnvironmentBanner/.test(core) && /if\(!savedScroll\)\{\s*showEnvironmentBanner\(\)/.test(core) && !/systemBootLines|QUICK_BOOT|Booting from Hard Disk|systemd 252 running in system mode/.test(core)],
+  ['Hidden reboot reconciliation', /MODE==='docker'&&dockerInstalled/.test(core) && /const configError=dockerConfigError\(\)/.test(core) && /services\.docker&&services\.docker\.active/.test(core) && /reason:'restart-policy'/.test(core)],
+  ['GRUB preserved for RHCSA recovery', /const startGrub[\s\S]*?enterGrubMenu\(\)/.test(core) && /rd\.break/.test(core) && /init=\/bin\/bash/.test(core) && /bootEmergency/.test(core)],
+  ['Clean alternate-screen transitions', /dispatchEvent\(new CustomEvent\('terminal-clear'\)\)/.test(core) && /addEventListener\('terminal-clear'/.test(xtermRenderer) && /term\.clear\(\)/.test(xtermRenderer) && /promptEl\.textContent=''/.test(core)],
   ['Runtime command hooks', /runtime\.createCommands/.test(core) && !/case '(?:dockerd|kubelet|crictl|kubeadm|etcdctl)'/.test(core) && /dockerd\(\{args\}\)/.test(runtimeDocker) && /kubeadm\(\{args\}\)/.test(runtimeKubernetes) && /etcdctl\(\{args\}\)/.test(runtimeKubernetes)],
 ];
 

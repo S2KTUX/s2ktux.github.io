@@ -11,11 +11,11 @@ if (!requested || !allowed.has(requested)) {
     const [{ default: engine }, { default: runtime }, { startTerminal }] = await Promise.all([
       import(`./terminal-engine-${mode}.js`),
       import(`./terminal-runtime-${mode}.js`),
-      import('./terminal-core.js?v=20260822-realism2')
+      import('./terminal-core.js?v=20260822-realism4')
     ]);
     startTerminal(engine, runtime);
     try {
-      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260822-4');
+      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260822-5');
       await attachTerminalRenderer();
     } catch (rendererError) {
       console.warn('Se usa el renderizador de compatibilidad de la terminal.', rendererError);
