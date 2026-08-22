@@ -9,19 +9,24 @@
 .terminal-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-left:auto}
 .terminal-window-button{width:30px;height:26px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:2px solid transparent;color:#9d9078;font:16px/1 "Share Tech Mono",monospace;cursor:pointer}
 .terminal-window-button:hover,.terminal-window-button:focus-visible{border-color:#66543b;color:#e9ddc7}
-.terminal-mobile-keys{display:none;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;padding:8px;background:#241d13;border-top:2px solid #4a3627}
+.terminal-mobile-tools{display:none;background:#241d13;border-top:2px solid #4a3627}
+.terminal-keys-toggle{width:100%;display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:#241d13;border:0;color:#a2957d;font:11px/1.2 "Share Tech Mono",monospace;cursor:pointer;touch-action:manipulation}
+.terminal-keys-toggle span{color:#e0a458;font-size:16px}
+.terminal-mobile-keys{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px;padding:0 8px 9px;background:#241d13}
+.terminal-mobile-keys[hidden]{display:none}
+.terminal-keys-help{grid-column:1/-1;margin:2px 2px 0;color:#9d9078;font:11px/1.35 "Share Tech Mono",monospace;text-align:left}
 .terminal-key{min-width:0;padding:8px 3px;background:#302619;border:2px solid #66543b;box-shadow:2px 2px 0 #0b0805;color:#d8cbad;font:13px/1 "Share Tech Mono",monospace;cursor:pointer;touch-action:manipulation}
 .terminal-key:active{transform:translate(2px,2px);box-shadow:none}
 .terminal-window:fullscreen,.terminal-window:-webkit-full-screen{display:flex;flex-direction:column;width:100vw;height:100vh;background:#12100b;border:0!important;box-shadow:none!important}
 .terminal-window:fullscreen .terminal-screen,.terminal-window:-webkit-full-screen .terminal-screen{height:auto;min-height:0;flex:1}
-.terminal-window:fullscreen .terminal-mobile-keys,.terminal-window:-webkit-full-screen .terminal-mobile-keys{display:grid}
+.terminal-window:fullscreen .terminal-mobile-tools,.terminal-window:-webkit-full-screen .terminal-mobile-tools{display:block}
 @media(max-width:760px){
-  .terminal-screen{height:58vh;min-height:390px;padding:10px 5px 8px 9px}
-  .terminal-mobile-keys{display:grid;position:sticky;bottom:0;z-index:3}
+  .terminal-screen{height:62svh;min-height:350px;max-height:660px;padding:10px 5px 8px 9px}
+  .terminal-mobile-tools{display:block;position:sticky;bottom:0;z-index:3}
   .terminal-key{font-size:11px}
 }
 @media(max-width:420px){
-  .terminal-screen{height:56vh;min-height:360px}
+  .terminal-screen{height:60svh;min-height:330px}
   .terminal-mobile-keys{gap:3px;padding:6px 5px}
-  .terminal-key{padding:8px 1px;font-size:10px}
+  .terminal-key{padding:8px 1px;font-size:9px}
 }

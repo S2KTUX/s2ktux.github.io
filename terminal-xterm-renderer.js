@@ -59,7 +59,7 @@ export async function attachTerminalRenderer() {
   const input = document.getElementById('term-input');
   if (!windowEl || !host || !body || !line || !prompt || !input) return;
 
-  await Promise.all([loadStyles('./vendor/xterm/xterm.css?v=6.0.0'), loadStyles('./terminal-xterm.css?v=20260822-2')]);
+  await Promise.all([loadStyles('./vendor/xterm/xterm.css?v=6.0.0'), loadStyles('./terminal-xterm.css?v=20260822-3')]);
   if (document.fonts?.ready) await document.fonts.ready.catch(() => {});
 
   const term = new Terminal({
@@ -142,14 +142,23 @@ export async function attachTerminalRenderer() {
   input.tabIndex = -1;
   input.setAttribute('aria-hidden', 'true');
 
+  const keyToggle = document.getElementById('terminal-keys-toggle');
+  const keyPanel = document.getElementById('terminal-mobile-keys');
+  keyToggle?.addEventListener('click', () => {
+    const open = keyToggle.getAttribute('aria-expanded') !== 'true';
+    keyToggle.setAttribute('aria-expanded', String(open));
+    const marker = keyToggle.querySelector('span');
+    if (marker) marker.textContent = open ? '−' : '+';
+    if (keyPanel) keyPanel.hidden = !open;
+    if (open) setTimeout(() => fit.fit(), 40);
+    term.focus();
+  });
+
   document.querySelectorAll('[data-term-key]').forEach((button) => button.addEventListener('click', () => {
     const key = button.dataset.termKey;
-    if (key === 'CTRL') { button.dataset.armed = button.dataset.armed === 'true' ? 'false' : 'true'; button.setAttribute('aria-pressed', button.dataset.armed); return; }
-    const ctrl = document.querySelector('[data-term-key="CTRL"]');
-    if (key === 'FULLSCREEN') { document.getElementById('term-fullscreen')?.click(); return; }
+    if (key === 'CTRLC') { handleData('\x03'); term.focus(); return; }
     const map = { ESC:'\x1b', TAB:'\t', UP:'\x1b[A', DOWN:'\x1b[B', LEFT:'\x1b[D', RIGHT:'\x1b[C' };
-    if (ctrl?.dataset.armed === 'true') { ctrl.dataset.armed = 'false'; ctrl.setAttribute('aria-pressed', 'false'); const letter = key.length === 1 ? key.toLowerCase() : 'c'; dispatchKey(letter, { ctrlKey:true }); }
-    else if (map[key]) handleData(map[key]);
+    if (map[key]) handleData(map[key]);
     term.focus();
   }));
 

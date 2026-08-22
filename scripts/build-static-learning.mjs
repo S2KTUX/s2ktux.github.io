@@ -77,11 +77,11 @@ const head = ({ title, description, canonical, jsonLd, type = 'article' }) => `<
 <meta property="og:image" content="${site}/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(title)}"><meta name="twitter:description" content="${escapeHtml(description)}"><meta name="twitter:image" content="${site}/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static1">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static2">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">${escapeJson(jsonLd)}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script type="module" src="/learning-pages.js?v=20260822-static1"></script>
+<script type="module" src="/learning-pages.js?v=20260822-static2"></script>
 </head>`;
 
 const routeData = { courses: {}, lessons: {} };
@@ -111,21 +111,20 @@ for (const [key, cfg] of Object.entries(config)) {
       ]}
     ]
   };
-  const cards = data.modules.map((module, index) => {
+  const modules = data.modules.map((module, index) => {
     const available = active[index];
     const tag = available ? 'a' : 'article';
     const href = available ? ` href="${moduleRoutes[index]}"` : '';
-    return `<${tag}${href} class="module-card${available ? '' : ' coming'}">
-      <span class="module-number">${escapeHtml(cfg.unit.toUpperCase())} ${escapeHtml(module.n)}</span>
-      <h2>${escapeHtml(module.title)}</h2><p>${escapeHtml(module.desc)}</p>
-      <span class="module-topics">${module.topics.length} apartados · ${module.video ? 'vídeo incluido' : 'guía escrita'}</span>
+    return `<${tag}${href} class="module-row${available ? '' : ' coming'}">
+      <span class="module-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
+      <span class="module-copy"><span class="module-number">${escapeHtml(cfg.unit.toUpperCase())} ${escapeHtml(module.n)}</span><span class="module-title">${escapeHtml(module.title)}</span><span class="module-description">${escapeHtml(module.desc)}</span><span class="module-topics">${module.topics.length} apartados · ${module.video ? 'vídeo incluido' : 'guía escrita'}</span></span>
       <span class="module-state">${available ? 'ABRIR →' : 'PRÓXIMAMENTE'}</span>
     </${tag}>`;
   }).join('\n');
   const courseTitle = `${data.title}: curso gratuito en español · S2KTUX`;
   const courseHtml = `${head({ title:courseTitle, description:courseDescription, canonical:`${site}${courseRoute}`, jsonLd:courseLd, type:'website' })}<body><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">${header()}
   <main id="main-content" class="learning-main"><nav class="learning-crumbs" aria-label="Migas de pan"><a href="/">Inicio</a><span>›</span><a href="/cursos.html">Cursos</a><span>›</span><span aria-current="page">${escapeHtml(data.title)}</span></nav>
-  <div class="learning-shell"><header class="course-hero"><div class="course-kicker">${escapeHtml(data.badge)} · ${escapeHtml(cfg.exam)}</div><h1>${escapeHtml(data.title)}</h1><p>${escapeHtml(courseDescription)}</p><div class="course-stats"><span class="course-stat">${data.modules.length} ${data.modules.length === 1 ? 'módulo' : 'módulos'}</span><span class="course-stat">${data.modules.reduce((sum, module) => sum + module.topics.length, 0)} objetivos</span><span class="course-stat">gratis · sin registro</span></div></header><section class="module-grid" aria-label="Contenido del curso">${cards}</section></div></main>${footer}</div></body></html>`;
+  <div class="learning-shell"><header class="course-hero"><div class="course-kicker">${escapeHtml(data.badge)} · ${escapeHtml(cfg.exam)}</div><h1>${escapeHtml(data.title)}</h1><p>${escapeHtml(courseDescription)}</p><div class="course-stats"><span class="course-stat">${data.modules.length} ${data.modules.length === 1 ? 'módulo' : 'módulos'}</span><span class="course-stat">${data.modules.reduce((sum, module) => sum + module.topics.length, 0)} objetivos</span><span class="course-stat">gratis · sin registro</span></div></header><section class="module-list" aria-label="Contenido del curso">${modules}</section></div></main>${footer}</div></body></html>`;
   await fs.writeFile(path.join(outDir, 'index.html'), courseHtml, 'utf8');
 
   for (let index = 0; index < data.modules.length; index++) {
