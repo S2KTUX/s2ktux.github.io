@@ -1,0 +1,27 @@
+.terminal-screen{display:none;position:relative;height:60vh;min-height:440px;overflow:hidden;background:#12100b;padding:12px 8px 10px 14px}
+#term-xterm{width:100%;height:100%;min-height:0;overflow:hidden}
+.terminal-screen .xterm{width:100%;height:100%;padding:0}
+.terminal-screen .xterm-viewport{background:#12100b!important;scrollbar-color:#66543b #161009;scrollbar-width:thin}
+.terminal-screen .xterm-screen{max-height:100%}
+.terminal-screen .xterm-helper-textarea{opacity:0}
+.terminal-window.xterm-ready .terminal-screen{display:block}
+.terminal-window.xterm-ready #term-body{position:absolute!important;width:1px!important;height:1px!important;min-height:0!important;margin:-1px!important;padding:0!important;overflow:hidden!important;clip:rect(0 0 0 0)!important;clip-path:inset(50%)!important;white-space:nowrap!important}
+.terminal-toolbar{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-left:auto}
+.terminal-window-button{width:30px;height:26px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:2px solid transparent;color:#9d9078;font:16px/1 "Share Tech Mono",monospace;cursor:pointer}
+.terminal-window-button:hover,.terminal-window-button:focus-visible{border-color:#66543b;color:#e9ddc7}
+.terminal-mobile-keys{display:none;grid-template-columns:repeat(8,minmax(0,1fr));gap:5px;padding:8px;background:#241d13;border-top:2px solid #4a3627}
+.terminal-key{min-width:0;padding:8px 3px;background:#302619;border:2px solid #66543b;box-shadow:2px 2px 0 #0b0805;color:#d8cbad;font:13px/1 "Share Tech Mono",monospace;cursor:pointer;touch-action:manipulation}
+.terminal-key:active{transform:translate(2px,2px);box-shadow:none}
+.terminal-window:fullscreen,.terminal-window:-webkit-full-screen{display:flex;flex-direction:column;width:100vw;height:100vh;background:#12100b;border:0!important;box-shadow:none!important}
+.terminal-window:fullscreen .terminal-screen,.terminal-window:-webkit-full-screen .terminal-screen{height:auto;min-height:0;flex:1}
+.terminal-window:fullscreen .terminal-mobile-keys,.terminal-window:-webkit-full-screen .terminal-mobile-keys{display:grid}
+@media(max-width:760px){
+  .terminal-screen{height:58vh;min-height:390px;padding:10px 5px 8px 9px}
+  .terminal-mobile-keys{display:grid;position:sticky;bottom:0;z-index:3}
+  .terminal-key{font-size:11px}
+}
+@media(max-width:420px){
+  .terminal-screen{height:56vh;min-height:360px}
+  .terminal-mobile-keys{gap:3px;padding:6px 5px}
+  .terminal-key{padding:8px 1px;font-size:10px}
+}

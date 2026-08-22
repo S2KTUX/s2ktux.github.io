@@ -6,6 +6,8 @@ const source = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
 
 for (const asset of [
   'site-shell.css?v=20260822-header4',
+  'fonts.css?v=20260822-local',
+  'assets/fonts/press-start-2p-latin-400.woff2',
   'support.js',
   'manifest.webmanifest',
   'assets/icon-192.png'
@@ -23,7 +25,9 @@ for (const onDemandAsset of [
   'terminal-engine-kubernetes.js',
   'terminal-runtime-linux.js',
   'terminal-runtime-docker.js',
-  'terminal-runtime-kubernetes.js'
+  'terminal-runtime-kubernetes.js',
+  'terminal-xterm-renderer.js',
+  'vendor/xterm/xterm.mjs'
 ]) {
   const precacheBody = source.match(/const PRECACHE = \[([\s\S]*?)\];/)?.[1] || '';
   assert.ok(!precacheBody.includes(`'${onDemandAsset}'`), `${onDemandAsset} must load only when its mode is opened`);
@@ -37,8 +41,7 @@ assert.match(source, /req\.mode==='navigate'\s*\?\s*caches\.match\('index\.html'
 assert.match(source, /if \(req\.mode === 'navigate'\)[\s\S]*networkFirst\(req, PAGE_CACHE/, 'Navigations must be network-first');
 assert.match(source, /isCode[\s\S]*cacheFirst\(req, STATIC_CACHE\)/, 'Same-origin code must be cache-first');
 assert.match(source, /isMedia[\s\S]*staleWhileRevalidate\(event, MEDIA_CACHE/, 'Same-origin media must use stale-while-revalidate');
-assert.match(source, /EXTERNAL_CACHE_LIMIT = \d+/, 'External cache must have an explicit size limit');
-assert.match(source, /fonts\.googleapis\.com[\s\S]*fonts\.gstatic\.com/, 'External cache must use an explicit allowlist');
+assert.doesNotMatch(source, /fonts\.googleapis\.com|fonts\.gstatic\.com/, 'The worker must not retain an external font dependency');
 assert.doesNotMatch(source, /plausible\.io[^\n]*(?:cacheFirst|staleWhileRevalidate)/, 'Analytics must never be cached');
 assert.match(source, /name\.startsWith\(CACHE_PREFIX\)/, 'Activation may delete only caches owned by this site');
 assert.doesNotMatch(source, /(?:localStorage|sessionStorage|indexedDB)\.(?:clear|delete)/, 'Service worker must not erase user state');
@@ -157,17 +160,6 @@ const thirdPartyAnalytics = {
   url: 'https://plausible.io/js/script.js', headers: new Headers()
 };
 assert.equal(await dispatchFetch(thirdPartyAnalytics), null, 'Non-allowlisted third parties must bypass Cache Storage');
-
-fetchImpl = async () => new Response('font css', { status: 200 });
-for (let index = 0; index < 30; index += 1) {
-  await dispatchFetch({
-    method: 'GET', mode: 'cors', destination: 'style',
-    url: `https://fonts.googleapis.com/css2?family=Test${index}`,
-    headers: new Headers({ accept: 'text/css' })
-  });
-}
-const externalBucket = [...buckets.entries()].find(([name]) => name.startsWith('s2ktux-external-'))?.[1];
-assert.ok(externalBucket && externalBucket.entries.size <= 24, 'Allowlisted third-party cache must remain bounded');
 
 await memoryCaches.open('unrelated-app-v1');
 await memoryCaches.open('s2ktux-v12');

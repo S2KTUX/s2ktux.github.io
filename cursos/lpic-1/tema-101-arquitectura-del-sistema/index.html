@@ -1,0 +1,226 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Arquitectura del Sistema · LPIC-1 · S2KTUX</title>
+<meta name="description" content="Hardware, arranque del sistema y niveles de ejecución. Aprende 101.1 Determinar y configurar hardware, 101.2 Arranque del sistema (BIOS/UEFI, GRUB), 101.3 Niveles de ejecución / targets y apagado con ejemplos en español."><meta name="robots" content="index,follow,max-image-preview:large">
+<link rel="canonical" href="https://s2ktux.github.io/cursos/lpic-1/tema-101-arquitectura-del-sistema/"><meta name="theme-color" content="#f6ecd9">
+<meta property="og:type" content="article"><meta property="og:site_name" content="S2KTUX"><meta property="og:locale" content="es_ES">
+<meta property="og:title" content="Arquitectura del Sistema · LPIC-1 · S2KTUX"><meta property="og:description" content="Hardware, arranque del sistema y niveles de ejecución. Aprende 101.1 Determinar y configurar hardware, 101.2 Arranque del sistema (BIOS/UEFI, GRUB), 101.3 Niveles de ejecución / targets y apagado con ejemplos en español."><meta property="og:url" content="https://s2ktux.github.io/cursos/lpic-1/tema-101-arquitectura-del-sistema/">
+<meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Arquitectura del Sistema · LPIC-1 · S2KTUX"><meta name="twitter:description" content="Hardware, arranque del sistema y niveles de ejecución. Aprende 101.1 Determinar y configurar hardware, 101.2 Arranque del sistema (BIOS/UEFI, GRUB), 101.3 Niveles de ejecución / targets y apagado con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static1">
+<script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Arquitectura del Sistema","description":"Hardware, arranque del sistema y niveles de ejecución.","url":"https://s2ktux.github.io/cursos/lpic-1/tema-101-arquitectura-del-sistema/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"LPIC-1","teaches":["101.1 Determinar y configurar hardware","101.2 Arranque del sistema (BIOS/UEFI, GRUB)","101.3 Niveles de ejecución / targets y apagado"],"isPartOf":{"@type":"Course","name":"LPIC-1","url":"https://s2ktux.github.io/cursos/lpic-1/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"LPIC-1","item":"https://s2ktux.github.io/cursos/lpic-1/"},{"@type":"ListItem","position":4,"name":"Arquitectura del Sistema","item":"https://s2ktux.github.io/cursos/lpic-1/tema-101-arquitectura-del-sistema/"}]}]}</script>
+<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
+<script type="module" src="/learning-pages.js?v=20260822-static1"></script>
+</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
+  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
+    <a class="site-logo" href="/" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
+    <nav class="site-nav" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
+      <a class="navlink nav-home" href="/">Inicio</a>
+      <a class="navlink" href="/cursos.html" style="color:var(--head);border-bottom:3px solid var(--accent)" aria-current="page">Cursos</a>
+      <a class="navlink" href="/terminal.html">Terminal</a>
+      <a class="navlink" href="/proyectos.html">Proyectos</a>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon></span></button>
+    </nav>
+  </div>
+</div>
+      <main id="main-content" class="learning-main"><nav class="learning-crumbs" aria-label="Migas de pan"><a href="/">Inicio</a><span>›</span><a href="/cursos.html">Cursos</a><span>›</span><a href="/cursos/lpic-1/">LPIC-1</a><span>›</span><span aria-current="page">Tema 1</span></nav>
+      <div class="learning-shell"><div class="lesson-topline"><span class="lesson-counter">Tema 1 / 10</span><span class="lesson-progress" aria-label="Progreso del curso: 10%"><span style="width:10%"></span></span></div>
+      <div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">LPIC-1 Examen 101</span>
+        <h1>Arquitectura del Sistema</h1>
+        <p>Determinar y configurar hardware, arranque del sistema y gestión de niveles de ejecución.</p>
+
+        <a href="https://youtu.be/enwp35IHCic" target="_blank" rel="noopener" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - TEMA 101</strong>
+                <span>Hardware, Boot y Runlevels</span>
+            </div>
+        </a>
+    </header>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h2>Objetivos del bloque</h2>
+            <ul>
+                <li><a href="#101.1">101.1 Determinar y configurar hardware</a></li>
+                <li><a href="#101.2">101.2 Arranque del Sistema</a></li>
+                <li><a href="#101.3">101.3 Niveles de ejecución y apagado</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+
+            <section id="101.1" class="lesson-section">
+                <h2>101.1 Determinar y configurar los ajustes de hardware</h2>
+
+                <h3>Activación de Dispositivos</h3>
+                <p>BIOS se presenta al presionar una tecla durante el arranque (F1, F2, Esc...). Aquí podemos habilitar/deshabilitar periféricos integrados, activar protección básica contra errores y cambiar configuraciones como DMA y IRQ.</p>
+
+                <h3>Inspección de dispositivos en Linux</h3>
+                <p>Podemos identificar recursos de hardware de dos formas: usando comandos o leyendo archivos específicos.</p>
+
+                <h4>Comandos:</h4>
+                <ul>
+                    <li><strong><code>lspci</code></strong>: Muestra los dispositivos conectados al bus PCI.
+                        <br>Para más información: <code>lspci -s 01:00.0 -v</code> o <code>lspci -s 04:02.0 -k</code> (más detallado).
+                    </li>
+                    <li><strong><code>lsusb</code></strong>: Muestra los dispositivos USB.
+                        <br>Opciones útiles: <code>lsusb -v -d 0424:2514</code>, <code>lsusb -t</code> (árbol). Requiere root.
+                    </li>
+                    <li><strong><code>lsmod</code></strong>: Muestra módulos cargados (Module, Size, Used by).
+                        <br>Gestión: <code>modprobe -r modulo</code> (descargar), <code>modprobe -p modulo</code> (info).
+                        <br>Configuración: Parámetros en <code>/etc/modprobe.d/</code>. Bloqueo en <code>/etc/modprobe.d/blacklist.conf</code>.
+                    </li>
+                </ul>
+
+                <h4>Archivos:</h4>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>/proc</strong><br>
+                        <small>Info sistema/procesos</small><br>
+                        <code>cpuinfo, interrupts, ioports, dma</code>
+                    </div>
+                    <div class="info-item">
+                        <strong>/sys</strong><br>
+                        <small>Interacción Kernel/Hardware</small>
+                    </div>
+                    <div class="info-item">
+                        <strong>/dev</strong><br>
+                        <small>Archivos de dispositivos</small><br>
+                        Gestionado por <strong>udev</strong>
+                    </div>
+                </div>
+                <p><strong>Udev</strong> gestiona dispositivos (coldplugs/hotplugs) usando reglas en <code>/etc/udev/rules.d/</code>. <strong>acpid</strong> gestiona eventos de energía.</p>
+
+                <h3>Dispositivos de almacenamiento</h3>
+                <p>Nomenclatura de dispositivos de bloques:</p>
+                <pre><code>/dev/hdX    # Canales IDE
+/dev/fdX    # Disquetes
+/dev/sdX    # SCSI/SATA
+/dev/mmcblkXpy # Tarjetas SD
+/dev/nvmeZnXpY # NVMe (Z=controlador, X=disco, Y=partición)</code></pre>
+            </section>
+
+            <section id="101.2" class="lesson-section">
+                <h2>101.2 Arranque del Sistema</h2>
+                <p>Para controlar un equipo, el núcleo (kernel) debe cargarse mediante un programa llamado bootloader, y este a su vez lo carga el firmware.</p>
+
+                <h3>BIOS vs UEFI</h3>
+                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                    <thead>
+                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">BIOS (Legacy)</th>
+                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">UEFI</th>
+                        </tr>
+                    </thead>
+                    <tbody style="background-color: var(--card-bg);">
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px 15px;">1. POST</td>
+                            <td style="padding: 12px 15px;">1. POST</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px 15px;">2. Activar componentes básicos</td>
+                            <td style="padding: 12px 15px;">2. Activar componentes básicos</td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid var(--border-color);">
+                            <td style="padding: 12px 15px;">3. Carga la primera etapa del gestor de arranque desde MBR (primeros 512 bytes)</td>
+                            <td style="padding: 12px 15px;">3. Lee las definiciones almacenadas en la NVRAM para ejecutar la aplicación definida</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 12px 15px;">4. La primera etapa llama a la segunda etapa que carga el kernel</td>
+                            <td style="padding: 12px 15px;">4. Si la app definida es un gestor de arranque, cargará el kernel</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p><strong>Detalles UEFI:</strong> No se basa en MBR. Usa partición ESP (EFI System Partition), admite Secure Boot y sistemas de archivos FAT12/16/32. Almacenado en GPT.</p>
+
+                <h3>El Cargador de Arranque (GRUB 2)</h3>
+                <p>Presiona <strong>Shift</strong> (BIOS) o <strong>Esc</strong> (UEFI) para invocar el menú. Parámetros del kernel comunes:</p>
+                <ul>
+                    <li><code>init:</code> Establece un iniciador alternativo (ej. init=/bin/bash)</li>
+                    <li><code>system.unit:</code> Indica la unidad a usar por systemd</li>
+                    <li><code>maxcpus:</code> Cantidad de CPUs a usar</li>
+                    <li><code>root:</code> Establece en qué partición está raíz (root=/dev/sda2)</li>
+                    <li><code>rootflags:</code> Parámetros para el filesystem raíz</li>
+                    <li><code>ro:</code> Montaje de solo lectura para raíz</li>
+                    <li><code>rw:</code> Montaje de lectura y escritura para raíz</li>
+                </ul>
+                <p>Para persistir cambios: editar <code>/etc/default/grub</code> en la línea <code>GRUB_CMDLINE_LINUX</code> y ejecutar <code>grub-mkconfig</code> o <code>update-grub</code>.</p>
+                <p>Archivos clave: <code>/boot/grub/grub.cfg</code> (configuración principal), <code>/boot/grub/i386-pc/lvm.mod</code>. Instalar en MBR: <code>grub-install /dev/sdX</code>.</p>
+
+                <h3>Inicialización del sistema</h3>
+                <p>El kernel abre <strong>initramfs</strong> (sistema de archivos raíz temporal comprimido), monta <code>/etc/fstab</code> y ejecuta el primer programa (init), que gestiona scripts y demonios.</p>
+                <p>Una vez cargado init, initramfs se elimina de la RAM. Init puede ser SysVinit, Systemd o Upstart (obsoleto).</p>
+                <p>En <strong>SysVinit</strong>, el primer programa es <code>/sbin/init</code> (PID 1). El nivel de ejecución se configura en <code>/etc/inittab</code>. Los scripts de arranque en <code>/etc/rcX.d/</code> usan prefijos <code>S</code> (Start) y <code>K</code> (Kill).</p>
+
+                <h3>Inspección de inicialización</h3>
+                <p>Los mensajes del kernel se guardan en el <strong>kernel ring buffer</strong> (se pierden al apagar o con <code>dmesg --clear</code>).</p>
+                <ul>
+                    <li><code>dmesg</code>: Muestra mensajes actuales.</li>
+                    <li><code>journalctl --list-boots</code>: Listará el número de arranques.</li>
+                    <li><code>journalctl -b 0</code>: Mensajes del inicio actual (<code>-b 1</code> el anterior).</li>
+                    <li><code>journalctl -D RUTA</code>: Mensajes en <code>/var/log/journal</code>.</li>
+                </ul>
+            </section>
+
+            <section id="101.3" class="lesson-section">
+                <h2>101.3 Cambiar los niveles de ejecución / objetivos de arranque y apagar o reiniciar el sistema</h2>
+
+                <h3>Estándar SysVinit</h3>
+                <p>Proporciona estados de sistema llamados <strong>runlevels</strong>. El responsable es <code>/sbin/init</code>, que identifica el nivel en <code>/etc/inittab</code> y carga scripts en <code>/etc/init.d/</code>.</p>
+                <p>Sintaxis <code>/etc/inittab</code>: <code>id:runlevels:action:process</code>.</p>
+
+                <div class="info-grid">
+                    <div class="info-item"><strong>0</strong><br>Apagado</div>
+                    <div class="info-item"><strong>1</strong><br>Modo monousuario (Mantenimiento)</div>
+                    <div class="info-item"><strong>2, 3, 4</strong><br>Modo multiusuario</div>
+                    <div class="info-item"><strong>5</strong><br>Modo multiusuario gráfico</div>
+                    <div class="info-item"><strong>6</strong><br>Reinicio</div>
+                </div>
+                <p><strong>Acciones:</strong> <code>boot</code>, <code>bootwait</code>, <code>sysinit</code>, <code>wait</code>, <code>respawn</code>, <code>ctrlaltdel</code>.</p>
+                <p>Comandos: <code>telinit q</code> (recargar inittab), <code>runlevel</code> (ver nivel), <code>telinit N</code> (cambiar).</p>
+
+                <h3>Systemd</h3>
+                <p>Utiliza <strong>unidades</strong>. Tipos: <code>service</code>, <code>socket</code>, <code>device</code>, <code>mount</code>, <code>automount</code>, <code>target</code>, <code>snapshot</code>.</p>
+                <p>Comandos <code>systemctl</code>:</p>
+                <pre><code>start/stop/restart unit.service
+is-active unit.service
+status unit.service
+enable/disable unit.service
+is-enabled unit.service</code></pre>
+                <p>Control de Targets (equivalente a runlevels):</p>
+                <pre><code>systemctl isolate graphical.target  # Cambiar modo
+systemctl set-default graphical.target # Establecer por defecto</code></pre>
+                <p>Nota: Systemd <strong>no</strong> utiliza <code>/etc/fstab</code>. Archivos de configuración en <code>/lib/systemd/system</code>. Listar: <code>systemctl list-unit-files --type=tipo</code>.</p>
+
+                <h3>Upstart (Obsoleto)</h3>
+                <p>Scripts en <code>/etc/init/</code>. Comandos: <code>initctl list</code>, <code>start</code>, <code>status</code>, <code>stop</code>.</p>
+
+                <h3>Apagado y Reinicio</h3>
+                <p><code>shutdown [option] time [message]</code>.</p>
+                <ul>
+                    <li>Opciones: <code>-h</code> (apagar), <code>-r</code> (reiniciar).</li>
+                    <li>Tiempo: <code>hh:mm</code>, <code>+m</code> (minutos), <code>now</code>/<code>+0</code>.</li>
+                    <li>Systemd: <code>poweroff</code>, <code>reboot</code>.</li>
+                    <li>Mensajes: <code>wall</code> (enviar a todos los usuarios).</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+</div>
+
+      <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><span></span><button class="lesson-read" type="button" data-lesson-read="lpic1:0">Marcar como leída</button><a class="lesson-nav-card next" href="/cursos/lpic-1/tema-102-instalacion-de-linux-y-gestion-de-paquetes/"><small>SIGUIENTE →</small><strong>Instalación de Linux y gestión de paquetes</strong></a></nav></div></main>
+<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
+  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
+  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
+  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
+  <div style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+</footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

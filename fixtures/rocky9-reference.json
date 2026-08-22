@@ -1,0 +1,22 @@
+{
+  "source": "docker.io/library/rockylinux:9",
+  "digest": "sha256:d7be1c094cc5845ee815d4632fe377514ee6ebcf8efaed6892889657e5ddaaa6",
+  "capturedAt": "2026-08-22",
+  "capturedRelease": "9.3",
+  "comparisonFamily": "Rocky Linux 9 / RHEL 9",
+  "locale": "C",
+  "facts": {
+    "name": "Rocky Linux",
+    "id": "rocky",
+    "codename": "Blue Onyx",
+    "architecture": "x86_64",
+    "bashVersion": "5.1.8",
+    "dnfVersion": "4.14.0",
+    "rootIdentity": "uid=0(root) gid=0(root) groups=0(root)"
+  },
+  "errorShapes": {
+    "missingFile": "ls: cannot access '/definitely-missing': No such file or directory",
+    "missingCommand": "bash: line 1: definitely-not-a-command: command not found"
+  },
+  "notes": "Se comparan invariantes de la familia EL9, no el número menor de una imagen de contenedor concreta. La terminal S2KTUX identifica explícitamente su máquina como Rocky Linux 9.4 y usa mensajes localizados en español cuando LANG=es_ES.UTF-8."
+}

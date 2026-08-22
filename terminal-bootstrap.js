@@ -14,6 +14,15 @@ if (!requested || !allowed.has(requested)) {
       import('./terminal-core.js')
     ]);
     startTerminal(engine, runtime);
+    try {
+      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260822-2');
+      await attachTerminalRenderer();
+    } catch (rendererError) {
+      console.warn('Se usa el renderizador de compatibilidad de la terminal.', rendererError);
+      document.documentElement.dataset.terminalRendererError = rendererError instanceof Error
+        ? rendererError.message
+        : String(rendererError);
+    }
   } catch (error) {
     console.error('No se pudo cargar el motor de terminal.', error);
     document.documentElement.dataset.terminalState = 'error';

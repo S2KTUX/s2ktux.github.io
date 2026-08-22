@@ -39,11 +39,12 @@ function localReference(htmlPath, ref) {
   let clean = ref.split(/[?#]/, 1)[0];
   if (!clean) return null;
   try { clean = decodeURIComponent(clean); } catch {}
-  const target = clean === '/'
+  const baseTarget = clean === '/'
     ? join(root, 'index.html')
     : clean.startsWith('/')
       ? join(root, clean.slice(1))
       : resolve(dirname(htmlPath), clean);
+  const target = clean.endsWith('/') && clean !== '/' ? join(baseTarget, 'index.html') : baseTarget;
   return { target, path: sitePath(target) };
 }
 
@@ -265,10 +266,11 @@ assert.ok(/req\.mode==='navigate'\s*\?\s*caches\.match\('index\.html'\)\s*:\s*Re
 
 const sitemap = await readFile(join(root, 'sitemap.xml'), 'utf8');
 assertWellFormedXml(sitemap, 'sitemap.xml');
-for (const expected of ['sobre.html', 'c=rhcsa&amp;m=10', 'c=docker&amp;m=0', 'c=docker&amp;m=1', 'c=docker&amp;m=2']) {
+for (const expected of ['sobre.html', '/cursos/rhcsa-9/', '/cursos/lpic-1/', '/cursos/docker/', '/cursos/kubernetes-cka/', '/cursos/docker/clase-1-fundamentos-de-docker/', '/cursos/docker/clase-2-docker-para-el-dia-a-dia/', '/cursos/docker/clase-3-docker-profesional/']) {
   assert.ok(sitemap.includes(expected), `Sitemap entry is missing: ${expected}`);
 }
-assert.doesNotMatch(sitemap, /leccion\.html\?c=kubernetes/i, 'Placeholder Kubernetes lessons must not be in the sitemap');
+assert.doesNotMatch(sitemap, /leccion\.html\?|curso\.html\?/, 'Legacy query routes must not be in the sitemap');
+assert.doesNotMatch(sitemap, /kubernetes-cka\/clase-/i, 'Placeholder Kubernetes lessons must not be in the sitemap');
 
 const dockerVideos = [
   ['docker/1/1.html', 'https://www.youtube.com/watch?v=BML40ZpS6zc'],
