@@ -8,6 +8,7 @@ const runtimeDocker = await readFile(new URL('../terminal-runtime-docker.js', im
 const runtimeKubernetes = await readFile(new URL('../terminal-runtime-kubernetes.js', import.meta.url), 'utf8');
 const page = await readFile(new URL('../terminal.html', import.meta.url), 'utf8');
 const bootstrap = await readFile(new URL('../terminal-bootstrap.js', import.meta.url), 'utf8');
+const xtermRenderer = await readFile(new URL('../terminal-xterm-renderer.js', import.meta.url), 'utf8');
 const joinedFlow = describeDescriptorFlow(parseRedirections('demo >out 2>&1').redirections);
 const splitFlow = describeDescriptorFlow(parseRedirections('demo 2>&1 >out').redirections);
 const redirectionForms = parseRedirections('cat <in >>out 2>>errors &>all').redirections;
@@ -30,6 +31,7 @@ const contracts = [
   ['Integrated terminal selector', /selector-room/.test(page) && /selector-machinebar/.test(page) && /selector-current-command/.test(page) && /linux-rhcsa/.test(page) && !/slot-scene/.test(page)],
   ['Mobile async input ownership', /input\.readOnly=true/.test(core) && /removeAttribute\('aria-busy'\)/.test(core) && /addEventListener\('beforeinput'/.test(core) && /foregroundProcess\|\|followTimer/.test(core)],
   ['Engine loading fallback', /try\s*\{/.test(bootstrap) && /No se pudo cargar esta máquina/.test(bootstrap) && /input\.disabled = true/.test(bootstrap)],
+  ['Professional xterm renderer', /vendor\/xterm\/xterm\.mjs/.test(xtermRenderer) && /FitAddon/.test(xtermRenderer) && /screenReaderMode:true/.test(xtermRenderer) && /minimumContrastRatio:4\.5/.test(xtermRenderer) && /term\.onData/.test(xtermRenderer) && /requestFullscreen/.test(xtermRenderer) && /terminal-mobile-keys/.test(page) && /import\('\.\/terminal-xterm-renderer\.js(?:\?[^']+)?'\)/.test(bootstrap)],
   ['SELinux causal diagnostics', /avcAudit/.test(core) && /case 'ausearch'/.test(core) && /case 'sealert'/.test(core)],
   ['Docker lifecycle state', /OOMKilled/.test(core) && /containerStatus/.test(core) && /restart policy activated/.test(core)],
   ['Kubernetes desired state', /endpointsFor/.test(core) && /readyForDeployment/.test(core) && /Deployment restored desired state/.test(core)],
@@ -52,6 +54,7 @@ const contracts = [
   ['Runtime-owned practice catalogs', /createChallenges\(ctx\)/.test(runtimeLinux) && /createChallenges\(ctx\)/.test(runtimeDocker) && /createChallenges\(ctx\)/.test(runtimeKubernetes) && !/const (?:dockerChallenges|k8sChallenges|challenges)\s*=/.test(core)],
   ['Runtime-owned manuals and completions', /manuals:\s*\{/.test(runtimeLinux) && /manuals:\s*\{/.test(runtimeDocker) && /manuals:\s*\{/.test(runtimeKubernetes) && /runtime\.manuals/.test(core) && /runtime\.completions/.test(core)],
   ['Selected runtime loading', /import\(`\.\/terminal-runtime-\$\{mode\}\.js`\)/.test(bootstrap) && /startTerminal\(engine, runtime\)/.test(bootstrap) && !/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]/.test(bootstrap)],
+  ['Mode-specific boot immersion', /const systemBootLines/.test(core) && /docker\.service - Docker Application Container Engine/.test(core) && /kubelet\.service - kubelet/.test(core) && /login: root/.test(core)],
   ['Runtime command hooks', /runtime\.createCommands/.test(core) && !/case '(?:dockerd|kubelet|crictl|kubeadm|etcdctl)'/.test(core) && /dockerd\(\{args\}\)/.test(runtimeDocker) && /kubeadm\(\{args\}\)/.test(runtimeKubernetes) && /etcdctl\(\{args\}\)/.test(runtimeKubernetes)],
 ];
 

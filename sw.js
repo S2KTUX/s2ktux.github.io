@@ -1,10 +1,9 @@
-const VERSION = 'v16';
+const VERSION = 'v17';
 const CACHE_PREFIX = 's2ktux-';
 const STATIC_CACHE = `${CACHE_PREFIX}static-${VERSION}`;
 const PAGE_CACHE = `${CACHE_PREFIX}pages-${VERSION}`;
 const MEDIA_CACHE = `${CACHE_PREFIX}media-${VERSION}`;
-const EXTERNAL_CACHE = `${CACHE_PREFIX}external-${VERSION}`;
-const CURRENT_CACHES = new Set([STATIC_CACHE, PAGE_CACHE, MEDIA_CACHE, EXTERNAL_CACHE]);
+const CURRENT_CACHES = new Set([STATIC_CACHE, PAGE_CACHE, MEDIA_CACHE]);
 
 // El shell común se guarda de entrada; cada motor se cachea al abrirlo por primera vez.
 // Así un alumno de Linux no descarga también Docker y Kubernetes.
@@ -12,15 +11,22 @@ const PRECACHE = [
   './',
   'index.html',
   'site-shell.css?v=20260822-header4',
+  'fonts.css?v=20260822-local',
+  'learning-pages.css?v=20260822-static1',
+  'learning-pages.js?v=20260822-static1',
   'support.js',
   'manifest.webmanifest',
   'assets/icon-192.png',
-  'assets/icon-512.png'
+  'assets/icon-512.png',
+  'assets/fonts/press-start-2p-latin-400.woff2',
+  'assets/fonts/vt323-latin-400.woff2',
+  'assets/fonts/share-tech-mono-latin-400.woff2',
+  'assets/fonts/space-mono-latin-400.woff2',
+  'assets/fonts/space-mono-latin-700.woff2'
 ];
 
-const PAGE_CACHE_LIMIT = 36;
+const PAGE_CACHE_LIMIT = 80;
 const MEDIA_CACHE_LIMIT = 96;
-const EXTERNAL_CACHE_LIMIT = 24;
 
 const scopeUrl = path => new URL(path, self.registration.scope).href;
 
@@ -125,14 +131,6 @@ function staleWhileRevalidate(event, cacheName, limit, allowOpaque = false) {
   });
 }
 
-function externalStrategy(url, req) {
-  // Lista blanca deliberadamente pequeña. Analítica, vídeos y cualquier otro tercero
-  // pasan por red y nunca ocupan almacenamiento offline.
-  if (url.origin === 'https://fonts.googleapis.com' && req.destination === 'style') return 'swr';
-  if (url.origin === 'https://fonts.gstatic.com' && req.destination === 'font') return 'cache-first';
-  return '';
-}
-
 self.addEventListener('fetch', event => {
   const req = event.request;
   if (req.method !== 'GET') return;
@@ -165,10 +163,6 @@ self.addEventListener('fetch', event => {
     return;
   }
 
-  const strategy = externalStrategy(url, req);
-  if (strategy === 'cache-first') {
-    event.respondWith(cacheFirst(req, EXTERNAL_CACHE, EXTERNAL_CACHE_LIMIT, true));
-  } else if (strategy === 'swr') {
-    event.respondWith(staleWhileRevalidate(event, EXTERNAL_CACHE, EXTERNAL_CACHE_LIMIT, true));
-  }
+  // Analítica, vídeos y cualquier otro tercero pasan por red y nunca ocupan
+  // almacenamiento offline. Las fuentes ya se sirven desde este mismo origen.
 });

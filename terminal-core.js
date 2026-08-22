@@ -965,10 +965,28 @@ export function startTerminal(engine, runtime = {}) {
       if(MODE==='kubernetes') k8s.pods.forEach(p=>{ if(p.status!=='CrashLoopBackOff'){p.status='Pending';p.ready='0/1';setTimeout(()=>{p.status='Running';p.ready='1/1';k8s.events.push({reason:'Started',object:'pod/'+p.name,message:'Started container '+p.name});eventAdd('kubernetes','reconcile','Pod became Running',{pod:p.name});save();},900);}});
       journalAdd('systemd','Linux boot '+bootId+' started.',6); journalAdd('systemd','Reached target Multi-User System.',6); eventAdd('kernel','boot','System boot completed',{bootId});
     };
+    const systemBootLines = () => {
+      const lines=['[    0.000000] Linux version '+KERNEL+' (mockbuild@rocky) ('+ARCH+')','[  OK  ] Started systemd-journald.service - Journal Service.','[  OK  ] Reached target local-fs.target - Local File Systems.','[  OK  ] Started NetworkManager.service - Network Manager.'];
+      if(MODE==='docker'&&dockerInstalled){
+        const error=dockerConfigError();
+        if(error){if(services.docker&&!services.docker.failed)failService('docker',error);lines.push('[FAILED] Failed to start docker.service - Docker Application Container Engine.');}
+        else if(services.containerd&&services.containerd.active)lines.push('[  OK  ] Started containerd.service - containerd container runtime.');
+        if(!error&&services.docker&&services.docker.active)lines.push('[  OK  ] Started docker.service - Docker Application Container Engine.');
+      }
+      if(MODE==='kubernetes'){
+        lines.push('[  OK  ] Started containerd.service - containerd container runtime.');
+        lines.push(services.kubelet&&services.kubelet.active?'[  OK  ] Started kubelet.service - kubelet: The Kubernetes Node Agent.':'[FAILED] Failed to start kubelet.service - kubelet: The Kubernetes Node Agent.');
+      }
+      lines.push('[  OK  ] Reached target multi-user.target - Multi-User System.');
+      lines.push('',OS_NAME,'Kernel '+KERNEL+' on an '+ARCH,'',localHostname()+' login: root','Last login: '+new Date().toString().slice(0,24)+' on tty1','');
+      return lines;
+    };
     const rebootMachine = () => {
       booting=true; recovery=null; grubState=null; interactive=null; loggedIn=false; clearBody(); promptEl.textContent=''; input.value='';
-      const finish=()=>{ persistBoot(); beginNewBoot(); if(MODE==='linux') applyFstabAtBoot(()=>startLogin()); else { loggedIn=true; currentUser='root'; cwd=['root']; loginRecords.push({user:'root',tty:'tty1',host:'',login:Date.now(),active:true}); out(OS_NAME+' ('+INITIAL_HOST+')','#8fa876'); out('Last login: '+new Date().toString().slice(0,24)+' on tty1','#a2957d'); out(''); setPrompt(); save(); } };
-      runSeq(['','Se está reiniciando el sistema...','[  OK  ] Stopped target Multi-User System.','[  OK  ] Unmounted /home.','[  OK  ] Reached target Shutdown.','reboot: Restarting system','','SeaBIOS (version s2ktux-1.16)','Booting from Hard Disk...','Cargando '+OS_NAME+'...','[  OK  ] Reached target Local File Systems.','[  OK  ] Reached target Multi-User System.',''], finish);
+      persistBoot(); beginNewBoot();
+      const finish=()=>{ if(MODE==='linux') applyFstabAtBoot(()=>startLogin()); else { loggedIn=true; currentUser='root'; cwd=['root']; loginRecords.push({user:'root',tty:'tty1',host:'',login:Date.now(),active:true}); setPrompt(); save(); } };
+      const shutdown=['','Broadcast message from root@'+localHostname()+' on pts/0:','The system will reboot now!','','[  OK  ] Stopped target multi-user.target - Multi-User System.','[  OK  ] Stopped target network.target - Network.','[  OK  ] Unmounted /home.','[  OK  ] Reached target shutdown.target - System Shutdown.','reboot: Restarting system','','SeaBIOS (version s2ktux-1.16)','Booting from Hard Disk...'];
+      runSeq(shutdown.concat(MODE==='linux'?['Cargando '+OS_NAME+'...','[  OK  ] Reached target Local File Systems.','[  OK  ] Reached target Multi-User System.','']:systemBootLines()), finish);
     };
     const bootStart = () => startGrub();
     const enterGrubMenu = () => {
@@ -1322,7 +1340,7 @@ export function startTerminal(engine, runtime = {}) {
         case 'ls': {
           const flags=args.filter(a=>a.startsWith('-')).join(''); const rest=args.filter(a=>!a.startsWith('-'));
           const segs=rest[0]?norm(rest[0]):cwd.slice(); const node=getNode(segs);
-          if(!node){err('ls: no existe: '+(rest[0]||''));break;}
+          if(!node){err("ls: no se puede acceder a '"+(rest[0]||'')+"': No existe el fichero o el directorio");break;}
           if(node.type==='file'){out(rest[0]);break;}
           let ks=Object.keys(node.children);
           if(!flags.includes('a')) ks=ks.filter(k=>!k.startsWith('.')); else ks=['.','..'].concat(ks);
@@ -1520,7 +1538,7 @@ export function startTerminal(engine, runtime = {}) {
         case 'renice': { ok('proceso reajustado de prioridad (nice) '+(args.join(' '))+'.'); break; }
         case 'chronyc': { const s=args[0]; if(s==='sources'||!s){ out('MS Name/IP address         Stratum Poll Reach LastRx Last sample'); out('^* ntp1.s2ktux.local             2   6   377    23   +0.000012s'); } else if(s==='tracking'){ out('Reference ID    : C0A80101 (ntp1.s2ktux.local)'); out('Stratum         : 3'); out('System time     : 0.000001 seconds slow of NTP time'); } else ok(''); break; }
 
-        case 'dnf': { const sub=args.find(a=>!a.startsWith('-')); const subIndex=args.indexOf(sub); const pkgs=args.slice(subIndex+1).filter(a=>!a.startsWith('-'));
+        case 'dnf': { if(args.includes('--version')){out('4.14.0');out('  Installed: dnf-0:4.14.0-9.el9.noarch at '+new Date(bootStartedAt).toISOString().replace('T',' ').slice(0,19));break;} const sub=args.find(a=>!a.startsWith('-')); const subIndex=args.indexOf(sub); const pkgs=args.slice(subIndex+1).filter(a=>!a.startsWith('-'));
           const netOps=['install','remove','update','upgrade','search','info','list','provides','group','check-update','reinstall','downgrade','makecache'];
           if(netOps.indexOf(sub)!==-1 && !net.eth0.ip){ err('Error: Failed to download metadata for repo \'baseos\': Cannot prepare internal mirrorlist: Curl error (6): Could not resolve host: mirrors.rockylinux.org'); break; }
           if(sub==='install'||sub==='upgrade'||sub==='update'||sub==='search'||sub==='list'||sub==='info'){ const rd=getNode(['etc','yum.repos.d']); let enabledOk=false; if(rd&&rd.type==='dir'){ Object.keys(rd.children).forEach(fn=>{ const f=rd.children[fn]; if(!f||f.type!=='file')return; f.content.split(/\n\s*\n/).forEach(block=>{ if(/^\s*\[/.test(block) && /enabled\s*=\s*1/.test(block)){ if(!/gpgcheck\s*=\s*1/.test(block) || /gpgkey\s*=/.test(block)) enabledOk=true; } }); }); } if(!enabledOk){ err('Error: There are no enabled repos.'); out(' Run "dnf repolist all" to see the repos you have.','#a2957d'); break; } }
@@ -2142,13 +2160,14 @@ export function startTerminal(engine, runtime = {}) {
     } else {
       currentUser='root'; loggedIn=true;
       if(!savedScroll){
-        out(OS_NAME,'#8fa876');
-        out('Kernel '+KERNEL+' on an '+ARCH); out('');
-        if(MODE==='docker'){ out('Docker Lab · '+localHostname(),'#e0a458'); out(dockerInstalled?'Docker Engine '+DOCKER_VERSION+' instalado.':'Docker Engine no está instalado. Prepara el host desde la práctica guiada o consulta el cheatsheet del entorno.','#a2957d'); }
-        else { out('CKA Lab · control-plane','#e0a458'); out('Cluster activo: 3 nodos · avisos pendientes en worker-2 y pod/api-broken.','#a2957d'); out('Inspecciona el estado del clúster y decide por dónde empezar.','#a2957d'); }
-        out('');
+        runSeq(systemBootLines(),()=>{
+          if(MODE==='docker'){ out('Docker Lab · '+localHostname(),'#e0a458'); out(dockerInstalled?'Docker Engine '+DOCKER_VERSION+' instalado.':'Docker Engine no está instalado. Prepara el host desde la práctica guiada o consulta el cheatsheet del entorno.','#a2957d'); }
+          else { out('CKA Lab · control-plane','#e0a458'); out('Cluster activo: 3 nodos · avisos pendientes en worker-2 y pod/api-broken.','#a2957d'); out('Inspecciona el estado del clúster y decide por dónde empezar.','#a2957d'); }
+          out('');setPrompt();save();input.focus();scroll();
+        });
+      } else {
+        setPrompt(); save();
       }
-      setPrompt(); save();
     }
     setTimeout(()=>{ input.focus(); scroll(); },100);
 

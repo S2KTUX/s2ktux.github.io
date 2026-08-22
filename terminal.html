@@ -3,9 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./fonts.css?v=20260822-local">
 <link rel="stylesheet" href="./site-shell.css?v=20260822-header4">
 <title>Terminales Linux, Docker y Kubernetes · S2KTUX</title>
 <meta name="description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas, rápidas e independientes dentro del navegador.">
@@ -272,19 +270,24 @@
     <div id="term-machine-label" style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--muted)">MÁQUINA · RHCSA9-LAB</div>
     <button data-change-mode class="pxbtn" style="background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer;color:var(--head);font-family:'Press Start 2P',monospace;font-size:9px;padding:10px 14px">← Cambiar terminal</button>
   </div>
-  <div style="background:#12100b;border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)">
+  <div class="terminal-window" style="background:#12100b;border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)">
     <div style="background:#241d13;padding:12px 16px;border-bottom:3px solid var(--line);display:flex;align-items:center;gap:8px">
       <span style="width:12px;height:12px;background:#ef4444;display:inline-block"></span>
       <span style="width:12px;height:12px;background:#eab308;display:inline-block"></span>
       <span style="width:12px;height:12px;background:#22c55e;display:inline-block"></span>
       <span id="term-title" style="font-family:'Share Tech Mono',monospace;font-size:14px;color:#8fa876;margin-left:12px">visitor@s2ktux: ~</span>
       <span id="term-os-label" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#9d9078">Rocky Linux 9.4 · RHCSA 9</span>
+      <span class="terminal-toolbar"><button id="term-fullscreen" type="button" class="terminal-window-button" aria-label="Abrir terminal a pantalla completa" title="Pantalla completa">⛶</button></span>
     </div>
+    <div class="terminal-screen"><div id="term-xterm"></div></div>
     <div id="term-body" role="log" aria-label="Salida de la terminal" aria-live="off" style="padding:20px;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.55;color:#d8cbad;height:60vh;min-height:440px;overflow-y:auto;background:#12100b">
       <div id="term-input-line">
         <span id="term-prompt" style="color:#8fa876;margin-right:9px;white-space:nowrap">visitor@s2ktux:~$</span>
         <label class="sr-only" for="term-input">Escribe un comando</label><input id="term-input" aria-label="Comando de terminal" aria-describedby="terminal-keyboard-help" autocomplete="off" autocapitalize="off" autocorrect="off" enterkeyhint="send" spellcheck="false">
       </div>
+    </div>
+    <div class="terminal-mobile-keys" aria-label="Teclas especiales de terminal">
+      <button type="button" class="terminal-key" data-term-key="ESC">ESC</button><button type="button" class="terminal-key" data-term-key="CTRL" aria-pressed="false">CTRL</button><button type="button" class="terminal-key" data-term-key="TAB">TAB</button><button type="button" class="terminal-key" data-term-key="UP">↑</button><button type="button" class="terminal-key" data-term-key="DOWN">↓</button><button type="button" class="terminal-key" data-term-key="LEFT">←</button><button type="button" class="terminal-key" data-term-key="RIGHT">→</button><button type="button" class="terminal-key" data-term-key="FULLSCREEN">⛶</button>
     </div>
     <div id="term-a11y-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   </div>
@@ -668,6 +671,6 @@
   <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 </div>
-<script type="module" src="./terminal-bootstrap.js"></script>
+<script type="module" src="./terminal-bootstrap.js?v=20260822-2"></script>
 </body>
 </html>
