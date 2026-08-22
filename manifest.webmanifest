@@ -1,7 +1,7 @@
 {
   "name": "S2KTUX · Aprende Linux",
   "short_name": "S2KTUX",
-  "description": "Aprende administración de sistemas Linux: RHCSA, LPIC-1, Docker y Kubernetes, con terminal simulada y apuntes claros.",
+  "description": "Aprende administración de sistemas Linux: RHCSA 9, LPIC-1, Docker y Kubernetes, con terminal simulada y apuntes claros.",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",

@@ -5,22 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./site-shell.css">
 <script src="./support.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&amp;family=VT323&amp;family=Share+Tech+Mono&amp;display=swap" rel="stylesheet">
-<title>S2KTUX · Aprende Linux, RHCSA y LPIC-1</title>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"S2KTUX","url":"https://s2ktux.github.io/","description":"Aprende administración de sistemas Linux: RHCSA, LPIC-1 y Docker, con terminal simulada y apuntes claros.","inLanguage":"es","publisher":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}}</script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/","logo":"https://s2ktux.github.io/favicon.png","description":"Formación gratuita de administración de sistemas Linux: RHCSA, LPIC-1, Docker y Kubernetes.","sameAs":["https://www.youtube.com/@S2KTUX","https://www.linkedin.com/in/alai-molina-delgado-563b70184"]}</script>
-<meta name="description" content="Aprende administración de sistemas Linux con apuntes claros, una terminal simulada y cursos para RHCSA, LPIC-1 y Docker. Teoría y práctica real, gratis.">
+<title>S2KTUX · Aprende Linux, RHCSA 9, Docker y Kubernetes</title>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"S2KTUX","url":"https://s2ktux.github.io/","description":"Aprende administración de sistemas Linux, RHCSA 9, LPIC-1, Docker y Kubernetes con terminales simuladas y cursos en español.","inLanguage":"es","publisher":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/","logo":"https://s2ktux.github.io/assets/icon-512.png","description":"Formación gratuita de administración de sistemas Linux: RHCSA 9, LPIC-1, Docker y Kubernetes.","sameAs":["https://www.youtube.com/@S2KTUX","https://www.linkedin.com/in/alai-molina-delgado-563b70184"]}</script>
+<meta name="description" content="Aprende Linux, RHCSA 9, LPIC-1, Docker y Kubernetes con cursos en español y terminales simuladas realistas. Gratis y sin registro.">
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
@@ -28,12 +24,12 @@
 <meta property="og:url" content="https://s2ktux.github.io/">
 <meta property="og:site_name" content="S2KTUX">
 <meta property="og:locale" content="es_ES">
-<meta name="twitter:title" content="S2KTUX · Aprende Linux, RHCSA y LPIC-1">
-<meta name="twitter:description" content="Aprende administración de sistemas Linux con apuntes claros, una terminal simulada y cursos para RHCSA, LPIC-1 y Docker. Teoría y práctica real, gratis.">
+<meta name="twitter:title" content="S2KTUX · Aprende Linux, RHCSA 9, Docker y Kubernetes">
+<meta name="twitter:description" content="Cursos en español y terminales simuladas realistas para practicar Linux, RHCSA 9, Docker y Kubernetes.">
 <meta name="author" content="S2KTUX">
 <meta property="og:type" content="website">
-<meta property="og:title" content="S2KTUX · Aprende Linux, RHCSA y LPIC-1">
-<meta property="og:description" content="Aprende administración de sistemas Linux con apuntes claros, una terminal simulada y cursos para RHCSA, LPIC-1 y Docker. Teoría y práctica real, gratis.">
+<meta property="og:title" content="S2KTUX · Aprende Linux, RHCSA 9, Docker y Kubernetes">
+<meta property="og:description" content="Cursos en español y terminales simuladas realistas para practicar Linux, RHCSA 9, Docker y Kubernetes.">
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -101,21 +97,27 @@
   setTimeout(updateIcons,150); setTimeout(updateIcons,600);
 })();
 </script>
-</helmet>
+</head>
+<body>
+<x-dc>
 
-<div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+<div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+
+<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
   <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
     <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div class="site-nav" style="display:flex;gap:30px;align-items:center">
+    <div class="site-nav" role="navigation" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
       <a class="navlink nav-home" href="index.html" style="color:var(--head);border-bottom:3px solid #d97757">Inicio</a>
       <a class="navlink" href="cursos.html">Cursos</a>
       <a class="navlink" href="terminal.html">Terminal</a>
       <a class="navlink" href="proyectos.html">Proyectos</a>
-      <button class="site-theme-toggle" data-theme-toggle="" aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon="">☾</span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle="" aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon="">☾</span></button>
     </div>
   </div>
 </div>
 
+<main id="main-content">
 <div id="top"></div>
 
 <!-- ============ HERO ============ -->
@@ -130,14 +132,14 @@
     <a href="cursos.html" class="pxbtn" style="background:#d97757;color:#fff;font-family:'Press Start 2P',monospace;font-size:12px;padding:17px 28px;border:3px solid var(--line);box-shadow:5px 5px 0 var(--line)">EMPEZAR GRATIS →</a>
     <a href="terminal.html" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:12px;padding:17px 28px;border:3px solid var(--line);box-shadow:5px 5px 0 var(--line)">PROBAR TERMINAL</a>
   </div>
-  <div style="margin-top:20px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">Gratis · sin registro · en español · RHCSA · LPIC-1 · Docker</div>
+  <div style="margin-top:20px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">Gratis · sin registro · en español · RHCSA 9 · LPIC-1 · Docker · CKA</div>
 </section>
 
 <!-- ============ MARQUEE (certificados) ============ -->
 <div style="background:var(--line);color:#f6ecd9;overflow:hidden;border-top:4px solid var(--line);border-bottom:4px solid var(--line)">
   <div style="display:flex;white-space:nowrap;animation:marquee 26s linear infinite;font-family:'Press Start 2P',monospace;font-size:13px;padding:15px 0">
-    <span style="padding:0 26px">LPIC-1</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">RHCSA EX200</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">SUSE</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">DOCKER</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">KUBERNETES</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">AWS</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">RHCE</span><span style="padding:0 26px;color:#e0a458">◆</span>
-    <span style="padding:0 26px">LPIC-1</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">RHCSA EX200</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">SUSE</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">DOCKER</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">KUBERNETES</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">AWS</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">RHCE</span><span style="padding:0 26px;color:#e0a458">◆</span>
+    <span style="padding:0 26px">LPIC-1</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">RHCSA 9 · EX200</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">SUSE</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">DOCKER</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">KUBERNETES</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">AWS</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">RHCE</span><span style="padding:0 26px;color:#e0a458">◆</span>
+    <span style="padding:0 26px">LPIC-1</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">RHCSA 9 · EX200</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">SUSE</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">DOCKER</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">KUBERNETES</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">AWS</span><span style="padding:0 26px;color:#e0a458">◆</span><span style="padding:0 26px">RHCE</span><span style="padding:0 26px;color:#e0a458">◆</span>
   </div>
 </div>
 
@@ -157,7 +159,7 @@
     </div>
     <div style="background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:22px 24px">
       <div style="font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:1px;color:#d97757;margin-bottom:9px">CERTIFICADOS</div>
-      <div style="font-size:20px;color:var(--text);line-height:1.3">LPIC-1 · RHCSA (EX200)</div>
+      <div style="font-size:20px;color:var(--text);line-height:1.3">LPIC-1 · RHCSA 9 (EX200)</div>
     </div>
     <div style="background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:22px 24px">
       <div style="font-family:'Share Tech Mono',monospace;font-size:13px;letter-spacing:1px;color:#d97757;margin-bottom:9px">AHORA MISMO</div>
@@ -205,6 +207,8 @@
   </div>
 </section>
 
+</main>
+
 <!-- ============ FOOTER ============ -->
 <footer style="max-width:1180px;margin:0 auto;padding:44px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
   <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
@@ -217,6 +221,7 @@
   <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 
+</div>
 </x-dc>
 </body>
 </html>

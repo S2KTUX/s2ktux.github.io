@@ -8,25 +8,24 @@
 <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="./site-shell.css">
 <title>Terminales Linux, Docker y Kubernetes · S2KTUX</title>
-<meta name="description" content="Practica Linux para RHCSA, Docker y Kubernetes para CKA en tres terminales simuladas, rápidas e independientes dentro del navegador.">
+<meta name="description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas, rápidas e independientes dentro del navegador.">
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
-<link rel="icon" type="image/png" href="favicon.png">
-<link rel="apple-touch-icon" href="favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 <link rel="canonical" href="https://s2ktux.github.io/terminal.html">
 <meta property="og:url" content="https://s2ktux.github.io/terminal.html">
 <meta property="og:site_name" content="S2KTUX">
 <meta property="og:locale" content="es_ES">
 <meta name="twitter:title" content="Terminales Linux, Docker y Kubernetes · S2KTUX">
-<meta name="twitter:description" content="Practica Linux para RHCSA, Docker y Kubernetes para CKA en tres terminales simuladas e independientes.">
+<meta name="twitter:description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas e independientes.">
 <meta name="author" content="S2KTUX">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Terminales Linux, Docker y Kubernetes · S2KTUX">
-<meta property="og:description" content="Practica Linux para RHCSA, Docker y Kubernetes para CKA en tres terminales simuladas e independientes.">
+<meta property="og:description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas e independientes.">
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -121,10 +120,45 @@
     document.addEventListener('click', function(e){
       var t=e.target;
       var b=t && t.closest && t.closest('[data-theme-toggle]'); if(b){ e.preventDefault(); window.__toggleTheme(); return; }
-      var tab=t && t.closest && t.closest('.cs-tab'); if(tab){ var key=tab.getAttribute('data-cs-tab'); var root=tab.closest('.cs'); root.querySelectorAll('.cs-tab').forEach(function(x){ x.setAttribute('data-active', x.getAttribute('data-cs-tab')===key?'1':'0'); }); root.querySelectorAll('.cs-panel').forEach(function(p){ p.setAttribute('data-active', p.getAttribute('data-cs-panel')===key?'1':'0'); }); }
+      var tab=t && t.closest && t.closest('.cs-tab'); if(tab){ activateCheatTab(tab,false); }
     });
   }
   document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateIcons,150); });
+  function activateCheatTab(tab,moveFocus){
+    if(!tab)return;
+    var root=tab.closest('.cs'),key=tab.getAttribute('data-cs-tab');
+    var tabs=[].slice.call(root.querySelectorAll('.cs-tab:not([hidden])'));
+    tabs.forEach(function(x){var on=x===tab;x.setAttribute('data-active',on?'1':'0');x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;});
+    root.querySelectorAll('.cs-panel').forEach(function(p){var on=p.getAttribute('data-cs-panel')===key;p.setAttribute('data-active',on?'1':'0');p.hidden=!on;});
+    if(moveFocus)tab.focus();
+  }
+  function initCheatTabs(){
+    document.querySelectorAll('.cs-tabs').forEach(function(list,n){
+      list.setAttribute('role','tablist');list.setAttribute('aria-label','Secciones del cheatsheet');
+      var tabs=[].slice.call(list.querySelectorAll('.cs-tab'));
+      tabs.forEach(function(tab,i){
+        var key=tab.getAttribute('data-cs-tab'),panel=tab.closest('.cs').querySelector('[data-cs-panel="'+key+'"]');
+        tab.setAttribute('role','tab');tab.id='cs-tab-'+n+'-'+i;tab.tabIndex=tab.getAttribute('data-active')==='1'?0:-1;tab.setAttribute('aria-selected',tab.getAttribute('data-active')==='1'?'true':'false');
+        if(panel){panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',tab.id);panel.hidden=panel.getAttribute('data-active')!=='1';}
+      });
+      list.addEventListener('keydown',function(e){
+        var visible=tabs.filter(function(t){return !t.hidden&&t.style.display!=='none';}),i=visible.indexOf(document.activeElement),next=i;
+        if(i<0)return;
+        if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(i+1)%visible.length;
+        else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(i-1+visible.length)%visible.length;
+        else if(e.key==='Home')next=0;else if(e.key==='End')next=visible.length-1;
+        else if(e.key==='Enter'||e.key===' '){e.preventDefault();activateCheatTab(visible[i],false);return;}else return;
+        e.preventDefault();activateCheatTab(visible[next],true);
+      });
+    });
+  }
+  window.__syncCheatTabs=initCheatTabs;
+  document.addEventListener('DOMContentLoaded',function(){initCheatTabs();setTimeout(initCheatTabs,500);});
+  document.addEventListener('keydown',function(e){
+    if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='m'){
+      var leave=document.querySelector('[data-change-mode]');if(leave){e.preventDefault();leave.focus();}
+    }
+  });
   setTimeout(updateIcons,150); setTimeout(updateIcons,600);
 })();
 (function(){
@@ -157,7 +191,7 @@
   function initSelectorKeyboard(){
     var slots=[].slice.call(document.querySelectorAll('.terminal-slot')),selected=0;
     var command=document.getElementById('selector-current-command'),status=document.getElementById('selector-current-status');
-    var info={linux:['linux-rhcsa','Rocky Linux 9 · preparado'],docker:['docker-host','Docker Engine · preparado'],kubernetes:['kubernetes-cka','Clúster CKA · preparado']};
+    var info={linux:['linux-rhcsa9','Rocky Linux 9.4 · preparado'],docker:['docker-host','Docker Engine · preparado'],kubernetes:['kubernetes-cka','Clúster CKA · preparado']};
     function choose(i,focus){selected=(i+slots.length)%slots.length;slots.forEach(function(s,n){var on=n===selected;s.setAttribute('data-selected',on?'1':'0');s.setAttribute('aria-selected',on?'true':'false');});var mode=slots[selected]&&slots[selected].getAttribute('data-pick-mode'),data=info[mode];if(data&&command)command.textContent=data[0];if(data&&status){var led=status.querySelector('i');status.textContent=' '+data[1];if(led)status.insertBefore(led,status.firstChild);}if(focus&&slots[selected])slots[selected].focus();}
     slots.forEach(function(s,i){s.addEventListener('mouseenter',function(){choose(i,false);});s.addEventListener('focus',function(){choose(i,false);});});
     document.addEventListener('keydown',function(e){var sel=document.getElementById('mode-select');if(!sel||sel.style.display==='none'||!slots.length)return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();choose(selected+1,true);}else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();choose(selected-1,true);}else if(e.key==='Enter'){e.preventDefault();slots[selected].click();}});
@@ -186,13 +220,13 @@
       <div class="selector-current" aria-live="polite">
         <span class="selector-current-prompt">s2ktux@lab:~$</span>
         <span>launch</span>
-        <span class="selector-command-wrap"><b id="selector-current-command">linux-rhcsa</b><i class="selector-cursor" aria-hidden="true"></i></span>
-        <small id="selector-current-status"><i aria-hidden="true"></i> Rocky Linux 9 · preparado</small>
+        <span class="selector-command-wrap"><b id="selector-current-command">linux-rhcsa9</b><i class="selector-cursor" aria-hidden="true"></i></span>
+        <small id="selector-current-status"><i aria-hidden="true"></i> Rocky Linux 9.4 · preparado</small>
       </div>
       <div class="selector-list" role="listbox" aria-label="Entornos disponibles">
           <button data-pick-mode="linux" class="terminal-slot" role="option" aria-selected="false">
             <span class="slot-index">01</span>
-            <span class="slot-copy"><span class="slot-title">LINUX · RHCSA</span><span class="slot-focus">GRUB · usuarios · SELinux · systemd · red · LVM</span></span>
+            <span class="slot-copy"><span class="slot-title">LINUX · RHCSA 9</span><span class="slot-focus">Rocky 9.4 · GRUB · SELinux · systemd · red · LVM</span></span>
             <span class="slot-action">ENTRAR ↵</span>
           </button>
           <button data-pick-mode="docker" class="terminal-slot" role="option" aria-selected="false">
@@ -213,10 +247,10 @@
 
 <div id="terminal-shell" class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
 <a class="skip-link" href="#term-input">Saltar a la terminal</a>
-<div style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
+<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
   <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
     <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div class="site-nav" style="display:flex;gap:30px;align-items:center">
+    <div class="site-nav" role="navigation" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
       <a class="navlink nav-home" href="index.html">Inicio</a>
       <a class="navlink" href="cursos.html">Cursos</a>
       <a class="navlink" href="terminal.html" style="color:var(--head);border-bottom:3px solid #d97757">Terminal</a>
@@ -226,15 +260,16 @@
   </div>
 </div>
 
+<main id="main-content">
 <section style="max-width:1200px;margin:0 auto;width:100%;padding:44px 32px 14px;text-align:center">
-  <div id="term-eyebrow" style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">SANDBOX · LINUX / RHCSA</div>
-  <h1 id="term-heading" style="font-family:'Press Start 2P',monospace;font-size:28px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:18px">Terminal Linux · RHCSA</h1>
-  <p id="term-description" style="font-size:22px;max-width:780px;margin:0 auto;color:var(--text);line-height:1.35">Una máquina Linux completa para practicar el RHCSA: recuperación mediante GRUB, usuarios, permisos, SELinux, systemd, red y almacenamiento. Escribe <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">help</span> o <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">man &lt;comando&gt;</span>.</p>
+  <div id="term-eyebrow" style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">SANDBOX · LINUX / RHCSA 9</div>
+  <h1 id="term-heading" style="font-family:'Press Start 2P',monospace;font-size:28px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:18px">Terminal Linux · RHCSA 9</h1>
+  <p id="term-description" style="font-size:22px;max-width:780px;margin:0 auto;color:var(--text);line-height:1.35">Una máquina Rocky Linux 9.4 para practicar RHCSA 9: recuperación mediante GRUB, usuarios, permisos, SELinux, systemd, red y almacenamiento. Escribe <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">help</span> o <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">man &lt;comando&gt;</span>.</p>
 </section>
 
 <section style="max-width:1200px;margin:0 auto;width:100%;padding:16px 32px 30px">
   <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px">
-    <div id="term-machine-label" style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--muted)">MÁQUINA · RHCSA-LAB</div>
+    <div id="term-machine-label" style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--muted)">MÁQUINA · RHCSA9-LAB</div>
     <button data-change-mode class="pxbtn" style="background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer;color:var(--head);font-family:'Press Start 2P',monospace;font-size:9px;padding:10px 14px">← Cambiar terminal</button>
   </div>
   <div style="background:#12100b;border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)">
@@ -243,22 +278,23 @@
       <span style="width:12px;height:12px;background:#eab308;display:inline-block"></span>
       <span style="width:12px;height:12px;background:#22c55e;display:inline-block"></span>
       <span id="term-title" style="font-family:'Share Tech Mono',monospace;font-size:14px;color:#8fa876;margin-left:12px">visitor@s2ktux: ~</span>
-      <span id="term-os-label" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#5c5344">Rocky Linux 9 · RHCSA lab</span>
+      <span id="term-os-label" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#9d9078">Rocky Linux 9.4 · RHCSA 9</span>
     </div>
-    <div id="term-body" role="log" aria-label="Salida de la terminal" aria-live="polite" aria-relevant="additions" style="padding:20px;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.55;color:#d8cbad;height:60vh;min-height:440px;overflow-y:auto;background:#12100b">
+    <div id="term-body" role="log" aria-label="Salida de la terminal" aria-live="off" style="padding:20px;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.55;color:#d8cbad;height:60vh;min-height:440px;overflow-y:auto;background:#12100b">
       <div id="term-input-line">
         <span id="term-prompt" style="color:#8fa876;margin-right:9px;white-space:nowrap">visitor@s2ktux:~$</span>
-        <label class="sr-only" for="term-input">Escribe un comando</label><input id="term-input" aria-label="Comando de terminal" autocomplete="off" autocapitalize="off" spellcheck="false" autofocus>
+        <label class="sr-only" for="term-input">Escribe un comando</label><input id="term-input" aria-label="Comando de terminal" aria-describedby="terminal-keyboard-help" autocomplete="off" autocapitalize="off" autocorrect="off" enterkeyhint="send" spellcheck="false">
       </div>
     </div>
+    <div id="term-a11y-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   </div>
   <div id="term-actions" style="text-align:center;margin-top:14px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button id="term-reboot" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">⟳ Reiniciar → GRUB</button><button id="term-rebootm" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↻ Reiniciar máquina</button><button id="term-reset" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↺ Resetear terminal</button><button id="term-solved" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">✓ Máquina resuelta</button></div>
-  <div style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">↑ / ↓ historial · <span style="color:#c2650a">Ctrl+R</span> busca · <span style="color:#c2650a">Tab</span> completa · <span style="color:#c2650a">Ctrl+C / Z / D</span> señal, pausa y EOF · <span style="color:#c2650a">| &gt; 2&gt;</span> tuberías y redirecciones</div>
+  <div id="terminal-keyboard-help" style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)">↑ / ↓ historial · <span style="color:#c2650a">Ctrl+R</span> busca · <span style="color:#c2650a">Tab</span> completa · <span style="color:#c2650a">Ctrl+C / Z / D</span> señal, pausa y EOF · <span style="color:#c2650a">Ctrl+Mayús+M</span> sale del teclado · <span style="color:#c2650a">| &gt; 2&gt;</span> tuberías y redirecciones</div>
 </section>
 
 <section style="max-width:1200px;margin:0 auto;width:100%;padding:10px 32px 50px">
   <details class="cs" open>
-    <summary id="cheatsheet-title">CHEATSHEET · LINUX / RHCSA</summary>
+    <summary id="cheatsheet-title">CHEATSHEET · LINUX / RHCSA 9</summary>
     <div class="cs-tabs">
       <div class="cs-tab" data-modes="linux" data-cs-tab="files" data-active="1">Ficheros</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="perms" data-active="0">Permisos y ACL</div>
@@ -596,7 +632,7 @@
 
 <section style="max-width:1200px;margin:0 auto;width:100%;padding:6px 32px 50px">
   <details class="cs" id="practice-panel" open>
-    <summary id="practice-title">PRÁCTICAS GUIADAS · RHCSA</summary>
+    <summary id="practice-title">PRÁCTICAS GUIADAS · RHCSA 9</summary>
     <div style="padding:20px 22px">
       <div id="exam-panel" class="exam-panel">
         <div style="font-family:'Press Start 2P',monospace;font-size:11px;line-height:1.6;color:#8fa876">SIMULACRO CKA</div>
@@ -618,6 +654,8 @@
     </div>
   </details>
 </section>
+
+</main>
 
 <footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
   <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>

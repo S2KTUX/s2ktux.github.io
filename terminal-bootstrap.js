@@ -8,11 +8,12 @@ if (!requested || !allowed.has(requested)) {
 } else {
   const mode = requested;
   try {
-    const [{ default: engine }, { startTerminal }] = await Promise.all([
+    const [{ default: engine }, { default: runtime }, { startTerminal }] = await Promise.all([
       import(`./terminal-engine-${mode}.js`),
+      import(`./terminal-runtime-${mode}.js`),
       import('./terminal-core.js')
     ]);
-    startTerminal(engine);
+    startTerminal(engine, runtime);
   } catch (error) {
     console.error('No se pudo cargar el motor de terminal.', error);
     document.documentElement.dataset.terminalState = 'error';

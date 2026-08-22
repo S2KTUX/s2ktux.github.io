@@ -15,7 +15,7 @@
 
     <div class="lesson-layout">
         <aside class="lesson-toc">
-            <h4>Objetivos del bloque</h4>
+            <h2>Objetivos del bloque</h2>
             <ul>
                 <li><a href="#103.1">103.1 Trabajar desde la línea de comandos</a></li>
                 <li><a href="#103.2">103.2 Procesar secuencias de texto usando filtros</a></li>
@@ -28,12 +28,12 @@
             </ul>
         </aside>
 
-        <div class="course-content">
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
             
             <section id="103.1" class="lesson-section">
-                <h3>103.1 Trabajar desde la línea de comandos</h3>
+                <h2>103.1 Trabajar desde la línea de comandos</h2>
                 
-                <h4>Obteniendo información del sistema</h4>
+                <h3>Obteniendo información del sistema</h3>
                 <ul>
                     <li><strong><code>pwd</code></strong>: Muestra el directorio actual.</li>
                     <li><strong><code>touch</code></strong>: Crea un archivo vacío.</li>
@@ -41,7 +41,7 @@
                     <li><strong><code>uname -a</code></strong>: Muestra información completa del sistema.</li>
                 </ul>
 
-                <h4>Información de los comandos</h4>
+                <h3>Información de los comandos</h3>
                 <ul>
                     <li><strong><code>man</code></strong>: Muestra el manual de un comando.</li>
                     <li><strong><code>apropos</code></strong>: Busca páginas de manual por palabra clave.</li>
@@ -50,7 +50,7 @@
                     <li><strong><code>history</code></strong>: Lista comandos ejecutados.</li>
                 </ul>
 
-                <h4>Variables de entorno</h4>
+                <h3>Variables de entorno</h3>
                 <ul>
                     <li><strong><code>env</code></strong>: Muestra todas las variables de entorno.</li>
                     <li><strong><code>echo $VAR</code></strong>: Muestra el valor de una variable.</li>
@@ -58,7 +58,7 @@
                     <li><strong><code>unset VAR</code></strong>: Elimina una variable.</li>
                 </ul>
 
-                <h4>Caracteres especiales</h4>
+                <h3>Caracteres especiales</h3>
                 <p>Para interpretar caracteres especiales literalmente (como espacios), usa:</p>
                 <ul>
                     <li><strong>Comillas simples <code>''</code></strong>: Interpreta todo literalmente.</li>
@@ -68,9 +68,9 @@
             </section>
 
             <section id="103.2" class="lesson-section">
-                <h3>103.2 Procesar secuencias de texto usando filtros</h3>
+                <h2>103.2 Procesar secuencias de texto usando filtros</h2>
                 
-                <h4>Redirecciones y Tuberías</h4>
+                <h3>Redirecciones y Tuberías</h3>
                 <ul>
                     <li><strong><code>></code></strong>: Redirige salida (sobrescribe).</li>
                     <li><strong><code>>></code></strong>: Añade salida.</li>
@@ -78,7 +78,7 @@
                     <li><strong><code>grep</code></strong>: Filtra texto (<code>-i</code> ignora mayúsculas).</li>
                 </ul>
 
-                <h4>Archivos comprimidos</h4>
+                <h3>Archivos comprimidos</h3>
                 <ul>
                     <li><strong><code>gzip</code> / <code>gunzip</code></strong>: Compresión estándar.</li>
                     <li><strong><code>bzip2</code> / <code>bunzip2</code></strong>: Compresión alternativa.</li>
@@ -86,7 +86,7 @@
                     <li><strong><code>zcat</code>, <code>bzcat</code>, <code>xzcat</code></strong>: Leen contenido sin descomprimir.</li>
                 </ul>
 
-                <h4>Ver y manipular texto</h4>
+                <h3>Ver y manipular texto</h3>
                 <ul>
                     <li><strong><code>less</code></strong>: Navega página por página.</li>
                     <li><strong><code>head</code> / <code>tail</code></strong>: Muestra principio o final de un archivo.</li>
@@ -96,7 +96,7 @@
                     <li><strong><code>tr</code></strong>: Sustituye caracteres.</li>
                 </ul>
 
-                <h4>Integridad de datos</h4>
+                <h3>Integridad de datos</h3>
                 <ul>
                     <li><strong><code>sha256sum archivo</code></strong>: Genera hash.</li>
                     <li><strong><code>sha256sum -c archivo_hash</code></strong>: Verifica integridad.</li>
@@ -104,9 +104,9 @@
             </section>
 
             <section id="103.3" class="lesson-section">
-                <h3>103.3 Administración básica de archivos</h3>
+                <h2>103.3 Administración básica de archivos</h2>
                 
-                <h4>Comandos básicos</h4>
+                <h3>Comandos básicos</h3>
                 <ul>
                     <li><strong><code>ls -l</code></strong>: Lista con detalles (permisos, propietario).</li>
                     <li><strong><code>cp</code></strong>: Copia archivos (<code>-r</code> para directorios).</li>
@@ -115,14 +115,14 @@
                     <li><strong><code>mkdir</code> / <code>rmdir</code></strong>: Crea/Elimina directorios.</li>
                 </ul>
 
-                <h4>Globbing y Wildcards</h4>
+                <h3>Globbing y Wildcards</h3>
                 <ul>
                     <li><strong><code>*</code></strong>: Coincide con cualquier cadena.</li>
                     <li><strong><code>?</code></strong>: Coincide con un carácter.</li>
                     <li><strong><code>[...]</code></strong>: Coincide con un conjunto o rango.</li>
                 </ul>
 
-                <h4>Encontrar archivos (<code>find</code>)</h4>
+                <h3>Encontrar archivos (<code>find</code>)</h3>
                 <ul>
                     <li><strong>Por nombre:</strong> <code>find / -name "archivo.txt"</code>.</li>
                     <li><strong>Por tipo:</strong> <code>find / -type d</code> (directorios).</li>
@@ -130,7 +130,7 @@
                     <li><strong>Ejecutar acción:</strong> <code>find ... -exec comando {} \;</code>.</li>
                 </ul>
 
-                <h4>Archivado (<code>tar</code>)</h4>
+                <h3>Archivado (<code>tar</code>)</h3>
                 <ul>
                     <li><strong>Crear:</strong> <code>tar -czvf archivo.tar.gz dir/</code>.</li>
                     <li><strong>Extraer:</strong> <code>tar -xzvf archivo.tar.gz</code>.</li>
@@ -139,27 +139,27 @@
             </section>
 
             <section id="103.4" class="lesson-section">
-                <h3>103.4 Uso de secuencias, tuberías y redirecciones</h3>
+                <h2>103.4 Uso de secuencias, tuberías y redirecciones</h2>
                 
-                <h4>Redirecciones de E/S</h4>
+                <h3>Redirecciones de E/S</h3>
                 <ul>
-                    <li><strong><code><</code></strong>: Entrada desde archivo.</li>
-                    <li><strong><code>></code> / <code>>></code></strong>: Salida estándar (sobrescribir / añadir).</li>
-                    <li><strong><code>2></code> / <code>2>></code></strong>: Salida de error.</li>
-                    <li><strong><code>&></code></strong>: Redirige salida y error juntos.</li>
+                    <li><strong><code>&lt;</code></strong>: Entrada desde archivo.</li>
+                    <li><strong><code>&gt;</code> / <code>&gt;&gt;</code></strong>: Salida estándar (sobrescribir / añadir).</li>
+                    <li><strong><code>2&gt;</code> / <code>2&gt;&gt;</code></strong>: Salida de error.</li>
+                    <li><strong><code>&amp;&gt;</code></strong>: Redirige salida y error juntos.</li>
                 </ul>
 
-                <h4>Here Document y Here String</h4>
+                <h3>Here Document y Here String</h3>
                 <ul>
                     <li><strong>Here Document:</strong> <code>comando << EOF ... EOF</code> (varias líneas).</li>
                     <li><strong>Here String:</strong> <code>comando <<< "texto"</code> (una línea).</li>
                 </ul>
 
-                <h4>Tuberías (Pipes)</h4>
+                <h3>Tuberías (Pipes)</h3>
                 <p>Conectar salida de un comando con entrada de otro: <code>cmd1 | cmd2</code>.</p>
                 <p>Ejemplo: <code>ps aux | grep python | sort</code>.</p>
 
-                <h4>Sustitución de comando</h4>
+                <h3>Sustitución de comando</h3>
                 <ul>
                     <li><strong>Comillas invertidas:</strong> <code>`comando`</code>.</li>
                     <li><strong>Dólar paréntesis:</strong> <code>$(comando)</code>.</li>
@@ -168,25 +168,25 @@
             </section>
 
             <section id="103.5" class="lesson-section">
-                <h3>103.5 Crear, supervisar y matar procesos</h3>
+                <h2>103.5 Crear, supervisar y matar procesos</h2>
                 
-                <h4>Control de trabajos</h4>
+                <h3>Control de trabajos</h3>
                 <ul>
-                    <li><strong><code>&</code></strong>: Ejecuta en segundo plano.</li>
+                    <li><strong><code>&amp;</code></strong>: Ejecuta en segundo plano.</li>
                     <li><strong><code>jobs</code></strong>: Lista trabajos en segundo plano.</li>
                     <li><strong><code>fg</code> / <code>bg</code></strong>: Trae a primer plano / envía a segundo plano.</li>
                     <li><strong><code>nohup</code></strong>: Ejecuta inmune a cierres de sesión.</li>
                     <li><strong><code>kill</code></strong>: Envía señales a procesos (<code>-9</code> para forzar).</li>
                 </ul>
 
-                <h4>Monitoreo</h4>
+                <h3>Monitoreo</h3>
                 <ul>
                     <li><strong><code>top</code></strong>: Vista en tiempo real (teclas: M por memoria, P por CPU).</li>
                     <li><strong><code>ps</code></strong>: Vista estática (<code>ps aux</code>, <code>ps -ef</code>).</li>
                     <li><strong><code>pgrep</code> / <code>pkill</code></strong>: Busca y mata por nombre.</li>
                 </ul>
 
-                <h4>Multiplexores (Screen / Tmux)</h4>
+                <h3>Multiplexores (Screen / Tmux)</h3>
                 <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
                     <thead>
                         <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
@@ -205,16 +205,16 @@
             </section>
 
             <section id="103.6" class="lesson-section">
-                <h3>103.6 Modificar la prioridad de ejecución de los procesos</h3>
+                <h2>103.6 Modificar la prioridad de ejecución de los procesos</h2>
                 
-                <h4>El planificador y Prioridades</h4>
+                <h3>El planificador y Prioridades</h3>
                 <p>Valores <em>nice</em> van de -20 (alta prioridad) a 19 (baja). Por defecto es 0.</p>
                 <ul>
                     <li><strong>Procesos tiempo real:</strong> Prioridad 0-99.</li>
                     <li><strong>Procesos normales:</strong> Prioridad 100-139 (nice mapeado aquí).</li>
                 </ul>
 
-                <h4>Gestión de Niceness</h4>
+                <h3>Gestión de Niceness</h3>
                 <ul>
                     <li><strong><code>nice -n 10 comando</code></strong>: Inicia con prioridad 10.</li>
                     <li><strong><code>renice 15 PID</code></strong>: Cambia prioridad en ejecución.</li>
@@ -223,9 +223,9 @@
             </section>
 
             <section id="103.7" class="lesson-section">
-                <h3>103.7 Búsquedas con expresiones regulares</h3>
+                <h2>103.7 Búsquedas con expresiones regulares</h2>
                 
-                <h4>RE Básicas (grep)</h4>
+                <h3>RE Básicas (grep)</h3>
                 <ul>
                     <li><strong><code>.</code></strong>: Cualquier carácter.</li>
                     <li><strong><code>^</code></strong>: Inicio de línea.</li>
@@ -233,10 +233,10 @@
                     <li><strong><code>[...]</code></strong>: Conjunto de caracteres.</li>
                 </ul>
 
-                <h4>Clases de caracteres</h4>
+                <h3>Clases de caracteres</h3>
                 <p><code>[:alpha:]</code> (letras), <code>[:digit:]</code> (números), <code>[:lower:]</code> (minúsculas).</p>
 
-                <h4>Cuantificadores (Extended grep -E)</h4>
+                <h3>Cuantificadores (Extended grep -E)</h3>
                 <ul>
                     <li><strong><code>*</code></strong>: 0 o más.</li>
                     <li><strong><code>+</code></strong>: 1 o más.</li>
@@ -244,7 +244,7 @@
                     <li><strong><code>{n}</code></strong>: Exactamente n.</li>
                 </ul>
 
-                <h4>Comandos</h4>
+                <h3>Comandos</h3>
                 <ul>
                     <li><strong><code>grep</code></strong>: Busca texto.</li>
                     <li><strong><code>sed</code></strong>: Edita flujos de texto (ej. <code>sed 's/old/new/g'</code>).</li>
@@ -253,16 +253,16 @@
             </section>
 
             <section id="103.8" class="lesson-section">
-                <h3>103.8 Edición básica de archivos</h3>
+                <h2>103.8 Edición básica de archivos</h2>
                 
-                <h4>vi / vim</h4>
+                <h3>vi / vim</h3>
                 <ul>
                     <li><strong>Modos:</strong> Normal (navegar) e Inserción (escribir, tecla <code>i</code>).</li>
                     <li><strong>Navegación:</strong> <code>h,j,k,l</code>, <code>w</code> (palabra), <code>G</code> (fin).</li>
                     <li><strong>Acciones:</strong> <code>x</code> (borrar), <code>yy</code> (copiar), <code>p</code> (pegar), <code>u</code> (deshacer).</li>
                 </ul>
 
-                <h4>Comandos Colon (:)</h4>
+                <h3>Comandos Colon (:)</h3>
                 <ul>
                     <li><strong><code>:w</code></strong>: Guardar.</li>
                     <li><strong><code>:q</code></strong>: Salir.</li>
@@ -270,7 +270,7 @@
                     <li><strong><code>:s/old/new/g</code></strong>: Reemplazar en línea actual.</li>
                 </ul>
 
-                <h4>Editores alternativos</h4>
+                <h3>Editores alternativos</h3>
                 <ul>
                     <li><strong>nano:</strong> Simple, menú visual (<code>Ctrl+O</code> guardar, <code>Ctrl+X</code> salir).</li>
                     <li><strong>emacs:</strong> Potente, personalizable.</li>

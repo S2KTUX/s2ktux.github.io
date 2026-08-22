@@ -16,7 +16,7 @@
     <div class="lesson-layout">
 
         <aside class="lesson-toc">
-            <h4>Objetivos del bloque</h4>
+            <h2>Objetivos del bloque</h2>
             <ul>
                 <li><a href="#obj1">1. Sistemas de archivos locales</a></li>
                 <li><a href="#obj2">2. Sistemas de archivos de red (NFS)</a></li>
@@ -26,10 +26,10 @@
             </ul>
         </aside>
 
-        <div class="course-content">
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
 
            <section id="obj1" class="lesson-section">
-                <h3>1. Crear, montar y desmontar sistemas de archivos locales</h3>
+                <h2>1. Crear, montar y desmontar sistemas de archivos locales</h2>
                  <p>Linux soporta distintos sistemas de archivos. Como vimos en la clase anterior, los más comunes son <strong>ext4</strong>, <strong>xfs</strong> y <strong>vfat</strong>.</p>
                 <ul>
                     <li><strong>ext4</strong> → Sistema estándar en Linux.</li>
@@ -37,13 +37,13 @@
                     <li><strong>vfat</strong> → Compatible con otros sistemas operativos, común en USB.</li>
                 </ul>
                  <p>Para crear un sistema de archivos utilizamos <code>mkfs</code> según el tipo. En el ejemplo creamos dos particiones nuevas, una en ext4 y otra en xfs, y posteriormente las montamos.</p>
-                <img src="/images/mkfs.png" alt="mkfs ejemplos" >
-                <img src="/images/comproba-mkfs.png" alt="mkfs ejemplo comprobación" >
-                <p>Una vez formateado y montado, podemos hacerlo permanente añadiéndolo a <code>/etc/fstab</code>y para desmontar usamos <code>umount</code>.</p>
+                <img src="/images/mkfs.png" alt="mkfs ejemplos" width="811" height="653" style="max-width:100%;height:auto">
+                <img src="/images/comproba-mkfs.png" alt="mkfs ejemplo comprobación" width="553" height="304" style="max-width:100%;height:auto">
+                <p>Una vez formateado y montado, podemos hacerlo permanente añadiéndolo a <code>/etc/fstab</code> y para desmontar usamos <code>umount</code>.</p>
             </section>
 
             <section id="obj2" class="lesson-section">
-                <h3>2. Montar y desmontar sistemas de archivos de red usando NFS</h3>
+                <h2>2. Montar y desmontar sistemas de archivos de red usando NFS</h2>
                  <p>NFS permite montar directorios remotos como si fueran locales. Es muy común en entornos empresariales y es un objetivo típico del examen RHCSA.</p>
                 <p>Puede pedirse de dos formas:</p>
                 <ul>
@@ -51,11 +51,11 @@
                     <li>Configuración completamente local.</li>
                 </ul>
                  <p><strong>Configuración en el SERVER:</strong> instalar NFS, crear directorio compartido, asignar permisos, configurar <code>/etc/exports</code> y abrir firewall.</p>
-                <img src="/images/nfs-remote.png" alt="nfs remote ejemplo" >
+                <img src="/images/nfs-remote.png" alt="nfs remote ejemplo" width="842" height="520" style="max-width:100%;height:auto">
                 <p><strong>Configuración en el CLIENTE:</strong> instalar cliente NFS, crear punto de montaje y montar manualmente o mediante <code>/etc/fstab</code>.</p>
-                <img src="/images/nfs-client.png" alt="mount nfs client">
+                <img src="/images/nfs-client.png" alt="mount nfs client" width="1232" height="490" style="max-width:100%;height:auto">
                 <p>También pueden pedir realizar todo localmente:</p>
-                <img src="/images/nfs-local.png" alt="mount nfs local">
+                <img src="/images/nfs-local.png" alt="mount nfs local" width="1031" height="576" style="max-width:100%;height:auto">
                 <p>El error <em>stale file handle</em> aparece cuando el recurso cambia sin desmontar previamente. Soluciones:</p>
                 <ul>
                     <li><strong>exportfs -au</strong> y luego <code>exportfs -ar</code></li>
@@ -64,7 +64,7 @@
             </section>
 
             <section id="obj3" class="lesson-section">
-                <h3>3. Configurar autofs</h3>
+                <h2>3. Configurar autofs</h2>
                 <p><strong>autofs</strong> monta sistemas automáticamente cuando se accede a ellos y los desmonta tras un tiempo de inactividad, ahorrando recursos.</p>
                 <p>Existen dos tipos de mapas:</p>
                 <ul>
@@ -72,20 +72,20 @@
                     <li><strong>Mapa directo</strong> → Usa rutas absolutas mediante /-.</li>
                 </ul>
                 <p>Instalamos el servicio y configuramos el archivo principal:</p>
-                <img src="/images/auto-master.png" alt="autofs ejemplo" >
+                <img src="/images/auto-master.png" alt="autofs ejemplo" width="744" height="232" style="max-width:100%;height:auto">
                 
                 <p>Después configuramos los mapas (las rutas deben existir previamente en <code>/etc/exports</code>):</p>
 
-                <img src="/images/auto-indirecto.png" alt="Mapa indirecto autofs">
+                <img src="/images/auto-indirecto.png" alt="Mapa indirecto autofs" width="785" height="129" style="max-width:100%;height:auto">
 
                 <p>Ejemplo de mapas directo e indirecto :</p>
 
-                <img src="/images/auto-direct.png" alt="Mapa directo" >
-                <img src="/images/auto-ejemplo.png" alt="Resultado autofs">
-                <p>Tras cualquier cambio recuerda reiniciar el servicio con <code>systemctl restart autofs</code>Evita usar mapas directo e indirecto en la misma ruta. En el examen normalmente se espera dominio del mapa indirecto.</p>
+                <img src="/images/auto-direct.png" alt="Mapa directo" width="763" height="143" style="max-width:100%;height:auto">
+                <img src="/images/auto-ejemplo.png" alt="Resultado autofs" width="798" height="136" style="max-width:100%;height:auto">
+                <p>Tras cualquier cambio recuerda reiniciar el servicio con <code>systemctl restart autofs</code>. Evita usar mapas directo e indirecto en la misma ruta. En el examen normalmente se espera dominio del mapa indirecto.</p>
             </section>
             <section id="obj4" class="lesson-section">
-                <h3>4. Ampliar volúmenes lógicos existentes</h3>
+                <h2>4. Ampliar volúmenes lógicos existentes</h2>
                 <p>Este punto continúa lo aprendido en la clase 5. Para ampliar almacenamiento sin pérdida de datos usamos <code>lvextend</code>.</p>
                 <p>Cosas importantes a recordar :</p>
                 <ul>
@@ -96,7 +96,7 @@
             </section>
 
             <section id="obj5" class="lesson-section">
-                <h3>5. Diagnosticar y corregir problemas de permisos</h3>
+                <h2>5. Diagnosticar y corregir problemas de permisos</h2>
                 <p>Muchos errores en Linux están relacionados con permisos incorrectos. Podemos analizarlos usando <code>ls -l</code></p>
                 <p> Ya sabemos que los permisos se dividen en lectura (r), escritura (w) y ejecución (x) para usuario - grupo - otros</p>
                 <p>Permisos especiales:</p>
@@ -107,9 +107,9 @@
                     <li><strong>Sticky Bit (1)</strong> → Solo el dueño puede borrar archivos.</li>
                 </ul>
                 <p> Para saber que tenemos los permisos especiales activos, simplemente veremos una s en SUID o SGID y una t en sticky bit</p>
-                <img src="/images/permisos-spe.png" alt="permisos ejemplo">
+                <img src="/images/permisos-spe.png" alt="permisos ejemplo" width="441" height="427" style="max-width:100%;height:auto">
                 <p>Los ACL permiten permisos avanzados adicionales sobre usuarios concretos:</p>
-                <img src="/images/acls.png" alt="acls ejemplo" >
+                <img src="/images/acls.png" alt="acls ejemplo" width="944" height="745" style="max-width:100%;height:auto">
             </section>
 
         </div>
