@@ -1,7 +1,7 @@
 const basePackages = [
   'bash','coreutils','glibc','systemd','dnf','rpm','util-linux','findutils',
   'procps-ng','iproute','iputils','NetworkManager','openssh-server',
-  'openssh-clients','curl','tar','gzip','bzip2','vim-minimal','nano'
+  'openssh-clients','curl','tar','gzip','bzip2','vim-minimal','nano','jq'
 ];
 
 export default {

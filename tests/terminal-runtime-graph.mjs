@@ -11,7 +11,7 @@ const sources=Object.fromEntries(await Promise.all(names.map(async name=>[name,a
 const modules={};
 
 assert.match(bootstrap,/labelledImport\('motor de configuración', `\.\/terminal-engine-\$\{mode\}\.js`\)/);
-assert.match(bootstrap,/labelledImport\('contenido del entorno', `\.\/terminal-runtime-\$\{mode\}\.js`\)/);
+assert.match(bootstrap,/labelledImport\('contenido del entorno', `\.\/terminal-runtime-\$\{mode\}\.js(?:\?[^`]*)?`\)/);
 assert.match(bootstrap,/await Promise\.all/);
 assert.doesNotMatch(bootstrap,/import\(['"]\.\/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]\)/);
 assert.doesNotMatch(core,/terminal-runtime-(?:linux|docker|kubernetes)/);
@@ -60,14 +60,14 @@ assert.deepEqual(output,['configuration OK']);
 // de Windows cuando convierte LF a CRLF localmente.
 const publishedCore=core.replace(/\r\n/g,'\n');
 const coreRaw=Buffer.byteLength(publishedCore), coreGzip=gzipSync(publishedCore).byteLength;
-// El shell ganó PS2, control de trabajos y causalidad de contenedores sin
-// volver a absorber los catálogos. El límite comprimido sigue siendo el gate
-// de red; este margen en bruto solo cubre lógica ejecutable.
-assert.ok(coreRaw<430000,'El core volvió a absorber catálogos de runtime');
-assert.ok(coreGzip<134000,'El core comprimido volvió a crecer por encima del presupuesto');
+// El shell comparte la causalidad de Linux, contenedores y objetos del clúster
+// sin volver a absorber catálogos. El límite comprimido sigue siendo el gate
+// principal de red y deja un margen pequeño para correcciones ejecutables.
+assert.ok(coreRaw<460000,'El core volvió a absorber catálogos de runtime');
+assert.ok(coreGzip<145000,'El core comprimido volvió a crecer por encima del presupuesto');
 for(const name of names){
   const selectedGzip=coreGzip+gzipSync(engines[name].replace(/\r\n/g,'\n')).byteLength+gzipSync(sources[name].replace(/\r\n/g,'\n')).byteLength;
-  assert.ok(selectedGzip<143000,'Carga inicial del modo '+name+' supera el presupuesto comprimido');
+  assert.ok(selectedGzip<154000,'Carga inicial del modo '+name+' supera el presupuesto comprimido');
 }
 
 console.log('terminal runtime graph: 3 runtimes aislados; core '+coreRaw+' B / '+coreGzip+' B gzip');

@@ -2,7 +2,7 @@ const basePackages = [
   'bash','coreutils','glibc','systemd','dnf','rpm','util-linux','findutils',
   'procps-ng','iproute','iputils','NetworkManager','openssh-server',
   'openssh-clients','curl','tar','gzip','bzip2','vim-minimal','nano',
-  'kubectl','kubelet','kubeadm','etcd','cri-tools'
+  'kubectl','kubelet','kubeadm','etcd','cri-tools','jq'
 ];
 
 export default {
@@ -29,7 +29,7 @@ export default {
     etcdctl:['administra etcd','etcdctl endpoint health|snapshot ...','Comprueba y respalda el almacén del clúster.']
   },
   completions: {
-    kubectl:['get','run','create','apply','expose','scale','describe','delete','logs','exec','version','config','cluster-info','rollout','cordon','drain','uncordon','label','taint','top','auth','-n','--namespace'],
+    kubectl:['get','run','create','apply','expose','scale','autoscale','edit','describe','delete','logs','exec','events','version','config','cluster-info','rollout','cordon','drain','uncordon','label','taint','top','auth','-n','--namespace'],
     kubeadm:['version','upgrade','token','join','init','reset'],
     crictl:['ps','pods','images','logs','inspect','exec','stats','version'],
     etcdctl:['endpoint','snapshot']
@@ -55,14 +55,19 @@ export default {
         else if(sub==='images'){out('IMAGE'.padEnd(48)+'TAG'.padEnd(12)+'IMAGE ID'.padEnd(18)+'SIZE');[...new Set(s.k8s.pods.map(p=>p.image))].forEach(image=>{const [repo,tag='latest']=image.split(':');out(repo.padEnd(48)+tag.padEnd(12)+Math.random().toString(16).slice(2,14).padEnd(18)+'48.2MB');});}
         else if(sub==='logs'){const p=findPod(args.filter(a=>!a.startsWith('-'))[1]);if(!p){err('E'+new Date().toISOString()+' log.go:32] container not found',1);return;}if(p.status==='CrashLoopBackOff')out('FATAL: required environment variable DATABASE_URL is not set','#ef8a7a');else out(new Date().toISOString()+' INFO container '+p.name+' ready');}
         else if(sub==='inspect'||sub==='inspectp'){const p=findPod(args[1]);if(!p){err('FATA[0000] container or pod not found');return;}out(JSON.stringify({status:{id:cid(p),metadata:{name:p.name,namespace:p.namespace},state:p.status,image:{image:p.image},labels:p.labels||{}}},null,2));}
-        else out('NAME:\n   crictl - client for CRI-compatible container runtimes\n\nCOMMANDS:\n   ps, pods, images, logs, inspect, inspectp, info, version');
+        else if(sub==='stats'){out('CONTAINER'.padEnd(18)+'CPU %'.padEnd(10)+'MEM'.padEnd(14)+'DISK'.padEnd(14)+'INODES');s.k8s.pods.filter(p=>p.status==='Running').forEach((p,i)=>out(cid(p).slice(7,19).padEnd(18)+(0.15+i*0.07).toFixed(2).padEnd(10)+((24+i*7)+'MB').padEnd(14)+((3+i)+'MB').padEnd(14)+String(120+i*17)));}
+        else if(sub==='exec'){const ref=args[1],p=findPod(ref);if(!p){err('FATA[0000] container not found');return;}if(p.status!=='Running'){err('FATA[0000] container is not running');return;}const inside=args.slice(2);if(!inside.length){err('FATA[0000] command is required');return;}if(inside[0]==='whoami')out('root');else if(inside[0]==='hostname')out(p.name);else if(inside[0]==='cat'&&inside[1]==='/etc/hostname')out(p.name);else out('command executed in '+p.name+': '+inside.join(' '));}
+        else out('NAME:\n   crictl - client for CRI-compatible container runtimes\n\nCOMMANDS:\n   ps, pods, images, logs, inspect, inspectp, stats, exec, info, version');
       },
       kubeadm({args}) {
         if(args[0]==='version'||args[0]==='--version')out('kubeadm version: &version.Info{Major:"'+K8S_MAJOR+'", Minor:"'+K8S_MINOR+'", GitVersion:"'+K8S_FULL+'", GitCommit:"rocky-lab", GitTreeState:"clean", BuildDate:"2026-08-01T00:00:00Z", GoVersion:"go1.25", Compiler:"gc", Platform:"linux/'+(ARCH==='x86_64'?'amd64':ARCH)+'"}');
         else if(args[0]==='upgrade'&&args[1]==='plan'){outMany(['[upgrade/config] Making sure the configuration is correct:','[preflight] Running pre-flight checks.','[upgrade] Fetching available versions to upgrade to','Components that must be upgraded manually after you have upgraded the control plane with kubeadm upgrade apply:','COMPONENT   CURRENT       TARGET','kubelet     3 x '+K8S_FULL+'  '+K8S_UPGRADE,'','You can now apply the upgrade by executing:','  kubeadm upgrade apply '+K8S_UPGRADE]);if(!s.k8s.actions.includes('upgrade-plan'))s.k8s.actions.push('upgrade-plan');}
         else if(args[0]==='upgrade'&&args[1]==='apply'){const v=args[2]||K8S_UPGRADE;out('[upgrade/successful] SUCCESS! Your cluster was upgraded to "'+v+'". Enjoy!','#8fa876');s.k8s.nodes[0].version=v;s.k8s.upgraded=true;if(!s.k8s.actions.includes('upgrade'))s.k8s.actions.push('upgrade');}
         else if(args[0]==='token'&&args[1]==='create'){out('abcdef.0123456789abcdef');if(args.includes('--print-join-command'))out('kubeadm join 10.10.0.10:6443 --token abcdef.0123456789abcdef --discovery-token-ca-cert-hash sha256:3f6a9c0d...');}
-        else out('kubeadm: usa upgrade plan | upgrade apply '+K8S_UPGRADE+' | token create');
+        else if(args[0]==='init'){outMany(['[init] Using Kubernetes version: '+K8S_FULL,'[preflight] Running pre-flight checks','[certs] Using certificateDir folder "/etc/kubernetes/pki"','[kubeconfig] Writing "admin.conf" kubeconfig file','[control-plane] Creating static Pod manifests','[kubelet-start] Starting the kubelet','[addons] Applied essential addon: CoreDNS','','Your Kubernetes control-plane has initialized successfully!']);if(!s.k8s.nodes.some(n=>n.name==='control-plane'))s.k8s.nodes.unshift({name:'control-plane',status:'Ready',role:'control-plane',version:K8S_FULL,schedulable:true,labels:{'node-role.kubernetes.io/control-plane':''},taints:['node-role.kubernetes.io/control-plane:NoSchedule']});}
+        else if(args[0]==='join'){const host='worker-'+(s.k8s.nodes.filter(n=>n.role==='<none>').length+1);outMany(['[preflight] Running pre-flight checks','[kubelet-start] Starting the kubelet','This node has joined the cluster:','* Certificate signing request was sent to apiserver and a response was received.']);if(!s.k8s.nodes.some(n=>n.name===host))s.k8s.nodes.push({name:host,status:'Ready',role:'<none>',version:K8S_FULL,schedulable:true,labels:{'kubernetes.io/hostname':host},taints:[]});}
+        else if(args[0]==='reset'){outMany(['[preflight] Running pre-flight checks','[reset] Deleted contents of the etcd data directory','[reset] Stopping the kubelet service','[reset] Deleting contents of directories: /etc/kubernetes/manifests /etc/kubernetes/pki']);s.k8s.pods=s.k8s.pods.filter(p=>p.namespace!=='kube-system');}
+        else out('kubeadm: usa init | join | reset | upgrade plan | upgrade apply '+K8S_UPGRADE+' | token create');
       },
       etcdctl({args}) {
         if(args[0]==='snapshot'&&args[1]==='save'){
