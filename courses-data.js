@@ -83,7 +83,7 @@ window.S2KTUX_COURSES = {
     badge: "CKA",
     badgeColor: "#5b7fa6",
     title: "Kubernetes",
-    subtitle: "Orquestación de contenedores desde cero, orientado a la certificación CKA, en 11 clases.",
+    subtitle: "Ruta de Kubernetes orientada a la certificación CKA. Las 11 clases previstas se publicarán progresivamente.",
     note: "Del contenedor al clúster: pods, despliegues, red, almacenamiento y administración.",
     modules: [
       { n: "01", title: "Clase 1 — Introducción y arquitectura", desc: "Qué es Kubernetes y montar el entorno.", video: "",

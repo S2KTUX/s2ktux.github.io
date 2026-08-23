@@ -7,15 +7,22 @@ if (!requested || !allowed.has(requested)) {
   document.documentElement.dataset.terminalState = 'selector';
 } else {
   const mode = requested;
+  let loadStage = 'módulos';
   try {
+    const labelledImport = (label, path) => import(path).catch((error) => {
+      loadStage = label;
+      throw error;
+    });
     const [{ default: engine }, { default: runtime }, { startTerminal }] = await Promise.all([
-      import(`./terminal-engine-${mode}.js`),
-      import(`./terminal-runtime-${mode}.js`),
-      import('./terminal-core.js?v=20260822-realism5')
+      labelledImport('motor de configuración', `./terminal-engine-${mode}.js`),
+      labelledImport('contenido del entorno', `./terminal-runtime-${mode}.js`),
+      labelledImport('núcleo de terminal', './terminal-core.js?v=20260823-final11')
     ]);
+    loadStage = 'motor';
     startTerminal(engine, runtime);
     try {
-      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260822-6');
+      loadStage = 'renderizador';
+      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260823-final11');
       await attachTerminalRenderer();
     } catch (rendererError) {
       console.warn('Se usa el renderizador de compatibilidad de la terminal.', rendererError);
@@ -26,6 +33,7 @@ if (!requested || !allowed.has(requested)) {
   } catch (error) {
     console.error('No se pudo cargar el motor de terminal.', error);
     document.documentElement.dataset.terminalState = 'error';
+    document.documentElement.dataset.terminalError = loadStage+': '+(error instanceof Error ? (error.stack || error.message) : String(error));
     const body = document.getElementById('term-body');
     const line = document.getElementById('term-input-line');
     const input = document.getElementById('term-input');
