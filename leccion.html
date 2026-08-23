@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="./fonts.css?v=20260822-local">
 <title>Lección · S2KTUX</title>
 <meta name="description" content="Lección completa con teoría, ejemplos e imágenes para preparar tu certificación Linux.">
-<meta name="robots" content="index,follow">
+<meta name="robots" content="noindex,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
@@ -34,7 +34,7 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
-<script>(function(){var p=new URLSearchParams(location.search),rawC=p.get('c'),names={rhcsa:'RHCSA 9',lpic1:'LPIC-1',docker:'Docker',kubernetes:'Kubernetes / CKA'},limits={rhcsa:11,lpic1:10,docker:3,kubernetes:0},validC=rawC===null||Object.prototype.hasOwnProperty.call(names,rawC),c=validC?(rawC||'rhcsa'):'rhcsa',rawM=p.get('m'),validM=rawM===null||/^(0|[1-9]\d*)$/.test(rawM),m=Math.max(0,parseInt(rawM||'0',10)||0),indexable=validC&&validM&&m<limits[c],unit=(c==='docker'||c==='kubernetes')?'Clase':'Tema';if(limits[c]>0&&m>=limits[c])m=limits[c]-1;var canonical='https://s2ktux.github.io/leccion.html?c='+encodeURIComponent(c)+'&m='+m,title=names[c]+' · '+unit+' '+(m+1)+' · S2KTUX';document.title=title;document.querySelector('link[rel="canonical"]').href=canonical;document.querySelector('meta[name="robots"]').content=indexable?'index,follow':'noindex,follow';document.querySelector('meta[property="og:url"]').content=canonical;document.querySelector('meta[property="og:title"]').content=title;document.querySelector('meta[name="twitter:title"]').content=title;})();</script>
+<script>(function(){var p=new URLSearchParams(location.search),rawC=p.get('c'),names={rhcsa:'RHCSA 9',lpic1:'LPIC-1',docker:'Docker',kubernetes:'Kubernetes / CKA'},limits={rhcsa:11,lpic1:10,docker:3,kubernetes:0},validC=rawC===null||Object.prototype.hasOwnProperty.call(names,rawC),c=validC?(rawC||'rhcsa'):'rhcsa',rawM=p.get('m'),validM=rawM===null||/^(0|[1-9]\d*)$/.test(rawM),m=Math.max(0,parseInt(rawM||'0',10)||0),indexable=validC&&validM&&m<limits[c],unit=(c==='docker'||c==='kubernetes')?'Clase':'Tema';if(limits[c]>0&&m>=limits[c])m=limits[c]-1;var canonical='https://s2ktux.github.io/leccion.html?c='+encodeURIComponent(c)+'&m='+m,title=names[c]+' · '+unit+' '+(m+1)+' · S2KTUX';document.title=title;document.querySelector('link[rel="canonical"]').href=canonical;document.querySelector('meta[name="robots"]').content='noindex,follow';document.querySelector('meta[property="og:url"]').content=canonical;document.querySelector('meta[property="og:title"]').content=title;document.querySelector('meta[name="twitter:title"]').content=title;})();</script>
   <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -254,7 +254,7 @@ class Component extends DCLogic {
       set('meta[name="description"]', 'content', desc);
       set('meta[property="og:description"]', 'content', desc);
       set('meta[name="twitter:description"]', 'content', desc);
-      set('meta[name="robots"]', 'content', indexable ? 'index,follow' : 'noindex,follow');
+      set('meta[name="robots"]', 'content', 'noindex,follow');
       if (!indexable) { const stale = document.getElementById('lesson-jsonld'); if (stale) stale.remove(); return; }
       // Datos estructurados verificables: curso gratuito + navegación.
       try {

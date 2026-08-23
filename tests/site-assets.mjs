@@ -224,7 +224,7 @@ for (const path of shellPages) {
 }
 
 const principalPages = [
-  'index.html', 'cursos.html', 'curso.html', 'leccion.html', 'proyectos.html',
+  'index.html', 'cursos.html', 'proyectos.html',
   'sobre.html', 'proyecto-kubernetes.html', 'proyecto-proxmox.html',
 ];
 for (const path of principalPages) {
@@ -244,6 +244,10 @@ for (const path of principalPages) {
     assert.doesNotThrow(() => JSON.parse(block[1].trim()), `Invalid JSON-LD: ${path}`);
   }
 }
+for (const path of ['curso.html', 'leccion.html']) {
+  const html = await readFile(join(root, path), 'utf8');
+  assert.match(html, /<meta\b[^>]*name=["']robots["'][^>]*content=["']noindex,follow["'][^>]*>/i, `Legacy redirect must remain noindex: ${path}`);
+}
 const notFound = await readFile(join(root, '404.html'), 'utf8');
 assert.match(notFound, /<meta\b[^>]*name=["']description["'][^>]*content=["'][^"']+["'][^>]*>/i, '404 page needs a description');
 assert.match(notFound, /<meta\b[^>]*name=["']robots["'][^>]*content=["']noindex,follow["'][^>]*>/i, '404 page must remain noindex');
@@ -258,7 +262,7 @@ const lessonPage = await readFile(join(root, 'leccion.html'), 'utf8');
 assert.match(lessonPage, /scroll-margin-top\s*:\s*80px/i, 'Lesson anchors must clear the sticky header');
 assert.match(lessonPage, /#lesson h1,#lesson h2,#lesson h3,#lesson h4\{overflow-wrap:anywhere/i, 'Long lesson headings must wrap at 320px');
 assert.match(lessonPage, /#lesson table\{display:block;max-width:100%;overflow-x:auto/i, 'Lesson tables need contained mobile scrolling');
-assert.match(lessonPage, /indexable\s*\?\s*'index,follow'\s*:\s*'noindex,follow'/, 'Empty or invalid lessons must be noindex');
+assert.doesNotMatch(lessonPage, /set\('meta\[name="robots"\]'[^\n]+indexable\s*\?/, 'The legacy lesson runtime must not restore indexability');
 
 const serviceWorker = await readFile(join(root, 'sw.js'), 'utf8');
 assert.ok(serviceWorker.includes("'site-shell.css?v=20260822-header4'"), 'Shared shell stylesheet is missing from offline cache');
@@ -266,11 +270,15 @@ assert.ok(/req\.mode==='navigate'\s*\?\s*caches\.match\('index\.html'\)\s*:\s*Re
 
 const sitemap = await readFile(join(root, 'sitemap.xml'), 'utf8');
 assertWellFormedXml(sitemap, 'sitemap.xml');
-for (const expected of ['sobre.html', '/cursos/rhcsa-9/', '/cursos/lpic-1/', '/cursos/docker/', '/cursos/kubernetes-cka/', '/cursos/docker/clase-1-fundamentos-de-docker/', '/cursos/docker/clase-2-docker-para-el-dia-a-dia/', '/cursos/docker/clase-3-docker-profesional/']) {
+for (const expected of ['sobre.html', '/cursos/rhcsa-9/', '/cursos/lpic-1/', '/cursos/docker/', '/cursos/docker/clase-1-fundamentos-de-docker/', '/cursos/docker/clase-2-docker-para-el-dia-a-dia/', '/cursos/docker/clase-3-docker-profesional/']) {
   assert.ok(sitemap.includes(expected), `Sitemap entry is missing: ${expected}`);
 }
 assert.doesNotMatch(sitemap, /leccion\.html\?|curso\.html\?/, 'Legacy query routes must not be in the sitemap');
+assert.doesNotMatch(sitemap, /https:\/\/s2ktux\.github\.io\/cursos\/kubernetes-cka\/<\/loc>/, 'The planned Kubernetes course must stay out of the sitemap until lessons exist');
 assert.doesNotMatch(sitemap, /kubernetes-cka\/clase-/i, 'Placeholder Kubernetes lessons must not be in the sitemap');
+const plannedKubernetes = await readFile(join(root, 'cursos/kubernetes-cka/index.html'), 'utf8');
+assert.match(plannedKubernetes, /name="robots" content="noindex,follow"/, 'The planned Kubernetes route must be noindex');
+assert.doesNotMatch(plannedKubernetes, /CKA · CKA/, 'Kubernetes kicker must not repeat CKA');
 
 const dockerVideos = [
   ['docker/1/1.html', 'https://www.youtube.com/watch?v=BML40ZpS6zc'],

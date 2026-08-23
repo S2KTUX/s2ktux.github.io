@@ -82,8 +82,19 @@ export async function attachTerminalRenderer() {
   // FitAddon no puede medir correctamente un elemento con display:none.
   windowEl.classList.add('xterm-ready');
   term.open(host);
-  fit.fit();
+  const fitTerminal = () => {
+    fit.fit();
+    body.dataset.columns = String(term.cols);
+    body.dataset.lines = String(term.rows);
+    body.dispatchEvent(new CustomEvent('terminal-resize', { detail:{ columns:term.cols, lines:term.rows } }));
+  };
+  fitTerminal();
   host.setAttribute('aria-label', 'Terminal interactiva S2KTUX');
+  // Xterm ofrece su propio árbol accesible cuando screenReaderMode está
+  // activo. El registro DOM queda solo como fuente de renderizado; exponer
+  // ambos haría que cada línea se anunciase dos veces.
+  body.setAttribute('aria-hidden', 'true');
+  body.hidden = true;
 
   let drawingPrompt = false;
   let destroyed = false;
@@ -92,7 +103,8 @@ export async function attachTerminalRenderer() {
     if (destroyed) return;
     drawingPrompt = true;
     const text = prompt.textContent || '';
-    term.write(`\r\x1b[2K${text ? `${promptAnsi()}${text}${RESET} ` : ''}${input.value}`);
+    const visibleInput = input.dataset.ttyEcho === 'off' ? '' : input.value;
+    term.write(`\r\x1b[2K${text ? `${promptAnsi()}${text}${RESET} ` : ''}${visibleInput}`);
     const tail = input.value.length - (input.selectionStart ?? input.value.length);
     if (tail > 0) term.write(`\x1b[${tail}D`);
     drawingPrompt = false;
@@ -157,7 +169,10 @@ export async function attachTerminalRenderer() {
     if (pasteDrainTimer === null) drainPasteQueue();
   };
   const handleData = (data) => {
-    if (data === '\r' || data === '\n') { term.write('\r\x1b[2K'); dispatchKey('Enter'); return; }
+    if (data === '\r' || data === '\n') {
+      if (input.readOnly || input.disabled) { pasteQueue.push({ text:'', enter:true }); if (pasteDrainTimer === null) drainPasteQueue(); return; }
+      term.write('\r\x1b[2K'); dispatchKey('Enter'); return;
+    }
     if (data === '\x7f') { const allowed = dispatchKey('Backspace'); if (allowed && beforeInput(null, 'deleteContentBackward')) deleteBackward(input); drawPrompt(); return; }
     if (data === '\t') { dispatchKey('Tab'); return; }
     if (data === '\x1b[A') { dispatchKey('ArrowUp'); return; }
@@ -174,7 +189,7 @@ export async function attachTerminalRenderer() {
     if (!clean) return;
     // Un bloque pegado puede contener varias órdenes y alguna de ellas puede
     // quedarse ejecutando. La cola entrega cada línea cuando vuelve PS1/PS2.
-    if (clean.includes('\n')) enqueuePaste(clean);
+    if (clean.includes('\n') || input.readOnly || input.disabled) enqueuePaste(clean);
     else if (beforeInput(clean, 'insertFromPaste')) insertText(input, clean);
     drawPrompt();
   };
@@ -201,7 +216,7 @@ export async function attachTerminalRenderer() {
     const marker = keyToggle.querySelector('span');
     if (marker) marker.textContent = open ? '−' : '+';
     if (keyPanel) keyPanel.hidden = !open;
-    if (open) setTimeout(() => fit.fit(), 40);
+    if (open) setTimeout(fitTerminal, 40);
     term.focus();
   });
 
@@ -214,11 +229,15 @@ export async function attachTerminalRenderer() {
   }));
 
   const fullscreen = document.getElementById('term-fullscreen');
-  const syncFullscreen = () => { fullscreen?.setAttribute('aria-label', document.fullscreenElement ? 'Salir de pantalla completa' : 'Abrir terminal a pantalla completa'); setTimeout(() => fit.fit(), 80); };
+  const syncFullscreen = () => { fullscreen?.setAttribute('aria-label', document.fullscreenElement ? 'Salir de pantalla completa' : 'Abrir terminal a pantalla completa'); setTimeout(fitTerminal, 80); };
   fullscreen?.addEventListener('click', async () => { try { if (document.fullscreenElement) await document.exitFullscreen(); else await windowEl.requestFullscreen(); } catch (_) {} syncFullscreen(); term.focus(); });
   document.addEventListener('fullscreenchange', syncFullscreen);
-  const resize = new ResizeObserver(() => { try { fit.fit(); drawPrompt(); } catch (_) {} });
+  const resize = new ResizeObserver(() => { try { fitTerminal(); drawPrompt(); } catch (_) {} });
   resize.observe(host);
   addEventListener('beforeunload', () => { destroyed = true; if(pasteDrainTimer!==null)clearTimeout(pasteDrainTimer); observer.disconnect(); resize.disconnect(); term.dispose(); }, { once:true });
-  term.focus();
+  // En móvil el foco automático abre el teclado y desplaza toda la
+  // introducción fuera de la pantalla. La primera pulsación sobre la propia
+  // terminal sigue enfocándola; en escritorio conservamos el comportamiento
+  // inmediato de una consola.
+  if (!matchMedia('(max-width: 760px), (pointer: coarse)').matches) term.focus();
 }

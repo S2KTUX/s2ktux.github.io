@@ -66,11 +66,11 @@ const footer = `
   <div style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>`;
 
-const head = ({ title, description, canonical, jsonLd, type = 'article' }) => `<!doctype html>
+const head = ({ title, description, canonical, jsonLd, type = 'article', robots = 'index,follow,max-image-preview:large' }) => `<!doctype html>
 <html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${escapeHtml(title)}</title>
-<meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="index,follow,max-image-preview:large">
+<meta name="description" content="${escapeHtml(description)}"><meta name="robots" content="${robots}">
 <link rel="canonical" href="${canonical}"><meta name="theme-color" content="#f6ecd9">
 <meta property="og:type" content="${type}"><meta property="og:site_name" content="S2KTUX"><meta property="og:locale" content="es_ES">
 <meta property="og:title" content="${escapeHtml(title)}"><meta property="og:description" content="${escapeHtml(description)}"><meta property="og:url" content="${canonical}">
@@ -92,18 +92,22 @@ for (const [key, cfg] of Object.entries(config)) {
   if (!data) continue;
   const courseRoute = `/cursos/${cfg.folder}/`;
   routeData.courses[key] = courseRoute;
-  sitemapUrls.push(courseRoute);
   const outDir = path.join(root, 'cursos', cfg.folder);
   await fs.rm(outDir, { recursive: true, force: true });
   await fs.mkdir(outDir, { recursive: true });
   const active = data.modules.map((module, index) => Boolean(cfg.files[index]));
+  const availableCount = active.filter(Boolean).length;
+  const isPlanned = availableCount === 0;
+  if (!isPlanned) sitemapUrls.push(courseRoute);
   const moduleRoutes = data.modules.map((module, index) => active[index] ? `${courseRoute}${lessonSlug(key, module, index)}/` : '');
   moduleRoutes.forEach((route, index) => { if (route) routeData.lessons[`${key}:${index}`] = route; });
 
   const courseDescription = data.subtitle || data.note;
   const courseLd = {
     '@context':'https://schema.org', '@graph': [
-      { '@type':'Course', name:data.title, description:courseDescription, url:`${site}${courseRoute}`, inLanguage:'es', isAccessibleForFree:true, provider:{ '@type':'Organization', name:'S2KTUX', url:`${site}/` }, hasCourseInstance:{ '@type':'CourseInstance', courseMode:'online', courseWorkload:`${data.modules.length} módulos` } },
+      isPlanned
+        ? { '@type':'WebPage', name:`Ruta prevista de ${data.title}`, description:courseDescription, url:`${site}${courseRoute}`, inLanguage:'es' }
+        : { '@type':'Course', name:data.title, description:courseDescription, url:`${site}${courseRoute}`, inLanguage:'es', isAccessibleForFree:true, provider:{ '@type':'Organization', name:'S2KTUX', url:`${site}/` }, hasCourseInstance:{ '@type':'CourseInstance', courseMode:'online', courseWorkload:`${data.modules.length} módulos` } },
       { '@type':'BreadcrumbList', itemListElement:[
         { '@type':'ListItem', position:1, name:'Inicio', item:`${site}/` },
         { '@type':'ListItem', position:2, name:'Cursos', item:`${site}/cursos.html` },
@@ -122,9 +126,9 @@ for (const [key, cfg] of Object.entries(config)) {
     </${tag}>`;
   }).join('\n');
   const courseTitle = `${data.title}: curso gratuito en español · S2KTUX`;
-  const courseHtml = `${head({ title:courseTitle, description:courseDescription, canonical:`${site}${courseRoute}`, jsonLd:courseLd, type:'website' })}<body><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">${header()}
+  const courseHtml = `${head({ title:courseTitle, description:courseDescription, canonical:`${site}${courseRoute}`, jsonLd:courseLd, type:'website', robots:isPlanned?'noindex,follow':'index,follow,max-image-preview:large' })}<body><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">${header()}
   <main id="main-content" class="learning-main"><nav class="learning-crumbs" aria-label="Migas de pan"><a href="/">Inicio</a><span>›</span><a href="/cursos.html">Cursos</a><span>›</span><span aria-current="page">${escapeHtml(data.title)}</span></nav>
-  <div class="learning-shell"><header class="course-hero"><div class="course-kicker">${escapeHtml(data.badge)} · ${escapeHtml(cfg.exam)}</div><h1>${escapeHtml(data.title)}</h1><p>${escapeHtml(courseDescription)}</p><div class="course-stats"><span class="course-stat">${data.modules.length} ${data.modules.length === 1 ? 'módulo' : 'módulos'}</span><span class="course-stat">${data.modules.reduce((sum, module) => sum + module.topics.length, 0)} objetivos</span><span class="course-stat">gratis · sin registro</span></div></header><section class="module-list" aria-label="Contenido del curso">${modules}</section></div></main>${footer}</div></body></html>`;
+  <div class="learning-shell"><header class="course-hero"><div class="course-kicker">${escapeHtml(data.badge === cfg.exam ? data.badge : `${data.badge} · ${cfg.exam}`)}</div><h1>${escapeHtml(data.title)}</h1><p>${escapeHtml(courseDescription)}</p><div class="course-stats">${isPlanned ? `<span class="course-stat">${data.modules.length} clases previstas</span><span class="course-stat">contenido en preparación</span>` : `<span class="course-stat">${data.modules.length} ${data.modules.length === 1 ? 'módulo' : 'módulos'}</span><span class="course-stat">${data.modules.reduce((sum, module) => sum + module.topics.length, 0)} objetivos</span>`}<span class="course-stat">gratis · sin registro</span></div></header><section class="module-list" aria-label="Contenido del curso">${modules}</section></div></main>${footer}</div></body></html>`;
   await fs.writeFile(path.join(outDir, 'index.html'), courseHtml, 'utf8');
 
   for (let index = 0; index < data.modules.length; index++) {
