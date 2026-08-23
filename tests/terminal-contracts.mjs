@@ -60,7 +60,7 @@ const contracts = [
   ['Reset command semantics', /reset:\['reinicializa la pantalla de la terminal'/.test(core) && /No borra ficheros ni reinicia la máquina/.test(core) && /case 'reset': \[\.\.\.body\.querySelectorAll/.test(core)],
   ['Runtime-owned practice catalogs', /createChallenges\(ctx\)/.test(runtimeLinux) && /createChallenges\(ctx\)/.test(runtimeDocker) && /createChallenges\(ctx\)/.test(runtimeKubernetes) && !/const (?:dockerChallenges|k8sChallenges|challenges)\s*=/.test(core)],
   ['Runtime-owned manuals and completions', /manuals:\s*\{/.test(runtimeLinux) && /manuals:\s*\{/.test(runtimeDocker) && /manuals:\s*\{/.test(runtimeKubernetes) && /runtime\.manuals/.test(core) && /runtime\.completions/.test(core)],
-  ['Selected runtime loading', /import\(`\.\/terminal-runtime-\$\{mode\}\.js`\)/.test(bootstrap) && /startTerminal\(engine, runtime\)/.test(bootstrap) && !/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]/.test(bootstrap)],
+  ['Selected runtime loading', /labelledImport\('contenido del entorno', `\.\/terminal-runtime-\$\{mode\}\.js`\)/.test(bootstrap) && /Promise\.all/.test(bootstrap) && /startTerminal\(engine, runtime\)/.test(bootstrap) && !/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]/.test(bootstrap)],
   ['Immediate environment entry', /const showEnvironmentBanner/.test(core) && /if\(!savedScroll\)\{\s*showEnvironmentBanner\(\)/.test(core) && !/systemBootLines|QUICK_BOOT|Booting from Hard Disk|systemd 252 running in system mode/.test(core)],
   ['Hidden reboot reconciliation', /MODE==='docker'&&dockerInstalled/.test(core) && /const configError=dockerConfigError\(\)/.test(core) && /services\.docker&&services\.docker\.active/.test(core) && /reason:'restart-policy'/.test(core)],
   ['GRUB preserved for RHCSA recovery', /const startGrub[\s\S]*?enterGrubMenu\(\)/.test(core) && /rd\.break/.test(core) && /init=\/bin\/bash/.test(core) && /bootEmergency/.test(core)],
@@ -71,6 +71,9 @@ const contracts = [
   ['Process lifecycle and job signals', /scheduleBackgroundJob/.test(core) && /job\.status='Done'/.test(core) && /job\.remaining/.test(core) && /targetJob/.test(core) && /jobId/.test(core)],
   ['Docker filesystem layers and health', /containerBaseFs/.test(core) && /c\.fs\[target\]/.test(core) && /buildKey/.test(core) && /health_status/.test(core) && /health: starting/.test(core)],
   ['Kubernetes causal scheduling and rollouts', /FailedScheduling/.test(core) && /FailedMount/.test(core) && /readinessFail/.test(core) && /livenessFail/.test(core) && /replicasets/.test(core) && /d\.history/.test(core)],
+  ['TTY geometry and non-interactive shells', /case 'tty'/.test(core) && /case 'stty'/.test(core) && /case 'sh': case 'bash'/.test(core) && /dispatch\(expandVariables\(nested\)\)/.test(core) && /dataset\.columns/.test(core)],
+  ['Docker network and volume causality', /attachDockerNetwork/.test(core) && /containerFsView/.test(core) && /volume is in use/.test(core) && /Name or service not known/.test(core) && /getOwnPropertyDescriptor\(target,key\)/.test(core)],
+  ['Kubernetes named resources and drain safety', /const requireRequested=/.test(core) && /use --force to override/.test(core) && /out\('node\/'\+n\.name\+' drained'\)/.test(core) && /ownedRs/.test(core) && /dryRun/.test(core)],
 ];
 
 for (const [name, passed] of contracts) assert.ok(passed, `Terminal contract failed: ${name}`);

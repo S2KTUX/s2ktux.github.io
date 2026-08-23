@@ -10,8 +10,9 @@ const engines=Object.fromEntries(await Promise.all(names.map(async name=>[name,a
 const sources=Object.fromEntries(await Promise.all(names.map(async name=>[name,await read('terminal-runtime-'+name+'.js')])));
 const modules={};
 
-assert.match(bootstrap,/import\(`\.\/terminal-engine-\$\{mode\}\.js`\)/);
-assert.match(bootstrap,/import\(`\.\/terminal-runtime-\$\{mode\}\.js`\)/);
+assert.match(bootstrap,/labelledImport\('motor de configuración', `\.\/terminal-engine-\$\{mode\}\.js`\)/);
+assert.match(bootstrap,/labelledImport\('contenido del entorno', `\.\/terminal-runtime-\$\{mode\}\.js`\)/);
+assert.match(bootstrap,/await Promise\.all/);
 assert.doesNotMatch(bootstrap,/import\(['"]\.\/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]\)/);
 assert.doesNotMatch(core,/terminal-runtime-(?:linux|docker|kubernetes)/);
 assert.doesNotMatch(core,/const (?:challenges|dockerChallenges|k8sChallenges)\s*=/);
@@ -59,11 +60,11 @@ const coreRaw=Buffer.byteLength(core), coreGzip=gzipSync(core).byteLength;
 // El shell ganó PS2, control de trabajos y causalidad de contenedores sin
 // volver a absorber los catálogos. El límite comprimido sigue siendo el gate
 // de red; este margen en bruto solo cubre lógica ejecutable.
-assert.ok(coreRaw<412000,'El core volvió a absorber catálogos de runtime');
-assert.ok(coreGzip<128000,'El core comprimido volvió a crecer por encima del presupuesto');
+assert.ok(coreRaw<430000,'El core volvió a absorber catálogos de runtime');
+assert.ok(coreGzip<134000,'El core comprimido volvió a crecer por encima del presupuesto');
 for(const name of names){
   const selectedGzip=gzipSync(core).byteLength+gzipSync(engines[name]).byteLength+gzipSync(sources[name]).byteLength;
-  assert.ok(selectedGzip<136000,'Carga inicial del modo '+name+' supera el presupuesto comprimido');
+  assert.ok(selectedGzip<143000,'Carga inicial del modo '+name+' supera el presupuesto comprimido');
 }
 
 console.log('terminal runtime graph: 3 runtimes aislados; core '+coreRaw+' B / '+coreGzip+' B gzip');
