@@ -15,14 +15,14 @@ if (!requested || !allowed.has(requested)) {
     });
     const [{ default: engine }, { default: runtime }, { startTerminal }] = await Promise.all([
       labelledImport('motor de configuración', `./terminal-engine-${mode}.js`),
-      labelledImport('contenido del entorno', `./terminal-runtime-${mode}.js?v=20260823-final12`),
-      labelledImport('núcleo de terminal', './terminal-core.js?v=20260823-final12')
+      labelledImport('contenido del entorno', `./terminal-runtime-${mode}.js?v=20260824-terminalfix1`),
+      labelledImport('núcleo de terminal', './terminal-core.js?v=20260824-terminalfix1')
     ]);
     loadStage = 'motor';
     startTerminal(engine, runtime);
     try {
       loadStage = 'renderizador';
-      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260823-final12');
+      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260824-terminalfix1');
       await attachTerminalRenderer();
     } catch (rendererError) {
       console.warn('Se usa el renderizador de compatibilidad de la terminal.', rendererError);
