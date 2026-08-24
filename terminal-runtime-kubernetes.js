@@ -78,7 +78,8 @@ export default {
           out('{"level":"info","msg":"saved","path":"'+p+'"}');out('Snapshot saved at '+p,'#8fa876');
         } else if(args[0]==='snapshot'&&args[1]==='status')out('b9e2a29f, 584291, 25 MB, 25 MB');
         else if(args[0]==='endpoint'&&args[1]==='health')out('https://127.0.0.1:2379 is healthy: successfully committed proposal: took = 4.8ms','#8fa876');
-        else out('etcdctl: usa snapshot save RUTA | snapshot status RUTA | endpoint health');
+        else if(args[0]==='endpoint'&&args[1]==='status'){out('https://127.0.0.1:2379, 8e9e05c52164694d, 3.5.13, 25 MB, true, false, 584291, 584291, 584291');out('ENDPOINT                 ID                 VERSION  DB SIZE  IS LEADER  RAFT TERM');out('https://127.0.0.1:2379  8e9e05c52164694d  3.5.13   25 MB    true       8');}
+        else out('etcdctl: usa snapshot save RUTA | snapshot status RUTA | endpoint health | endpoint status');
       }
     };
   },
