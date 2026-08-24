@@ -1,7 +1,7 @@
 const packages = [
   'bash','coreutils','glibc','systemd','dnf','rpm','util-linux','findutils',
   'procps-ng','iproute','iputils','NetworkManager','openssh-server',
-  'openssh-clients','chrony','rsyslog','firewalld','cronie','audit','lvm2',
+  'openssh-clients','chrony','rsyslog','firewalld','cronie','at','audit','lvm2',
   'xfsprogs','e2fsprogs','parted','acl','policycoreutils',
   'policycoreutils-python-utils','setroubleshoot-server','vim-minimal','nano',
   'podman','curl','tar','gzip','bzip2','tuned'

@@ -209,7 +209,7 @@ test('Docker · motor listo, catálogo, pull por capas y ciclo de vida coherente
   expect(pull).toContain('Downloaded newer image');
   const launched=await run(page,'docker run -d --name web -p 8080:80 nginx',{timeout:20000});
   expect(launched).toMatch(/[a-f0-9]{12}/);
-  expect(await run(page,'docker ps')).toMatch(/web[\s\S]*8080:80|8080:80[\s\S]*web/);
+  expect(await run(page,'docker ps')).toMatch(/web[\s\S]*8080->80|8080->80[\s\S]*web/);
   expect(await run(page,'docker stop web')).toContain('web');
   expect(await run(page,'docker ps')).not.toMatch(/\bweb\b/);
   expect(await run(page,'docker ps -a')).toMatch(/web[\s\S]*Exited|Exited[\s\S]*web/);
@@ -242,6 +242,9 @@ test('Docker · imágenes, save/load, Dockerfile, volúmenes, redes y Compose',a
 
   await run(page,'mkdir -p /root/stack');
   await run(page,"printf 'services:\\n  web:\\n    image: nginx\\n    ports:\\n      - \"8081:80\"\\n' > /root/stack/compose.yaml");
+  const composeFile=await run(page,'cat /root/stack/compose.yaml');
+  console.log('COMPOSE_FILE='+JSON.stringify(composeFile));
+  expect(composeFile).toContain('  web:');
   await run(page,'cd /root/stack');
   expect(await run(page,'docker compose up -d',{timeout:20000})).toMatch(/Created|Started|Running/i);
   expect(await run(page,'docker compose ps')).toMatch(/web|nginx/i);
