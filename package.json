@@ -1,0 +1,13 @@
+{
+  "name": "s2ktux-terminal-validation",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:contracts": "node tests/terminal-contracts.mjs && node tests/terminal-command-coverage.mjs",
+    "test:e2e": "playwright test",
+    "test": "npm run test:contracts && npm run test:e2e"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.62.0"
+  }
+}

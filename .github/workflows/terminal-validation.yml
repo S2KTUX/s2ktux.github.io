@@ -1,0 +1,44 @@
+name: Validacion completa de terminales
+
+on:
+  push:
+    branches:
+      - main
+      - 'test/terminal-validation-*'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  terminal-validation:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.0-noble
+      options: --user 1001
+    steps:
+      - name: Descargar repositorio
+        uses: actions/checkout@v6
+      - name: Preparar Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+      - name: Instalar dependencias
+        run: npm install --no-audit --no-fund
+      - name: Validar contratos e inventario
+        run: npm run test:contracts
+      - name: Ejecutar Linux, Docker y Kubernetes en Chromium
+        run: npm run test:e2e
+      - name: Guardar informe, capturas, trazas y videos
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v5
+        with:
+          name: terminal-validation-report
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 30
+          if-no-files-found: warn
