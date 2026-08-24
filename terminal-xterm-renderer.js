@@ -123,7 +123,11 @@ export async function attachTerminalRenderer() {
     const screen = alternateScreen();
     if (!screen) return false;
     alternateActive = true;
-    term.write(`\x1b[2J\x1b[H${nodeToAnsi(screen, ansiFor(screen.style?.color))}${RESET}`);
+    const row = Math.max(1, Math.min(term.rows, Number.parseInt(screen.dataset.cursorRow||'',10)||1));
+    const col = Math.max(1, Math.min(term.cols, Number.parseInt(screen.dataset.cursorCol||'',10)||1));
+    const editor = screen.id === 'term-editor';
+    term.write(`\x1b[2J\x1b[H${nodeToAnsi(screen, ansiFor(screen.style?.color))}${RESET}${editor?'\x1b[?25h\x1b['+row+';'+col+'H':'\x1b[?25l'}`);
+    if (editor) host.dataset.cursorCell = row+':'+col; else delete host.dataset.cursorCell;
     return true;
   };
   const rebuildFromDom = () => {
@@ -136,6 +140,8 @@ export async function attachTerminalRenderer() {
     if (renderAlternateScreen()) return;
     if (wasAlternate) {
       alternateActive = false;
+      term.write('\x1b[?25h');
+      delete host.dataset.cursorCell;
       rebuildFromDom();
       return;
     }
