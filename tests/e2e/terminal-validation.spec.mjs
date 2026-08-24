@@ -130,7 +130,6 @@ test('TTY · man, nano y vi reciben teclado real y devuelven el prompt',async({p
   await page.keyboard.press('Control+o');
   await page.keyboard.press('Enter');
   await page.keyboard.press('Control+x');
-  await page.keyboard.press('n');
   await waitForShell(page);
   expect(await run(page,'cat /tmp/nano-e2e.txt')).toContain('abd');
 
@@ -388,6 +387,7 @@ test('Editores · nano y vi ocupan la pantalla y colocan el cursor en el texto',
   await page.keyboard.type('abc');
   await expect.poll(()=>page.locator('#term-xterm').getAttribute('data-cursor-cell')).toBe('2:4');
   await page.keyboard.press('Control+x');
+  await page.keyboard.press('n');
   await waitForShell(page);
 
   await focusXterm(page);
