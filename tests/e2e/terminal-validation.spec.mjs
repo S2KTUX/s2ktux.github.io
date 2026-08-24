@@ -24,7 +24,7 @@ async function openMode(page,mode,{solved=mode==='linux'}={}){
 }
 
 async function submitRaw(page,command){
-  const before=await page.locator('#term-body').innerText();
+  const before=await page.locator('#term-body .term-out').count();
   await page.locator('#term-input').evaluate((input,value)=>{
     input.focus();
     input.value=value;
@@ -45,8 +45,7 @@ async function waitForShell(page,timeout=8000){
 async function run(page,command,{timeout=8000}={}){
   const before=await submitRaw(page,command);
   await waitForShell(page,timeout);
-  const after=await page.locator('#term-body').innerText();
-  return after.slice(Math.min(before.length,after.length));
+  return page.locator('#term-body .term-out').evaluateAll((nodes,start)=>nodes.slice(Math.min(start,nodes.length)).map(node=>node.innerText).join('\n'),before);
 }
 
 async function focusXterm(page){
@@ -63,6 +62,7 @@ for(const mode of MODES){
       await openMode(page,mode);
       for(const name of batch){
         await test.step(name,async()=>{
+          const errorCount=errors.length;
           const command=invocationFor(name);
           try{
             await run(page,command,{timeout:12000});
@@ -70,6 +70,7 @@ for(const mode of MODES){
             const screen=await page.locator('#term-body').innerText().catch(()=>'(terminal no disponible)');
             throw new Error('Bloqueo o ausencia de prompt tras: '+command+'\n\nPantalla final:\n'+screen+'\n\n'+error.message);
           }
+          expect(errors.slice(errorCount),'Error JavaScript provocado por: '+command).toEqual([]);
         });
       }
       expect(errors,'Errores JavaScript durante el lote').toEqual([]);
@@ -253,6 +254,8 @@ test('Kubernetes · nodos, workloads, servicios, escalado, rollout y diagnóstic
   await openMode(page,'kubernetes');
   expect(await run(page,'kubectl get nodes')).toMatch(/Ready/);
   await run(page,'kubectl create deployment web --image=nginx');
+  expect(await run(page,'kubectl get deployments')).toMatch(/web[\s\S]*(?:0|1)\/1|(?:0|1)\/1[\s\S]*web/);
+  await run(page,'kubectl rollout status deployment/web',{timeout:15000});
   expect(await run(page,'kubectl get deployments')).toMatch(/web[\s\S]*1\/1|1\/1[\s\S]*web/);
   await run(page,'kubectl expose deployment web --port=80 --target-port=80');
   expect(await run(page,'kubectl get services')).toMatch(/web[\s\S]*80/);
