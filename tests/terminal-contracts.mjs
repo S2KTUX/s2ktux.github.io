@@ -12,6 +12,7 @@ const xtermRenderer = await readFile(new URL('../terminal-xterm-renderer.js', im
 const joinedFlow = describeDescriptorFlow(parseRedirections('demo >out 2>&1').redirections);
 const splitFlow = describeDescriptorFlow(parseRedirections('demo 2>&1 >out').redirections);
 const redirectionForms = parseRedirections('cat <in >>out 2>>errors &>all').redirections;
+const quotedWhitespace = parseRedirections("printf 'services:\\n  web:' >compose.yaml").command;
 
 const contracts = [
   ['TTY signals', /suspendForeground/.test(core) && /endForeground\(130,'C'\)/.test(core)],
@@ -52,6 +53,7 @@ const contracts = [
   ['Remote SSH identity', /const promptIsRoot=/.test(core) && /remoteHost\.user\+'@'\+remoteHost\.name\+'\: '/.test(core) && /Connection to '\+closed\+' closed/.test(core)],
   ['Packaged Kubernetes utilities', /crictl\(\{args\}\)/.test(runtimeKubernetes) && /kubelet\(\{args\}\)/.test(runtimeKubernetes) && /const jqFilter=/.test(core)],
   ['Ordered shell redirections', /import \{[^}]*parseRedirections[^}]*\}/.test(core) && /const prepareRedirections=|const prepareRedirections =/.test(core) && /routeRedirectEvents/.test(core) && /ioEvents/.test(core) && !/let redir=null|writeRedirect|mergeErr|errRedir|inputRedir/.test(core) && joinedFlow[1] === 'file:out:truncate' && joinedFlow[2] === 'file:out:truncate' && splitFlow[1] === 'file:out:truncate' && splitFlow[2] === 'terminal:stdout'],
+  ['Quoted whitespace survives redirection parsing', quotedWhitespace.includes("services:\\n  web:")],
   ['Shell redirection forms and failures', redirectionForms.some(item=>item.fd===0&&item.operator==='<') && redirectionForms.some(item=>item.fd===1&&item.append) && redirectionForms.some(item=>item.fd===2&&item.append) && redirectionForms.some(item=>item.fd==='both') && /noclobber/.test(core) && /descriptor de fichero incorrecto/.test(core) && /Es un directorio/.test(core)],
   ['Engine-backed Rocky identity', /const SYSTEM=engine\.system/.test(core) && /const OS_NAME=/.test(core) && /syncSystemIdentity/.test(core) && /Operating System: '\+OS_NAME/.test(core) && /Kernel: Linux '\+KERNEL/.test(core) && /CERTIFICATION\|\|'RHCSA 9'/.test(core)],
   ['Engine-backed platform versions', /DOCKER_VERSION=SYSTEM\.docker\|\|'29\.7\.2'/.test(core) && /K8S_VERSION=SYSTEM\.kubernetes\|\|'1\.35\.0'/.test(core) && /Docker version '\+DOCKER_VERSION/.test(core) && /Client Version: '\+K8S_FULL/.test(core)],

@@ -242,7 +242,6 @@ test('Docker · imágenes, save/load, Dockerfile, volúmenes, redes y Compose',a
 
   await run(page,'mkdir -p /root/stack');
   await run(page,"printf 'services:\\n  web:\\n    image: nginx\\n    ports:\\n      - \"8081:80\"\\n' > /root/stack/compose.yaml");
-  const composeFile=await run(page,'cat /root/stack/compose.yaml');
   await run(page,'cd /root/stack');
   expect(await run(page,'docker compose up -d',{timeout:20000})).toMatch(/Created|Started|Running/i);
   expect(await run(page,'docker compose ps')).toMatch(/web|nginx/i);

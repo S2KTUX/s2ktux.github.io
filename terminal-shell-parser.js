@@ -204,7 +204,7 @@ export function parseRedirections(source) {
     index = word.end - 1;
   }
 
-  return { command: command.join('').replace(/\s+/g, ' ').trim(), redirections, error: quote ? `comilla ${quote} sin cerrar` : null };
+  return { command: command.join('').trim(), redirections, error: quote ? `comilla ${quote} sin cerrar` : null };
 }
 
 export function describeDescriptorFlow(redirections) {
