@@ -371,3 +371,56 @@ test('@mobile cabecera, selector, terminal y controles no desbordan',async({page
   expect(metrics.terminal.x).toBeGreaterThanOrEqual(0);
   expect(metrics.terminal.right).toBeLessThanOrEqual(metrics.viewport+1);
 });
+
+
+test('Editores · nano y vi ocupan la pantalla y colocan el cursor en el texto',async({page})=>{
+  await openMode(page,'docker');
+  await focusXterm(page);
+  await page.keyboard.type('nano /tmp/cursor.txt');
+  await page.keyboard.press('Enter');
+  const nano=page.locator('#term-editor');
+  await expect(nano).toBeAttached();
+  await expect.poll(()=>page.locator('#term-xterm').getAttribute('data-cursor-cell')).toBe('2:1');
+  const nanoRows=await nano.evaluate(el=>el.textContent.split('\n').length);
+  const terminalRows=Number(await page.locator('#term-body').getAttribute('data-lines'));
+  expect(nanoRows).toBeGreaterThanOrEqual(terminalRows-1);
+  await page.keyboard.type('abc');
+  await expect.poll(()=>page.locator('#term-xterm').getAttribute('data-cursor-cell')).toBe('2:4');
+  await page.keyboard.press('Control+x');
+  await page.keyboard.press('n');
+  await waitForShell(page);
+
+  await focusXterm(page);
+  await page.keyboard.type('vi /tmp/cursor.txt');
+  await page.keyboard.press('Enter');
+  await expect(page.locator('#term-editor')).toBeAttached();
+  await expect.poll(()=>page.locator('#term-xterm').getAttribute('data-cursor-cell')).toBe('1:1');
+  await page.keyboard.press('i');
+  await page.keyboard.type('Z');
+  await expect.poll(()=>page.locator('#term-xterm').getAttribute('data-cursor-cell')).toBe('1:2');
+  await page.keyboard.press('Escape');
+  await page.keyboard.type(':q!');
+  await page.keyboard.press('Enter');
+  await waitForShell(page);
+});
+
+test('Docker · opciones y órdenes incompletas devuelven errores de CLI reales',async({page})=>{
+  await openMode(page,'docker');
+  const cases=[
+    ['docker rm -f',/requires at least 1 argument/i],
+    ['docker stop --time',/flag needs an argument/i],
+    ['docker run --name',/flag needs an argument/i],
+    ['docker run -p',/flag needs an argument/i],
+    ['docker run',/requires at least 1 argument/i],
+    ['docker attach',/requires at least 1 argument/i],
+    ['docker logs --tail',/flag needs an argument/i],
+    ['docker logs',/requires at least 1 argument/i],
+    ['docker inspect --format',/flag needs an argument/i],
+    ['docker inspect',/requires at least 1 argument/i],
+    ['docker exec',/requires at least 2 arguments/i]
+  ];
+  for(const [command,expected] of cases){
+    expect(await run(page,command),command).toMatch(expected);
+  }
+  expect(await run(page,'docker container prune -f')).toMatch(/Deleted Containers|Total reclaimed space/i);
+});
