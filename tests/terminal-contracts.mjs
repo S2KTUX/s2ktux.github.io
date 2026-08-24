@@ -23,7 +23,7 @@ const contracts = [
   ['Kubernetes reconciliation', /ContainerCreating/.test(core) && /Pod became Running/.test(core)],
   ['Interactive container shells', /enterContainerShell/.test(core) && /containerDispatch/.test(core)],
   ['Here-document input', /const hd=cmd\.match/.test(core) && /startInteractive\('>'/.test(core)],
-  ['Async command prompt recovery', /const runCommandSeq/.test(core) && (core.match(/runCommandSeq\(seq/g)||[]).length===2 && /setPrompt\(\); input\.focus\(\)/.test(core)],
+  ['Async command prompt recovery', /const runCommandSeq/.test(core) && (core.match(/runCommandSeq\(seq/g)||[]).length>=2 && /finally\{[\s\S]*?input\.readOnly=false[\s\S]*?setPrompt\(\); input\.focus\(\)/.test(core)],
   ['Foreground input ownership', /foregroundProcess && !\(e\.ctrlKey/.test(core) && /foregroundProcess=\{pid,cmd:'ping '[^\n]+promptEl\.textContent='';/.test(core)],
   ['Single-line terminal input', /#term-input-line\{[^}]*flex-wrap:nowrap[^}]*min-width:0/.test(page) && /#term-input\{[^}]*width:1px[^}]*min-width:0/.test(page)],
   ['Reload-proof selector', /explicitEntry/.test(page) && /params\.delete\('enter'\)/.test(page) && /history\.replaceState/.test(page) && /pageshow/.test(page) && /e\.persisted/.test(page) && /&enter=1/.test(page)],
