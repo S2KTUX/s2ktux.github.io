@@ -218,7 +218,7 @@
   window.addEventListener('pageshow',function(e){ var restored=getMode(new URLSearchParams(location.search)); if(e.persisted&&restored){ clearAllTerminalSessions(); location.replace(selectionUrl()); } });
   document.addEventListener('click', function(e){
     var b = e.target && e.target.closest && e.target.closest('[data-pick-mode]');
-    if(b){ var selected=b.getAttribute('data-pick-mode'); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
+    if(b){ var selected=b.getAttribute('data-pick-mode'); clearModeSession(selected); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
     var cm = e.target && e.target.closest && e.target.closest('[data-change-mode]');
     if(cm){ location.href=selectionUrl(); }
   });
@@ -265,7 +265,7 @@
           </button>
           <button data-pick-mode="docker" class="terminal-slot" role="option" aria-selected="false">
             <span class="slot-index">02</span>
-            <span class="slot-copy"><span class="slot-title">DOCKER</span><span class="slot-focus">instalación · imágenes · volúmenes · redes · Compose</span></span>
+            <span class="slot-copy"><span class="slot-title">DOCKER</span><span class="slot-focus">imágenes · contenedores · volúmenes · redes · Compose</span></span>
             <span class="slot-action">ENTRAR ↵</span>
           </button>
           <button data-pick-mode="kubernetes" class="terminal-slot" role="option" aria-selected="false">
@@ -347,7 +347,7 @@
       <div class="cs-tab" data-modes="linux" data-cs-tab="store" data-active="0">Almacenamiento</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="net" data-active="0">Red</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="selinux" data-active="0">SELinux</div>
-      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-host" data-active="0">Inicio y daemon</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-host" data-active="0">Primeros pasos</div>
       <div class="cs-tab" data-modes="docker" data-cs-tab="docker-images" data-active="0">Imágenes y build</div>
       <div class="cs-tab" data-modes="docker" data-cs-tab="cont" data-active="0">Contenedores</div>
       <div class="cs-tab" data-modes="docker" data-cs-tab="docker-data" data-active="0">Volúmenes</div>
@@ -462,20 +462,19 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-host" data-active="0">
-      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">Flujo inicial del motor Docker: instalación, daemon, diagnóstico y primera ejecución. Este cheatsheet no mezcla objetivos RHCSA.</div>
-      <div class="csrow"><span class="cscmd">dnf -y install dnf-plugins-core</span><span class="csdesc">Instala el complemento necesario para gestionar repositorios.</span></div>
-      <div class="csrow"><span class="cscmd">dnf config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo</span><span class="csdesc">Añade el repositorio estable oficial de Docker CE.</span></div>
-      <div class="csrow"><span class="cscmd">dnf install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin</span><span class="csdesc">Instalación completa mediante el gestor de paquetes.</span></div>
-      <div class="csrow"><span class="cscmd">curl -fsSL https://get.docker.com | sh</span><span class="csdesc">Script rápido de conveniencia; Docker recomienda el repositorio para un host estable.</span></div>
-      <div class="csrow"><span class="cscmd">systemctl enable --now docker</span><span class="csdesc">Arranca el daemon ahora y en los siguientes reinicios.</span></div>
-      <div class="csrow"><span class="cscmd">systemctl status docker</span><span class="csdesc">Estado realista del daemon de Docker.</span></div>
-      <div class="csrow"><span class="cscmd">docker version · docker info</span><span class="csdesc">Comprueba cliente, servidor, almacenamiento y estado.</span></div>
-      <div class="csrow"><span class="cscmd">docker run hello-world</span><span class="csdesc">Verificación completa: pull, create, start y salida.</span></div>
-      <div class="csrow"><span class="cscmd">journalctl -u docker</span><span class="csdesc">Logs de arranque y errores del daemon.</span></div>
-      <div class="csrow"><span class="cscmd">/etc/docker/daemon.json</span><span class="csdesc">Configuración persistente del daemon: logs, storage y registries.</span></div>
+      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">Docker Engine y Compose están listos desde el primer prompt. Empieza por el flujo de trabajo; las pestañas siguientes separan imágenes, contenedores, datos, redes y Compose.</div>
+      <div class="csrow"><span class="cscmd">docker version · docker info</span><span class="csdesc">Comprueba las versiones del cliente y servidor y revisa el estado general del host.</span></div>
+      <div class="csrow"><span class="cscmd">docker search TÉRMINO</span><span class="csdesc">Busca imágenes compatibles en el catálogo simulado de Docker Hub.</span></div>
+      <div class="csrow"><span class="cscmd">docker pull IMAGEN[:TAG]</span><span class="csdesc">Descarga las capas de una imagen y la incorpora al almacén local.</span></div>
+      <div class="csrow"><span class="cscmd">docker images</span><span class="csdesc">Muestra las imágenes que ya existen en este host.</span></div>
+      <div class="csrow"><span class="cscmd">docker run [OPCIONES] IMAGEN</span><span class="csdesc">Crea y arranca un contenedor; si falta la imagen, primero realiza el pull.</span></div>
+      <div class="csrow"><span class="cscmd">docker ps · docker ps -a</span><span class="csdesc">Lista los contenedores activos o todos, incluidos los detenidos.</span></div>
+      <div class="csrow"><span class="cscmd">docker stop · start · restart · rm</span><span class="csdesc">Administra el ciclo de vida y elimina contenedores.</span></div>
+      <div style="margin:12px 22px;padding:12px 14px;background:var(--surface2);border:2px dashed var(--line);font-family:'Share Tech Mono',monospace;font-size:15px;line-height:1.55;color:var(--head)"><b>Imágenes disponibles:</b> alpine · nginx · httpd · debian · ubuntu · rockylinux · busybox · mariadb · mysql · postgres · redis · mongo · node · python · php · traefik · rabbitmq · wordpress · hello-world</div>
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-images" data-active="0">
+      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">Las imágenes son plantillas inmutables. Docker descarga capas, las reutiliza por caché y crea contenedores a partir de ellas.</div>
       <div class="csrow"><span class="cscmd">docker search TERM · docker pull IMG</span><span class="csdesc">Busca y descarga imágenes desde un registry.</span></div>
       <div class="csrow"><span class="cscmd">docker images · image ls</span><span class="csdesc">Lista repositorio, tag, ID y tamaño local.</span></div>
       <div class="csrow"><span class="cscmd">docker inspect IMG · history IMG</span><span class="csdesc">Metadatos completos y capas de construcción.</span></div>
@@ -530,7 +529,7 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-ops" data-active="0">
-      <div class="csrow"><span class="cscmd">docker stats · docker events</span><span class="csdesc">Métricas en vivo y eventos del daemon.</span></div>
+      <div class="csrow"><span class="cscmd">docker stats · docker events</span><span class="csdesc">Métricas en vivo y eventos del motor de contenedores.</span></div>
       <div class="csrow"><span class="cscmd">docker system df</span><span class="csdesc">Espacio usado por imágenes, contenedores y volúmenes.</span></div>
       <div class="csrow"><span class="cscmd">docker container/image/volume/network prune</span><span class="csdesc">Limpieza selectiva por tipo de objeto.</span></div>
       <div class="csrow"><span class="cscmd">docker system prune -a --volumes</span><span class="csdesc">Limpieza global agresiva; revisa antes qué está en uso.</span></div>
@@ -711,6 +710,6 @@
   <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 </div>
-<script type="module" src="./terminal-bootstrap.js?v=20260823-final12"></script>
+<script type="module" src="./terminal-bootstrap.js?v=20260824-terminalfix1"></script>
 </body>
 </html>

@@ -17,9 +17,9 @@ export default {
     cheat: 'CHEATSHEET · DOCKER',
     practice: 'PRÁCTICAS GUIADAS · DOCKER',
     host: 'docker-host',
-    description: 'Un host Linux limpio para instalar Docker y practicar contenedores, imágenes, Dockerfiles, redes, volúmenes, recursos y Compose.'
+    description: 'Un host Rocky Linux con Docker Engine listo para practicar imágenes, contenedores, Dockerfiles, redes, volúmenes, recursos y Compose.'
   },
   commandSet: 'linux-docker',
-  commands: ['docker','docker-compose','dockerd','jq'],
+  commands: ['docker','docker-compose','jq'],
   map: { zone: 'docker', title: 'TALLER DE CONTENEDORES', accent: '#3b82a0' }
 };

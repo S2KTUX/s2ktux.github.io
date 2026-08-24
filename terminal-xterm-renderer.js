@@ -98,9 +98,12 @@ export async function attachTerminalRenderer() {
 
   let drawingPrompt = false;
   let destroyed = false;
+  let alternateActive = false;
+  const alternateScreen = () => body.querySelector('#term-editor, #term-pager');
+  const rawKeyOwner = () => Boolean(alternateScreen() || input.dataset.ttyKeys === 'raw' || input.dataset.ttyKeys);
   const promptAnsi = () => ansiFor(prompt.style.color || (prompt.textContent.endsWith('#') ? '#e08a2e' : '#8fa876'));
   const drawPrompt = () => {
-    if (destroyed) return;
+    if (destroyed || alternateScreen()) return;
     drawingPrompt = true;
     const text = prompt.textContent || '';
     const visibleInput = input.dataset.ttyEcho === 'off' ? '' : input.value;
@@ -116,17 +119,37 @@ export async function attachTerminalRenderer() {
   [...body.querySelectorAll(':scope > .term-out')].forEach(writeOutput);
   drawPrompt();
 
+  const renderAlternateScreen = () => {
+    const screen = alternateScreen();
+    if (!screen) return false;
+    alternateActive = true;
+    term.write(`\x1b[2J\x1b[H${nodeToAnsi(screen, ansiFor(screen.style?.color))}${RESET}`);
+    return true;
+  };
+  const rebuildFromDom = () => {
+    term.write('\x1b[2J\x1b[H');
+    [...body.querySelectorAll(':scope > .term-out')].forEach(writeOutput);
+    drawPrompt();
+  };
   const observer = new MutationObserver((records) => {
+    const wasAlternate = alternateActive;
+    if (renderAlternateScreen()) return;
+    if (wasAlternate) {
+      alternateActive = false;
+      rebuildFromDom();
+      return;
+    }
     let outputAdded = false;
     let outputRemoved = false;
     for (const record of records) {
+      if (record.target !== body) continue;
       for (const node of record.addedNodes) if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('term-out')) { writeOutput(node); outputAdded = true; }
       for (const node of record.removedNodes) if (node.nodeType === Node.ELEMENT_NODE && node.classList.contains('term-out')) outputRemoved = true;
     }
     if (outputRemoved && !body.querySelector('.term-out') && !outputAdded) term.clear();
     queueMicrotask(drawPrompt);
   });
-  observer.observe(body, { childList:true });
+  observer.observe(body, { childList:true, subtree:true, characterData:true });
   body.addEventListener('terminal-clear', () => {
     term.clear();
     term.write('\x1b[2J\x1b[H');
@@ -187,6 +210,12 @@ export async function attachTerminalRenderer() {
     const clean = normalizeTerminalPaste(data);
     if (clean.startsWith('\x1b')) return;
     if (!clean) return;
+    // Los programas que poseen el TTY (man/less, nano, vi, GRUB y nmtui)
+    // reciben teclas, no texto insertado en el input oculto del prompt.
+    if (rawKeyOwner()) {
+      for (const char of clean) dispatchKey(char === '\n' ? 'Enter' : char);
+      return;
+    }
     // Un bloque pegado puede contener varias órdenes y alguna de ellas puede
     // quedarse ejecutando. La cola entrega cada línea cuando vuelve PS1/PS2.
     if (clean.includes('\n') || input.readOnly || input.disabled) enqueuePaste(clean);
