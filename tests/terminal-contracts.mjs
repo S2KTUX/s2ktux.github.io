@@ -33,6 +33,7 @@ const contracts = [
   ['Mobile async input ownership', /input\.readOnly=true/.test(core) && /removeAttribute\('aria-busy'\)/.test(core) && /addEventListener\('beforeinput'/.test(core) && /foregroundProcess\|\|followTimer/.test(core)],
   ['Engine loading fallback', /try\s*\{/.test(bootstrap) && /No se pudo cargar esta máquina/.test(bootstrap) && /input\.disabled = true/.test(bootstrap)],
   ['Professional xterm renderer', /vendor\/xterm\/xterm\.mjs/.test(xtermRenderer) && /FitAddon/.test(xtermRenderer) && /screenReaderMode:true/.test(xtermRenderer) && /minimumContrastRatio:4\.5/.test(xtermRenderer) && /term\.onData/.test(xtermRenderer) && /requestFullscreen/.test(xtermRenderer) && /terminal-mobile-keys/.test(page) && /import\('\.\/terminal-xterm-renderer\.js(?:\?[^']+)?'\)/.test(bootstrap)],
+  ['Single accessible terminal tree', /screenReaderMode:true/.test(xtermRenderer) && /body\.setAttribute\('aria-hidden', 'true'\)/.test(xtermRenderer) && /body\.hidden = true/.test(xtermRenderer)],
   ['Optional explained mobile keys', /terminal-keys-toggle/.test(page) && /aria-expanded="false"/.test(page) && /data-term-key="CTRLC"/.test(page) && /Ctrl\+C cancela/.test(page) && /key === 'CTRLC'/.test(xtermRenderer) && !/data-term-key="CTRL"/.test(page)],
   ['Collapsed learning panels', /<details class="cs">/.test(page) && /<details class="cs" id="practice-panel">/.test(page) && !/<details class="cs"[^>]*\sopen/.test(page) && /practice\.open=false/.test(core)],
   ['SELinux causal diagnostics', /avcAudit/.test(core) && /case 'ausearch'/.test(core) && /case 'sealert'/.test(core)],
@@ -78,7 +79,11 @@ const contracts = [
   ['Real Docker mounts and Compose projects', /mount\.type==='bind'/.test(core) && /hostPath:norm/.test(core) && /const parseCompose=/.test(core) && /composeProject:projectName/.test(core) && /--scale=/.test(core) && /rest\.includes\('-v'\)/.test(core)],
   ['CKA workload and rollout coverage', /daemonsets/.test(core) && /statefulsets/.test(core) && /cronjobs/.test(core) && /horizontalpodautoscaler/.test(core) && /op==='restart'/.test(core) && /sub==='autoscale'/.test(core) && /sub==='events'/.test(core) && /args\[1\]==='token'/.test(core)],
   ['Kubernetes lifecycle tools', /args\[0\]==='init'/.test(runtimeKubernetes) && /args\[0\]==='join'/.test(runtimeKubernetes) && /args\[0\]==='reset'/.test(runtimeKubernetes) && /sub==='stats'/.test(runtimeKubernetes) && /sub==='exec'/.test(runtimeKubernetes)],
-];
+  ['Strict command schemas', /validateCommandInvocation/.test(core) && /terminal-command-schema\.js/.test(core)],
+  ['State-only challenge scoring', /const scoreChallenge=\(c,r\)=>r&&r\.ok\?100:0/.test(core) && !/targets\.filter\(t=>log\.includes/.test(core)],
+  ['Text-only scroll restoration', /t:d\.textContent/.test(core) && /d\.textContent=typeof it\.t/.test(core) && !/d\.innerHTML=it\.h/.test(core)],
+  ['Runtime and permanent firewalld state', /permanentServices/.test(core) && /runtime-to-permanent/.test(core) && /fw\.services=new Set\(fw\.permanentServices\)/.test(core)],
+  ['Native symbolic links', /type:'symlink'/.test(core) && /n\.type==='symlink'/.test(core) && /typeP==='l'/.test(core)],];
 
 for (const [name, passed] of contracts) assert.ok(passed, `Terminal contract failed: ${name}`);
 console.log(`terminal contracts: ${contracts.length}/${contracts.length} passed`);

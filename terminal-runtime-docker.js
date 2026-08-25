@@ -1,7 +1,8 @@
 const basePackages = [
   'bash','coreutils','glibc','systemd','dnf','rpm','util-linux','findutils',
   'procps-ng','iproute','iputils','NetworkManager','openssh-server',
-  'openssh-clients','curl','tar','gzip','bzip2','vim-minimal','nano','jq'
+  'openssh-clients','curl','tar','gzip','bzip2','vim-minimal','nano','jq',
+  'docker-ce','docker-ce-cli','containerd.io','docker-buildx-plugin','docker-compose-plugin'
 ];
 
 export default {
@@ -10,7 +11,7 @@ export default {
     initialUser: 'root',
     cwd: ['root'],
     packages: basePackages,
-    motd: 'Docker practice host — instala el motor y trabaja como en un Linux real',
+    motd: 'Docker practice host — Docker Engine activo y listo para trabajar',
     network: { up:true, ip:'192.168.56.20', prefix:24, gw:'192.168.56.1', dns:'1.1.1.1', method:'auto', autoconnect:true }
   },
   manuals: {
@@ -46,8 +47,8 @@ export default {
   createChallenges(ctx) {
     const s=ctx.state;
     return [
-      {badge:'NIVEL 1 · INSTALACIÓN',title:'Instala Docker Engine',goal:'Prepara este host Rocky Linux con Docker Engine Community. Deben quedar instalados el motor, la CLI, containerd, Buildx y Compose.',check:()=>s.dockerInstalled?{ok:true,msg:'Docker Engine está instalado.'}:{ok:false,msg:'Docker todavía no está instalado.'}},
-      {badge:'NIVEL 1 · DAEMON',title:'Activa y verifica el daemon',goal:'Deja Docker activo ahora y habilitado para los siguientes arranques. Confirma además que tanto el cliente como el servidor responden.',check:()=>s.services.docker&&s.services.docker.active&&s.services.docker.enabled&&s.history.some(h=>/^docker (version|info)/.test(h))?{ok:true,msg:'Daemon activo, habilitado y comprobado.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
+      {badge:'NIVEL 1 · ORIENTACIÓN',title:'Reconoce el host Docker',goal:'Revisa el inventario inicial de contenedores, imágenes, redes y volúmenes para conocer el estado de la máquina antes de trabajar.',check:()=>['docker ps','docker images','docker network ls','docker volume ls'].every(command=>s.history.some(h=>h===command))?{ok:true,msg:'Has reconocido todos los recursos iniciales del host.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
+      {badge:'NIVEL 1 · IMÁGENES',title:'Prepara una imagen Alpine',goal:'Añade la imagen oficial <b>alpine:latest</b> al host y examina sus metadatos antes de utilizarla.',check:()=>s.images.some(i=>i.repo==='alpine'&&i.tag==='latest')&&s.history.some(h=>/^docker inspect alpine(?::latest)?$/.test(h))?{ok:true,msg:'La imagen Alpine está disponible y ha sido inspeccionada.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
       {badge:'NIVEL 1 · EJECUCIÓN',title:'Completa el hello-world',goal:'Verifica la instalación con la imagen <b>hello-world</b> y deja constancia de que el contenedor terminó correctamente.',check:()=>s.images.some(i=>i.repo==='hello-world')&&s.containers.some(c=>c.image.startsWith('hello-world'))&&s.history.some(h=>/^docker ps .*a/.test(h))?{ok:true,msg:'Has completado y revisado el primer contenedor.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
       {badge:'NIVEL 2 · CICLO DE VIDA',title:'Controla el ciclo de vida',goal:'Crea un contenedor llamado <b>ciclo</b>, detenlo, arráncalo de nuevo y reinícialo. Debe terminar activo.',check:()=>s.containers.some(c=>c.name==='ciclo'&&c.running)&&['stop','start','restart'].every(op=>s.history.some(h=>h.startsWith('docker '+op+' ciclo')))?{ok:true,msg:'Ciclo de vida completo.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
       {badge:'NIVEL 2 · PUERTOS',title:'Publica un servidor nginx',goal:'Publica un servidor nginx llamado <b>web</b>, en segundo plano, para que el puerto 80 del contenedor sea accesible en el 8080 del host. Verifica el mapeo.',check:()=>s.containers.some(c=>c.name==='web'&&c.running&&c.image.startsWith('nginx')&&c.ports.includes('8080:80'))&&s.history.some(h=>h==='docker port web')?{ok:true,msg:'nginx está activo y su puerto está comprobado.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},

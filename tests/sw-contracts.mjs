@@ -20,6 +20,7 @@ for (const onDemandAsset of [
   'terminal-bootstrap.js',
   'terminal-shell-parser.js',
   'terminal-core.js',
+  'terminal-command-schema.js',
   'terminal-engine-linux.js',
   'terminal-engine-docker.js',
   'terminal-engine-kubernetes.js',

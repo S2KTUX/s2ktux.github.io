@@ -10,7 +10,7 @@ const engines=Object.fromEntries(await Promise.all(names.map(async name=>[name,a
 const sources=Object.fromEntries(await Promise.all(names.map(async name=>[name,await read('terminal-runtime-'+name+'.js')])));
 const modules={};
 
-assert.match(bootstrap,/labelledImport\('motor de configuración', `\.\/terminal-engine-\$\{mode\}\.js`\)/);
+assert.match(bootstrap,/labelledImport\('motor de configuración', `\.\/terminal-engine-\$\{mode\}\.js(?:\?[^`]*)?`\)/);
 assert.match(bootstrap,/labelledImport\('contenido del entorno', `\.\/terminal-runtime-\$\{mode\}\.js(?:\?[^`]*)?`\)/);
 assert.match(bootstrap,/await Promise\.all/);
 assert.doesNotMatch(bootstrap,/import\(['"]\.\/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]\)/);
@@ -35,7 +35,9 @@ for(const name of names){
 
 assert.doesNotMatch(core,/NIVEL 1 · INSTALACIÓN|CKA · CONTEXTO|PREGUNTA 1 · RESCATE/);
 assert.match(sources.linux,/PREGUNTA 1 · RESCATE/);
-assert.match(sources.docker,/NIVEL 1 · INSTALACIÓN/);
+assert.doesNotMatch(sources.docker,/NIVEL 1 · INSTALACIÓN|NIVEL 1 · DAEMON/);
+assert.match(sources.docker,/NIVEL 1 · ORIENTACIÓN/);
+assert.match(sources.docker,/docker-ce-cli/);
 assert.match(sources.kubernetes,/CKA · CONTEXTO/);
 
 const output=[];

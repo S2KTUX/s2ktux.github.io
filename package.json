@@ -1,0 +1,13 @@
+{
+  "name": "s2ktux-site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node tests/run-all.mjs",
+    "test:commands": "node tests/command-validation.mjs",
+    "test:contracts": "node tests/terminal-contracts.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

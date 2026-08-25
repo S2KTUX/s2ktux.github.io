@@ -1,0 +1,24 @@
+name: Validar S2KTUX
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Instalar dependencias
+        run: npm ci --no-audit --no-fund
+      - name: Instalar Chromium de pruebas
+        run: npx playwright install --with-deps chromium
+      - name: Ejecutar toda la batería
+        run: npm test
