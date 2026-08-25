@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const site = 'https://s2ktux.github.io';
-const lastmod = '2026-08-22';
+const lastmod = '2026-08-26';
 const source = await fs.readFile(path.join(root, 'courses-data.js'), 'utf8');
 const context = { window: {} };
 vm.createContext(context);
@@ -45,25 +45,25 @@ const lessonSlug = (key, module, index) => {
 
 const header = (active = 'Cursos') => `
 <a class="skip-link" href="#main-content">Saltar al contenido</a>
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="/" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <nav class="site-nav" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="/">S2KTUX</a>
+    <nav class="site-nav" aria-label="Navegación principal">
       <a class="navlink nav-home" href="/">Inicio</a>
-      <a class="navlink" href="/cursos.html"${active === 'Cursos' ? ' style="color:var(--head);border-bottom:3px solid var(--accent)" aria-current="page"' : ''}>Cursos</a>
+      <a class="navlink" href="/cursos.html"${active === 'Cursos' ? ' aria-current="page"' : ''}>Cursos</a>
       <a class="navlink" href="/terminal.html">Terminal</a>
       <a class="navlink" href="/proyectos.html">Proyectos</a>
-      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon></span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema"><span data-theme-icon></span></button>
     </nav>
   </div>
 </div>`;
 
 const footer = `
-<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
-  <div style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
+  <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>`;
 
 const head = ({ title, description, canonical, jsonLd, type = 'article', robots = 'index,follow,max-image-preview:large' }) => `<!doctype html>
@@ -77,11 +77,12 @@ const head = ({ title, description, canonical, jsonLd, type = 'article', robots 
 <meta property="og:image" content="${site}/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(title)}"><meta name="twitter:description" content="${escapeHtml(description)}"><meta name="twitter:image" content="${site}/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static2">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260826-phase3"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=20260826-phase3">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">${escapeJson(jsonLd)}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script type="module" src="/learning-pages.js?v=20260822-static2"></script>
+<script defer src="/site-shell.js?v=20260826-phase3"></script>
+<script type="module" src="/learning-pages.js?v=20260826-phase3"></script>
 </head>`;
 
 const routeData = { courses: {}, lessons: {} };
@@ -126,7 +127,7 @@ for (const [key, cfg] of Object.entries(config)) {
     </${tag}>`;
   }).join('\n');
   const courseTitle = `${data.title}: curso gratuito en español · S2KTUX`;
-  const courseHtml = `${head({ title:courseTitle, description:courseDescription, canonical:`${site}${courseRoute}`, jsonLd:courseLd, type:'website', robots:isPlanned?'noindex,follow':'index,follow,max-image-preview:large' })}<body><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">${header()}
+  const courseHtml = `${head({ title:courseTitle, description:courseDescription, canonical:`${site}${courseRoute}`, jsonLd:courseLd, type:'website', robots:isPlanned?'noindex,follow':'index,follow,max-image-preview:large' })}<body><div class="site-page-shell site-app-shell">${header()}
   <main id="main-content" class="learning-main"><nav class="learning-crumbs" aria-label="Migas de pan"><a href="/">Inicio</a><span>›</span><a href="/cursos.html">Cursos</a><span>›</span><span aria-current="page">${escapeHtml(data.title)}</span></nav>
   <div class="learning-shell"><header class="course-hero"><div class="course-kicker">${escapeHtml(data.badge === cfg.exam ? data.badge : `${data.badge} · ${cfg.exam}`)}</div><h1>${escapeHtml(data.title)}</h1><p>${escapeHtml(courseDescription)}</p><div class="course-stats">${isPlanned ? `<span class="course-stat">${data.modules.length} clases previstas</span><span class="course-stat">contenido en preparación</span>` : `<span class="course-stat">${data.modules.length} ${data.modules.length === 1 ? 'módulo' : 'módulos'}</span><span class="course-stat">${data.modules.reduce((sum, module) => sum + module.topics.length, 0)} objetivos</span>`}<span class="course-stat">gratis · sin registro</span></div></header><section class="module-list" aria-label="Contenido del curso">${modules}</section></div></main>${footer}</div></body></html>`;
   await fs.writeFile(path.join(outDir, 'index.html'), courseHtml, 'utf8');
@@ -139,7 +140,9 @@ for (const [key, cfg] of Object.entries(config)) {
     const fragment = (await fs.readFile(path.join(root, cfg.files[index]), 'utf8'))
       .replace(/<style[\s\S]*?<\/style>/gi, '')
       .replace(/<script[\s\S]*?<\/script>/gi, '')
-      .replace(/<link[^>]*>/gi, '');
+      .replace(/<link[^>]*>/gi, '')
+      .replace(/\sstyle="max-width:100%;height:auto"/gi, '')
+      .replace(/class="course-content"\s+style="min-width:0;max-width:100%;overflow-wrap:anywhere"/gi, 'class="course-content"');
     const lessonDir = path.join(root, lessonRoute.replace(/^\//, ''));
     await fs.mkdir(lessonDir, { recursive: true });
     const description = `${module.desc} Aprende ${module.topics.slice(0, 3).join(', ')} con ejemplos en español.`;
@@ -156,7 +159,7 @@ for (const [key, cfg] of Object.entries(config)) {
     ]};
     const prev = index > 0 && moduleRoutes[index - 1] ? `<a class="lesson-nav-card" href="${moduleRoutes[index - 1]}"><small>← ANTERIOR</small><strong>${escapeHtml(data.modules[index - 1].title)}</strong></a>` : '<span></span>';
     const next = index < data.modules.length - 1 && moduleRoutes[index + 1] ? `<a class="lesson-nav-card next" href="${moduleRoutes[index + 1]}"><small>SIGUIENTE →</small><strong>${escapeHtml(data.modules[index + 1].title)}</strong></a>` : '<span></span>';
-    const lessonHtml = `${head({ title, description, canonical:`${site}${lessonRoute}`, jsonLd:lessonLd })}<body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">${header()}
+    const lessonHtml = `${head({ title, description, canonical:`${site}${lessonRoute}`, jsonLd:lessonLd })}<body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell site-app-shell">${header()}
       <main id="main-content" class="learning-main"><nav class="learning-crumbs" aria-label="Migas de pan"><a href="/">Inicio</a><span>›</span><a href="/cursos.html">Cursos</a><span>›</span><a href="${courseRoute}">${escapeHtml(data.title)}</a><span>›</span><span aria-current="page">${escapeHtml(cfg.unit)} ${index + 1}</span></nav>
       <div class="learning-shell"><div class="lesson-topline"><span class="lesson-counter">${escapeHtml(cfg.unit)} ${index + 1} / ${data.modules.length}</span><span class="lesson-progress" aria-label="Progreso del curso: ${Math.round((index + 1) / data.modules.length * 100)}%"><span style="width:${(index + 1) / data.modules.length * 100}%"></span></span></div>
       ${fragment}

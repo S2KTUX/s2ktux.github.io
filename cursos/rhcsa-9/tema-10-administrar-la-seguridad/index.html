@@ -9,22 +9,23 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Administrar la seguridad · RHCSA 9 · S2KTUX"><meta name="twitter:description" content="Firewall, permisos, SSH y hardening con SELinux. Aprende Configurar el firewall (firewalld / rich rules / NAT), Permisos predeterminados (umask), Autenticación SSH mediante claves con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static2">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260826-phase3"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=20260826-phase3">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Administrar la seguridad","description":"Firewall, permisos, SSH y hardening con SELinux.","url":"https://s2ktux.github.io/cursos/rhcsa-9/tema-10-administrar-la-seguridad/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"RHCSA 9","teaches":["Configurar el firewall (firewalld / rich rules / NAT)","Permisos predeterminados (umask)","Autenticación SSH mediante claves","Modos de SELinux","Contextos SELinux","Restaurar contextos predeterminados","Etiquetas de puerto SELinux","Booleanos SELinux"],"isPartOf":{"@type":"Course","name":"RHCSA 9 · EX200","url":"https://s2ktux.github.io/cursos/rhcsa-9/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"RHCSA 9 · EX200","item":"https://s2ktux.github.io/cursos/rhcsa-9/"},{"@type":"ListItem","position":4,"name":"Administrar la seguridad","item":"https://s2ktux.github.io/cursos/rhcsa-9/tema-10-administrar-la-seguridad/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script type="module" src="/learning-pages.js?v=20260822-static2"></script>
-</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+<script defer src="/site-shell.js?v=20260826-phase3"></script>
+<script type="module" src="/learning-pages.js?v=20260826-phase3"></script>
+</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell site-app-shell">
 <a class="skip-link" href="#main-content">Saltar al contenido</a>
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="/" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <nav class="site-nav" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="/">S2KTUX</a>
+    <nav class="site-nav" aria-label="Navegación principal">
       <a class="navlink nav-home" href="/">Inicio</a>
-      <a class="navlink" href="/cursos.html" style="color:var(--head);border-bottom:3px solid var(--accent)" aria-current="page">Cursos</a>
+      <a class="navlink" href="/cursos.html" aria-current="page">Cursos</a>
       <a class="navlink" href="/terminal.html">Terminal</a>
       <a class="navlink" href="/proyectos.html">Proyectos</a>
-      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon></span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema"><span data-theme-icon></span></button>
     </nav>
   </div>
 </div>
@@ -62,24 +63,24 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Configurar el firewall con firewalld</h2>
                 <p>Como ya sabemos, firewalld permite gestionar reglas dinámicas mediante zonas, servicios y reglas avanzadas almacenadas en <code>/etc/firewalld/zones/</code>.</p>
                 <p>Podemos crear aplicaciones personalizadas copiando servicios desde <code>/usr/lib/firewalld/services/</code> hacia <code>/etc/firewalld/services/</code> y aplicando contextos SELinux con <code>restorecon</code>.</p>
-                <img src="/images/firewall-app.png" alt="app perso de firewall" width="1289" height="587" style="max-width:100%;height:auto">
+                <img src="/images/firewall-app.png" alt="app perso de firewall" width="1289" height="587">
                 <p>Las <strong>rich rules</strong> permiten crear reglas específicas por IP, puerto o servicio.</p>
-                <img src="/images/firewall-rich.png" alt="richrules de firewall" width="1312" height="741" style="max-width:100%;height:auto">
+                <img src="/images/firewall-rich.png" alt="richrules de firewall" width="1312" height="741">
                 <p>NAT permite enrutar tráfico mediante:</p>
                 <ul>
                     <li><strong>Masquerade</strong> → acceso a internet desde redes internas.</li>
                     <li><strong>Port Forwarding</strong> → redirección de puertos.</li>
                     <li><strong>Rich Rule NAT</strong> → redirección específica por IP/red.</li>
                 </ul>
-                <img src="/images/firewall-nat.png" alt="nat de firewall" width="1218" height="530" style="max-width:100%;height:auto">
+                <img src="/images/firewall-nat.png" alt="nat de firewall" width="1218" height="530">
                 <p>Las <code>ipset</code> permiten manejar listas grandes de IPs de forma eficiente.</p>
-                <img src="/images/firewall-ipset.png" alt="ipset de firewall" width="1091" height="561" style="max-width:100%;height:auto">
+                <img src="/images/firewall-ipset.png" alt="ipset de firewall" width="1091" height="561">
             </section>
 
             <section id="obj2" class="lesson-section">
@@ -92,7 +93,7 @@
                 <h2>3. Autenticación SSH mediante claves</h2>
                 <p>Permite acceso seguro sin contraseña usando criptografía pública/privada. La clave pública se copia al servidor y la privada nunca se comparte.</p>
                 <p>Lo que tenemos que tener más claro es que la clave publica es la que compartiremos con el servidor pero la privada NUNCA la compartiremos. Practicad el hecho de que <code>ssh-copy-id</code> podría fallar, el examen está hecho para ponernos trampas en todo momento</p>
-                <img src="/images/ssh-key.png" alt="Autenticación SSH" width="957" height="578" style="max-width:100%;height:auto">
+                <img src="/images/ssh-key.png" alt="Autenticación SSH" width="957" height="578">
                 <p>Debemos verificar en <code>/etc/ssh/sshd_config</code> que estén activadas las opciones:</p>
                 <ul>
                     <li><code>PubkeyAuthentication yes</code></li>
@@ -111,7 +112,7 @@
                     <li><strong>Disabled</strong> → desactivado.</li>
                 </ul>
                 <p>Se consulta con <code>getenforce</code> y se cambia temporalmente con <code>setenforce</code>. Para hacerlo permanente se modifica <code>/etc/selinux/config</code>.</p>
-                <img src="/images/selinux-modes.png" alt="Modos SELinux" width="573" height="449" style="max-width:100%;height:auto">
+                <img src="/images/selinux-modes.png" alt="Modos SELinux" width="573" height="449">
             </section>
 
             <section id="obj5" class="lesson-section">
@@ -122,18 +123,18 @@
                     <li><code>ps -eZ</code> → contexto de procesos.</li>
                 </ul>
                 <p>No hay que memorizarlos los contextos.<code>semanage fcontext -l | grep servicio</code> lista las etiquetas recomendadas, <code>matchpathcon /ruta/archivo</code> indica la que debería tener y <code>ls -Z</code> la que tiene realmente.</p>
-                <img src="/images/selinux-context.png" alt="Contextos SELinux" width="1322" height="413" style="max-width:100%;height:auto">
+                <img src="/images/selinux-context.png" alt="Contextos SELinux" width="1322" height="413">
                 <p>Para investigar fallos de SELinux, usa <code>ausearch</code> (rastreador) y <code>audit2why</code> (traductor). Lo más común es combinarlos con <code>ausearch -m avc -ts recent | audit2why</code>, ya que la mayoría de bloqueos se registran bajo el tipo avc.</p>
-                <img src="/images/selinux-audit.png" alt="AUSEARCH -AUDIT- SELinux" width="1282" height="540" style="max-width:100%;height:auto">
+                <img src="/images/selinux-audit.png" alt="AUSEARCH -AUDIT- SELinux" width="1282" height="540">
             </section>
 
             <section id="obj6" class="lesson-section">
                 <h2>6. Restaurar contextos predeterminados</h2>
                 <p><code>restorecon</code> restaura etiquetas correctas cuando archivos se mueven o cambian manualmente.</p>
                 <p>El ejemplo más sencillo es el servicio httpd. Este servicio se encuentra en <code>/var/www/html/</code> y necesita un contexto para funcionar. Si importamos un archivo desde otra ubicación y no nos aseguramos de que tenga un contexto correcto, no funcionará. Tal y como hemos visto en la imagen de <code>ausearch -m avc -ts recent | audit2why</code></p>
-                <img src="/images/restorecon.png" alt="Uso de restorecon" width="1057" height="515" style="max-width:100%;height:auto">
+                <img src="/images/restorecon.png" alt="Uso de restorecon" width="1057" height="515">
                 <p>Para nuevas rutas usamos <code>semanage fcontext -a</code> y aplicamos cambios con <code>restorecon -Rv</code>.</p>
-                <img src="/images/restorecon-add.png" alt="Uso de restorecon" width="931" height="469" style="max-width:100%;height:auto">
+                <img src="/images/restorecon-add.png" alt="Uso de restorecon" width="931" height="469">
                 <p> De la misma manera que agregamos con <code>-a</code>, podemos eliminar una regla que hayamos creado exactamente igual pero con <code>-d</code> o modificarla con <code>-m</code>. Recordad lanzar siempre el comando <code>restorecon -Rv</code> para aplicar esos cambios. En el video menciono <code>chcon</code> pero este haría un cambio temporal y se perdería al reiniciar, por lo que mejor usar semanage fcontext. </p>
 
             </section>
@@ -141,18 +142,18 @@
             <section id="obj7" class="lesson-section">
                 <h2>7. Administrar etiquetas de puerto SELinux</h2>
                 <p>Si un servicio (ej. Apache) debe escuchar en un puerto no estándar, debemos etiquetar ese puerto en SELinux. Podemos comprobar el contexto de los puertos de la misma manera que la de los servicios : <code>semanage port -l | grep servicio</code>.</p>
-                <img src="/images/semanage-ports.png" alt="Puertos SELinux" width="691" height="207" style="max-width:100%;height:auto">
+                <img src="/images/semanage-ports.png" alt="Puertos SELinux" width="691" height="207">
                 <p>Si un servicio necesita usar un puerto diferente, debemos añadirlo con <code>semanage port -a X -p tcp PUERTO</code>. Por ejemplo, permitir que <strong>httpd</strong> use el puerto 8080:</p>
-                <img src="/images/semanage-ports2.png" alt="Puertos SELinux change" width="736" height="389" style="max-width:100%;height:auto">
+                <img src="/images/semanage-ports2.png" alt="Puertos SELinux change" width="736" height="389">
                 <p>Si el puerto ya existe y queremos modificarlo usamos <code>-m</code>, y para eliminarlo usamos <code>-d</code>.</p>
             </section>
              <section id="obj8" class="lesson-section">
                 <h2>8. Booleanos SELinux</h2>
                 <p>Los booleanos son interruptores (on/off) que permiten cambiar reglas de SELinux en tiempo real sin modificar la política completa. Tenemos que tener en cuenta que si un servicio funciona pero SELinux lo bloquea lo primero que revisaremos será los booleanos</p>
                 <p> Con el comando <code>getsebool -a</code> podemos listar todos los booleanos disponibles y podemos filtrar con grep servicio. Tambien podemos filtrar con <code>semanage boolean -l | grep X</code>. </p>
-                <img src="/images/selinux-booleans.png" alt="Booleanos SELinux" width="876" height="533" style="max-width:100%;height:auto">
+                <img src="/images/selinux-booleans.png" alt="Booleanos SELinux" width="876" height="533">
                 <p>Se listan con <code>getsebool -a</code> y se modifican con <code>setsebool</code>. Para hacerlo persistente usamos <code>-P</code>.</p>
-                <img src="/images/selinux-booleans2.png" alt="Booleanos SELinux" width="859" height="607" style="max-width:100%;height:auto">
+                <img src="/images/selinux-booleans2.png" alt="Booleanos SELinux" width="859" height="607">
                 <p>No es necesario memorizar booleanos concretos, sino saber identificarlos con <code>getsebool</code> o <code>getsebool -a</code> y activarlos correctamente usando <code>setsebool</code> o <code>setsebool -P</code> cuando SELinux bloquea un servicio.</p>
                 <p>Ejemplos comunes:</p>
                 <ul>
@@ -169,9 +170,9 @@
 </div>
 
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><a class="lesson-nav-card" href="/cursos/rhcsa-9/tema-9-administrar-usuarios-y-grupos/"><small>← ANTERIOR</small><strong>Administrar usuarios y grupos</strong></a><button class="lesson-read" type="button" data-lesson-read="rhcsa:9">Marcar como leída</button><a class="lesson-nav-card next" href="/cursos/rhcsa-9/tema-11-clase-extra/"><small>SIGUIENTE →</small><strong>Clase Extra</strong></a></nav></div></main>
-<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
-  <div style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
+  <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

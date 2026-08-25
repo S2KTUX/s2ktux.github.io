@@ -29,6 +29,8 @@ Este documento fija las cinco fases acordadas. No se inicia una fase hasta que l
 
 ## Fase 3 · Sistema visual y mantenibilidad
 
+**Estado: completada y validada.** Componentes comunes, tipografía de lectura, cursos estáticos y terminal verificados en escritorio y móvil.
+
 - Reducir estilos en línea y centralizar componentes visuales reutilizables.
 - Usar Space Mono para cuerpo, código y textos largos.
 - Reservar Press Start 2P para títulos y controles breves; evitar VT323 en párrafos largos.

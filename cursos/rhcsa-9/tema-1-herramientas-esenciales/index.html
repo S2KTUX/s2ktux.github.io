@@ -9,22 +9,23 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Herramientas Esenciales · RHCSA 9 · S2KTUX"><meta name="twitter:description" content="Herramientas esenciales de la shell para la administración del sistema. Aprende Acceder a un prompt de shell, Redirección de entrada/salida, Grep y expresiones regulares con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static2">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260826-phase3"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=20260826-phase3">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Herramientas Esenciales","description":"Herramientas esenciales de la shell para la administración del sistema.","url":"https://s2ktux.github.io/cursos/rhcsa-9/tema-1-herramientas-esenciales/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"RHCSA 9","teaches":["Acceder a un prompt de shell","Redirección de entrada/salida","Grep y expresiones regulares","Acceso remoto con SSH","Inicio y cambio de usuario (su)","Tar y compresión (gzip/bzip2)","Edición de texto con VI","Gestión de archivos y directorios","Enlaces físicos y simbólicos","Permisos estándar ugo/rwx","Documentación del sistema (man/info)"],"isPartOf":{"@type":"Course","name":"RHCSA 9 · EX200","url":"https://s2ktux.github.io/cursos/rhcsa-9/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"RHCSA 9 · EX200","item":"https://s2ktux.github.io/cursos/rhcsa-9/"},{"@type":"ListItem","position":4,"name":"Herramientas Esenciales","item":"https://s2ktux.github.io/cursos/rhcsa-9/tema-1-herramientas-esenciales/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script type="module" src="/learning-pages.js?v=20260822-static2"></script>
-</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+<script defer src="/site-shell.js?v=20260826-phase3"></script>
+<script type="module" src="/learning-pages.js?v=20260826-phase3"></script>
+</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell site-app-shell">
 <a class="skip-link" href="#main-content">Saltar al contenido</a>
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="/" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <nav class="site-nav" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="/">S2KTUX</a>
+    <nav class="site-nav" aria-label="Navegación principal">
       <a class="navlink nav-home" href="/">Inicio</a>
-      <a class="navlink" href="/cursos.html" style="color:var(--head);border-bottom:3px solid var(--accent)" aria-current="page">Cursos</a>
+      <a class="navlink" href="/cursos.html" aria-current="page">Cursos</a>
       <a class="navlink" href="/terminal.html">Terminal</a>
       <a class="navlink" href="/proyectos.html">Proyectos</a>
-      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon></span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema"><span data-theme-icon></span></button>
     </nav>
   </div>
 </div>
@@ -63,12 +64,12 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Acceder a un prompt de shell</h2>
                 <p>El prompt indica tu identidad y ubicación mediante el formato <code>usuario@máquina:ruta</code>. Se cierra con <code>$</code> para usuarios normales o <code>#</code> para root.</p>
-                <img src="/images/Shell.png" alt="Ejemplo de prompt de shell" width="705" height="306" style="max-width:100%;height:auto">
+                <img src="/images/Shell.png" alt="Ejemplo de prompt de shell" width="705" height="306">
                 <p>El acceso puede ser local (TTY)(Control + Alt + F2 - F6 en sistemas modernos), remoto (SSH) o vía terminal gráfica. Linux distingue entre mayúsculas y minúsculas (case-sensitive), por lo que la sintaxis debe escribirse exactamente.</p>
             </section>
 
@@ -88,7 +89,7 @@
                     <li><strong><code>&amp;&gt;</code></strong> → Redirige salida estándar y errores al mismo destino.</li>
                     <li><strong><code>|</code></strong> → Tubería (envía la salida de un comando como entrada de otro).</li>
                 </ul>
-                <img src="/images/redd-basic.png" alt="Ejemplo de redirecciones" width="978" height="689" style="max-width:100%;height:auto">
+                <img src="/images/redd-basic.png" alt="Ejemplo de redirecciones" width="978" height="689">
             </section>
 
             <section id="obj3" class="lesson-section">
@@ -112,15 +113,15 @@
                     <li><code>-v</code> : Modo verbose para mostrar más información sobre el proceso de conexión</li>
                     <li><code>-l</code> : Especifica el nombre del usuario con el que deseamos establecer la conexión.</li>
                 </ul>
-                <img src="/images/ssh.png" alt="Ejemplo de SSH" width="1620" height="495" style="max-width:100%;height:auto">
+                <img src="/images/ssh.png" alt="Ejemplo de SSH" width="1620" height="495">
             </section>
 
             <section id="obj5" class="lesson-section">
                 <h2>5. Inicio y cambio de usuario</h2>
                 <p>Para cambiar de identidad, usamos <code>su -</code> (el guion carga el entorno completo del usuario destino).</p>
-                <img src="/images/inicio-su.png" alt="Ejemplo de su -" width="690" height="321" style="max-width:100%;height:auto">
+                <img src="/images/inicio-su.png" alt="Ejemplo de su -" width="690" height="321">
                 <p>Con <code>sudo -i</code> usaremos la propia contraseña del usuario normal para ganar privilegios de root.</p>
-                <img src="/images/inicio-sudo.png" alt="Ejemplo de sudo -i" width="650" height="257" style="max-width:100%;height:auto">
+                <img src="/images/inicio-sudo.png" alt="Ejemplo de sudo -i" width="650" height="257">
                 <p>Podemos comprobar que usuario somos con <code>whoami</code> o <code>id</code>.</p>
             </section>
 
@@ -136,7 +137,7 @@
                 <pre><code>tar -cvzf archivo.tar.gz /carpeta  # Comprimir
 tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                 <p> Tambien podemos comprimir / descomprimir directamente con gzip o bzip2 : </p>
-                <img src="/images/tar-gz-bz2.png" alt="Ejemplo de tar / gzip / bzip2" width="649" height="583" style="max-width:100%;height:auto">
+                <img src="/images/tar-gz-bz2.png" alt="Ejemplo de tar / gzip / bzip2" width="649" height="583">
             </section>
 
             <section id="obj7" class="lesson-section">
@@ -151,7 +152,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                     <li><code>u</code> : Deshacer</li>
                 </ul>
                 <p> Podemos mencionar tambien el comando sed que se utilizar para transformar texto en un fichero.</p>
-                <img src="/images/sed.png" alt="Uso de sed para transformaciones" width="482" height="185" style="max-width:100%;height:auto">
+                <img src="/images/sed.png" alt="Uso de sed para transformaciones" width="482" height="185">
             </section>
 
             <section id="obj8" class="lesson-section">
@@ -163,7 +164,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                     <li><code>mv</code> : Mover ficheros / directorios.</li>
                     <li><code>rm -rf</code> : Borrado forzado y recursivo de un archivo o un directorio.</li>
                 </ul>
-                <img src="/images/crear-borrar.png" alt="Gestión de archivos" width="589" height="340" style="max-width:100%;height:auto">
+                <img src="/images/crear-borrar.png" alt="Gestión de archivos" width="589" height="340">
             </section>
 
             <section id="obj9" class="lesson-section">
@@ -171,7 +172,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                 <p>Un <code>enlace fisico</code> es un nombre adicional para los mismos datos en el disco (mismo inodo), mientras que un <code>enlace simbólico</code> es un acceso directo que apunta a la ruta del archivo original (acceso directo en Windows). La sintaxis es <code>ln [-s] archivo_original enlace</code>.</p>
                 <p><strong>Físico (Hard link):</strong> Mismo inodo. Si borras el original, el contenido sobrevive.<br>
                 <strong>Simbólico (Soft link):</strong> Acceso directo. Si borras el original, el enlace se rompe y el contenido se pierde.</p>
-                <img src="/images/links.png" alt="Diferencia entre enlaces" width="642" height="322" style="max-width:100%;height:auto">
+                <img src="/images/links.png" alt="Diferencia entre enlaces" width="642" height="322">
             </section>
 
             <section id="obj10" class="lesson-section">
@@ -183,8 +184,8 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                     <div class="info-item">x (1)</div>
                 </div>
                 <p>Usaremos los comandos <code>chmod</code> para modificar permisos y <code>chown</code> para modificar propietario:grupo. Podremos comprobar con <code>ls -l</code></p>
-                <img src="/images/permisos-basic.png" alt="Listar permisos" width="646" height="179" style="max-width:100%;height:auto">
-                <img src="/images/cambiar-permisos-basic.png" alt="Cambiar permisos" width="581" height="345" style="max-width:100%;height:auto">
+                <img src="/images/permisos-basic.png" alt="Listar permisos" width="646" height="179">
+                <img src="/images/cambiar-permisos-basic.png" alt="Cambiar permisos" width="581" height="345">
                 <p> Tener en cuenta el flag -R para que se aplique de forma recursiva a todos los subdirectorios y archivos cuando lo usemos para un directorio</p>
             </section>
 
@@ -204,9 +205,9 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
 </div>
 
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><span></span><button class="lesson-read" type="button" data-lesson-read="rhcsa:0">Marcar como leída</button><a class="lesson-nav-card next" href="/cursos/rhcsa-9/tema-2-administracion-del-software/"><small>SIGUIENTE →</small><strong>Administración del Software</strong></a></nav></div></main>
-<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
-  <div style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
+  <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

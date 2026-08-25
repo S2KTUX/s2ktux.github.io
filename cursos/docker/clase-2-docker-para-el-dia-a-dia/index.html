@@ -9,22 +9,23 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Clase 2 — Docker para el día a día · Docker · S2KTUX"><meta name="twitter:description" content="Gestionar y compartir imágenes, volúmenes, redes y Docker Compose. Aprende Gestionar imágenes: commit, save y load, Etiquetas (docker tag), Compartir imágenes: push, pull y registros con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static2">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260826-phase3"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=20260826-phase3">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Clase 2 — Docker para el día a día","description":"Gestionar y compartir imágenes, volúmenes, redes y Docker Compose.","url":"https://s2ktux.github.io/cursos/docker/clase-2-docker-para-el-dia-a-dia/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"Fundamentos a avanzado","teaches":["Gestionar imágenes: commit, save y load","Etiquetas (docker tag)","Compartir imágenes: push, pull y registros","Volúmenes y bind mounts","Persistencia y docker cp","Redes y resolución por nombre","Docker Compose: up, ps, logs, down","Build desde Compose y ejemplo completo"],"isPartOf":{"@type":"Course","name":"Docker","url":"https://s2ktux.github.io/cursos/docker/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"Docker","item":"https://s2ktux.github.io/cursos/docker/"},{"@type":"ListItem","position":4,"name":"Clase 2 — Docker para el día a día","item":"https://s2ktux.github.io/cursos/docker/clase-2-docker-para-el-dia-a-dia/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script type="module" src="/learning-pages.js?v=20260822-static2"></script>
-</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+<script defer src="/site-shell.js?v=20260826-phase3"></script>
+<script type="module" src="/learning-pages.js?v=20260826-phase3"></script>
+</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell site-app-shell">
 <a class="skip-link" href="#main-content">Saltar al contenido</a>
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="/" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <nav class="site-nav" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="/">S2KTUX</a>
+    <nav class="site-nav" aria-label="Navegación principal">
       <a class="navlink nav-home" href="/">Inicio</a>
-      <a class="navlink" href="/cursos.html" style="color:var(--head);border-bottom:3px solid var(--accent)" aria-current="page">Cursos</a>
+      <a class="navlink" href="/cursos.html" aria-current="page">Cursos</a>
       <a class="navlink" href="/terminal.html">Terminal</a>
       <a class="navlink" href="/proyectos.html">Proyectos</a>
-      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon></span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema"><span data-theme-icon></span></button>
     </nav>
   </div>
 </div>
@@ -58,7 +59,7 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Gestionar imágenes</h2>
@@ -72,7 +73,7 @@
                 <pre><code>docker save -o fichero.tar imagen</code></pre>
                 <p>Y para importarlas en la máquina de destino:</p>
                 <pre><code>docker load -i fichero.tar</code></pre>
-                <img src="/images/Docker-save1.png" alt="docker save y docker load" width="912" height="547" style="max-width:100%;height:auto">
+                <img src="/images/Docker-save1.png" alt="docker save y docker load" width="912" height="547">
 
                 <h3>Etiquetas: el tag de una imagen</h3>
                 <p>Una imagen se identifica con <code>nombre:version</code>. Esa versión es la <strong>etiqueta</strong> (tag), y la podemos indicar al construir con el argumento <code>-t</code> del <code>docker build</code>.</p>
@@ -96,7 +97,7 @@
                 <pre><code>docker volume create mi-vol
 docker volume ls
 docker volume inspect mi-vol</code></pre>
-                <img src="/images/VOLUMEN-1.png" alt="Crear e inspeccionar un volumen" width="743" height="427" style="max-width:100%;height:auto">
+                <img src="/images/VOLUMEN-1.png" alt="Crear e inspeccionar un volumen" width="743" height="427">
                 <p>Para montarlos usamos el argumento <code>-v</code> al lanzar <code>docker run</code>, y hay dos formas:</p>
                 <div class="lesson-table-scroll" style="max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
                 <table class="lesson-table">
@@ -115,7 +116,7 @@ docker volume inspect mi-vol</code></pre>
                 <pre><code>docker run -d --name db -v datos:/var/lib/mysql mariadb</code></pre>
                 <p>Un ejemplo con bind mount:</p>
                 <pre><code>docker run -d --name web -v /home/usuario/web:/usr/share/nginx/html nginx</code></pre>
-                <img src="/images/VOLUMEN-2.png" alt="Contenedor con un volumen montado" width="823" height="169" style="max-width:100%;height:auto">
+                <img src="/images/VOLUMEN-2.png" alt="Contenedor con un volumen montado" width="823" height="169">
                 <p>Aunque borremos el contenedor <code>db</code>, el volumen <code>datos</code> sigue ahí con la información, listo para montarlo en otro. La prueba, en tres pasos:</p>
                 <pre><code>docker rm -f db                                            # borramos el contenedor
 docker run -d --name db -v datos:/var/lib/mysql mariadb    # lo recreamos igual
@@ -127,7 +128,7 @@ docker exec -it db mysql -uroot -p                         # los datos siguen ah
                 <p>Si lo único que quieres es sacar o meter un fichero concreto en un contenedor, no hace falta montar un volumen. Para eso está <code>docker cp</code>, que copia igual que el <code>cp</code> de siempre pero entre tu máquina y el contenedor:</p>
                 <pre><code>docker cp db:/etc/mysql/my.cnf .      # del contenedor a tu carpeta
 docker cp ./config.txt db:/tmp/       # de tu carpeta al contenedor</code></pre>
-                <img src="/images/VOLUMEN-3.png" alt="docker cp entre host y contenedor" width="726" height="546" style="max-width:100%;height:auto">
+                <img src="/images/VOLUMEN-3.png" alt="docker cp entre host y contenedor" width="726" height="546">
             </section>
 
             <section id="obj3" class="lesson-section">
@@ -136,7 +137,7 @@ docker cp ./config.txt db:/tmp/       # de tu carpeta al contenedor</code></pre>
                 <pre><code>docker network create red
 docker network ls
 docker network inspect red</code></pre>
-                <img src="/images/RED-1.png" alt="Crear y listar redes" width="745" height="849" style="max-width:100%;height:auto">
+                <img src="/images/RED-1.png" alt="Crear y listar redes" width="745" height="849">
                 <p>El driver que vas a usar casi siempre es <strong>bridge</strong> — es más, es el que se pone por defecto si no dices nada. Para empezar usaremos casi siempre bridge, pero podríamos ver otras opciones. Para poner una en específico podríamos indicar <code>docker network create --driver bridge red</code>. Las que existen son:</p>
                 <div class="lesson-table-scroll" style="max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
                 <table class="lesson-table">
@@ -162,7 +163,7 @@ docker network disconnect mi-red mi-contenedor</code></pre>
                 <p>Por ejemplo:</p>
                 <pre><code>docker run -dit --name linux --network red alpine
 docker exec -it linux ping web</code></pre>
-                <img src="/images/RED-2.png" alt="Resolución por nombre entre contenedores" width="746" height="483" style="max-width:100%;height:auto">
+                <img src="/images/RED-2.png" alt="Resolución por nombre entre contenedores" width="746" height="483">
                 <p>Por último, para borrar una red:</p>
                 <pre><code>docker network rm red</code></pre>
             </section>
@@ -171,7 +172,7 @@ docker exec -it linux ping web</code></pre>
                 <h2>4. Docker Compose</h2>
                 <p>Hasta ahora, para levantar una web con su base de datos hemos tenido que lanzar varios <code>docker run</code>, crear la red, crear el volumen… a mano y en orden. <strong>Docker Compose</strong> nos permite describir todo eso en un único fichero y levantarlo con un solo comando.</p>
                 <p>El fichero se llama <code>compose.yaml</code> y describe los servicios (contenedores), sus volúmenes y su configuración. Un ejemplo sencillo:</p>
-                <img src="/images/COMPOSE-1.png" alt="Ejemplo de fichero compose.yaml" width="754" height="234" style="max-width:100%;height:auto">
+                <img src="/images/COMPOSE-1.png" alt="Ejemplo de fichero compose.yaml" width="754" height="234">
                 <p>Tenemos el servicio <code>web</code> que está usando la imagen <code>nginx</code>, publicando el puerto 80 del contenedor en el 8080 del host.</p>
                 <p>Podemos comprobar que no describimos pasos, describimos el resultado que queremos: qué servicios existen y cómo son. Docker se encarga del cómo.</p>
                 <p>Levantamos todos los servicios de una vez, y una vez levantado con Compose, dejamos de usar <code>docker ps</code> o <code>docker logs</code> y tiramos de los del propio Compose, que actúan sobre todos los servicios del fichero a la vez:</p>
@@ -181,7 +182,7 @@ docker compose -f /ruta/al/compose.yaml up -d    # si el fichero está en otra r
 docker compose ps
 docker compose logs -f
 docker compose exec web sh</code></pre>
-                <img src="/images/COMPOSE-2.png" alt="docker compose up, ps y logs" width="1421" height="791" style="max-width:100%;height:auto">
+                <img src="/images/COMPOSE-2.png" alt="docker compose up, ps y logs" width="1421" height="791">
                 <p>En estos comandos usas el nombre del <em>servicio</em> (<code>web</code>), no el del contenedor que ves en <code>docker ps</code> — Compose razona por servicios.</p>
 
                 <h3>Construir un Dockerfile desde Compose</h3>
@@ -194,13 +195,13 @@ docker compose exec web sh</code></pre>
                 <p>Ese <code>.</code> significa "el Dockerfile de esta misma carpeta". Con <code>docker compose up -d --build</code> forzamos que lo reconstruya cuando cambiemos algo.</p>
 
                 <h3>Un ejemplo más completo</h3>
-                <img src="/images/COMPOSE-3.png" alt="Ejemplo de compose con varios servicios" width="1052" height="415" style="max-width:100%;height:auto">
-                <img src="/images/COMPOSE-4.png" alt="Servicios levantados con Compose" width="1396" height="721" style="max-width:100%;height:auto">
+                <img src="/images/COMPOSE-3.png" alt="Ejemplo de compose con varios servicios" width="1052" height="415">
+                <img src="/images/COMPOSE-4.png" alt="Servicios levantados con Compose" width="1396" height="721">
 
                 <h3>Volúmenes y redes en Compose</h3>
                 <p>Los volúmenes y las redes se declaran en su propia sección y luego se referencian en cada servicio que los use. Un ejemplo completo con nginx como web y redis como su almacén, con red y un volumen:</p>
-                <img src="/images/COMPOSE-5.png" alt="Compose con volúmenes y redes declarados" width="1044" height="516" style="max-width:100%;height:auto">
-                <img src="/images/COMPOSE-6.png" alt="Compose levantando los servicios con su red y volumen" width="1417" height="589" style="max-width:100%;height:auto">
+                <img src="/images/COMPOSE-5.png" alt="Compose con volúmenes y redes declarados" width="1044" height="516">
+                <img src="/images/COMPOSE-6.png" alt="Compose levantando los servicios con su red y volumen" width="1417" height="589">
                 <p>Abajo se declaran el volumen y la red. Al volumen lo referencia el servicio de <strong>redis</strong>, indicando la ruta donde se monta dentro del contenedor (<code>/data</code>, donde redis guarda su información). La red la comparten los dos servicios, y por eso el servicio web puede encontrar a <strong>redis</strong> por su nombre.</p>
                 <p>Al declararlos solo con el nombre, Docker los crea con sus valores por defecto: un volumen normal gestionado por él y una red de tipo <code>bridge</code>. Se pueden personalizar, pero para la mayoría de casos con esto sobra.</p>
                 <p>De hecho, si no declaramos ninguna red, Compose <strong>crea una automáticamente</strong> y mete todos los servicios dentro — por eso el primer ejemplo ya funcionaba sin escribir nada de redes. Esa red toma el nombre de la carpeta del proyecto seguido de <code>_default</code> (por ejemplo <code>miproyecto_default</code>), y puedes verla con <code>docker network ls</code> o mirarla a fondo con <code>docker network inspect</code>, como vimos antes.</p>
@@ -215,9 +216,9 @@ docker compose exec web sh</code></pre>
 </div>
 
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><a class="lesson-nav-card" href="/cursos/docker/clase-1-fundamentos-de-docker/"><small>← ANTERIOR</small><strong>Clase 1 — Fundamentos de Docker</strong></a><button class="lesson-read" type="button" data-lesson-read="docker:1">Marcar como leída</button><a class="lesson-nav-card next" href="/cursos/docker/clase-3-docker-profesional/"><small>SIGUIENTE →</small><strong>Clase 3 — Docker profesional</strong></a></nav></div></main>
-<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
-  <div style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
+  <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

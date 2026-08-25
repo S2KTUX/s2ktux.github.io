@@ -1,0 +1,205 @@
+/* Sistema visual compartido de S2KTUX · Fase 3 */
+:root {
+  --content-wide: 1180px;
+  --content-reading: 760px;
+  --space-page: clamp(16px, 4vw, 32px);
+  --pixel-shadow-sm: 3px 3px 0 var(--line);
+  --pixel-shadow-md: 5px 5px 0 var(--surface2);
+  --pixel-shadow-lg: 8px 8px 0 var(--surface2);
+}
+
+html body {
+  font-family: "Space Mono", monospace;
+  font-size: 16px;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+}
+
+.site-app-shell {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--surface2);
+  border-bottom: 4px solid var(--line);
+}
+
+.site-header-inner {
+  display: flex;
+  width: 100%;
+  max-width: var(--content-wide);
+  margin: 0 auto;
+  padding: 14px var(--space-page);
+  align-items: center;
+  justify-content: space-between;
+}
+
+.site-logo,
+.site-footer-brand {
+  color: var(--head) !important;
+  font: 14px/1.4 "Press Start 2P", monospace;
+  letter-spacing: -.04em;
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: clamp(16px, 2.5vw, 30px);
+  font-family: "Share Tech Mono", monospace;
+}
+
+.site-nav .navlink {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  border-bottom: 3px solid transparent;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+}
+
+.site-nav .navlink:hover,
+.site-nav .navlink[aria-current="page"] {
+  color: var(--head);
+  border-bottom-color: var(--accent, #a94f35);
+}
+
+.site-theme-toggle {
+  display: flex;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 2px solid var(--line);
+  background: var(--surface);
+  box-shadow: 2px 2px 0 var(--line);
+  color: var(--head);
+  cursor: pointer;
+}
+
+.site-footer {
+  display: grid;
+  width: min(100%, var(--content-wide));
+  margin: auto auto 0;
+  padding: 38px var(--space-page) 28px;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 18px 28px;
+  border-top: 4px solid var(--line);
+}
+
+.site-footer-tagline {
+  color: var(--muted);
+  font-size: 15px;
+  text-align: center;
+}
+
+.site-footer-links {
+  display: flex;
+  gap: 18px;
+  font: 16px/1.4 "Share Tech Mono", monospace;
+}
+
+.site-footer-copy {
+  grid-column: 1 / -1;
+  padding-top: 6px;
+  color: var(--muted);
+  font: 13px/1.5 "Space Mono", monospace;
+  text-align: center;
+}
+
+.pixel-button,
+.pxbtn {
+  font-family: "Press Start 2P", monospace;
+}
+
+.pixel-panel,
+.pxcard,
+.coursecard,
+.modcard,
+.module-list,
+.lesson-toc,
+.mobile-toc,
+.video-card,
+.lesson-nav-card {
+  border-radius: 0;
+}
+
+.content-copy,
+.course-description,
+.project-description {
+  font-family: "Space Mono", monospace;
+}
+
+.pixel-label,
+.eyebrow,
+.course-kicker,
+.module-number,
+.module-state {
+  font-family: "Press Start 2P", monospace;
+}
+
+@media (hover: hover) {
+  .site-theme-toggle:hover {
+    transform: translate(-1px, -1px);
+    box-shadow: 3px 3px 0 var(--line);
+  }
+}
+
+@media (max-width: 640px) {
+  html body {
+    font-size: 14px;
+    line-height: 1.65;
+  }
+
+  .site-header-inner {
+    padding: 10px 14px 9px;
+  }
+
+  .site-logo {
+    min-height: 34px;
+    font-size: 12px;
+  }
+
+  .site-nav .navlink {
+    min-height: 34px;
+    padding: 6px 2px;
+    font-size: 15px !important;
+  }
+
+  .site-footer {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    gap: 14px;
+    padding: 30px 16px 24px;
+    text-align: center;
+  }
+
+  .site-footer-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .site-footer-copy {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 370px) {
+  .site-nav .navlink {
+    font-size: 14px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-theme-toggle {
+    transition: none;
+  }
+}

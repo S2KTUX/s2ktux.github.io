@@ -3,8 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="./site-shell.css?v=20260822-header4">
+<link rel="stylesheet" href="./site-shell.css?v=20260826-phase3">
 <link rel="stylesheet" href="./fonts.css?v=20260822-local">
+<link rel="stylesheet" href="./visual-system.css?v=20260826-phase3">
 <title>S2KTUX · Aprende Linux, RHCSA 9, Docker y Kubernetes</title>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"S2KTUX","url":"https://s2ktux.github.io/","description":"Aprende administración de sistemas Linux, RHCSA 9, LPIC-1, Docker y Kubernetes con terminales simuladas y cursos en español.","inLanguage":"es","publisher":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/","logo":"https://s2ktux.github.io/assets/icon-512.png","description":"Formación gratuita de administración de sistemas Linux: RHCSA 9, LPIC-1, Docker y Kubernetes.","sameAs":["https://www.youtube.com/@S2KTUX","https://www.linkedin.com/in/alai-molina-delgado-563b70184"]}</script>
@@ -35,7 +36,7 @@
   <style>
   *{margin:0;padding:0;box-sizing:border-box}
   html{scroll-behavior:smooth}
-  body{background:var(--bg);font-family:'VT323',monospace;color:var(--text)}
+  body{background:var(--bg);font-family:'Space Mono',monospace;color:var(--text)}
   :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a}
   html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#e6d5b8;--head:#f8cf90;--muted:#c4ab89;--soft2:#0f0b06}
   html,body{transition:background-color .25s ease,color .25s ease}
@@ -82,33 +83,23 @@
     [style*="padding: 44px 32px"]{padding:30px 20px !important}
   }
 </style>
-<script>
-(function(){
-  try{ if(localStorage.getItem('s2ktux-theme')==='dark') document.documentElement.classList.add('dark'); }catch(e){}
-  function updateIcons(){ var dark=document.documentElement.classList.contains('dark'),label=dark?'Activar tema claro':'Activar tema oscuro'; document.querySelectorAll('[data-theme-icon]').forEach(function(el){ el.textContent=dark?'\u2600':'\u263e'; }); document.querySelectorAll('[data-theme-toggle]').forEach(function(el){ el.setAttribute('aria-label',label); el.setAttribute('title',label); }); }
-  window.__toggleTheme=function(){ var h=document.documentElement; h.classList.toggle('dark'); var dark=h.classList.contains('dark'); try{ localStorage.setItem('s2ktux-theme', dark?'dark':'light'); }catch(e){} updateIcons(); };
-  if(!window.__s2kThemeInit){ window.__s2kThemeInit=true;
-    document.addEventListener('click', function(e){ var b=e.target && e.target.closest && e.target.closest('[data-theme-toggle]'); if(b){ e.preventDefault(); window.__toggleTheme(); } });
-  }
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateIcons,150); });
-  setTimeout(updateIcons,150); setTimeout(updateIcons,600);
-})();
-</script>
+<script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
+<script defer src="./site-shell.js?v=20260826-phase3"></script>
 </head>
 <body>
 
 <a class="skip-link" href="#main-content">Saltar al contenido</a>
-<div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+<div class="site-page-shell site-app-shell">
 
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div class="site-nav" role="navigation" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
-      <a class="navlink nav-home" href="index.html" style="color:var(--head);border-bottom:3px solid #d97757">Inicio</a>
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="index.html">S2KTUX</a>
+    <div class="site-nav" role="navigation" aria-label="Navegación principal">
+      <a class="navlink nav-home" href="index.html" aria-current="page">Inicio</a>
       <a class="navlink" href="cursos.html">Cursos</a>
       <a class="navlink" href="terminal.html">Terminal</a>
       <a class="navlink" href="proyectos.html">Proyectos</a>
-      <button type="button" class="site-theme-toggle" data-theme-toggle="" aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon="">☾</span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle="" aria-label="Cambiar tema claro u oscuro"><span data-theme-icon="">☾</span></button>
     </div>
   </div>
 </div>
@@ -206,15 +197,15 @@
 </main>
 
 <!-- ============ FOOTER ============ -->
-<footer style="max-width:1180px;margin:0 auto;padding:44px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px">
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-links">
     <a href="sobre.html">Sobre</a>
     <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a>
     <a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a>
   </div>
-  <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+  <div data-copyright class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 
 </div>

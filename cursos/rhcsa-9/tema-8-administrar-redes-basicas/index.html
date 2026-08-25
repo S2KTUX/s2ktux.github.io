@@ -9,22 +9,23 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Administrar redes básicas · RHCSA 9 · S2KTUX"><meta name="twitter:description" content="Configuración de IP, hostname y firewall. Aprende Configurar direcciones IPv4 e IPv6 (nmcli), Resolución del nombre de host, Servicios de red al inicio con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static2">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260826-phase3"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=20260826-phase3">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Administrar redes básicas","description":"Configuración de IP, hostname y firewall.","url":"https://s2ktux.github.io/cursos/rhcsa-9/tema-8-administrar-redes-basicas/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"RHCSA 9","teaches":["Configurar direcciones IPv4 e IPv6 (nmcli)","Resolución del nombre de host","Servicios de red al inicio","Restringir acceso con firewalld"],"isPartOf":{"@type":"Course","name":"RHCSA 9 · EX200","url":"https://s2ktux.github.io/cursos/rhcsa-9/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"RHCSA 9 · EX200","item":"https://s2ktux.github.io/cursos/rhcsa-9/"},{"@type":"ListItem","position":4,"name":"Administrar redes básicas","item":"https://s2ktux.github.io/cursos/rhcsa-9/tema-8-administrar-redes-basicas/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script type="module" src="/learning-pages.js?v=20260822-static2"></script>
-</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+<script defer src="/site-shell.js?v=20260826-phase3"></script>
+<script type="module" src="/learning-pages.js?v=20260826-phase3"></script>
+</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell site-app-shell">
 <a class="skip-link" href="#main-content">Saltar al contenido</a>
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="/" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <nav class="site-nav" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="/">S2KTUX</a>
+    <nav class="site-nav" aria-label="Navegación principal">
       <a class="navlink nav-home" href="/">Inicio</a>
-      <a class="navlink" href="/cursos.html" style="color:var(--head);border-bottom:3px solid var(--accent)" aria-current="page">Cursos</a>
+      <a class="navlink" href="/cursos.html" aria-current="page">Cursos</a>
       <a class="navlink" href="/terminal.html">Terminal</a>
       <a class="navlink" href="/proyectos.html">Proyectos</a>
-      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon></span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema"><span data-theme-icon></span></button>
     </nav>
   </div>
 </div>
@@ -58,25 +59,25 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Configurar direcciones IPv4 e IPv6</h2>
                 <p>En RHEL, la gestión de red se realiza mediante <strong>NetworkManager</strong> usando <code>nmcli</code>. También podemos usar <code>nmtui</code> o el comando <code>ip</code> para cambios temporales.</p>
                 <p>Con <strong>nmcli</strong> podemos crear, modificar y eliminar conexiones de red y gestionar el estado de las interfaces.</p>
-                <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="1290" height="725" style="max-width:100%;height:auto">
+                <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="1290" height="725">
                 <p>Ejemplo WiFi: <code>nmcli connection add type wifi ifname [INTERFAZ] con-name [NOMBRE] ssid [NOMBRE_RED] wifi-sec.key-mgmt wpa-psk wifi-sec.psk [CONTRASEÑA] ipv4.addresses ...</code>.</p>
                 <p>IPv6 se configura igual usando propiedades <code>ipv6.*</code>. Es importante usar <code>connection.autoconnect yes</code>. Activamos con <code>nmcli con up "ID"</code> y verificamos con <code>ip addr show</code>.</p>
                 <p>También podemos añadir rutas estáticas además de la puerta de enlace definida con <code>ipv4.gateway</code>. El símbolo <code>+</code> añade rutas sin sobrescribir las existentes.</p>
-                <img src="/images/nmcli-route.png" alt="nmcli ejemplo configuración" width="1313" height="739" style="max-width:100%;height:auto">
+                <img src="/images/nmcli-route.png" alt="nmcli ejemplo configuración" width="1313" height="739">
             </section>
 
             <section id="obj2" class="lesson-section">
                 <h2>2. Configurar la resolución del nombre de host</h2>
                 <p>El hostname identifica al equipo en la red. Para cambios permanentes usamos <code>hostnamectl</code>. Editar <code>/etc/hostname</code> también es posible pero requiere reinicio.</p>
-                <img src="/images/hostname.png" alt="hostname ejemplo configuración" width="590" height="448" style="max-width:100%;height:auto">
+                <img src="/images/hostname.png" alt="hostname ejemplo configuración" width="590" height="448">
                 <p>Para resolución local sin DNS editamos <code>/etc/hosts</code> con la sintaxis: IP NOMBRE_COMPLETO ALIAS.</p>
-                <img src="/images/etc-host.png" alt="archivo ejemplo /etc/hosts" width="793" height="259" style="max-width:100%;height:auto">
+                <img src="/images/etc-host.png" alt="archivo ejemplo /etc/hosts" width="793" height="259">
                 <p>No debemos modificar <code>/etc/resolv.conf</code>, ya que NetworkManager lo sobrescribe. La configuración DNS persistente se realiza mediante <code>nmcli</code>, <code>nmtui</code> o archivos <code>.nmconnection</code>.</p>
                 <p> La forma correcta para una configuración de DNS persistente es con <code>nmcli</code>, <code>nmtui</code> o los archivos <code>.nmconnection</code> ubicados en <strong>/etc/NetworkManager/system-connections/</strong> y <code>nmcli con up NOMBRE-RED</code> para aplicar el cambio. </p>
             </section>
@@ -86,7 +87,7 @@
                 <p>Para asegurar que nuestra configuración de red sea efectiva desde el arranque, el servicio <strong>NetworkManager</strong> debe estar habilitado y activo : <code>systemctl enable --now NetworkManager</code>.</p>
                 <p>Si utilizamos el nmcli, no olvideis usar <code>connection.autoconnect yes</code> para que se inicie automaticamente.</p>
                  <p>Podemos comprobar la conectividad con comandos como <code>ip a</code>, <code>nmcli device status</code> o <code>systemctl status NetworkManager</code>.</p>
-                <img src="/images/check-net.png" alt="check net ejemplo" width="830" height="581" style="max-width:100%;height:auto">
+                <img src="/images/check-net.png" alt="check net ejemplo" width="830" height="581">
                 <p>Si creamos servicios dependientes de red, debemos usar <code>After=network-online.target</code> y <code>Wants=network-online.target</code> en la sección [Unit].</p>
             </section>
 
@@ -102,9 +103,9 @@
                     <li><strong>trusted</strong> : Confianza absoluta. Se aceptan todas las conexiones entrantes sin aplicar ningún filtro de seguridad.</li>
                 </ul>
                 <p> Cada interfaz puede tener una zona, y podemos cambiarla, poner una por defecto, comprobar el estado actual...  </p>
-                <img src="/images/firewall-basic.png" alt="firewall-cmd ejemplo" width="741" height="395" style="max-width:100%;height:auto">
+                <img src="/images/firewall-basic.png" alt="firewall-cmd ejemplo" width="741" height="395">
                  <p>Recordad usar <code>--permanent</code> para persistencia y <code>firewall-cmd --reload</code> para aplicar cambios.</p>
-                <img src="/images/firewall-basic2.png" alt="firewall-cmd ejemplo" width="1040" height="734" style="max-width:100%;height:auto">
+                <img src="/images/firewall-basic2.png" alt="firewall-cmd ejemplo" width="1040" height="734">
                 <p>Las rich rules permiten reglas más avanzadas y las vemos en la siguiente clase.</p>
             </section>
 
@@ -113,9 +114,9 @@
 </div>
 
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><a class="lesson-nav-card" href="/cursos/rhcsa-9/tema-7-implementar-configurar-y-mantener-sistemas/"><small>← ANTERIOR</small><strong>Implementar, configurar y mantener sistemas</strong></a><button class="lesson-read" type="button" data-lesson-read="rhcsa:7">Marcar como leída</button><a class="lesson-nav-card next" href="/cursos/rhcsa-9/tema-9-administrar-usuarios-y-grupos/"><small>SIGUIENTE →</small><strong>Administrar usuarios y grupos</strong></a></nav></div></main>
-<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
-  <div style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
+  <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

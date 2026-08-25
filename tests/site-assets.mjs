@@ -212,7 +212,7 @@ assert.ok(/\.site-theme-toggle\s*\{[^}]*position:\s*absolute/im.test(shellCss), 
 assert.ok(/@media\s*\(max-width:\s*640px\)/i.test(shellCss), 'Shared mobile header breakpoint is missing');
 for (const path of shellPages) {
   const html = await readFile(join(root, path), 'utf8');
-  assert.ok(html.includes('href="./site-shell.css?v=20260822-header4"'), `Missing versioned shared shell stylesheet: ${path}`);
+  assert.ok(html.includes('href="./site-shell.css?v=20260826-phase3"'), `Missing versioned shared shell stylesheet: ${path}`);
   assert.ok(html.includes('class="site-header-inner"'), `Missing shared header wrapper: ${path}`);
   assert.ok(html.includes('class="site-nav"'), `Missing shared navigation class: ${path}`);
   assert.ok(html.includes('site-theme-toggle'), `Missing shared theme button class: ${path}`);
@@ -261,7 +261,7 @@ for (const path of ['curso.html', 'leccion.html']) {
 }
 
 const serviceWorker = await readFile(join(root, 'sw.js'), 'utf8');
-assert.ok(serviceWorker.includes("'site-shell.css?v=20260822-header4'"), 'Shared shell stylesheet is missing from offline cache');
+assert.ok(serviceWorker.includes("'site-shell.css?v=20260826-phase3'"), 'Shared shell stylesheet is missing from offline cache');
 assert.ok(/req\.mode==='navigate'\s*\?\s*caches\.match\('index\.html'\)\s*:\s*Response\.error\(\)/.test(serviceWorker), 'Asset failures must not fall back to HTML');
 
 const sitemap = await readFile(join(root, 'sitemap.xml'), 'utf8');

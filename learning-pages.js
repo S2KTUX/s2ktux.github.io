@@ -1,25 +1,3 @@
-const html = document.documentElement;
-const THEME_KEY = 's2ktux-theme';
-
-function syncThemeIcon() {
-  const dark = html.classList.contains('dark');
-  document.querySelectorAll('[data-theme-toggle]').forEach((button) => {
-    const label = dark ? 'Activar tema claro' : 'Activar tema oscuro';
-    button.setAttribute('aria-label', label);
-    button.setAttribute('title', label);
-  });
-}
-
-try { if (localStorage.getItem(THEME_KEY) === 'dark') html.classList.add('dark'); } catch (_) {}
-
-document.addEventListener('click', (event) => {
-  const toggle = event.target.closest('[data-theme-toggle]');
-  if (!toggle) return;
-  html.classList.toggle('dark');
-  try { localStorage.setItem(THEME_KEY, html.classList.contains('dark') ? 'dark' : 'light'); } catch (_) {}
-  syncThemeIcon();
-});
-
 function wireCodeCopy() {
   document.querySelectorAll('.lesson-wrapper pre').forEach((pre) => {
     if (pre.closest('.codewrap')) return;
@@ -113,7 +91,6 @@ function wireBackTop() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  syncThemeIcon();
   makeMobileToc();
   wireCodeCopy();
   wireImages();

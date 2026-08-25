@@ -9,22 +9,23 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Clase 1 — Fundamentos de Docker · Docker · S2KTUX"><meta name="twitter:description" content="Qué es un contenedor, instalación y primeros pasos. Aprende Qué es Docker, Máquina virtual vs contenedor, Contenedor, imagen, Dockerfile y DockerHub con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static2">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260826-phase3"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=20260826-phase3">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Clase 1 — Fundamentos de Docker","description":"Qué es un contenedor, instalación y primeros pasos.","url":"https://s2ktux.github.io/cursos/docker/clase-1-fundamentos-de-docker/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"Fundamentos a avanzado","teaches":["Qué es Docker","Máquina virtual vs contenedor","Contenedor, imagen, Dockerfile y DockerHub","Instalar Docker en Linux","Primeros pasos: run, ps, stop, rm, logs","Ciclo de vida de un contenedor","Imágenes y capas","Primer Dockerfile (CMD vs ENTRYPOINT)"],"isPartOf":{"@type":"Course","name":"Docker","url":"https://s2ktux.github.io/cursos/docker/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"Docker","item":"https://s2ktux.github.io/cursos/docker/"},{"@type":"ListItem","position":4,"name":"Clase 1 — Fundamentos de Docker","item":"https://s2ktux.github.io/cursos/docker/clase-1-fundamentos-de-docker/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script type="module" src="/learning-pages.js?v=20260822-static2"></script>
-</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+<script defer src="/site-shell.js?v=20260826-phase3"></script>
+<script type="module" src="/learning-pages.js?v=20260826-phase3"></script>
+</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell site-app-shell">
 <a class="skip-link" href="#main-content">Saltar al contenido</a>
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="/" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <nav class="site-nav" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="/">S2KTUX</a>
+    <nav class="site-nav" aria-label="Navegación principal">
       <a class="navlink nav-home" href="/">Inicio</a>
-      <a class="navlink" href="/cursos.html" style="color:var(--head);border-bottom:3px solid var(--accent)" aria-current="page">Cursos</a>
+      <a class="navlink" href="/cursos.html" aria-current="page">Cursos</a>
       <a class="navlink" href="/terminal.html">Terminal</a>
       <a class="navlink" href="/proyectos.html">Proyectos</a>
-      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon></span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema"><span data-theme-icon></span></button>
     </nav>
   </div>
 </div>
@@ -62,7 +63,7 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Qué es Docker</h2>
@@ -102,7 +103,7 @@ docker info</code></pre>
                 <pre><code>sudo usermod -aG docker $USER</code></pre>
                 <p>Y lanzamos una imagen de prueba:</p>
                 <pre><code>docker run hello-world</code></pre>
-                <img src="/images/Instalacion-Docker.png" alt="Instalación de Docker" width="812" height="659" style="max-width:100%;height:auto">
+                <img src="/images/Instalacion-Docker.png" alt="Instalación de Docker" width="812" height="659">
             </section>
 
             <section id="obj5" class="lesson-section">
@@ -112,12 +113,12 @@ docker info</code></pre>
                 <p>Esto nos devuelve una lista de imágenes disponibles en DockerHub. Es solo una consulta: no podemos ejecutar un resultado directamente. Para ejecutar la imagen:</p>
                 <pre><code>docker run nginx</code></pre>
                 <p>Si no tenemos la imagen en local, Docker hace un <code>pull</code>, la descarga y ejecuta el contenedor en primer plano. Se queda escuchando, pero no podremos escribir nada ni acceder desde el navegador, porque no hemos publicado ningún puerto.</p>
-                <img src="/images/Primer-paso-run.png" alt="Primer docker run" width="1009" height="989" style="max-width:100%;height:auto">
+                <img src="/images/Primer-paso-run.png" alt="Primer docker run" width="1009" height="989">
                 <p>Si abrimos otra terminal y lanzamos <code>docker ps</code>, veremos que está corriendo.</p>
                 <p>Para poder verlo desde el navegador y dejarlo en segundo plano:</p>
                 <pre><code>docker run -d --name TEST -p 8080:80 nginx</code></pre>
                 <p>Con <code>-d</code> lo mandamos a segundo plano y con <code>-p 8080:80</code> hacemos que el puerto 8080 del host apunte al puerto 80 del contenedor, de modo que podamos acceder desde fuera. El orden es siempre <strong>host:contenedor</strong>.</p>
-                <img src="/images/primer-paso-2doplano.png" alt="Contenedor en segundo plano" width="1238" height="182" style="max-width:100%;height:auto">
+                <img src="/images/primer-paso-2doplano.png" alt="Contenedor en segundo plano" width="1238" height="182">
                 <p>Iremos viendo todos los parámetros, pero los principales son:</p>
                 <div class="lesson-table-scroll" style="max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
                 <table class="lesson-table">
@@ -158,18 +159,18 @@ docker rm TEST          # también vale el CONTAINER ID
 docker container prune  # borra todos los contenedores parados</code></pre>
                 <p>Por último, es interesante conocer los logs de nuestro contenedor. El <code>-f</code> (follow) nos deja verlos en vivo, según se van generando:</p>
                 <pre><code>docker logs -f ID-CONTENEDOR</code></pre>
-                <img src="/images/primer-paso-final.png" alt="docker ps y logs" width="1402" height="954" style="max-width:100%;height:auto">
+                <img src="/images/primer-paso-final.png" alt="docker ps y logs" width="1402" height="954">
             </section>
 
             <section id="obj6" class="lesson-section">
                 <h2>6. Ciclo de vida de un contenedor</h2>
                 <p>Para entender el ciclo de vida hay que distinguir primero entre contenedores de <strong>aplicaciones</strong> (web, base de datos…) y contenedores con un <strong>sistema Linux mínimo</strong> (alpine, ubuntu).</p>
                 <p>Un contenedor vive mientras vive su proceso principal. Por eso, si lanzamos <code>docker run alpine</code> a secas, no encuentra nada que hacer y finaliza al instante. Para que no muera hay que darle un proceso, y lo indicamos al final del comando:</p>
-                <img src="/images/ciclo-1.png" alt="Ciclo de vida de un contenedor" width="1004" height="291" style="max-width:100%;height:auto">
+                <img src="/images/ciclo-1.png" alt="Ciclo de vida de un contenedor" width="1004" height="291">
                 <p>El problema es que ejecuta ese comando y muere. Podemos usar un comando que lo mantenga "vivo", como <code>sleep</code> (sin olvidar el <code>-d</code> para lanzarlo en segundo plano), y entrar después al contenedor si lo necesitamos:</p>
                 <pre><code>docker run -d --name PRUEBA alpine sleep 3600
 docker exec -it PRUEBA sh</code></pre>
-                <img src="/images/ciclo-2.png" alt="docker exec en un contenedor vivo" width="738" height="298" style="max-width:100%;height:auto">
+                <img src="/images/ciclo-2.png" alt="docker exec en un contenedor vivo" width="738" height="298">
                 <p>Si lo que queremos es lanzar el Linux mínimo directamente en modo interactivo, lo hacemos todo en un solo comando (siendo <code>sh</code> la shell desde la que ejecutaremos los comandos):</p>
                 <pre><code>docker run -it alpine sh</code></pre>
                 <p>Tenemos que entender claramente la diferencia: <strong><code>run</code> crea un contenedor nuevo</strong> y <strong><code>exec</code> entra en uno que ya está en marcha</strong>.</p>
@@ -188,14 +189,14 @@ docker kill NAME    # fuerza la parada</code></pre>
                 <pre><code>docker pull mariadb
 docker images
 docker history mariadb</code></pre>
-                <img src="/images/do-image-1.png" alt="docker pull e images" width="814" height="548" style="max-width:100%;height:auto">
-                <img src="/images/do-image-2.png" alt="docker history" width="1007" height="535" style="max-width:100%;height:auto">
+                <img src="/images/do-image-1.png" alt="docker pull e images" width="814" height="548">
+                <img src="/images/do-image-2.png" alt="docker history" width="1007" height="535">
                 <p>Y como vimos antes, podemos buscar imágenes desde la terminal con <code>docker search mariadb</code>.</p>
                 <p>Para borrar imágenes tenemos <code>docker rmi</code>, o <code>docker image prune</code> para eliminar las que nadie usa. Si la imagen está en uso no se borrará, a no ser que usemos <code>-f</code>. Para borrar también las que no están etiquetadas —el caso más habitual— añadimos <code>-a</code>:</p>
                 <pre><code>docker rmi mariadb
 docker image prune
 docker image prune -a</code></pre>
-                <img src="/images/do-image-3.png" alt="docker image prune" width="917" height="994" style="max-width:100%;height:auto">
+                <img src="/images/do-image-3.png" alt="docker image prune" width="917" height="994">
             </section>
 
             <section id="obj8" class="lesson-section">
@@ -228,13 +229,13 @@ RUN zypper -n install nginx
 COPY index.html /srv/www/htdocs/
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]</code></pre>
-                <img src="/images/Docker-build-1.png" alt="Dockerfile de ejemplo" width="1101" height="887" style="max-width:100%;height:auto">
-                <img src="/images/Docker-build-2.png" alt="Construcción de la imagen" width="960" height="721" style="max-width:100%;height:auto">
+                <img src="/images/Docker-build-1.png" alt="Dockerfile de ejemplo" width="1101" height="887">
+                <img src="/images/Docker-build-2.png" alt="Construcción de la imagen" width="960" height="721">
                 <p>En este Dockerfile partimos de openSUSE Leap (<code>FROM</code>), instalamos nginx durante la construcción con zypper (<code>RUN</code>) y copiamos el <code>index.html</code> a donde nginx sirve las páginas (<code>COPY</code>). <code>EXPOSE</code> solo informa del puerto 80 —para publicarlo sigue haciendo falta el <code>-p</code>—, y <code>CMD</code> arranca nginx con <code>daemon off;</code> en primer plano, para que el proceso no muera y el contenedor siga vivo.</p>
                 <p>Una vez escrito el Dockerfile, construimos la imagen y la lanzamos. El punto final del <code>build</code> indica el contexto, es decir, el directorio donde está el Dockerfile:</p>
                 <pre><code>docker build -t NAME .
 docker run -d --name TEST -p 8080:80 NAME</code></pre>
-                <img src="/images/Docker-build-3.png" alt="docker build y run" width="1676" height="214" style="max-width:100%;height:auto">
+                <img src="/images/Docker-build-3.png" alt="docker build y run" width="1676" height="214">
 
                 <h3>Orden de las instrucciones</h3>
                 <p>Docker construye por capas y las cachea. Poner arriba lo que menos cambia y abajo lo que más cambia hace que las reconstrucciones sean mucho más rápidas.</p>
@@ -269,9 +270,9 @@ docker run miimagen adios
 </div>
 
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><span></span><button class="lesson-read" type="button" data-lesson-read="docker:0">Marcar como leída</button><a class="lesson-nav-card next" href="/cursos/docker/clase-2-docker-para-el-dia-a-dia/"><small>SIGUIENTE →</small><strong>Clase 2 — Docker para el día a día</strong></a></nav></div></main>
-<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
-  <div style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
+  <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>
