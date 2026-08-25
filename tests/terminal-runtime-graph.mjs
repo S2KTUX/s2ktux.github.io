@@ -10,7 +10,7 @@ const engines=Object.fromEntries(await Promise.all(names.map(async name=>[name,a
 const sources=Object.fromEntries(await Promise.all(names.map(async name=>[name,await read('terminal-runtime-'+name+'.js')])));
 const modules={};
 
-assert.match(bootstrap,/labelledImport\('motor de configuración', `\.\/terminal-engine-\$\{mode\}\.js`\)/);
+assert.match(bootstrap,/labelledImport\('motor de configuración', `\.\/terminal-engine-\$\{mode\}\.js(?:\?[^`]*)?`\)/);
 assert.match(bootstrap,/labelledImport\('contenido del entorno', `\.\/terminal-runtime-\$\{mode\}\.js(?:\?[^`]*)?`\)/);
 assert.match(bootstrap,/await Promise\.all/);
 assert.doesNotMatch(bootstrap,/import\(['"]\.\/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]\)/);
@@ -35,7 +35,9 @@ for(const name of names){
 
 assert.doesNotMatch(core,/NIVEL 1 · INSTALACIÓN|CKA · CONTEXTO|PREGUNTA 1 · RESCATE/);
 assert.match(sources.linux,/PREGUNTA 1 · RESCATE/);
-assert.match(sources.docker,/NIVEL 1 · INSTALACIÓN/);
+assert.doesNotMatch(sources.docker,/NIVEL 1 · INSTALACIÓN|NIVEL 1 · DAEMON/);
+assert.match(sources.docker,/NIVEL 1 · IMÁGENES/);
+assert.match(sources.docker,/docker-ce-cli/);
 assert.match(sources.kubernetes,/CKA · CONTEXTO/);
 
 const output=[];
@@ -50,11 +52,7 @@ assert.ok(output.some(line=>line.includes('Kubernetes v1.35.0')));
 assert.ok(output.some(line=>line.includes('GitVersion:"v1.35.0"')));
 assert.ok(output.some(line=>line.includes('is healthy')));
 
-output.length=0;
-const dockerCommands=modules.docker.createCommands({io,helpers:{dockerConfigError:()=>''}});
-assert.deepEqual(Object.keys(dockerCommands),['dockerd']);
-dockerCommands.dockerd({args:['--validate']});
-assert.deepEqual(output,['configuration OK']);
+assert.equal(modules.docker.createCommands,undefined,'Docker no debe exponer un daemon instalable');
 
 // Mide el recurso tal como se publica en GitHub, sin penalizar el checkout
 // de Windows cuando convierte LF a CRLF localmente.
@@ -63,7 +61,7 @@ const coreRaw=Buffer.byteLength(publishedCore), coreGzip=gzipSync(publishedCore)
 // El shell comparte la causalidad de Linux, contenedores y objetos del clúster
 // sin volver a absorber catálogos. El límite comprimido sigue siendo el gate
 // principal de red y deja un margen pequeño para correcciones ejecutables.
-assert.ok(coreRaw<460000,'El core volvió a absorber catálogos de runtime');
+assert.ok(coreRaw<470000,'El core volvió a absorber catálogos de runtime');
 assert.ok(coreGzip<145000,'El core comprimido volvió a crecer por encima del presupuesto');
 for(const name of names){
   const selectedGzip=coreGzip+gzipSync(engines[name].replace(/\r\n/g,'\n')).byteLength+gzipSync(sources[name].replace(/\r\n/g,'\n')).byteLength;

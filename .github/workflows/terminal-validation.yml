@@ -13,7 +13,7 @@ permissions:
   contents: read
 
 jobs:
-  terminal-validation:
+  tests:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
@@ -27,11 +27,9 @@ jobs:
         with:
           node-version: 24
       - name: Instalar dependencias
-        run: npm install --no-audit --no-fund
-      - name: Validar contratos e inventario
-        run: npm run test:contracts
-      - name: Ejecutar Linux, Docker y Kubernetes en Chromium
-        run: npm run test:e2e
+        run: npm ci --no-audit --no-fund
+      - name: Ejecutar toda la batería
+        run: npm test
       - name: Guardar informe, capturas, trazas y videos
         if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v5
