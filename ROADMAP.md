@@ -16,6 +16,8 @@ Este documento fija las cinco fases acordadas. No se inicia una fase hasta que l
 
 ## Fase 2 · Arquitectura y aislamiento del motor
 
+**Estado: completada y validada.** El mapa de módulos y sus límites se documenta en [ARCHITECTURE.md](ARCHITECTURE.md).
+
 - Extraer sistema de archivos, procesos, shell, red y motores Linux/Docker/Kubernetes de `terminal-core.js`.
 - Definir un protocolo de mensajes estable entre la interfaz y la simulación.
 - Trasladar al Web Worker la lógica pura y costosa; mantener DOM, xterm, foco y renderizado en el hilo principal.

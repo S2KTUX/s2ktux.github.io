@@ -1,7 +1,12 @@
 import { analyzeShellInput, joinShellLines, parseRedirections } from './terminal-shell-parser.js';
 import { validateCommandInvocation } from './terminal-command-schema.js?v=20260825-phase1-main';
+import { canTraverseVirtualPath, createDirectory, createFile, displayVirtualPath, ensureVirtualDirectory, hasVirtualPermission, normalizeVirtualPath, resolveVirtualNode, resolveVirtualParent } from './terminal-virtual-fs.js?v=20260825-phase2';
+import { createDefaultProcesses } from './terminal-process-state.js?v=20260825-phase2';
+import { formatPublishedPorts, isIPv4Address, parsePublishedPort, publishedPortEntries, sharesIpv4Subnet } from './terminal-network-state.js?v=20260825-phase2';
+import { defaultDockerImageCommand, dockerRegistryMetadata, DOCKER_REGISTRY_CATALOG, parseDockerImageReference } from './terminal-docker-state.js?v=20260825-phase2';
+import { createDefaultKubernetesState } from './terminal-kubernetes-state.js?v=20260825-phase2';
 
-export function startTerminal(engine, runtime = {}) {
+export function startTerminal(engine, runtime = {}, adapters = {}) {
     const body = document.querySelector('#term-body');
     const line = document.querySelector('#term-input-line');
     const input = document.querySelector('#term-input');
@@ -9,6 +14,7 @@ export function startTerminal(engine, runtime = {}) {
     const titleEl = document.querySelector('#term-title');
     const a11yStatus = document.querySelector('#term-a11y-status');
     if (!body || !input) return;
+    const simulation=adapters.simulation||null;
 
     const MODE=engine.mode;
     if(runtime.mode && runtime.mode!==MODE) throw new Error('Runtime incompatible con el motor '+MODE);
@@ -38,9 +44,9 @@ export function startTerminal(engine, runtime = {}) {
     if(typeof window.__syncCheatTabs==='function')window.__syncCheatTabs();
     if(MODE!=='linux') document.querySelectorAll('#term-reboot,#term-solved').forEach(b=>{ if(b) b.style.display='none'; });
 
-    const dir = (children, o) => ({ type:'dir', children:children||{}, mode:'rwxr-xr-x', owner:(o&&o.owner)||'root', group:(o&&o.group)||'root', mtime:(o&&o.mtime)||Date.now() });
-    const file = (content, o) => ({ type:'file', content:content||'', mode:(o&&o.mode)||'rw-r--r--', owner:(o&&o.owner)||'root', group:(o&&o.group)||'root', mtime:(o&&o.mtime)||Date.now() });
-    const mkdirp = (path) => { const segs=String(path).split('/').filter(Boolean); let n=fs; for(const s of segs){ if(!n||n.type!=='dir') return null; if(!n.children[s]) n.children[s]=dir({},{owner:'root',group:'root'}); n=n.children[s]; } return n; };
+    const dir = createDirectory;
+    const file = createFile;
+    const mkdirp = (path) => ensureVirtualDirectory(fs,path,{owner:'root',group:'root'});
     const syncMounts = () => { try{ (disks||[]).forEach(d=>d.parts.forEach(p=>{ if(p.mount && p.mount!=='[SWAP]' && p.mount!=='') mkdirp(p.mount); })); ((lvm&&lvm.lvs)||[]).forEach(l=>{ if(l.mount && l.mount!=='[SWAP]' && l.mount!=='' && l.mount!=='/') mkdirp(l.mount); }); }catch(e){} };
 
     // ---------------- default state builders ----------------
@@ -96,26 +102,7 @@ export function startTerminal(engine, runtime = {}) {
         lib: dir({ 'systemd': dir({}), rpm: dir({}), containers: dir({}) }), cache: dir({ dnf: dir({}) }), spool: dir({ cron: dir({}), mail: dir({}) }), tmp: dir({}), 'run': dir({}), empty: dir({}), ftp: dir({ pub: dir({}) }),
       }),
     });
-    const defaultProcs = () => ([
-      {pid:1,ppid:0,user:'root',cpu:0.0,mem:0.4,vsz:171200,rss:13800,stat:'Ss',start:'09:00',time:'0:03',cmd:'/usr/lib/systemd/systemd --switched-root --system'},
-      {pid:2,ppid:0,user:'root',cpu:0.0,mem:0.0,vsz:0,rss:0,stat:'S',start:'09:00',time:'0:00',cmd:'[kthreadd]'},
-      {pid:3,ppid:2,user:'root',cpu:0.0,mem:0.0,vsz:0,rss:0,stat:'I<',start:'09:00',time:'0:00',cmd:'[rcu_gp]'},
-      {pid:11,ppid:2,user:'root',cpu:0.0,mem:0.0,vsz:0,rss:0,stat:'S',start:'09:00',time:'0:00',cmd:'[ksoftirqd/0]'},
-      {pid:14,ppid:2,user:'root',cpu:0.0,mem:0.0,vsz:0,rss:0,stat:'I',start:'09:00',time:'0:01',cmd:'[kworker/0:1]'},
-      {pid:410,ppid:1,user:'root',cpu:0.0,mem:0.3,vsz:225800,rss:9800,stat:'Ss',start:'09:00',time:'0:01',cmd:'/usr/lib/systemd/systemd-journald'},
-      {pid:435,ppid:1,user:'root',cpu:0.0,mem:0.2,vsz:88300,rss:7100,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/lib/systemd/systemd-udevd'},
-      {pid:610,ppid:1,user:'root',cpu:0.0,mem:0.6,vsz:398200,rss:22400,stat:'Ssl',start:'09:00',time:'0:02',cmd:'/usr/sbin/NetworkManager --no-daemon'},
-      {pid:640,ppid:1,user:'chrony',cpu:0.0,mem:0.1,vsz:23800,rss:2900,stat:'S',start:'09:00',time:'0:00',cmd:'/usr/sbin/chronyd -F 2'},
-      {pid:660,ppid:1,user:'root',cpu:0.0,mem:0.1,vsz:26100,rss:3600,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/sbin/crond -n'},
-      {pid:680,ppid:1,user:'dbus',cpu:0.0,mem:0.1,vsz:10200,rss:4800,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/bin/dbus-broker-launch --scope system'},
-      {pid:700,ppid:1,user:'polkitd',cpu:0.0,mem:0.4,vsz:220100,rss:14200,stat:'Ssl',start:'09:00',time:'0:00',cmd:'/usr/lib/polkit-1/polkitd --no-debug'},
-      {pid:720,ppid:1,user:'root',cpu:0.0,mem:0.2,vsz:78400,rss:5600,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/sbin/rsyslogd -n'},
-      {pid:420,ppid:1,user:'root',cpu:0.0,mem:0.2,vsz:92500,rss:7200,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/sbin/sshd -D'},
-      {pid:760,ppid:1,user:'root',cpu:0.0,mem:0.0,vsz:12100,rss:2100,stat:'Ss+',start:'09:00',time:'0:00',cmd:'/usr/sbin/agetty -o -p -- \\u --noclear tty1 linux'},
-      {pid:820,ppid:420,user:'root',cpu:0.0,mem:0.2,vsz:94800,rss:8100,stat:'Ss',start:'09:12',time:'0:00',cmd:'sshd: visitor [priv]'},
-      {pid:825,ppid:820,user:'visitor',cpu:0.0,mem:0.1,vsz:94800,rss:5200,stat:'S',start:'09:12',time:'0:00',cmd:'sshd: visitor@pts/0'},
-      {pid:888,ppid:825,user:'visitor',cpu:0.0,mem:0.1,vsz:12800,rss:3600,stat:'Ss',start:'09:12',time:'0:00',cmd:'-bash'},
-    ]);
+    const defaultProcs = createDefaultProcesses;
     const defaultDisks = () => ([
       { name:'sda', size:'80G', parts:[
         { name:'sda1', size:'1G',  fstype:'xfs',          uuid:'a1b2-c3d4', mount:'/boot' },
@@ -137,15 +124,7 @@ export function startTerminal(engine, runtime = {}) {
     const defaultInstalled = () => Array.isArray(PROFILE.packages)
       ? PROFILE.packages.slice()
       : ['bash','coreutils','glibc','systemd','dnf','rpm','util-linux','findutils','procps-ng','iproute','iputils','NetworkManager','openssh-server','openssh-clients','curl','tar','gzip','bzip2','vim-minimal','nano'];
-    const defaultK8s = () => ({
-      namespace:'default', nextIp:10,
-      nodes:[
-        {name:'control-plane',status:'Ready',role:'control-plane',version:K8S_FULL,schedulable:true,labels:{'node-role.kubernetes.io/control-plane':'','kubernetes.io/hostname':'control-plane'},taints:['node-role.kubernetes.io/control-plane:NoSchedule']},
-        {name:'worker-1',status:'Ready',role:'<none>',version:K8S_FULL,schedulable:true,labels:{'kubernetes.io/hostname':'worker-1','disk':'ssd'}},
-        {name:'worker-2',status:'NotReady',role:'<none>',version:K8S_FULL,schedulable:true,labels:{'kubernetes.io/hostname':'worker-2','disk':'hdd'},taints:[]}
-      ],
-      namespaces:['default','kube-system','kube-public','kube-node-lease'], pods:[{name:'api-broken',namespace:'default',image:'demo/api:broken',status:'CrashLoopBackOff',ready:'0/1',restarts:5,node:'worker-1',ip:'10.244.1.21'},{name:'coredns-7db6d8ff4d-2wz9p',namespace:'kube-system',image:'registry.k8s.io/coredns:v1.11.1',status:'Running',ready:'1/1',restarts:0,node:'control-plane',ip:'10.244.0.3'}], deployments:[], replicasets:[], daemonsets:[], statefulsets:[], jobs:[], cronjobs:[], hpas:[], services:[{name:'kubernetes',namespace:'default',type:'ClusterIP',clusterIp:'10.96.0.1',port:'443/TCP',selector:{}}], configmaps:[], secrets:[], serviceaccounts:[{name:'default',namespace:'default'}], roles:[], rolebindings:[], pvcs:[], pvs:[], storageclasses:[{name:'local-path',provisioner:'rancher.io/local-path',default:true}], ingresses:[], networkpolicies:[], events:[{reason:'BackOff',object:'pod/api-broken',message:'Back-off restarting failed container api'},{reason:'NodeNotReady',object:'node/worker-2',message:'Node worker-2 status is now: NodeNotReady'}], actions:[], etcdSnapshot:false, upgraded:false
-    });
+    const defaultK8s = () => createDefaultKubernetesState(K8S_FULL);
     const stateNode = (segs) => { let n=fs; for(const s of segs){ if(!n||n.type!=='dir'||!n.children[s])return null; n=n.children[s]; } return n; };
 
     // ---------------- mutable state ----------------
@@ -353,19 +332,12 @@ export function startTerminal(engine, runtime = {}) {
 
     // ---------------- path helpers ----------------
     const homeSegs = () => (users[currentUser]?.home||'/root').split('/').filter(Boolean);
-    const norm = (p) => {
-      let segs;
-      if (p.startsWith('/')) segs = [];
-      else if (p === '~' || p.startsWith('~/')) { segs = homeSegs(); p = p.slice(1); }
-      else segs = cwd.slice();
-      for (const raw of p.split('/')) { if (raw===''||raw==='.') continue; if (raw==='..'){ if(segs.length) segs.pop(); } else segs.push(raw); }
-      return segs;
-    };
-    const getNode = (segs,followFinal=true,seen=new Set()) => { let n=fs,resolved=[];for(let index=0;index<segs.length;index++){const s=segs[index];if(n.type!=='dir'||!n.children[s])return null;n=n.children[s];resolved.push(s);if(n.type==='symlink'&&(followFinal||index<segs.length-1)){const key=resolved.join('/');if(seen.has(key))return null;seen.add(key);const target=String(n.target||''),base=target.startsWith('/')?[]:resolved.slice(0,-1);for(const part of target.split('/')){if(!part||part==='.')continue;if(part==='..')base.pop();else base.push(part);}return getNode(base.concat(segs.slice(index+1)),followFinal,seen);}}return n; };
-    const getParent = (segs) => getNode(segs.slice(0,-1));
-    const pretty = (segs) => { const h=homeSegs(); if(segs.length>=h.length && h.every((s,i)=>segs[i]===s)){ const rest=segs.slice(h.length); return '~'+(rest.length?'/'+rest.join('/'):''); } return '/'+segs.join('/'); };
-    const hasPerm=(node,perm)=>{if(!node)return false;if(currentUser==='root')return true;const u=users[currentUser]||{groups:[]};const acl=node.acl||[],direct=acl.find(a=>a.type==='user'&&a.name===currentUser),groupAcl=acl.find(a=>a.type==='group'&&(u.groups||[]).includes(a.name));if(direct)return String(direct.perms||'').includes(perm);if(groupAcl)return String(groupAcl.perms||'').includes(perm);const mode=node.mode||'rw-r--r--';const base=node.owner===currentUser?0:((u.groups||[]).includes(node.group)?3:6);const off={r:0,w:1,x:2}[perm];return mode[base+off]===perm;};
-    const canTraverse=(segs)=>{let n=fs;for(const s of segs){if(!n||n.type!=='dir'||!hasPerm(n,'x'))return false;n=n.children[s];}return true;};
+    const norm = (path) => normalizeVirtualPath(path,cwd,homeSegs());
+    const getNode = (segments,followFinal=true) => resolveVirtualNode(fs,segments,followFinal);
+    const getParent = (segments) => resolveVirtualParent(fs,segments);
+    const pretty = (segments) => displayVirtualPath(segments,homeSegs());
+    const hasPerm=(node,permission)=>hasVirtualPermission(node,permission,currentUser,users);
+    const canTraverse=(segments)=>canTraverseVirtualPath(fs,segments,currentUser,users);
 
     // ---------------- output (con captura para tuberías) ----------------
     let cap = null, errCap = null, ioEvents = null;
@@ -577,9 +549,9 @@ export function startTerminal(engine, runtime = {}) {
     const linkUp=()=> !!net.eth0.up;
     const online=()=> linkUp() && !!net.eth0.gw;
     const dnsOk=()=> online() && !!net.eth0.dns;
-    const isIP=(s)=>/^\d{1,3}(\.\d{1,3}){3}$/.test(s||'');
-    const sameSubnet=(ip)=>{ if(!isIP(ip)||!net.eth0.ip) return false; const a=ip.split('.').slice(0,3).join('.'); const b=net.eth0.ip.split('.').slice(0,3).join('.'); return a===b; };
-    const listeningSockets=()=>{const rows=[];const add=(port,proc,pid,addr='0.0.0.0')=>{port=+port;if(port&&!rows.some(r=>r.port===port&&r.addr===addr))rows.push({proto:'tcp',addr,port,proc,pid:pid||1});};if(services.sshd&&services.sshd.active)add(sshdCfg.port||22,'sshd',services.sshd.pid);if(services.httpd&&services.httpd.active)add(services.httpd.port||httpdCfg().port||80,'httpd',services.httpd.pid);if(services.nginx&&services.nginx.active)add(80,'nginx',services.nginx.pid);if(services.mariadb&&services.mariadb.active)add(3306,'mariadbd',services.mariadb.pid,'127.0.0.1');if(services.docker&&services.docker.active)containers.filter(c=>c.running&&c.ports).forEach(c=>{for(const m of String(c.ports).matchAll(/(?:[\d.]+:)?(\d+):(\d+)/g))add(m[1],'docker-proxy',services.docker.pid);});if(MODE==='kubernetes')add(6443,'kube-apiserver',1020,net.eth0.ip||'0.0.0.0');return rows.sort((a,b)=>a.port-b.port);};
+    const isIP=isIPv4Address;
+    const sameSubnet=(ip)=>sharesIpv4Subnet(ip,net.eth0.ip,net.eth0.prefix||24);
+    const listeningSockets=()=>{const rows=[];const add=(port,proc,pid,addr='0.0.0.0')=>{port=+port;if(port&&!rows.some(r=>r.port===port&&r.addr===addr))rows.push({proto:'tcp',addr,port,proc,pid:pid||1});};if(services.sshd&&services.sshd.active)add(sshdCfg.port||22,'sshd',services.sshd.pid);if(services.httpd&&services.httpd.active)add(services.httpd.port||httpdCfg().port||80,'httpd',services.httpd.pid);if(services.nginx&&services.nginx.active)add(80,'nginx',services.nginx.pid);if(services.mariadb&&services.mariadb.active)add(3306,'mariadbd',services.mariadb.pid,'127.0.0.1');if(services.docker&&services.docker.active)containers.filter(c=>c.running&&c.ports).forEach(c=>{for(const mapping of publishedPortEntries(c.ports))add(mapping.hostPort,'docker-proxy',services.docker.pid,mapping.hostIp);});if(MODE==='kubernetes')add(6443,'kube-apiserver',1020,net.eth0.ip||'0.0.0.0');return rows.sort((a,b)=>a.port-b.port);};
     const portOpen=(host,port)=>{if(['localhost','127.0.0.1','::1',net.eth0.ip,localHostname()].includes(host))return listeningSockets().find(r=>r.port===+port);const h=Object.values(labHosts||{}).find(x=>x.ip===host)||labHosts?.[host];return h&&(h.ports||[]).includes(+port)?{port:+port,proc:'remote'}:null;};
     // ---------------- ping (streaming) ----------------
     let pingTimer=null; let followTimer=null; let foregroundProcess=null; let pagerState=null;
@@ -1775,34 +1747,11 @@ export function startTerminal(engine, runtime = {}) {
           const startContainer=(c)=>{c.running=true;c.paused=false;c.status='running';c.exitCode=0;c.oomKilled=false;c.startedAt=Date.now();eventAdd('docker','start','container started',{id:c.id,name:c.name});};
           const ageText=(at)=>{const sec=Math.max(0,Math.floor((Date.now()-(at||Date.now()))/1000));if(sec<1)return 'Less than a second';if(sec<60)return sec+' second'+(sec===1?'':'s');const min=Math.floor(sec/60);if(min<60)return min+' minute'+(min===1?'':'s');const hr=Math.floor(min/60);return hr+' hour'+(hr===1?'':'s');};
           const containerStatus=(c)=>c.paused?'Up '+ageText(c.startedAt)+' (Paused)':c.running?'Up '+ageText(c.startedAt)+(c.health?' ('+(c.health==='starting'?'health: starting':c.health)+')':''):'Exited ('+(c.exitCode==null?0:c.exitCode)+') '+ageText(c.finishedAt)+' ago';
-          const publishedPorts=(spec)=>{const m=String(spec||'').match(/^(?:(\d+\.\d+\.\d+\.\d+):)?(\d+):(\d+)(?:\/(tcp|udp))?$/);if(!m)return spec||'';const ip=m[1]||'0.0.0.0',proto=m[4]||'tcp';return ip+':'+m[2]+'->'+m[3]+'/'+proto+(m[1]?'':', [::]:'+m[2]+'->'+m[3]+'/'+proto);};
-          const defaultImageCommand=(repo)=>({nginx:"/docker-entrypoint.sh nginx -g 'daemon off;'",httpd:'httpd-foreground',mariadb:'docker-entrypoint.sh mariadbd',mysql:'docker-entrypoint.sh mysqld',postgres:'docker-entrypoint.sh postgres',redis:'docker-entrypoint.sh redis-server',alpine:'/bin/sh',ubuntu:'/bin/bash',debian:'/bin/bash','hello-world':'/hello'}[repo]||'/bin/sh');
-          const registryCatalog=[
-            {name:'alpine',description:'A minimal Docker image based on Alpine Linux',stars:'11K',official:true,size:'7.8MB',layers:['4abcf2066143']},
-            {name:'alpine/git',description:'A simple git container running in Alpine Linux',stars:'240',official:false,size:'28MB',layers:['4abcf2066143','d6a8c3b56f41']},
-            {name:'alpinelinux/docker-cli',description:'Docker CLI in an Alpine Linux image',stars:'190',official:false,size:'42MB',layers:['4abcf2066143','51c8c8a42d6f']},
-            {name:'nginx',description:'Official build of Nginx',stars:'21K',official:true,size:'192MB',layers:['c6b49c7dca7c','b0b2a5e23e61','9b5e1e5aa1b8','4f4fb700ef54']},
-            {name:'nginxinc/nginx-unprivileged',description:'Unprivileged NGINX image',stars:'190',official:false,size:'191MB',layers:['c6b49c7dca7c','1e4fcb927968']},
-            {name:'httpd',description:'The Apache HTTP Server Project',stars:'5.1K',official:true,size:'148MB',layers:['8a1e25ce7c4f','c7b7c2d5f4e1','dd3f31b31b31']},
-            {name:'debian',description:'Debian is a Linux distribution composed of free software',stars:'5.3K',official:true,size:'117MB',layers:['e4fff0779e6d']},
-            {name:'ubuntu',description:'Ubuntu is a Debian-based Linux operating system',stars:'17K',official:true,size:'78.1MB',layers:['c920ba4cfca0']},
-            {name:'rockylinux',description:'The official Rocky Linux image',stars:'190',official:true,size:'206MB',layers:['a42f6fe7c35d']},
-            {name:'busybox',description:'Busybox base image',stars:'3.5K',official:true,size:'4.3MB',layers:['80bfbb8a41a2']},
-            {name:'mariadb',description:'MariaDB Server is a high performing open source database',stars:'6.2K',official:true,size:'410MB',layers:['e2a8cdd1a724','7b41c9a6041e','c0ffeece2757','585b9b9e2e34']},
-            {name:'mysql',description:'MySQL is a widely used open source relational database',stars:'16K',official:true,size:'602MB',layers:['a2abf6c4d29d','b2f0a90a6f92','d55a7d2a4f4d','9f2c7a07d92a']},
-            {name:'postgres',description:'The PostgreSQL object-relational database system',stars:'14K',official:true,size:'435MB',layers:['44cf07d57ee4','2f3c1b2f332f','7e4d7d2f51c4']},
-            {name:'redis',description:'Redis is an open source key-value store',stars:'14K',official:true,size:'138MB',layers:['9824c27679d3','b1bad32ba8af','4f4fb700ef54']},
-            {name:'mongo',description:'MongoDB document databases provide high availability',stars:'11K',official:true,size:'801MB',layers:['e4fff0779e6d','a1f2c3d4e5f6','f91e9a4a32bc']},
-            {name:'node',description:'Node.js is a JavaScript-based platform',stars:'14K',official:true,size:'1.1GB',layers:['e4fff0779e6d','bbca4097a1b8','fbf931c92f2d']},
-            {name:'python',description:'Python is an interpreted high-level language',stars:'11K',official:true,size:'1.02GB',layers:['e4fff0779e6d','a3ed95caeb02','c1f4f9e9e7ad']},
-            {name:'php',description:'PHP is a server-side scripting language',stars:'3.8K',official:true,size:'521MB',layers:['e4fff0779e6d','2296e2aa6bc3']},
-            {name:'traefik',description:'Traefik cloud-native application proxy',stars:'3.4K',official:true,size:'185MB',layers:['4abcf2066143','6095c180e208']},
-            {name:'rabbitmq',description:'RabbitMQ is an open source message broker',stars:'5.5K',official:true,size:'282MB',layers:['e4fff0779e6d','bf7d89f24a2f']},
-            {name:'wordpress',description:'The WordPress rich content management system',stars:'7.2K',official:true,size:'702MB',layers:['e4fff0779e6d','44f9e3a5d6c1']},
-            {name:'hello-world',description:'Hello World! (an example of minimal Dockerization)',stars:'2.5K',official:true,size:'13.3kB',layers:['17eec7bbc9d7']}
-          ];
-          const parseImageRef=(ref)=>{const raw=String(ref||'').replace(/^docker\.io\/(?:library\/)?/,'');const slash=raw.lastIndexOf('/'),colon=raw.lastIndexOf(':');return colon>slash?{repo:raw.slice(0,colon),tag:raw.slice(colon+1)||'latest'}:{repo:raw,tag:'latest'};};
-          const registryMeta=(repo)=>registryCatalog.find(item=>item.name===repo);
+          const publishedPorts=formatPublishedPorts;
+          const defaultImageCommand=defaultDockerImageCommand;
+          const registryCatalog=DOCKER_REGISTRY_CATALOG;
+          const parseImageRef=parseDockerImageReference;
+          const registryMeta=dockerRegistryMetadata;
           const pullImage=(ref,done)=>{const parsed=parseImageRef(ref),meta=registryMeta(parsed.repo);if(!meta){err('Error response from daemon: pull access denied for '+parsed.repo+', repository does not exist or may require docker login');return false;}const existing=images.find(i=>i.repo===parsed.repo&&i.tag===parsed.tag),digest='sha256:'+meta.layers.join('').padEnd(64,'0').slice(0,64);const seq=[parsed.tag+': Pulling from library/'+parsed.repo];if(existing){seq.push('Digest: '+digest,'Status: Image is up to date for '+parsed.repo+':'+parsed.tag);}else{meta.layers.forEach(id=>seq.push(id+': Pulling fs layer'));meta.layers.forEach((id,index)=>{const total=['3.42MB','28.6MB','62.1MB','14.8MB'][index%4];seq.push(id+': Downloading  [===============>                                   ]  '+(index+1)+'.8MB/'+total);seq.push(id+': Download complete');seq.push(id+': Extracting   [==================================>                ]  '+total+'/'+total);seq.push(id+': Pull complete');});seq.push('Digest: '+digest,'Status: Downloaded newer image for '+parsed.repo+':'+parsed.tag);}runCommandSeq(seq,()=>{let image=existing;if(!image){image={repo:parsed.repo,tag:parsed.tag,id:digest.slice(7,19),size:meta.size,layers:meta.layers.map((id,index)=>({instruction:index?'COPY layer '+id:'FROM '+parsed.repo+':'+parsed.tag,size:index?((index+1)*8)+'MB':'0B'})),fs:{}};images.push(image);}eventAdd('docker','pull','image pulled',{image:parsed.repo+':'+parsed.tag});if(done)done(image);});return true;};
           if(!sub||sub==='--help'||sub==='help'){ outMany(['Uso:  '+engine+' [OPCIONES] COMANDO','','Gestión de contenedores e imágenes'+(engine==='podman'?' (rootless, sin daemon)':'')+'.','','Comandos comunes:','  run       Crea y arranca un contenedor desde una imagen','  ps        Lista contenedores (-a incluye los parados)','  images    Lista imágenes locales','  pull      Descarga una imagen de un registro','  build     Construye una imagen desde un Dockerfile','  exec      Ejecuta un comando dentro de un contenedor','  logs      Muestra los logs de un contenedor','  compose   Define y ejecuta apps multi-contenedor','',"Ejecuta '"+engine+" COMANDO --help' para más información."]); break; }
           if(sub==='ps'){ out('CONTAINER ID   IMAGE           COMMAND                  STATUS                         PORTS                                      NAMES'); const list=(args.includes('-a')||args.includes('--all'))?containers:containers.filter(c=>c.running); if(!list.length){ break; } list.forEach(c=>out(c.id+'   '+c.image.padEnd(15)+' "'+(c.cmd||'/bin/sh').slice(0,22).padEnd(22)+'"  '+containerStatus(c).padEnd(31)+' '+publishedPorts(c.ports).padEnd(42)+' '+c.name)); break; }
@@ -1816,7 +1765,7 @@ export function startTerminal(engine, runtime = {}) {
             const nameV=valOf('--name'),portValues=valsOf('-p','--publish'),volumeValues=valsOf('-v','--volume'),mountValues=valsOf('--mount'),envValues=valsOf('-e','--env'),portV=portValues.join(', '),restartV=valOf('--restart'),memV=valOf('-m','--memory'),reservationV=valOf('--memory-reservation'),cpuV=valOf('--cpus'),netV=valOf('--network','--net'),healthCmd=valOf('--health-cmd');
             if(nameV&&containers.some(c=>c.name===nameV)){err('docker: Error response from daemon: Conflict. The container name "/'+nameV+'" is already in use.');break;}
             const selectedNetwork=dockerNetworkByRef(netV||'bridge');if(!selectedNetwork){err('docker: Error response from daemon: network '+netV+' not found');break;}
-            if(portValues.some(value=>{const pm=value.match(/(?:[\d.]+:)?(\d+):(\d+)/),hostPort=pm&&+pm[1];if(hostPort&&listeningSockets().some(s=>s.port===hostPort)){err('docker: Error response from daemon: driver failed programming external connectivity: Bind for 0.0.0.0:'+hostPort+' failed: port is already allocated');return true;}return false;}))break;
+            if(portValues.some(value=>{const pm=parsePublishedPort(value),hostPort=pm&&pm.hostPort;if(hostPort&&listeningSockets().some(s=>s.port===hostPort)){err('docker: Error response from daemon: driver failed programming external connectivity: Bind for 0.0.0.0:'+hostPort+' failed: port is already allocated');return true;}return false;}))break;
             const valueFlags=new Set(runValueFlags);let img='',containerCmd=[];for(let i=1;i<args.length;i++){const a=args[i];if(a.startsWith('-')){if(valueFlags.has(a))i++;continue;}img=a;containerCmd=args.slice(i+1);break;}
             if(!img){err('docker: "docker run" requires at least 1 argument');break;}
             const parsedImage=parseImageRef(img),repo=parsedImage.repo,tagName=parsedImage.tag;
@@ -2180,12 +2129,18 @@ export function startTerminal(engine, runtime = {}) {
       if(eof)err('-bash: error sintáctico: fin de fichero inesperado',2);else out('^C','#a2957d');
       continuationLines=[];input.value='';lastStatus=eof?2:130;lastFail=true;setPrompt();scroll();return true;
     };
-    const submitCommandLine=(value)=>{
+    let submissionPending=false;
+    const submitCommandLine=async(value)=>{
+      if(submissionPending)return;
+      submissionPending=true;input.readOnly=true;
       const lineValue=normalizeCommandInput(value);
       const candidate=joinShellLines(continuationLines.concat(lineValue));
-      const analysis=analyzeShellInput(candidate);
       if(continuationActive())echoPs2(lineValue);else echoCmd(lineValue);
       input.value='';
+      let analysis;
+      try{analysis=simulation?await simulation.analyzeShellInput(candidate):analyzeShellInput(candidate);}
+      catch(error){analysis=analyzeShellInput(candidate);}
+      submissionPending=false;input.readOnly=false;
       if(!analysis.complete){continuationLines.push(lineValue);setPs2();scroll();return;}
       continuationLines=[];
       run(candidate,{echo:false});
@@ -2238,10 +2193,10 @@ export function startTerminal(engine, runtime = {}) {
       if(k.length===1&&!e.ctrlKey&&!e.metaKey&&!e.altKey){ e.preventDefault(); revSearch.q+=k; revFrom(revSearch.pos); revRender(); return; }
     };
     input.addEventListener('beforeinput', (e) => {
-      if(booting||awaitReboot||grubState||pagerState||nmtuiState||foregroundProcess||followTimer) e.preventDefault();
+      if(booting||submissionPending||awaitReboot||grubState||pagerState||nmtuiState||foregroundProcess||followTimer) e.preventDefault();
     });
     input.addEventListener('keydown', (e) => {
-      if(booting){ e.preventDefault(); return; }
+      if(booting||submissionPending){ e.preventDefault(); return; }
       if(revSearch){ revKey(e); return; }
       if(awaitReboot){ if(e.key==='Enter'){ e.preventDefault(); awaitReboot=false; startGrub(); } else { e.preventDefault(); } return; }
       if(grubState){ grubKey(e); return; }
@@ -2263,7 +2218,7 @@ export function startTerminal(engine, runtime = {}) {
         if(k==='r'){ e.preventDefault(); if(!interactive) revStart(); return; }
       }
       if(interactive){ if(e.key==='Enter'){ const v=input.value; echoInteractive(v); input.value=''; const cb=interactive.onLine; cb(v); scroll(); save(); } else if(e.key==='ArrowUp'||e.key==='ArrowDown'||e.key==='Tab'){ e.preventDefault(); } return; }
-      if(e.key==='Enter'){ submitCommandLine(input.value); }
+      if(e.key==='Enter'){ e.preventDefault(); void submitCommandLine(input.value); }
       else if(e.key==='ArrowUp'){ e.preventDefault(); if(!continuationActive()&&history.length&&hIdx>0){ hIdx--; input.value=history[hIdx]; } }
       else if(e.key==='ArrowDown'){ e.preventDefault(); if(continuationActive())return;if(hIdx<history.length-1){ hIdx++; input.value=history[hIdx]; } else { hIdx=history.length; input.value=''; } }
       else if(e.key==='Tab'){ e.preventDefault(); const val=input.value; if(val.trim()===''){ return; } const parts=val.split(/\s+/); const endsSpace=/\s$/.test(val); const tok=endsSpace?'':parts[parts.length-1]; const cmd=parts[0];

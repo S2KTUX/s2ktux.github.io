@@ -203,7 +203,7 @@ for (const htmlPath of nonTerminalHtml) {
 assert.deepEqual(integrityIssues, [], `Non-terminal page integrity failures:\n${integrityIssues.join('\n')}`);
 
 const shellPages = [
-  'index.html', 'cursos.html', 'curso.html', 'leccion.html', 'terminal.html',
+  'index.html', 'cursos.html', 'terminal.html',
   'proyectos.html', 'sobre.html', 'proyecto-kubernetes.html', 'proyecto-proxmox.html',
 ];
 const shellCss = await readFile(join(root, 'site-shell.css'), 'utf8');
@@ -254,17 +254,11 @@ const notFound = await readFile(join(root, '404.html'), 'utf8');
 assert.match(notFound, /<meta\b[^>]*name=["']description["'][^>]*content=["'][^"']+["'][^>]*>/i, '404 page needs a description');
 assert.match(notFound, /<meta\b[^>]*name=["']robots["'][^>]*content=["']noindex,follow["'][^>]*>/i, '404 page must remain noindex');
 
-const coursePage = await readFile(join(root, 'curso.html'), 'utf8');
-assert.doesNotMatch(coursePage, /aws:'AWS|rhce:'RHCE'/, 'Unavailable courses must not receive canonical URLs');
 for (const path of ['curso.html', 'leccion.html']) {
   const html = await readFile(join(root, path), 'utf8');
-  assert.equal((html.match(/addEventListener\(['"]scroll['"],\s*upd/g) || []).length, 1, `Duplicate back-to-top scroll listener: ${path}`);
+  assert.match(html, /learning-routes\.js[\s\S]*legacy-routes\.js/, `Legacy mapping must load before redirect: ${path}`);
+  assert.doesNotMatch(html, /support\.js|courses-data\.js|setInterval|setTimeout/, `Legacy bridge must stay lightweight: ${path}`);
 }
-const lessonPage = await readFile(join(root, 'leccion.html'), 'utf8');
-assert.match(lessonPage, /scroll-margin-top\s*:\s*80px/i, 'Lesson anchors must clear the sticky header');
-assert.match(lessonPage, /#lesson h1,#lesson h2,#lesson h3,#lesson h4\{overflow-wrap:anywhere/i, 'Long lesson headings must wrap at 320px');
-assert.match(lessonPage, /#lesson table\{display:block;max-width:100%;overflow-x:auto/i, 'Lesson tables need contained mobile scrolling');
-assert.doesNotMatch(lessonPage, /set\('meta\[name="robots"\]'[^\n]+indexable\s*\?/, 'The legacy lesson runtime must not restore indexability');
 
 const serviceWorker = await readFile(join(root, 'sw.js'), 'utf8');
 assert.ok(serviceWorker.includes("'site-shell.css?v=20260822-header4'"), 'Shared shell stylesheet is missing from offline cache');

@@ -9,6 +9,8 @@ const bootstrap=await read('terminal-bootstrap.js');
 const engines=Object.fromEntries(await Promise.all(names.map(async name=>[name,await read('terminal-engine-'+name+'.js')])));
 const sources=Object.fromEntries(await Promise.all(names.map(async name=>[name,await read('terminal-runtime-'+name+'.js')])));
 const modules={};
+const interactiveSharedPaths=['terminal-bootstrap.js','terminal-shell-parser.js','terminal-command-schema.js','terminal-virtual-fs.js','terminal-process-state.js','terminal-network-state.js','terminal-docker-state.js','terminal-kubernetes-state.js','terminal-worker-client.js','terminal-worker-protocol.js','terminal-simulation-worker.js','terminal-xterm-renderer.js','vendor/xterm/xterm.mjs'];
+const interactiveShared=Object.fromEntries(await Promise.all(interactiveSharedPaths.map(async path=>[path,await read(path)])));
 
 assert.match(bootstrap,/labelledImport\('motor de configuración', `\.\/terminal-engine-\$\{mode\}\.js(?:\?[^`]*)?`\)/);
 assert.match(bootstrap,/labelledImport\('contenido del entorno', `\.\/terminal-runtime-\$\{mode\}\.js(?:\?[^`]*)?`\)/);
@@ -54,18 +56,16 @@ assert.ok(output.some(line=>line.includes('is healthy')));
 
 assert.equal(modules.docker.createCommands,undefined,'Docker no debe exponer un daemon instalable');
 
-// Mide el recurso tal como se publica en GitHub, sin penalizar el checkout
-// de Windows cuando convierte LF a CRLF localmente.
+// Mide todos los recursos descargados hasta que xterm queda interactivo, no
+// solo el archivo central. Así la modularización no puede ocultar un aumento.
 const publishedCore=core.replace(/\r\n/g,'\n');
-const coreRaw=Buffer.byteLength(publishedCore), coreGzip=gzipSync(publishedCore).byteLength;
-// El shell comparte la causalidad de Linux, contenedores y objetos del clúster
-// sin volver a absorber catálogos. El límite comprimido sigue siendo el gate
-// principal de red y deja un margen pequeño para correcciones ejecutables.
-assert.ok(coreRaw<470000,'El core volvió a absorber catálogos de runtime');
-assert.ok(coreGzip<145000,'El core comprimido volvió a crecer por encima del presupuesto');
+const coreRaw=Buffer.byteLength(publishedCore),coreGzip=gzipSync(publishedCore).byteLength;
+assert.ok(coreRaw<463000,'El core volvió a absorber módulos ya extraídos');
+assert.ok(coreGzip<143000,'El core comprimido volvió a crecer por encima del presupuesto');
+const sharedInteractiveGzip=Object.values(interactiveShared).reduce((total,source)=>total+gzipSync(source.replace(/\r\n/g,'\n')).byteLength,0)+coreGzip;
 for(const name of names){
-  const selectedGzip=coreGzip+gzipSync(engines[name].replace(/\r\n/g,'\n')).byteLength+gzipSync(sources[name].replace(/\r\n/g,'\n')).byteLength;
-  assert.ok(selectedGzip<154000,'Carga inicial del modo '+name+' supera el presupuesto comprimido');
+  const selectedGzip=sharedInteractiveGzip+gzipSync(engines[name].replace(/\r\n/g,'\n')).byteLength+gzipSync(sources[name].replace(/\r\n/g,'\n')).byteLength;
+  assert.ok(selectedGzip<260000,'Carga interactiva completa del modo '+name+' supera el presupuesto comprimido');
 }
 
-console.log('terminal runtime graph: 3 runtimes aislados; core '+coreRaw+' B / '+coreGzip+' B gzip');
+console.log('terminal runtime graph: 3 runtimes aislados; core '+coreRaw+' B / '+coreGzip+' B gzip; carga interactiva compartida '+sharedInteractiveGzip+' B gzip');

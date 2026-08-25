@@ -1,4 +1,4 @@
-const VERSION = 'v25';
+const VERSION = 'v26';
 const CACHE_PREFIX = 's2ktux-';
 const STATIC_CACHE = `${CACHE_PREFIX}static-${VERSION}`;
 const PAGE_CACHE = `${CACHE_PREFIX}pages-${VERSION}`;
@@ -14,7 +14,6 @@ const PRECACHE = [
   'fonts.css?v=20260822-local',
   'learning-pages.css?v=20260822-static2',
   'learning-pages.js?v=20260822-static2',
-  'support.js',
   'manifest.webmanifest',
   'assets/icon-192.png',
   'assets/icon-512.png',
