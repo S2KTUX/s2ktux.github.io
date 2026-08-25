@@ -3,231 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#f6ecd9">
+<title>Redirigiendo al contenido actual · S2KTUX</title>
 <link rel="stylesheet" href="./site-shell.css?v=20260822-header4">
+<link rel="stylesheet" href="./fonts.css?v=20260822-local">
+<link rel="canonical" href="https://s2ktux.github.io/cursos.html">
 <script src="./learning-routes.js"></script>
 <script src="./legacy-routes.js"></script>
-<script src="./support.js"></script>
-<link rel="stylesheet" href="./fonts.css?v=20260822-local">
-<script defer src="courses-data.js"></script>
-<title>Curso · S2KTUX</title>
-<meta name="description" content="Módulos y temas del curso, con teoría y laboratorios prácticos de Linux.">
-<meta name="robots" content="noindex,follow">
-<meta http-equiv="content-language" content="es">
-<meta name="theme-color" content="#f6ecd9">
-<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
-<link rel="apple-touch-icon" href="assets/icon-192.png">
-<link rel="manifest" href="manifest.webmanifest">
-<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
-<link rel="canonical" href="https://s2ktux.github.io/curso.html">
-<meta property="og:url" content="https://s2ktux.github.io/curso.html">
-<meta property="og:site_name" content="S2KTUX">
-<meta property="og:locale" content="es_ES">
-<meta name="twitter:title" content="Curso · S2KTUX">
-<meta name="twitter:description" content="Módulos y temas del curso, con teoría y laboratorios prácticos de Linux.">
-<meta name="author" content="S2KTUX">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Curso · S2KTUX">
-<meta property="og:description" content="Módulos y temas del curso, con teoría y laboratorios prácticos de Linux.">
-<meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
-<meta name="twitter:card" content="summary_large_image">
-<script>(function(){var p=new URLSearchParams(location.search),c=p.get('c')||'rhcsa',names={rhcsa:'RHCSA 9 · EX200',lpic1:'LPIC-1',docker:'Docker',kubernetes:'Kubernetes / CKA'};if(!names[c])c='rhcsa';var canonical='https://s2ktux.github.io/curso.html?c='+encodeURIComponent(c),title=names[c]+' · Curso · S2KTUX';document.title=title;document.querySelector('link[rel="canonical"]').href=canonical;document.querySelector('meta[property="og:url"]').content=canonical;document.querySelector('meta[property="og:title"]').content=title;document.querySelector('meta[name="twitter:title"]').content=title;})();</script>
-  <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);font-family:'VT323',monospace;color:var(--text)}
-  :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a}
-  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#e6d5b8;--head:#f8cf90;--muted:#c4ab89;--soft2:#0f0b06}
-  html,body{transition:background-color .25s ease,color .25s ease}
-  a{color:#d97757;text-decoration:none}
-  a:hover{color:#c2650a}
-  html.dark a{color:#ef8a5f}
-  html.dark a:hover{color:#f2a071}
-  ::selection{background:#d97757;color:#fff}
-  .navlink{color:var(--text);font-size:20px;transition:color .15s}
-  .navlink:hover{color:var(--head)}
-  .pxbtn{transition:transform .08s, box-shadow .08s;cursor:pointer}
-  .pxbtn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line) !important}
-  .modcard{transition:transform .12s, box-shadow .12s}
-  .modcard:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--surface2)}
-  a:focus-visible,button:focus-visible,summary:focus-visible,[tabindex]:focus-visible{outline:3px solid #d97757;outline-offset:2px}
-  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
-  #backtop{position:fixed;right:20px;bottom:20px;z-index:90;display:none;align-items:center;justify-content:center;width:46px;height:46px;background:var(--surface);color:var(--head);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer;font-size:20px;line-height:1}
-  #backtop.show{display:flex}
-  details.mod>summary{cursor:pointer;list-style:none}
-  details.mod>summary::-webkit-details-marker{display:none}
-  .modcard-copy{min-width:0;overflow-wrap:anywhere}
-
-  /* --- responsive (móvil) --- */
-  @media(max-width:860px){
-    [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: repeat(2, 1fr)"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: repeat(3, 1fr)"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: repeat(4, 1fr)"]{grid-template-columns:1fr 1fr !important}
-    [style*="grid-template-columns: 230px 1fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: 2fr 1fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: 1fr 2fr"]{grid-template-columns:1fr !important}
-  }
-  @media(max-width:640px){
-    h1{font-size:20px !important;line-height:1.55 !important}
-    .navlink{font-size:16px !important}
-    [style*="gap: 30px"]{gap:12px !important;flex-wrap:wrap !important}
-    [style*="font-size: 26px"]{font-size:21px !important}
-    [style*="padding: 64px 32px"]{padding:40px 20px !important}
-    [style*="padding: 44px 32px"]{padding:30px 20px !important}
-    .modcard-row{padding:18px 16px !important;gap:12px !important;min-width:0}
-    .modcard-action{display:none !important}
-  }
+<noscript><meta http-equiv="refresh" content="0;url=/cursos.html"></noscript>
+<style>
+body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg,#f6ecd9);color:var(--text,#6b543f);font-family:'Space Mono',monospace;padding:24px;box-sizing:border-box}.legacy-redirect{max-width:680px;background:var(--surface,#fbf3e2);border:3px solid var(--line,#4a3627);box-shadow:6px 6px 0 var(--surface2,#e7d3ae);padding:32px}.legacy-redirect h1{font-family:'Press Start 2P',monospace;font-size:16px;line-height:1.6;color:var(--head,#7a4a2b)}.legacy-redirect a{color:#d97757}
 </style>
-<script>
-(function(){
-  try{ if(localStorage.getItem('s2ktux-theme')==='dark') document.documentElement.classList.add('dark'); }catch(e){}
-  function updateIcons(){ var dark=document.documentElement.classList.contains('dark'),label=dark?'Activar tema claro':'Activar tema oscuro'; document.querySelectorAll('[data-theme-icon]').forEach(function(el){ el.textContent=dark?'\u2600':'\u263e'; }); document.querySelectorAll('[data-theme-toggle]').forEach(function(el){ el.setAttribute('aria-label',label); el.setAttribute('title',label); }); }
-  window.__toggleTheme=function(){ var h=document.documentElement; h.classList.toggle('dark'); var dark=h.classList.contains('dark'); try{ localStorage.setItem('s2ktux-theme', dark?'dark':'light'); }catch(e){} updateIcons(); };
-  if(!window.__s2kThemeInit){ window.__s2kThemeInit=true;
-    document.addEventListener('click', function(e){ var b=e.target && e.target.closest && e.target.closest('[data-theme-toggle]'); if(b){ e.preventDefault(); window.__toggleTheme(); } });
-  }
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateIcons,150); });
-  setTimeout(updateIcons,150); setTimeout(updateIcons,600);
-  (function(){ function upd(){ var b=document.getElementById('backtop'); if(b) b.classList.toggle('show', window.pageYOffset>400); } window.addEventListener('scroll',upd,{passive:true}); document.addEventListener('DOMContentLoaded',function(){setTimeout(upd,300);}); setTimeout(upd,500); setTimeout(upd,1200); })();
-})();
-</script>
 </head>
 <body>
-<x-dc>
-
-<div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
-<a class="skip-link" href="#main-content">Saltar al contenido</a>
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div class="site-nav" role="navigation" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
-      <a class="navlink nav-home" href="index.html">Inicio</a>
-      <a class="navlink" href="cursos.html" style="color:var(--head);border-bottom:3px solid #d97757">Cursos</a>
-      <a class="navlink" href="terminal.html">Terminal</a>
-      <a class="navlink" href="proyectos.html">Proyectos</a>
-      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
-    </div>
-  </div>
-</div>
-
-<main id="main-content">
-<section style="max-width:1100px;margin:0 auto;width:100%;padding:40px 32px 10px">
-  <a href="cursos.html" class="navlink" style="font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--muted)">&larr; Volver a Cursos</a>
-</section>
-
-<section style="max-width:1100px;margin:0 auto;width:100%;padding:14px 32px 30px">
-  <span style="font-family:'Press Start 2P',monospace;font-size:10px;background:{{ badgeColor }};color:#fff;padding:8px 12px">{{ badge }}</span>
-  <h1 style="font-family:'Press Start 2P',monospace;font-size:26px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin:22px 0 16px">{{ title }}</h1>
-  <p style="font-size:23px;max-width:640px;color:var(--text);line-height:1.35">{{ subtitle }}</p>
-  <p style="font-family:'Share Tech Mono',monospace;font-size:16px;max-width:720px;color:var(--muted);line-height:1.45;margin-top:12px">{{ note }}</p>
-  <div style="display:flex;gap:22px;flex-wrap:wrap;margin-top:22px;font-family:'Share Tech Mono',monospace;font-size:16px;color:var(--muted)">
-    <span>▸ {{ moduleCount }} módulos</span>
-    <span>▸ {{ topicCount }} temas</span>
-    <span style="color:#5a8a3c">▸ {{ readLabel }}</span>
-    <span>▸ teoría + laboratorio</span>
-  </div>
-</section>
-
-<section style="max-width:1100px;margin:0 auto;width:100%;padding:6px 32px 50px;display:flex;flex-direction:column;gap:20px">
-  <sc-if value="{{ hasModules }}" hint-placeholder-val="{{ true }}">
-  <sc-for list="{{ modules }}" as="mod" hint-placeholder-count="6">
-    <a href="{{ mod.href }}" class="modcard" style="display:block;background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);text-decoration:none">
-      <div class="modcard-row" style="display:flex;align-items:center;gap:18px;padding:24px 26px">
-        <span style="font-family:'Press Start 2P',monospace;font-size:16px;color:#d97757;flex-shrink:0;min-width:54px">{{ mod.n }}</span>
-        <span class="modcard-copy" style="flex:1">
-          <span style="display:block;font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head);line-height:1.5;margin-bottom:9px">{{ mod.title }}</span>
-          <span style="display:block;font-size:18px;color:var(--text);line-height:1.3">{{ mod.desc }}</span>
-        </span>
-        <sc-if value="{{ mod.done }}" hint-placeholder-val="{{ false }}"><span style="font-family:'Share Tech Mono',monospace;font-size:14px;color:#5a8a3c;flex-shrink:0">✔ leída</span></sc-if>
-        <span class="modcard-action" style="font-family:'Share Tech Mono',monospace;font-size:15px;color:#d97757;flex-shrink:0">abrir →</span>
-      </div>
-    </a>
-  </sc-for>
-  </sc-if>
-  <sc-if value="{{ noModules }}" hint-placeholder-val="{{ false }}">
-    <div style="background:var(--surface);border:3px dashed #b89b78;padding:40px 30px;text-align:center">
-      <div style="font-family:'Press Start 2P',monospace;font-size:16px;color:var(--head);margin-bottom:14px">PRÓXIMAMENTE</div>
-      <div style="font-size:19px;color:var(--muted)">Este curso está en preparación. Vuelve pronto.</div>
-    </div>
-  </sc-if>
-</section>
-
+<main class="legacy-redirect">
+<p>RUTA ACTUALIZADA</p>
+<h1>Moviendo la sesión al contenido actual…</h1>
+<p>Si la redirección no se completa, abre la <a href="/cursos.html">lista de cursos</a>.</p>
 </main>
-
-<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px">
-    <a href="sobre.html">Sobre</a>
-    <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a>
-    <a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a>
-  </div>
-  <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
-</footer>
-</div>
-<button type="button" id="backtop" aria-label="Volver arriba" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
-
-</x-dc>
-<script type="text/x-dc" data-dc-script>
-class Component extends DCLogic {
-  state = { ready: false };
-  setMeta(data, key) {
-    try {
-      const base = 'https://s2ktux.github.io/curso.html?c=' + key;
-      if (data && data.title) { const tt = data.title + ' · Curso de Linux · S2KTUX'; document.title = tt; setTimeout(() => { try { document.title = tt; } catch (e) {} }, 80); }
-      const set = (sel, attr, val) => { let el = document.querySelector(sel); if (el) el.setAttribute(attr, val); };
-      set('link[rel="canonical"]', 'href', base);
-      set('meta[property="og:url"]', 'content', base);
-      if (data && data.title) { set('meta[property="og:title"]', 'content', data.title + ' · S2KTUX'); set('meta[name="twitter:title"]', 'content', data.title + ' · S2KTUX'); }
-      if (data && data.subtitle) { set('meta[name="description"]', 'content', data.subtitle); set('meta[property="og:description"]', 'content', data.subtitle); set('meta[name="twitter:description"]', 'content', data.subtitle); }
-    } catch (e) {}
-  }
-  _meta() { try { const raw = new URLSearchParams(location.search).get('c'); const key = (raw === 'lpic1' || raw === 'docker' || raw === 'kubernetes') ? raw : 'rhcsa'; const data = (window.S2KTUX_COURSES || {})[key]; if (data) this.setMeta(data, key); } catch (e) {} }
-  componentDidMount() {
-    let n = 0; const mv = setInterval(() => { this._meta(); if (++n >= 12) clearInterval(mv); }, 150);
-    const tryLoad = () => {
-      if (window.S2KTUX_COURSES) { this.setState({ ready: true }); return true; }
-      return false;
-    };
-    if (!tryLoad()) {
-      let tries = 0;
-      const iv = setInterval(() => { tries++; if (tryLoad() || tries > 50) clearInterval(iv); }, 60);
-    }
-  }
-  renderVals() {
-    const params = new URLSearchParams(location.search);
-    const raw = params.get('c');
-    const key = (raw === 'lpic1' || raw === 'docker' || raw === 'kubernetes') ? raw : 'rhcsa';
-    let read = {}; try { read = JSON.parse(localStorage.getItem('s2ktux-read') || '{}') || {}; } catch (e) {}
-    const data = (window.S2KTUX_COURSES || {})[key];
-    if (data) this.setMeta(data, key);
-    if (!data) {
-      return { badge: "", badgeColor: "#d97757", title: "Cargando…", subtitle: "", note: "", moduleCount: "", topicCount: "", readLabel: "", modules: [] };
-    }
-    const modules = data.modules.map((m, i) => ({
-      n: m.n, title: m.title, desc: m.desc,
-      topics: m.topics,
-      topicLabel: m.topics.length + " temas",
-      done: !!read[key + ':' + i],
-      href: "leccion.html?c=" + key + "&m=" + i
-    }));
-    const readCount = modules.filter(m => m.done).length;
-    const topicCount = data.modules.reduce((s, m) => s + m.topics.length, 0);
-    return {
-      badge: data.badge, badgeColor: data.badgeColor,
-      title: data.title, subtitle: data.subtitle, note: data.note || "",
-      moduleCount: data.modules.length, topicCount,
-      readLabel: readCount + "/" + data.modules.length + " leídas",
-      hasModules: data.modules.length > 0,
-      noModules: data.modules.length === 0,
-      modules
-    };
-  }
-}
-</script>
 </body>
 </html>

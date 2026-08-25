@@ -1,0 +1,21 @@
+// Estado inicial de procesos, independiente del DOM y del modo activo.
+export const createDefaultProcesses = () => ([
+      {pid:1,ppid:0,user:'root',cpu:0.0,mem:0.4,vsz:171200,rss:13800,stat:'Ss',start:'09:00',time:'0:03',cmd:'/usr/lib/systemd/systemd --switched-root --system'},
+      {pid:2,ppid:0,user:'root',cpu:0.0,mem:0.0,vsz:0,rss:0,stat:'S',start:'09:00',time:'0:00',cmd:'[kthreadd]'},
+      {pid:3,ppid:2,user:'root',cpu:0.0,mem:0.0,vsz:0,rss:0,stat:'I<',start:'09:00',time:'0:00',cmd:'[rcu_gp]'},
+      {pid:11,ppid:2,user:'root',cpu:0.0,mem:0.0,vsz:0,rss:0,stat:'S',start:'09:00',time:'0:00',cmd:'[ksoftirqd/0]'},
+      {pid:14,ppid:2,user:'root',cpu:0.0,mem:0.0,vsz:0,rss:0,stat:'I',start:'09:00',time:'0:01',cmd:'[kworker/0:1]'},
+      {pid:410,ppid:1,user:'root',cpu:0.0,mem:0.3,vsz:225800,rss:9800,stat:'Ss',start:'09:00',time:'0:01',cmd:'/usr/lib/systemd/systemd-journald'},
+      {pid:435,ppid:1,user:'root',cpu:0.0,mem:0.2,vsz:88300,rss:7100,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/lib/systemd/systemd-udevd'},
+      {pid:610,ppid:1,user:'root',cpu:0.0,mem:0.6,vsz:398200,rss:22400,stat:'Ssl',start:'09:00',time:'0:02',cmd:'/usr/sbin/NetworkManager --no-daemon'},
+      {pid:640,ppid:1,user:'chrony',cpu:0.0,mem:0.1,vsz:23800,rss:2900,stat:'S',start:'09:00',time:'0:00',cmd:'/usr/sbin/chronyd -F 2'},
+      {pid:660,ppid:1,user:'root',cpu:0.0,mem:0.1,vsz:26100,rss:3600,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/sbin/crond -n'},
+      {pid:680,ppid:1,user:'dbus',cpu:0.0,mem:0.1,vsz:10200,rss:4800,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/bin/dbus-broker-launch --scope system'},
+      {pid:700,ppid:1,user:'polkitd',cpu:0.0,mem:0.4,vsz:220100,rss:14200,stat:'Ssl',start:'09:00',time:'0:00',cmd:'/usr/lib/polkit-1/polkitd --no-debug'},
+      {pid:720,ppid:1,user:'root',cpu:0.0,mem:0.2,vsz:78400,rss:5600,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/sbin/rsyslogd -n'},
+      {pid:420,ppid:1,user:'root',cpu:0.0,mem:0.2,vsz:92500,rss:7200,stat:'Ss',start:'09:00',time:'0:00',cmd:'/usr/sbin/sshd -D'},
+      {pid:760,ppid:1,user:'root',cpu:0.0,mem:0.0,vsz:12100,rss:2100,stat:'Ss+',start:'09:00',time:'0:00',cmd:'/usr/sbin/agetty -o -p -- \\u --noclear tty1 linux'},
+      {pid:820,ppid:420,user:'root',cpu:0.0,mem:0.2,vsz:94800,rss:8100,stat:'Ss',start:'09:12',time:'0:00',cmd:'sshd: visitor [priv]'},
+      {pid:825,ppid:820,user:'visitor',cpu:0.0,mem:0.1,vsz:94800,rss:5200,stat:'S',start:'09:12',time:'0:00',cmd:'sshd: visitor@pts/0'},
+      {pid:888,ppid:825,user:'visitor',cpu:0.0,mem:0.1,vsz:12800,rss:3600,stat:'Ss',start:'09:12',time:'0:00',cmd:'-bash'},
+    ]);

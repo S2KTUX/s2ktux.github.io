@@ -10,8 +10,15 @@ const text = (file) => read(file).toString('utf8');
 const gzip = (file) => zlib.gzipSync(read(file), { level: 9 }).length;
 
 const budgets = {
-  'support.js': 18_000,
   'terminal-bootstrap.js': 3_500,
+  'terminal-worker-client.js': 2_000,
+  'terminal-simulation-worker.js': 1_000,
+  'terminal-worker-protocol.js': 1_000,
+  'terminal-virtual-fs.js': 2_500,
+  'terminal-process-state.js': 1_500,
+  'terminal-network-state.js': 1_500,
+  'terminal-docker-state.js': 2_500,
+  'terminal-kubernetes-state.js': 1_500,
   'learning-pages.js': 5_500,
   'learning-pages.css': 5_500,
   'terminal-xterm-renderer.js': 5_500,

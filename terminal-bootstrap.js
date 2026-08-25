@@ -14,13 +14,15 @@ if (!requested || !allowed.has(requested)) {
       loadStage = label;
       throw error;
     });
-    const [{ default: engine }, { default: runtime }, { startTerminal }] = await Promise.all([
+    const [{ default: engine }, { default: runtime }, { startTerminal }, simulation] = await Promise.all([
       labelledImport('motor de configuración', `./terminal-engine-${mode}.js?v=20260825-phase1-main`),
       labelledImport('contenido del entorno', `./terminal-runtime-${mode}.js?v=20260825-phase1-main`),
-      labelledImport('núcleo de terminal', './terminal-core.js?v=20260825-phase1-main')
+      labelledImport('núcleo de terminal', './terminal-core.js?v=20260825-phase2'),
+      labelledImport('aislamiento de simulación', './terminal-worker-client.js?v=20260825-phase2').then(module=>module.createTerminalSimulationClient(mode))
     ]);
     loadStage = 'motor';
-    startTerminal(engine, runtime);
+    startTerminal(engine, runtime, { simulation });
+    document.documentElement.dataset.terminalEngineThread=simulation.kind;
     try {
       loadStage = 'renderizador';
       const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260825-phase1-main');

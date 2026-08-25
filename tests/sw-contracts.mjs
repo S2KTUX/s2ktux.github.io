@@ -8,7 +8,6 @@ for (const asset of [
   'site-shell.css?v=20260822-header4',
   'fonts.css?v=20260822-local',
   'assets/fonts/press-start-2p-latin-400.woff2',
-  'support.js',
   'manifest.webmanifest',
   'assets/icon-192.png'
 ]) {
@@ -20,6 +19,13 @@ for (const onDemandAsset of [
   'terminal-bootstrap.js',
   'terminal-shell-parser.js',
   'terminal-core.js',
+  'terminal-command-schema.js',
+  'terminal-virtual-fs.js',
+  'terminal-process-state.js',
+  'terminal-network-state.js',
+  'terminal-worker-client.js',
+  'terminal-worker-protocol.js',
+  'terminal-simulation-worker.js',
   'terminal-engine-linux.js',
   'terminal-engine-docker.js',
   'terminal-engine-kubernetes.js',
@@ -108,7 +114,7 @@ fetchImpl = async request => {
 const installEvent = lifetimeEvent();
 handlers.install(installEvent);
 await installEvent.done();
-assert.ok(await memoryCaches.match(`${scope}support.js`), 'Successful assets must survive a partial install failure');
+assert.ok(await memoryCaches.match(`${scope}fonts.css?v=20260822-local`), 'Successful assets must survive a partial install failure');
 assert.equal(await memoryCaches.match(`${scope}assets/icon-512.png`), undefined, 'A failed asset must not poison the cache');
 
 async function dispatchFetch(request) {
