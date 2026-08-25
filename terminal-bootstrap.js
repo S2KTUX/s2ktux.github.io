@@ -7,6 +7,7 @@ if (!requested || !allowed.has(requested)) {
   document.documentElement.dataset.terminalState = 'selector';
 } else {
   const mode = requested;
+  performance.mark('s2ktux-terminal-load-start');
   let loadStage = 'módulos';
   try {
     const labelledImport = (label, path) => import(path).catch((error) => {
@@ -14,15 +15,15 @@ if (!requested || !allowed.has(requested)) {
       throw error;
     });
     const [{ default: engine }, { default: runtime }, { startTerminal }] = await Promise.all([
-      labelledImport('motor de configuración', `./terminal-engine-${mode}.js`),
-      labelledImport('contenido del entorno', `./terminal-runtime-${mode}.js?v=20260824-terminalfix2`),
-      labelledImport('núcleo de terminal', './terminal-core.js?v=20260824-terminalfix2')
+      labelledImport('motor de configuración', `./terminal-engine-${mode}.js?v=20260825-phase1-main`),
+      labelledImport('contenido del entorno', `./terminal-runtime-${mode}.js?v=20260825-phase1-main`),
+      labelledImport('núcleo de terminal', './terminal-core.js?v=20260825-phase1-main')
     ]);
     loadStage = 'motor';
     startTerminal(engine, runtime);
     try {
       loadStage = 'renderizador';
-      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260824-terminalfix2');
+      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260825-phase1-main');
       await attachTerminalRenderer();
     } catch (rendererError) {
       console.warn('Se usa el renderizador de compatibilidad de la terminal.', rendererError);
@@ -30,6 +31,10 @@ if (!requested || !allowed.has(requested)) {
         ? rendererError.message
         : String(rendererError);
     }
+    document.documentElement.dataset.terminalReady = 'true';
+    performance.mark('s2ktux-terminal-interactive');
+    performance.measure('s2ktux-time-to-terminal-interactive','s2ktux-terminal-load-start','s2ktux-terminal-interactive');
+    document.dispatchEvent(new CustomEvent('s2ktux-terminal-ready',{detail:{mode}}));
   } catch (error) {
     console.error('No se pudo cargar el motor de terminal.', error);
     document.documentElement.dataset.terminalState = 'error';

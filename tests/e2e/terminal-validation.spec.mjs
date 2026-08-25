@@ -16,7 +16,7 @@ async function openMode(page,mode,{solved=mode==='linux'}={}){
   await expect(page).toHaveURL(new RegExp('mode='+mode));
   await expect(page.locator('#terminal-shell')).toBeVisible();
   await expect(page.locator('#term-input')).toBeAttached();
-  await page.waitForFunction(()=>document.querySelector('#term-input') && !document.querySelector('#term-input').disabled);
+  await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   if(solved){
     await page.locator('#term-solved').click();
     await page.waitForFunction(()=>/[@#$] ?$/.test(document.querySelector('#term-prompt')?.textContent||'') && !document.querySelector('#term-input')?.readOnly,null,{timeout:8000});
@@ -346,6 +346,7 @@ for(const mode of MODES){
     await page.reload();
     await expect(page.locator('#mode-select')).toBeVisible();
     await page.locator('[data-pick-mode="'+mode+'"]').click();
+    await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
     if(mode==='linux') await page.locator('#term-solved').click();
     await waitForShell(page);
     expect(await run(page,'test -e /tmp/no-debe-sobrevivir; echo $?')).toMatch(/1/);
