@@ -7,6 +7,7 @@ const runtimeLinux = await readFile(new URL('../terminal-runtime-linux.js', impo
 const runtimeDocker = await readFile(new URL('../terminal-runtime-docker.js', import.meta.url), 'utf8');
 const runtimeKubernetes = await readFile(new URL('../terminal-runtime-kubernetes.js', import.meta.url), 'utf8');
 const page = await readFile(new URL('../terminal.html', import.meta.url), 'utf8');
+const terminalCss = await readFile(new URL('../terminal-page.css', import.meta.url), 'utf8');
 const bootstrap = await readFile(new URL('../terminal-bootstrap.js', import.meta.url), 'utf8');
 const xtermRenderer = await readFile(new URL('../terminal-xterm-renderer.js', import.meta.url), 'utf8');
 const joinedFlow = describeDescriptorFlow(parseRedirections('demo >out 2>&1').redirections);
@@ -26,7 +27,7 @@ const contracts = [
   ['Here-document input', /const hd=cmd\.match/.test(core) && /startInteractive\('>'/.test(core)],
   ['Async command prompt recovery', /const runCommandSeq/.test(core) && (core.match(/runCommandSeq\(seq/g)||[]).length>=2 && /finally\{[\s\S]*?input\.readOnly=false[\s\S]*?setPrompt\(\); input\.focus\(\)/.test(core)],
   ['Foreground input ownership', /foregroundProcess && !\(e\.ctrlKey/.test(core) && /foregroundProcess=\{pid,cmd:'ping '[^\n]+promptEl\.textContent='';/.test(core)],
-  ['Single-line terminal input', /#term-input-line\{[^}]*flex-wrap:nowrap[^}]*min-width:0/.test(page) && /#term-input\{[^}]*width:1px[^}]*min-width:0/.test(page)],
+  ['Single-line terminal input', /#term-input-line\{[^}]*flex-wrap:nowrap[^}]*min-width:0/.test(terminalCss) && /#term-input\{[^}]*width:1px[^}]*min-width:0/.test(terminalCss)],
   ['Reload-proof selector', /explicitEntry/.test(page) && /params\.delete\('enter'\)/.test(page) && /history\.replaceState/.test(page) && /pageshow/.test(page) && /e\.persisted/.test(page) && /&enter=1/.test(page)],
   ['Ephemeral machine on reload', /function clearModeSession\(mode\)/.test(page) && /function clearAllTerminalSessions\(\)/.test(page) && (page.match(/clearAllTerminalSessions\(\)/g)||[]).length>=3 && /F5 crea una máquina limpia/.test(page) && /internalData\.mode===active/.test(page) && /Date\.now\(\)-internalData\.at<10000/.test(page)],
   ['Selector modal isolation', /aria-modal="true"/.test(page) && /terminal-shell/.test(page) && /setAttribute\('inert'/.test(page) && /choose\(0,!getMode/.test(page)],

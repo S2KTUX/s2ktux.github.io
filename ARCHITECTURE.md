@@ -42,3 +42,8 @@ Las páginas públicas se entregan como HTML estático. `support.js` y el runtim
 ## Validación
 
 `npm test` ejecuta contratos, fuzzing, presupuestos, grafo de carga y recorridos reales con navegador. El workflow obligatorio de GitHub impide integrar una propuesta si esta batería falla.
+## Sistema visual
+
+`visual-system.css` define la composición compartida de cabecera, navegación, tema, pie, tipografía y ritmo responsive. `terminal-page.css` conserva los estilos exclusivos de la terminal y `learning-pages.css` los patrones educativos. `site-shell.js` gestiona el tema sin temporizadores ni lógica duplicada por página.
+
+El contenido largo usa Space Mono; Press Start 2P queda reservado para marca, títulos y controles breves. El generador de cursos produce directamente esta estructura para que las nuevas clases no reintroduzcan estilos duplicados.

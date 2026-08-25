@@ -9,22 +9,23 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Clase Extra · RHCSA 9 · S2KTUX"><meta name="twitter:description" content="Podman, contenedores como servicio, find avanzado, reset de root, SSH y entorno del examen. Aprende Podman: buscar, descargar y gestionar imágenes, Crear contenedores con puertos y volúmenes, Contenedor como servicio systemd (root y rootless) con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260822-header4"><link rel="stylesheet" href="/learning-pages.css?v=20260822-static2">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=20260826-phase3"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=20260826-phase3">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Clase Extra","description":"Podman, contenedores como servicio, find avanzado, reset de root, SSH y entorno del examen.","url":"https://s2ktux.github.io/cursos/rhcsa-9/tema-11-clase-extra/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"RHCSA 9","teaches":["Podman: buscar, descargar y gestionar imágenes","Crear contenedores con puertos y volúmenes","Contenedor como servicio systemd (root y rootless)","loginctl enable-linger y systemctl --user","find avanzado (-perm, -mmin, -exec)","Reset de contraseña de root paso a paso","Usuario SSH con sudo para el examen","Metodología y entorno de la certificación"],"isPartOf":{"@type":"Course","name":"RHCSA 9 · EX200","url":"https://s2ktux.github.io/cursos/rhcsa-9/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"RHCSA 9 · EX200","item":"https://s2ktux.github.io/cursos/rhcsa-9/"},{"@type":"ListItem","position":4,"name":"Clase Extra","item":"https://s2ktux.github.io/cursos/rhcsa-9/tema-11-clase-extra/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script type="module" src="/learning-pages.js?v=20260822-static2"></script>
-</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+<script defer src="/site-shell.js?v=20260826-phase3"></script>
+<script type="module" src="/learning-pages.js?v=20260826-phase3"></script>
+</head><body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell site-app-shell">
 <a class="skip-link" href="#main-content">Saltar al contenido</a>
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="/" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <nav class="site-nav" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="/">S2KTUX</a>
+    <nav class="site-nav" aria-label="Navegación principal">
       <a class="navlink nav-home" href="/">Inicio</a>
-      <a class="navlink" href="/cursos.html" style="color:var(--head);border-bottom:3px solid var(--accent)" aria-current="page">Cursos</a>
+      <a class="navlink" href="/cursos.html" aria-current="page">Cursos</a>
       <a class="navlink" href="/terminal.html">Terminal</a>
       <a class="navlink" href="/proyectos.html">Proyectos</a>
-      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);width:38px;height:38px;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon></span></button>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema"><span data-theme-icon></span></button>
     </nav>
   </div>
 </div>
@@ -58,22 +59,22 @@
                 <li><a href="#obj5">5. Inside Red Hat</a></li>
             </ul>
         </aside>
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Podman</h2>
                 <p>Podman es una herramienta para ejecutar contenedores y es muy probable que aparezca en el examen, especialmente en tareas relacionadas con el registro en repositorios y la creación de contenedores como servicios.</p>
                 <p>A diferencia de <code>dnf</code>, Podman trabaja con imágenes de contenedor. Algunas imágenes están protegidas, por lo que primero debemos autenticarnos usando <code>podman login registry.redhat.io</code> e introducir nuestras credenciales.</p>
                 <p>Podemos buscar imágenes con <code>podman search httpd</code> y descargarlas, por ejemplo, mediante <code>podman pull docker.io/library/httpd</code>. Las imágenes descargadas se consultan con <code>podman images</code> y pueden eliminarse usando <code>podman rmi ID-IMAGEN</code>.</p>
-                <img src="/images/podman1.png" alt="podman ejemplo" width="823" height="353" style="max-width:100%;height:auto">
+                <img src="/images/podman1.png" alt="podman ejemplo" width="823" height="353">
                 <p>Una vez disponible la imagen, podemos crear un contenedor y comprobar su estado. Podemos detenerlo con <code>podman stop</code> o eliminarlo con <code>podman rm</code>.</p>
                 <pre><code>podman run -d --name NOMBRE -p PUERTO_HOST:PUERTO_CONTENEDOR ID-IMAGEN
 podman ps</code></pre>
-                <img src="/images/podman2.png" alt="podman ejemplo" width="1299" height="407" style="max-width:100%;height:auto">
+                <img src="/images/podman2.png" alt="podman ejemplo" width="1299" height="407">
                 <p>Si necesitamos trabajar de forma interactiva usaremos el modo <code>-it</code>. Para localizar contenido dentro del sistema, <code>find / -name index</code>. También pueden pedir mapear contenido local al contenedor mediante volúmenes:</p>
                 <pre><code>podman run -it ID-IMAGEN /bin/bash
 podman run -d --name NOMBRE -p 8080:80 -v /RUTA-LOCAL:/RUTA/index.html:Z ID-IMAGEN</code></pre>
-                <img src="/images/podman3.png" alt="podman ejemplo" width="1047" height="418" style="max-width:100%;height:auto">
+                <img src="/images/podman3.png" alt="podman ejemplo" width="1047" height="418">
                 <p>Una tarea muy habitual en el examen es ejecutar un contenedor como servicio systemd, tanto para root como para un usuario normal. El procedimiento base es el mismo: descargar la imagen, crear el contenedor y generar su servicio. Si usamos <code>--new</code> (recomendado), debemos eliminar el contenedor para evitar conflictos.</p>
                 <pre><code>podman pull IMAGEN
 podman run -d --name mi-web -p 8080:80 ID-IMAGEN
@@ -85,7 +86,7 @@ podman rm -f NOMBRE</code></pre>
 systemctl daemon-reload
 systemctl enable --now NOMBRE.service
 systemctl status NOMBRE.service</code></pre>
-                <img src="/images/podman4.png" alt="podman ejemplo" width="1117" height="733" style="max-width:100%;height:auto">
+                <img src="/images/podman4.png" alt="podman ejemplo" width="1117" height="733">
                 <p>Si lo configuramos para un usuario normal, primero habilitamos la persistencia con <code>loginctl enable-linger usuario</code> (como root) y accedemos por SSH. Después, tras seguir los mismos pasos, colocamos el <code>.service</code> en la ruta del usuario y lo activamos con <code>--user</code>. Si la unidad trae <code>WantedBy=multi-user.target</code>, la cambiamos por <code>WantedBy=default.target</code>.</p>
                 <pre><code>loginctl enable-linger usuario
 ssh usuario@localhost
@@ -93,7 +94,7 @@ mkdir -p ~/.config/systemd/user/
 mv container-NOMBRE.service ~/.config/systemd/user/
 systemctl --user daemon-reload
 systemctl --user enable --now NOMBRE.service</code></pre>
-                <img src="/images/podman5.png" alt="podman ejemplo" width="1264" height="771" style="max-width:100%;height:auto">
+                <img src="/images/podman5.png" alt="podman ejemplo" width="1264" height="771">
                 </section>
 
             <section id="obj2" class="lesson-section">
@@ -139,7 +140,7 @@ touch /.autorelabel</code></pre>
                 <h2>5. Inside Red Hat y simulacro</h2>
                <p>Es recomendable ver el vídeo oficial <strong>Inside a Red Hat Certification</strong> para entender el entorno real del examen.</p>
                 <p>Por otro lado, como simulacro, está disponible el repositorio <strong><a href="https://github.com/AustinNicely/rhcsa-simulator" target="_blank" rel="noopener">AustinNicely/rhcsa-simulator</a></strong>. Aunque está en inglés, es un recurso muy completo para practicar o repasar conceptos.</p>
-                <img src="/images/rhcsasimulator.png" alt="rhcsa sim ejemplo" width="669" height="99" style="max-width:100%;height:auto">
+                <img src="/images/rhcsasimulator.png" alt="rhcsa sim ejemplo" width="669" height="99">
             </section>
 
         </div>
@@ -147,9 +148,9 @@ touch /.autorelabel</code></pre>
 </div>
 
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><a class="lesson-nav-card" href="/cursos/rhcsa-9/tema-10-administrar-la-seguridad/"><small>← ANTERIOR</small><strong>Administrar la seguridad</strong></a><button class="lesson-read" type="button" data-lesson-read="rhcsa:10">Marcar como leída</button><span></span></nav></div></main>
-<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;border-top:4px solid var(--line);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
-  <div style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
+  <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

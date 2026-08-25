@@ -4,7 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./fonts.css?v=20260822-local">
-<link rel="stylesheet" href="./site-shell.css?v=20260822-header4">
+<link rel="stylesheet" href="./visual-system.css?v=20260826-phase3">
+<link rel="stylesheet" href="./terminal-page.css?v=20260826-phase3">
+<link rel="stylesheet" href="./site-shell.css?v=20260826-phase3">
 <title>Terminales Linux, Docker y Kubernetes · S2KTUX</title>
 <meta name="description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas, rápidas e independientes dentro del navegador.">
 <meta name="robots" content="index,follow">
@@ -29,107 +31,6 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
-  <style>
-  *{margin:0;padding:0;box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{background:var(--bg);font-family:'VT323',monospace;color:var(--text)}
-  :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a}
-  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#e6d5b8;--head:#f8cf90;--muted:#c4ab89;--soft2:#0f0b06}
-  html,body{transition:background-color .25s ease,color .25s ease}
-  svg{stroke:var(--head)}
-  a{color:#d97757;text-decoration:none}
-  a:hover{color:#c2650a}
-  html.dark a{color:#ef8a5f}
-  html.dark a:hover{color:#f2a071}
-  ::selection{background:#d97757;color:#fff}
-  a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #d97757;outline-offset:2px}
-  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
-  @keyframes blink{50%{opacity:0}}
-  .navlink{color:var(--text);font-size:20px;transition:color .15s}
-  .navlink:hover{color:var(--head)}
-  .pxbtn{transition:transform .08s, box-shadow .08s;cursor:pointer}
-  .pxbtn:active{transform:translate(3px,3px);box-shadow:1px 1px 0 var(--line) !important}
-  #term-input-line{display:flex;align-items:baseline;flex-wrap:nowrap;width:100%;min-width:0}
-  #term-prompt{flex:0 0 auto}
-  #term-input{background:transparent;border:none;color:#e9ddc7;font-family:'Share Tech Mono',monospace;font-size:17px;outline:none;flex:1 1 auto;width:1px;min-width:0;caret-color:#e0a458}
-  #term-body::-webkit-scrollbar{width:12px}
-  #term-body::-webkit-scrollbar-track{background:#161009}
-  #term-body::-webkit-scrollbar-thumb{background:#3a3226;border:2px solid #161009}
-  .term-out{white-space:pre-wrap;word-break:break-word}
-  details.cs{background:var(--surface);border:3px solid var(--line);box-shadow:6px 6px 0 var(--surface2)}
-  details.cs>summary{cursor:pointer;list-style:none;padding:18px 22px;font-family:'Press Start 2P',monospace;font-size:13px;color:var(--head);display:flex;align-items:center;justify-content:space-between}
-  details.cs>summary::-webkit-details-marker{display:none}
-  details.cs>summary::after{content:'+';font-size:22px;color:#d97757}
-  details.cs[open]>summary::after{content:'\2212'}
-  .cs-tabs{display:flex;flex-wrap:wrap;gap:0;border-top:3px solid var(--line);background:var(--surface2)}
-  .cs-tab{font-family:'Share Tech Mono',monospace;font-size:15px;padding:11px 16px;cursor:pointer;color:var(--head);border-right:2px solid var(--line);border-bottom:3px solid transparent;user-select:none;transition:background .12s}
-  .cs-tab:hover{background:var(--surface)}
-  .cs-tab[data-active="1"]{background:var(--surface);border-bottom:3px solid #d97757;font-weight:bold}
-  .cs-panel{display:none;padding:6px 0 12px}
-  .cs-panel[data-active="1"]{display:block}
-  .csrow{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:9px 22px;border-top:2px solid var(--surface2);align-items:baseline}
-  .cscmd{font-family:'Share Tech Mono',monospace;font-size:16px;color:#d97757;word-break:break-word}
-  .csdesc{font-size:18px;color:var(--text);line-height:1.3}
-  .skip-link{position:fixed;left:12px;top:-60px;z-index:1000;background:#d97757;color:#fff;padding:12px 16px;border:3px solid var(--line);font-family:'Press Start 2P',monospace;font-size:9px}
-  .skip-link:focus{top:12px;color:#fff}
-  .workbench-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-  .mini-btn{background:var(--surface2);color:var(--head);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);font-family:'Press Start 2P',monospace;font-size:8px;padding:9px 11px;cursor:pointer;min-height:38px}
-  .exam-panel{display:none;background:#1a2410;border:3px solid #8fa876;box-shadow:4px 4px 0 var(--line);padding:16px;margin-bottom:18px;color:#e9ddc7}
-  .exam-panel[data-show="1"]{display:block}.exam-running{color:#e0a458;font-family:'Share Tech Mono',monospace;font-size:19px}
-  .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
-  .mode-select{position:fixed;inset:0;z-index:500;background-color:var(--bg);background-image:linear-gradient(90deg,rgba(208,181,138,.18) 1px,transparent 1px),linear-gradient(rgba(208,181,138,.18) 1px,transparent 1px);background-size:24px 24px;display:flex;align-items:center;justify-content:center;padding:30px;overflow:auto}
-  .selector-wrap{width:min(820px,100%);position:relative}
-  .selector-heading{text-align:center;margin-bottom:24px}.selector-kicker{font-family:'Press Start 2P',monospace;font-size:9px;color:#d97757;letter-spacing:1px;margin-bottom:13px}.selector-heading h1{font-family:'Press Start 2P',monospace;font-size:21px;line-height:1.55;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin:0}.selector-heading p{font:19px 'VT323',monospace;color:var(--muted);margin:12px auto 0;max-width:590px}
-  .selector-room{background:var(--surface);border:4px solid var(--line);box-shadow:9px 9px 0 var(--soft2);position:relative;overflow:hidden}
-  .selector-machinebar{min-height:40px;box-sizing:border-box;display:grid;grid-template-columns:130px 1fr auto;align-items:center;padding:0 14px;background:#2c2218;color:#b5a58a;border-bottom:3px solid var(--line);font:13px 'Share Tech Mono',monospace}.selector-machinebar>span:last-child{color:#76654e}.selector-lights{display:flex;gap:8px}.selector-lights i{display:block;width:10px;height:10px;background:#e95d45}.selector-lights i:nth-child(2){background:#e4a72c}.selector-lights i:nth-child(3){background:#4cbd6a}
-  .selector-current{min-height:70px;box-sizing:border-box;display:flex;align-items:center;gap:8px;padding:14px 19px;background:#17150f;color:#d8c8aa;border-bottom:3px solid var(--line);font:18px 'VT323',monospace}.selector-current-prompt{color:#d97757}.selector-command-wrap{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}.selector-current b{color:#9bb879;font-weight:normal}.selector-cursor{display:inline-block;width:8px;height:18px;background:#9bb879}.selector-current small{margin-left:auto;color:#9d9078;font:12px 'Share Tech Mono',monospace;white-space:nowrap}.selector-current small i{display:inline-block;width:7px;height:7px;margin-right:5px;background:#8fa876;border:1px solid #455132;font-style:normal}
-  .selector-list{display:grid;grid-template-columns:1fr}
-  .terminal-slot{appearance:none;width:100%;min-height:84px;display:grid;grid-template-columns:48px 1fr auto;align-items:center;gap:14px;padding:16px 20px;background:var(--surface);color:var(--text);border:0;border-bottom:2px solid var(--surface2);cursor:pointer;text-align:left}.terminal-slot:last-child{border-bottom:0}.terminal-slot:hover,.terminal-slot:focus-visible{background:var(--bg);outline:0}.terminal-slot[data-selected="1"]{position:relative;background:var(--bg);box-shadow:inset 6px 0 0 #d97757}.terminal-slot[data-selected="1"]::before{content:'>';position:absolute;left:15px;color:#d97757;font:18px 'VT323',monospace}.slot-index{color:#b69b7e;font:15px 'Share Tech Mono',monospace;text-align:right}.terminal-slot[data-selected="1"] .slot-index{color:#d97757}.slot-copy{display:grid;gap:8px;min-width:0}.slot-copy>span{display:block}.slot-title{color:var(--head);font:11px/1.4 'Press Start 2P',monospace}.slot-focus{color:var(--muted);font:15px 'Share Tech Mono',monospace}.slot-action{visibility:hidden;padding:8px 10px 6px;background:#d97757;color:#fff;border:2px solid var(--line);box-shadow:3px 3px 0 var(--soft2);font:14px 'VT323',monospace;white-space:nowrap}.terminal-slot[data-selected="1"] .slot-action{visibility:visible}
-  .selector-footer{display:flex;justify-content:space-between;gap:20px;padding:12px 17px;background:var(--surface2);color:var(--muted);border-top:3px solid var(--line);font:13px 'Share Tech Mono',monospace}.selector-footer strong{color:#d97757;font-weight:normal}
-  @media(max-width:760px){.mode-select{align-items:flex-start;padding:20px 14px}.selector-wrap{padding-top:24px}.selector-heading h1{font-size:16px}.selector-room{box-shadow:6px 6px 0 var(--soft2)}.selector-machinebar{grid-template-columns:auto 1fr;gap:9px}.selector-machinebar>span:last-child{display:none}.selector-current{display:grid;grid-template-columns:auto auto 1fr;gap:5px}.selector-current small{grid-column:1/4;margin:2px 0 0}.terminal-slot{grid-template-columns:31px 1fr;padding:15px 12px;gap:10px}.terminal-slot[data-selected="1"]::before{left:6px}.slot-title{font-size:10px}.slot-action{display:none}.selector-footer{font-size:12px;flex-direction:column;align-items:flex-start}#term-prompt{flex:0 1 auto;max-width:58%;min-width:0;overflow:hidden;text-overflow:ellipsis}#term-input-line{overflow:hidden}}
-  @media(min-width:901px){details.cs[data-mode="linux"] .cs-tabs{flex-wrap:nowrap}details.cs[data-mode="linux"] .cs-tab{flex:1 1 auto;min-width:0;padding:11px 7px;font-size:13px;text-align:center;white-space:nowrap}}
-  @media(max-width:640px){.csrow{grid-template-columns:1fr;gap:2px}}
-
-  /* --- responsive (móvil) --- */
-  @media(max-width:860px){
-    [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: repeat(2, 1fr)"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: repeat(3, 1fr)"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: repeat(4, 1fr)"]{grid-template-columns:1fr 1fr !important}
-    [style*="grid-template-columns: 230px 1fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: 2fr 1fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: 1fr 2fr"]{grid-template-columns:1fr !important}
-  }
-  @media(max-width:640px){
-    h1{font-size:20px !important;line-height:1.55 !important}
-    .navlink{font-size:16px !important}
-    [style*="gap: 30px"]{gap:12px !important;flex-wrap:wrap !important}
-    [style*="font-size: 26px"]{font-size:21px !important}
-    [style*="padding: 64px 32px"]{padding:40px 20px !important}
-    [style*="padding: 44px 32px"]{padding:30px 20px !important}
-    .terminal-hero{padding:28px 16px 10px!important}
-    .terminal-stage{padding:12px 14px 26px!important}
-    .terminal-panel-section{padding:7px 14px 30px!important}
-    #term-heading{font-size:18px!important;margin-bottom:12px!important}
-    #term-description{font-size:18px!important;line-height:1.3!important}
-    .terminal-chrome{padding:9px 10px!important;gap:6px!important}
-    .terminal-chrome>span:not(#term-title):not(#term-os-label):not(.terminal-toolbar){width:9px!important;height:9px!important}
-    #term-title{margin-left:5px!important;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    #term-os-label{max-width:38%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px!important}
-    #term-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px!important}
-    #term-actions button{width:100%;min-width:0;padding:10px 8px!important;font-size:8px!important;line-height:1.45}
-    #terminal-keyboard-help{font-size:13px!important;line-height:1.35;margin-top:12px!important}
-    details.cs>summary{padding:15px 14px;font-size:10px;line-height:1.55;gap:12px}
-    details.cs>summary::after{font-size:19px}
-    #practice-panel>div{padding:15px 14px!important}
-    #chal-body{padding:15px!important}
-    #chal-check{width:100%}
-  }
-  @media(max-width:420px){
-    #term-actions{grid-template-columns:1fr}
-    #term-os-label{display:none}
-  }
-</style>
 <script>
 (function(){
   try{ if(localStorage.getItem('s2ktux-theme')==='dark') document.documentElement.classList.add('dark'); }catch(e){}
@@ -279,46 +180,46 @@
   </div>
 </div>
 
-<div id="terminal-shell" class="site-page-shell" style="min-height:100vh;display:flex;flex-direction:column">
+<div id="terminal-shell" class="site-page-shell site-app-shell">
 <a class="skip-link" href="#term-input">Saltar a la terminal</a>
-<div role="banner" style="position:sticky;top:0;z-index:100;background:var(--surface2);border-bottom:4px solid var(--line)">
-  <div class="site-header-inner" style="max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 32px">
-    <a class="site-logo" href="index.html" style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</a>
-    <div class="site-nav" role="navigation" aria-label="Navegación principal" style="display:flex;gap:30px;align-items:center">
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="index.html">S2KTUX</a>
+    <div class="site-nav" role="navigation" aria-label="Navegación principal">
       <a class="navlink nav-home" href="index.html">Inicio</a>
       <a class="navlink" href="cursos.html">Cursos</a>
-      <a class="navlink" href="terminal.html" style="color:var(--head);border-bottom:3px solid #d97757">Terminal</a>
+      <a class="navlink" href="terminal.html" aria-current="page">Terminal</a>
       <a class="navlink" href="proyectos.html">Proyectos</a>
-      <button class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro" style="background:var(--surface);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);cursor:pointer;color:var(--head);font-family:'VT323',monospace;font-size:20px;width:38px;height:38px;line-height:1;display:flex;align-items:center;justify-content:center;padding:0;flex-shrink:0"><span data-theme-icon>&#9790;</span></button>
+      <button class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro"><span data-theme-icon>&#9790;</span></button>
     </div>
   </div>
 </div>
 
 <main id="main-content">
-<section class="terminal-hero" style="max-width:1200px;margin:0 auto;width:100%;padding:44px 32px 14px;text-align:center">
-  <div id="term-eyebrow" style="font-family:'Press Start 2P',monospace;font-size:11px;color:#d97757;margin-bottom:16px">SANDBOX · LINUX / RHCSA 9</div>
-  <h1 id="term-heading" style="font-family:'Press Start 2P',monospace;font-size:28px;line-height:1.5;color:var(--head);text-shadow:4px 4px 0 var(--surface2);margin-bottom:18px">Terminal Linux · RHCSA 9</h1>
-  <p id="term-description" style="font-size:22px;max-width:780px;margin:0 auto;color:var(--text);line-height:1.35">Una máquina Rocky Linux 9.4 para practicar RHCSA 9: recuperación mediante GRUB, usuarios, permisos, SELinux, systemd, red y almacenamiento. Escribe <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">help</span> o <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">man &lt;comando&gt;</span>.</p>
+<section class="terminal-hero">
+  <div id="term-eyebrow">SANDBOX · LINUX / RHCSA 9</div>
+  <h1 id="term-heading">Terminal Linux · RHCSA 9</h1>
+  <p id="term-description">Una máquina Rocky Linux 9.4 para practicar RHCSA 9: recuperación mediante GRUB, usuarios, permisos, SELinux, systemd, red y almacenamiento. Escribe <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">help</span> o <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">man &lt;comando&gt;</span>.</p>
 </section>
 
-<section class="terminal-stage" style="max-width:1200px;margin:0 auto;width:100%;padding:16px 32px 30px">
-  <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px">
-    <div id="term-machine-label" style="font-family:'Press Start 2P',monospace;font-size:10px;color:var(--muted)">MÁQUINA · RHCSA9-LAB</div>
-    <button data-change-mode class="pxbtn" style="background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer;color:var(--head);font-family:'Press Start 2P',monospace;font-size:9px;padding:10px 14px">← Cambiar terminal</button>
+<section class="terminal-stage">
+  <div class="terminal-stage-toolbar">
+    <div id="term-machine-label">MÁQUINA · RHCSA9-LAB</div>
+    <button data-change-mode class="pxbtn terminal-change-button">← Cambiar terminal</button>
   </div>
-  <div class="terminal-window" style="background:#12100b;border:3px solid var(--line);box-shadow:8px 8px 0 var(--line)">
-    <div class="terminal-chrome" style="background:#241d13;padding:12px 16px;border-bottom:3px solid var(--line);display:flex;align-items:center;gap:8px">
-      <span style="width:12px;height:12px;background:#ef4444;display:inline-block"></span>
-      <span style="width:12px;height:12px;background:#eab308;display:inline-block"></span>
-      <span style="width:12px;height:12px;background:#22c55e;display:inline-block"></span>
-      <span id="term-title" style="font-family:'Share Tech Mono',monospace;font-size:14px;color:#8fa876;margin-left:12px">visitor@s2ktux: ~</span>
-      <span id="term-os-label" style="margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:13px;color:#9d9078">Rocky Linux 9.4 · RHCSA 9</span>
+  <div class="terminal-window">
+    <div class="terminal-chrome">
+      <span class="terminal-light terminal-light-red"></span>
+      <span class="terminal-light terminal-light-yellow"></span>
+      <span class="terminal-light terminal-light-green"></span>
+      <span id="term-title">visitor@s2ktux: ~</span>
+      <span id="term-os-label">Rocky Linux 9.4 · RHCSA 9</span>
       <span class="terminal-toolbar"><button id="term-fullscreen" type="button" class="terminal-window-button" aria-label="Abrir terminal a pantalla completa" title="Pantalla completa">⛶</button></span>
     </div>
     <div class="terminal-screen"><div id="term-xterm"></div></div>
-    <div id="term-body" role="log" aria-label="Salida de la terminal" aria-live="off" style="padding:20px;font-family:'Share Tech Mono',monospace;font-size:17px;line-height:1.55;color:#d8cbad;height:60vh;min-height:440px;overflow-y:auto;background:#12100b">
+    <div id="term-body" role="log" aria-label="Salida de la terminal" aria-live="off">
       <div id="term-input-line">
-        <span id="term-prompt" style="color:#8fa876;margin-right:9px;white-space:nowrap">visitor@s2ktux:~$</span>
+        <span id="term-prompt">visitor@s2ktux:~$</span>
         <label class="sr-only" for="term-input">Escribe un comando</label><input id="term-input" aria-label="Comando de terminal" aria-describedby="terminal-keyboard-help" autocomplete="off" autocapitalize="off" autocorrect="off" enterkeyhint="send" spellcheck="false">
       </div>
     </div>
@@ -331,11 +232,11 @@
     </div>
     <div id="term-a11y-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   </div>
-  <div id="term-actions" style="text-align:center;margin-top:14px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap"><button id="term-reboot" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">⟳ Reiniciar → GRUB</button><button id="term-rebootm" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↻ Reiniciar máquina</button><button id="term-reset" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">↺ Resetear terminal</button><button id="term-solved" class="pxbtn" style="background:var(--surface);color:var(--head);font-family:'Press Start 2P',monospace;font-size:10px;padding:11px 18px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">✓ Máquina resuelta</button></div>
-  <div id="terminal-keyboard-help" style="text-align:center;margin-top:14px;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--muted)"><span style="color:#c2650a">↑ ↓</span> recuperan comandos · <span style="color:#c2650a">Tab</span> completa órdenes y rutas · <span style="color:#c2650a">Ctrl+C</span> cancela · <span style="color:#c2650a">Ctrl+Z</span> pausa · <span style="color:#c2650a">Ctrl+D</span> cierra · <span style="color:#c2650a">Ctrl+R</span> busca en el historial · <span style="color:#c2650a">| &gt; 2&gt;</span> conectan y redirigen</div>
+  <div id="term-actions"><button id="term-reboot" class="pxbtn terminal-action-button">⟳ Reiniciar → GRUB</button><button id="term-rebootm" class="pxbtn terminal-action-button">↻ Reiniciar máquina</button><button id="term-reset" class="pxbtn terminal-action-button">↺ Resetear terminal</button><button id="term-solved" class="pxbtn terminal-action-button">✓ Máquina resuelta</button></div>
+  <div id="terminal-keyboard-help"><span style="color:#c2650a">↑ ↓</span> recuperan comandos · <span style="color:#c2650a">Tab</span> completa órdenes y rutas · <span style="color:#c2650a">Ctrl+C</span> cancela · <span style="color:#c2650a">Ctrl+Z</span> pausa · <span style="color:#c2650a">Ctrl+D</span> cierra · <span style="color:#c2650a">Ctrl+R</span> busca en el historial · <span style="color:#c2650a">| &gt; 2&gt;</span> conectan y redirigen</div>
 </section>
 
-<section class="terminal-panel-section" style="max-width:1200px;margin:0 auto;width:100%;padding:10px 32px 50px">
+<section class="terminal-panel-section">
   <details class="cs">
     <summary id="cheatsheet-title">CHEATSHEET · LINUX / RHCSA 9</summary>
     <div class="cs-tabs">
@@ -672,7 +573,7 @@
     </details>
 </section>
 
-<section class="terminal-panel-section" style="max-width:1200px;margin:0 auto;width:100%;padding:6px 32px 50px">
+<section class="terminal-panel-section terminal-practice-section">
   <details class="cs" id="practice-panel">
     <summary id="practice-title">PRÁCTICAS GUIADAS · RHCSA 9</summary>
     <div style="padding:20px 22px">
@@ -699,15 +600,15 @@
 
 </main>
 
-<footer style="width:100%;max-width:1180px;margin:auto auto 0;padding:44px 32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px">
-  <div style="font-family:'Press Start 2P',monospace;font-size:14px;color:var(--head)">S2KTUX</div>
-  <div style="font-size:19px;color:var(--muted)">Domina Linux. Sin límites.</div>
-  <div style="display:flex;gap:18px;font-family:'Share Tech Mono',monospace;font-size:17px">
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-links">
     <a href="sobre.html">Sobre</a>
     <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a>
     <a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a>
   </div>
-  <div data-copyright style="width:100%;text-align:center;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--muted);padding-top:8px">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+  <div data-copyright class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>
 </div>
 <script type="module" src="./terminal-bootstrap.js?v=20260825-phase2"></script>

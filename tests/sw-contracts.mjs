@@ -5,7 +5,9 @@ import vm from 'node:vm';
 const source = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
 
 for (const asset of [
-  'site-shell.css?v=20260822-header4',
+  'site-shell.css?v=20260826-phase3',
+  'visual-system.css?v=20260826-phase3',
+  'site-shell.js?v=20260826-phase3',
   'fonts.css?v=20260822-local',
   'assets/fonts/press-start-2p-latin-400.woff2',
   'manifest.webmanifest',
