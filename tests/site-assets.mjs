@@ -4,12 +4,13 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const ignoredDirectories = new Set(['.git', 'node_modules']);
 
 async function htmlFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
   for (const entry of entries) {
-    if (entry.name === '.git') continue;
+    if (ignoredDirectories.has(entry.name)) continue;
     const path = join(dir, entry.name);
     if (entry.isDirectory()) files.push(...await htmlFiles(path));
     else if (entry.isFile() && entry.name.endsWith('.html')) files.push(path);
@@ -21,7 +22,7 @@ async function siteFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   const files = [];
   for (const entry of entries) {
-    if (entry.name === '.git') continue;
+    if (ignoredDirectories.has(entry.name)) continue;
     const path = join(dir, entry.name);
     if (entry.isDirectory()) files.push(...await siteFiles(path));
     else if (entry.isFile()) files.push(path);
@@ -76,6 +77,7 @@ function assertWellFormedXml(xml, label) {
 }
 
 const allHtml = await htmlFiles(root);
+assert.ok(allHtml.every(path => !sitePath(path).startsWith('node_modules/')), 'La auditoría no debe inspeccionar HTML de dependencias');
 const allSitePaths = new Set((await siteFiles(root)).map(sitePath));
 const missing = [];
 const malformed = [];
