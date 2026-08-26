@@ -323,6 +323,37 @@ test('Linux · passwd, su, at, nmtui y visudo conservan control del TTY',async({
   expect(errors).toEqual([]);
 });
 
+test('Linux · veracidad RHCSA: sudoers, extents, tar, chmod recursivo y SELinux',async({page})=>{
+  const errors=captureRuntimeErrors(page);
+  await openMode(page,'linux');
+  await run(page,'mkdir -p /tmp/tree/child');
+  await run(page,'touch /tmp/tree/child/file');
+  await run(page,'chmod -R 700 /tmp/tree');
+  expect(await run(page,'ls -l /tmp/tree/child/file')).toContain('-rwx------');
+  await run(page,'cd /tmp');
+  await run(page,'mkdir source');
+  await run(page,"printf 'contenido restaurado' > source/file");
+  await run(page,'tar -cf archive.tar source');
+  await run(page,'rm -rf source');
+  await run(page,'tar -xf archive.tar');
+  expect(await run(page,'cat source/file')).toContain('contenido restaurado');
+  expect(await run(page,"printf 'no soy tar' > falso.tar; tar -xf falso.tar")).toMatch(/no parece un archivo tar/i);
+  expect(await run(page,'ls -Z /etc/passwd')).toMatch(/system_u:object_r:passwd_file_t:s0[\s\S]*\/etc\/passwd/);
+  expect(await run(page,'lvcreate -n exact -l 60 datavg')).toMatch(/created/i);
+  expect(await run(page,'lvs')).toMatch(/exact[\s\S]*0\.23g/i);
+  expect(await run(page,'lvcreate -n invalid -l datavg')).toMatch(/Invalid argument for --extents/i);
+  await run(page,'useradd atlas');
+  await run(page,"printf '# atlas ALL=(ALL) NOPASSWD: ALL\\n' > /etc/sudoers.d/atlas");
+  await run(page,'su - atlas');
+  expect(await run(page,'sudo whoami')).toMatch(/no está en el fichero sudoers/i);
+  await run(page,'exit');
+  await run(page,"echo 'atlas ALL=(ALL) NOPASSWD: ALL' > /etc/sudoers.d/atlas");
+  await run(page,'su - atlas');
+  expect(await run(page,'sudo whoami')).toMatch(/root/);
+  await run(page,'exit');
+  expect(errors).toEqual([]);
+});
+
 for(const mode of MODES){
   for(const command of ['bash','sh','clear','reset','exit','logout','reboot','poweroff','shutdown']){
     test(mode+' · control de sesión: '+command,async({page})=>{

@@ -4,6 +4,8 @@ Este documento fija las cinco fases acordadas. No se inicia una fase hasta que l
 
 ## Fase 1 · Veracidad e integración continua
 
+**Estado: completada y validada.** La batería local y el flujo principal de CI ejecutan los contratos, escenarios negativos y regresiones acordados.
+
 - Ejecutar todas las pruebas desde un único comando y en cada propuesta de cambio.
 - Exigir el control de CI antes de integrar en `main`.
 - Validar opciones desconocidas, argumentos ausentes y estados causales.
@@ -43,13 +45,15 @@ Este documento fija las cinco fases acordadas. No se inicia una fase hasta que l
 **Estado: completada y validada.** Canonicals, sitemap, datos estructurados, rutas históricas y páginas noindex quedan cubiertos por CI.
 
 - Completar metadatos y datos estructurados que no se hayan adelantado en la fase 1.
-- Sustituir rutas históricas dependientes de JavaScript por páginas estáticas de redirección cuando GitHub Pages lo permita.
-- No asumir soporte para `_redirects`: si se requieren respuestas HTTP 301 reales por ruta, usar una capa de hosting/CDN que las admita.
+- Mantener las 25 rutas históricas como páginas puente estáticas con `noindex,follow,noarchive`, canonical hacia la URL nueva y `meta refresh` con retraso cero.
+- Esta es la solución definitiva mientras S2KTUX viva exclusivamente en `s2ktux.github.io`: GitHub Pages no permite configurar respuestas HTTP 301 por ruta y `_redirects` no se aplica en este hosting. No se considera trabajo pendiente; solo se reconsiderará si una decisión futura cambia el dominio o la capa de entrega.
 - Auditar indexación, enlaces internos, sitemap y páginas noindex.
 
 **Salida:** una URL canónica por contenido, rutas antiguas verificadas y cero páginas duplicadas indexables.
 
 ## Fase 5 · Robustez y accesibilidad
+
+**Estado: completada y validada.** Cuotas, límites de recursos y recorrido accesible automatizado quedan cubiertos por la batería del proyecto; las comprobaciones manuales que requieran tecnología asistiva se documentan por separado.
 
 - Añadir cuotas de disco virtual, límites de archivos, imágenes y scrollback.
 - Evitar crecimiento ilimitado, recursiones abusivas y bloqueos de pestaña.
