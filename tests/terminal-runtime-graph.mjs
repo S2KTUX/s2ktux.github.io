@@ -9,7 +9,7 @@ const bootstrap=await read('terminal-bootstrap.js');
 const engines=Object.fromEntries(await Promise.all(names.map(async name=>[name,await read('terminal-engine-'+name+'.js')])));
 const sources=Object.fromEntries(await Promise.all(names.map(async name=>[name,await read('terminal-runtime-'+name+'.js')])));
 const modules={};
-const interactiveSharedPaths=['terminal-bootstrap.js','terminal-shell-parser.js','terminal-command-schema.js','terminal-virtual-fs.js','terminal-process-state.js','terminal-network-state.js','terminal-docker-state.js','terminal-kubernetes-state.js','terminal-worker-client.js','terminal-worker-protocol.js','terminal-simulation-worker.js','terminal-xterm-renderer.js','vendor/xterm/xterm.mjs'];
+const interactiveSharedPaths=['terminal-bootstrap.js','terminal-shell-parser.js','terminal-command-schema.js','terminal-virtual-fs.js','terminal-fidelity.js','terminal-process-state.js','terminal-network-state.js','terminal-docker-state.js','terminal-kubernetes-state.js','terminal-worker-client.js','terminal-worker-protocol.js','terminal-simulation-worker.js','terminal-xterm-renderer.js','vendor/xterm/xterm.mjs'];
 const interactiveShared=Object.fromEntries(await Promise.all(interactiveSharedPaths.map(async path=>[path,await read(path)])));
 
 assert.match(bootstrap,/labelledImport\('motor de configuración', `\.\/terminal-engine-\$\{mode\}\.js(?:\?[^`]*)?`\)/);
