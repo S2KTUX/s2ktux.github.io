@@ -1,5 +1,6 @@
 import { Terminal } from './vendor/xterm/xterm.mjs';
 import { FitAddon } from './vendor/xterm/addon-fit.mjs';
+import { TERMINAL_LIMITS, utf8Bytes, validatePaste } from './terminal-resource-limits.js?v=20260826-phase5';
 
 const COLOR = {
   '#8fa876':'\x1b[38;2;143;168;118m', '#e08a2e':'\x1b[38;2;224;138;46m',
@@ -71,7 +72,7 @@ export async function attachTerminalRenderer() {
   if (document.fonts?.ready) await document.fonts.ready.catch(() => {});
 
   const term = new Terminal({
-    cursorBlink:true, cursorStyle:'block', convertEol:true, scrollback:2500,
+    cursorBlink:true, cursorStyle:'block', convertEol:true, scrollback:TERMINAL_LIMITS.xtermScrollbackLines,
     fontFamily:'"Share Tech Mono", "Cascadia Mono", monospace', fontSize:17,
     lineHeight:1.18, letterSpacing:0, screenReaderMode:true, minimumContrastRatio:4.5,
     theme:{ background:'#12100b', foreground:'#d8cbad', cursor:'#e0a458', cursorAccent:'#12100b', selectionBackground:'#66543b99', black:'#12100b', red:'#ef8a7a', green:'#8fa876', yellow:'#e0a458', blue:'#6b8e9e', magenta:'#b887a4', cyan:'#7aa9a0', white:'#e9ddc7', brightBlack:'#6f6250', brightRed:'#ff9c8f', brightGreen:'#aac991', brightYellow:'#f2bd72', brightBlue:'#91afc0', brightMagenta:'#d1a1bd', brightCyan:'#96c5bc', brightWhite:'#fff7e8' }
@@ -90,6 +91,12 @@ export async function attachTerminalRenderer() {
   };
   fitTerminal();
   host.setAttribute('aria-label', 'Terminal interactiva S2KTUX');
+  const helperTextarea = host.querySelector('.xterm-helper-textarea');
+  if (helperTextarea) {
+    helperTextarea.setAttribute('aria-label', 'Entrada de la terminal S2KTUX');
+    helperTextarea.setAttribute('aria-describedby', 'terminal-keyboard-help');
+    helperTextarea.setAttribute('autocomplete', 'off');
+  }
   // Xterm ofrece su propio árbol accesible cuando screenReaderMode está
   // activo. El registro DOM queda solo como fuente de renderizado; exponer
   // ambos haría que cada línea se anunciase dos veces.
@@ -189,8 +196,17 @@ export async function attachTerminalRenderer() {
     }
     pasteDrainTimer = setTimeout(drainPasteQueue, 12);
   };
+  const rejectPaste = (reason) => {
+    pasteQueue.length = 0;
+    const detail = reason === 'lines' ? 'demasiadas líneas' : 'demasiados datos';
+    term.write(`\r\n\x1b[38;2;239;138;122m-bash: pegado rechazado: ${detail} para este sandbox\x1b[0m\r\n`);
+    document.getElementById('term-a11y-status')?.replaceChildren(document.createTextNode('Pegado rechazado: '+detail));
+    drawPrompt();
+  };
   const enqueuePaste = (clean) => {
     const chunks = clean.split('\n');
+    const check = validatePaste(clean);
+    if (!check.ok) { rejectPaste(check.reason); return; }
     chunks.forEach((text, index) => {
       const enter = index < chunks.length - 1;
       if (text || enter) pasteQueue.push({ text, enter });
@@ -199,7 +215,7 @@ export async function attachTerminalRenderer() {
   };
   const handleData = (data) => {
     if (data === '\r' || data === '\n') {
-      if (input.readOnly || input.disabled) { pasteQueue.push({ text:'', enter:true }); if (pasteDrainTimer === null) drainPasteQueue(); return; }
+      if (input.readOnly || input.disabled) { if(pasteQueue.length<TERMINAL_LIMITS.pasteLines)pasteQueue.push({ text:'', enter:true }); if (pasteDrainTimer === null) drainPasteQueue(); return; }
       term.write('\r\x1b[2K'); dispatchKey('Enter'); return;
     }
     if (data === '\x7f') { const allowed = dispatchKey('Backspace'); if (allowed && beforeInput(null, 'deleteContentBackward')) deleteBackward(input); drawPrompt(); return; }
@@ -222,6 +238,7 @@ export async function attachTerminalRenderer() {
       for (const char of clean) dispatchKey(char === '\n' ? 'Enter' : char);
       return;
     }
+    if (!rawKeyOwner() && utf8Bytes(input.value + clean) > TERMINAL_LIMITS.inputBytes) { rejectPaste('bytes'); return; }
     // Un bloque pegado puede contener varias órdenes y alguna de ellas puede
     // quedarse ejecutando. La cola entrega cada línea cuando vuelve PS1/PS2.
     if (clean.includes('\n') || input.readOnly || input.disabled) enqueuePaste(clean);
