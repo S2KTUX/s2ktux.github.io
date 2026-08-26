@@ -5,6 +5,7 @@ import { createDefaultProcesses } from './terminal-process-state.js?v=20260825-p
 import { formatPublishedPorts, isIPv4Address, parsePublishedPort, publishedPortEntries, sharesIpv4Subnet } from './terminal-network-state.js?v=20260825-phase2';
 import { defaultDockerImageCommand, dockerRegistryMetadata, DOCKER_REGISTRY_CATALOG, parseDockerImageReference } from './terminal-docker-state.js?v=20260825-phase2';
 import { createDefaultKubernetesState } from './terminal-kubernetes-state.js?v=20260825-phase2';
+import { TERMINAL_LIMITS, countKubernetesResources, measureVirtualFileSystem, trimCollection, utf8Bytes, validateVirtualWrite } from './terminal-resource-limits.js?v=20260826-phase5';
 
 export function startTerminal(engine, runtime = {}, adapters = {}) {
     const body = document.querySelector('#term-body');
@@ -24,6 +25,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     const SYSTEM=engine.system||{};
     const DISTRO=SYSTEM.distribution||'Rocky Linux', RELEASE=SYSTEM.release||'9.4', CODENAME=SYSTEM.codename||'Blue Onyx', OS_ID=SYSTEM.id||'rocky';
     const KERNEL=SYSTEM.kernel||'5.14.0-427.el9.x86_64', ARCH=SYSTEM.architecture||'x86_64', INITIAL_HOST=SYSTEM.host||ENV.host;
+    const shouldAutoFocus=()=>!matchMedia('(max-width: 760px), (pointer: coarse)').matches;
     const OS_NAME=DISTRO+' '+RELEASE+(CODENAME?' ('+CODENAME+')':''), CERTIFICATION=SYSTEM.certification||'';
     const DOCKER_VERSION=SYSTEM.docker||'29.7.2', K8S_VERSION=SYSTEM.kubernetes||'1.35.0', K8S_FULL='v'+K8S_VERSION;
     const [K8S_MAJOR,K8S_MINOR]=K8S_VERSION.split('.');
@@ -342,16 +344,21 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     // ---------------- output (con captura para tuberías) ----------------
     let cap = null, errCap = null, ioEvents = null;
     const esc = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    const out = (t,c) => { const text=t==null?'':String(t); if(cap){ cap.push(text); if(ioEvents)ioEvents.push({fd:1,text}); return; } const d=document.createElement('div'); d.className='term-out'; if(c) d.style.color=c; d.innerHTML=(t===''||t==null)?'&nbsp;':esc(t); body.insertBefore(d,line); };
+    const appendTermOutput=(d)=>{body.insertBefore(d,line);const rows=body.querySelectorAll(':scope > .term-out');for(let i=0;i<rows.length-TERMINAL_LIMITS.domScrollbackLines;i++)rows[i].remove();};
+    const out = (t,c) => { const text=t==null?'':String(t); if(cap){ cap.push(text); if(ioEvents)ioEvents.push({fd:1,text}); return; } const d=document.createElement('div'); d.className='term-out'; if(c) d.style.color=c; d.innerHTML=(t===''||t==null)?'&nbsp;':esc(t); appendTermOutput(d); };
     const outMany = (a,c)=>a.forEach(l=>out(l,c));
     const err = (t,status=1)=>{ const text=t==null?'':String(t); lastFail=true; lastStatus=status; if(errCap){errCap.push(text);if(ioEvents)ioEvents.push({fd:2,text});return;} return out(text,'#ef8a7a'); };
     const ok = (t)=>out(t,'#8fa876');
+    const virtualWrite=(node,nextContent,label='')=>{const available=Math.max(0,TERMINAL_LIMITS.virtualDiskBytes-flatStorageUsage().bytes),check=validateVirtualWrite(fs,node,nextContent,node?0:1,{...TERMINAL_LIMITS,virtualDiskBytes:available});if(check.ok)return true;err((label?label+': ':'')+check.message);announce(check.message);return false;};
+    const filesystemQuotaError=(command)=>{if(!/^(?:mkdir|touch|cp|ln|useradd|tar|ssh-keygen)\b/.test(command))return '';const usage=measureVirtualFileSystem(fs),parts=String(command).split(/\s+/).slice(1).filter(v=>v&&!v.startsWith('-'));const requested=/^mkdir\s+-p\b/.test(command)?parts.reduce((n,value)=>n+value.split('/').filter(Boolean).length,0):Math.max(1,parts.length);return usage.nodes+requested>TERMINAL_LIMITS.virtualFsNodes?'No queda espacio en el dispositivo':'';};
+    const serviceProcessQuotaError=(command)=>processes.length>=TERMINAL_LIMITS.processes&&/^systemctl\s+(?:start|restart|enable\s+--now)\b/.test(String(command).trim())?'Failed to fork process: Resource temporarily unavailable':'';
+    const resourceQuotaError=(command)=>{const c=String(command).trim();if((/^(?:sleep|ping|nohup)\b/.test(c)||/&\s*$/.test(c))&&(processes.length>=TERMINAL_LIMITS.processes||jobs.length>=TERMINAL_LIMITS.jobs))return 'bash: fork: Recurso temporalmente no disponible';if(/^docker\s+(?:run|create)\b/.test(c)&&containers.length>=TERMINAL_LIMITS.dockerContainers)return 'docker: Error response from daemon: maximum number of sandbox containers reached.';if(/^docker\s+(?:pull|build|commit|load|tag)\b/.test(c)&&images.length>=TERMINAL_LIMITS.dockerImages)return 'docker: Error response from daemon: no space left on device.';if(/^docker\s+network\s+create\b/.test(c)&&dockerNetworks.length>=TERMINAL_LIMITS.dockerNetworks)return 'Error response from daemon: network limit reached';if(/^docker\s+volume\s+create\b/.test(c)&&dockerVolumes.length>=TERMINAL_LIMITS.dockerVolumes)return 'Error response from daemon: volume limit reached';if(/^kubectl\s+(?:create|apply|run|expose)\b/.test(c)&&countKubernetesResources(k8s)>=TERMINAL_LIMITS.kubernetesResources)return 'Error from server (Forbidden): exceeded quota: sandbox-resources';return '';};
     const localHostname=()=>((getNode(['etc','hostname'])||{}).content||INITIAL_HOST).trim();
     const remotePretty = () => { const h=remoteHost; let p=h.cwd; const home=h.user==='root'?'/root':'/home/'+h.user; if(p===home) p='~'; else if(p.indexOf(home+'/')===0) p='~'+p.slice(home.length); return p; };
     const promptStr = () => recovery ? (recovery.kind==='rdbreak' ? (recovery.chrooted?'sh-5.1#':'switch_root:/#') : 'bash-5.1#') : containerShell ? ('root@'+containerShell.name+':'+containerShell.cwd+'#') : remoteHost ? (remoteHost.user+'@'+remoteHost.name+':'+remotePretty()+(remoteHost.user==='root'?'#':'$')) : currentUser+'@'+localHostname()+':'+pretty(cwd)+(currentUser==='root'?'#':'$');
     const promptIsRoot=()=>!!(recovery||containerShell||(remoteHost?remoteHost.user==='root':currentUser==='root'));
-    const echoCmd = (raw)=>{ const d=document.createElement('div'); d.className='term-out'; d.innerHTML='<span style="color:'+(promptIsRoot()?'#e08a2e':'#8fa876')+'">'+esc(promptStr())+'</span> <span style="color:#e9ddc7">'+esc(raw)+'</span>'; body.insertBefore(d,line); };
-    const echoPs2 = (raw)=>{ const d=document.createElement('div'); d.className='term-out'; d.innerHTML='<span style="color:#a2957d">&gt;</span> <span style="color:#e9ddc7">'+esc(raw)+'</span>'; body.insertBefore(d,line); };
+    const echoCmd = (raw)=>{ const d=document.createElement('div'); d.className='term-out'; d.innerHTML='<span style="color:'+(promptIsRoot()?'#e08a2e':'#8fa876')+'">'+esc(promptStr())+'</span> <span style="color:#e9ddc7">'+esc(raw)+'</span>'; appendTermOutput(d); };
+    const echoPs2 = (raw)=>{ const d=document.createElement('div'); d.className='term-out'; d.innerHTML='<span style="color:#a2957d">&gt;</span> <span style="color:#e9ddc7">'+esc(raw)+'</span>'; appendTermOutput(d); };
     const scroll=()=>{ body.scrollTop=body.scrollHeight; };
     const setPrompt=()=>{ if(recovery){ setRecoveryPrompt(); return; } promptEl.textContent=promptStr(); promptEl.style.color=promptIsRoot()?'#e08a2e':'#8fa876'; if(titleEl) titleEl.textContent=containerShell?('root@'+containerShell.name+': '+containerShell.cwd):remoteHost?(remoteHost.user+'@'+remoteHost.name+': '+remotePretty()):(currentUser+'@'+localHostname()+': '+pretty(cwd)); };
     const setRawKeys=(owner='')=>{ if(owner) input.dataset.ttyKeys=owner; else delete input.dataset.ttyKeys; };
@@ -360,7 +367,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     let interactive = null; // { promptText, masked, onLine, color }
     const startInteractive = (promptText, masked, onLine, color) => { setRawKeys(); interactive = { promptText, masked, onLine, color: color||'#e0a458' }; promptEl.textContent = promptText; promptEl.style.color = interactive.color; input.value=''; input.style.color = masked ? 'transparent' : ''; scroll(); };
     const endInteractive = () => { setRawKeys(); interactive = null; input.style.color=''; setPrompt(); };
-    const echoInteractive = (v) => { const shown = interactive.masked ? '' : v; const d=document.createElement('div'); d.className='term-out'; d.innerHTML='<span style="color:'+interactive.color+'">'+esc(interactive.promptText)+'</span> <span style="color:#e9ddc7">'+esc(shown)+'</span>'; body.insertBefore(d,line); };
+    const echoInteractive = (v) => { const shown = interactive.masked ? '' : v; const d=document.createElement('div'); d.className='term-out'; d.innerHTML='<span style="color:'+interactive.color+'">'+esc(interactive.promptText)+'</span> <span style="color:#e9ddc7">'+esc(shown)+'</span>'; appendTermOutput(d); };
 
     const octalToSym=(o)=>{ const m=['---','--x','-w-','-wx','r--','r-x','rw-','rwx']; if(!/^[0-7]{3}$/.test(o)) return null; return m[+o[0]]+m[+o[1]]+m[+o[2]]; };
     const maskedMode=(base)=>{const mask=parseInt((systemSettings&&systemSettings.umask)||'0022',8),result=(parseInt(base,8)&(~mask&0o777)).toString(8).padStart(3,'0');return octalToSym(result);};
@@ -408,8 +415,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     };
     const finalizeDockerInstall=()=>{reconcilePackages();if(installed.has('docker-ce')){groupsDb.add('docker');rebuildGroup();}if(!dockerInstalled)return;services.docker=services.docker||{enabled:false,active:false,pid:null};services.containerd=services.containerd||{enabled:false,active:false,pid:null};const v=getNode(['var','lib']);if(v&&v.type==='dir'){if(!v.children.docker)v.children.docker=dir({},{owner:'root'});if(!v.children.containerd)v.children.containerd=dir({},{owner:'root'});}};
     finalizeDockerInstall();
-    const eventAdd=(source,type,message,data)=>{ const ev={ts:Date.now(),bootId,source,type,message,data:data||{}}; timeline.push(ev); if(timeline.length>700)timeline.shift(); return ev; };
-    const journalAdd=(unit,message,priority=6)=>{ const e={unit,priority,message,time:new Date().toLocaleTimeString(),ts:Date.now(),bootId}; journal.push(e); eventAdd('journal',unit,message,{priority}); return e; };
+    const eventAdd=(source,type,message,data)=>{ const ev={ts:Date.now(),bootId,source,type,message,data:data||{}}; timeline.push(ev); trimCollection(timeline,TERMINAL_LIMITS.timelineEntries); if(k8s)trimCollection(k8s.events,TERMINAL_LIMITS.kubernetesEvents); return ev; };
+    const journalAdd=(unit,message,priority=6)=>{ const e={unit,priority,message,time:new Date().toLocaleTimeString(),ts:Date.now(),bootId}; journal.push(e); trimCollection(journal,TERMINAL_LIMITS.journalEntries); eventAdd('journal',unit,message,{priority}); return e; };
     const secureLog=(message,priority=5)=>{ const n=getNode(['var','log','secure']); if(n&&n.type==='file')n.content+=(n.content?'\n':'')+new Date().toLocaleString()+' '+localHostname()+' '+message; journalAdd('audit',message,priority); };
     const avcAudit=(operation,target,source='httpd_t',tclass='tcp_socket')=>{const serial=1000+((Math.random()*8999)|0),stamp=(Date.now()/1000).toFixed(3),msg='type=AVC msg=audit('+stamp+':'+serial+'): avc:  denied  { '+operation+' } for  pid='+(services.httpd&&services.httpd.pid||nextPid)+' comm="httpd" dest='+target+' scontext=system_u:system_r:'+source+':s0 tcontext=system_u:object_r:unreserved_port_t:s0 tclass='+tclass+' permissive='+(selinux.mode==='Enforcing'?'0':'1');const n=getNode(['var','log','audit','audit.log']);if(n&&n.type==='file')n.content+=(n.content?'\n':'')+msg;journalAdd('audit',msg,3);eventAdd('selinux','avc','SELinux denied '+operation,{target,source,tclass});return msg;};
     const dockerConfigError=()=>{const n=getNode(['etc','docker','daemon.json']);if(!n||n.type!=='file'||!n.content.trim())return '';try{const cfg=JSON.parse(n.content);if(cfg&&cfg['log-driver']&&typeof cfg['log-driver']!=='string')return 'json: cannot unmarshal '+typeof cfg['log-driver']+' into Go value of type string';return '';}catch(e){return 'failed to decode configuration JSON: '+String(e.message).replace(/^JSON\.parse:\s*/,'');}};
@@ -759,8 +766,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       if(existing&&existing.type!=='file'){s.saveError='Es un directorio';return false;}
       if(existing&&!hasPerm(existing,'w')){s.saveError='Permiso denegado';return false;}
       if(!existing&&(!hasPerm(parent,'w')||!hasPerm(parent,'x'))){s.saveError='Permiso denegado';return false;}
+      const nextContent=s.lines.join('\n');
+      if(!virtualWrite(existing,nextContent,s.path)){s.saveError='No queda espacio en el dispositivo';return false;}
       if(!parent.children[fn]) parent.children[fn]=file('',{owner:currentUser,group:currentUser});
-      parent.children[fn].content=s.lines.join('\n'); s.parent=parent;s.fn=fn;s.path=nextPath;s.saveError='';s.dirty=false; save(); return true;
+      parent.children[fn].content=nextContent; s.parent=parent;s.fn=fn;s.path=nextPath;s.saveError='';s.dirty=false; save(); return true;
     };
     const lineWithCursor=(text,col,active)=>{
       if(!active) return edEsc(text)||' ';
@@ -998,7 +1007,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         out('Cluster activo: 3 nodos · avisos pendientes en worker-2 y pod/api-broken.','#a2957d');
         out('Inspecciona el estado del clúster y decide por dónde empezar.','#a2957d');
       }
-      out(''); setPrompt(); save(); input.focus(); scroll();
+      out(''); setPrompt(); save(); scroll();
     };
     const rebootMachine = () => {
       booting=true; recovery=null; grubState=null; interactive=null; loggedIn=false; clearBody(); promptEl.textContent=''; input.value='';
@@ -1222,6 +1231,9 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     const containerBaseFs=(name)=>({'/etc/hostname':name,'/etc/hosts':'127.0.0.1 localhost\n10.244.1.10 '+name,'/etc/os-release':'NAME="'+DISTRO+'"\nVERSION="'+RELEASE+(CODENAME?' ('+CODENAME+')':'')+'"\nID="'+OS_ID+'"\nPRETTY_NAME="'+OS_NAME+'"'});
     const dockerNetworkByRef=(ref)=>dockerNetworks.find(network=>network.name===ref||network.id.startsWith(ref||'~'));
     const dockerNetworkIp=(network)=>{if(!network||!network.subnet)return'';const prefix=network.subnet.split('/')[0].split('.');const ip=prefix.slice(0,3).join('.')+'.'+Math.max(2,network.nextIp||2);network.nextIp=Math.max(2,network.nextIp||2)+1;return ip;};
+    const flatStorageMaps=()=>[...images.map(item=>item.fs),...containers.map(item=>item.fs),...dockerVolumes.map(item=>item.data),...(k8s?.pods||[]).map(item=>item.fs)].filter(value=>value&&typeof value==='object');
+    const flatStorageUsage=()=>flatStorageMaps().reduce((result,map)=>{for(const value of Object.values(map)){result.entries++;result.bytes+=utf8Bytes(typeof value==='string'?value:JSON.stringify(value));}return result;},{bytes:0,entries:0});
+    const flatWriteAllowed=(current,next,label)=>{const usage=flatStorageUsage(),rootBytes=measureVirtualFileSystem(fs).bytes,currentBytes=utf8Bytes(current),nextBytes=utf8Bytes(next);if(nextBytes>TERMINAL_LIMITS.virtualFileBytes||rootBytes+usage.bytes-currentBytes+nextBytes>TERMINAL_LIMITS.virtualDiskBytes||((current===undefined)&&usage.entries>=TERMINAL_LIMITS.virtualFsNodes)){err('bash: '+label+': No queda espacio en el dispositivo');announce('No queda espacio en el dispositivo');return false;}return true;};
     const attachDockerNetwork=(container,network)=>{container.networks=container.networks||{};if(container.networks[network.name])return false;container.networks[network.name]={ip:dockerNetworkIp(network)};container.net=Object.keys(container.networks)[0]||network.name;return true;};
     const detachDockerNetwork=(container,network)=>{container.networks=container.networks||{};if(!container.networks[network.name])return false;delete container.networks[network.name];container.net=Object.keys(container.networks)[0]||'none';return true;};
     const dockerVolumeByName=(name)=>dockerVolumes.find(volume=>volume.name===name);
@@ -1229,16 +1241,16 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       const base=owner.fs||(owner.fs=containerBaseFs(owner.name));
       const mountedEntry=(key)=>{if(typeof key!=='string')return null;for(const mount of owner.mounts||[]){if(!(key===mount.target||key.startsWith(mount.target+'/')))continue;const relative=key.slice(mount.target.length)||'/';if(mount.type==='volume'){const volume=dockerVolumeByName(mount.source);if(volume)return{mount,volume,relative};}else if(mount.type==='bind')return{mount,relative,hostPath:norm(mount.source+(relative==='/'?'':relative))};}return null;};
       const mountedValue=(mounted)=>{if(mounted.volume)return mounted.volume.data[mounted.relative];const node=getNode(mounted.hostPath);return node&&node.type==='file'?node.content:undefined;};
-      const writeMounted=(mounted,value)=>{if(mounted.volume){mounted.volume.data[mounted.relative]=value;return;}const segs=mounted.hostPath,parent=getParent(segs),leaf=segs[segs.length-1];if(parent&&parent.type==='dir'){const previous=parent.children[leaf];parent.children[leaf]=file(String(value),{owner:previous?.owner||currentUser,group:previous?.group||users[currentUser]?.primary||currentUser,mode:previous?.mode||maskedMode('666')});}};
+      const writeMounted=(mounted,value)=>{if(mounted.volume){const current=mounted.volume.data[mounted.relative];if(flatWriteAllowed(current,value,mounted.mount.target+mounted.relative))mounted.volume.data[mounted.relative]=value;return;}const segs=mounted.hostPath,parent=getParent(segs),leaf=segs[segs.length-1];if(parent&&parent.type==='dir'){const previous=parent.children[leaf],content=String(value);if(virtualWrite(previous,content,mounted.mount.source+mounted.relative))parent.children[leaf]=file(content,{owner:previous?.owner||currentUser,group:previous?.group||users[currentUser]?.primary||currentUser,mode:previous?.mode||maskedMode('666')});}};
       return new Proxy(base,{
         get(target,key){const mounted=mountedEntry(key);return mounted?mountedValue(mounted):target[key];},
-        set(target,key,value){const mounted=mountedEntry(key);if(mounted){if(mounted.mount.readOnly){err('bash: '+key+': Sistema de archivos de solo lectura');return true;}writeMounted(mounted,value);return true;}target[key]=value;return true;},
+        set(target,key,value){const mounted=mountedEntry(key);if(mounted){if(mounted.mount.readOnly){err('bash: '+key+': Sistema de archivos de solo lectura');return true;}writeMounted(mounted,value);return true;}if(flatWriteAllowed(target[key],value,key))target[key]=value;return true;},
         deleteProperty(target,key){const mounted=mountedEntry(key);if(mounted){if(mounted.mount.readOnly){err('rm: no se puede borrar '+key+': Sistema de archivos de solo lectura');return true;}if(mounted.volume)delete mounted.volume.data[mounted.relative];else{const parent=getParent(mounted.hostPath),leaf=mounted.hostPath[mounted.hostPath.length-1];if(parent&&parent.type==='dir')delete parent.children[leaf];}return true;}delete target[key];return true;},
         ownKeys(target){const keys=new Set(Reflect.ownKeys(target));for(const mount of owner.mounts||[]){if(mount.type==='volume'){const volume=dockerVolumeByName(mount.source);Object.keys(volume?.data||{}).forEach(relative=>keys.add(mount.target+(relative==='/'?'':relative)));}else if(mount.type==='bind'){const root=getNode(norm(mount.source));const walk=(node,prefix)=>{if(!node||node.type!=='dir')return;Object.entries(node.children||{}).forEach(([leaf,child])=>{const path=prefix+'/'+leaf;keys.add(mount.target+path);if(child.type==='dir')walk(child,path);});};walk(root,'');}}return [...keys];},
         getOwnPropertyDescriptor(target,key){const mounted=mountedEntry(key);if(mounted&&mountedValue(mounted)===undefined)return undefined;if(!mounted&&!Reflect.has(target,key))return undefined;return{enumerable:true,configurable:true,writable:!mounted?.mount.readOnly,value:mounted?mountedValue(mounted):target[key]};}
       });
     };
-    const enterContainerShell=(name,image,kind)=>{const owner=(kind==='kubernetes'?k8s.pods:containers).find(x=>x.name===name);if(owner&&!owner.fs)owner.fs=containerBaseFs(name);containerShell={name,image:image||'linux',kind:kind||'docker',cwd:'/',owner,fs:(kind==='docker'&&owner?containerFsView(owner):(owner&&owner.fs))||containerBaseFs(name)};out('root@'+name+':/#','#8fa876');setPrompt();};
+    const enterContainerShell=(name,image,kind)=>{const owner=(kind==='kubernetes'?k8s.pods:containers).find(x=>x.name===name);if(owner&&!owner.fs)owner.fs=containerBaseFs(name);containerShell={name,image:image||'linux',kind:kind||'docker',cwd:'/',owner,fs:(owner?containerFsView(owner):containerBaseFs(name))};out('root@'+name+':/#','#8fa876');setPrompt();};
     const containerDispatch=(cmd,name,args)=>{const c=containerShell;const abs=(p)=>{p=String(p||'');if(!p.startsWith('/'))p=(c.cwd==='/'?'/':c.cwd+'/')+p;const parts=[];p.split('/').forEach(x=>{if(!x||x==='.')return;if(x==='..')parts.pop();else parts.push(x);});return '/'+parts.join('/');};const dirs=()=>new Set(['/','/bin','/dev','/etc','/home','/proc','/root','/run','/tmp','/usr','/usr/bin','/var',...(c.owner?.dirs||[]),...((c.owner?.mounts||[]).map(m=>m.target))]);const red=cmd.match(/^(echo|printf)\s+([\s\S]*?)\s*(>>?)\s*([^\s]+)\s*$/);if(red){let text=red[2].replace(/^(['"])([\s\S]*)\1$/,'$2');if(red[1]==='printf')text=text.replace(/\\n/g,'\n').replace(/\\t/g,'\t');const target=abs(red[4]);const parent=target.replace(/\/[^/]+$/,'')||'/';if(!dirs().has(parent)){err('sh: '+target+': No such file or directory');return;}c.fs[target]=(red[3]==='>>'&&c.fs[target]?(c.fs[target]+'\n'):'')+text;return;}if(name==='exit'||name==='logout'){out('exit');containerShell=null;setPrompt();return;}if(name==='pwd'){out(c.cwd);return;}if(name==='cd'){const target=abs(args[0]||'/root');if(!dirs().has(target)){err('sh: cd: '+(args[0]||'')+': No such file or directory');return;}c.cwd=target;setPrompt();return;}if(name==='whoami'){out('root');return;}if(name==='hostname'){out(c.name);return;}if(c.kind==='docker'&&(name==='ping'||(name==='getent'&&args[0]==='hosts'))){const target=name==='ping'?args.filter(a=>!a.startsWith('-')&&!/^\\d+$/.test(a)).pop():args[1];const mine=c.owner?.networks||{},peer=containers.find(item=>item!==c.owner&&item.name===target&&Object.keys(item.networks||{}).some(network=>mine[network]));const ip=peer&&Object.values(peer.networks||{}).find(link=>link.ip)?.ip;if(!peer||!ip){err((name==='ping'?'ping: '+target+': Name or service not known':'getent: '+target+': Name or service not known'),2);return;}if(name==='getent')out(ip+'    '+peer.name);else outMany(['PING '+peer.name+' ('+ip+') 56(84) bytes of data.','64 bytes from '+peer.name+' ('+ip+'): icmp_seq=1 ttl=64 time=0.083 ms','','--- '+peer.name+' ping statistics ---','1 packets transmitted, 1 received, 0% packet loss, time 0ms']);return;}if(name==='id'){out('uid=0(root) gid=0(root) groups=0(root)');return;}if(name==='uname'){out(args.includes('-a')?'Linux '+c.name+' '+KERNEL+' #1 SMP '+ARCH+' GNU/Linux':args.includes('-r')?KERNEL:args.includes('-m')?ARCH:args.includes('-n')?c.name:'Linux');return;}if(name==='env'||name==='printenv'){outMany(['HOSTNAME='+c.name,'HOME=/root','PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin','PWD='+c.cwd]);return;}if(name==='ps'){outMany(['PID   USER     TIME  COMMAND','    1 root      0:00 '+(c.kind==='kubernetes'?'/pause':'/bin/sh'),'   12 root      0:00 sh','   19 root      0:00 ps']);return;}if(name==='mkdir'){for(const p of args.filter(x=>!x.startsWith('-'))){const target=abs(p);if(!c.owner)c.owner={};if(!c.owner.dirs)c.owner.dirs=[];if(!c.owner.dirs.includes(target))c.owner.dirs.push(target);}return;}if(name==='touch'){args.filter(x=>!x.startsWith('-')).forEach(p=>c.fs[abs(p)]=c.fs[abs(p)]||'');return;}if(name==='rm'){args.filter(x=>!x.startsWith('-')).forEach(p=>delete c.fs[abs(p)]);return;}if(name==='ls'){const base=c.cwd==='/'?'/':c.cwd+'/';const names=new Set();dirs().forEach(p=>{if(p.startsWith(base)&&p!==c.cwd){const tail=p.slice(base.length).split('/')[0];if(tail)names.add(tail);}});Object.keys(c.fs).forEach(p=>{if(p.startsWith(base)){const tail=p.slice(base.length).split('/')[0];if(tail)names.add(tail);}});out([...names].sort().join('  '));return;}if(name==='cat'){const f=abs(args[0]||'');if(Object.prototype.hasOwnProperty.call(c.fs,f))c.fs[f].split('\n').forEach(l=>out(l));else err('cat: '+(args[0]||'')+': No such file or directory');return;}if(name==='echo'){out(args.join(' '));return;}if(name==='printf'){out(args.join(' ').replace(/\\n/g,'\n'));return;}if(name==='clear'){clearBody();return;}err('sh: '+name+': not found',127);};
 
     // ---------------- dispatch ----------------
@@ -2031,8 +2043,9 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         if(sink.kind==='terminal'){out(event.text,sink.fd===2?'#ef8a7a':undefined);return;}
         if(sink.kind!=='file'){err('-bash: '+event.fd+': descriptor de fichero incorrecto');return;}
         const text=event.text==null?'':String(event.text);
-        if(sink.needsSeparator||sink.wrote)sink.node.content+='\n';
-        sink.node.content+=text;
+        const next=sink.node.content+((sink.needsSeparator||sink.wrote)?'\n':'')+text;
+        if(!virtualWrite(sink.node,next,sink.target))return;
+        sink.node.content=next;
         sink.needsSeparator=false;sink.wrote=true;
       });
     };
@@ -2047,9 +2060,12 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       const echoInput=options.echo!==false;
       if(cmd[0]==='!' && !recovery){ const ex=expandBang(cmd); if(ex===null){ if(echoInput)echoCmd(raw); err('bash: '+cmd+': event not found'); save(); return; } cmd=ex; }
       const hd=cmd.match(/<<-?\s*(['"]?)([A-Za-z_][A-Za-z0-9_]*)\1/);
-      if(hd){if(echoInput)echoCmd(cmd);history.push(cmd);const delimiter=hd[2],literal=!!hd[1],lines=[];const om=cmd.match(/(?:^|\s)(?:>|1>)\s*([^\s]+)(?![\s\S]*>)/);startInteractive('>',false,v=>{if(v!==delimiter){lines.push(literal?v:expandVariables(v));return;}endInteractive();const target=om&&om[1];if(target){const segs=norm(target),parent=getParent(segs),fn=segs[segs.length-1];if(!parent||parent.type!=='dir')err('-bash: '+target+': No existe el fichero o el directorio');else parent.children[fn]=file(lines.join('\n')+'\n',{owner:currentUser,group:currentUser});}else lines.forEach(l=>out(l));save();});return;}
+      if(hd){if(echoInput)echoCmd(cmd);history.push(cmd);const delimiter=hd[2],literal=!!hd[1],lines=[];const om=cmd.match(/(?:^|\s)(?:>|1>)\s*([^\s]+)(?![\s\S]*>)/);startInteractive('>',false,v=>{if(v!==delimiter){lines.push(literal?v:expandVariables(v));return;}endInteractive();const target=om&&om[1];if(target){const segs=norm(target),parent=getParent(segs),fn=segs[segs.length-1],existing=parent&&parent.children&&parent.children[fn],content=lines.join('\n')+'\n';if(!parent||parent.type!=='dir')err('-bash: '+target+': No existe el fichero o el directorio');else if(virtualWrite(existing,content,target))parent.children[fn]=file(content,{owner:currentUser,group:currentUser});}else lines.forEach(l=>out(l));save();});return;}
       if(echoInput)echoCmd(cmd);
+      {const processError=serviceProcessQuotaError(cmd);if(processError){err(processError);save();return;}}
       if(!cmd){ save(); return; }
+      {const quotaError=resourceQuotaError(cmd);if(quotaError){err(quotaError);save();return;}}
+      {const fsQuotaError=filesystemQuotaError(cmd);if(fsQuotaError){err('-bash: '+fsQuotaError);save();return;}}
       if(history[history.length-1]!==cmd) history.push(cmd);
       const fn=cmd.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*\(\s*\)\s*\{([\s\S]*)\}\s*$/);if(fn){shellFunctions[fn[1]]=fn[2].trim().replace(/;\s*$/,'');save();return;}
       hIdx = history.length;
@@ -2324,7 +2340,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         setPrompt(); save();
       }
     }
-    setTimeout(()=>{ input.focus(); scroll(); },100);
+    setTimeout(()=>{ if(shouldAutoFocus())input.focus(); scroll(); },100);
 
     // ---------------- prácticas guiadas (propiedad del runtime elegido) ----------------
     const CH=typeof runtime.createChallenges==='function'?runtime.createChallenges(runtimeContext):[];

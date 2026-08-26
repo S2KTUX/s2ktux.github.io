@@ -24,6 +24,7 @@ for (const onDemandAsset of [
   'terminal-command-schema.js',
   'terminal-virtual-fs.js',
   'terminal-process-state.js',
+  'terminal-resource-limits.js',
   'terminal-network-state.js',
   'terminal-worker-client.js',
   'terminal-worker-protocol.js',
