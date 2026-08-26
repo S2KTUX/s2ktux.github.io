@@ -1,0 +1,172 @@
+<div class="lesson-wrapper">
+    <header class="lesson-header">
+        <span class="badge">RHCSA Objetivo 1</span>
+        <h1>Herramientas Esenciales</h1>
+        <p>Comprender y usar herramientas esenciales de la shell para la administración del sistema</p>
+        
+        <a href="https://youtu.be/enwp35IHCic" target="_blank" rel="noopener" class="video-card">
+            <div class="video-icon">🎬</div>
+            <div class="video-text">
+                <strong>VER VIDEO YOUTUBE - CLASE 1</strong>
+                <span>Tutorial completo de herramientas esenciales</span>
+            </div>
+        </a>
+    </header>
+
+    <div class="lesson-layout">
+        <aside class="lesson-toc">
+            <h2>Objetivos del bloque</h2>
+            <ul>
+                <li><a href="#obj1">1. Solicitud de shell</a></li>
+                <li><a href="#obj2">2. Redirección I/O</a></li>
+                <li><a href="#obj3">3. Grep y Regex</a></li>
+                <li><a href="#obj4">4. Acceso SSH</a></li>
+                <li><a href="#obj5">5. Cambio de usuario</a></li>
+                <li><a href="#obj6">6. Tar y compresión</a></li>
+                <li><a href="#obj7">7. Edición de texto (VI)</a></li>
+                <li><a href="#obj8">8. Gestión de archivos</a></li>
+                <li><a href="#obj9">9. Enlaces (Links)</a></li>
+                <li><a href="#obj10">10. Permisos ugo/rwx</a></li>
+                <li><a href="#obj11">11. Documentación</a></li>
+            </ul>
+        </aside>
+
+        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+            
+            <section id="obj1" class="lesson-section">
+                <h2>1. Acceder a un prompt de shell</h2>
+                <p>El prompt indica tu identidad y ubicación mediante el formato <code>usuario@máquina:ruta</code>. Se cierra con <code>$</code> para usuarios normales o <code>#</code> para root.</p>
+                <img src="/images/Shell.png" alt="Ejemplo de prompt de shell" width="705" height="306" style="max-width:100%;height:auto">
+                <p>El acceso puede ser local (TTY)(Control + Alt + F2 - F6 en sistemas modernos), remoto (SSH) o vía terminal gráfica. Linux distingue entre mayúsculas y minúsculas (case-sensitive), por lo que la sintaxis debe escribirse exactamente.</p>
+            </section>
+
+            <section id="obj2" class="lesson-section">
+                <h2>2. Redirección de entrada y salida</h2>
+                <p>Cada proceso utiliza descriptores estándar:</p>
+                <div class="info-grid">
+                    <div class="info-item"><strong>0</strong><br>STDIN<br><small>Entrada</small></div>
+                    <div class="info-item"><strong>1</strong><br>STDOUT<br><small>Salida</small></div>
+                    <div class="info-item"><strong>2</strong><br>STDERR<br><small>Errores</small></div>
+                </div>             
+                <ul>
+                    <li><strong><code>&lt;</code>, <code>&lt;&lt;</code>, <code>&lt;&lt;&lt;</code></strong> → Entrada estándar desde archivo, bloque de texto (heredoc) o cadena.</li>
+                    <li><strong><code>&gt;</code>, <code>&gt;&gt;</code></strong> → Redirige la salida estándar a un archivo (sobrescribe o añade).</li>
+                    <li><strong><code>2&gt;</code></strong> → Redirige únicamente la salida de error (STDERR).</li>
+                    <li><strong><code>2&gt;&amp;1</code></strong> → Redirige STDERR hacia STDOUT.</li>
+                    <li><strong><code>&amp;&gt;</code></strong> → Redirige salida estándar y errores al mismo destino.</li>
+                    <li><strong><code>|</code></strong> → Tubería (envía la salida de un comando como entrada de otro).</li>
+                </ul>
+                <img src="/images/redd-basic.png" alt="Ejemplo de redirecciones" width="978" height="689" style="max-width:100%;height:auto">
+            </section>
+
+            <section id="obj3" class="lesson-section">
+                <h2>3. Grep y expresiones regulares</h2>
+                <p>Grep sirve para analizar y buscar patrones dentro de archivos o salidas de comandos. Las flags más importantes son :</p>
+                <ul>
+                    <li><code>-E</code> : Regex extendidas. Ejemplo : <code>grep -E "error|fallo" log.txt</code>.</li>
+                    <li><code>-v</code> : Muestra las líneas que NO coinciden con el patrón : <code> ps -ef | grep -v grep</code></li>
+                    <li><code>-i</code> : Ignorar mayúsculas. Ejemplo : <code>grep -i "linux" manual.txt</code></li>
+                    <li><code>-r</code> : Busca recursivamente dentro de directorios.</li>
+                </ul>
+                <p>Símbolos Regex (expresiones regulares básicas): <code>^</code> (inicio), <code>$</code> (fin), <code>.</code> (cualquier carácter), <code>*</code> (repetición), <code>[]</code> (Cualquiera de los caracteres dentro), <code>|</code> (una opción u otra).</p>
+            </section>
+
+            <section id="obj4" class="lesson-section">
+                <h2>4. Acceso remoto con SSH</h2>
+                <p>SSH es un protocolo de red diseñado para establecer conexiones seguras entre dos máquinas. Tiene el puerto 22 por defecto y su configuración está en <code>/etc/ssh/sshd_config</code>.</p>
+                <ul>
+                    <li><code>-p</code> : Permite especificar un puerto</li>
+                    <li><code>-i</code> : Indica la ruta de la clave privada.</li>
+                    <li><code>-v</code> : Modo verbose para mostrar más información sobre el proceso de conexión</li>
+                    <li><code>-l</code> : Especifica el nombre del usuario con el que deseamos establecer la conexión.</li>
+                </ul>
+                <img src="/images/ssh.png" alt="Ejemplo de SSH" width="1620" height="495" style="max-width:100%;height:auto">
+            </section>
+
+            <section id="obj5" class="lesson-section">
+                <h2>5. Inicio y cambio de usuario</h2>
+                <p>Para cambiar de identidad, usamos <code>su -</code> (el guion carga el entorno completo del usuario destino).</p>
+                <img src="/images/inicio-su.png" alt="Ejemplo de su -" width="690" height="321" style="max-width:100%;height:auto">
+                <p>Con <code>sudo -i</code> usaremos la propia contraseña del usuario normal para ganar privilegios de root.</p>
+                <img src="/images/inicio-sudo.png" alt="Ejemplo de sudo -i" width="650" height="257" style="max-width:100%;height:auto">
+                <p>Podemos comprobar que usuario somos con <code>whoami</code> o <code>id</code>.</p>
+            </section>
+
+            <section id="obj6" class="lesson-section">
+                <h2>6. Tar y compresión</h2>
+                <p><code>tar</code> se utiliza para empaquetar, mientras que <code>gzip</code> (z) y <code>bzip2</code> (j) para comprimir.</p>
+                <ul>
+                    <li><code>-c</code> -> Create: Crea un nuevo archivo de empaquetado.</li>
+                    <li><code>-x</code> -> Extract: Extrae el contenido de un archivo empaquetado existente.</li>
+                    <li><code>-v</code> -> Verbose: Muestra el listado de archivos procesados por pantalla.</li>
+                    <li><code>-f</code> -> File: Indica el nombre del archivo resultante o el archivo a extraer ((normalmente se coloca al final por claridad)).</li>
+                </ul>
+                <pre><code>tar -cvzf archivo.tar.gz /carpeta  # Comprimir
+tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
+                <p> Tambien podemos comprimir / descomprimir directamente con gzip o bzip2 : </p>
+                <img src="/images/tar-gz-bz2.png" alt="Ejemplo de tar / gzip / bzip2" width="649" height="583" style="max-width:100%;height:auto">
+            </section>
+
+            <section id="obj7" class="lesson-section">
+                <h2>7. Edición de archivos de texto (VI)</h2>
+                <p> Vi es un editor de texto, aunque diferente al resto. Cuando lo iniciamos entramos en un modo normal. Tenemos otros editores como nano, que es más simple aunque menos potente:</p>
+                <ul>
+                    <li><code>i</code> : Modo inserción.</li>
+                    <li><code>Esc + :wq!</code> : Guardar y salir.</li>
+                    <li><code>Esc + :q!</code> : Salir sin guardar </li>
+                    <li><code>Esc + dd</code> : Borrar línea.</li>
+                    <li><code>/texto</code> : Buscar dentro del archivo.</li>
+                    <li><code>u</code> : Deshacer</li>
+                </ul>
+                <p> Podemos mencionar tambien el comando sed que se utilizar para transformar texto en un fichero.</p>
+                <img src="/images/sed.png" alt="Uso de sed para transformaciones" width="482" height="185" style="max-width:100%;height:auto">
+            </section>
+
+            <section id="obj8" class="lesson-section">
+                <h2>8. Gestión de archivos y directorios</h2>
+                <ul>
+                    <li><code>mkdir -p</code> : Crea directorios y subdirectorios ( si fuera necesario).</li>
+                    <li><code>rmdir</code> :Elimina directorios vacíos.</li>
+                    <li><code>cp </code> : Copia archivos / directorios a otra ruta. Usamos -r para hacerlo de forma recursiva.</li>
+                    <li><code>mv</code> : Mover ficheros / directorios.</li>
+                    <li><code>rm -rf</code> : Borrado forzado y recursivo de un archivo o un directorio.</li>
+                </ul>
+                <img src="/images/crear-borrar.png" alt="Gestión de archivos" width="589" height="340" style="max-width:100%;height:auto">
+            </section>
+
+            <section id="obj9" class="lesson-section">
+                <h2>9. Enlaces físicos y simbólicos</h2>
+                <p>Un <code>enlace fisico</code> es un nombre adicional para los mismos datos en el disco (mismo inodo), mientras que un <code>enlace simbólico</code> es un acceso directo que apunta a la ruta del archivo original (acceso directo en Windows). La sintaxis es <code>ln [-s] archivo_original enlace</code>.</p>
+                <p><strong>Físico (Hard link):</strong> Mismo inodo. Si borras el original, el contenido sobrevive.<br>
+                <strong>Simbólico (Soft link):</strong> Acceso directo. Si borras el original, el enlace se rompe y el contenido se pierde.</p>
+                <img src="/images/links.png" alt="Diferencia entre enlaces" width="642" height="322" style="max-width:100%;height:auto">
+            </section>
+
+            <section id="obj10" class="lesson-section">
+                <h2>10. Permisos estándar ugo/rwx</h2>
+                <p> Como sabemos, r(lectura), w(escritura) y x (ejecución) son los permisos basicos de ficheros, directorios, enlaces...</p>
+                <div class="info-grid">
+                    <div class="info-item">r (4)</div>
+                    <div class="info-item">w (2)</div>
+                    <div class="info-item">x (1)</div>
+                </div>
+                <p>Usaremos los comandos <code>chmod</code> para modificar permisos y <code>chown</code> para modificar propietario:grupo. Podremos comprobar con <code>ls -l</code></p>
+                <img src="/images/permisos-basic.png" alt="Listar permisos" width="646" height="179" style="max-width:100%;height:auto">
+                <img src="/images/cambiar-permisos-basic.png" alt="Cambiar permisos" width="581" height="345" style="max-width:100%;height:auto">
+                <p> Tener en cuenta el flag -R para que se aplique de forma recursiva a todos los subdirectorios y archivos cuando lo usemos para un directorio</p>
+            </section>
+
+            <section id="obj11" class="lesson-section">
+                <h2>11. Documentación del sistema</h2>
+                <p>Nunca memorices flags si tienes el sistema delante, tenemos diferentes formas de ver documentación de todos los comandos y es muy importante conocerlos y tenerlos presentes :</p>
+                <ul>
+                    <li><code>man</code> : Manuales oficiales.</li>
+                    <li><code>info</code> : Documentación extendida.</li>
+                    <li><code>/usr/share/doc</code> : Ejemplos y guías de paquetes.</li>
+                    <li><code>whatis</code> : Breve explicación de un comando</li>
+                    <li><code>comando --help</code> : Ayuda rápida integrada.</li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</div>

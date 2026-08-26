@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const site = 'https://s2ktux.github.io';
-const lastmod = '2026-08-26';
+const lastmod = process.env.S2KTUX_LASTMOD || new Date().toISOString().slice(0, 10);
 const source = await fs.readFile(path.join(root, 'courses-data.js'), 'utf8');
 const context = { window: {} };
 vm.createContext(context);
@@ -137,7 +137,8 @@ for (const [key, cfg] of Object.entries(config)) {
     const module = data.modules[index];
     const lessonRoute = moduleRoutes[index];
     sitemapUrls.push(lessonRoute);
-    const fragment = (await fs.readFile(path.join(root, cfg.files[index]), 'utf8'))
+    const sourcePath = cfg.files[index].replace(/^([^/]+)/, '_$1').replace(/\.html$/, '.inc');
+    const fragment = (await fs.readFile(path.join(root, sourcePath), 'utf8'))
       .replace(/<style[\s\S]*?<\/style>/gi, '')
       .replace(/<script[\s\S]*?<\/script>/gi, '')
       .replace(/<link[^>]*>/gi, '')
@@ -169,7 +170,7 @@ for (const [key, cfg] of Object.entries(config)) {
 }
 
 await fs.writeFile(path.join(root, 'learning-routes.js'), `window.S2KTUX_LEARNING_ROUTES=${JSON.stringify(routeData)};\n`, 'utf8');
-const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls.map((route) => `  <url><loc>${site}${route}</loc><lastmod>${lastmod}</lastmod><changefreq>${route === '/' ? 'weekly' : 'monthly'}</changefreq><priority>${route === '/' ? '1.0' : route === '/cursos.html' || route === '/terminal.html' ? '0.9' : route.split('/').filter(Boolean).length <= 2 ? '0.8' : '0.7'}</priority></url>`).join('\n')}\n</urlset>\n`;
+const sitemap = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemapUrls.map((route) => `  <url><loc>${site}${route}</loc><lastmod>${lastmod}</lastmod></url>`).join('\n')}\n</urlset>\n`;
 await fs.writeFile(path.join(root, 'sitemap.xml'), sitemap, 'utf8');
 const topLevelPages = ['404.html','curso.html','cursos.html','index.html','leccion.html','proyecto-kubernetes.html','proyecto-proxmox.html','proyectos.html','sobre.html','terminal.html'];
 for (const file of topLevelPages) {

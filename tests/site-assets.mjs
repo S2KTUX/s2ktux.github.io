@@ -13,7 +13,7 @@ async function htmlFiles(dir) {
     if (ignoredDirectories.has(entry.name)) continue;
     const path = join(dir, entry.name);
     if (entry.isDirectory()) files.push(...await htmlFiles(path));
-    else if (entry.isFile() && entry.name.endsWith('.html')) files.push(path);
+    else if (entry.isFile() && (entry.name.endsWith('.html') || entry.name.endsWith('.inc'))) files.push(path);
   }
   return files;
 }
@@ -98,7 +98,7 @@ for (const htmlPath of allHtml) {
   if (/<img\b(?:(?!>).)*$\s*<p\b/im.test(html)) malformed.push(`${relative(root, htmlPath)} -> unclosed image tag`);
   if (/<a\b[^>]*target=["']_blank["'](?![^>]*\brel=["'][^"']*noopener)/i.test(html)) malformed.push(`${relative(root, htmlPath)} -> target=_blank without rel=noopener`);
 
-  const isLessonFragment = /^(?:rhcsa|lpic|docker)[\\/]/.test(relative(root, htmlPath));
+  const isLessonFragment = /^_(?:rhcsa|lpic|docker)[\\/]/.test(relative(root, htmlPath));
   if (isLessonFragment) {
     const opens = tag => (html.match(new RegExp(`<${tag}\\b`, 'gi')) || []).length;
     const closes = tag => (html.match(new RegExp(`</${tag}>`, 'gi')) || []).length;
@@ -165,7 +165,7 @@ for (const htmlPath of nonTerminalHtml) {
     if (!/\btype=["'](?:button|submit|reset)["']/i.test(match[0])) integrityIssues.push(`${rel} -> button without explicit type`);
   }
 
-  const isLessonFragment = /^(?:rhcsa|lpic|docker)\//.test(rel);
+  const isLessonFragment = /^_(?:rhcsa|lpic|docker)\//.test(rel);
   if (!isLessonFragment) continue;
   const contentTags = [...html.matchAll(/<div\b[^>]*\bclass=["'][^"']*\bcourse-content\b[^"']*["'][^>]*>/gi)];
   if (contentTags.length !== 1) integrityIssues.push(`${rel} -> expected one course-content block`);
@@ -277,9 +277,9 @@ assert.match(plannedKubernetes, /name="robots" content="noindex,follow"/, 'The p
 assert.doesNotMatch(plannedKubernetes, /CKA · CKA/, 'Kubernetes kicker must not repeat CKA');
 
 const dockerVideos = [
-  ['docker/1/1.html', 'https://www.youtube.com/watch?v=BML40ZpS6zc'],
-  ['docker/2/2.html', 'https://www.youtube.com/watch?v=15_TPrR1cSA'],
-  ['docker/3/3.html', 'https://www.youtube.com/watch?v=OxdRl8Yiy5I'],
+  ['_docker/1/1.inc', 'https://www.youtube.com/watch?v=BML40ZpS6zc'],
+  ['_docker/2/2.inc', 'https://www.youtube.com/watch?v=15_TPrR1cSA'],
+  ['_docker/3/3.inc', 'https://www.youtube.com/watch?v=OxdRl8Yiy5I'],
 ];
 const courseData = await readFile(join(root, 'courses-data.js'), 'utf8');
 for (const [path, url] of dockerVideos) {

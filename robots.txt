@@ -2,3 +2,8 @@ User-agent: *
 Allow: /
 
 Sitemap: https://s2ktux.github.io/sitemap.xml
+
+# Fuentes internas; las páginas públicas están en /cursos/
+Disallow: /_rhcsa/
+Disallow: /_lpic/
+Disallow: /_docker/

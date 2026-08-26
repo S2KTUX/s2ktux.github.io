@@ -1,0 +1,6 @@
+/_rhcsa/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+/_lpic/*
+  X-Robots-Tag: noindex, nofollow, noarchive
+/_docker/*
+  X-Robots-Tag: noindex, nofollow, noarchive

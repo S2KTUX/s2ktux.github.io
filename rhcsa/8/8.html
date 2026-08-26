@@ -1,81 +1,10 @@
-<div class="lesson-wrapper">
-
-    <header class="lesson-header">
-        <span class="badge">RHCSA Objetivo</span>
-        <h1>Administrar redes básicas</h1>
-        <p>Configuración de IP, Hostname y Firewall</p>
-
-        <a href="https://youtu.be/cjx4DZ7tJI0" target="_blank" rel="noopener" class="video-card">
-            <div class="video-icon">🎬</div>
-            <div class="video-text">
-                <strong>VER VIDEO YOUTUBE - CLASE 8</strong>
-                <span>Configuración de red y seguridad básica en RHEL</span>
-            </div>
-        </a>
-    </header>
-
-    <div class="lesson-layout">
-
-        <aside class="lesson-toc">
-            <h2>Objetivos del bloque</h2>
-            <ul>
-                <li><a href="#obj1">1. IPv4 e IPv6</a></li>
-                <li><a href="#obj2">2. Nombre de host</a></li>
-                <li><a href="#obj3">3. Servicios en el arranque</a></li>
-                <li><a href="#obj4">4. Firewall y seguridad</a></li>
-            </ul>
-        </aside>
-
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
-
-            <section id="obj1" class="lesson-section">
-                <h2>1. Configurar direcciones IPv4 e IPv6</h2>
-                <p>En RHEL, la gestión de red se realiza mediante <strong>NetworkManager</strong> usando <code>nmcli</code>. También podemos usar <code>nmtui</code> o el comando <code>ip</code> para cambios temporales.</p>
-                <p>Con <strong>nmcli</strong> podemos crear, modificar y eliminar conexiones de red y gestionar el estado de las interfaces.</p>
-                <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="1290" height="725" style="max-width:100%;height:auto">
-                <p>Ejemplo WiFi: <code>nmcli connection add type wifi ifname [INTERFAZ] con-name [NOMBRE] ssid [NOMBRE_RED] wifi-sec.key-mgmt wpa-psk wifi-sec.psk [CONTRASEÑA] ipv4.addresses ...</code>.</p>
-                <p>IPv6 se configura igual usando propiedades <code>ipv6.*</code>. Es importante usar <code>connection.autoconnect yes</code>. Activamos con <code>nmcli con up "ID"</code> y verificamos con <code>ip addr show</code>.</p>
-                <p>También podemos añadir rutas estáticas además de la puerta de enlace definida con <code>ipv4.gateway</code>. El símbolo <code>+</code> añade rutas sin sobrescribir las existentes.</p>
-                <img src="/images/nmcli-route.png" alt="nmcli ejemplo configuración" width="1313" height="739" style="max-width:100%;height:auto">
-            </section>
-
-            <section id="obj2" class="lesson-section">
-                <h2>2. Configurar la resolución del nombre de host</h2>
-                <p>El hostname identifica al equipo en la red. Para cambios permanentes usamos <code>hostnamectl</code>. Editar <code>/etc/hostname</code> también es posible pero requiere reinicio.</p>
-                <img src="/images/hostname.png" alt="hostname ejemplo configuración" width="590" height="448" style="max-width:100%;height:auto">
-                <p>Para resolución local sin DNS editamos <code>/etc/hosts</code> con la sintaxis: IP NOMBRE_COMPLETO ALIAS.</p>
-                <img src="/images/etc-host.png" alt="archivo ejemplo /etc/hosts" width="793" height="259" style="max-width:100%;height:auto">
-                <p>No debemos modificar <code>/etc/resolv.conf</code>, ya que NetworkManager lo sobrescribe. La configuración DNS persistente se realiza mediante <code>nmcli</code>, <code>nmtui</code> o archivos <code>.nmconnection</code>.</p>
-                <p> La forma correcta para una configuración de DNS persistente es con <code>nmcli</code>, <code>nmtui</code> o los archivos <code>.nmconnection</code> ubicados en <strong>/etc/NetworkManager/system-connections/</strong> y <code>nmcli con up NOMBRE-RED</code> para aplicar el cambio. </p>
-            </section>
-
-            <section id="obj3" class="lesson-section">
-                <h2>3. Servicios de red al inicio del sistema</h2>
-                <p>Para asegurar que nuestra configuración de red sea efectiva desde el arranque, el servicio <strong>NetworkManager</strong> debe estar habilitado y activo : <code>systemctl enable --now NetworkManager</code>.</p>
-                <p>Si utilizamos el nmcli, no olvideis usar <code>connection.autoconnect yes</code> para que se inicie automaticamente.</p>
-                 <p>Podemos comprobar la conectividad con comandos como <code>ip a</code>, <code>nmcli device status</code> o <code>systemctl status NetworkManager</code>.</p>
-                <img src="/images/check-net.png" alt="check net ejemplo" width="830" height="581" style="max-width:100%;height:auto">
-                <p>Si creamos servicios dependientes de red, debemos usar <code>After=network-online.target</code> y <code>Wants=network-online.target</code> en la sección [Unit].</p>
-            </section>
-
-            <section id="obj4" class="lesson-section">
-                <h2>4. Restringir acceso con firewalld y firewall-cmd</h2>
-                <p>La seguridad en RHEL se gestiona mediante <strong>firewalld</strong>, que organiza reglas en zonas. Podemos comprobar su estado con <code>systemctl status firewalld</code> o <code>firewall-cmd --state</code>.</p>
-                <p>Las zonas son un conjunto de reglas que determinan qué tráfico se permite o se deniega. Las zonas más comunes son : </p>
-                <ul>
-                    <li><strong>public</strong> : Zona estándar de confianza baja. Solo se permite el tráfico entrante de servicios específicos (como SSH) y el resto se descarta.</li>
-                    <li><strong>drop</strong> : Nivel de seguridad máximo. El sistema descarta los paquetes entrantes sin enviar ninguna respuesta al emisor (silencio total).</li>
-                    <li><strong>block</strong> : El sistema rechaza las conexiones entrantes enviando un mensaje de "ICMP host prohibited", informando que el acceso está denegado.</li>
-                    <li><strong>internal</strong> : Orientada a redes locales seguras. Permite de forma predefinida más servicios para facilitar la comunicación entre equipos conocidos.</li>
-                    <li><strong>trusted</strong> : Confianza absoluta. Se aceptan todas las conexiones entrantes sin aplicar ningún filtro de seguridad.</li>
-                </ul>
-                <p> Cada interfaz puede tener una zona, y podemos cambiarla, poner una por defecto, comprobar el estado actual...  </p>
-                <img src="/images/firewall-basic.png" alt="firewall-cmd ejemplo" width="741" height="395" style="max-width:100%;height:auto">
-                 <p>Recordad usar <code>--permanent</code> para persistencia y <code>firewall-cmd --reload</code> para aplicar cambios.</p>
-                <img src="/images/firewall-basic2.png" alt="firewall-cmd ejemplo" width="1040" height="734" style="max-width:100%;height:auto">
-                <p>Las rich rules permiten reglas más avanzadas y las vemos en la siguiente clase.</p>
-            </section>
-
-        </div>
-    </div>
-</div>
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Contenido trasladado · S2KTUX</title>
+<meta name="description" content="Esta lección se ha trasladado a su dirección permanente.">
+<meta name="robots" content="noindex,follow,noarchive">
+<link rel="canonical" href="https://s2ktux.github.io/cursos/rhcsa-9/tema-8-administrar-redes-basicas/">
+<meta http-equiv="refresh" content="0;url=/cursos/rhcsa-9/tema-8-administrar-redes-basicas/">
+<script>location.replace("/cursos/rhcsa-9/tema-8-administrar-redes-basicas/");</script>
+</head><body><main><h1>Contenido trasladado</h1><p>La lección ahora está en <a href="/cursos/rhcsa-9/tema-8-administrar-redes-basicas/">su dirección permanente</a>.</p></main></body></html>
