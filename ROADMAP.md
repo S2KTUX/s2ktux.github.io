@@ -40,6 +40,8 @@ Este documento fija las cinco fases acordadas. No se inicia una fase hasta que l
 
 ## Fase 4 · SEO, rutas y entrega
 
+**Estado: completada y validada.** Canonicals, sitemap, datos estructurados, rutas históricas y páginas noindex quedan cubiertos por CI.
+
 - Completar metadatos y datos estructurados que no se hayan adelantado en la fase 1.
 - Sustituir rutas históricas dependientes de JavaScript por páginas estáticas de redirección cuando GitHub Pages lo permita.
 - No asumir soporte para `_redirects`: si se requieren respuestas HTTP 301 reales por ruta, usar una capa de hosting/CDN que las admita.
