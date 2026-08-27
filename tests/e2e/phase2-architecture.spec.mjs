@@ -73,3 +73,28 @@ test('Bloque 2 · Kubernetes sincroniza reconciliación en Worker y F5 destruye 
   await expect(page.locator('#term-body')).toContainText(/NotFound|not found/);
   expect(errors).toEqual([]);
 });
+
+test('Bloque 2 · una excepción no controlada cierra el Worker Kubernetes a mitad de sesión',async({page})=>{
+  test.skip(workerDisabled,'Esta prueba necesita un Worker real para provocar su excepción');
+  await page.addInitScript(()=>{
+    const BrowserWorker=window.Worker;
+    window.Worker=class FaultingWorker extends BrowserWorker{
+      constructor(url,options){const target=String(url);const source=`import ${JSON.stringify(target)};setTimeout(()=>{throw new Error('S2KTUX_TEST_UNCAUGHT_KUBERNETES_WORKER');},1500);`;super(URL.createObjectURL(new Blob([source],{type:'text/javascript'})),{...options,type:'module'});}
+    };
+  });
+  await page.goto('/terminal.html');
+  const workerStarted=page.waitForEvent('worker');
+  await page.locator('[data-pick-mode="kubernetes"]').click();
+  const worker=await workerStarted;
+  await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
+  expect(worker.url()).toMatch(/^blob:/);
+  const workerClosed=new Promise(resolve=>worker.once('close',resolve));
+  const input=page.locator('#term-input');
+  await input.evaluate(element=>{element.value='kubectl get pods --watch';element.dispatchEvent(new Event('input',{bubbles:true}));});
+  await workerClosed;
+  expect(page.isClosed()).toBeFalsy();
+  await expect.poll(()=>page.evaluate(()=>document.documentElement.dataset.terminalEngineThread)).toBe('disconnected');
+  await expect(page.locator('#term-body')).toContainText('El entorno Kubernetes se ha desconectado');
+  expect(await input.inputValue()).toBe('kubectl get pods --watch');
+  expect(await input.evaluate(element=>element.readOnly)).toBeFalsy();
+});

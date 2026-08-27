@@ -1315,6 +1315,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     const runtimeCommands=!kubernetesWorkerEnabled&&typeof runtime.createCommands==='function'?(runtime.createCommands(runtimeContext)||{}):{};
     const publishKubernetesState=(reason)=>document.dispatchEvent(new CustomEvent('s2ktux-kubernetes-state',{detail:{reason,state:k8s}}));
     const acceptKubernetesState=(state,reason)=>{if(!state)return;k8s=state;save();publishKubernetesState(reason);};
+    if(kubernetesWorkerEnabled)simulation.on('runtime.disconnected',()=>{document.documentElement.dataset.terminalEngineThread='disconnected';out('⚠ El entorno Kubernetes se ha desconectado. Los comandos del clúster no están disponibles.','#ef8a7a');scroll();});
     if(kubernetesWorkerEnabled)simulation.on('kubernetes.state',payload=>acceptKubernetesState(payload.state,payload.reason||'reconcile'));
     const kubernetesWorkerReady=kubernetesWorkerEnabled?simulation.initializeKubernetes({state:k8s,fs,cwd,currentUser,system:{K8S_FULL,K8S_MAJOR,K8S_MINOR,K8S_UPGRADE,ARCH}}):Promise.resolve();
     const applyKubernetesWorkerResult=async(result,reason='command')=>{
