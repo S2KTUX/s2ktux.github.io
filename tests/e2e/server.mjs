@@ -2,7 +2,7 @@ import http from 'node:http';
 import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 
-const root = process.cwd();
+const root = normalize(join(process.cwd(), process.argv[2] || '.'));
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.mjs':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2', '.webmanifest':'application/manifest+json' };
 http.createServer(async (req,res)=>{
   try{

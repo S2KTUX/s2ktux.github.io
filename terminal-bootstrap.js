@@ -10,22 +10,36 @@ if (!requested || !allowed.has(requested)) {
   performance.mark('s2ktux-terminal-load-start');
   let loadStage = 'módulos';
   try {
-    const labelledImport = (label, path) => import(path).catch((error) => {
+    const labelledImport = (label, loader) => loader().catch((error) => {
       loadStage = label;
       throw error;
     });
-    const [{ default: engine }, { default: runtime }, { startTerminal }, simulation] = await Promise.all([
-      labelledImport('motor de configuración', `./terminal-engine-${mode}.js?v=20260825-phase1-main`),
-      labelledImport('contenido del entorno', `./terminal-runtime-${mode}.js?v=20260825-phase1-main`),
-      labelledImport('núcleo de terminal', './terminal-core.js?v=20260826-phase5'),
-      labelledImport('aislamiento de simulación', './terminal-worker-client.js?v=20260825-phase2').then(module=>module.createTerminalSimulationClient(mode))
-    ]);
+    const production = typeof __S2KTUX_PRODUCTION__ !== 'undefined' && __S2KTUX_PRODUCTION__;
+    const importBuilt = path => import(path);
+    const sourceLoaders = {
+      linux:()=>Promise.all([import('./terminal-engine-linux.js?v=20260825-phase1-main'),import('./terminal-runtime-linux.js?v=20260825-phase1-main')]),
+      docker:()=>Promise.all([import('./terminal-engine-docker.js?v=20260825-phase1-main'),import('./terminal-runtime-docker.js?v=20260825-phase1-main')]),
+      kubernetes:()=>Promise.all([import('./terminal-engine-kubernetes.js?v=20260825-phase1-main'),import('./terminal-runtime-kubernetes.js?v=20260825-phase1-main')])
+    };
+    const components = production
+      ? await labelledImport('paquete de producción',()=>importBuilt('./terminal-'+mode+'.min.js'))
+      : await (async()=>{
+          const [{default:engine},{default:runtime}]=await labelledImport('entorno seleccionado',sourceLoaders[mode]);
+          const [{startTerminal},{createTerminalSimulationClient},{attachTerminalRenderer}]=await Promise.all([
+            labelledImport('núcleo de terminal',()=>import('./terminal-core.js?v=20260826-phase5')),
+            labelledImport('aislamiento de simulación',()=>import('./terminal-worker-client.js?v=20260825-phase2')),
+            labelledImport('renderizador',()=>import('./terminal-xterm-renderer.js?v=20260826-phase5'))
+          ]);
+          return {engine,runtime,startTerminal,createTerminalSimulationClient,attachTerminalRenderer};
+        })();
+    const {engine,runtime,startTerminal,createTerminalSimulationClient,attachTerminalRenderer}=components;
+    const workerUrl=production?new URL('./terminal-simulation-worker.min.js',import.meta.url):undefined;
+    const simulation=await labelledImport('aislamiento de simulación',()=>createTerminalSimulationClient(mode,{workerUrl}));
     loadStage = 'motor';
     startTerminal(engine, runtime, { simulation });
     document.documentElement.dataset.terminalEngineThread=simulation.kind;
     try {
       loadStage = 'renderizador';
-      const { attachTerminalRenderer } = await import('./terminal-xterm-renderer.js?v=20260826-phase5');
       await attachTerminalRenderer();
     } catch (rendererError) {
       console.warn('Se usa el renderizador de compatibilidad de la terminal.', rendererError);

@@ -4,7 +4,7 @@ import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const ignoredDirectories = new Set(['.git', 'node_modules', 'playwright-report', 'test-results']);
+const ignoredDirectories = new Set(['.git', 'node_modules', 'playwright-report', 'test-results', '_site']);
 
 async function htmlFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });

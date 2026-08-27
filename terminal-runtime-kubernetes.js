@@ -1,3 +1,6 @@
+import { createDefaultKubernetesState } from './terminal-kubernetes-state.js?v=20260827-block2-kubernetes';
+import { createKubectlCommand } from './terminal-kubernetes-command.js?v=20260827-block2-kubernetes';
+
 const basePackages = [
   'bash','coreutils','glibc','systemd','dnf','rpm','util-linux','findutils',
   'procps-ng','iproute','iputils','NetworkManager','openssh-server',
@@ -34,12 +37,17 @@ export default {
     crictl:['ps','pods','images','logs','inspect','exec','stats','version'],
     etcdctl:['endpoint','snapshot']
   },
+  createState({version}) {
+    return createDefaultKubernetesState(version);
+  },
   createCommands(ctx) {
     const s=ctx.state, {out,outMany,err}=ctx.io;
     const {K8S_FULL,K8S_MAJOR,K8S_MINOR,K8S_UPGRADE,ARCH}=ctx.system;
     const cid=p=>('sha256:'+String(p.name).split('').reduce((a,c)=>((a*33+c.charCodeAt(0))>>>0),5381).toString(16).padStart(12,'0')).slice(0,19);
     const findPod=ref=>s.k8s.pods.find(p=>p.name===ref||cid(p).includes(ref||'~'));
+    const kubectl=createKubectlCommand(ctx);
     return {
+      kubectl,
       kubelet({args}) {
         if(args.includes('--version')||args.includes('version'))out('Kubernetes '+K8S_FULL);
         else if(args.includes('--help'))out('The kubelet is the primary "node agent" that runs on each node.\nUsage: kubelet [flags]');

@@ -74,7 +74,6 @@ export const ALL_DISPATCH_COMMANDS = [
   "journalctl",
   "jq",
   "kill",
-  "kubectl",
   "labhosts",
   "last",
   "less",
@@ -195,7 +194,7 @@ export const ALL_DISPATCH_COMMANDS = [
   "yum"
 ];
 
-export const RUNTIME_COMMANDS = ["kubelet","crictl","kubeadm","etcdctl"];
+export const RUNTIME_COMMANDS = ["kubectl","kubelet","crictl","kubeadm","etcdctl"];
 
 export const INTERACTIVE_COMMANDS = [
   "at",
@@ -298,7 +297,6 @@ export const SAFE_COMMANDS = [
   "journalctl",
   "jq",
   "kill",
-  "kubectl",
   "labhosts",
   "last",
   "ln",
