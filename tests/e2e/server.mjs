@@ -14,7 +14,9 @@ http.createServer(async (req,res)=>{
     const info=await stat(file);
     const target=info.isDirectory()?join(file,'index.html'):file;
     const body=await readFile(target);
-    res.writeHead(200,{'Content-Type':types[extname(target)]||'application/octet-stream','Cache-Control':'no-store'});
+    const headers={'Content-Type':types[extname(target)]||'application/octet-stream','Cache-Control':'no-store'};
+    if(process.env.S2KTUX_DISABLE_WORKER==='1')headers['Content-Security-Policy']="worker-src 'none'";
+    res.writeHead(200,headers);
     res.end(body);
   }catch(error){res.writeHead(404);res.end('Not found');}
 }).listen(4173,'127.0.0.1',()=>console.log('S2KTUX test server on 4173'));

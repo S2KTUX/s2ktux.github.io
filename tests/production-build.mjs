@@ -29,7 +29,7 @@ for(const [name,expected] of Object.entries(report.assets)){
   assert.deepEqual(actualSizes[name],expected,'Tamaño no reproducible: '+name);
 }
 
-const closure=roots=>{
+const closure=(roots,includeDynamic=false)=>{
   const found=new Set();
   const queue=[...roots];
   while(queue.length){
@@ -38,6 +38,7 @@ const closure=roots=>{
     found.add(current);
     assert.ok(report.graph[current],'El grafo no describe '+current);
     queue.push(...report.graph[current]);
+    if(includeDynamic)queue.push(...(report.dynamicGraph[current]||[]));
   }
   return found;
 };
@@ -45,6 +46,7 @@ const closure=roots=>{
 const totals={};
 for(const mode of modes){
   const files=closure(['terminal-bootstrap.min.js','terminal-simulation-worker.min.js','terminal-'+mode+'.min.js']);
+  if(mode==='kubernetes')for(const name of closure(['terminal-simulation-worker.min.js'],true))files.add(name);
   const total=[...files].reduce((sum,name)=>sum+actualSizes[name].gzip,0);
   const margin=LIMIT-total;
   totals[mode]={total,margin};

@@ -99,7 +99,7 @@ const resolveOutputImport = (from, imported) => {
   if (metaByAbsolute.has(fromRoot)) return fromRoot;
   throw new Error('Import generado no localizado: ' + imported + ' desde ' + from);
 };
-const dependencyClosure = roots => {
+const dependencyClosure = (roots,includeDynamic=false) => {
   const found = new Set();
   const queue = [...roots];
   while (queue.length) {
@@ -109,7 +109,7 @@ const dependencyClosure = roots => {
     const meta = metaByAbsolute.get(current);
     if (!meta) throw new Error('Salida sin metadatos: ' + current);
     for (const imported of meta.imports || []) {
-      if (!imported.external && imported.kind !== 'dynamic-import') queue.push(resolveOutputImport(current, imported.path));
+      if (!imported.external && (includeDynamic || imported.kind !== 'dynamic-import')) queue.push(resolveOutputImport(current, imported.path));
     }
   }
   return found;
@@ -124,6 +124,7 @@ const workerOutput = namedOutput('terminal-simulation-worker.min.js');
 const modeReports = {};
 for (const mode of modes) {
   const loaded = dependencyClosure([bootstrapOutput, workerOutput, namedOutput('terminal-' + mode + '.min.js')]);
+  if(mode==='kubernetes')for(const path of dependencyClosure([workerOutput],true))loaded.add(path);
   const totalGzip = [...loaded].reduce((total,path)=>total+gzipSync(bytesByAbsolute.get(path)).byteLength,0);
   modeReports[mode] = {
     totalGzip,
@@ -153,6 +154,10 @@ const report = {
   graph:Object.fromEntries([...metaByAbsolute.entries()].map(([path,meta])=>[
     posix(relative(terminalAssets,path)),
     (meta.imports || []).filter(item=>!item.external && item.kind!=='dynamic-import').map(item=>posix(relative(terminalAssets,resolveOutputImport(path,item.path))))
+  ])),
+  dynamicGraph:Object.fromEntries([...metaByAbsolute.entries()].map(([path,meta])=>[
+    posix(relative(terminalAssets,path)),
+    (meta.imports || []).filter(item=>!item.external && item.kind==='dynamic-import').map(item=>posix(relative(terminalAssets,resolveOutputImport(path,item.path))))
   ])),
   modes:modeReports
 };

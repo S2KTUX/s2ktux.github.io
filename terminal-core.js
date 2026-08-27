@@ -18,6 +18,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     const simulation=adapters.simulation||null;
 
     const MODE=engine.mode;
+    const kubernetesWorkerEnabled=MODE==='kubernetes'&&simulation?.kind==='worker';
     if(runtime.mode && runtime.mode!==MODE) throw new Error('Runtime incompatible con el motor '+MODE);
     const PROFILE=runtime.profile||{};
     const IS_EXAM=MODE==='kubernetes'&&new URLSearchParams(location.search).get('exam')==='1';
@@ -295,7 +296,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       const hostname=stateNode(['etc','hostname']);
       const procHostname=stateNode(['proc','sys','kernel','hostname']);
       if(procHostname&&procHostname.type==='file')procHostname.content=(hostname&&hostname.content||INITIAL_HOST).trim();
-      if(k8s&&Array.isArray(k8s.nodes))k8s.nodes.forEach(node=>{if(/^v1\.(?:30|31)(?:\.|$)/.test(node.version||''))node.version=K8S_FULL;});
+      if(!kubernetesWorkerEnabled&&k8s&&Array.isArray(k8s.nodes))k8s.nodes.forEach(node=>{if(/^v1\.(?:30|31)(?:\.|$)/.test(node.version||''))node.version=K8S_FULL;});
     };
 
     // ---------------- persistence (localStorage: sobrevive a F5 / recarga) ----------------
@@ -318,15 +319,15 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       // procesos de trabajos transitorios y resolvemos estados de Pod intermedios
       // para que la máquina nunca reaparezca congelada para siempre.
       { const transientPids=new Set((jobs||[]).map(j=>j.pid)); processes=(processes||[]).filter(p=>!transientPids.has(p.pid)&&!/^(?:ping|sleep)\b/.test(String(p.cmd||''))); jobs=[]; }
-      if(k8s&&!Number.isFinite(k8s.nextIp))k8s.nextIp=10;
-      if(k8s&&!Array.isArray(k8s.events))k8s.events=[];
-      if(k8s&&!Array.isArray(k8s.replicasets))k8s.replicasets=[];
-      if(k8s)for(const collection of ['daemonsets','statefulsets','jobs','cronjobs','hpas'])if(!Array.isArray(k8s[collection]))k8s[collection]=[];
+      if(!kubernetesWorkerEnabled&&k8s&&!Number.isFinite(k8s.nextIp))k8s.nextIp=10;
+      if(!kubernetesWorkerEnabled&&k8s&&!Array.isArray(k8s.events))k8s.events=[];
+      if(!kubernetesWorkerEnabled&&k8s&&!Array.isArray(k8s.replicasets))k8s.replicasets=[];
+      if(!kubernetesWorkerEnabled&&k8s)for(const collection of ['daemonsets','statefulsets','jobs','cronjobs','hpas'])if(!Array.isArray(k8s[collection]))k8s[collection]=[];
       dockerNetworks=(dockerNetworks||[]).map((network,index)=>Object.assign({subnet:index===0?'172.17.0.0/16':'',gateway:index===0?'172.17.0.1':'',nextIp:2},network));
       dockerVolumes=(dockerVolumes||[]).map(volume=>Object.assign({driver:'local',data:{},createdAt:Date.now()},volume,{data:volume.data||{}}));
       containers=(containers||[]).map(container=>{container.networks=container.networks||{};const legacy=container.net||'bridge';if(legacy!=='host'&&legacy!=='none'&&!container.networks[legacy])container.networks[legacy]={ip:''};container.mounts=container.mounts||[];if(container.volume&&!container.mounts.some(m=>m.source===container.volume))container.mounts.push({type:'volume',source:container.volume,target:'/data',readOnly:false});return container;});
-      if(k8s&&Array.isArray(k8s.pods))k8s.pods.forEach(p=>{if(p.status==='ErrImagePull'){p.status='ImagePullBackOff';p.ready='0/1';p.lastState='Waiting: ImagePullBackOff';}else if(p.status==='Pending'||p.status==='ContainerCreating'){if(/missing|notfound|does-not-exist/i.test(p.image||'')){p.status='ImagePullBackOff';p.ready='0/1';p.lastState='Waiting: ImagePullBackOff';}else if(/broken|crash/i.test(p.image||'')){p.status='CrashLoopBackOff';p.ready='0/1';p.restarts=Math.max(1,p.restarts||0);p.lastState='Terminated: Error (exit code 1)';}else{p.status='Running';p.ready='1/1';if(!p.ip||p.ip==='<none>')p.ip='10.244.1.'+(k8s.nextIp++);}}});
-      if(k8s&&Array.isArray(k8s.deployments)&&Array.isArray(k8s.pods))k8s.deployments.forEach(d=>{const owned=k8s.pods.filter(p=>p.namespace===d.namespace&&(p.owner===d.name||(!p.owner&&p.name.startsWith(d.name+'-'))));for(let i=owned.length;i<(d.replicas||1);i++){const name=d.name+'-'+Math.random().toString(36).slice(2,10);k8s.pods.push({name,namespace:d.namespace||'default',image:d.image||'nginx:latest',status:'Running',ready:'1/1',restarts:0,node:'worker-1',ip:'10.244.1.'+(k8s.nextIp++),owner:d.name,labels:d.selector||{app:d.name},createdAt:Date.now(),lastState:''});k8s.events.push({reason:'SuccessfulCreate',object:'replicaset/'+d.name,message:'Created pod '+name+' while recovering desired state'});}});
+      if(!kubernetesWorkerEnabled&&k8s&&Array.isArray(k8s.pods))k8s.pods.forEach(p=>{if(p.status==='ErrImagePull'){p.status='ImagePullBackOff';p.ready='0/1';p.lastState='Waiting: ImagePullBackOff';}else if(p.status==='Pending'||p.status==='ContainerCreating'){if(/missing|notfound|does-not-exist/i.test(p.image||'')){p.status='ImagePullBackOff';p.ready='0/1';p.lastState='Waiting: ImagePullBackOff';}else if(/broken|crash/i.test(p.image||'')){p.status='CrashLoopBackOff';p.ready='0/1';p.restarts=Math.max(1,p.restarts||0);p.lastState='Terminated: Error (exit code 1)';}else{p.status='Running';p.ready='1/1';if(!p.ip||p.ip==='<none>')p.ip='10.244.1.'+(k8s.nextIp++);}}});
+      if(!kubernetesWorkerEnabled&&k8s&&Array.isArray(k8s.deployments)&&Array.isArray(k8s.pods))k8s.deployments.forEach(d=>{const owned=k8s.pods.filter(p=>p.namespace===d.namespace&&(p.owner===d.name||(!p.owner&&p.name.startsWith(d.name+'-'))));for(let i=owned.length;i<(d.replicas||1);i++){const name=d.name+'-'+Math.random().toString(36).slice(2,10);k8s.pods.push({name,namespace:d.namespace||'default',image:d.image||'nginx:latest',status:'Running',ready:'1/1',restarts:0,node:'worker-1',ip:'10.244.1.'+(k8s.nextIp++),owner:d.name,labels:d.selector||{app:d.name},createdAt:Date.now(),lastState:''});k8s.events.push({reason:'SuccessfulCreate',object:'replicaset/'+d.name,message:'Created pod '+name+' while recovering desired state'});}});
       syncSystemIdentity();
       syncMounts();
     }
@@ -1002,7 +1003,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       Object.keys(services).forEach(s=>{ const svc=services[s]; svc.active=!!svc.enabled; svc.failed=false; svc.error=''; if(svc.active){svc.pid=nextPid++;processes.push({pid:svc.pid,ppid:1,user:'root',cpu:0.1,mem:0.4,vsz:90000,rss:7000,stat:'Ss',start:new Date().toLocaleTimeString().slice(0,5),time:'0:00',cmd:'/usr/sbin/'+s});}else svc.pid=null; });
       if(MODE==='docker'&&dockerInstalled){ const configError=dockerConfigError(); if(configError&&services.docker)failService('docker',configError); }
       containers.forEach(c=>{c.running=!!(services.docker&&services.docker.active)&&['always','unless-stopped','on-failure'].includes(c.restart||''); if(c.running)eventAdd('docker','start','container start',{id:c.id,name:c.name,reason:'restart-policy'});});
-      if(MODE==='kubernetes') k8s.pods.forEach(p=>{ if(p.status!=='CrashLoopBackOff'){p.status='Pending';p.ready='0/1';setTimeout(()=>{p.status='Running';p.ready='1/1';k8s.events.push({reason:'Started',object:'pod/'+p.name,message:'Started container '+p.name});eventAdd('kubernetes','reconcile','Pod became Running',{pod:p.name});save();},900);}});
+      if(MODE==='kubernetes'){if(kubernetesWorkerEnabled){void kubernetesWorkerReady.then(()=>simulation.rebootKubernetes()).then(result=>applyKubernetesWorkerResult(result,'reboot'));}else k8s.pods.forEach(p=>{if(p.status!=='CrashLoopBackOff'){p.status='Pending';p.ready='0/1';setTimeout(()=>{p.status='Running';p.ready='1/1';k8s.events.push({reason:'Started',object:'pod/'+p.name,message:'Started container '+p.name});eventAdd('kubernetes','reconcile','Pod became Running',{pod:p.name});save();},900);}});}
       journalAdd('systemd','Linux boot '+bootId+' started.',6); journalAdd('systemd','Reached target Multi-User System.',6); eventAdd('kernel','boot','System boot completed',{bootId});
     };
     const showEnvironmentBanner = () => {
@@ -1206,7 +1207,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       const loop=()=>startInteractive('MariaDB ['+(db.cur||'(none)')+']> ', false, (lineIn)=>{ endInteractive(); const line=(lineIn||'').trim(); if(/^(exit|quit|\\q)\s*;?$/i.test(line)){ out('Bye'); return; } if(!line){ loop(); return; } line.split(';').map(x=>x.trim()).filter(Boolean).forEach(sqlRun); loop(); });
       out('Welcome to the MariaDB monitor.  Commands end with ; or \\g.'); out('Server version: 11.4.2-MariaDB','#a2957d'); out(''); loop();
     };
-    const remoteDispatch = (cmd, name, args) => {
+    const remoteDispatch = async (cmd, name, args) => {
       const h=remoteHost.host; const rest=args.filter(a=>!a.startsWith('-'));
       switch(name){
         case 'exit': case 'logout': {const closed=remoteHost.name;out('logout');out('Connection to '+closed+' closed.','#a2957d');loginRecords.filter(r=>r.active&&r.remote&&r.host===closed).forEach(r=>{r.active=false;r.logout=Date.now();});secureLog('sshd: pam_unix(sshd:session): session closed for user '+remoteHost.user,5);remoteHost=null;setPrompt();save();return;}
@@ -1223,7 +1224,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         case 'cd': { const p=rest[0]||rHome(); const np=rNorm(p)||'/'; if(rDirs().has(np)){ remoteHost.cwd=np;setPrompt(); } else { err('-bash: cd: '+p+': No existe el fichero o el directorio'); } return; }
         case 'ls': { const base=rNorm(rest[0]||'.')||'/'; const kids=new Set(); rDirs().forEach(d=>{ if(d!==base && (base==='/'?(d.lastIndexOf('/')===0&&d!=='/'):d.indexOf(base+'/')===0)){ const r=d.slice(base==='/'?1:base.length+1); if(r&&r.indexOf('/')===-1) kids.add(r+'/'); } }); Object.keys(h.files).forEach(f=>{ const dir=f.slice(0,f.lastIndexOf('/'))||'/'; if(dir===base) kids.add(f.split('/').pop()); }); const arr=[...kids].sort(); if(arr.length) out(arr.join('   ')); return; }
         case 'cat': { const p=rNorm(rest[0]||''); const c=h.files[p]; if(c==null){ err('cat: '+(rest[0]||'')+': No existe el fichero o el directorio'); } else c.split('\n').forEach(l=>out(l)); return; }
-        case 'systemctl': { const sub=rest[0]; const svc=(rest[1]||'').replace('.service',''); if(['start','stop','restart','enable','disable'].includes(sub)&&remoteHost.user!=='root'){err('Failed to '+sub+' '+svc+'.service: Access denied');return;}if(sub==='status'){ const s=h.services[svc]; if(!s){ err('Unit '+svc+'.service could not be found.'); return; } out('● '+svc+'.service', s.active?'#8fa876':undefined); out('   Active: '+(s.active?'active (running)':'inactive (dead)'), s.active?'#8fa876':'#a2957d'); if(!s.active&&svc==='kubelet')out('   Error: failed to update node lease; connection timed out','#ef8a7a'); } else if(sub==='start'){ if(h.services[svc])h.services[svc].active=true; ok(''); } else if(sub==='stop'){ if(h.services[svc])h.services[svc].active=false; ok(''); } else if(sub==='restart'||sub==='enable'||sub==='disable'){ if(h.services[svc])h.services[svc].active=sub!=='disable'; if(MODE==='kubernetes'&&remoteHost.name==='worker-2'&&svc==='kubelet'&&sub==='restart'){const n=k8s.nodes.find(x=>x.name==='worker-2');if(n)n.status='Ready';k8s.events=k8s.events.filter(e=>e.reason!=='NodeNotReady');if(!k8s.actions.includes('restart-kubelet'))k8s.actions.push('restart-kubelet');out('Job for kubelet.service restarted successfully.');}else ok(''); } else out('systemctl: usa status/start/stop <servicio>'); return; }
+        case 'systemctl': { const sub=rest[0]; const svc=(rest[1]||'').replace('.service',''); if(['start','stop','restart','enable','disable'].includes(sub)&&remoteHost.user!=='root'){err('Failed to '+sub+' '+svc+'.service: Access denied');return;}if(sub==='status'){ const s=h.services[svc]; if(!s){ err('Unit '+svc+'.service could not be found.'); return; } out('● '+svc+'.service', s.active?'#8fa876':undefined); out('   Active: '+(s.active?'active (running)':'inactive (dead)'), s.active?'#8fa876':'#a2957d'); if(!s.active&&svc==='kubelet')out('   Error: failed to update node lease; connection timed out','#ef8a7a'); } else if(sub==='start'){ if(h.services[svc])h.services[svc].active=true; ok(''); } else if(sub==='stop'){ if(h.services[svc])h.services[svc].active=false; ok(''); } else if(sub==='restart'||sub==='enable'||sub==='disable'){ if(h.services[svc])h.services[svc].active=sub!=='disable'; if(MODE==='kubernetes'&&remoteHost.name==='worker-2'&&svc==='kubelet'&&sub==='restart'){if(kubernetesWorkerEnabled){await kubernetesWorkerReady;const result=await simulation.recoverKubernetesKubelet('worker-2');await applyKubernetesWorkerResult(result,'kubelet-recovered');}else{const n=k8s.nodes.find(x=>x.name==='worker-2');if(n)n.status='Ready';k8s.events=k8s.events.filter(e=>e.reason!=='NodeNotReady');if(!k8s.actions.includes('restart-kubelet'))k8s.actions.push('restart-kubelet');}out('Job for kubelet.service restarted successfully.');}else ok(''); } else out('systemctl: usa status/start/stop <servicio>'); return; }
         case 'ss': { out('State   Recv-Q  Send-Q  Local Address:Port'); (h.ports||[]).forEach(p=>out('LISTEN  0       128     0.0.0.0:'+p)); return; }
         case 'ping': { streamPing(rest[0]||remoteHost.name); return; }
         case 'curl': { if(remoteHost.role!=='web'){ err('curl: (7) Failed to connect'); return; } const u=(rest[0]||'localhost'); if(/localhost|127\.0\.0\.1|web1|:80/.test(u)){ const idx=h.files['/var/www/html/index.html']; if(idx!=null) idx.split('\n').forEach(l=>out(l)); else err('curl: (7) empty reply from server'); } else err('curl: (6) Could not resolve host: '+u); return; }
@@ -1310,8 +1311,29 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       system:Object.freeze({K8S_FULL,K8S_MAJOR,K8S_MINOR,K8S_UPGRADE,ARCH}),
       helpers:Object.freeze({dockerConfigError,sudoersRuleFor,sudoersSyntaxError,kubernetes:Object.freeze({containerBaseFs,eventAdd,save,dispatch:command=>dispatch(command),runCommandSeq,editorEnter,enterContainerShell,executeContainerCommand:kubernetesContainerExec,getCurrentUser:()=>currentUser})})
     });
-    const runtimeCommands=typeof runtime.createCommands==='function'?(runtime.createCommands(runtimeContext)||{}):{};
-    const dispatch = (cmd) => {
+    const kubernetesWorkerCommands=new Set(kubernetesWorkerEnabled?(engine.commands||[]):[]);
+    const runtimeCommands=!kubernetesWorkerEnabled&&typeof runtime.createCommands==='function'?(runtime.createCommands(runtimeContext)||{}):{};
+    const publishKubernetesState=(reason)=>document.dispatchEvent(new CustomEvent('s2ktux-kubernetes-state',{detail:{reason,state:k8s}}));
+    const acceptKubernetesState=(state,reason)=>{if(!state)return;k8s=state;save();publishKubernetesState(reason);};
+    if(kubernetesWorkerEnabled)simulation.on('kubernetes.state',payload=>acceptKubernetesState(payload.state,payload.reason||'reconcile'));
+    const kubernetesWorkerReady=kubernetesWorkerEnabled?simulation.initializeKubernetes({state:k8s,fs,cwd,currentUser,system:{K8S_FULL,K8S_MAJOR,K8S_MINOR,K8S_UPGRADE,ARCH}}):Promise.resolve();
+    const applyKubernetesWorkerResult=async(result,reason='command')=>{
+      if(result.state)k8s=result.state;if(result.fs)fs=result.fs;
+      for(const item of result.outputs||[]){if(item.fd===2)err(item.text,result.status||1);else out(item.text,item.color||undefined);}
+      for(const effect of result.effects||[]){
+        if(effect.type==='timeline')eventAdd(effect.source,effect.eventType,effect.message,effect.data);
+        else if(effect.type==='editor')editorEnter(effect.editor,effect.path);
+        else if(effect.type==='container-shell')enterContainerShell(effect.name,effect.image,effect.kind);
+        else if(effect.type==='container-command'){const pod=k8s.pods.find(item=>item.name===effect.pod);if(pod)kubernetesContainerExec(pod,effect.args||[]);}
+        else if(effect.type==='dispatch')await dispatch(effect.command);
+      }
+      lastStatus=Number.isInteger(result.status)?result.status:0;lastFail=lastStatus!==0;save();publishKubernetesState(reason);
+    };
+    const executeKubernetesInWorker=async(name,args,cmd)=>{
+      try{await kubernetesWorkerReady;const result=await simulation.executeKubernetes({name,args,cmd,fs,cwd,currentUser,system:{K8S_FULL,K8S_MAJOR,K8S_MINOR,K8S_UPGRADE,ARCH}});await applyKubernetesWorkerResult(result);}
+      catch(error){err('kubectl: fallo de comunicación con el motor aislado: '+error.message,1);}
+    };
+    const dispatch = async (cmd) => {
       let parts = tokenize(cmd);
       parts=parts.map((part,index)=>!tokenQuoted[index]&&(part==='~'||part.startsWith('~/'))?(shellEnv().HOME+part.slice(1)):part);
       parts=globArgs(parts); let name=parts[0]; let args=parts.slice(1);
@@ -1332,7 +1354,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       if(shellFunctions[name]){const saved={};for(let i=0;i<=9;i++){saved[i]=shellVars[i];shellVars[i]=i===0?name:(args[i-1]||'');}saved['#']=shellVars['#'];shellVars['#']=String(args.length);shellFunctions[name].split(';').map(x=>x.trim()).filter(Boolean).forEach(x=>dispatch(expandVariables(x)));for(let i=0;i<=9;i++){if(saved[i]===undefined)delete shellVars[i];else shellVars[i]=saved[i];}if(saved['#']===undefined)delete shellVars['#'];else shellVars['#']=saved['#'];return;}
       if(/^[A-Za-z_][A-Za-z0-9_]*=/.test(name) && parts.length===1){const at=name.indexOf('=');shellVars[name.slice(0,at)]=name.slice(at+1);return;}
       if(containerShell){containerDispatch(cmd,name,args);return;}
-      if(remoteHost){ remoteDispatch(cmd, name, args); return; }
+      if(remoteHost){await remoteDispatch(cmd,name,args);return;}
       if(recovery){ recoveryDispatch(cmd, name, args); return; }
       if(!SHELL_BUILTINS.has(name)&&name!=='docker'&&!commandAvailable(name)){err('-bash: '+name+': orden no encontrada',127);return;}
       if(currentUser!=='root'&&rootMutation(name,args)){err(name+': Permiso denegado: se requieren privilegios de superusuario.',1);return;}
@@ -1343,7 +1365,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
 
       if(args.includes('--help') && name!=='docker' && name!=='podman'){ const k=name.replace(/\..*/,''); renderMan(MAN[k]?k:name.replace(/\..*/,'')); return; }
 
-      if(typeof runtimeCommands[name]==='function'){ runtimeCommands[name]({name,args,cmd}); return; }
+      if(kubernetesWorkerCommands.has(name)){await executeKubernetesInWorker(name,args,cmd);return;}
+      if(typeof runtimeCommands[name]==='function'){runtimeCommands[name]({name,args,cmd});return;}
 
       switch(name){
         case 'help':
@@ -1953,7 +1976,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       .replace(/[\u200B-\u200D\u2060\uFEFF]/g,'')
       .replace(/\u00A0/g,' ')
       .replace(/[\u2028\u2029]/g,'\n');
-    const run = (raw, options={}) => {
+    const run = async (raw, options={}) => {
       raw=normalizeCommandInput(raw);
       let cmd = raw.trim();
       const echoInput=options.echo!==false;
@@ -1991,7 +2014,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         if(prevOp==='||'&&!lastFail){ prevOp=null; continue; }
         prevOp=null; lastFail=false; lastStatus=0;
         let seg=t.trim();
-        const subshell=seg.match(/^\(([\s\S]*)\)$/);if(subshell){const savedCwd=cwd.slice(),savedVars={...shellVars},savedUser=currentUser;run(subshell[1],{echo:false});cwd=savedCwd;shellVars=savedVars;currentUser=savedUser;setPrompt();expansionStatus=lastStatus;continue;}
+        const subshell=seg.match(/^\(([\s\S]*)\)$/);if(subshell){const savedCwd=cwd.slice(),savedVars={...shellVars},savedUser=currentUser;await run(subshell[1],{echo:false});cwd=savedCwd;shellVars=savedVars;currentUser=savedUser;setPrompt();expansionStatus=lastStatus;continue;}
         if(seg.includes('{')){ const words=tokenize(seg), quoted=tokenQuoted.slice(); seg=words.flatMap((w,wi)=>quoted[wi]?[w]:braceExpand(w)).map(w=>/\s/.test(w)?'"'+w.replace(/"/g,'\\"')+'"':w).join(' '); }
         seg=expandVariables(seg);
         const background=/\s&\s*$/.test(seg); if(background)seg=seg.replace(/\s&\s*$/,'').trim();
@@ -2001,7 +2024,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         seg=parsed.command;
         const redirectPlan=prepareRedirections(parsed.redirections);
         if(!redirectPlan)continue;
-        if(background){const first=tokenize(splitOutside(seg,true).parts[0]||'')[0]||'',known=SHELL_BUILTINS.has(first)||CMDS.includes(first)||typeof runtimeCommands[first]==='function'||['docker','podman','kubectl'].includes(first)||first.startsWith('./')||first.startsWith('/');if(!known||(!SHELL_BUILTINS.has(first)&&first!=='docker'&&first!=='podman'&&first!=='kubectl'&&!commandAvailable(first)&&typeof runtimeCommands[first]!=='function')){err('-bash: '+first+': orden no encontrada',127);expansionStatus=127;continue;}const pid=nextPid++;const job={id:nextJob++,pid,cmd:seg,status:'Running',user:currentUser};jobs.push(job);processes.push({pid,ppid:888,user:currentUser,cpu:0,mem:0.1,vsz:8200,rss:900,stat:'S',start:new Date().toLocaleTimeString().slice(0,5),time:'0:00',cmd:seg});const sm=seg.match(/^sleep\s+([0-9]+(?:\.[0-9]+)?)([smhd]?)$/);out('['+job.id+'] '+pid);if(sm){const factor={s:1000,m:60000,h:3600000,d:86400000}[sm[2]||'s'];job.kind='sleep';scheduleBackgroundJob(job,parseFloat(sm[1])*factor);}else{dispatch(seg);job.status='Done';const proc=processes.find(p=>p.pid===pid);if(proc)processes.splice(processes.indexOf(proc),1);}expansionStatus=0;continue;}
+        if(background){const first=tokenize(splitOutside(seg,true).parts[0]||'')[0]||'',known=SHELL_BUILTINS.has(first)||CMDS.includes(first)||typeof runtimeCommands[first]==='function'||['docker','podman','kubectl'].includes(first)||first.startsWith('./')||first.startsWith('/');if(!known||(!SHELL_BUILTINS.has(first)&&first!=='docker'&&first!=='podman'&&first!=='kubectl'&&!commandAvailable(first)&&typeof runtimeCommands[first]!=='function')){err('-bash: '+first+': orden no encontrada',127);expansionStatus=127;continue;}const pid=nextPid++;const job={id:nextJob++,pid,cmd:seg,status:'Running',user:currentUser};jobs.push(job);processes.push({pid,ppid:888,user:currentUser,cpu:0,mem:0.1,vsz:8200,rss:900,stat:'S',start:new Date().toLocaleTimeString().slice(0,5),time:'0:00',cmd:seg});const sm=seg.match(/^sleep\s+([0-9]+(?:\.[0-9]+)?)([smhd]?)$/);out('['+job.id+'] '+pid);if(sm){const factor={s:1000,m:60000,h:3600000,d:86400000}[sm[2]||'s'];job.kind='sleep';scheduleBackgroundJob(job,parseFloat(sm[1])*factor);}else{await dispatch(seg);job.status='Done';const proc=processes.find(p=>p.pid===pid);if(proc)processes.splice(processes.indexOf(proc),1);}expansionStatus=0;continue;}
         const stages = splitOutside(seg,true).parts.filter(s=>s!=='|');
         let buf=null;
         const hasRedirections=parsed.redirections.length>0;
@@ -2014,20 +2037,20 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             if(stages.length>1){
               let b;
               if(inputLines&&streamCommand(stages[0]))b=applyFilter(stages[0],inputLines.slice());
-              else{dispatch(stages[0]);b=cap.slice();}
+              else{await dispatch(stages[0]);b=cap.slice();}
               for(let j=1;j<stages.length;j++)b=applyFilter(stages[j],b);
               ioEvents=ioEvents.filter(event=>event.fd===2);
               b.forEach(text=>ioEvents.push({fd:1,text}));
             }else if(inputLines&&streamCommand(stages[0])){
               const b=applyFilter(stages[0],inputLines.slice());
               b.forEach(text=>ioEvents.push({fd:1,text}));
-            }else if(stages[0])dispatch(stages[0]);
+            }else if(stages[0])await dispatch(stages[0]);
             const events=ioEvents.slice();
             cap=oldCap;errCap=oldErr;ioEvents=oldEvents;
             routeRedirectEvents(redirectPlan,events);
           }finally{cap=oldCap;errCap=oldErr;ioEvents=oldEvents;}
-        }else if(stages.length>1){ cap=[]; dispatch(stages[0]); let b=cap; cap=null; for(let j=1;j<stages.length;j++) b=applyFilter(stages[j],b); buf=b; }
-        else if(stages[0]){ dispatch(seg); }
+        }else if(stages.length>1){ cap=[]; await dispatch(stages[0]); let b=cap; cap=null; for(let j=1;j<stages.length;j++) b=applyFilter(stages[j],b); buf=b; }
+        else if(stages[0]){ await dispatch(seg); }
         if(buf)buf.forEach(l=>out(l));
         expansionStatus=lastStatus;
       }
@@ -2055,10 +2078,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       let analysis;
       try{analysis=simulation?await simulation.analyzeShellInput(candidate):analyzeShellInput(candidate);}
       catch(error){analysis=analyzeShellInput(candidate);}
-      submissionPending=false;input.readOnly=false;
-      if(!analysis.complete){continuationLines.push(lineValue);setPs2();scroll();return;}
+      if(!analysis.complete){submissionPending=false;input.readOnly=false;continuationLines.push(lineValue);setPs2();scroll();return;}
       continuationLines=[];
-      run(candidate,{echo:false});
+      try{await run(candidate,{echo:false});}
+      finally{submissionPending=false;if(!booting)input.readOnly=false;}
       if(!interactive&&!foregroundProcess&&!followTimer)setPrompt();
       scroll();
     };

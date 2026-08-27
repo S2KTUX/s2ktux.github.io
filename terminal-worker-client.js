@@ -1,9 +1,9 @@
-import { WORKER_OPERATIONS, createWorkerRequest, isWorkerEnvelope } from './terminal-worker-protocol.js';
+import { WORKER_OPERATIONS, createWorkerRequest, isWorkerEnvelope, isWorkerEvent } from './terminal-worker-protocol.js';
 
-const REQUEST_TIMEOUT=1500;
+const REQUEST_TIMEOUT=5000;
 
 class TerminalSimulationClient{
-  constructor(mode,options={}){this.mode=mode;this.kind='fallback';this.nextId=1;this.pending=new Map();this.worker=null;this.workerUrl=options.workerUrl||new URL('./terminal-simulation-worker.js?v=20260825-phase2',import.meta.url);}
+  constructor(mode,options={}){this.mode=mode;this.kind='fallback';this.nextId=1;this.pending=new Map();this.listeners=new Map();this.worker=null;this.workerUrl=options.workerUrl||new URL('./terminal-simulation-worker.js?v=20260827-block2-kubernetes-worker',import.meta.url);}
   async connect(){
     if(typeof Worker!=='function')return this;
     try{
@@ -19,6 +19,7 @@ class TerminalSimulationClient{
     this.pending.clear();
   }
   receive(message){
+    if(isWorkerEvent(message)){for(const listener of this.listeners.get(message.event)||[])listener(message.payload);return;}
     if(!isWorkerEnvelope(message))return;const pending=this.pending.get(message.id);if(!pending)return;
     clearTimeout(pending.timer);this.pending.delete(message.id);
     if(message.ok)pending.resolve(message.result);else pending.reject(new Error(message.error||'Fallo del Worker'));
@@ -30,10 +31,15 @@ class TerminalSimulationClient{
       this.pending.set(id,{resolve,reject,timer});this.worker.postMessage(createWorkerRequest(id,operation,payload));
     });
   }
+  on(event,listener){if(!this.listeners.has(event))this.listeners.set(event,new Set());this.listeners.get(event).add(listener);return()=>this.listeners.get(event)?.delete(listener);}
   async analyzeShellInput(source){
     if(this.worker){try{return await this.request(WORKER_OPERATIONS.SHELL_ANALYZE,{source});}catch(error){this.disconnect();}}
     const {analyzeShellInput}=await import('./terminal-shell-parser.js');return analyzeShellInput(source);
   }
+  initializeKubernetes(payload){return this.request(WORKER_OPERATIONS.KUBERNETES_INIT,payload);}
+  executeKubernetes(payload){return this.request(WORKER_OPERATIONS.KUBERNETES_EXECUTE,payload);}
+  rebootKubernetes(){return this.request(WORKER_OPERATIONS.KUBERNETES_REBOOT,{});}
+  recoverKubernetesKubelet(node){return this.request(WORKER_OPERATIONS.KUBERNETES_KUBELET_RECOVER,{node});}
 }
 
 export async function createTerminalSimulationClient(mode,options){return new TerminalSimulationClient(mode,options).connect();}
