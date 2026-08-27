@@ -1,4 +1,4 @@
-name: Validacion completa de terminales
+name: Validacion y despliegue de S2KTUX
 
 on:
   push:
@@ -9,16 +9,19 @@ on:
     branches: [main]
   workflow_dispatch:
 
-permissions:
-  contents: read
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
-  tests:
+  validate:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.62.0-noble
       options: --user 1001
+    permissions:
+      contents: read
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v6
@@ -26,9 +29,10 @@ jobs:
         uses: actions/setup-node@v6
         with:
           node-version: 24
-      - name: Instalar dependencias
+          cache: npm
+      - name: Instalar dependencias fijadas
         run: npm ci --no-audit --no-fund
-      - name: Ejecutar toda la batería
+      - name: Construir y validar el artefacto publicable
         run: npm test
       - name: Guardar informe, capturas, trazas y videos
         if: ${{ !cancelled() }}
@@ -38,5 +42,29 @@ jobs:
           path: |
             playwright-report/
             test-results/
+            _site/assets/terminal/build-report.json
           retention-days: 30
           if-no-files-found: warn
+      - name: Preparar GitHub Pages
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+        uses: actions/configure-pages@v5
+      - name: Empaquetar sitio validado
+        if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+
+  deploy:
+    if: ${{ github.event_name != 'pull_request' && github.ref == 'refs/heads/main' }}
+    needs: validate
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Publicar únicamente el artefacto validado
+        id: deployment
+        uses: actions/deploy-pages@v4

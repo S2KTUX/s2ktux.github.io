@@ -6,6 +6,8 @@ const core = await readFile(new URL('../terminal-core.js', import.meta.url), 'ut
 const runtimeLinux = await readFile(new URL('../terminal-runtime-linux.js', import.meta.url), 'utf8');
 const runtimeDocker = await readFile(new URL('../terminal-runtime-docker.js', import.meta.url), 'utf8');
 const runtimeKubernetes = await readFile(new URL('../terminal-runtime-kubernetes.js', import.meta.url), 'utf8');
+const commandKubernetes = await readFile(new URL('../terminal-kubernetes-command.js', import.meta.url), 'utf8');
+const kubernetesSource = runtimeKubernetes+'\n'+commandKubernetes;
 const page = await readFile(new URL('../terminal.html', import.meta.url), 'utf8');
 const terminalCss = await readFile(new URL('../terminal-page.css', import.meta.url), 'utf8');
 const bootstrap = await readFile(new URL('../terminal-bootstrap.js', import.meta.url), 'utf8');
@@ -22,7 +24,7 @@ const contracts = [
   ['Boot identity and history', /bootHistory/.test(core) && /--list-boots/.test(core)],
   ['Shared sockets', /listeningSockets/.test(core) && /portOpen/.test(core)],
   ['Docker event stream', /eventAdd\('docker'/.test(core) && /sub==='events'/.test(core)],
-  ['Kubernetes reconciliation', /ContainerCreating/.test(core) && /Pod became Running/.test(core)],
+  ['Kubernetes reconciliation', /ContainerCreating/.test(kubernetesSource) && /Pod became Running/.test(kubernetesSource)],
   ['Interactive container shells', /enterContainerShell/.test(core) && /containerDispatch/.test(core)],
   ['Here-document input', /const hd=cmd\.match/.test(core) && /startInteractive\('>'/.test(core)],
   ['Async command prompt recovery', /const runCommandSeq/.test(core) && (core.match(/runCommandSeq\(seq/g)||[]).length>=2 && /finally\{[\s\S]*?input\.readOnly=false[\s\S]*?setPrompt\(\); input\.focus\(\)/.test(core)],
@@ -39,7 +41,7 @@ const contracts = [
   ['Collapsed learning panels', /<details class="cs">/.test(page) && /<details class="cs" id="practice-panel">/.test(page) && !/<details class="cs"[^>]*\sopen/.test(page) && /practice\.open=false/.test(core)],
   ['SELinux causal diagnostics', /avcAudit/.test(core) && /case 'ausearch'/.test(core) && /case 'sealert'/.test(core)],
   ['Docker lifecycle state', /OOMKilled/.test(core) && /containerStatus/.test(core) && /restart policy activated/.test(core)],
-  ['Kubernetes desired state', /endpointsFor/.test(core) && /readyForDeployment/.test(core) && /Deployment restored desired state/.test(core)],
+  ['Kubernetes desired state', /endpointsFor/.test(kubernetesSource) && /readyForDeployment/.test(kubernetesSource) && /Deployment restored desired state/.test(kubernetesSource)],
   ['Complete persistence schema', /state-v15-/.test(core) && /schema:15/.test(core) && /state-v13-/.test(core) && /groupsDb:\[\.\.\.groupsDb\]/.test(core) && /linger,userUnits,labHosts,defaultTarget/.test(core) && /dnfCache/.test(core)],
   ['Reload state repair', /transientPids/.test(core) && /processes=\(processes\|\|\[\]\)\.filter/.test(core) && /p\.status==='Pending'\|\|p\.status==='ContainerCreating'/.test(core) && /p\.status==='ErrImagePull'/.test(core) && /recovering desired state/.test(core) && /reconcilePackages/.test(core)],
   ['Effective-root authorization', /const rootMutation=/.test(core) && /currentUser!=='root'&&rootMutation/.test(core) && /dockerd/.test(core) && /groups\|\|\[\]\)\.includes\('docker'\)/.test(core)],
@@ -50,20 +52,20 @@ const contracts = [
   ['Everyday filesystem semantics', /const numbered=args\.includes\('-n'\)/.test(core) && /path==='\/proc\/uptime'/.test(core) && /se omite el directorio/.test(core) && /const rec=args\.some/.test(core) && /targets\.forEach\(tgt/.test(core)],
   ['Coherent identity databases', /const groupRows=/.test(core) && /const rebuildGroup=/.test(core) && /db==='group'/.test(core) && /rebuildPasswd\(\); rebuildGroup\(\)/.test(core)],
   ['Unknown systemd units', /const unitExists=/.test(core) && /LoadState=not-found/.test(core) && /Unit '\+svc\+'\.service could not be found/.test(core) && /const unitNames=/.test(core)],
-  ['Flexible kubectl namespace flags', /scanEnd=args\.indexOf\('--'\)/.test(core) && /a\.startsWith\('--namespace='\)/.test(core) && /args\.splice\(i,count\)/.test(core) && /args\.splice\(i,1\)/.test(core)],
+  ['Flexible kubectl namespace flags', /scanEnd=args\.indexOf\('--'\)/.test(kubernetesSource) && /a\.startsWith\('--namespace='\)/.test(kubernetesSource) && /args\.splice\(i,count\)/.test(kubernetesSource) && /args\.splice\(i,1\)/.test(kubernetesSource)],
   ['Remote SSH identity', /const promptIsRoot=/.test(core) && /remoteHost\.user\+'@'\+remoteHost\.name\+'\: '/.test(core) && /Connection to '\+closed\+' closed/.test(core)],
   ['Packaged Kubernetes utilities', /crictl\(\{args\}\)/.test(runtimeKubernetes) && /kubelet\(\{args\}\)/.test(runtimeKubernetes) && /const jqFilter=/.test(core)],
   ['Ordered shell redirections', /import \{[^}]*parseRedirections[^}]*\}/.test(core) && /const prepareRedirections=|const prepareRedirections =/.test(core) && /routeRedirectEvents/.test(core) && /ioEvents/.test(core) && !/let redir=null|writeRedirect|mergeErr|errRedir|inputRedir/.test(core) && joinedFlow[1] === 'file:out:truncate' && joinedFlow[2] === 'file:out:truncate' && splitFlow[1] === 'file:out:truncate' && splitFlow[2] === 'terminal:stdout'],
   ['Quoted whitespace survives redirection parsing', quotedWhitespace.includes("services:\\n  web:")],
   ['Shell redirection forms and failures', redirectionForms.some(item=>item.fd===0&&item.operator==='<') && redirectionForms.some(item=>item.fd===1&&item.append) && redirectionForms.some(item=>item.fd===2&&item.append) && redirectionForms.some(item=>item.fd==='both') && /noclobber/.test(core) && /descriptor de fichero incorrecto/.test(core) && /Es un directorio/.test(core)],
   ['Engine-backed Rocky identity', /const SYSTEM=engine\.system/.test(core) && /const OS_NAME=/.test(core) && /syncSystemIdentity/.test(core) && /Operating System: '\+OS_NAME/.test(core) && /Kernel: Linux '\+KERNEL/.test(core) && /CERTIFICATION\|\|'RHCSA 9'/.test(core)],
-  ['Engine-backed platform versions', /DOCKER_VERSION=SYSTEM\.docker\|\|'29\.7\.2'/.test(core) && /K8S_VERSION=SYSTEM\.kubernetes\|\|'1\.35\.0'/.test(core) && /Docker version '\+DOCKER_VERSION/.test(core) && /Client Version: '\+K8S_FULL/.test(core)],
+  ['Engine-backed platform versions', /DOCKER_VERSION=SYSTEM\.docker\|\|'29\.7\.2'/.test(core) && /K8S_VERSION=SYSTEM\.kubernetes\|\|'1\.35\.0'/.test(core) && /Docker version '\+DOCKER_VERSION/.test(core) && /Client Version: '\+K8S_FULL/.test(kubernetesSource)],
   ['No obsolete simulated OS versions', !/S2KTUX OS|7\.1\.0-cozy|v1\.30(?:\.\d+)?|v1\.31(?:\.\d+)?|29\.6\.1/.test(core)],
   ['Cheatsheet and long-command accessibility', /window\.__syncCheatTabs/.test(core) && /#term-a11y-status/.test(core) && /Comando finalizado\. El prompt vuelve a estar disponible\./.test(core)],
   ['Reset command semantics', /reset:\['reinicializa la pantalla de la terminal'/.test(core) && /No borra ficheros ni reinicia la máquina/.test(core) && /case 'reset': \[\.\.\.body\.querySelectorAll/.test(core)],
   ['Runtime-owned practice catalogs', /createChallenges\(ctx\)/.test(runtimeLinux) && /createChallenges\(ctx\)/.test(runtimeDocker) && /createChallenges\(ctx\)/.test(runtimeKubernetes) && !/const (?:dockerChallenges|k8sChallenges|challenges)\s*=/.test(core)],
   ['Runtime-owned manuals and completions', /manuals:\s*\{/.test(runtimeLinux) && /manuals:\s*\{/.test(runtimeDocker) && /manuals:\s*\{/.test(runtimeKubernetes) && /runtime\.manuals/.test(core) && /runtime\.completions/.test(core)],
-  ['Selected runtime loading', /labelledImport\('contenido del entorno', `\.\/terminal-runtime-\$\{mode\}\.js(?:\?[^`]*)?`\)/.test(bootstrap) && /Promise\.all/.test(bootstrap) && /startTerminal\(engine, runtime, \{ simulation \}\)/.test(bootstrap) && !/terminal-runtime-(?:linux|docker|kubernetes)\.js['"]/.test(bootstrap)],
+  ['Selected runtime loading', ['linux','docker','kubernetes'].every(name=>bootstrap.includes("import('./terminal-runtime-"+name+".js")) && /sourceLoaders\[mode\]/.test(bootstrap) && /importBuilt\('\.\/terminal-'\+mode\+'\.min\.js'\)/.test(bootstrap) && /startTerminal\(engine, runtime, \{ simulation \}\)/.test(bootstrap)],
   ['Immediate environment entry', /const showEnvironmentBanner/.test(core) && /if\(!savedScroll\)\{\s*showEnvironmentBanner\(\)/.test(core) && !/systemBootLines|QUICK_BOOT|Booting from Hard Disk|systemd 252 running in system mode/.test(core)],
   ['Hidden reboot reconciliation', /MODE==='docker'&&dockerInstalled/.test(core) && /const configError=dockerConfigError\(\)/.test(core) && /services\.docker&&services\.docker\.active/.test(core) && /reason:'restart-policy'/.test(core)],
   ['GRUB preserved for RHCSA recovery', /const startGrub[\s\S]*?enterGrubMenu\(\)/.test(core) && /rd\.break/.test(core) && /init=\/bin\/bash/.test(core) && /bootEmergency/.test(core)],
@@ -73,13 +75,13 @@ const contracts = [
   ['Editor write protection and workflows', /editorRemember/.test(core) && /E212: No se puede abrir/.test(core) && /confirmExit/.test(core) && /lastSearch/.test(core) && /GNU nano 5\.6\.1/.test(core) && /setRawKeys\(kind\)/.test(core) && /for \(const char of clean\) dispatchKey/.test(xtermRenderer)],
   ['Process lifecycle and job signals', /scheduleBackgroundJob/.test(core) && /job\.status='Done'/.test(core) && /job\.remaining/.test(core) && /targetJob/.test(core) && /jobId/.test(core)],
   ['Docker filesystem layers and health', /containerBaseFs/.test(core) && /c\.fs\[target\]/.test(core) && /buildKey/.test(core) && /health_status/.test(core) && /health: starting/.test(core)],
-  ['Kubernetes causal scheduling and rollouts', /FailedScheduling/.test(core) && /FailedMount/.test(core) && /readinessFail/.test(core) && /livenessFail/.test(core) && /replicasets/.test(core) && /d\.history/.test(core)],
+  ['Kubernetes causal scheduling and rollouts', /FailedScheduling/.test(kubernetesSource) && /FailedMount/.test(kubernetesSource) && /readinessFail/.test(kubernetesSource) && /livenessFail/.test(kubernetesSource) && /replicasets/.test(kubernetesSource) && /d\.history/.test(kubernetesSource)],
   ['TTY geometry and non-interactive shells', /case 'tty'/.test(core) && /case 'stty'/.test(core) && /case 'sh': case 'bash'/.test(core) && /dispatch\(expandVariables\(nested\)\)/.test(core) && /dataset\.columns/.test(core)],
   ['Docker network and volume causality', /attachDockerNetwork/.test(core) && /containerFsView/.test(core) && /volume is in use/.test(core) && /Name or service not known/.test(core) && /getOwnPropertyDescriptor\(target,key\)/.test(core)],
-  ['Kubernetes named resources and drain safety', /const requireRequested=/.test(core) && /use --force to override/.test(core) && /out\('node\/'\+n\.name\+' drained'\)/.test(core) && /ownedRs/.test(core) && /dryRun/.test(core)],
+  ['Kubernetes named resources and drain safety', /const requireRequested=/.test(kubernetesSource) && /use --force to override/.test(kubernetesSource) && /out\('node\/'\+n\.name\+' drained'\)/.test(kubernetesSource) && /ownedRs/.test(kubernetesSource) && /dryRun/.test(kubernetesSource)],
   ['Stateful Linux administration', /const maskedMode=/.test(core) && /systemSettings\.timezone/.test(core) && /systemSettings\.sebools/.test(core) && /systemSettings\.chage/.test(core) && /case 'visudo'/.test(core) && /case 'chroot'/.test(core)],
   ['Real Docker mounts and Compose projects', /mount\.type==='bind'/.test(core) && /hostPath:norm/.test(core) && /const parseCompose=/.test(core) && /composeProject:projectName/.test(core) && /--scale=/.test(core) && /rest\.includes\('-v'\)/.test(core)],
-  ['CKA workload and rollout coverage', /daemonsets/.test(core) && /statefulsets/.test(core) && /cronjobs/.test(core) && /horizontalpodautoscaler/.test(core) && /op==='restart'/.test(core) && /sub==='autoscale'/.test(core) && /sub==='events'/.test(core) && /args\[1\]==='token'/.test(core)],
+  ['CKA workload and rollout coverage', /daemonsets/.test(kubernetesSource) && /statefulsets/.test(kubernetesSource) && /cronjobs/.test(kubernetesSource) && /horizontalpodautoscaler/.test(kubernetesSource) && /op==='restart'/.test(kubernetesSource) && /sub==='autoscale'/.test(kubernetesSource) && /sub==='events'/.test(kubernetesSource) && /args\[1\]==='token'/.test(kubernetesSource)],
   ['Docker ready from first prompt', /MODE==='docker'[\s\S]*?services\.docker=\{active:true,enabled:true/.test(core) && /dockerInstalled=MODE==='docker'/.test(core) && /docker-ce/.test(runtimeDocker) && !/NIVEL 1 · INSTALACIÓN|NIVEL 1 · DAEMON/.test(runtimeDocker)],
   ['Docker registry transfer realism', /const registryCatalog=/.test(core) && /const pullImage=/.test(core) && /Pulling fs layer/.test(core) && /Downloading  \[/.test(core) && /Extracting   \[/.test(core) && /Downloaded newer image/.test(core)],
   ['Docker bare latest references', /!String\(ref\)\.includes\(':'\)&&item\.repo===ref&&item\.tag==='latest'/.test(core) && /docker save/.test(core)],

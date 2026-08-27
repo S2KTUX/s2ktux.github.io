@@ -3,11 +3,11 @@ import { WORKER_OPERATIONS, createWorkerRequest, isWorkerEnvelope } from './term
 const REQUEST_TIMEOUT=1500;
 
 class TerminalSimulationClient{
-  constructor(mode){this.mode=mode;this.kind='fallback';this.nextId=1;this.pending=new Map();this.worker=null;}
+  constructor(mode,options={}){this.mode=mode;this.kind='fallback';this.nextId=1;this.pending=new Map();this.worker=null;this.workerUrl=options.workerUrl||new URL('./terminal-simulation-worker.js?v=20260825-phase2',import.meta.url);}
   async connect(){
     if(typeof Worker!=='function')return this;
     try{
-      const worker=new Worker(new URL('./terminal-simulation-worker.js?v=20260825-phase2',import.meta.url),{type:'module',name:'s2ktux-simulation'});
+      const worker=new Worker(this.workerUrl,{type:'module',name:'s2ktux-simulation'});
       worker.addEventListener('message',event=>this.receive(event.data));worker.addEventListener('error',()=>this.disconnect());
       this.worker=worker;this.kind='worker';await this.request(WORKER_OPERATIONS.READY,{});
     }catch(error){this.disconnect();}
@@ -36,4 +36,4 @@ class TerminalSimulationClient{
   }
 }
 
-export async function createTerminalSimulationClient(mode){return new TerminalSimulationClient(mode).connect();}
+export async function createTerminalSimulationClient(mode,options){return new TerminalSimulationClient(mode,options).connect();}
