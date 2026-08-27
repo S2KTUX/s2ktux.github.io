@@ -93,8 +93,36 @@ test('Bloque 2 · una excepción no controlada cierra el Worker Kubernetes a mit
   await input.evaluate(element=>{element.value='kubectl get pods --watch';element.dispatchEvent(new Event('input',{bubbles:true}));});
   await workerClosed;
   expect(page.isClosed()).toBeFalsy();
-  await expect.poll(()=>page.evaluate(()=>document.documentElement.dataset.terminalEngineThread)).toBe('disconnected');
   await expect(page.locator('#term-body')).toContainText('El entorno Kubernetes se ha desconectado');
   expect(await input.inputValue()).toBe('kubectl get pods --watch');
   expect(await input.evaluate(element=>element.readOnly)).toBeFalsy();
+});
+
+test('Bloque 2 · Kubernetes recrea el Worker sin confundir reinicio con resincronización',async({page})=>{
+  test.skip(workerDisabled,'Esta prueba necesita reiniciar un Worker real');
+  await page.addInitScript(()=>{
+    const BrowserWorker=window.Worker;let creations=0;
+    window.Worker=class RecoverableWorker extends BrowserWorker{
+      constructor(url,options){
+        creations+=1;
+        if(creations===1){const target=String(url),source=`import ${JSON.stringify(target)};setTimeout(()=>{throw new Error('S2KTUX_TEST_FIRST_WORKER_CRASH');},1500);`;super(URL.createObjectURL(new Blob([source],{type:'text/javascript'})),{...options,type:'module'});}
+        else super(url,options);
+      }
+    };
+  });
+  const workers=[];page.on('worker',worker=>workers.push(worker));
+  await page.goto('/terminal.html');
+  await page.locator('[data-pick-mode="kubernetes"]').click();
+  await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
+  await expect(page.locator('#term-body')).toContainText('El entorno Kubernetes se ha desconectado');
+  await expect(page.locator('#term-body')).toContainText('Reinicio automático de Kubernetes · intento 1/3');
+  await expect(page.locator('#term-body')).toContainText('Worker Kubernetes reiniciado');
+  await expect.poll(()=>workers.length).toBeGreaterThanOrEqual(2);
+  expect(await page.evaluate(()=>document.documentElement.dataset.terminalEngineThread)).toBe('worker');
+  expect(await page.evaluate(()=>document.documentElement.dataset.terminalClusterSync)).toBe('pending');
+  await expect(page).toHaveURL(/terminal\.html\?mode=kubernetes/);
+  const input=page.locator('#term-input');
+  await input.evaluate(element=>{element.value='kubectl get nodes';element.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));});
+  await page.waitForFunction(()=>!document.querySelector('#term-input')?.readOnly);
+  await expect(page.locator('#term-body')).toContainText('Kubernetes no está inicializado en el Worker');
 });

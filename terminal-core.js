@@ -1315,9 +1315,16 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     const runtimeCommands=!kubernetesWorkerEnabled&&typeof runtime.createCommands==='function'?(runtime.createCommands(runtimeContext)||{}):{};
     const publishKubernetesState=(reason)=>document.dispatchEvent(new CustomEvent('s2ktux-kubernetes-state',{detail:{reason,state:k8s}}));
     const acceptKubernetesState=(state,reason)=>{if(!state)return;k8s=state;save();publishKubernetesState(reason);};
-    if(kubernetesWorkerEnabled)simulation.on('runtime.disconnected',()=>{document.documentElement.dataset.terminalEngineThread='disconnected';out('⚠ El entorno Kubernetes se ha desconectado. Los comandos del clúster no están disponibles.','#ef8a7a');scroll();});
+    if(kubernetesWorkerEnabled){
+      document.documentElement.dataset.terminalClusterSync='initializing';
+      simulation.on('runtime.disconnected',()=>{document.documentElement.dataset.terminalEngineThread='disconnected';document.documentElement.dataset.terminalClusterSync='pending';out('⚠ El entorno Kubernetes se ha desconectado. Los comandos del clúster no están disponibles.','#ef8a7a');scroll();});
+      simulation.on('runtime.restart-scheduled',payload=>{document.documentElement.dataset.terminalEngineThread='restarting';out('Reinicio automático de Kubernetes · intento '+payload.attempt+'/'+payload.max+' en '+(payload.delay/1000).toLocaleString('es-ES')+' s.','#e0a458');scroll();});
+      simulation.on('runtime.restarted',()=>{document.documentElement.dataset.terminalEngineThread='worker';document.documentElement.dataset.terminalClusterSync='pending';out('Worker Kubernetes reiniciado. El motor responde, pero el estado del clúster aún no está resincronizado.','#e0a458');scroll();});
+      simulation.on('runtime.restart-exhausted',payload=>{document.documentElement.dataset.terminalEngineThread='disconnected';out('No se pudo reiniciar el Worker Kubernetes tras '+payload.attempts+' intentos. El clúster sigue no disponible.','#ef8a7a');scroll();});
+    }
     if(kubernetesWorkerEnabled)simulation.on('kubernetes.state',payload=>acceptKubernetesState(payload.state,payload.reason||'reconcile'));
     const kubernetesWorkerReady=kubernetesWorkerEnabled?simulation.initializeKubernetes({state:k8s,fs,cwd,currentUser,system:{K8S_FULL,K8S_MAJOR,K8S_MINOR,K8S_UPGRADE,ARCH}}):Promise.resolve();
+    if(kubernetesWorkerEnabled)void kubernetesWorkerReady.then(()=>{document.documentElement.dataset.terminalClusterSync='synchronized';}).catch(()=>{});
     const applyKubernetesWorkerResult=async(result,reason='command')=>{
       if(result.state)k8s=result.state;if(result.fs)fs=result.fs;
       for(const item of result.outputs||[]){if(item.fd===2)err(item.text,result.status||1);else out(item.text,item.color||undefined);}
