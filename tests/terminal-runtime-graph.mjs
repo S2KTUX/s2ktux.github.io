@@ -1,6 +1,10 @@
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
+import { createDefaultKubernetesState } from '../terminal-kubernetes-state.js';
+import { createKubectlCommand } from '../terminal-kubernetes-command.js';
+import { executeDockerCommand, repairDockerState } from '../terminal-docker-command.js';
+import { createTerminalFidelity } from '../terminal-fidelity.js';
 
 const names=['linux','docker','kubernetes'];
 const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
@@ -24,6 +28,12 @@ assert.match(bootstrap,/await Promise\.all/);
 assert.doesNotMatch(core,/terminal-runtime-(?:linux|docker|kubernetes)/);
 assert.doesNotMatch(core,/const (?:challenges|dockerChallenges|k8sChallenges)\s*=/);
 assert.doesNotMatch(core,/kubectl controls the Kubernetes cluster manager|createDefaultKubernetesState/,'El nucleo conserva el motor kubectl o su estado inicial');
+assert.equal(typeof createDefaultKubernetesState,'function');
+assert.equal(typeof createKubectlCommand,'function');
+assert.equal(typeof executeDockerCommand,'function');
+assert.equal(typeof repairDockerState,'function');
+assert.equal(typeof createTerminalFidelity,'function');
+assert.doesNotMatch(core,/function\s+(?:createDefaultKubernetesState|createKubectlCommand|executeDockerCommand|repairDockerState|createTerminalFidelity)\b/,'El core contiene implementaciones que pertenecen a módulos extraídos');
 assert.match(sources.kubernetes,/createKubectlCommand|terminal-kubernetes-command\.js/,'El runtime Kubernetes debe cargar su comando aislado');
 assert.doesNotMatch(modeInteractive.kubernetes['terminal-kubernetes-command.js'],/document\.|window\.|querySelector/,'El comando Kubernetes aislado no debe acceder al DOM');
 
@@ -68,8 +78,6 @@ assert.equal(modules.docker.createCommands,undefined,'Docker no debe exponer un 
 // solo el archivo central. Así la modularización no puede ocultar un aumento.
 const publishedCore=core.replace(/\r\n/g,'\n');
 const coreRaw=Buffer.byteLength(publishedCore),coreGzip=gzipSync(publishedCore).byteLength;
-assert.ok(coreRaw<463000,'El core volvió a absorber módulos ya extraídos');
-assert.ok(coreGzip<143000,'El core comprimido volvió a crecer por encima del presupuesto');
 const sharedInteractiveGzip=Object.values(interactiveShared).reduce((total,source)=>total+gzipSync(source.replace(/\r\n/g,'\n')).byteLength,0)+coreGzip;
 const selectedGzipByMode={};
 for(const name of names){

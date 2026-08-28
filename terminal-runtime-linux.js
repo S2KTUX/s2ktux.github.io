@@ -9,6 +9,7 @@ const packages = [
 
 export default {
   mode: 'linux',
+  workerCommands: ['labhosts','getfacl','setfacl','getenforce','setenforce','sestatus','getsebool','setsebool','semanage','restorecon','chcon','chage','timedatectl','tuned-adm','pvcreate','vgcreate','vgextend','lvcreate','lvextend','lvresize','lvreduce','lvremove','vgremove','pvremove','xfs_growfs','resize2fs','mkswap','swapon','getent','useradd','userdel','usermod','groupadd','blkid','mkfs.xfs','mkfs.ext4','mount','umount','pvs','vgs','lvs','ifup','ifdown','firewall-cmd','chronyc','logger','loginctl','atq','atrm','bzip2','bunzip2','podman'],
   profile: {
     initialUser: 'visitor',
     cwd: ['home','visitor'],

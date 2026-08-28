@@ -7,7 +7,8 @@ export default {
     id: 'rocky',
     kernel: '5.14.0-427.el9.x86_64',
     architecture: 'x86_64',
-    certification: 'RHCSA 9'
+    certification: 'RHCSA 9',
+    dnf: '4.14.0'
   },
   environment: {
     eyebrow: 'SANDBOX · LINUX / RHCSA 9',

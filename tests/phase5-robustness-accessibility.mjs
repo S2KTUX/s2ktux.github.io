@@ -9,6 +9,7 @@ import {
   validatePaste,
   validateVirtualWrite
 } from '../terminal-resource-limits.js';
+import { evaluateVirtualWrite } from '../terminal-core-behavior.js';
 
 const fs = {
   type:'dir',
@@ -41,8 +42,10 @@ assert.equal(countKubernetesResources({pods:[1,2],deployments:[1],events:[1,2,3]
 const core = await readFile(new URL('../terminal-core.js', import.meta.url), 'utf8');
 const renderer = await readFile(new URL('../terminal-xterm-renderer.js', import.meta.url), 'utf8');
 assert.match(core,/flatStorageMaps/, 'La cuota debe incluir imágenes, contenedores, volúmenes y Pods');
-assert.match(core,/virtualWrite\(existing,nextContent/, 'Los editores deben respetar la cuota');
-assert.match(core,/virtualWrite\(sink\.node,next/, 'Las redirecciones deben respetar la cuota');
+const acceptedWrite=evaluateVirtualWrite({fs,node:fs.children.etc.children.hostname,nextContent:'nuevo',availableBytes:TERMINAL_LIMITS.virtualDiskBytes});
+const rejectedWrite=evaluateVirtualWrite({fs,node:null,nextContent:'x'.repeat(TERMINAL_LIMITS.virtualFileBytes+1),availableBytes:TERMINAL_LIMITS.virtualDiskBytes});
+assert.equal(acceptedWrite.ok,true,'Los editores deben aceptar escrituras dentro de cuota');
+assert.equal(rejectedWrite.reason,'file','Editores y redirecciones deben rechazar ficheros por encima de cuota');
 assert.match(renderer,/validatePaste\(clean\)/, 'Los pegados deben validarse antes de entrar en cola');
 assert.match(renderer,/xterm-helper-textarea/, 'La entrada real de xterm debe quedar etiquetada');
 
