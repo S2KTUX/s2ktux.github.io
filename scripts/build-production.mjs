@@ -122,14 +122,14 @@ const namedOutput = name => {
 const bootstrapOutput = namedOutput('terminal-bootstrap.min.js');
 const workerOutput = namedOutput('terminal-simulation-worker.min.js');
 const modeDynamicOutputs = mode => {
-  const markers = mode==='kubernetes'?['terminal-runtime-kubernetes.js','terminal-kubernetes-command.js']:mode==='docker'?['terminal-docker-command.js']:[];
-  if (!markers.length) return [];
+  const marker = mode==='kubernetes'?'terminal-kubernetes-command.js':mode==='docker'?'terminal-docker-command.js':'terminal-linux-command.js';
   const dynamicRoots=(metaByAbsolute.get(workerOutput).imports||[])
     .filter(item=>!item.external&&item.kind==='dynamic-import')
     .map(item=>resolveOutputImport(workerOutput,item.path));
-  return dynamicRoots.filter(root=>[...dependencyClosure([root])].some(path=>
-    Object.keys(metaByAbsolute.get(path).inputs||{}).some(input=>markers.some(marker=>input.endsWith(marker)))
-  ));
+  return dynamicRoots.filter(root=>{
+    const inputs=[...dependencyClosure([root])].flatMap(path=>Object.keys(metaByAbsolute.get(path).inputs||{}));
+    return inputs.some(input=>input.endsWith(marker))&&(mode!=='docker'||!inputs.some(input=>input.endsWith('terminal-linux-command.js')));
+  });
 };
 const modeReports = {};
 for (const mode of modes) {

@@ -6,6 +6,8 @@ let kubernetesSession=null;
 let kubernetesGeneration=0;
 let kubernetesRuntime=null,virtualFs=null;
 let dockerSession=null,dockerRuntime=null;
+let linuxSession=null,linuxRuntime=null;
+const loadLinuxEngine=async()=>{if(!linuxRuntime)linuxRuntime=await import('./terminal-linux-command.js');};
 const loadDockerEngine=async()=>{if(!dockerRuntime)dockerRuntime=await import('./terminal-docker-command.js');};
 const loadKubernetesEngine=async()=>{if(kubernetesRuntime)return;const [runtimeModule,fsModule]=await Promise.all([import('./terminal-runtime-kubernetes.js'),import('./terminal-virtual-fs.js')]);kubernetesRuntime=runtimeModule.default;virtualFs=fsModule;};
 
@@ -116,6 +118,24 @@ const executeDocker=async payload=>{
   return result;
 };
 
+const initializeLinux=async payload=>{
+  await loadLinuxEngine();
+  linuxSession=linuxRuntime.repairLinuxState(clone(payload.state||{}));
+  return {state:clone(linuxSession)};
+};
+
+const executeLinux=async payload=>{
+  if(!linuxSession)throw new Error('Linux no está inicializado en el Worker');
+  for(const key of ['fs','users','groupsDb','installed','disks','lvm','net','selinux','fw','systemSettings','linger','userUnits','journal','timeline','images','containers','dockerNetworks','dockerVolumes','composeProjects','services'])if(payload[key]!==undefined)linuxSession[key]=clone(payload[key]);
+  if(Array.isArray(payload.cwd))linuxSession.cwd=payload.cwd.slice();
+  if(payload.currentUser)linuxSession.currentUser=payload.currentUser;
+  if(Number.isInteger(payload.nextUid))linuxSession.nextUid=payload.nextUid;
+  if(payload.tunedProfile)linuxSession.tunedProfile=payload.tunedProfile;
+  const result=await linuxRuntime.executeLinuxCommand(linuxSession,payload);
+  linuxSession=result.state;
+  return result;
+};
+
 self.addEventListener('message',async event=>{
   const request=event.data;if(!isWorkerEnvelope(request))return;
   try{
@@ -124,6 +144,8 @@ self.addEventListener('message',async event=>{
     else if(request.operation===WORKER_OPERATIONS.SHELL_ANALYZE)result=analyzeShellInput(request.payload.source);
     else if(request.operation===WORKER_OPERATIONS.SHELL_REDIRECTIONS)result=parseRedirections(request.payload.source);
     else if(request.operation===WORKER_OPERATIONS.COMMAND_VALIDATE)result=validateCommandInvocation(request.payload.mode,request.payload.name,request.payload.args||[]);
+    else if(request.operation===WORKER_OPERATIONS.LINUX_INIT)result=await initializeLinux(request.payload);
+    else if(request.operation===WORKER_OPERATIONS.LINUX_EXECUTE)result=await executeLinux(request.payload);
     else if(request.operation===WORKER_OPERATIONS.DOCKER_INIT)result=await initializeDocker(request.payload);
     else if(request.operation===WORKER_OPERATIONS.DOCKER_EXECUTE)result=await executeDocker(request.payload);
     else if(request.operation===WORKER_OPERATIONS.KUBERNETES_INIT)result=await initializeKubernetes(request.payload);

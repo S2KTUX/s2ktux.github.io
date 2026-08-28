@@ -46,9 +46,8 @@ const closure=(roots,includeDynamic=false)=>{
 
 const totals={};
 for(const mode of modes){
-  const files=closure(['terminal-bootstrap.min.js','terminal-simulation-worker.min.js','terminal-'+mode+'.min.js']);
-  const marker=mode==='docker'?'Successfully tagged':mode==='kubernetes'?'kubectl':'';
-  if(marker){const dynamic=(report.dynamicGraph['terminal-simulation-worker.min.js']||[]).find(name=>[...closure([name])].some(dependency=>assetText[dependency]?.includes(marker)));assert.ok(dynamic,'No se encontró el módulo dinámico de '+mode);for(const name of closure([dynamic]))files.add(name);}
+  const files=new Set(report.modes[mode].files);
+  for(const required of closure(['terminal-bootstrap.min.js','terminal-simulation-worker.min.js','terminal-'+mode+'.min.js']))assert.ok(files.has(required),'El informe omite una dependencia estática de '+mode+': '+required);
   const total=[...files].reduce((sum,name)=>sum+actualSizes[name].gzip,0);
   const margin=LIMIT-total;
   totals[mode]={total,margin};
