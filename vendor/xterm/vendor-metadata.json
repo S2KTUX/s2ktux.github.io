@@ -1,0 +1,7 @@
+{
+  "package": "@xterm/xterm",
+  "version": "5.5.0",
+  "vendoredFile": "vendor/xterm/xterm.mjs",
+  "source": "https://www.npmjs.com/package/@xterm/xterm/v/5.5.0",
+  "updatePolicy": "Revisar avisos semanalmente y reemplazar manualmente junto con addon-fit y licencias."
+}

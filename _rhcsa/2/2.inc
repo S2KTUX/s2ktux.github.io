@@ -24,9 +24,9 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
             
-            <div class="lesson-alert" style="background: rgba(255,165,0,0.1); border-left: 4px solid #ffa500; padding: 15px; margin-bottom: 20px; border-radius: 4px;">
+            <div class="lesson-alert u-inline-e081402ebf">
                 <strong>⚠️ ATENCIÓN:</strong> Los puntos 3 y 4 solo aplican a <strong>RHCSA v10</strong>. En  <strong>RHCSA v9</strong> no forman parte del examen.
             </div>
 
@@ -34,7 +34,7 @@
                 <h2>1. Configurar el acceso a los repositorios de RPM</h2>
                 <p>Los repositorios son fuentes de software que se definen mediante archivos <code>.repo</code> en <code>/etc/yum.repos.d/</code>. Son esenciales para que <strong>dnf</strong> pueda resolver dependencias automáticamente.</p>
                 
-                <img src="/images/repo-rpm.png" alt="Estructura de un archivo .repo" width="748" height="165" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/repo-rpm.png" alt="Estructura de un archivo .repo" width="748" height="165">
                 <p>Donde cada campo significa:</p>
                 <ul>
                     <li><strong>[id-del-repo]</strong> → Identificador del repositorio.</li>
@@ -50,7 +50,7 @@
                     <li><code>dnf makecache</code> → Regenera la caché.</li>
                     <li><code>dnf repolist</code> → Comprueba los repositorios activos.</li>
                 </ul>
-                <img src="/images/recargar-repo-rpm.png" alt="Refrescar repositorios" width="1269" height="374" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/recargar-repo-rpm.png" alt="Refrescar repositorios" width="1269" height="374">
                 <p>Por último, podríamos gestionar repositorios a través de comandos:</p>
                 <ul>
                     <li><strong>dnf config-manager --add-repo=URL</strong> → Añade un nuevo repositorio desde una URL.</li>
@@ -88,9 +88,9 @@
                     <li><strong>dnf provides</strong> → Indica qué paquete pertenece a un comando o archivo (similar a qf).</li>
                 </ul>
                 <p>Dentro de dnf podemos ver su historial con <code>dnf history</code> y deshacer acciones con <code>dnf history undo Nº</code>.</p>
-                <img src="/images/history-rpm.png" alt="Historial DNF" width="754" height="147" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/history-rpm.png" alt="Historial DNF" width="754" height="147">
                 <p>Para extraer archivos concretos de un paquete RPM usamos <code>rpm2cpio</code> junto con <code>cpio -idv</code>:</p>
-                <img src="/images/recuperar-archivo-rpm.png" alt="Uso de rpm2cpio" width="1245" height="373" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/recuperar-archivo-rpm.png" alt="Uso de rpm2cpio" width="1245" height="373">
             </section>
 
             <section id="obj3" class="lesson-section">
@@ -103,7 +103,7 @@
                 </ul>
                 <p>Esto se crea para el usuario actual; para todos los usuarios añadiremos <code>--system</code>.</p>
                 <p> En el examen RHCSA nos podrían pedir añadir un repositorio oficial de RED HAT :</p>
-                <img src="/images/flatpak-redhat.png" alt="Configurar repo oficial Red Hat" width="864" height="237" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/flatpak-redhat.png" alt="Configurar repo oficial Red Hat" width="864" height="237">
                 <p>Si <code>--auth-file</code> falla, usamos la configuración manual: <code>cp $XDG_RUNTIME_DIR/containers/auth.json /etc/flatpak/oci-auth.json</code> y <code>chmod 644 /etc/flatpak/oci-auth.json</code>.</p>
             </section>
 
@@ -121,7 +121,7 @@
                     <li><strong>flatpak uninstall app</strong> → Eliminar una aplicación</li>
                     <li><strong>flatpak search app</strong> → Buscar una aplicación</li>
                 </ul>
-                <img src="/images/flatpak-install.png" alt="Instalación Flatpak" width="1273" height="789" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/flatpak-install.png" alt="Instalación Flatpak" width="1273" height="789">
             </section>
 
         </div>

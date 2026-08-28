@@ -5,6 +5,9 @@ import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ignoredDirectories = new Set(['.git', 'node_modules', 'playwright-report', 'test-results', '_site']);
+const learningCss = await readFile(join(root, 'learning-pages.css'), 'utf8');
+assert.match(learningCss, /\.course-content[^}]*min-width:\s*0[^}]*max-width:\s*100%[^}]*overflow-wrap:\s*anywhere/i);
+assert.match(learningCss, /\.lesson-wrapper img[^}]*max-width:\s*100%[^}]*height:\s*auto/i);
 
 async function htmlFiles(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
@@ -84,6 +87,7 @@ const malformed = [];
 const brokenLinks = [];
 for (const htmlPath of allHtml) {
   const html = await readFile(htmlPath, 'utf8');
+  if (/\sstyle=["']/i.test(html)) malformed.push(`${relative(root, htmlPath)} -> inline style attribute`);
   for (const match of html.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["']/gi)) {
     const src = match[1];
     if (/^(?:https?:|data:)/i.test(src)) continue;
@@ -169,10 +173,6 @@ for (const htmlPath of nonTerminalHtml) {
   if (!isLessonFragment) continue;
   const contentTags = [...html.matchAll(/<div\b[^>]*\bclass=["'][^"']*\bcourse-content\b[^"']*["'][^>]*>/gi)];
   if (contentTags.length !== 1) integrityIssues.push(`${rel} -> expected one course-content block`);
-  else {
-    const style = attr(contentTags[0][0], 'style') || '';
-    if (!/min-width\s*:\s*0/i.test(style) || !/max-width\s*:\s*100%/i.test(style) || !/overflow-wrap\s*:\s*anywhere/i.test(style)) integrityIssues.push(`${rel} -> course-content is not shrink-safe at 320px`);
-  }
   for (const match of html.matchAll(/<section\b[^>]*>/gi)) {
     if (!/\bclass=["'][^"']*\blesson-section\b/i.test(match[0])) integrityIssues.push(`${rel} -> section without lesson-section class`);
   }
@@ -181,8 +181,6 @@ for (const htmlPath of nonTerminalHtml) {
     if (!(attr(tag, 'alt') || '').trim()) integrityIssues.push(`${rel} -> image without useful alt text`);
     if (!/^\d+$/.test(attr(tag, 'width') || '') || Number(attr(tag, 'width')) < 1) integrityIssues.push(`${rel} -> image without intrinsic width`);
     if (!/^\d+$/.test(attr(tag, 'height') || '') || Number(attr(tag, 'height')) < 1) integrityIssues.push(`${rel} -> image without intrinsic height`);
-    const style = attr(tag, 'style') || '';
-    if (!/max-width\s*:\s*100%/i.test(style) || !/height\s*:\s*auto/i.test(style)) integrityIssues.push(`${rel} -> non-responsive lesson image`);
   }
   if (/&(?!#\d+;|#x[\da-f]+;|[a-z][a-z\d]+;)/i.test(html)) integrityIssues.push(`${rel} -> unescaped ampersand`);
   for (const tagName of ['pre', 'code']) {

@@ -21,7 +21,7 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
             
             <section id="103.1" class="lesson-section">
                 <h2>103.1 Trabajar desde la línea de comandos</h2>
@@ -180,19 +180,19 @@
                 </ul>
 
                 <h3>Multiplexores (Screen / Tmux)</h3>
-                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                <table class="u-inline-7f220dc963">
                     <thead>
-                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
-                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">Acción</th>
-                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">Screen</th>
-                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">Tmux</th>
+                        <tr class="u-inline-08c0e9470f">
+                            <th class="u-inline-5a695e0c20">Acción</th>
+                            <th class="u-inline-5a695e0c20">Screen</th>
+                            <th class="u-inline-5a695e0c20">Tmux</th>
                         </tr>
                     </thead>
-                    <tbody style="background-color: var(--card-bg);">
-                        <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Crear ventana</td><td style="padding: 10px;">Ctrl + a c</td><td style="padding: 10px;">Ctrl + b c</td></tr>
-                        <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Cambiar ventana</td><td style="padding: 10px;">Ctrl + a 0-9</td><td style="padding: 10px;">Ctrl + b 0-9</td></tr>
-                        <tr><td style="padding: 10px; border-bottom: 1px solid var(--border-color);">Desconectar (Detach)</td><td style="padding: 10px;">Ctrl + a d</td><td style="padding: 10px;">Ctrl + b d</td></tr>
-                        <tr><td style="padding: 10px;">Reconectar</td><td style="padding: 10px;"><code>screen -r</code></td><td style="padding: 10px;"><code>tmux attach</code></td></tr>
+                    <tbody class="u-inline-570db7fd1a">
+                        <tr><td class="u-inline-e69dd109bb">Crear ventana</td><td class="u-inline-c7aa49fe84">Ctrl + a c</td><td class="u-inline-c7aa49fe84">Ctrl + b c</td></tr>
+                        <tr><td class="u-inline-e69dd109bb">Cambiar ventana</td><td class="u-inline-c7aa49fe84">Ctrl + a 0-9</td><td class="u-inline-c7aa49fe84">Ctrl + b 0-9</td></tr>
+                        <tr><td class="u-inline-e69dd109bb">Desconectar (Detach)</td><td class="u-inline-c7aa49fe84">Ctrl + a d</td><td class="u-inline-c7aa49fe84">Ctrl + b d</td></tr>
+                        <tr><td class="u-inline-c7aa49fe84">Reconectar</td><td class="u-inline-c7aa49fe84"><code>screen -r</code></td><td class="u-inline-c7aa49fe84"><code>tmux attach</code></td></tr>
                     </tbody>
                 </table>
             </section>

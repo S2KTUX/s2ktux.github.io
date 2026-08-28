@@ -31,12 +31,12 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
             
             <section id="obj1" class="lesson-section">
                 <h2>1. Acceder a un prompt de shell</h2>
                 <p>El prompt indica tu identidad y ubicación mediante el formato <code>usuario@máquina:ruta</code>. Se cierra con <code>$</code> para usuarios normales o <code>#</code> para root.</p>
-                <img src="/images/Shell.png" alt="Ejemplo de prompt de shell" width="705" height="306" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Shell.png" alt="Ejemplo de prompt de shell" width="705" height="306">
                 <p>El acceso puede ser local (TTY)(Control + Alt + F2 - F6 en sistemas modernos), remoto (SSH) o vía terminal gráfica. Linux distingue entre mayúsculas y minúsculas (case-sensitive), por lo que la sintaxis debe escribirse exactamente.</p>
             </section>
 
@@ -56,7 +56,7 @@
                     <li><strong><code>&amp;&gt;</code></strong> → Redirige salida estándar y errores al mismo destino.</li>
                     <li><strong><code>|</code></strong> → Tubería (envía la salida de un comando como entrada de otro).</li>
                 </ul>
-                <img src="/images/redd-basic.png" alt="Ejemplo de redirecciones" width="978" height="689" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/redd-basic.png" alt="Ejemplo de redirecciones" width="978" height="689">
             </section>
 
             <section id="obj3" class="lesson-section">
@@ -80,15 +80,15 @@
                     <li><code>-v</code> : Modo verbose para mostrar más información sobre el proceso de conexión</li>
                     <li><code>-l</code> : Especifica el nombre del usuario con el que deseamos establecer la conexión.</li>
                 </ul>
-                <img src="/images/ssh.png" alt="Ejemplo de SSH" width="1620" height="495" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/ssh.png" alt="Ejemplo de SSH" width="1620" height="495">
             </section>
 
             <section id="obj5" class="lesson-section">
                 <h2>5. Inicio y cambio de usuario</h2>
                 <p>Para cambiar de identidad, usamos <code>su -</code> (el guion carga el entorno completo del usuario destino).</p>
-                <img src="/images/inicio-su.png" alt="Ejemplo de su -" width="690" height="321" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/inicio-su.png" alt="Ejemplo de su -" width="690" height="321">
                 <p>Con <code>sudo -i</code> usaremos la propia contraseña del usuario normal para ganar privilegios de root.</p>
-                <img src="/images/inicio-sudo.png" alt="Ejemplo de sudo -i" width="650" height="257" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/inicio-sudo.png" alt="Ejemplo de sudo -i" width="650" height="257">
                 <p>Podemos comprobar que usuario somos con <code>whoami</code> o <code>id</code>.</p>
             </section>
 
@@ -104,7 +104,7 @@
                 <pre><code>tar -cvzf archivo.tar.gz /carpeta  # Comprimir
 tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                 <p> Tambien podemos comprimir / descomprimir directamente con gzip o bzip2 : </p>
-                <img src="/images/tar-gz-bz2.png" alt="Ejemplo de tar / gzip / bzip2" width="649" height="583" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/tar-gz-bz2.png" alt="Ejemplo de tar / gzip / bzip2" width="649" height="583">
             </section>
 
             <section id="obj7" class="lesson-section">
@@ -119,7 +119,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                     <li><code>u</code> : Deshacer</li>
                 </ul>
                 <p> Podemos mencionar tambien el comando sed que se utilizar para transformar texto en un fichero.</p>
-                <img src="/images/sed.png" alt="Uso de sed para transformaciones" width="482" height="185" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/sed.png" alt="Uso de sed para transformaciones" width="482" height="185">
             </section>
 
             <section id="obj8" class="lesson-section">
@@ -131,7 +131,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                     <li><code>mv</code> : Mover ficheros / directorios.</li>
                     <li><code>rm -rf</code> : Borrado forzado y recursivo de un archivo o un directorio.</li>
                 </ul>
-                <img src="/images/crear-borrar.png" alt="Gestión de archivos" width="589" height="340" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/crear-borrar.png" alt="Gestión de archivos" width="589" height="340">
             </section>
 
             <section id="obj9" class="lesson-section">
@@ -139,7 +139,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                 <p>Un <code>enlace fisico</code> es un nombre adicional para los mismos datos en el disco (mismo inodo), mientras que un <code>enlace simbólico</code> es un acceso directo que apunta a la ruta del archivo original (acceso directo en Windows). La sintaxis es <code>ln [-s] archivo_original enlace</code>.</p>
                 <p><strong>Físico (Hard link):</strong> Mismo inodo. Si borras el original, el contenido sobrevive.<br>
                 <strong>Simbólico (Soft link):</strong> Acceso directo. Si borras el original, el enlace se rompe y el contenido se pierde.</p>
-                <img src="/images/links.png" alt="Diferencia entre enlaces" width="642" height="322" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/links.png" alt="Diferencia entre enlaces" width="642" height="322">
             </section>
 
             <section id="obj10" class="lesson-section">
@@ -151,8 +151,8 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                     <div class="info-item">x (1)</div>
                 </div>
                 <p>Usaremos los comandos <code>chmod</code> para modificar permisos y <code>chown</code> para modificar propietario:grupo. Podremos comprobar con <code>ls -l</code></p>
-                <img src="/images/permisos-basic.png" alt="Listar permisos" width="646" height="179" style="max-width:100%;height:auto">
-                <img src="/images/cambiar-permisos-basic.png" alt="Cambiar permisos" width="581" height="345" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/permisos-basic.png" alt="Listar permisos" width="646" height="179">
+                <img class="u-inline-525b23bb9f" src="/images/cambiar-permisos-basic.png" alt="Cambiar permisos" width="581" height="345">
                 <p> Tener en cuenta el flag -R para que se aplique de forma recursiva a todos los subdirectorios y archivos cuando lo usemos para un directorio</p>
             </section>
 

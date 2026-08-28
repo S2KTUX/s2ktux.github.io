@@ -26,7 +26,7 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Gestionar imágenes</h2>
@@ -40,7 +40,7 @@
                 <pre><code>docker save -o fichero.tar imagen</code></pre>
                 <p>Y para importarlas en la máquina de destino:</p>
                 <pre><code>docker load -i fichero.tar</code></pre>
-                <img src="/images/Docker-save1.png" alt="docker save y docker load" width="912" height="547" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-save1.png" alt="docker save y docker load" width="912" height="547">
 
                 <h3>Etiquetas: el tag de una imagen</h3>
                 <p>Una imagen se identifica con <code>nombre:version</code>. Esa versión es la <strong>etiqueta</strong> (tag), y la podemos indicar al construir con el argumento <code>-t</code> del <code>docker build</code>.</p>
@@ -64,9 +64,9 @@
                 <pre><code>docker volume create mi-vol
 docker volume ls
 docker volume inspect mi-vol</code></pre>
-                <img src="/images/VOLUMEN-1.png" alt="Crear e inspeccionar un volumen" width="743" height="427" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/VOLUMEN-1.png" alt="Crear e inspeccionar un volumen" width="743" height="427">
                 <p>Para montarlos usamos el argumento <code>-v</code> al lanzar <code>docker run</code>, y hay dos formas:</p>
-                <div class="lesson-table-scroll" style="max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
+                <div class="lesson-table-scroll u-inline-7156d61cff">
                 <table class="lesson-table">
                     <thead>
                         <tr><th scope="col">Tipo</th><th scope="col">Sintaxis</th><th scope="col">Para qué</th></tr>
@@ -83,7 +83,7 @@ docker volume inspect mi-vol</code></pre>
                 <pre><code>docker run -d --name db -v datos:/var/lib/mysql mariadb</code></pre>
                 <p>Un ejemplo con bind mount:</p>
                 <pre><code>docker run -d --name web -v /home/usuario/web:/usr/share/nginx/html nginx</code></pre>
-                <img src="/images/VOLUMEN-2.png" alt="Contenedor con un volumen montado" width="823" height="169" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/VOLUMEN-2.png" alt="Contenedor con un volumen montado" width="823" height="169">
                 <p>Aunque borremos el contenedor <code>db</code>, el volumen <code>datos</code> sigue ahí con la información, listo para montarlo en otro. La prueba, en tres pasos:</p>
                 <pre><code>docker rm -f db                                            # borramos el contenedor
 docker run -d --name db -v datos:/var/lib/mysql mariadb    # lo recreamos igual
@@ -95,7 +95,7 @@ docker exec -it db mysql -uroot -p                         # los datos siguen ah
                 <p>Si lo único que quieres es sacar o meter un fichero concreto en un contenedor, no hace falta montar un volumen. Para eso está <code>docker cp</code>, que copia igual que el <code>cp</code> de siempre pero entre tu máquina y el contenedor:</p>
                 <pre><code>docker cp db:/etc/mysql/my.cnf .      # del contenedor a tu carpeta
 docker cp ./config.txt db:/tmp/       # de tu carpeta al contenedor</code></pre>
-                <img src="/images/VOLUMEN-3.png" alt="docker cp entre host y contenedor" width="726" height="546" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/VOLUMEN-3.png" alt="docker cp entre host y contenedor" width="726" height="546">
             </section>
 
             <section id="obj3" class="lesson-section">
@@ -104,9 +104,9 @@ docker cp ./config.txt db:/tmp/       # de tu carpeta al contenedor</code></pre>
                 <pre><code>docker network create red
 docker network ls
 docker network inspect red</code></pre>
-                <img src="/images/RED-1.png" alt="Crear y listar redes" width="745" height="849" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/RED-1.png" alt="Crear y listar redes" width="745" height="849">
                 <p>El driver que vas a usar casi siempre es <strong>bridge</strong> — es más, es el que se pone por defecto si no dices nada. Para empezar usaremos casi siempre bridge, pero podríamos ver otras opciones. Para poner una en específico podríamos indicar <code>docker network create --driver bridge red</code>. Las que existen son:</p>
-                <div class="lesson-table-scroll" style="max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
+                <div class="lesson-table-scroll u-inline-7156d61cff">
                 <table class="lesson-table">
                     <thead>
                         <tr><th scope="col">Driver</th><th scope="col">Qué hace</th></tr>
@@ -130,7 +130,7 @@ docker network disconnect mi-red mi-contenedor</code></pre>
                 <p>Por ejemplo:</p>
                 <pre><code>docker run -dit --name linux --network red alpine
 docker exec -it linux ping web</code></pre>
-                <img src="/images/RED-2.png" alt="Resolución por nombre entre contenedores" width="746" height="483" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/RED-2.png" alt="Resolución por nombre entre contenedores" width="746" height="483">
                 <p>Por último, para borrar una red:</p>
                 <pre><code>docker network rm red</code></pre>
             </section>
@@ -139,7 +139,7 @@ docker exec -it linux ping web</code></pre>
                 <h2>4. Docker Compose</h2>
                 <p>Hasta ahora, para levantar una web con su base de datos hemos tenido que lanzar varios <code>docker run</code>, crear la red, crear el volumen… a mano y en orden. <strong>Docker Compose</strong> nos permite describir todo eso en un único fichero y levantarlo con un solo comando.</p>
                 <p>El fichero se llama <code>compose.yaml</code> y describe los servicios (contenedores), sus volúmenes y su configuración. Un ejemplo sencillo:</p>
-                <img src="/images/COMPOSE-1.png" alt="Ejemplo de fichero compose.yaml" width="754" height="234" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/COMPOSE-1.png" alt="Ejemplo de fichero compose.yaml" width="754" height="234">
                 <p>Tenemos el servicio <code>web</code> que está usando la imagen <code>nginx</code>, publicando el puerto 80 del contenedor en el 8080 del host.</p>
                 <p>Podemos comprobar que no describimos pasos, describimos el resultado que queremos: qué servicios existen y cómo son. Docker se encarga del cómo.</p>
                 <p>Levantamos todos los servicios de una vez, y una vez levantado con Compose, dejamos de usar <code>docker ps</code> o <code>docker logs</code> y tiramos de los del propio Compose, que actúan sobre todos los servicios del fichero a la vez:</p>
@@ -149,7 +149,7 @@ docker compose -f /ruta/al/compose.yaml up -d    # si el fichero está en otra r
 docker compose ps
 docker compose logs -f
 docker compose exec web sh</code></pre>
-                <img src="/images/COMPOSE-2.png" alt="docker compose up, ps y logs" width="1421" height="791" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/COMPOSE-2.png" alt="docker compose up, ps y logs" width="1421" height="791">
                 <p>En estos comandos usas el nombre del <em>servicio</em> (<code>web</code>), no el del contenedor que ves en <code>docker ps</code> — Compose razona por servicios.</p>
 
                 <h3>Construir un Dockerfile desde Compose</h3>
@@ -162,13 +162,13 @@ docker compose exec web sh</code></pre>
                 <p>Ese <code>.</code> significa "el Dockerfile de esta misma carpeta". Con <code>docker compose up -d --build</code> forzamos que lo reconstruya cuando cambiemos algo.</p>
 
                 <h3>Un ejemplo más completo</h3>
-                <img src="/images/COMPOSE-3.png" alt="Ejemplo de compose con varios servicios" width="1052" height="415" style="max-width:100%;height:auto">
-                <img src="/images/COMPOSE-4.png" alt="Servicios levantados con Compose" width="1396" height="721" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/COMPOSE-3.png" alt="Ejemplo de compose con varios servicios" width="1052" height="415">
+                <img class="u-inline-525b23bb9f" src="/images/COMPOSE-4.png" alt="Servicios levantados con Compose" width="1396" height="721">
 
                 <h3>Volúmenes y redes en Compose</h3>
                 <p>Los volúmenes y las redes se declaran en su propia sección y luego se referencian en cada servicio que los use. Un ejemplo completo con nginx como web y redis como su almacén, con red y un volumen:</p>
-                <img src="/images/COMPOSE-5.png" alt="Compose con volúmenes y redes declarados" width="1044" height="516" style="max-width:100%;height:auto">
-                <img src="/images/COMPOSE-6.png" alt="Compose levantando los servicios con su red y volumen" width="1417" height="589" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/COMPOSE-5.png" alt="Compose con volúmenes y redes declarados" width="1044" height="516">
+                <img class="u-inline-525b23bb9f" src="/images/COMPOSE-6.png" alt="Compose levantando los servicios con su red y volumen" width="1417" height="589">
                 <p>Abajo se declaran el volumen y la red. Al volumen lo referencia el servicio de <strong>redis</strong>, indicando la ruta donde se monta dentro del contenedor (<code>/data</code>, donde redis guarda su información). La red la comparten los dos servicios, y por eso el servicio web puede encontrar a <strong>redis</strong> por su nombre.</p>
                 <p>Al declararlos solo con el nombre, Docker los crea con sus valores por defecto: un volumen normal gestionado por él y una red de tipo <code>bridge</code>. Se pueden personalizar, pero para la mayoría de casos con esto sobra.</p>
                 <p>De hecho, si no declaramos ninguna red, Compose <strong>crea una automáticamente</strong> y mete todos los servicios dentro — por eso el primer ejemplo ya funcionaba sin escribir nada de redes. Esa red toma el nombre de la carpeta del proyecto seguido de <code>_default</code> (por ejemplo <code>miproyecto_default</code>), y puedes verla con <code>docker network ls</code> o mirarla a fondo con <code>docker network inspect</code>, como vimos antes.</p>

@@ -24,7 +24,7 @@ const visual = await read('visual-system.css');
 assert.match(visual, /html body\s*\{[^}]*font-family:\s*"Space Mono"/s, 'El cuerpo debe usar Space Mono');
 assert.match(visual, /\.site-logo,[\s\S]*"Press Start 2P"/, 'La marca debe reservar Press Start 2P');
 assert.match(visual, /@media \(max-width: 640px\)[\s\S]*\.site-footer/, 'El sistema debe incluir composición móvil');
-assert.ok(gzipSync(visual).length < 4_000, 'El sistema visual común debe permanecer ligero');
+assert.ok(gzipSync(visual).length < 6_000, 'El sistema visual común, incluidas las utilidades extraídas, debe permanecer ligero');
 
 const learning = await read('learning-pages.css');
 assert.doesNotMatch(learning, /VT323/, 'Los textos educativos no deben usar VT323');

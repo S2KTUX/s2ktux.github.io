@@ -30,7 +30,7 @@
             </ul>
         </aside>
 
-<div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+<div class="course-content u-inline-285c4804ec">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Arrancar, reiniciar y apagar sistemas</h2>
@@ -67,7 +67,7 @@
                     <li><code>systemctl set-default TARGET</code> → Define el target por defecto</li>
                     <li><code>systemctl get-default</code> → Muestra el target actual</li>
                 </ul>
-                <img src="/images/per-target.png" alt="Ejemplo cambio de target permanente" loading="lazy" width="825" height="179" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/per-target.png" alt="Ejemplo cambio de target permanente" loading="lazy" width="825" height="179">
             </section>
 
 
@@ -76,25 +76,25 @@
                 <p>Durante el arranque, es posible interrumpir GRUB para acceder y modificar parametros Esto lo podemos hacer ya sea para encender el sistema con un target especifico, recuperar la contraseña o entrar como modo emergencia para revisar posibles errores </p>
                 <p>Uno de los puntos mas importantes del examen es resetear la contraseña de root para poder realizar el examen. Para ello lo primero que haremos será entrar en GRUB y editar la entrada presionando <strong>e</strong>.</p>
                 <p>Una vez dentro, modificamos la linea de linux, añadiendo al final <strong>rd.break</strong> (si no funciona podriamos poner como alternativa init=/bin/bash) y arrancaremos con Ctrl + X.</p>
-                <img src="/images/root-rec1.png" alt="Edición de la entrada de GRUB para recuperar la contraseña de root" loading="lazy" width="761" height="243" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/root-rec1.png" alt="Edición de la entrada de GRUB para recuperar la contraseña de root" loading="lazy" width="761" height="243">
                 
                 <p> Una vez arrancado, tendremos que seguir los siguientes pasos :</p>
-                <img src="/images/root-rec2.png" alt="grub line" loading="lazy" width="1251" height="372" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/root-rec2.png" alt="grub line" loading="lazy" width="1251" height="372">
             </section>
 
             <section id="obj4" class="lesson-section">
                 <h2>4. Identificar y eliminar procesos</h2>
                 <p>Linux ofrece varias herramientas para ver qué procesos están usando más recursos. Podemos hacerlo de forma <strong>estática</strong> con <code>ps</code> o de forma <strong>interactiva</strong> con <code>top</code>.</p>
                 <p>El comando <code>top</code> muestra los procesos en tiempo real y permite ver el consumo de CPU y memoria. Desde <code>top</code> también podemos matar procesos pulsando <strong>k</strong></p>
-                <img src="/images/top.png" alt="top line" loading="lazy" width="909" height="294" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/top.png" alt="top line" loading="lazy" width="909" height="294">
                 <p>Los flags más importantes de ps serían :</p>
                 <ul>
                     <li><strong>ps aux</strong> → Muestra todos los procesos del sistema</li>
                     <li><strong>ps -ef</strong> → Vista completa de los procesos en formato extendido</li>
                 </ul>
-                <img src="/images/ps.png" alt="ps" loading="lazy" width="1126" height="335" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/ps.png" alt="ps" loading="lazy" width="1126" height="335">
                 <p> Para comprobar el uso de memoria del sistema utilizamos el comando <code>free -h</code>, que muestra la memoria total, usada y libre de forma legible.</p> 
-                <img src="/images/free.png" alt="free pic" loading="lazy" width="690" height="126" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/free.png" alt="free pic" loading="lazy" width="690" height="126">
                 <p>Para finalizar procesos utilizamos el comando <code>kill</code> que tiene diferentes flags : </p>
                 <ul>
                     <li><strong>kill -15 PID</strong> : Es la que se usa por defecto, para el proceso</li>
@@ -110,14 +110,14 @@
                     <li><strong>nice -n 10 comando</strong> → Ejecuta un comando con menor prioridad</li>
                     <li><strong>renice -5 PID</strong> → Cambia la prioridad de un proceso en ejecución</li>
                 </ul>
-                <img src="/images/nice-re.png" alt="nice example" loading="lazy" width="523" height="113" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/nice-re.png" alt="nice example" loading="lazy" width="523" height="113">
                 <p> Por otro lado tenemos los procesos real time, que son procesos que tienen prioridad ante todos y va con valores de 0 a 99, siendo 99 el mas alto. Podemos ver su información, cambiar su prioridad o lanzar un proceso con un rt especifico :  </p>
                 <ul>
                     <li><strong>chrt -p PID</strong> → Muestra la política y prioridad real time de un proceso</li>
                     <li><strong>chrt -r -p PRIORIDAD PID</strong> → Cambia la prioridad real time de un proceso existente</li>
                     <li><strong>chrt -r PRIORIDAD comando</strong> → Ejecuta un comando con prioridad real time</li>
                 </ul>
-                <img src="/images/chrt.png" alt="grub line" width="508" height="219" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/chrt.png" alt="grub line" width="508" height="219">
             </section>
 
             <section id="obj6" class="lesson-section">
@@ -125,7 +125,7 @@
                 <p>El servicio <strong>tuned</strong> optimiza el rendimiento según el rol del servidor.</p>
                 <p> Los perfiles más interesantes podrían ser : balanced, virtual-guest, throughput-performance, network-latency... </p>
                 <p> Podemos listar los perfiles con <code>tuned-adm list</code>, ver el perfil actual con el comando <code>tuned-adm active</code>, cambiarlo con <code>tuned-adm profile nombre-perfil</code> o apagar este servicio con <code>tuned-adm off</code>.</p>
-                <img src="/images/tuned.png" alt="tuned-adm ejemplo" loading="lazy" width="1287" height="509" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/tuned.png" alt="tuned-adm ejemplo" loading="lazy" width="1287" height="509">
             </section>
 
             <section id="obj7" class="lesson-section">
@@ -138,7 +138,7 @@
                     <li><code>journalctl -f </code> : Muestra los mensajes en tiempo real</li>
                     <li><code>journalctl -b </code> : Logs del arranque del sistema</li>
                 </ul>
-                <img src="/images/logs-ex.png" alt="logs ejemplo" loading="lazy" width="1330" height="299" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/logs-ex.png" alt="logs ejemplo" loading="lazy" width="1330" height="299">
             </section>
 
             <section id="obj8" class="lesson-section">
@@ -148,8 +148,8 @@
 chown root:systemd-journal /var/log/journal
 chmod 2755 /var/log/journal</code></pre>
                 <p>Configurar <code>Storage=persistent</code> en <code>/etc/systemd/journald.conf</code> y reiniciar el servicio.</p>
-                <img src="/images/log-pers.png" alt="logs persistent" loading="lazy" width="703" height="202" style="max-width:100%;height:auto">
-                <img src="/images/log-pers-2.png" alt="logs persistent" loading="lazy" width="968" height="384" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/log-pers.png" alt="logs persistent" loading="lazy" width="703" height="202">
+                <img class="u-inline-525b23bb9f" src="/images/log-pers-2.png" alt="logs persistent" loading="lazy" width="968" height="384">
                 <p> Preferiblemente, siempre que hagamos un cambio a un archivo de configuración de un servicio, reiniciaremos este servicio <code>systemctl restart systemd-journald</code>.</p>
                 <p>No hemos mencionado la rotación de logs, para ello podemos usar</p>
                 <ul>
@@ -159,7 +159,7 @@ chmod 2755 /var/log/journal</code></pre>
                     <li><strong>--disk-usage</strong> → Muestra cuánto espacio ocupan los logs</li>
                     <li><strong>--list-boots</strong> → Muestra los arranques registrados en el sistema</li>
                 </ul>
-                <img src="/images/logs-rotated.png" alt="logs persistent conf" loading="lazy" width="864" height="409" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/logs-rotated.png" alt="logs persistent conf" loading="lazy" width="864" height="409">
             </section>
 
             <section id="obj9" class="lesson-section">
@@ -172,21 +172,21 @@ chmod 2755 /var/log/journal</code></pre>
                     <li><strong>systemctl restart NetworkManager</strong> → Reiniciar</li>
                     <li><strong>systemctl status NetworkManager</strong> → Comprobar el estado</li>
                 </ul>
-                <img src="/images/networkmanager.png" alt="nm ejemplo" width="1142" height="563" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/networkmanager.png" alt="nm ejemplo" width="1142" height="563">
                 <p> Tambien podemos usar nmcli para gestionar los servicios de red :</p>
                 <ul>
                     <li><strong>nmcli connection up "interfaz" </strong> → Levantar</li>
                     <li><strong>nmcli connection down "interfaz"</strong> → Parar</li>
                     <li><strong>nmcli connection show</strong> → Comprobar</li>
                 </ul>
-                <img src="/images/nmcli-basic.png" alt="nmcli basic ejemplo" loading="lazy" width="961" height="290" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/nmcli-basic.png" alt="nmcli basic ejemplo" loading="lazy" width="961" height="290">
                 <p> Por ultimo, podemos usar ip ( aunque este no es recomendable ya que solo hace cambios temporales ) : </p>
                 <ul>
                     <li><strong>ip link set "interfaz" up</strong> → Levantar</li>
                     <li><strong>ip link set "interfaz" down</strong> → Parar</li>
                     <li><strong>ip a</strong> → Comprobar</li>
                 </ul>
-                <img src="/images/ip-basic.png" alt="ip basic ejemplo" loading="lazy" width="844" height="518" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/ip-basic.png" alt="ip basic ejemplo" loading="lazy" width="844" height="518">
             </section>
 
             <section id="obj10" class="lesson-section">
@@ -203,8 +203,8 @@ chmod 2755 /var/log/journal</code></pre>
                     <li><strong>-P</strong> → Indicar puerto</li>
                     <li><strong>-p </strong> → Conservar permisos y otros datos</li>
                 </ul>
-                <img src="/images/scp.png" alt="scp ejemplo" loading="lazy" width="1246" height="190" style="max-width:100%;height:auto">
-                <img src="/images/scp-remoto.png" alt="scp-remoto ejemplo" loading="lazy" width="514" height="140" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/scp.png" alt="scp ejemplo" loading="lazy" width="1246" height="190">
+                <img class="u-inline-525b23bb9f" src="/images/scp-remoto.png" alt="scp-remoto ejemplo" loading="lazy" width="514" height="140">
                 <p> Por otro lado, tenemos <code>sftp</code> que tiene un menú interactivo donde podemos lanzar comandos. Para conectarnos usaremos <code>sftp user@IP</code>.</p>
                 <p> Si queremos lanzar comandos en local lanzariamos los comandos con una l delante, por ejemplo lcd, lpwd...</p>
                 <p> Los más a tener en cuenta serían : <code>put</code>( Subir un archivo) y <code>get</code>( Descargarlo)</p>
