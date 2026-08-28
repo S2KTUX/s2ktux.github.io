@@ -16,7 +16,7 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
             
             <section id="101.1" class="lesson-section">
                 <h2>101.1 Determinar y configurar los ajustes de hardware</h2>
@@ -74,29 +74,29 @@
                 <p>Para controlar un equipo, el núcleo (kernel) debe cargarse mediante un programa llamado bootloader, y este a su vez lo carga el firmware.</p>
 
                 <h3>BIOS vs UEFI</h3>
-                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                <table class="u-inline-7f220dc963">
                     <thead>
-                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
-                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">BIOS (Legacy)</th>
-                            <th style="padding: 12px 15px; color: var(--accent); font-weight: 700;">UEFI</th>
+                        <tr class="u-inline-08c0e9470f">
+                            <th class="u-inline-5a695e0c20">BIOS (Legacy)</th>
+                            <th class="u-inline-5a695e0c20">UEFI</th>
                         </tr>
                     </thead>
-                    <tbody style="background-color: var(--card-bg);">
-                        <tr style="border-bottom: 1px solid var(--border-color);">
-                            <td style="padding: 12px 15px;">1. POST</td>
-                            <td style="padding: 12px 15px;">1. POST</td>
+                    <tbody class="u-inline-570db7fd1a">
+                        <tr class="u-inline-196685694b">
+                            <td class="u-inline-9138107e49">1. POST</td>
+                            <td class="u-inline-9138107e49">1. POST</td>
                         </tr>
-                        <tr style="border-bottom: 1px solid var(--border-color);">
-                            <td style="padding: 12px 15px;">2. Activar componentes básicos</td>
-                            <td style="padding: 12px 15px;">2. Activar componentes básicos</td>
+                        <tr class="u-inline-196685694b">
+                            <td class="u-inline-9138107e49">2. Activar componentes básicos</td>
+                            <td class="u-inline-9138107e49">2. Activar componentes básicos</td>
                         </tr>
-                        <tr style="border-bottom: 1px solid var(--border-color);">
-                            <td style="padding: 12px 15px;">3. Carga la primera etapa del gestor de arranque desde MBR (primeros 512 bytes)</td>
-                            <td style="padding: 12px 15px;">3. Lee las definiciones almacenadas en la NVRAM para ejecutar la aplicación definida</td>
+                        <tr class="u-inline-196685694b">
+                            <td class="u-inline-9138107e49">3. Carga la primera etapa del gestor de arranque desde MBR (primeros 512 bytes)</td>
+                            <td class="u-inline-9138107e49">3. Lee las definiciones almacenadas en la NVRAM para ejecutar la aplicación definida</td>
                         </tr>
                         <tr>
-                            <td style="padding: 12px 15px;">4. La primera etapa llama a la segunda etapa que carga el kernel</td>
-                            <td style="padding: 12px 15px;">4. Si la app definida es un gestor de arranque, cargará el kernel</td>
+                            <td class="u-inline-9138107e49">4. La primera etapa llama a la segunda etapa que carga el kernel</td>
+                            <td class="u-inline-9138107e49">4. Si la app definida es un gestor de arranque, cargará el kernel</td>
                         </tr>
                     </tbody>
                 </table>

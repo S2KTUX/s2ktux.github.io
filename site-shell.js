@@ -8,6 +8,9 @@ function syncThemeControls() {
     button.setAttribute('aria-label', label);
     button.setAttribute('title', label);
   });
+  document.querySelectorAll('[data-theme-icon]').forEach((icon) => {
+    icon.textContent = dark ? '☀' : '☾';
+  });
 }
 
 document.addEventListener('click', (event) => {
@@ -19,6 +22,9 @@ document.addEventListener('click', (event) => {
     localStorage.setItem(THEME_KEY, root.classList.contains('dark') ? 'dark' : 'light');
   } catch (_) {}
   syncThemeControls();
+  document.dispatchEvent(new CustomEvent('s2ktux:themechange', {
+    detail: { theme: root.classList.contains('dark') ? 'dark' : 'light' },
+  }));
 });
 
 if (document.readyState === 'loading') {

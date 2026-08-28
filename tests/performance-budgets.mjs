@@ -23,7 +23,8 @@ const budgets = {
   'terminal-kubernetes-state.js': 1_500,
   'learning-pages.js': 5_500,
   'learning-pages.css': 5_500,
-  'visual-system.css': 4_000,
+  // Incluye las antiguas declaraciones inline, ahora cacheables y compartidas.
+  'visual-system.css': 6_000,
   'terminal-page.css': 6_000,
   'site-shell.js': 1_500,
   'terminal-xterm-renderer.js': 5_500,

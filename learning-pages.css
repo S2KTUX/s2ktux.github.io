@@ -36,7 +36,7 @@ html.dark .lesson-header .badge{color:#1e1811}
 .lesson-toc li,.mobile-toc li{margin:0 0 9px}
 .lesson-toc a,.mobile-toc a{display:block;color:var(--text);font:15px/1.6 "Space Mono",monospace}
 .lesson-toc a:hover,.lesson-toc a[aria-current="true"],.mobile-toc a:hover{color:var(--accent)}
-.course-content,.lesson-layout>div{min-width:0}
+.course-content,.lesson-layout>div{min-width:0;max-width:100%;overflow-wrap:anywhere}
 .lesson-section{margin-bottom:38px;padding-bottom:8px;scroll-margin-top:94px}
 .lesson-section>h2{margin:0 0 18px;padding-top:8px;color:var(--head);font:15px/1.55 "Press Start 2P",monospace;overflow-wrap:anywhere}
 .lesson-section h3{margin:22px 0 10px;color:var(--accent);font:700 19px/1.45 "Share Tech Mono",monospace}
@@ -122,3 +122,7 @@ a.module-row:hover{background:var(--bg);box-shadow:inset 6px 0 0 var(--accent)}
   .module-state{grid-column:2;margin-top:2px;font-size:8px}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;transition-duration:.001ms!important}}
+.youtube-facade{cursor:pointer;position:relative}
+.youtube-facade::after{content:'▶';display:inline-grid;place-items:center;margin-inline-start:.75rem;width:2.5rem;height:2.5rem;border-radius:50%;background:#c00;color:#fff}
+.youtube-facade:focus-visible{outline:3px solid currentColor;outline-offset:4px}
+.youtube-embed{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:1rem;background:#000}

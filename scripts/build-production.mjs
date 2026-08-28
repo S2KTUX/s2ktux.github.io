@@ -18,7 +18,7 @@ const isExcluded = source => {
   const rel = posix(relative(root, source));
   const first = rel.split('/')[0];
   if (excludedRoots.has(first) || excludedFiles.has(rel)) return true;
-  if (/^terminal-.*\.js$/.test(rel)) return true;
+  if (/^terminal-.*\.js$/.test(rel) && rel !== 'terminal-page.js') return true;
   if (/^vendor\/xterm\/.*\.mjs$/.test(rel)) return true;
   return false;
 };

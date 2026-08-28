@@ -26,25 +26,25 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Configurar direcciones IPv4 e IPv6</h2>
                 <p>En RHEL, la gestión de red se realiza mediante <strong>NetworkManager</strong> usando <code>nmcli</code>. También podemos usar <code>nmtui</code> o el comando <code>ip</code> para cambios temporales.</p>
                 <p>Con <strong>nmcli</strong> podemos crear, modificar y eliminar conexiones de red y gestionar el estado de las interfaces.</p>
-                <img src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="1290" height="725" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/nmcli-config.png" alt="nmcli ejemplo configuración" width="1290" height="725">
                 <p>Ejemplo WiFi: <code>nmcli connection add type wifi ifname [INTERFAZ] con-name [NOMBRE] ssid [NOMBRE_RED] wifi-sec.key-mgmt wpa-psk wifi-sec.psk [CONTRASEÑA] ipv4.addresses ...</code>.</p>
                 <p>IPv6 se configura igual usando propiedades <code>ipv6.*</code>. Es importante usar <code>connection.autoconnect yes</code>. Activamos con <code>nmcli con up "ID"</code> y verificamos con <code>ip addr show</code>.</p>
                 <p>También podemos añadir rutas estáticas además de la puerta de enlace definida con <code>ipv4.gateway</code>. El símbolo <code>+</code> añade rutas sin sobrescribir las existentes.</p>
-                <img src="/images/nmcli-route.png" alt="nmcli ejemplo configuración" width="1313" height="739" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/nmcli-route.png" alt="nmcli ejemplo configuración" width="1313" height="739">
             </section>
 
             <section id="obj2" class="lesson-section">
                 <h2>2. Configurar la resolución del nombre de host</h2>
                 <p>El hostname identifica al equipo en la red. Para cambios permanentes usamos <code>hostnamectl</code>. Editar <code>/etc/hostname</code> también es posible pero requiere reinicio.</p>
-                <img src="/images/hostname.png" alt="hostname ejemplo configuración" width="590" height="448" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/hostname.png" alt="hostname ejemplo configuración" width="590" height="448">
                 <p>Para resolución local sin DNS editamos <code>/etc/hosts</code> con la sintaxis: IP NOMBRE_COMPLETO ALIAS.</p>
-                <img src="/images/etc-host.png" alt="archivo ejemplo /etc/hosts" width="793" height="259" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/etc-host.png" alt="archivo ejemplo /etc/hosts" width="793" height="259">
                 <p>No debemos modificar <code>/etc/resolv.conf</code>, ya que NetworkManager lo sobrescribe. La configuración DNS persistente se realiza mediante <code>nmcli</code>, <code>nmtui</code> o archivos <code>.nmconnection</code>.</p>
                 <p> La forma correcta para una configuración de DNS persistente es con <code>nmcli</code>, <code>nmtui</code> o los archivos <code>.nmconnection</code> ubicados en <strong>/etc/NetworkManager/system-connections/</strong> y <code>nmcli con up NOMBRE-RED</code> para aplicar el cambio. </p>
             </section>
@@ -54,7 +54,7 @@
                 <p>Para asegurar que nuestra configuración de red sea efectiva desde el arranque, el servicio <strong>NetworkManager</strong> debe estar habilitado y activo : <code>systemctl enable --now NetworkManager</code>.</p>
                 <p>Si utilizamos el nmcli, no olvideis usar <code>connection.autoconnect yes</code> para que se inicie automaticamente.</p>
                  <p>Podemos comprobar la conectividad con comandos como <code>ip a</code>, <code>nmcli device status</code> o <code>systemctl status NetworkManager</code>.</p>
-                <img src="/images/check-net.png" alt="check net ejemplo" width="830" height="581" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/check-net.png" alt="check net ejemplo" width="830" height="581">
                 <p>Si creamos servicios dependientes de red, debemos usar <code>After=network-online.target</code> y <code>Wants=network-online.target</code> en la sección [Unit].</p>
             </section>
 
@@ -70,9 +70,9 @@
                     <li><strong>trusted</strong> : Confianza absoluta. Se aceptan todas las conexiones entrantes sin aplicar ningún filtro de seguridad.</li>
                 </ul>
                 <p> Cada interfaz puede tener una zona, y podemos cambiarla, poner una por defecto, comprobar el estado actual...  </p>
-                <img src="/images/firewall-basic.png" alt="firewall-cmd ejemplo" width="741" height="395" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/firewall-basic.png" alt="firewall-cmd ejemplo" width="741" height="395">
                  <p>Recordad usar <code>--permanent</code> para persistencia y <code>firewall-cmd --reload</code> para aplicar cambios.</p>
-                <img src="/images/firewall-basic2.png" alt="firewall-cmd ejemplo" width="1040" height="734" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/firewall-basic2.png" alt="firewall-cmd ejemplo" width="1040" height="734">
                 <p>Las rich rules permiten reglas más avanzadas y las vemos en la siguiente clase.</p>
             </section>
 

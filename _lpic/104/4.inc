@@ -18,7 +18,7 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
             
             <section id="104.1" class="lesson-section">
                 <h2>104.1 Creación de particiones y sistemas de archivos</h2>
@@ -218,29 +218,29 @@ WantedBy=multi-user.target
                 </ul>
 
                 <h3>Permisos especiales</h3>
-                <table style="width: 100%; border-collapse: collapse; margin: 20px 0; font-size: 0.9rem; border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden;">
+                <table class="u-inline-7f220dc963">
                     <thead>
-                        <tr style="background-color: rgba(255,255,255,0.05); border-bottom: 2px solid var(--accent); text-align: left;">
-                            <th style="padding: 12px; color: var(--accent);">Permiso</th>
-                            <th style="padding: 12px; color: var(--accent);">Valor</th>
-                            <th style="padding: 12px; color: var(--accent);">Descripción</th>
+                        <tr class="u-inline-08c0e9470f">
+                            <th class="u-inline-89759ecb5d">Permiso</th>
+                            <th class="u-inline-89759ecb5d">Valor</th>
+                            <th class="u-inline-89759ecb5d">Descripción</th>
                         </tr>
                     </thead>
-                    <tbody style="background-color: var(--card-bg);">
+                    <tbody class="u-inline-570db7fd1a">
                         <tr>
-                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>SUID</strong></td>
-                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">4</td>
-                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Ejecuta con permisos del propietario. Se usa en <code>passwd</code>. Muestra <code>s</code> en usuario (<code>rwsr-xr-x</code>). Comando: <code>chmod 4755 archivo</code>.</td>
+                            <td class="u-inline-4df238574e"><strong>SUID</strong></td>
+                            <td class="u-inline-4df238574e">4</td>
+                            <td class="u-inline-4df238574e">Ejecuta con permisos del propietario. Se usa en <code>passwd</code>. Muestra <code>s</code> en usuario (<code>rwsr-xr-x</code>). Comando: <code>chmod 4755 archivo</code>.</td>
                         </tr>
                         <tr>
-                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);"><strong>SGID</strong></td>
-                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">2</td>
-                            <td style="padding: 12px; border-bottom: 1px solid var(--border-color);">Ejecuta con permisos del grupo. En directorios, los nuevos archivos heredan el grupo. Muestra <code>s</code> en grupo (<code>rwxr-sr-x</code>). Comando: <code>chmod 2755 archivo</code>.</td>
+                            <td class="u-inline-4df238574e"><strong>SGID</strong></td>
+                            <td class="u-inline-4df238574e">2</td>
+                            <td class="u-inline-4df238574e">Ejecuta con permisos del grupo. En directorios, los nuevos archivos heredan el grupo. Muestra <code>s</code> en grupo (<code>rwxr-sr-x</code>). Comando: <code>chmod 2755 archivo</code>.</td>
                         </tr>
                         <tr>
-                            <td style="padding: 12px;"><strong>Sticky bit</strong></td>
-                            <td style="padding: 12px;">1</td>
-                            <td style="padding: 12px;">En directorios, evita borrar archivos de otros (ej: <code>/tmp</code>). Muestra <code>t</code> en otros (<code>rwxrwxrwt</code>). Comando: <code>chmod 1755 directorio</code>.</td>
+                            <td class="u-inline-43eb55eaea"><strong>Sticky bit</strong></td>
+                            <td class="u-inline-43eb55eaea">1</td>
+                            <td class="u-inline-43eb55eaea">En directorios, evita borrar archivos de otros (ej: <code>/tmp</code>). Muestra <code>t</code> en otros (<code>rwxrwxrwt</code>). Comando: <code>chmod 1755 directorio</code>.</td>
                         </tr>
                     </tbody>
                 </table>

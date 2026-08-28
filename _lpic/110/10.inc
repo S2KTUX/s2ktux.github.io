@@ -15,7 +15,7 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
             
             <section id="110.1" class="lesson-section">
                 <h2>110.1 Tareas de administración de seguridad</h2>

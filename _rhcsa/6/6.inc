@@ -26,7 +26,7 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
 
            <section id="obj1" class="lesson-section">
                 <h2>1. Crear, montar y desmontar sistemas de archivos locales</h2>
@@ -37,8 +37,8 @@
                     <li><strong>vfat</strong> → Compatible con otros sistemas operativos, común en USB.</li>
                 </ul>
                  <p>Para crear un sistema de archivos utilizamos <code>mkfs</code> según el tipo. En el ejemplo creamos dos particiones nuevas, una en ext4 y otra en xfs, y posteriormente las montamos.</p>
-                <img src="/images/mkfs.png" alt="mkfs ejemplos" width="811" height="653" style="max-width:100%;height:auto">
-                <img src="/images/comproba-mkfs.png" alt="mkfs ejemplo comprobación" width="553" height="304" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/mkfs.png" alt="mkfs ejemplos" width="811" height="653">
+                <img class="u-inline-525b23bb9f" src="/images/comproba-mkfs.png" alt="mkfs ejemplo comprobación" width="553" height="304">
                 <p>Una vez formateado y montado, podemos hacerlo permanente añadiéndolo a <code>/etc/fstab</code> y para desmontar usamos <code>umount</code>.</p>
             </section>
 
@@ -51,11 +51,11 @@
                     <li>Configuración completamente local.</li>
                 </ul>
                  <p><strong>Configuración en el SERVER:</strong> instalar NFS, crear directorio compartido, asignar permisos, configurar <code>/etc/exports</code> y abrir firewall.</p>
-                <img src="/images/nfs-remote.png" alt="nfs remote ejemplo" width="842" height="520" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/nfs-remote.png" alt="nfs remote ejemplo" width="842" height="520">
                 <p><strong>Configuración en el CLIENTE:</strong> instalar cliente NFS, crear punto de montaje y montar manualmente o mediante <code>/etc/fstab</code>.</p>
-                <img src="/images/nfs-client.png" alt="mount nfs client" width="1232" height="490" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/nfs-client.png" alt="mount nfs client" width="1232" height="490">
                 <p>También pueden pedir realizar todo localmente:</p>
-                <img src="/images/nfs-local.png" alt="mount nfs local" width="1031" height="576" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/nfs-local.png" alt="mount nfs local" width="1031" height="576">
                 <p>El error <em>stale file handle</em> aparece cuando el recurso cambia sin desmontar previamente. Soluciones:</p>
                 <ul>
                     <li><strong>exportfs -au</strong> y luego <code>exportfs -ar</code></li>
@@ -72,16 +72,16 @@
                     <li><strong>Mapa directo</strong> → Usa rutas absolutas mediante /-.</li>
                 </ul>
                 <p>Instalamos el servicio y configuramos el archivo principal:</p>
-                <img src="/images/auto-master.png" alt="autofs ejemplo" width="744" height="232" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/auto-master.png" alt="autofs ejemplo" width="744" height="232">
                 
                 <p>Después configuramos los mapas (las rutas deben existir previamente en <code>/etc/exports</code>):</p>
 
-                <img src="/images/auto-indirecto.png" alt="Mapa indirecto autofs" width="785" height="129" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/auto-indirecto.png" alt="Mapa indirecto autofs" width="785" height="129">
 
                 <p>Ejemplo de mapas directo e indirecto :</p>
 
-                <img src="/images/auto-direct.png" alt="Mapa directo" width="763" height="143" style="max-width:100%;height:auto">
-                <img src="/images/auto-ejemplo.png" alt="Resultado autofs" width="798" height="136" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/auto-direct.png" alt="Mapa directo" width="763" height="143">
+                <img class="u-inline-525b23bb9f" src="/images/auto-ejemplo.png" alt="Resultado autofs" width="798" height="136">
                 <p>Tras cualquier cambio recuerda reiniciar el servicio con <code>systemctl restart autofs</code>. Evita usar mapas directo e indirecto en la misma ruta. En el examen normalmente se espera dominio del mapa indirecto.</p>
             </section>
             <section id="obj4" class="lesson-section">
@@ -107,9 +107,9 @@
                     <li><strong>Sticky Bit (1)</strong> → Solo el dueño puede borrar archivos.</li>
                 </ul>
                 <p> Para saber que tenemos los permisos especiales activos, simplemente veremos una s en SUID o SGID y una t en sticky bit</p>
-                <img src="/images/permisos-spe.png" alt="permisos ejemplo" width="441" height="427" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/permisos-spe.png" alt="permisos ejemplo" width="441" height="427">
                 <p>Los ACL permiten permisos avanzados adicionales sobre usuarios concretos:</p>
-                <img src="/images/acls.png" alt="acls ejemplo" width="944" height="745" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/acls.png" alt="acls ejemplo" width="944" height="745">
             </section>
 
         </div>

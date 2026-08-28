@@ -96,7 +96,7 @@ for(const [oldPath,target] of Object.entries(redirects)){
 for(const path of sources){
  const source=await read(path);
  assert.doesNotMatch(source,/<\/?(?:html|head|body)\b/i);
- assert.match(source,/class="course-content"/);
+ assert.match(source,/class="[^"]*\bcourse-content\b[^"]*"/);
  assert.equal(urls.some(url=>url.includes(path)),false);
 }
 const headers=await read('_headers'),robots=await read('robots.txt');

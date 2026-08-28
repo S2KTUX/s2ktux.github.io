@@ -26,13 +26,13 @@
             </ul>
         </aside>
 
-        <div class="course-content" style="min-width:0;max-width:100%;overflow-wrap:anywhere">
+        <div class="course-content u-inline-285c4804ec">
 
             <section id="obj1" class="lesson-section">
                 <h2>1. Controlar los recursos de un contenedor (CPU, memoria)</h2>
                 <p>Por defecto, un contenedor puede usar toda la CPU y toda la memoria de la máquina. El problema es evidente: un solo contenedor que se desmadre —una fuga de memoria, un proceso disparado— puede tumbar el servidor entero y llevarse por delante a los demás. En un servidor de verdad esto no vale, así que les ponemos límites.</p>
                 <p>Los dos que usarás casi siempre van en el <code>docker run</code>:</p>
-                <div class="lesson-table-scroll" style="max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch">
+                <div class="lesson-table-scroll u-inline-7156d61cff">
                 <table class="lesson-table">
                     <thead>
                         <tr><th scope="col">Parámetro</th><th scope="col">Para qué sirve</th></tr>
@@ -49,11 +49,11 @@
                 <p>Para ver el consumo en vivo de lo que está corriendo:</p>
                 <pre><code>docker stats</code></pre>
                 <p>Nos muestra, contenedor a contenedor, cuánta CPU y memoria gasta en tiempo real. Es lo primero que mirarás cuando algo vaya lento.</p>
-                <img src="/images/Docker-stats.png" alt="docker stats mostrando el consumo en vivo" width="969" height="201" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-stats.png" alt="docker stats mostrando el consumo en vivo" width="969" height="201">
                 <p>Existe una imagen en DockerHub llamada <code>polinux/stress</code>, pensada justo para forzar a un contenedor a consumir recursos. Por ejemplo:</p>
                 <pre><code>docker run --rm -it --cpus 1 polinux/stress stress --cpu 4</code></pre>
                 <p>Lo que estamos haciendo aquí es pedirle dos cosas contrarias: con <code>--cpus 1</code> le decimos que solo puede usar un núcleo, y con <code>--cpu 4</code> le pedimos que intente quemar cuatro. El primero lo aplica Docker y el segundo lo ejecuta el propio <code>stress</code>, ya dentro del contenedor.</p>
-                <img src="/images/Docker-stress.png" alt="Contenedor cortado por el límite de memoria (OOM)" width="1746" height="262" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-stress.png" alt="Contenedor cortado por el límite de memoria (OOM)" width="1746" height="262">
 
                 <h3>Los mismos límites en Docker Compose</h3>
                 <p>Si en vez de <code>docker run</code> usamos un fichero <code>compose.yaml</code>, los límites se declaran igual pero dentro de una clave <code>deploy.resources.limits</code>:</p>
@@ -88,7 +88,7 @@
                 <p>Si el contenedor ya está corriendo y queremos ajustar sus límites sin recrearlo, usamos <code>docker update</code>:</p>
                 <pre><code>docker update --memory 1g my-container
 docker update --cpus 2 my-container</code></pre>
-                <img src="/images/Docker-update.png" alt="docker update cambiando límites en caliente" width="1472" height="204" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-update.png" alt="docker update cambiando límites en caliente" width="1472" height="204">
                 <p>Si la memoria nos da error es porque tiene un límite de swap fijo y Docker exige que swap sea siempre mayor o igual que la memoria.</p>
             </section>
 
@@ -111,9 +111,9 @@ COPY --from=build /app/miapp /miapp
 CMD ["/miapp"]</code></pre>
                 <p>La primera etapa la llamamos <code>build</code> con el <code>AS</code> — ese nombre nos hará falta enseguida. Partimos de la imagen oficial de Go, que trae todo el kit de compilación (cientos de megas), metemos nuestro código con <code>COPY . .</code> y lo compilamos: el resultado es el binario <code>miapp</code>.</p>
                 <p>El segundo <code>FROM</code> abre una etapa nueva y vacía, y con <code>COPY --from=build</code> traemos de la anterior únicamente ese binario. El compilador, el código fuente y todo lo demás se quedan atrás y se descartan. La imagen final es un alpine diminuto con un solo fichero dentro.</p>
-                <img src="/images/Docker-multi1.png" alt="Construcción multi-stage de una imagen" width="958" height="740" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-multi1.png" alt="Construcción multi-stage de una imagen" width="958" height="740">
                 <p>El resultado lo vemos al mirar <code>docker images</code>: la misma aplicación que pesaba X ha reducido considerablemente su peso.</p>
-                <img src="/images/Docker-multi2.png" alt="Comparación de tamaños con docker images" width="621" height="145" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-multi2.png" alt="Comparación de tamaños con docker images" width="621" height="145">
                 <p>Un detalle práctico de multi-stage: no estás obligado a construir hasta el final. Con <code>--target</code> puedes parar en la etapa que quieras:</p>
                 <pre><code>docker build --target build -t miapp-dev .</code></pre>
                 <p>Con ese comando, Docker construye hasta la etapa llamada <code>build</code> y se detiene ahí: la imagen que obtenemos es la de esa etapa, no la del final del fichero. Del mismo Dockerfile podríamos sacar varias imágenes distintas.</p>
@@ -124,12 +124,12 @@ CMD ["/miapp"]</code></pre>
                 <p>Con <code>alpine</code> hemos llegado a una imagen pequeña. Se puede ir un paso más allá con <strong>distroless</strong>.</p>
                 <p>Distroless es una familia de imágenes base que publica Google (bajo <code>gcr.io/distroless/</code>) sin nada que no sea imprescindible para ejecutar la aplicación: no hay gestor de paquetes, ni shell, ni <code>ls</code>, ni <code>cat</code>, ni <code>bash</code>. Solo la aplicación y sus librerías justas. Y de ahí sus dos ventajas: son más pequeñas que alpine y, sobre todo, más seguras — si alguien externo intenta acceder dentro, se encuentra un sitio vacío, sin herramientas con las que moverse ni forma de instalar nada.</p>
                 <p>No hay una única imagen distroless, sino varias, porque cada lenguaje necesita cosas distintas: para un binario ya compilado (como el de Go de antes) vale <code>gcr.io/distroless/static</code>; para una app de Java hay otra que incluye su máquina virtual. Elegimos la que corresponda. Y todavía existe un paso más extremo, la imagen <code>scratch</code>, literalmente vacía — pero solo sirve para binarios autónomos, así que distroless suele ser lo práctico.</p>
-                <img src="/images/Docker-distroless1.png" alt="Tamaño de una imagen distroless" width="836" height="927" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-distroless1.png" alt="Tamaño de una imagen distroless" width="836" height="927">
                 <p>El <code>CGO_ENABLED=0</code> aquí es obligatorio: distroless/static no trae librerías del sistema, así que el binario tiene que ser autónomo o no arranca.</p>
                 <p>Como vemos en el siguiente ejemplo, la imagen scratch incluso ocupa menos ya que no tiene nada.</p>
-                <img src="/images/Docker-distroless2.png" alt="Comparación con la imagen scratch" width="885" height="955" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-distroless2.png" alt="Comparación con la imagen scratch" width="885" height="955">
                 <p>Ahora comprobamos los tamaños de las diferentes imágenes que hemos creado:</p>
-                <img src="/images/Docker-distroless3.png" alt="Comparación final de tamaños" width="812" height="126" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-distroless3.png" alt="Comparación final de tamaños" width="812" height="126">
             </section>
 
             <section id="obj4" class="lesson-section">
@@ -140,18 +140,18 @@ CMD ["/miapp"]</code></pre>
                 <p>Por defecto, el proceso dentro del contenedor corre como <code>root</code>. Si alguien se cuela, es root dentro del contenedor — un riesgo innecesario. En el Dockerfile podemos crear un usuario y cambiar a él con <code>USER</code>:</p>
                 <pre><code>RUN useradd -r appuser
 USER appuser</code></pre>
-                <img src="/images/Docker-root.png" alt="Contenedor ejecutándose con un usuario sin privilegios" width="766" height="666" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-root.png" alt="Contenedor ejecutándose con un usuario sin privilegios" width="766" height="666">
                 <p>Es importante tener en cuenta que pondremos el <code>RUN</code> y el <code>USER</code> antes del <code>CMD</code>.</p>
 
                 <h3>Configuración por variables de entorno</h3>
                 <p>Una imagen debe ser <strong>inmutable y reutilizable</strong>: la misma imagen tiene que valer para desarrollo, preproducción y producción. La configuración no va dentro de la imagen — se inyecta desde fuera al arrancar, con variables de entorno.</p>
                 <p>Tendremos un fichero <code>.env</code> donde declararemos las variables necesarias. En Compose lo enganchamos al servicio con <code>env_file: .env</code>, así que el fichero viaja aparte de la imagen y de nuestro código.</p>
                 <p>Esta idea es la base de los <strong>ConfigMaps</strong> y <strong>Secrets</strong> de Kubernetes.</p>
-                <img src="/images/Docker-env.png" alt="Servicio en Compose usando env_file" width="692" height="443" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-env.png" alt="Servicio en Compose usando env_file" width="692" height="443">
 
                 <h3>Healthcheck</h3>
                 <p>Que un contenedor esté "corriendo" no significa que la aplicación funcione. El proceso puede estar vivo pero la app colgada, sin responder a nadie. Docker, por defecto, solo sabe si el proceso vive, no si la aplicación responde. Un <code>HEALTHCHECK</code> cubre justo esa diferencia — le enseña a Docker cómo preguntarle a la app si está realmente viva. Es una instrucción más del Dockerfile, que se suele poner cerca del final, junto al <code>CMD</code>.</p>
-                <img src="/images/Docker-health.png" alt="Servicio en Compose con healthcheck" width="1192" height="821" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-health.png" alt="Servicio en Compose con healthcheck" width="1192" height="821">
                 <p>La comprobación depende del tipo de servicio: a una web se le pide una página, a una base de datos se le hace un ping, y así sucesivamente:</p>
                 <pre><code># Web (nginx, apache, una API…)
 HEALTHCHECK CMD curl -f http://localhost/ || exit 1
@@ -169,7 +169,7 @@ HEALTHCHECK CMD curl -f http://localhost:9090/metrics || exit 1</code></pre>
                 <h3>Política de reinicio</h3>
                 <p>Ya vimos <code>--restart</code> en la Clase 1; en producción es donde cobra sentido. Con <code>--restart unless-stopped</code>, si el contenedor se cae o reinicias el servidor, vuelve a levantarse solo. Es lo que convierte un contenedor en un servicio que no tienes que vigilar.</p>
                 <p>Además, si queremos reiniciar el contenedor bajo unas condiciones podemos hacer:</p>
-                <img src="/images/Docker-restart.png" alt="Condiciones de reinicio en Docker Compose" width="817" height="270" style="max-width:100%;height:auto">
+                <img class="u-inline-525b23bb9f" src="/images/Docker-restart.png" alt="Condiciones de reinicio en Docker Compose" width="817" height="270">
                 <p><code>condition</code> es el mismo concepto de antes. <code>delay</code> es la espera entre reintentos, <code>max_attempts</code> el máximo de intentos, y <code>window</code> el tiempo para confirmar que el reinicio fue un éxito.</p>
 
                 <h3>.dockerignore</h3>

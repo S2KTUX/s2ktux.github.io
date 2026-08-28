@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./theme-bootstrap.js?v=20260828-hardening"></script>
 <link rel="stylesheet" href="./fonts.css?v=20260822-local">
 <link rel="stylesheet" href="./visual-system.css?v=20260826-phase3">
 <link rel="stylesheet" href="./terminal-page.css?v=20260826-phase3">
@@ -31,56 +32,9 @@
 <meta property="og:image:height" content="630">
 <meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <meta name="twitter:card" content="summary_large_image">
+<script defer src="./site-shell.js?v=20260828-hardening"></script>
+<script defer src="./terminal-page.js?v=20260828-hardening"></script>
 <script>
-(function(){
-  try{ if(localStorage.getItem('s2ktux-theme')==='dark') document.documentElement.classList.add('dark'); }catch(e){}
-  function updateIcons(){ var dark=document.documentElement.classList.contains('dark'),label=dark?'Activar tema claro':'Activar tema oscuro'; document.querySelectorAll('[data-theme-icon]').forEach(function(el){ el.textContent=dark?'\u2600':'\u263e'; }); document.querySelectorAll('[data-theme-toggle]').forEach(function(el){ el.setAttribute('aria-label',label); el.setAttribute('title',label); }); }
-  window.__toggleTheme=function(){ var h=document.documentElement; h.classList.toggle('dark'); var dark=h.classList.contains('dark'); try{ localStorage.setItem('s2ktux-theme', dark?'dark':'light'); }catch(e){} updateIcons(); };
-  if(!window.__s2kThemeInit){ window.__s2kThemeInit=true;
-    document.addEventListener('click', function(e){
-      var t=e.target;
-      var b=t && t.closest && t.closest('[data-theme-toggle]'); if(b){ e.preventDefault(); window.__toggleTheme(); return; }
-      var tab=t && t.closest && t.closest('.cs-tab'); if(tab){ activateCheatTab(tab,false); }
-    });
-  }
-  document.addEventListener('DOMContentLoaded', function(){ setTimeout(updateIcons,150); });
-  function activateCheatTab(tab,moveFocus){
-    if(!tab)return;
-    var root=tab.closest('.cs'),key=tab.getAttribute('data-cs-tab');
-    var tabs=[].slice.call(root.querySelectorAll('.cs-tab:not([hidden])'));
-    tabs.forEach(function(x){var on=x===tab;x.setAttribute('data-active',on?'1':'0');x.setAttribute('aria-selected',on?'true':'false');x.tabIndex=on?0:-1;});
-    root.querySelectorAll('.cs-panel').forEach(function(p){var on=p.getAttribute('data-cs-panel')===key;p.setAttribute('data-active',on?'1':'0');p.hidden=!on;});
-    if(moveFocus)tab.focus();
-  }
-  function initCheatTabs(){
-    document.querySelectorAll('.cs-tabs').forEach(function(list,n){
-      list.setAttribute('role','tablist');list.setAttribute('aria-label','Secciones del cheatsheet');
-      var tabs=[].slice.call(list.querySelectorAll('.cs-tab'));
-      tabs.forEach(function(tab,i){
-        var key=tab.getAttribute('data-cs-tab'),panel=tab.closest('.cs').querySelector('[data-cs-panel="'+key+'"]');
-        tab.setAttribute('role','tab');tab.id='cs-tab-'+n+'-'+i;tab.tabIndex=tab.getAttribute('data-active')==='1'?0:-1;tab.setAttribute('aria-selected',tab.getAttribute('data-active')==='1'?'true':'false');
-        if(panel){panel.setAttribute('role','tabpanel');panel.setAttribute('aria-labelledby',tab.id);panel.hidden=panel.getAttribute('data-active')!=='1';}
-      });
-      list.addEventListener('keydown',function(e){
-        var visible=tabs.filter(function(t){return !t.hidden&&t.style.display!=='none';}),i=visible.indexOf(document.activeElement),next=i;
-        if(i<0)return;
-        if(e.key==='ArrowRight'||e.key==='ArrowDown')next=(i+1)%visible.length;
-        else if(e.key==='ArrowLeft'||e.key==='ArrowUp')next=(i-1+visible.length)%visible.length;
-        else if(e.key==='Home')next=0;else if(e.key==='End')next=visible.length-1;
-        else if(e.key==='Enter'||e.key===' '){e.preventDefault();activateCheatTab(visible[i],false);return;}else return;
-        e.preventDefault();activateCheatTab(visible[next],true);
-      });
-    });
-  }
-  window.__syncCheatTabs=initCheatTabs;
-  document.addEventListener('DOMContentLoaded',function(){initCheatTabs();setTimeout(initCheatTabs,500);});
-  document.addEventListener('keydown',function(e){
-    if(e.ctrlKey&&e.shiftKey&&e.key.toLowerCase()==='m'){
-      var leave=document.querySelector('[data-change-mode]');if(leave){e.preventDefault();leave.focus();}
-    }
-  });
-  setTimeout(updateIcons,150); setTimeout(updateIcons,600);
-})();
 (function(){
   var INTERNAL_RELOAD_KEY='s2ktux-terminal-internal-reload';
   var VALID_MODE=/^(linux|docker|kubernetes)$/;
@@ -200,7 +154,7 @@
 <section class="terminal-hero">
   <div id="term-eyebrow">SANDBOX · LINUX / RHCSA 9</div>
   <h1 id="term-heading">Terminal Linux · RHCSA 9</h1>
-  <p id="term-description">Una máquina Rocky Linux 9.4 para practicar RHCSA 9: recuperación mediante GRUB, usuarios, permisos, SELinux, systemd, red y almacenamiento. Escribe <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">help</span> o <span style="font-family:'Share Tech Mono',monospace;color:#c2650a">man &lt;comando&gt;</span>.</p>
+  <p id="term-description">Una máquina Rocky Linux 9.4 para practicar RHCSA 9: recuperación mediante GRUB, usuarios, permisos, SELinux, systemd, red y almacenamiento. Escribe <span class="u-inline-2213475f28">help</span> o <span class="u-inline-2213475f28">man &lt;comando&gt;</span>.</p>
 </section>
 
 <section class="terminal-stage">
@@ -234,7 +188,7 @@
     <div id="term-a11y-status" class="sr-only" aria-live="polite" aria-atomic="true"></div>
   </div>
   <div id="term-actions"><button id="term-reboot" class="pxbtn terminal-action-button">⟳ Reiniciar → GRUB</button><button id="term-rebootm" class="pxbtn terminal-action-button">↻ Reiniciar máquina</button><button id="term-reset" class="pxbtn terminal-action-button">↺ Resetear terminal</button><button id="term-solved" class="pxbtn terminal-action-button">✓ Máquina resuelta</button></div>
-  <div id="terminal-keyboard-help"><span style="color:#c2650a">↑ ↓</span> recuperan comandos · <span style="color:#c2650a">Tab</span> completa órdenes y rutas · <span style="color:#c2650a">Ctrl+C</span> cancela · <span style="color:#c2650a">Ctrl+Z</span> pausa · <span style="color:#c2650a">Ctrl+D</span> cierra · <span style="color:#c2650a">Ctrl+R</span> busca en el historial · <span style="color:#c2650a">| &gt; 2&gt;</span> conectan y redirigen</div>
+  <div id="terminal-keyboard-help"><span class="u-inline-92fa2aa58c">↑ ↓</span> recuperan comandos · <span class="u-inline-92fa2aa58c">Tab</span> completa órdenes y rutas · <span class="u-inline-92fa2aa58c">Ctrl+C</span> cancela · <span class="u-inline-92fa2aa58c">Ctrl+Z</span> pausa · <span class="u-inline-92fa2aa58c">Ctrl+D</span> cierra · <span class="u-inline-92fa2aa58c">Ctrl+R</span> busca en el historial · <span class="u-inline-92fa2aa58c">| &gt; 2&gt;</span> conectan y redirigen</div>
 </section>
 
 <section class="terminal-panel-section">
@@ -271,7 +225,7 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="files" data-active="1">
-      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">💡 Escribe <span style="color:#d97757">man &lt;comando&gt;</span> en la terminal para ver todas sus opciones. Aquí solo va el comando y para qué sirve.</div>
+      <div class="u-inline-290cac0b7f">💡 Escribe <span class="u-inline-da35776638">man &lt;comando&gt;</span> en la terminal para ver todas sus opciones. Aquí solo va el comando y para qué sirve.</div>
       <div class="csrow"><span class="cscmd">pwd · cd · ls</span><span class="csdesc">Ruta actual, cambiar de directorio, listar.</span></div>
       <div class="csrow"><span class="cscmd">tree · cat · head · tail</span><span class="csdesc">Árbol, ver contenido, principio/final.</span></div>
       <div class="csrow"><span class="cscmd">mkdir · rmdir · touch</span><span class="csdesc">Crear directorio / borrar vacío / crear fichero.</span></div>
@@ -364,7 +318,7 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-host" data-active="0">
-      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">Docker Engine y Compose están listos desde el primer prompt. Empieza por el flujo de trabajo; las pestañas siguientes separan imágenes, contenedores, datos, redes y Compose.</div>
+      <div class="u-inline-290cac0b7f">Docker Engine y Compose están listos desde el primer prompt. Empieza por el flujo de trabajo; las pestañas siguientes separan imágenes, contenedores, datos, redes y Compose.</div>
       <div class="csrow"><span class="cscmd">docker version · docker info</span><span class="csdesc">Comprueba las versiones del cliente y servidor y revisa el estado general del host.</span></div>
       <div class="csrow"><span class="cscmd">docker search TÉRMINO</span><span class="csdesc">Busca imágenes compatibles en el catálogo simulado de Docker Hub.</span></div>
       <div class="csrow"><span class="cscmd">docker pull IMAGEN[:TAG]</span><span class="csdesc">Descarga las capas de una imagen y la incorpora al almacén local.</span></div>
@@ -372,11 +326,11 @@
       <div class="csrow"><span class="cscmd">docker run [OPCIONES] IMAGEN</span><span class="csdesc">Crea y arranca un contenedor; si falta la imagen, primero realiza el pull.</span></div>
       <div class="csrow"><span class="cscmd">docker ps · docker ps -a</span><span class="csdesc">Lista los contenedores activos o todos, incluidos los detenidos.</span></div>
       <div class="csrow"><span class="cscmd">docker stop · start · restart · rm</span><span class="csdesc">Administra el ciclo de vida y elimina contenedores.</span></div>
-      <div style="margin:12px 22px;padding:12px 14px;background:var(--surface2);border:2px dashed var(--line);font-family:'Share Tech Mono',monospace;font-size:15px;line-height:1.55;color:var(--head)"><b>Imágenes disponibles:</b> alpine · nginx · httpd · debian · ubuntu · rockylinux · busybox · mariadb · mysql · postgres · redis · mongo · node · python · php · traefik · rabbitmq · wordpress · hello-world</div>
+      <div class="u-inline-f322f9e334"><b>Imágenes disponibles:</b> alpine · nginx · httpd · debian · ubuntu · rockylinux · busybox · mariadb · mysql · postgres · redis · mongo · node · python · php · traefik · rabbitmq · wordpress · hello-world</div>
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-images" data-active="0">
-      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">Las imágenes son plantillas inmutables. Docker descarga capas, las reutiliza por caché y crea contenedores a partir de ellas.</div>
+      <div class="u-inline-290cac0b7f">Las imágenes son plantillas inmutables. Docker descarga capas, las reutiliza por caché y crea contenedores a partir de ellas.</div>
       <div class="csrow"><span class="cscmd">docker search TERM · docker pull IMG</span><span class="csdesc">Busca y descarga imágenes desde un registry.</span></div>
       <div class="csrow"><span class="cscmd">docker images · image ls</span><span class="csdesc">Lista repositorio, tag, ID y tamaño local.</span></div>
       <div class="csrow"><span class="cscmd">docker inspect IMG · history IMG</span><span class="csdesc">Metadatos completos y capas de construcción.</span></div>
@@ -427,7 +381,7 @@
       <div class="csrow"><span class="cscmd">docker compose up -d --scale web=3</span><span class="csdesc">Escala un servicio durante el despliegue.</span></div>
       <div class="csrow"><span class="cscmd">docker compose exec web sh</span><span class="csdesc">Ejecuta un comando dentro de un servicio.</span></div>
       <div class="csrow"><span class="cscmd">docker compose down -v</span><span class="csdesc">Elimina contenedores, red y volúmenes del proyecto.</span></div>
-      <div style="margin:10px 22px 4px;padding:11px 15px;background:var(--surface2);border:3px dashed #b89b78;font-family:'Share Tech Mono',monospace;font-size:14px;color:var(--head);line-height:1.6">Ejemplo docker-compose.yml:<br>services:<br>&nbsp;&nbsp;web:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: nginx<br>&nbsp;&nbsp;&nbsp;&nbsp;ports: ["8080:80"]<br>&nbsp;&nbsp;db:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: mariadb:11<br>&nbsp;&nbsp;&nbsp;&nbsp;environment: ["MARIADB_ROOT_PASSWORD=secreto"]<br>&nbsp;&nbsp;&nbsp;&nbsp;volumes: ["db_data:/var/lib/mysql"]</div>
+      <div class="u-inline-95b04a1f7a">Ejemplo docker-compose.yml:<br>services:<br>&nbsp;&nbsp;web:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: nginx<br>&nbsp;&nbsp;&nbsp;&nbsp;ports: ["8080:80"]<br>&nbsp;&nbsp;db:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: mariadb:11<br>&nbsp;&nbsp;&nbsp;&nbsp;environment: ["MARIADB_ROOT_PASSWORD=secreto"]<br>&nbsp;&nbsp;&nbsp;&nbsp;volumes: ["db_data:/var/lib/mysql"]</div>
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-ops" data-active="0">
@@ -448,16 +402,16 @@
       <div class="csrow"><span class="cscmd">uptime · free · env · history</span><span class="csdesc">Carga, memoria, variables, historial (· !! repite el último, !texto el último que empieza por, Ctrl+R busca).</span></div>
       <div class="csrow"><span class="cscmd">tuned-adm · tar · neofetch</span><span class="csdesc">Perfiles, comprimir, resumen del sistema.</span></div>
       <div class="csrow"><span class="cscmd">clear (Ctrl+L) · reset</span><span class="csdesc">Limpia o restablece la pantalla sin borrar la máquina.</span></div>
-      <div style="margin:10px 22px 4px;padding:11px 15px;background:var(--surface2);border:3px dashed #b89b78;font-family:'Share Tech Mono',monospace;font-size:15px;color:var(--head)">Atajos: ↑/↓ historial · Tab autocompleta · Ctrl+C cancela · Ctrl+U borra la línea · Ctrl+A/E inicio/fin.</div>
+      <div class="u-inline-5d60d06738">Atajos: ↑/↓ historial · Tab autocompleta · Ctrl+C cancela · Ctrl+U borra la línea · Ctrl+A/E inicio/fin.</div>
     </div>
 
     <div class="cs-panel" data-cs-panel="lab" data-active="0">
-      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">🖥️ Máquinas de la red del laboratorio (192.168.1.0/24). Escribe <span style="color:#d97757">labhosts</span> para verlas. Primero configura tu red; luego <span style="color:#d97757">ssh alumno@web1</span> (contraseña <b>alumno</b>).</div>
+      <div class="u-inline-290cac0b7f">🖥️ Máquinas de la red del laboratorio (192.168.1.0/24). Escribe <span class="u-inline-da35776638">labhosts</span> para verlas. Primero configura tu red; luego <span class="u-inline-da35776638">ssh alumno@web1</span> (contraseña <b>alumno</b>).</div>
       <div class="csrow"><span class="cscmd">web1 · 192.168.1.10</span><span class="csdesc">Servidor web (Apache) para practicar conectividad, ssh y curl.</span></div>
       <div class="csrow"><span class="cscmd">node1 · 192.168.1.12</span><span class="csdesc">Próximamente: nodo para Ansible y Kubernetes.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-linux" data-active="0">
-      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">Herramientas de nodo y edición declarativa que sí aparecen en tareas CKA. La administración RHCSA avanzada queda fuera de este entorno.</div>
+      <div class="u-inline-290cac0b7f">Herramientas de nodo y edición declarativa que sí aparecen en tareas CKA. La administración RHCSA avanzada queda fuera de este entorno.</div>
       <div class="csrow"><span class="cscmd">pwd · cd · ls · cat · grep</span><span class="csdesc">Navegar, leer YAML y filtrar logs.</span></div>
       <div class="csrow"><span class="cscmd">mkdir · touch · cp · mv · rm</span><span class="csdesc">Gestionar manifiestos y copias de seguridad.</span></div>
       <div class="csrow"><span class="cscmd">vi · nano</span><span class="csdesc">Editar recursos declarativos.</span></div>
@@ -468,7 +422,7 @@
       <div class="csrow"><span class="cscmd">KUBECONFIG=/ruta/config</span><span class="csdesc">Selecciona un kubeconfig para kubectl.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-cluster" data-active="0">
-      <div style="padding:12px 22px;font-size:16px;color:var(--muted);font-family:'Share Tech Mono',monospace;border-top:2px solid var(--surface2)">El clúster responde a comandos y conserva sus recursos. Usa <span style="color:#d97757">kubectl explain</span> y <span style="color:#d97757">--help</span> como en una máquina real.</div>
+      <div class="u-inline-290cac0b7f">El clúster responde a comandos y conserva sus recursos. Usa <span class="u-inline-da35776638">kubectl explain</span> y <span class="u-inline-da35776638">--help</span> como en una máquina real.</div>
       <div class="csrow"><span class="cscmd">kubectl cluster-info</span><span class="csdesc">Info del control plane.</span></div>
       <div class="csrow"><span class="cscmd">kubectl get nodes -o wide</span><span class="csdesc">Nodos del clúster y su estado.</span></div>
       <div class="csrow"><span class="cscmd">kubectl get pods -A</span><span class="csdesc">Todos los pods, todos los namespaces.</span></div>
@@ -577,24 +531,24 @@
 <section class="terminal-panel-section terminal-practice-section">
   <details class="cs" id="practice-panel">
     <summary id="practice-title">PRÁCTICAS GUIADAS · RHCSA 9</summary>
-    <div style="padding:20px 22px">
+    <div class="u-inline-ea4b23665b">
       <div id="exam-panel" class="exam-panel">
-        <div style="font-family:'Press Start 2P',monospace;font-size:11px;line-height:1.6;color:#8fa876">SIMULACRO CKA</div>
-        <div style="font-size:18px;line-height:1.4;margin:8px 0 12px">Dos horas, objetivos visibles y sin validaciones durante el examen. Al finalizar recibirás una puntuación global.</div>
-        <div class="workbench-row"><button id="exam-start" class="mini-btn pxbtn" type="button">INICIAR 2H</button><button id="exam-finish" class="mini-btn pxbtn" type="button" style="display:none">FINALIZAR</button><span id="exam-clock" class="exam-running"></span></div>
+        <div class="u-inline-dee9d19e68">SIMULACRO CKA</div>
+        <div class="u-inline-6178006f9c">Dos horas, objetivos visibles y sin validaciones durante el examen. Al finalizar recibirás una puntuación global.</div>
+        <div class="workbench-row"><button id="exam-start" class="mini-btn pxbtn" type="button">INICIAR 2H</button><button id="exam-finish" class="mini-btn pxbtn u-inline-d0466aa33f" type="button">FINALIZAR</button><span id="exam-clock" class="exam-running"></span></div>
       </div>
-      <div style="font-size:18px;color:var(--text);line-height:1.4;margin-bottom:16px">Elige un reto, resuélvelo en la terminal de arriba y pulsa <b>Comprobar</b>. El sistema mira el estado real de tu máquina y te dice si lo has conseguido.</div>
-      <div id="chal-progress" style="margin-bottom:16px"></div>
-      <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:16px">
-        <div style="position:relative;flex:1;min-width:240px">
-          <label class="sr-only" for="chal-select">Práctica guiada</label><select id="chal-select" style="width:100%;appearance:none;-webkit-appearance:none;font-family:'Share Tech Mono',monospace;font-size:16px;padding:12px 40px 12px 14px;background:var(--surface);color:var(--head);border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer"></select>
-          <span style="position:absolute;right:15px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--head);font-size:11px">▼</span>
+      <div class="u-inline-904cf8e39d">Elige un reto, resuélvelo en la terminal de arriba y pulsa <b>Comprobar</b>. El sistema mira el estado real de tu máquina y te dice si lo has conseguido.</div>
+      <div class="u-inline-7564ec607e" id="chal-progress"></div>
+      <div class="u-inline-e771d89710">
+        <div class="u-inline-a6caf2b82b">
+          <label class="sr-only" for="chal-select">Práctica guiada</label><select class="u-inline-dc23b8ff5c" id="chal-select"></select>
+          <span class="u-inline-6685fe3cc9">▼</span>
         </div>
-        <button id="chal-check" class="pxbtn" style="background:#8fa876;color:#2e3d24;font-family:'Press Start 2P',monospace;font-size:11px;padding:14px 22px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);cursor:pointer">COMPROBAR</button>
+        <button id="chal-check" class="pxbtn u-inline-373cb07cb2">COMPROBAR</button>
       </div>
-      <div id="chal-body" style="background:var(--surface);border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);padding:20px"></div>
-      <div id="chal-result" style="margin-top:14px;font-size:19px;line-height:1.4;min-height:24px"></div>
-      <div id="chal-congrats" style="display:none"></div>
+      <div class="u-inline-43df987bd0" id="chal-body"></div>
+      <div class="u-inline-2988ff8a4f" id="chal-result"></div>
+      <div class="u-inline-d0466aa33f" id="chal-congrats"></div>
     </div>
   </details>
 </section>
