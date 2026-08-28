@@ -12,7 +12,7 @@ const gzip = (file) => zlib.gzipSync(read(file), { level: 9 }).length;
 const budgets = {
   'terminal-bootstrap.js': 3_500,
   'terminal-worker-client.js': 2_000,
-  'terminal-simulation-worker.js': 1_000,
+  'terminal-simulation-worker.js': 3_500,
   'terminal-worker-protocol.js': 1_000,
   'terminal-virtual-fs.js': 2_500,
   'terminal-process-state.js': 1_500,

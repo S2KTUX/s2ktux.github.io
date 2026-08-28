@@ -22,14 +22,15 @@ assert.equal(report.limit,LIMIT);
 assert.equal(report.requiredMargin,REQUIRED_MARGIN);
 assert.match(report.tool,/^esbuild 0\.28\.2$/);
 
-const actualSizes={};
+const actualSizes={},assetText={};
 for(const [name,expected] of Object.entries(report.assets)){
   const bytes=await read(name);
+  assetText[name]=bytes.toString('utf8');
   actualSizes[name]={raw:bytes.byteLength,gzip:gzipSync(bytes).byteLength};
   assert.deepEqual(actualSizes[name],expected,'Tamaño no reproducible: '+name);
 }
 
-const closure=roots=>{
+const closure=(roots,includeDynamic=false)=>{
   const found=new Set();
   const queue=[...roots];
   while(queue.length){
@@ -38,6 +39,7 @@ const closure=roots=>{
     found.add(current);
     assert.ok(report.graph[current],'El grafo no describe '+current);
     queue.push(...report.graph[current]);
+    if(includeDynamic)queue.push(...(report.dynamicGraph[current]||[]));
   }
   return found;
 };
@@ -45,6 +47,8 @@ const closure=roots=>{
 const totals={};
 for(const mode of modes){
   const files=closure(['terminal-bootstrap.min.js','terminal-simulation-worker.min.js','terminal-'+mode+'.min.js']);
+  const marker=mode==='docker'?'Successfully tagged':mode==='kubernetes'?'kubectl':'';
+  if(marker){const dynamic=(report.dynamicGraph['terminal-simulation-worker.min.js']||[]).find(name=>[...closure([name])].some(dependency=>assetText[dependency]?.includes(marker)));assert.ok(dynamic,'No se encontró el módulo dinámico de '+mode);for(const name of closure([dynamic]))files.add(name);}
   const total=[...files].reduce((sum,name)=>sum+actualSizes[name].gzip,0);
   const margin=LIMIT-total;
   totals[mode]={total,margin};

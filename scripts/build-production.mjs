@@ -99,7 +99,7 @@ const resolveOutputImport = (from, imported) => {
   if (metaByAbsolute.has(fromRoot)) return fromRoot;
   throw new Error('Import generado no localizado: ' + imported + ' desde ' + from);
 };
-const dependencyClosure = roots => {
+const dependencyClosure = (roots,includeDynamic=false) => {
   const found = new Set();
   const queue = [...roots];
   while (queue.length) {
@@ -109,7 +109,7 @@ const dependencyClosure = roots => {
     const meta = metaByAbsolute.get(current);
     if (!meta) throw new Error('Salida sin metadatos: ' + current);
     for (const imported of meta.imports || []) {
-      if (!imported.external && imported.kind !== 'dynamic-import') queue.push(resolveOutputImport(current, imported.path));
+      if (!imported.external && (includeDynamic || imported.kind !== 'dynamic-import')) queue.push(resolveOutputImport(current, imported.path));
     }
   }
   return found;
@@ -121,9 +121,20 @@ const namedOutput = name => {
 };
 const bootstrapOutput = namedOutput('terminal-bootstrap.min.js');
 const workerOutput = namedOutput('terminal-simulation-worker.min.js');
+const modeDynamicOutputs = mode => {
+  const markers = mode==='kubernetes'?['terminal-runtime-kubernetes.js','terminal-kubernetes-command.js']:mode==='docker'?['terminal-docker-command.js']:[];
+  if (!markers.length) return [];
+  const dynamicRoots=(metaByAbsolute.get(workerOutput).imports||[])
+    .filter(item=>!item.external&&item.kind==='dynamic-import')
+    .map(item=>resolveOutputImport(workerOutput,item.path));
+  return dynamicRoots.filter(root=>[...dependencyClosure([root])].some(path=>
+    Object.keys(metaByAbsolute.get(path).inputs||{}).some(input=>markers.some(marker=>input.endsWith(marker)))
+  ));
+};
 const modeReports = {};
 for (const mode of modes) {
   const loaded = dependencyClosure([bootstrapOutput, workerOutput, namedOutput('terminal-' + mode + '.min.js')]);
+  for(const path of dependencyClosure(modeDynamicOutputs(mode)))loaded.add(path);
   const totalGzip = [...loaded].reduce((total,path)=>total+gzipSync(bytesByAbsolute.get(path)).byteLength,0);
   modeReports[mode] = {
     totalGzip,
@@ -154,8 +165,13 @@ const report = {
     posix(relative(terminalAssets,path)),
     (meta.imports || []).filter(item=>!item.external && item.kind!=='dynamic-import').map(item=>posix(relative(terminalAssets,resolveOutputImport(path,item.path))))
   ])),
+  dynamicGraph:Object.fromEntries([...metaByAbsolute.entries()].map(([path,meta])=>[
+    posix(relative(terminalAssets,path)),
+    (meta.imports || []).filter(item=>!item.external && item.kind==='dynamic-import').map(item=>posix(relative(terminalAssets,resolveOutputImport(path,item.path))))
+  ])),
   modes:modeReports
 };
 await writeFile(join(terminalAssets, 'build-report.json'), JSON.stringify(report, null, 2)+'\n');
 console.log('Producción: esbuild ' + esbuildVersion + ' · release ' + releaseHash);
 for (const mode of modes) console.log(mode + ': ' + report.modes[mode].totalGzip + ' B gzip · margen ' + report.modes[mode].margin + ' B');
+for (const mode of modes) if(report.modes[mode].margin<report.requiredMargin)throw new Error(mode+' incumple el margen obligatorio: '+report.modes[mode].margin+' B < '+report.requiredMargin+' B');

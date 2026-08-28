@@ -20,7 +20,7 @@ export default defineConfig({
   webServer: {
     command: 'node tests/e2e/server.mjs _site',
     url: 'http://127.0.0.1:4173/index.html',
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !process.env.CI&&process.env.S2KTUX_DISABLE_WORKER!=='1',
     timeout: 30_000
   },
   projects: [

@@ -37,6 +37,9 @@ assert.match(formatPublishedPorts('8080:80, 8443:443'),/0\.0\.0\.0:8080->80\/tcp
 
 const request=createWorkerRequest(7,WORKER_OPERATIONS.SHELL_ANALYZE,{source:'echo ok'});
 assert.equal(request.protocol,TERMINAL_WORKER_PROTOCOL);
+assert.equal(TERMINAL_WORKER_PROTOCOL,2);
+assert.equal(WORKER_OPERATIONS.KUBERNETES_EXECUTE,'kubernetes.execute');
+assert.equal(WORKER_OPERATIONS.KUBERNETES_REBOOT,'kubernetes.reboot');
 assert.equal(isWorkerEnvelope(request),true);
 assert.equal(isWorkerEnvelope({id:7,protocol:99}),false);
 
@@ -46,8 +49,13 @@ assert.equal((await fallback.analyzeShellInput("echo 'sin cerrar")).complete,fal
 
 const bootstrap=await read('terminal-bootstrap.js');
 const worker=await read('terminal-simulation-worker.js');
+const core=await read('terminal-core.js');
 assert.match(bootstrap,/Promise\.all\([\s\S]*terminal-worker-client/,'El Worker debe arrancar en paralelo con los motores');
 assert.doesNotMatch(worker,/\bdocument\b|\bwindow\b|localStorage|sessionStorage/,'El Worker no debe acceder a la interfaz ni al almacenamiento web');
+assert.match(worker,/KUBERNETES_EXECUTE[\s\S]*executeKubernetes/,'El Worker debe ejecutar el runtime Kubernetes, no solo el parser');
+assert.match(worker,/repairKubernetesState[\s\S]*rebootKubernetes/,'La reconciliación y el reinicio Kubernetes deben vivir en el Worker');
+assert.match(core,/simulation\.executeKubernetes/,'El hilo principal debe delegar los comandos Kubernetes al Worker');
+assert.match(core,/s2ktux-kubernetes-state/,'El hilo principal debe publicar el estado visual recibido');
 
 for(const page of ['index.html','cursos.html','proyectos.html','proyecto-proxmox.html','proyecto-kubernetes.html','sobre.html']){
   const html=await read(page);
