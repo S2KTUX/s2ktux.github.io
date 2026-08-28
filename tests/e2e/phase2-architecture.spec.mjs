@@ -126,3 +126,47 @@ test('Bloque 2 · Kubernetes recrea el Worker sin confundir reinicio con resincr
   await page.waitForFunction(()=>!document.querySelector('#term-input')?.readOnly);
   await expect(page.locator('#term-body')).toContainText('Kubernetes no está inicializado en el Worker');
 });
+
+test('Bloque 2 · Docker reinicia y resincroniza el último estado confirmado',async({page})=>{
+  test.skip(workerDisabled,'Esta prueba necesita reiniciar un Worker real');
+  await page.addInitScript(()=>{
+    const BrowserWorker=window.Worker;let creations=0;
+    window.Worker=class RecoverableDockerWorker extends BrowserWorker{
+      constructor(url,options){creations+=1;if(creations===1){const target=String(url),source=`import ${JSON.stringify(target)};setTimeout(()=>{throw new Error('S2KTUX_TEST_DOCKER_CRASH');},1800);`;super(URL.createObjectURL(new Blob([source],{type:'text/javascript'})),{...options,type:'module'});}else super(url,options);}
+    };
+  });
+  await page.goto('/terminal.html');
+  await page.locator('[data-pick-mode="docker"]').click();
+  await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
+  const input=page.locator('#term-input');
+  const submit=value=>input.evaluate((element,command)=>{element.value=command;element.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));},value);
+  await submit('docker run -d --name protegido alpine');
+  await page.waitForFunction(()=>!document.querySelector('#term-input')?.readOnly);
+  await expect(page.locator('#term-body')).toContainText('El entorno Docker se ha desconectado');
+  await expect(page.locator('#term-body')).toContainText('Docker vuelve a estar disponible y el estado ha sido restaurado');
+  await expect.poll(()=>page.evaluate(()=>document.documentElement.dataset.terminalDockerSync)).toBe('synchronized');
+  await submit('docker ps');
+  await page.waitForFunction(()=>!document.querySelector('#term-input')?.readOnly);
+  await expect(page.locator('#term-body')).toContainText('protegido');
+});
+
+test('Bloque 2 · Docker degrada explícitamente si también falla el reinicio',async({page})=>{
+  test.skip(workerDisabled,'Esta prueba necesita provocar fallos reales del Worker');
+  await page.addInitScript(()=>{
+    const BrowserWorker=window.Worker;let creations=0;
+    window.Worker=class FailingDockerWorker extends BrowserWorker{
+      constructor(url,options){creations+=1;if(creations===1){const target=String(url),source=`import ${JSON.stringify(target)};setTimeout(()=>{throw new Error('S2KTUX_TEST_DOCKER_FATAL');},1200);`;super(URL.createObjectURL(new Blob([source],{type:'text/javascript'})),{...options,type:'module'});}else throw new Error('S2KTUX_TEST_DOCKER_RESTART_FAILED');}
+    };
+  });
+  await page.goto('/terminal.html');
+  await page.locator('[data-pick-mode="docker"]').click();
+  await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
+  await expect(page.locator('#term-body')).toContainText('El entorno Docker se ha desconectado');
+  await expect(page.locator('#term-body')).toContainText('No se pudo reiniciar Docker tras 3 intentos',{timeout:12000});
+  expect(await page.evaluate(()=>document.documentElement.dataset.terminalEngineThread)).toBe('fallback');
+  expect(await page.evaluate(()=>document.documentElement.dataset.terminalDockerSync)).toBe('degraded');
+  const input=page.locator('#term-input');
+  await input.evaluate(element=>{element.value='docker ps';element.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));});
+  await page.waitForFunction(()=>!document.querySelector('#term-input')?.readOnly);
+  await expect(page.locator('#term-body')).toContainText('CONTAINER ID');
+});

@@ -121,10 +121,20 @@ const namedOutput = name => {
 };
 const bootstrapOutput = namedOutput('terminal-bootstrap.min.js');
 const workerOutput = namedOutput('terminal-simulation-worker.min.js');
+const modeDynamicOutputs = mode => {
+  const markers = mode==='kubernetes'?['terminal-runtime-kubernetes.js','terminal-kubernetes-command.js']:mode==='docker'?['terminal-docker-command.js']:[];
+  if (!markers.length) return [];
+  const dynamicRoots=(metaByAbsolute.get(workerOutput).imports||[])
+    .filter(item=>!item.external&&item.kind==='dynamic-import')
+    .map(item=>resolveOutputImport(workerOutput,item.path));
+  return dynamicRoots.filter(root=>[...dependencyClosure([root])].some(path=>
+    Object.keys(metaByAbsolute.get(path).inputs||{}).some(input=>markers.some(marker=>input.endsWith(marker)))
+  ));
+};
 const modeReports = {};
 for (const mode of modes) {
   const loaded = dependencyClosure([bootstrapOutput, workerOutput, namedOutput('terminal-' + mode + '.min.js')]);
-  if(mode==='kubernetes')for(const path of dependencyClosure([workerOutput],true))loaded.add(path);
+  for(const path of dependencyClosure(modeDynamicOutputs(mode)))loaded.add(path);
   const totalGzip = [...loaded].reduce((total,path)=>total+gzipSync(bytesByAbsolute.get(path)).byteLength,0);
   modeReports[mode] = {
     totalGzip,
@@ -164,3 +174,4 @@ const report = {
 await writeFile(join(terminalAssets, 'build-report.json'), JSON.stringify(report, null, 2)+'\n');
 console.log('Producción: esbuild ' + esbuildVersion + ' · release ' + releaseHash);
 for (const mode of modes) console.log(mode + ': ' + report.modes[mode].totalGzip + ' B gzip · margen ' + report.modes[mode].margin + ' B');
+for (const mode of modes) if(report.modes[mode].margin<report.requiredMargin)throw new Error(mode+' incumple el margen obligatorio: '+report.modes[mode].margin+' B < '+report.requiredMargin+' B');

@@ -5,6 +5,8 @@ export const WORKER_OPERATIONS = Object.freeze({
   SHELL_ANALYZE: 'shell.analyze',
   SHELL_REDIRECTIONS: 'shell.redirections',
   COMMAND_VALIDATE: 'command.validate',
+  DOCKER_INIT: 'docker.init',
+  DOCKER_EXECUTE: 'docker.execute',
   KUBERNETES_INIT: 'kubernetes.init',
   KUBERNETES_EXECUTE: 'kubernetes.execute',
   KUBERNETES_REBOOT: 'kubernetes.reboot',

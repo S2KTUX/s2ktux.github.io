@@ -5,6 +5,8 @@ import { WORKER_OPERATIONS, createWorkerEvent, createWorkerFailure, createWorker
 let kubernetesSession=null;
 let kubernetesGeneration=0;
 let kubernetesRuntime=null,virtualFs=null;
+let dockerSession=null,dockerRuntime=null;
+const loadDockerEngine=async()=>{if(!dockerRuntime)dockerRuntime=await import('./terminal-docker-command.js');};
 const loadKubernetesEngine=async()=>{if(kubernetesRuntime)return;const [runtimeModule,fsModule]=await Promise.all([import('./terminal-runtime-kubernetes.js'),import('./terminal-virtual-fs.js')]);kubernetesRuntime=runtimeModule.default;virtualFs=fsModule;};
 
 const clone=value=>structuredClone(value);
@@ -96,6 +98,24 @@ const recoverKubernetesKubelet=nodeName=>{
   return {state:clone(kubernetesSession.k8s)};
 };
 
+const initializeDocker=async payload=>{
+  await loadDockerEngine();
+  dockerSession=dockerRuntime.repairDockerState(clone(payload.state||{}));
+  return {state:clone(dockerSession)};
+};
+
+const executeDocker=async payload=>{
+  if(!dockerSession)throw new Error('Docker no está inicializado en el Worker');
+  if(payload.fs)dockerSession.fs=clone(payload.fs);
+  if(Array.isArray(payload.cwd))dockerSession.cwd=payload.cwd.slice();
+  if(payload.currentUser)dockerSession.currentUser=payload.currentUser;
+  if(payload.services)dockerSession.services=clone(payload.services);
+  if(payload.env)dockerSession.env=clone(payload.env);
+  const result=await dockerRuntime.executeDockerCommand(dockerSession,payload);
+  dockerSession=result.state;
+  return result;
+};
+
 self.addEventListener('message',async event=>{
   const request=event.data;if(!isWorkerEnvelope(request))return;
   try{
@@ -104,6 +124,8 @@ self.addEventListener('message',async event=>{
     else if(request.operation===WORKER_OPERATIONS.SHELL_ANALYZE)result=analyzeShellInput(request.payload.source);
     else if(request.operation===WORKER_OPERATIONS.SHELL_REDIRECTIONS)result=parseRedirections(request.payload.source);
     else if(request.operation===WORKER_OPERATIONS.COMMAND_VALIDATE)result=validateCommandInvocation(request.payload.mode,request.payload.name,request.payload.args||[]);
+    else if(request.operation===WORKER_OPERATIONS.DOCKER_INIT)result=await initializeDocker(request.payload);
+    else if(request.operation===WORKER_OPERATIONS.DOCKER_EXECUTE)result=await executeDocker(request.payload);
     else if(request.operation===WORKER_OPERATIONS.KUBERNETES_INIT)result=await initializeKubernetes(request.payload);
     else if(request.operation===WORKER_OPERATIONS.KUBERNETES_EXECUTE)result=await executeKubernetes(request.payload);
     else if(request.operation===WORKER_OPERATIONS.KUBERNETES_REBOOT)result=rebootKubernetes();

@@ -22,7 +22,7 @@ class TerminalSimulationClient{
     for(const {reject,timer} of this.pending.values()){clearTimeout(timer);reject(new Error('Worker de simulación no disponible'));}
     this.pending.clear();
     if(wasConnected&&details.notify!==false)this.emit('runtime.disconnected',details);
-    if(wasConnected&&details.recover!==false&&this.everConnected&&this.mode==='kubernetes')this.scheduleRestart();
+    if(wasConnected&&details.recover!==false&&this.everConnected&&['docker','kubernetes'].includes(this.mode))this.scheduleRestart();
   }
   receive(message){
     if(isWorkerEvent(message)){for(const listener of this.listeners.get(message.event)||[])listener(message.payload);return;}
@@ -48,6 +48,8 @@ class TerminalSimulationClient{
     if(this.worker){try{return await this.request(WORKER_OPERATIONS.SHELL_ANALYZE,{source});}catch(error){this.disconnect();}}
     const {analyzeShellInput}=await import('./terminal-shell-parser.js');return analyzeShellInput(source);
   }
+  initializeDocker(payload){return this.request(WORKER_OPERATIONS.DOCKER_INIT,payload);}
+  executeDocker(payload){return this.request(WORKER_OPERATIONS.DOCKER_EXECUTE,payload);}
   initializeKubernetes(payload){return this.request(WORKER_OPERATIONS.KUBERNETES_INIT,payload);}
   executeKubernetes(payload){return this.request(WORKER_OPERATIONS.KUBERNETES_EXECUTE,payload);}
   rebootKubernetes(){return this.request(WORKER_OPERATIONS.KUBERNETES_REBOOT,{});}

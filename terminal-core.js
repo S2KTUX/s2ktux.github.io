@@ -19,6 +19,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
 
     const MODE=engine.mode;
     const kubernetesWorkerEnabled=MODE==='kubernetes'&&simulation?.kind==='worker';
+    const dockerWorkerEnabled=MODE==='docker'&&simulation?.kind==='worker';
     if(runtime.mode && runtime.mode!==MODE) throw new Error('Runtime incompatible con el motor '+MODE);
     const PROFILE=runtime.profile||{};
     const IS_EXAM=MODE==='kubernetes'&&new URLSearchParams(location.search).get('exam')==='1';
@@ -1312,6 +1313,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       helpers:Object.freeze({dockerConfigError,sudoersRuleFor,sudoersSyntaxError,kubernetes:Object.freeze({containerBaseFs,eventAdd,save,dispatch:command=>dispatch(command),runCommandSeq,editorEnter,enterContainerShell,executeContainerCommand:kubernetesContainerExec,getCurrentUser:()=>currentUser})})
     });
     const kubernetesWorkerCommands=new Set(kubernetesWorkerEnabled?(engine.commands||[]):[]);
+    const dockerWorkerCommands=new Set(MODE==='docker'?['docker','docker-compose']:[]);
     const runtimeCommands=!kubernetesWorkerEnabled&&typeof runtime.createCommands==='function'?(runtime.createCommands(runtimeContext)||{}):{};
     const publishKubernetesState=(reason)=>document.dispatchEvent(new CustomEvent('s2ktux-kubernetes-state',{detail:{reason,state:k8s}}));
     const acceptKubernetesState=(state,reason)=>{if(!state)return;k8s=state;save();publishKubernetesState(reason);};
@@ -1341,6 +1343,30 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       try{await kubernetesWorkerReady;const result=await simulation.executeKubernetes({name,args,cmd,fs,cwd,currentUser,system:{K8S_FULL,K8S_MAJOR,K8S_MINOR,K8S_UPGRADE,ARCH}});await applyKubernetesWorkerResult(result);}
       catch(error){err('kubectl: fallo de comunicación con el motor aislado: '+error.message,1);}
     };
+    const dockerSnapshot=()=>({images,containers,networks:dockerNetworks,volumes:dockerVolumes,composeProjects,timeline,services,fs,cwd,currentUser,env:shellEnv()});
+    const acceptDockerState=state=>{if(!state)return;images=state.images||[];containers=state.containers||[];dockerNetworks=state.networks||[];dockerVolumes=state.volumes||[];composeProjects=state.composeProjects||{};timeline=state.timeline||timeline;fs=state.fs||fs;save();document.dispatchEvent(new CustomEvent('s2ktux-docker-state',{detail:{state}}));};
+    const dockerWorkerReady=dockerWorkerEnabled?simulation.initializeDocker({state:dockerSnapshot(),system:{DOCKER_VERSION}}):Promise.resolve();
+    if(dockerWorkerEnabled){
+      document.documentElement.dataset.terminalDockerSync='initializing';
+      simulation.on('runtime.disconnected',()=>{document.documentElement.dataset.terminalEngineThread='disconnected';document.documentElement.dataset.terminalDockerSync='pending';out('⚠ El entorno Docker se ha desconectado. El daemon aislado no está disponible.','#ef8a7a');scroll();});
+      simulation.on('runtime.restart-scheduled',payload=>{document.documentElement.dataset.terminalEngineThread='restarting';out('Docker sigue no disponible · reintento '+payload.attempt+'/'+payload.max+' en '+(payload.delay/1000).toLocaleString('es-ES')+' s.','#e0a458');scroll();});
+      simulation.on('runtime.restarted',async()=>{document.documentElement.dataset.terminalEngineThread='worker';document.documentElement.dataset.terminalDockerSync='pending';out('Worker Docker reiniciado. Resincronizando el último estado confirmado…','#e0a458');scroll();try{const result=await simulation.initializeDocker({state:dockerSnapshot(),system:{DOCKER_VERSION}});acceptDockerState(result.state);document.documentElement.dataset.terminalDockerSync='synchronized';out('Docker vuelve a estar disponible y el estado ha sido restaurado.','#8fa876');}catch(error){simulation.disconnect({reason:'resync',recover:false,notify:false});document.documentElement.dataset.terminalEngineThread='fallback';document.documentElement.dataset.terminalDockerSync='degraded';out('No se pudo resincronizar Docker. Se activa el motor local de compatibilidad para evitar perder la sesión.','#ef8a7a');}scroll();});
+      simulation.on('runtime.restart-exhausted',payload=>{document.documentElement.dataset.terminalEngineThread='fallback';document.documentElement.dataset.terminalDockerSync='degraded';out('No se pudo reiniciar Docker tras '+payload.attempts+' intentos. Se activa el motor local de compatibilidad.','#ef8a7a');scroll();});
+      void dockerWorkerReady.then(result=>{acceptDockerState(result.state);document.documentElement.dataset.terminalDockerSync='synchronized';}).catch(()=>{});
+    }
+    const applyDockerWorkerResult=async result=>{
+      acceptDockerState(result.state);
+      for(const item of result.outputs||[]){if(item.fd===2)err(item.text,result.status||1);else out(item.text,item.color||undefined);}
+      for(const effect of result.effects||[]){
+        if(effect.type==='sequence')await new Promise(resolve=>runCommandSeq(effect.lines||[],resolve));
+        else if(effect.type==='container-shell')enterContainerShell(effect.name,effect.image,effect.kind);
+        else if(effect.type==='container-command'){const container=containers.find(item=>item.name===effect.container);if(container){const old=containerShell;containerShell={name:container.name,image:container.image,kind:'docker',cwd:'/',owner:container,fs:containerFsView(container)};try{containerDispatch((effect.args||[]).join(' '),(effect.args||[])[0],(effect.args||[]).slice(1));}finally{containerShell=old;setPrompt();}}}
+        else if(effect.type==='pager')pagerEnter(effect.lines||[],effect.label||'docker');
+        else if(effect.type==='follow')startFollow(index=>new Date().toISOString()+' '+effect.name+' | '+['GET / 200','healthcheck ok','worker heartbeat'][index%3]);
+      }
+      lastStatus=Number.isInteger(result.status)?result.status:0;lastFail=lastStatus!==0;save();
+    };
+    const executeDockerInWorker=async(name,args,cmd)=>{try{await dockerWorkerReady;const result=await simulation.executeDocker({name,args,cmd,fs,cwd,currentUser,services,env:shellEnv(),system:{DOCKER_VERSION}});await applyDockerWorkerResult(result);}catch(error){err('docker: fallo de comunicación con el motor aislado: '+error.message,1);}};
     const dispatch = async (cmd) => {
       let parts = tokenize(cmd);
       parts=parts.map((part,index)=>!tokenQuoted[index]&&(part==='~'||part.startsWith('~/'))?(shellEnv().HOME+part.slice(1)):part);
@@ -1374,6 +1400,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       if(args.includes('--help') && name!=='docker' && name!=='podman'){ const k=name.replace(/\..*/,''); renderMan(MAN[k]?k:name.replace(/\..*/,'')); return; }
 
       if(kubernetesWorkerCommands.has(name)){await executeKubernetesInWorker(name,args,cmd);return;}
+      if(dockerWorkerCommands.has(name)){if(simulation.kind==='worker')await executeDockerInWorker(name,args,cmd);else{const module=await import('./terminal-docker-command.js');const result=await module.executeDockerCommand(dockerSnapshot(),{name,args,cmd,fs,cwd,currentUser,services,env:shellEnv(),system:{DOCKER_VERSION}});await applyDockerWorkerResult(result);}return;}
       if(typeof runtimeCommands[name]==='function'){runtimeCommands[name]({name,args,cmd});return;}
 
       switch(name){
