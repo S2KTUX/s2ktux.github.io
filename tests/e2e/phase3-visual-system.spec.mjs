@@ -1,5 +1,15 @@
 import { test, expect } from '@playwright/test';
 
+test('Fase 3 · la portada conserva su composición visual completa', async ({ page }) => {
+  await page.goto('/');
+  const hero = page.locator('main section').first();
+  await expect(page.getByRole('heading', { level: 1, name: /Domina Linux/i })).toBeVisible();
+  await expect(hero).toHaveCSS('padding-top', '70px');
+  await expect(hero).toHaveCSS('text-align', 'center');
+  await expect(page.locator('.hero-badge')).toHaveCSS('display', 'inline-flex');
+  await expect(page.getByRole('link', { name: /EMPEZAR GRATIS/i })).toHaveCSS('padding', '17px 28px');
+});
+
 test('Fase 3 · cabecera y tema compartidos funcionan sin solaparse en móvil', async ({ page }) => {
   await page.setViewportSize({ width: 360, height: 780 });
   await page.goto('/index.html');

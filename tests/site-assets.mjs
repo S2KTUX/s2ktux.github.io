@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { access, readFile, readdir } from 'node:fs/promises';
 import { dirname, join, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -6,6 +7,9 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ignoredDirectories = new Set(['.git', 'node_modules', 'playwright-report', 'test-results', '_site']);
 const learningCss = await readFile(join(root, 'learning-pages.css'), 'utf8');
+const visualCss = await readFile(join(root, 'visual-system.css'), 'utf8');
+const visualFingerprint = createHash('sha256').update(visualCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
+const visualAsset = `visual-system.css?v=${visualFingerprint}`;
 assert.match(learningCss, /\.course-content[^}]*min-width:\s*0[^}]*max-width:\s*100%[^}]*overflow-wrap:\s*anywhere/i);
 assert.match(learningCss, /\.lesson-wrapper img[^}]*max-width:\s*100%[^}]*height:\s*auto/i);
 
@@ -85,8 +89,14 @@ const allSitePaths = new Set((await siteFiles(root)).map(sitePath));
 const missing = [];
 const malformed = [];
 const brokenLinks = [];
+const extractedInlineClasses = new Set();
 for (const htmlPath of allHtml) {
   const html = await readFile(htmlPath, 'utf8');
+  for (const className of html.match(/\bu-inline-[a-f0-9]{10}\b/g) || []) extractedInlineClasses.add(className);
+  const visualReference = html.match(/(?:\.\/|\/)?visual-system\.css\?v=([^"']+)/);
+  if (visualReference) {
+    assert.equal(visualReference[1], visualFingerprint, `${sitePath(htmlPath)}: stale visual-system.css fingerprint`);
+  }
   if (/\sstyle=["']/i.test(html)) malformed.push(`${relative(root, htmlPath)} -> inline style attribute`);
   for (const match of html.matchAll(/<img\b[^>]*\bsrc=["']([^"']+)["']/gi)) {
     const src = match[1];
@@ -124,6 +134,10 @@ for (const htmlPath of allHtml) {
     try { await access(target); }
     catch { brokenLinks.push(`${relative(root, htmlPath)} -> ${href}`); }
   }
+}
+
+for (const className of extractedInlineClasses) {
+  assert.ok(visualCss.includes(`.${className}{`), `Extracted inline class is missing from visual-system.css: ${className}`);
 }
 
 assert.deepEqual(missing, [], `Broken local images:\n${missing.join('\n')}`);
@@ -260,6 +274,7 @@ for (const path of ['curso.html', 'leccion.html']) {
 
 const serviceWorker = await readFile(join(root, 'sw.js'), 'utf8');
 assert.ok(serviceWorker.includes("'site-shell.css?v=20260826-phase3'"), 'Shared shell stylesheet is missing from offline cache');
+assert.ok(serviceWorker.includes(`'${visualAsset}'`), 'Current visual stylesheet fingerprint is missing from offline cache');
 assert.ok(/req\.mode==='navigate'\s*\?\s*caches\.match\('index\.html'\)\s*:\s*Response\.error\(\)/.test(serviceWorker), 'Asset failures must not fall back to HTML');
 
 const sitemap = await readFile(join(root, 'sitemap.xml'), 'utf8');

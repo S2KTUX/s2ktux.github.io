@@ -1,12 +1,15 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 const source = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
+const visualCss = await readFile(new URL('../visual-system.css', import.meta.url), 'utf8');
+const visualFingerprint = createHash('sha256').update(visualCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 
 for (const asset of [
   'site-shell.css?v=20260826-phase3',
-  'visual-system.css?v=20260826-phase3',
+  `visual-system.css?v=${visualFingerprint}`,
   'site-shell.js?v=20260826-phase3',
   'fonts.css?v=20260822-local',
   'assets/fonts/press-start-2p-latin-400.woff2',
