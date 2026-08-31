@@ -7,6 +7,9 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ignoredDirectories = new Set(['.git', 'node_modules', 'playwright-report', 'test-results', '_site']);
 const learningCss = await readFile(join(root, 'learning-pages.css'), 'utf8');
+const shellCss = await readFile(join(root, 'site-shell.css'), 'utf8');
+const shellFingerprint = createHash('sha256').update(shellCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
+const shellAsset = `site-shell.css?v=${shellFingerprint}`;
 const visualCss = await readFile(join(root, 'visual-system.css'), 'utf8');
 const visualFingerprint = createHash('sha256').update(visualCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 const visualAsset = `visual-system.css?v=${visualFingerprint}`;
@@ -218,13 +221,12 @@ const shellPages = [
   'index.html', 'cursos.html', 'terminal.html',
   'proyectos.html', 'sobre.html', 'proyecto-kubernetes.html', 'proyecto-proxmox.html',
 ];
-const shellCss = await readFile(join(root, 'site-shell.css'), 'utf8');
 assert.ok(/grid-template-columns:\s*repeat\(4,\s*minmax\(0,\s*1fr\)\)/i.test(shellCss), 'Shared mobile navigation must use four balanced columns');
 assert.ok(/\.site-theme-toggle\s*\{[^}]*position:\s*absolute/im.test(shellCss), 'Mobile theme toggle must remain visible beside the logo');
 assert.ok(/@media\s*\(max-width:\s*640px\)/i.test(shellCss), 'Shared mobile header breakpoint is missing');
 for (const path of shellPages) {
   const html = await readFile(join(root, path), 'utf8');
-  assert.ok(html.includes('href="./site-shell.css?v=20260826-phase3"'), `Missing versioned shared shell stylesheet: ${path}`);
+  assert.ok(html.includes(`href="./${shellAsset}"`), `Missing current shared shell stylesheet: ${path}`);
   assert.ok(html.includes('class="site-header-inner"'), `Missing shared header wrapper: ${path}`);
   assert.ok(html.includes('class="site-nav"'), `Missing shared navigation class: ${path}`);
   assert.ok(html.includes('site-theme-toggle'), `Missing shared theme button class: ${path}`);
@@ -273,7 +275,7 @@ for (const path of ['curso.html', 'leccion.html']) {
 }
 
 const serviceWorker = await readFile(join(root, 'sw.js'), 'utf8');
-assert.ok(serviceWorker.includes("'site-shell.css?v=20260826-phase3'"), 'Shared shell stylesheet is missing from offline cache');
+assert.ok(serviceWorker.includes(`'${shellAsset}'`), 'Current shared shell stylesheet is missing from offline cache');
 assert.ok(serviceWorker.includes(`'${visualAsset}'`), 'Current visual stylesheet fingerprint is missing from offline cache');
 assert.ok(/req\.mode==='navigate'\s*\?\s*caches\.match\('index\.html'\)\s*:\s*Response\.error\(\)/.test(serviceWorker), 'Asset failures must not fall back to HTML');
 

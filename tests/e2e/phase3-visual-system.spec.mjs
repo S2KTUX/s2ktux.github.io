@@ -4,10 +4,13 @@ test('Fase 3 · la portada conserva su composición visual completa', async ({ p
   await page.goto('/');
   const hero = page.locator('main section').first();
   await expect(page.getByRole('heading', { level: 1, name: /Domina Linux/i })).toBeVisible();
+  await expect(hero).toHaveCSS('max-width', '1180px');
   await expect(hero).toHaveCSS('padding-top', '70px');
   await expect(hero).toHaveCSS('text-align', 'center');
   await expect(page.locator('.hero-badge')).toHaveCSS('display', 'inline-flex');
   await expect(page.getByRole('link', { name: /EMPEZAR GRATIS/i })).toHaveCSS('padding', '17px 28px');
+  await expect(page.locator('main > section').nth(1)).toHaveCSS('max-width', '1000px');
+  await expect(page.locator('main > section').nth(2)).toHaveCSS('max-width', '1180px');
 });
 
 test('Fase 3 · cabecera y tema compartidos funcionan sin solaparse en móvil', async ({ page }) => {
