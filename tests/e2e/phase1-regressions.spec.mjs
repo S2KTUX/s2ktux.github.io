@@ -53,3 +53,19 @@ test('Fase 1 · Kubernetes rechaza opciones desconocidas y requisitos ausentes',
   expect(await run(page, 'kubectl get pods --inventada')).toContain('unknown flag');
   expect(await run(page, 'kubectl run web')).toMatch(/image.*not set/);
 });
+
+test('Terminal · errores incompletos no filtran valores internos ni desvían jq al Worker', async ({ page }) => {
+  await enter(page, 'linux');
+  await page.locator('#term-solved').click();
+  await page.waitForFunction(() => /root@/.test(document.querySelector('#term-prompt')?.textContent || ''));
+  for (const command of ['chgrp', 'kill', 'getfacl', 'lvcreate']) {
+    const output = await run(page, command);
+    expect(output, command).not.toMatch(/undefined|NaN/);
+    expect(output, command).toMatch(/falta|uso|matching syntax/i);
+  }
+
+  await enter(page, 'kubernetes');
+  const jq = await run(page, 'echo \'{"ok":true}\' | jq .ok');
+  expect(jq).toContain('true');
+  expect(jq).not.toMatch(/fallo de comunicación|no soportado/i);
+});

@@ -21,5 +21,6 @@ export default {
   },
   commandSet: 'linux-kubernetes',
   commands: ['kubectl','kubeadm','kubelet','etcdctl','crictl','jq'],
+  workerCommands: ['kubectl','kubeadm','kubelet','etcdctl','crictl'],
   map: { zone: 'kubernetes', title: 'CENTRO DE CONTROL', accent: '#6b5a8e' }
 };

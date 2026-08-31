@@ -563,7 +563,9 @@ export async function executeLinuxCommand(input, payload = {}) {
       nameIndex = args.indexOf("-n"),
       sizeIndex = args.indexOf("-L"),
       extentIndex = args.indexOf("-l");
-    if (!group) err('  Volume group "' + vg + '" not found');
+    if (!args.length)
+      err("  No command with matching syntax recognised. Run 'lvcreate --help' for more information.", 3);
+    else if (!group) err('  Volume group "' + vg + '" not found', 5);
     else if (
       (sizeIndex >= 0 && extentIndex >= 0) ||
       (sizeIndex < 0 && extentIndex < 0)
@@ -914,8 +916,10 @@ export async function executeLinuxCommand(input, payload = {}) {
     else out("semanage: usa port | fcontext | boolean");
   } else if (name === "getfacl") {
     const target = args.filter((value) => !value.startsWith("-")).at(-1),
-      node = getNode(norm(target));
-    if (!node)
+      node = target ? getNode(norm(target)) : null;
+    if (!target)
+      err("getfacl: falta un operando de fichero");
+    else if (!node)
       err(
         "getfacl: " + (target || "") + ": No existe el fichero o el directorio",
       );
