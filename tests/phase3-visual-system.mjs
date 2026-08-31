@@ -6,7 +6,7 @@ import { gzipSync } from 'node:zlib';
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const shellPages = ['index.html','cursos.html','proyectos.html','sobre.html','proyecto-proxmox.html','proyecto-kubernetes.html','terminal.html'];
 const visual = await read('visual-system.css');
-const visualFingerprint = createHash('sha256').update(visual).digest('hex').slice(0, 12);
+const visualFingerprint = createHash('sha256').update(visual.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 
 for (const path of shellPages) {
   const html = await read(path);

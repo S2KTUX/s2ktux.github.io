@@ -8,7 +8,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ignoredDirectories = new Set(['.git', 'node_modules', 'playwright-report', 'test-results', '_site']);
 const learningCss = await readFile(join(root, 'learning-pages.css'), 'utf8');
 const visualCss = await readFile(join(root, 'visual-system.css'), 'utf8');
-const visualFingerprint = createHash('sha256').update(visualCss).digest('hex').slice(0, 12);
+const visualFingerprint = createHash('sha256').update(visualCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 const visualAsset = `visual-system.css?v=${visualFingerprint}`;
 assert.match(learningCss, /\.course-content[^}]*min-width:\s*0[^}]*max-width:\s*100%[^}]*overflow-wrap:\s*anywhere/i);
 assert.match(learningCss, /\.lesson-wrapper img[^}]*max-width:\s*100%[^}]*height:\s*auto/i);

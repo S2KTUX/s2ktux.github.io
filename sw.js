@@ -11,7 +11,7 @@ const PRECACHE = [
   './',
   'index.html',
   'site-shell.css?v=20260826-phase3',
-  'visual-system.css?v=00ba350705c5',
+  'visual-system.css?v=35555b4494e9',
   'site-shell.js?v=20260826-phase3',
   'fonts.css?v=20260822-local',
   'learning-pages.css?v=20260822-static2',

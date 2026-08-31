@@ -4,8 +4,8 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 const source = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
-const visualCss = await readFile(new URL('../visual-system.css', import.meta.url));
-const visualFingerprint = createHash('sha256').update(visualCss).digest('hex').slice(0, 12);
+const visualCss = await readFile(new URL('../visual-system.css', import.meta.url), 'utf8');
+const visualFingerprint = createHash('sha256').update(visualCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 
 for (const asset of [
   'site-shell.css?v=20260826-phase3',
