@@ -4,11 +4,13 @@ import { readFile } from 'node:fs/promises';
 import vm from 'node:vm';
 
 const source = await readFile(new URL('../sw.js', import.meta.url), 'utf8');
+const shellCss = await readFile(new URL('../site-shell.css', import.meta.url), 'utf8');
+const shellFingerprint = createHash('sha256').update(shellCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 const visualCss = await readFile(new URL('../visual-system.css', import.meta.url), 'utf8');
 const visualFingerprint = createHash('sha256').update(visualCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 
 for (const asset of [
-  'site-shell.css?v=20260826-phase3',
+  `site-shell.css?v=${shellFingerprint}`,
   `visual-system.css?v=${visualFingerprint}`,
   'site-shell.js?v=20260826-phase3',
   'fonts.css?v=20260822-local',

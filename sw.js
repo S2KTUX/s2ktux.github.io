@@ -1,4 +1,4 @@
-const VERSION = 'v29';
+const VERSION = 'v30';
 const CACHE_PREFIX = 's2ktux-';
 const STATIC_CACHE = `${CACHE_PREFIX}static-${VERSION}`;
 const PAGE_CACHE = `${CACHE_PREFIX}pages-${VERSION}`;
@@ -10,7 +10,7 @@ const CURRENT_CACHES = new Set([STATIC_CACHE, PAGE_CACHE, MEDIA_CACHE]);
 const PRECACHE = [
   './',
   'index.html',
-  'site-shell.css?v=20260826-phase3',
+  'site-shell.css?v=7f59585aa67a',
   'visual-system.css?v=35555b4494e9',
   'site-shell.js?v=20260826-phase3',
   'fonts.css?v=20260822-local',
