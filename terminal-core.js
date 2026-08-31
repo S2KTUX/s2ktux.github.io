@@ -8667,7 +8667,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     MODE === "linux" ? runtime.workerCommands || [] : [],
   );
   const kubernetesWorkerCommands = new Set(
-    kubernetesWorkerEnabled ? engine.commands || [] : [],
+    kubernetesWorkerEnabled ? engine.workerCommands || [] : [],
   );
   const dockerWorkerCommands = new Set(
     MODE === "docker" ? ["docker", "docker-compose"] : [],
@@ -11057,6 +11057,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         break;
       }
       case "chgrp": {
+        if (args.length < 2) {
+          err("chgrp: falta un operando");
+          break;
+        }
         const group = args[0],
           tgt = args[args.length - 1] || "",
           n = getNode(norm(tgt));
@@ -12449,6 +12453,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
           break;
         }
         const target = args.filter((a) => !a.startsWith("-")).pop();
+        if (!target) {
+          err("bash: kill: uso: kill [-s señal | -n número | -señal] pid | jobspec ...");
+          break;
+        }
         const targetJob = String(target || "").startsWith("%")
           ? jobs.find((j) => String(j.id) === String(target).slice(1))
           : null;
