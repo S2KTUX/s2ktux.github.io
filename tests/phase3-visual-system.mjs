@@ -1,13 +1,16 @@
 import assert from 'node:assert/strict';
+import { createHash } from 'node:crypto';
 import { readFile } from 'node:fs/promises';
 import { gzipSync } from 'node:zlib';
 
 const read = (path) => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 const shellPages = ['index.html','cursos.html','proyectos.html','sobre.html','proyecto-proxmox.html','proyecto-kubernetes.html','terminal.html'];
+const visual = await read('visual-system.css');
+const visualFingerprint = createHash('sha256').update(visual).digest('hex').slice(0, 12);
 
 for (const path of shellPages) {
   const html = await read(path);
-  assert.match(html, /visual-system\.css\?v=20260826-phase3/, `${path} debe cargar el sistema visual compartido`);
+  assert.ok(html.includes(`visual-system.css?v=${visualFingerprint}`), `${path} debe cargar la versión actual del sistema visual compartido`);
   assert.match(html, /class="site-page-shell site-app-shell"/, `${path} debe usar el contenedor común`);
   assert.match(html, /class="site-header"/, `${path} debe usar el encabezado común`);
   assert.match(html, /class="site-footer"/, `${path} debe usar el pie común`);
@@ -20,7 +23,6 @@ for (const path of shellPages.filter((path) => path !== 'terminal.html')) {
   assert.doesNotMatch(html, /updateIcons|setTimeout\(updateIcons/, `${path} no debe sincronizar el tema mediante temporizadores`);
 }
 
-const visual = await read('visual-system.css');
 assert.match(visual, /html body\s*\{[^}]*font-family:\s*"Space Mono"/s, 'El cuerpo debe usar Space Mono');
 assert.match(visual, /\.site-logo,[\s\S]*"Press Start 2P"/, 'La marca debe reservar Press Start 2P');
 assert.match(visual, /@media \(max-width: 640px\)[\s\S]*\.site-footer/, 'El sistema debe incluir composición móvil');
@@ -37,6 +39,6 @@ assert.match(terminal, /terminal-page\.css\?v=20260826-phase3/, 'La terminal deb
 const generator = await read('scripts/build-static-learning.mjs');
 assert.match(generator, /class="site-header"/, 'El generador debe producir el encabezado común');
 assert.match(generator, /class="site-footer"/, 'El generador debe producir el pie común');
-assert.match(generator, /visual-system\.css\?v=20260826-phase3/, 'El generador debe enlazar el sistema visual');
+assert.match(generator, /visual-system\.css\?v=\$\{visualFingerprint\}/, 'El generador debe enlazar el sistema visual con su huella de contenido');
 
 console.log('phase 3 visual system: shared components, readable type and responsive structure');

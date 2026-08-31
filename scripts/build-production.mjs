@@ -147,8 +147,9 @@ const generatedJs = [...bytesByAbsolute.entries()].sort(([a],[b])=>a.localeCompa
 const releaseHash = createHash('sha256').update(Buffer.concat(generatedJs.map(([,bytes])=>bytes))).digest('hex').slice(0, 12);
 const swPath = join(out, 'sw.js');
 let sw = await readFile(swPath, 'utf8');
-if (!sw.includes("const VERSION = 'v28';")) throw new Error('No se encontró la versión esperada del service worker');
-sw = sw.replace("const VERSION = 'v28';", "const VERSION = 'v28-" + releaseHash + "';");
+const swVersion = sw.match(/const VERSION = '([^']+)';/)?.[1];
+if (!swVersion) throw new Error('No se encontró la versión del service worker');
+sw = sw.replace(`const VERSION = '${swVersion}';`, `const VERSION = '${swVersion}-${releaseHash}';`);
 sw = sw.replace("  'index.html',", "  'index.html',\n  'assets/terminal/terminal-bootstrap.min.js',");
 await writeFile(swPath, sw);
 

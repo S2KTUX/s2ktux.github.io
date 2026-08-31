@@ -56,6 +56,9 @@ for(const mode of modes){
   assert.ok(margin>=REQUIRED_MARGIN,'El modo '+mode+' deja '+margin+' B; se exigen al menos '+REQUIRED_MARGIN+' B de margen');
 }
 
-assert.match(await readFile(new URL('sw.js',site),'utf8'),/const VERSION = 'v28-[a-f0-9]{12}';/);
+const sourceSw=await readFile(new URL('../sw.js',import.meta.url),'utf8');
+const sourceSwVersion=sourceSw.match(/const VERSION = '([^']+)';/)?.[1];
+assert.ok(sourceSwVersion,'El service worker fuente no declara versión');
+assert.ok((await readFile(new URL('sw.js',site),'utf8')).includes(`const VERSION = '${sourceSwVersion}-${report.releaseHash}';`),'El artefacto no combina la versión del service worker con la versión de la terminal');
 assert.match(await readFile(new URL('sw.js',site),'utf8'),/assets\/terminal\/terminal-bootstrap\.min\.js/);
 console.log('production budget: '+modes.map(mode=>mode+' '+totals[mode].total+' B gzip · margen '+totals[mode].margin+' B').join(' · ')+'; mínimo obligatorio '+REQUIRED_MARGIN+' B');
