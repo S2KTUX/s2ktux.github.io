@@ -19232,7 +19232,9 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
   const selEl = document.querySelector("#chal-select"),
     bodyEl = document.querySelector("#chal-body"),
     resEl = document.querySelector("#chal-result"),
-    btnEl = document.querySelector("#chal-check");
+    btnEl = document.querySelector("#chal-check"),
+    solutionBtn = document.querySelector("#chal-solution"),
+    solutionBody = document.querySelector("#chal-solution-body");
   if (selEl && bodyEl && btnEl) {
     const examPanel = document.querySelector("#exam-panel"),
       examStart = document.querySelector("#exam-start"),
@@ -19437,6 +19439,13 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         '</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">' +
         c.goal +
         "</div>";
+      if (solutionBtn && solutionBody) {
+        const hasSolution = MODE === "docker" && !!c.solution && !examActive;
+        solutionBtn.hidden = !hasSolution;
+        solutionBtn.textContent = "VER SOLUCIÓN";
+        solutionBody.hidden = true;
+        solutionBody.textContent = hasSolution ? c.solution : "";
+      }
       if (examActive) {
         resEl.innerHTML =
           '<span style="color:var(--muted)">Validación oculta durante el simulacro.</span>';
@@ -19447,6 +19456,12 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       }
     };
     selEl.addEventListener("change", renderChal);
+    if (solutionBtn && solutionBody)
+      solutionBtn.addEventListener("click", () => {
+        const isHidden = solutionBody.hidden;
+        solutionBody.hidden = !isHidden;
+        solutionBtn.textContent = isHidden ? "OCULTAR SOLUCIÓN" : "VER SOLUCIÓN";
+      });
     renderChal();
     updateProgress();
     const MKEY = "s2ktux-chal-manual-v12-" + MODE + (IS_EXAM ? "-exam" : "");

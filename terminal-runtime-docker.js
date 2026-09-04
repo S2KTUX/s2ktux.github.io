@@ -29,7 +29,24 @@ export default {
   createChallenges(ctx) {
     const s=ctx.state;
     const fileAt=(path)=>ctx.getNode(path.split('/').filter(Boolean));
-    return [
+    const solutions=[
+      'docker search alpine\ndocker pull alpine\ndocker images alpine',
+      'docker run -d --name primer-alpine alpine sleep 3600\ndocker ps',
+      'docker run -d --name ciclo nginx\ndocker stop ciclo\ndocker start ciclo\ndocker restart ciclo\ndocker ps',
+      'docker run -d --name web -p 8080:80 nginx\ndocker ps',
+      'docker inspect web\ndocker logs web\ndocker top web\ndocker port web',
+      "mkdir -p /root/miweb\necho '<h1>Mi web</h1>' > /root/miweb/index.html\necho 'FROM nginx' > /root/miweb/Dockerfile\necho 'COPY index.html /usr/share/nginx/html/index.html' >> /root/miweb/Dockerfile\ndocker build -t miweb:v1 /root/miweb",
+      'docker run -d --name miweb-app -p 8081:80 miweb:v1\ndocker ps',
+      'docker tag miweb:v1 alumno/miweb:1.0\ndocker save -o /root/miweb-1.0.tar alumno/miweb:1.0',
+      'docker volume create datos\ndocker run -d --name persistente -v datos:/var/lib/app alpine sleep 3600\ndocker volume inspect datos',
+      "mkdir -p /root/site\necho '<h1>Bind mount</h1>' > /root/site/index.html\ndocker run -d --name bindweb -p 8082:80 -v /root/site:/usr/share/nginx/html nginx",
+      'docker network create labnet\ndocker run -d --name backend --network labnet nginx\ndocker run -d --name frontend --network labnet alpine sleep 3600\ndocker network inspect labnet',
+      'docker run -d --name limitado --memory 256m --cpus 0.50 --restart unless-stopped nginx\ndocker stats',
+      "mkdir -p /root/stack\ncat > /root/stack/compose.yaml <<'EOF'\nservices:\n  web:\n    image: nginx\n  db:\n    image: mariadb\n    environment:\n      MARIADB_ROOT_PASSWORD: curso\n    volumes:\n      - datos_db:/var/lib/mysql\nvolumes:\n  datos_db:\nEOF\ncd /root/stack\ndocker compose -p tienda up -d",
+      'cd /root/stack\ndocker compose -p tienda config\ndocker compose -p tienda ps\ndocker compose -p tienda logs\ndocker compose -p tienda up -d --scale web=3',
+      "mkdir -p /root/produccion\ncat > /root/produccion/Dockerfile <<'EOF'\nFROM node:20-alpine AS build\nWORKDIR /app\nCOPY . .\nRUN npm run build\nFROM nginx:alpine\nCOPY --from=build /app/dist /usr/share/nginx/html\nEOF\ndocker build -t miapp:prod /root/produccion\ndocker history miapp:prod"
+    ];
+    const challenges=[
       {badge:'NIVEL 1 · IMÁGENES',title:'Prepara Alpine',goal:'Busca la imagen oficial de Alpine y deja descargada localmente su etiqueta <b>latest</b>.',check:()=>s.images.some(i=>i.repo==='alpine'&&i.tag==='latest')&&s.history.some(h=>h==='docker search alpine')&&s.history.some(h=>h==='docker pull alpine')?{ok:true,msg:'Alpine está localizada y descargada.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
       {badge:'NIVEL 1 · EJECUCIÓN',title:'Tu primer contenedor',goal:'Deja ejecutándose en segundo plano un contenedor llamado <b>primer-alpine</b> basado en Alpine.',check:()=>s.containers.some(c=>c.name==='primer-alpine'&&c.running&&c.image.startsWith('alpine'))?{ok:true,msg:'El primer contenedor está activo.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
       {badge:'NIVEL 1 · CICLO DE VIDA',title:'Controla el ciclo de vida',goal:'Crea un contenedor llamado <b>ciclo</b>, detenlo, vuelve a arrancarlo y reinícialo. Debe quedar activo.',check:()=>s.containers.some(c=>c.name==='ciclo'&&c.running)&&['stop','start','restart'].every(op=>s.history.some(h=>h.startsWith('docker '+op+' ciclo')))?{ok:true,msg:'Ciclo de vida completo.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
@@ -44,7 +61,8 @@ export default {
       {badge:'NIVEL 5 · RECURSOS',title:'Limita un servicio',goal:'Deja activo un contenedor <b>limitado</b> con un máximo de 256 MiB de memoria, 0.50 CPU y política de reinicio <b>unless-stopped</b>. Revisa después su consumo.',check:()=>s.containers.some(c=>c.name==='limitado'&&c.running&&/256m/i.test(c.mem||'')&&String(c.cpus)==='0.50'&&c.restart==='unless-stopped')&&s.history.some(h=>h.startsWith('docker stats'))?{ok:true,msg:'Límites aplicados y consumo revisado.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
       {badge:'NIVEL 5 · COMPOSE',title:'Escribe una aplicación Compose',goal:'Crea <b>/root/stack/compose.yaml</b> con un servicio <b>web</b> basado en nginx, un servicio <b>db</b> basado en MariaDB y un volumen con nombre para la base de datos. Despliega el proyecto como <b>tienda</b>.',check:()=>{const f=fileAt('/root/stack/compose.yaml'),p=s.composeProjects.tienda;return (f&&/services:/i.test(f.content)&&/web:/i.test(f.content)&&/db:/i.test(f.content)&&p&&p.running&&p.services.includes('web')&&p.services.includes('db'))?{ok:true,msg:'Proyecto Compose desplegado.'}:{ok:false,msg:'El objetivo todavía no está completo.'};}},
       {badge:'NIVEL 5 · OPERACIÓN COMPOSE',title:'Opera el proyecto',goal:'Valida la configuración del proyecto <b>tienda</b>, revisa sus contenedores y sus logs, y escala el servicio web a tres réplicas.',check:()=>s.history.some(h=>/^docker compose .*config/.test(h))&&s.history.some(h=>/^docker compose .*ps/.test(h))&&s.history.some(h=>/^docker compose .*logs/.test(h))&&s.containers.filter(c=>c.composeProject==='tienda'&&c.composeService==='web').length===3?{ok:true,msg:'Proyecto validado, observado y escalado.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
-      {badge:'NIVEL 6 · RELEASE',title:'Publica una release',goal:'Etiqueta miweb:v1 como <b>alumno/miweb:release</b>, autentícate en Docker Hub y publica exactamente esa etiqueta.',check:()=>s.images.some(i=>i.repo==='alumno/miweb'&&i.tag==='release')&&s.history.some(h=>h.startsWith('docker login'))&&s.history.some(h=>/^docker push alumno\/miweb:release$/.test(h))?{ok:true,msg:'Release publicada.'}:{ok:false,msg:'El objetivo todavía no está completo.'}}
+      {badge:'NIVEL 6 · PRODUCCIÓN',title:'Construye una imagen multi-stage',goal:'Crea <b>/root/produccion/Dockerfile</b> con una etapa de construcción nombrada mediante <b>AS</b> y una segunda etapa final. Construye el resultado como <b>miapp:prod</b>.',check:()=>{const f=fileAt('/root/produccion/Dockerfile'),froms=f&&f.content.match(/^\s*FROM\s+.+$/gim);return f&&froms&&froms.length>=2&&/^\s*FROM\s+.+\s+AS\s+\S+/im.test(f.content)&&s.images.some(i=>i.repo==='miapp'&&i.tag==='prod')?{ok:true,msg:'Imagen multi-stage construida.'}:{ok:false,msg:'El objetivo todavía no está completo.'};}}
     ];
+    return challenges.map((challenge,index)=>({...challenge,solution:solutions[index]}));
   }
 };
