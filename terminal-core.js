@@ -17727,13 +17727,19 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         err("-bash: " + event.fd + ": descriptor de fichero incorrecto");
         return;
       }
+      // A Worker response may replace `fs` with its synchronized clone. Resolve
+      // the destination again so redirected output is written into the live tree,
+      // rather than into the detached node captured before the command ran.
+      const liveNode = sink.target ? getNode(norm(sink.target)) : null;
+      const targetNode = liveNode && liveNode.type === "file" ? liveNode : sink.node;
       const text = event.text == null ? "" : String(event.text);
       const next =
-        sink.node.content +
+        targetNode.content +
         (sink.needsSeparator || sink.wrote ? "\n" : "") +
         text;
-      if (!virtualWrite(sink.node, next, sink.target)) return;
-      sink.node.content = next;
+      if (!virtualWrite(targetNode, next, sink.target)) return;
+      targetNode.content = next;
+      sink.node = targetNode;
       sink.needsSeparator = false;
       sink.wrote = true;
     });

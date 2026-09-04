@@ -286,6 +286,25 @@ test('Kubernetes · YAML, configuración, storage, RBAC, logs y herramientas del
   expect(errors).toEqual([]);
 });
 
+test('Kubernetes · dry-run genera YAML reutilizable sin crear recursos',async({page})=>{
+  const errors=captureRuntimeErrors(page);
+  await openMode(page,'kubernetes');
+  await run(page,'kubectl create deployment yaml-web --image=nginx:1.27 --dry-run=client -o yaml > /tmp/deployment.yaml');
+  expect(await run(page,'cat /tmp/deployment.yaml')).toMatch(/apiVersion: apps\/v1[\s\S]*kind: Deployment[\s\S]*name: yaml-web/);
+  expect(await run(page,'kubectl get deployment yaml-web')).toMatch(/NotFound/);
+  expect(await run(page,'kubectl apply -f /tmp/deployment.yaml')).toMatch(/configured|created/);
+
+  await run(page,'kubectl expose deployment yaml-web --port=80 --target-port=8080 --dry-run=client -o yaml > /tmp/service.yaml');
+  expect(await run(page,'cat /tmp/service.yaml')).toMatch(/kind: Service[\s\S]*targetPort: 8080/);
+  expect(await run(page,'kubectl get service yaml-web')).toMatch(/NotFound/);
+  expect(await run(page,'kubectl apply -f /tmp/service.yaml')).toMatch(/configured|created/);
+
+  await run(page,'kubectl create namespace laboratorio');
+  expect(await run(page,'kubectl config set-context --current --namespace=laboratorio')).toContain('modified');
+  expect(await run(page,'kubectl config get-contexts')).toContain('laboratorio');
+  expect(errors).toEqual([]);
+});
+
 test('Linux · passwd, su, at, nmtui y visudo conservan control del TTY',async({page})=>{
   const errors=captureRuntimeErrors(page);
   await openMode(page,'linux');
