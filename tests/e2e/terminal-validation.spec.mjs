@@ -475,3 +475,35 @@ test('Docker · opciones y órdenes incompletas devuelven errores de CLI reales'
   }
   expect(await run(page,'docker container prune -f')).toMatch(/Deleted Containers|Total reclaimed space/i);
 });
+
+test('Docker · la práctica 15 usa multi-stage y ofrece una solución sin alterar la máquina',async({page})=>{
+  await openMode(page,'docker');
+  await page.locator('#practice-panel').evaluate((panel)=>{panel.open=true;});
+  for(let index=0;index<15;index+=1){
+    await page.locator('#chal-select').selectOption(String(index));
+    await expect(page.locator('#chal-solution')).toBeVisible();
+    await page.locator('#chal-solution').click();
+    await expect(page.locator('#chal-solution-body')).not.toBeEmpty();
+    await page.locator('#chal-solution').click();
+  }
+  await page.locator('#chal-select').selectOption('14');
+  await expect(page.locator('#chal-body')).toContainText('Construye una imagen multi-stage');
+  await expect(page.locator('#chal-body')).not.toContainText('Publica una release');
+
+  const solution=page.locator('#chal-solution-body');
+  await expect(solution).toBeHidden();
+  await page.locator('#chal-solution').click();
+  await expect(solution).toBeVisible();
+  await expect(solution).toContainText('AS build');
+  await expect(solution).toContainText('docker build -t miapp:prod');
+  expect(await run(page,'docker images miapp:prod')).not.toMatch(/miapp\s+prod/);
+
+  await run(page,'mkdir -p /root/produccion');
+  await run(page,"echo 'FROM node:20-alpine AS build' > /root/produccion/Dockerfile");
+  await run(page,"echo 'RUN npm run build' >> /root/produccion/Dockerfile");
+  await run(page,"echo 'FROM nginx:alpine' >> /root/produccion/Dockerfile");
+  await run(page,"echo 'COPY --from=build /app/dist /usr/share/nginx/html' >> /root/produccion/Dockerfile");
+  await run(page,'docker build -t miapp:prod /root/produccion');
+  await page.locator('#chal-check').click();
+  await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
+});

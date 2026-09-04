@@ -49,6 +49,7 @@
   .skip-link:focus{top:12px;color:#fff}
   .workbench-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
   .mini-btn{background:var(--surface2);color:var(--head);border:2px solid var(--line);box-shadow:2px 2px 0 var(--line);font-family:'Press Start 2P',monospace;font-size:8px;padding:9px 11px;cursor:pointer;min-height:38px}
+  .challenge-solution{margin:0 0 18px;padding:16px 18px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);background:#12100b;color:#d8cbad;font:16px/1.55 'Share Tech Mono',monospace;white-space:pre-wrap;overflow-wrap:anywhere}
   .exam-panel{display:none;background:#1a2410;border:3px solid #8fa876;box-shadow:4px 4px 0 var(--line);padding:16px;margin-bottom:18px;color:#e9ddc7}
   .exam-panel[data-show="1"]{display:block}.exam-running{color:#e0a458;font-family:'Share Tech Mono',monospace;font-size:19px}
   .sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
@@ -101,7 +102,7 @@
     .cs-code{padding:13px;font-size:13px}
     #practice-panel>div{padding:15px 14px!important}
     #chal-body{padding:15px!important}
-    #chal-check{width:100%}
+    #chal-check,#chal-solution{width:100%}
   }
   @media(max-width:420px){
     #term-actions{grid-template-columns:1fr}
