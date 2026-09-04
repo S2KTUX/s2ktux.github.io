@@ -36,9 +36,15 @@
   .cs-tab[data-active="1"]{background:var(--surface);border-bottom:3px solid #d97757;font-weight:bold}
   .cs-panel{display:none;padding:6px 0 12px}
   .cs-panel[data-active="1"]{display:block}
+  .cs-intro{padding:12px 22px 14px;border-top:2px solid var(--surface2);color:var(--muted);font:15px/1.55 'Space Mono',monospace}
+  .cs-intro strong{color:var(--head)}
   .csrow{display:grid;grid-template-columns:250px 1fr;gap:16px;padding:9px 22px;border-top:2px solid var(--surface2);align-items:baseline}
   .cscmd{font-family:'Share Tech Mono',monospace;font-size:16px;color:#d97757;word-break:break-word}
   .csdesc{font-size:18px;color:var(--text);line-height:1.3}
+  .cs-code-wrap{margin:14px 22px 18px;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);background:#12100b;overflow:hidden}
+  .cs-code-title{padding:8px 12px;border-bottom:2px solid var(--line);background:#241d13;color:#e0a458;font:13px/1.4 'Press Start 2P',monospace}
+  .cs-code{margin:0;padding:15px 17px;overflow-x:auto;color:#d8cbad;font:15px/1.45 'Share Tech Mono',monospace;white-space:pre}
+  .cs-code .yaml-key{color:#e0a458}.cs-code .yaml-value{color:#8fa876}.cs-code .yaml-comment{color:#9d9078}
   .skip-link{position:fixed;left:12px;top:-60px;z-index:1000;background:#d97757;color:#fff;padding:12px 16px;border:3px solid var(--line);font-family:'Press Start 2P',monospace;font-size:9px}
   .skip-link:focus{top:12px;color:#fff}
   .workbench-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
@@ -90,6 +96,9 @@
     #terminal-keyboard-help{font-size:13px!important;line-height:1.35;margin-top:12px!important}
     details.cs>summary{padding:15px 14px;font-size:10px;line-height:1.55;gap:12px}
     details.cs>summary::after{font-size:19px}
+    .cs-intro{padding:12px 14px;font-size:14px}
+    .cs-code-wrap{margin:12px 14px 16px}
+    .cs-code{padding:13px;font-size:13px}
     #practice-panel>div{padding:15px 14px!important}
     #chal-body{padding:15px!important}
     #chal-check{width:100%}

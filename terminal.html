@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="./fonts.css?v=20260822-local">
 <link rel="stylesheet" href="./visual-system.css?v=35555b4494e9">
 <link rel="stylesheet" href="./terminal-page.css?v=20260826-phase3">
-<link rel="stylesheet" href="./site-shell.css?v=7f59585aa67a">
+<link rel="stylesheet" href="./site-shell.css?v=5ba23c5af75b">
 <title>Terminales Linux, Docker y Kubernetes · S2KTUX</title>
 <meta name="description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas, rápidas e independientes dentro del navegador.">
 <meta name="robots" content="index,follow">
@@ -195,24 +195,24 @@
   <details class="cs">
     <summary id="cheatsheet-title">CHEATSHEET · LINUX / RHCSA 9</summary>
     <div class="cs-tabs">
-      <div class="cs-tab" data-modes="linux" data-cs-tab="files" data-active="1">Ficheros</div>
+      <div class="cs-tab" data-modes="linux" data-cs-tab="files" data-active="1">Shell y ficheros</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="perms" data-active="0">Permisos y ACL</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="users" data-active="0">Usuarios</div>
-      <div class="cs-tab" data-modes="linux" data-cs-tab="proc" data-active="0">Procesos y servicios</div>
+      <div class="cs-tab" data-modes="linux" data-cs-tab="proc" data-active="0">Procesos y systemd</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="pkg" data-active="0">Paquetes</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="store" data-active="0">Almacenamiento</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="net" data-active="0">Red</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="selinux" data-active="0">SELinux</div>
-      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-host" data-active="0">Primeros pasos</div>
-      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-images" data-active="0">Imágenes y build</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-host" data-active="0">Flujo diario</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-images" data-active="0">Imágenes y Dockerfile</div>
       <div class="cs-tab" data-modes="docker" data-cs-tab="cont" data-active="0">Contenedores</div>
       <div class="cs-tab" data-modes="docker" data-cs-tab="docker-data" data-active="0">Volúmenes</div>
       <div class="cs-tab" data-modes="docker" data-cs-tab="docker-network" data-active="0">Redes</div>
       <div class="cs-tab" data-modes="docker" data-cs-tab="compose" data-active="0">Docker Compose</div>
-      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-ops" data-active="0">Operación</div>
-      <div class="cs-tab" data-modes="linux" data-cs-tab="sys" data-active="0">Sistema</div>
+      <div class="cs-tab" data-modes="docker" data-cs-tab="docker-ops" data-active="0">Producción</div>
+      <div class="cs-tab" data-modes="linux" data-cs-tab="sys" data-active="0">Arranque y tareas</div>
       <div class="cs-tab" data-modes="linux" data-cs-tab="lab" data-active="0">Red del lab</div>
-      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-linux" data-active="0">Linux y YAML</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-linux" data-active="0">kubectl y YAML</div>
       <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-cluster" data-active="0">Clúster y Pods</div>
       <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-work" data-active="0">Workloads</div>
       <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-cfg" data-active="0">Config</div>
@@ -221,21 +221,26 @@
       <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-net" data-active="0">Servicios y Red</div>
       <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-rbac" data-active="0">RBAC</div>
       <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-admin" data-active="0">Administración</div>
+      <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-yaml" data-active="0">YAML útiles</div>
       <div class="cs-tab" data-modes="kubernetes" data-cs-tab="k8s-trouble" data-active="0">Troubleshooting</div>
     </div>
 
     <div class="cs-panel" data-cs-panel="files" data-active="1">
-      <div class="u-inline-290cac0b7f">💡 Escribe <span class="u-inline-da35776638">man &lt;comando&gt;</span> en la terminal para ver todas sus opciones. Aquí solo va el comando y para qué sirve.</div>
+      <div class="cs-intro"><strong>Flujo recomendado:</strong> localiza, inspecciona, transforma y solo después modifica. Usa <span class="terminal-command">man COMANDO</span> para consultar opciones sin salir de la terminal.</div>
       <div class="csrow"><span class="cscmd">pwd · cd · ls</span><span class="csdesc">Ruta actual, cambiar de directorio, listar.</span></div>
       <div class="csrow"><span class="cscmd">tree · cat · head · tail</span><span class="csdesc">Árbol, ver contenido, principio/final.</span></div>
       <div class="csrow"><span class="cscmd">mkdir · rmdir · touch</span><span class="csdesc">Crear directorio / borrar vacío / crear fichero.</span></div>
       <div class="csrow"><span class="cscmd">rm · cp · mv · ln</span><span class="csdesc">Borrar, copiar, mover, enlazar.</span></div>
       <div class="csrow"><span class="cscmd">find · grep · wc</span><span class="csdesc">Buscar ficheros / texto / contar.</span></div>
+      <div class="csrow"><span class="cscmd">grep -Rin PATRÓN RUTA</span><span class="csdesc">Busca texto recursivamente mostrando línea; añade <b>-E</b> para expresiones regulares extendidas.</span></div>
+      <div class="csrow"><span class="cscmd">sed · awk · cut · tr</span><span class="csdesc">Filtra, sustituye y selecciona columnas en flujos de texto.</span></div>
       <div class="csrow"><span class="cscmd">stat · file · which</span><span class="csdesc">Metadatos / tipo / ruta del ejecutable.</span></div>
       <div class="csrow"><span class="cscmd">sort · uniq · nl</span><span class="csdesc">Ordenar / quitar duplicados / numerar.</span></div>
-      <div class="csrow"><span class="cscmd">echo texto &gt; f · &gt;&gt;</span><span class="csdesc">Escribir en fichero (sobrescribe / añade).</span></div>
+      <div class="csrow"><span class="cscmd">&gt; · &gt;&gt; · 2&gt; · 2&gt;&amp;1</span><span class="csdesc">Redirige salida, añade, separa errores o reúne stdout y stderr.</span></div>
       <div class="csrow"><span class="cscmd">cmd1 | cmd2</span><span class="csdesc">Tuberías: encadena la salida de un comando a otro.</span></div>
       <div class="csrow"><span class="cscmd">cmd1 &amp;&amp; cmd2 · || · ;</span><span class="csdesc">Encadena por éxito / fallo / siempre.</span></div>
+      <div class="csrow"><span class="cscmd">tar -caf copia.tar.xz RUTA · tar -xaf copia.tar.xz</span><span class="csdesc">Crea o extrae un archivo; <b>-a</b> elige la compresión por la extensión.</span></div>
+      <div class="csrow"><span class="cscmd">$VAR · "$VAR" · '*.log'</span><span class="csdesc">Expansión de variables; comillas dobles expanden y simples conservan el texto literal.</span></div>
       <div class="csrow"><span class="cscmd">vi FICHERO · nano FICHERO</span><span class="csdesc">Editores (vi modal; nano con ^O/^X).</span></div>
       <div class="csrow"><span class="cscmd">./script.sh</span><span class="csdesc">Ejecuta un script con permiso +x.</span></div>
     </div>
@@ -252,17 +257,26 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="users" data-active="0">
+      <div class="cs-intro"><strong>Regla práctica:</strong> crea la cuenta, asigna grupos, define caducidad y verifica siempre con <span class="terminal-command">id</span> y <span class="terminal-command">getent</span>.</div>
       <div class="csrow"><span class="cscmd">whoami · id · groups</span><span class="csdesc">Quién soy, UID/GID, grupos.</span></div>
-      <div class="csrow"><span class="cscmd">useradd · userdel · usermod</span><span class="csdesc">Crear / borrar / modificar usuarios.</span></div>
-      <div class="csrow"><span class="cscmd">groupadd · passwd · chage</span><span class="csdesc">Crear grupo / contraseña / caducidad.</span></div>
+      <div class="csrow"><span class="cscmd">useradd -m -s /bin/bash ana</span><span class="csdesc">Crea usuario con directorio personal y shell explícita.</span></div>
+      <div class="csrow"><span class="cscmd">usermod -aG wheel ana</span><span class="csdesc">Añade a un grupo suplementario sin borrar los grupos actuales.</span></div>
+      <div class="csrow"><span class="cscmd">userdel -r ana · groupadd · groupdel</span><span class="csdesc">Elimina cuenta y home; crea o elimina grupos.</span></div>
+      <div class="csrow"><span class="cscmd">passwd · chage -M 90 -W 7 ana</span><span class="csdesc">Contraseña y política de caducidad; comprueba con <b>chage -l</b>.</span></div>
       <div class="csrow"><span class="cscmd">su · exit · getent</span><span class="csdesc">Cambiar de usuario / volver / consultar BD.</span></div>
+      <div class="csrow"><span class="cscmd">visudo · /etc/sudoers.d/ana</span><span class="csdesc">Edita y valida privilegios sudo sin arriesgar un fichero inválido.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="proc" data-active="0">
-      <div class="csrow"><span class="cscmd">ps · top · pgrep · kill</span><span class="csdesc">Ver procesos / en vivo / buscar / matar.</span></div>
-      <div class="csrow"><span class="cscmd">systemctl</span><span class="csdesc">Servicios: status/start/stop/enable/restart.</span></div>
-      <div class="csrow"><span class="cscmd">journalctl</span><span class="csdesc">Logs de servicios y del sistema.</span></div>
-      <div class="csrow"><span class="cscmd">crontab · uptime · free</span><span class="csdesc">Tareas programadas / carga / memoria.</span></div>
+      <div class="cs-intro"><strong>Diagnóstico:</strong> identifica el proceso, comprueba el servicio y correlaciona su fallo con el journal antes de reiniciarlo.</div>
+      <div class="csrow"><span class="cscmd">ps aux · ps -ef · pgrep -a NOMBRE</span><span class="csdesc">Vista global o búsqueda precisa de procesos y argumentos.</span></div>
+      <div class="csrow"><span class="cscmd">top · uptime · free -h</span><span class="csdesc">CPU/carga, tiempo activo y memoria disponible.</span></div>
+      <div class="csrow"><span class="cscmd">comando &amp; · jobs · fg · bg</span><span class="csdesc">Ejecuta y controla trabajos en segundo o primer plano.</span></div>
+      <div class="csrow"><span class="cscmd">kill -TERM PID · kill -KILL PID</span><span class="csdesc">Solicita cierre limpio; usa KILL solo cuando el proceso no responde.</span></div>
+      <div class="csrow"><span class="cscmd">nice -n 10 CMD · renice 5 -p PID</span><span class="csdesc">Inicia o reajusta la prioridad de CPU.</span></div>
+      <div class="csrow"><span class="cscmd">systemctl status|start|stop UNIDAD</span><span class="csdesc">Consulta y controla el estado actual del servicio.</span></div>
+      <div class="csrow"><span class="cscmd">systemctl enable --now UNIDAD</span><span class="csdesc">Arranca ahora y también durante los próximos inicios.</span></div>
+      <div class="csrow"><span class="cscmd">journalctl -u UNIDAD -b --since -30m</span><span class="csdesc">Logs de la unidad en este arranque y periodo reciente.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="pkg" data-active="0">
@@ -281,18 +295,23 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="store" data-active="0">
+      <div class="cs-intro"><strong>Orden seguro:</strong> identifica el dispositivo, crea partición/volumen, formatea, monta, verifica y finalmente hazlo persistente.</div>
       <div class="csrow"><span class="cscmd">lsblk · fdisk · blkid</span><span class="csdesc">Discos, particiones y UUIDs. Hay un /dev/sdb vacío.</span></div>
       <div class="csrow"><span class="cscmd">parted</span><span class="csdesc">Particionado (también discos grandes / GPT).</span></div>
       <div class="csrow"><span class="cscmd">mkfs.xfs · mkfs.ext4</span><span class="csdesc">Formatea una partición.</span></div>
       <div class="csrow"><span class="cscmd">mount · umount · df · du</span><span class="csdesc">Monta / desmonta / uso de disco.</span></div>
+      <div class="csrow"><span class="cscmd">blkid · /etc/fstab · mount -a</span><span class="csdesc">Obtén el UUID, declara el montaje persistente y valida la sintaxis sin reiniciar.</span></div>
       <div class="csrow"><span class="cscmd">pvcreate · vgcreate · vgextend</span><span class="csdesc">LVM: inicia PV, crea/amplía el grupo (VG). Compruébalo con pvs / vgs.</span></div>
       <div class="csrow"><span class="cscmd">lvcreate -n x -L 5G vg</span><span class="csdesc">Crea un volumen lógico (· -l 100%FREE usa todo el espacio libre).</span></div>
       <div class="csrow"><span class="cscmd">lvextend -r -L +2G /dev/vg/x</span><span class="csdesc">Amplía el LV y, con -r, también el FS (o xfs_growfs / resize2fs).</span></div>
       <div class="csrow"><span class="cscmd">pvs vgs lvs · lvremove</span><span class="csdesc">Ver PV/VG/LV · eliminar un volumen.</span></div>
       <div class="csrow"><span class="cscmd">mkswap · swapon --show</span><span class="csdesc">Crear y activar/ver el swap.</span></div>
+      <div class="csrow"><span class="cscmd">mount -t nfs SERVIDOR:/ruta /mnt</span><span class="csdesc">Monta un recurso NFS; usa <b>_netdev</b> en fstab para montajes de red.</span></div>
+      <div class="csrow"><span class="cscmd">/etc/auto.master.d/ · /etc/auto.*</span><span class="csdesc">Mapas de autofs para montar recursos bajo demanda.</span></div>
     </div>
 
     <div class="cs-panel" data-cs-panel="net" data-active="0">
+      <div class="cs-intro"><strong>Diagnóstico por capas:</strong> enlace → dirección → ruta → DNS → puerto → firewall.</div>
       <div class="csrow"><span class="cscmd">ip a · ip route</span><span class="csdesc">Direcciones IP e interfaces · tabla de rutas (puerta de enlace).</span></div>
       <div class="csrow"><span class="cscmd">ip link set eth0 up|down</span><span class="csdesc">Activa o desactiva el enlace (equivale a ifup/ifdown).</span></div>
       <div class="csrow"><span class="cscmd">nmcli general · dev status</span><span class="csdesc">Estado de red y de los dispositivos (connected/disconnected).</span></div>
@@ -304,6 +323,8 @@
       <div class="csrow"><span class="cscmd">ping 8.8.8.8 · ping HOST</span><span class="csdesc">Prueba conectividad. Falla si falta enlace, gateway o DNS.</span></div>
       <div class="csrow"><span class="cscmd">ss -tlnp</span><span class="csdesc">Puertos TCP en escucha y el proceso que los abre.</span></div>
       <div class="csrow"><span class="cscmd">firewall-cmd --list-all</span><span class="csdesc">Firewalld: servicios/puertos. --add-* --permanent y --reload.</span></div>
+      <div class="csrow"><span class="cscmd">ssh-keygen · ssh-copy-id usuario@host</span><span class="csdesc">Crea una clave y autorízala para iniciar sesión sin contraseña.</span></div>
+      <div class="csrow"><span class="cscmd">curl -I URL · ssh -v usuario@host</span><span class="csdesc">Prueba HTTP o depura paso a paso una conexión SSH.</span></div>
       <div class="csrow"><span class="cscmd">hostnamectl set-hostname NOMBRE</span><span class="csdesc">Fija el nombre del sistema de forma persistente.</span></div>
     </div>
 
@@ -318,7 +339,7 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-host" data-active="0">
-      <div class="u-inline-290cac0b7f">Docker Engine y Compose están listos desde el primer prompt. Empieza por el flujo de trabajo; las pestañas siguientes separan imágenes, contenedores, datos, redes y Compose.</div>
+      <div class="cs-intro"><strong>Flujo profesional:</strong> inspecciona lo que existe, usa tags explícitos, crea de forma reproducible y verifica estado, logs y recursos.</div>
       <div class="csrow"><span class="cscmd">docker version · docker info</span><span class="csdesc">Comprueba las versiones del cliente y servidor y revisa el estado general del host.</span></div>
       <div class="csrow"><span class="cscmd">docker search TÉRMINO</span><span class="csdesc">Busca imágenes compatibles en el catálogo simulado de Docker Hub.</span></div>
       <div class="csrow"><span class="cscmd">docker pull IMAGEN[:TAG]</span><span class="csdesc">Descarga las capas de una imagen y la incorpora al almacén local.</span></div>
@@ -330,7 +351,7 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-images" data-active="0">
-      <div class="u-inline-290cac0b7f">Las imágenes son plantillas inmutables. Docker descarga capas, las reutiliza por caché y crea contenedores a partir de ellas.</div>
+      <div class="cs-intro"><strong>Idea clave:</strong> una imagen debe poder reconstruirse desde su Dockerfile. Las capas se reutilizan por caché; ordena primero lo que menos cambia.</div>
       <div class="csrow"><span class="cscmd">docker search TERM · docker pull IMG</span><span class="csdesc">Busca y descarga imágenes desde un registry.</span></div>
       <div class="csrow"><span class="cscmd">docker images · image ls</span><span class="csdesc">Lista repositorio, tag, ID y tamaño local.</span></div>
       <div class="csrow"><span class="cscmd">docker inspect IMG · history IMG</span><span class="csdesc">Metadatos completos y capas de construcción.</span></div>
@@ -340,9 +361,25 @@
       <div class="csrow"><span class="cscmd">docker login · docker push IMG</span><span class="csdesc">Autenticación y publicación en el registry.</span></div>
       <div class="csrow"><span class="cscmd">docker save -o img.tar IMG · load -i img.tar</span><span class="csdesc">Exporta e importa imágenes sin registry.</span></div>
       <div class="csrow"><span class="cscmd">docker rmi IMG · image prune</span><span class="csdesc">Elimina imágenes concretas o capas sin uso.</span></div>
+      <div class="csrow"><span class="cscmd">FROM · WORKDIR · COPY · RUN</span><span class="csdesc">Base, directorio de trabajo, entrada de ficheros y pasos de construcción.</span></div>
+      <div class="csrow"><span class="cscmd">ENV · EXPOSE · USER · CMD · ENTRYPOINT</span><span class="csdesc">Entorno, puerto documentado, usuario y proceso principal del contenedor.</span></div>
+      <div class="cs-code-wrap">
+        <div class="cs-code-title">Dockerfile reproducible y ligero</div>
+        <pre class="cs-code"><code><span class="yaml-key">FROM</span> node:22-alpine AS build
+<span class="yaml-key">WORKDIR</span> /app
+<span class="yaml-key">COPY</span> package*.json ./
+<span class="yaml-key">RUN</span> npm ci
+<span class="yaml-key">COPY</span> . .
+<span class="yaml-key">RUN</span> npm run build
+
+<span class="yaml-key">FROM</span> nginx:alpine
+<span class="yaml-key">COPY</span> --from=build /app/dist /usr/share/nginx/html
+<span class="yaml-key">EXPOSE</span> 80</code></pre>
+      </div>
     </div>
 
     <div class="cs-panel" data-cs-panel="cont" data-active="0">
+      <div class="cs-intro"><strong>Diferencia esencial:</strong> una imagen es la plantilla; un contenedor es una instancia con estado y ciclo de vida propios.</div>
       <div class="csrow"><span class="cscmd">docker run · ps · logs</span><span class="csdesc">Arranca contenedores, lista, logs.</span></div>
       <div class="csrow"><span class="cscmd">docker run -d --name web -p 8080:80 nginx</span><span class="csdesc">Nombre, segundo plano y publicación de puertos.</span></div>
       <div class="csrow"><span class="cscmd">start · stop · restart · rm</span><span class="csdesc">Ciclo de vida de un contenedor.</span></div>
@@ -356,6 +393,7 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-data" data-active="0">
+      <div class="cs-intro"><strong>Elección rápida:</strong> volumen para datos administrados por Docker; bind mount para compartir una ruta concreta del host.</div>
       <div class="csrow"><span class="cscmd">docker volume create · ls · inspect</span><span class="csdesc">Volúmenes persistentes administrados por Docker.</span></div>
       <div class="csrow"><span class="cscmd">docker run -v datos:/ruta IMG</span><span class="csdesc">Monta un volumen con nombre dentro del contenedor.</span></div>
       <div class="csrow"><span class="cscmd">docker run -v /host:/contenedor IMG</span><span class="csdesc">Bind mount desde un directorio del host.</span></div>
@@ -365,6 +403,7 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-network" data-active="0">
+      <div class="cs-intro"><strong>Regla práctica:</strong> en una red bridge creada por ti, los contenedores se encuentran por nombre; publica puertos solo para acceder desde fuera.</div>
       <div class="csrow"><span class="cscmd">docker network create · ls · inspect</span><span class="csdesc">Redes bridge propias con DNS entre contenedores.</span></div>
       <div class="csrow"><span class="cscmd">docker run --network labnet --name api IMG</span><span class="csdesc">Inicia el contenedor directamente en una red propia.</span></div>
       <div class="csrow"><span class="cscmd">docker network connect · disconnect</span><span class="csdesc">Conecta o retira un contenedor de una red.</span></div>
@@ -375,16 +414,31 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="compose" data-active="0">
+      <div class="cs-intro"><strong>Compose:</strong> describe servicios, redes y persistencia como una única aplicación reproducible.</div>
       <div class="csrow"><span class="cscmd">docker compose up -d · down</span><span class="csdesc">Arranca / para toda la app multi-contenedor.</span></div>
       <div class="csrow"><span class="cscmd">docker compose ps · logs -f</span><span class="csdesc">Estado de servicios y logs agregados.</span></div>
       <div class="csrow"><span class="cscmd">docker compose build · pull</span><span class="csdesc">Construye servicios propios o actualiza imágenes.</span></div>
       <div class="csrow"><span class="cscmd">docker compose up -d --scale web=3</span><span class="csdesc">Escala un servicio durante el despliegue.</span></div>
       <div class="csrow"><span class="cscmd">docker compose exec web sh</span><span class="csdesc">Ejecuta un comando dentro de un servicio.</span></div>
       <div class="csrow"><span class="cscmd">docker compose down -v</span><span class="csdesc">Elimina contenedores, red y volúmenes del proyecto.</span></div>
-      <div class="u-inline-95b04a1f7a">Ejemplo docker-compose.yml:<br>services:<br>&nbsp;&nbsp;web:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: nginx<br>&nbsp;&nbsp;&nbsp;&nbsp;ports: ["8080:80"]<br>&nbsp;&nbsp;db:<br>&nbsp;&nbsp;&nbsp;&nbsp;image: mariadb:11<br>&nbsp;&nbsp;&nbsp;&nbsp;environment: ["MARIADB_ROOT_PASSWORD=secreto"]<br>&nbsp;&nbsp;&nbsp;&nbsp;volumes: ["db_data:/var/lib/mysql"]</div>
+      <div class="cs-code-wrap">
+        <div class="cs-code-title">compose.yaml</div>
+        <pre class="cs-code"><code><span class="yaml-key">services:</span>
+  <span class="yaml-key">web:</span>
+    <span class="yaml-key">image:</span> <span class="yaml-value">nginx:alpine</span>
+    <span class="yaml-key">ports:</span> [<span class="yaml-value">"8080:80"</span>]
+  <span class="yaml-key">db:</span>
+    <span class="yaml-key">image:</span> <span class="yaml-value">mariadb:11</span>
+    <span class="yaml-key">environment:</span>
+      <span class="yaml-key">MARIADB_ROOT_PASSWORD:</span> <span class="yaml-value">secreto</span>
+    <span class="yaml-key">volumes:</span> [<span class="yaml-value">"db_data:/var/lib/mysql"</span>]
+<span class="yaml-key">volumes:</span>
+  <span class="yaml-key">db_data:</span></code></pre>
+      </div>
     </div>
 
     <div class="cs-panel" data-cs-panel="docker-ops" data-active="0">
+      <div class="cs-intro"><strong>Antes de limpiar:</strong> revisa <span class="terminal-command">docker system df</span>, dependencias y montajes. Un <span class="terminal-command">prune</span> no distingue lo importante de lo olvidado.</div>
       <div class="csrow"><span class="cscmd">docker stats · docker events</span><span class="csdesc">Métricas en vivo y eventos del motor de contenedores.</span></div>
       <div class="csrow"><span class="cscmd">docker system df</span><span class="csdesc">Espacio usado por imágenes, contenedores y volúmenes.</span></div>
       <div class="csrow"><span class="cscmd">docker container/image/volume/network prune</span><span class="csdesc">Limpieza selectiva por tipo de objeto.</span></div>
@@ -396,13 +450,16 @@
     </div>
 
     <div class="cs-panel" data-cs-panel="sys" data-active="0">
-      <div class="csrow"><span class="cscmd">man · help</span><span class="csdesc">Manual de un comando / índice rápido.</span></div>
-      <div class="csrow"><span class="cscmd">uname · hostnamectl</span><span class="csdesc">Kernel e información del host.</span></div>
-      <div class="csrow"><span class="cscmd">date · timedatectl</span><span class="csdesc">Fecha, hora y zona.</span></div>
-      <div class="csrow"><span class="cscmd">uptime · free · env · history</span><span class="csdesc">Carga, memoria, variables, historial (· !! repite el último, !texto el último que empieza por, Ctrl+R busca).</span></div>
-      <div class="csrow"><span class="cscmd">tuned-adm · tar · neofetch</span><span class="csdesc">Perfiles, comprimir, resumen del sistema.</span></div>
-      <div class="csrow"><span class="cscmd">clear (Ctrl+L) · reset</span><span class="csdesc">Limpia o restablece la pantalla sin borrar la máquina.</span></div>
-      <div class="u-inline-5d60d06738">Atajos: ↑/↓ historial · Tab autocompleta · Ctrl+C cancela · Ctrl+U borra la línea · Ctrl+A/E inicio/fin.</div>
+      <div class="cs-intro"><strong>Persistencia:</strong> en RHCSA no basta con que funcione ahora; red, montajes, servicios y tareas deben sobrevivir a un reinicio.</div>
+      <div class="csrow"><span class="cscmd">systemctl get-default · set-default TARGET</span><span class="csdesc">Consulta o cambia el objetivo de arranque predeterminado.</span></div>
+      <div class="csrow"><span class="cscmd">systemctl isolate multi-user.target</span><span class="csdesc">Cambia al target indicado en la sesión actual.</span></div>
+      <div class="csrow"><span class="cscmd">reboot · shutdown -h now</span><span class="csdesc">Reinicia o apaga de forma ordenada.</span></div>
+      <div class="csrow"><span class="cscmd">crontab -e · crontab -l</span><span class="csdesc">Programa y revisa tareas recurrentes del usuario.</span></div>
+      <div class="csrow"><span class="cscmd">at 22:00 · atq · atrm ID</span><span class="csdesc">Programa, lista o elimina una tarea de una sola ejecución.</span></div>
+      <div class="csrow"><span class="cscmd">systemd-run --on-calendar=... CMD</span><span class="csdesc">Crea un timer transitorio administrado por systemd.</span></div>
+      <div class="csrow"><span class="cscmd">timedatectl · hostnamectl</span><span class="csdesc">Hora/zona y nombre persistente del host.</span></div>
+      <div class="csrow"><span class="cscmd">tuned-adm active · profile PERFIL</span><span class="csdesc">Consulta o aplica un perfil de rendimiento.</span></div>
+      <div class="cs-intro"><strong>Atajos:</strong> ↑/↓ historial · Tab completa · Ctrl+C cancela · Ctrl+U borra la línea · Ctrl+A/E inicio/fin.</div>
     </div>
 
     <div class="cs-panel" data-cs-panel="lab" data-active="0">
@@ -411,18 +468,20 @@
       <div class="csrow"><span class="cscmd">node1 · 192.168.1.12</span><span class="csdesc">Próximamente: nodo para Ansible y Kubernetes.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-linux" data-active="0">
-      <div class="u-inline-290cac0b7f">Herramientas de nodo y edición declarativa que sí aparecen en tareas CKA. La administración RHCSA avanzada queda fuera de este entorno.</div>
+      <div class="cs-intro"><strong>Ciclo CKA:</strong> consulta → genera → edita → aplica → verifica. Trabaja siempre en el contexto y namespace correctos.</div>
+      <div class="csrow"><span class="cscmd">kubectl config current-context</span><span class="csdesc">Confirma el clúster activo antes de modificar recursos.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl config set-context --current --namespace=NS</span><span class="csdesc">Fija el namespace de trabajo y evita repetir <b>-n</b>.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl run web --image=nginx --dry-run=client -o yaml</span><span class="csdesc">Genera el YAML de un Pod sin crearlo.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl create deployment web --image=nginx --dry-run=client -o yaml</span><span class="csdesc">Genera una base editable para un Deployment.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl expose deploy web --port=80 --dry-run=client -o yaml</span><span class="csdesc">Genera el Service sin tocar el clúster.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl apply -f recurso.yaml</span><span class="csdesc">Converge el estado real hacia lo declarado.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl get recurso nombre -o yaml</span><span class="csdesc">Inspecciona el objeto que realmente guarda la API.</span></div>
+      <div class="csrow"><span class="cscmd">kubectl explain deployment.spec --recursive</span><span class="csdesc">Consulta campos y estructura directamente desde el esquema de la API.</span></div>
       <div class="csrow"><span class="cscmd">pwd · cd · ls · cat · grep</span><span class="csdesc">Navegar, leer YAML y filtrar logs.</span></div>
-      <div class="csrow"><span class="cscmd">mkdir · touch · cp · mv · rm</span><span class="csdesc">Gestionar manifiestos y copias de seguridad.</span></div>
-      <div class="csrow"><span class="cscmd">vi · nano</span><span class="csdesc">Editar recursos declarativos.</span></div>
-      <div class="csrow"><span class="cscmd">systemctl status kubelet</span><span class="csdesc">Diagnóstico del agente del nodo.</span></div>
-      <div class="csrow"><span class="cscmd">journalctl -u kubelet</span><span class="csdesc">Logs del nodo cuando está NotReady.</span></div>
-      <div class="csrow"><span class="cscmd">/etc/kubernetes/manifests</span><span class="csdesc">Static Pods del control plane administrados por kubelet.</span></div>
-      <div class="csrow"><span class="cscmd">/etc/kubernetes/admin.conf</span><span class="csdesc">Kubeconfig administrativo creado por kubeadm.</span></div>
-      <div class="csrow"><span class="cscmd">KUBECONFIG=/ruta/config</span><span class="csdesc">Selecciona un kubeconfig para kubectl.</span></div>
+      <div class="csrow"><span class="cscmd">vi · nano · cp recurso.yaml{,.bak}</span><span class="csdesc">Edita y conserva una copia antes de cambios delicados.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-cluster" data-active="0">
-      <div class="u-inline-290cac0b7f">El clúster responde a comandos y conserva sus recursos. Usa <span class="u-inline-da35776638">kubectl explain</span> y <span class="u-inline-da35776638">--help</span> como en una máquina real.</div>
+      <div class="cs-intro"><strong>Ámbito:</strong> los Nodes, PV y StorageClass son de clúster; Pods, Deployments, Services y la mayoría de objetos viven en un namespace.</div>
       <div class="csrow"><span class="cscmd">kubectl cluster-info</span><span class="csdesc">Info del control plane.</span></div>
       <div class="csrow"><span class="cscmd">kubectl get nodes -o wide</span><span class="csdesc">Nodos del clúster y su estado.</span></div>
       <div class="csrow"><span class="cscmd">kubectl get pods -A</span><span class="csdesc">Todos los pods, todos los namespaces.</span></div>
@@ -434,6 +493,7 @@
       <div class="csrow"><span class="cscmd">-n NS · -A · --context CONTEXTO</span><span class="csdesc">Ámbito de namespace, todos los namespaces o contexto concreto.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-work" data-active="0">
+      <div class="cs-intro"><strong>Elige el controlador:</strong> Deployment para servicios sin estado, StatefulSet para identidad estable, DaemonSet por nodo y Job/CronJob para tareas finitas.</div>
       <div class="csrow"><span class="cscmd">kubectl run NOMBRE --image=IMG</span><span class="csdesc">Pod suelto (debug rápido).</span></div>
       <div class="csrow"><span class="cscmd">kubectl create deployment NOMBRE --image=IMG</span><span class="csdesc">Deployment con su ReplicaSet.</span></div>
       <div class="csrow"><span class="cscmd">kubectl scale deployment NOMBRE --replicas=N</span><span class="csdesc">Escalar réplicas.</span></div>
@@ -447,6 +507,7 @@
       <div class="csrow"><span class="cscmd">kubectl autoscale deployment</span><span class="csdesc">Crea un HPA basado en métricas.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-cfg" data-active="0">
+      <div class="cs-intro"><strong>Separa imagen y configuración:</strong> ConfigMap para datos no sensibles, Secret para credenciales y probes para comunicar salud real al clúster.</div>
       <div class="csrow"><span class="cscmd">kubectl create configmap N --from-literal=k=v</span><span class="csdesc">Configuración no sensible.</span></div>
       <div class="csrow"><span class="cscmd">kubectl create secret generic N --from-literal=k=v</span><span class="csdesc">Configuración sensible (base64, no cifrado).</span></div>
       <div class="csrow"><span class="cscmd">envFrom / valueFrom.configMapKeyRef</span><span class="csdesc">Inyectar como variables de entorno del Pod.</span></div>
@@ -458,6 +519,7 @@
       <div class="csrow"><span class="cscmd">securityContext</span><span class="csdesc">Usuario, grupo, privilegios y capacidades del Pod/contenedor.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-sched" data-active="0">
+      <div class="cs-intro"><strong>Primero filtra, después puntúa:</strong> requests, taints y afinidades determinan dónde puede ejecutarse un Pod; las preferencias ayudan a elegir entre nodos válidos.</div>
       <div class="csrow"><span class="cscmd">resources.requests / resources.limits</span><span class="csdesc">Reserva mínima y techo de CPU/memoria por contenedor.</span></div>
       <div class="csrow"><span class="cscmd">kubectl describe node NODO</span><span class="csdesc">Capacidad del nodo y lo ya reservado.</span></div>
       <div class="csrow"><span class="cscmd">nodeSelector: disktype: ssd</span><span class="csdesc">Fuerza el pod a nodos con esa etiqueta.</span></div>
@@ -470,6 +532,7 @@
       <div class="csrow"><span class="cscmd">kubectl top nodes · top pods</span><span class="csdesc">Consumo actual para decisiones de scheduling.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-store" data-active="0">
+      <div class="cs-intro"><strong>Cadena:</strong> el Pod monta un PVC; el PVC enlaza con un PV existente o solicita que una StorageClass lo aprovisione.</div>
       <div class="csrow"><span class="cscmd">PersistentVolume (PV)</span><span class="csdesc">Almacenamiento real, lo provee el clúster/admin.</span></div>
       <div class="csrow"><span class="cscmd">PersistentVolumeClaim (PVC)</span><span class="csdesc">Petición de almacenamiento que hace una app.</span></div>
       <div class="csrow"><span class="cscmd">StorageClass</span><span class="csdesc">Plantilla para aprovisionar PVs de forma dinámica.</span></div>
@@ -480,6 +543,7 @@
       <div class="csrow"><span class="cscmd">kubectl describe pvc NOMBRE</span><span class="csdesc">Diagnostica Pending, clase, eventos y binding.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-net" data-active="0">
+      <div class="cs-intro"><strong>Ruta del tráfico:</strong> cliente → Gateway/Ingress o Service → EndpointSlice → Pod. Comprueba cada salto por separado.</div>
       <div class="csrow"><span class="cscmd">Service ClusterIP</span><span class="csdesc">IP estable interna para un grupo de pods (por defecto).</span></div>
       <div class="csrow"><span class="cscmd">Service NodePort / LoadBalancer</span><span class="csdesc">Exposición hacia fuera del clúster.</span></div>
       <div class="csrow"><span class="cscmd">CoreDNS</span><span class="csdesc">Resuelve Services por nombre (servicio.namespace).</span></div>
@@ -492,6 +556,7 @@
       <div class="csrow"><span class="cscmd">nslookup servicio.namespace</span><span class="csdesc">Comprueba el DNS interno desde un Pod de diagnóstico.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-rbac" data-active="0">
+      <div class="cs-intro"><strong>Modelo:</strong> Role define permisos; RoleBinding los entrega a un usuario, grupo o ServiceAccount. Aplica siempre mínimo privilegio.</div>
       <div class="csrow"><span class="cscmd">Role / ClusterRole</span><span class="csdesc">Permisos dentro de un namespace / en todo el clúster.</span></div>
       <div class="csrow"><span class="cscmd">RoleBinding / ClusterRoleBinding</span><span class="csdesc">Asigna un Role a un usuario o ServiceAccount.</span></div>
       <div class="csrow"><span class="cscmd">ServiceAccount</span><span class="csdesc">"Usuario" para procesos que corren dentro del clúster (pods).</span></div>
@@ -502,8 +567,10 @@
       <div class="csrow"><span class="cscmd">verbs · apiGroups · resources · resourceNames</span><span class="csdesc">Campos principales de una regla RBAC precisa.</span></div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-admin" data-active="0">
+      <div class="cs-intro"><strong>CKA actual:</strong> instalación, ciclo de vida y alta disponibilidad, además de extensiones y componentes instalados con Helm o Kustomize.</div>
       <div class="csrow"><span class="cscmd">kubeadm init / kubeadm join</span><span class="csdesc">Arrancar el control plane / unir un nodo nuevo.</span></div>
       <div class="csrow"><span class="cscmd">kubeadm upgrade plan/apply</span><span class="csdesc">Subir de versión el clúster.</span></div>
+      <div class="csrow"><span class="cscmd">--control-plane-endpoint · --upload-certs</span><span class="csdesc">Punto estable y certificados para un control plane de alta disponibilidad.</span></div>
       <div class="csrow"><span class="cscmd">etcdctl snapshot save/restore</span><span class="csdesc">Copia de seguridad y restauración de etcd.</span></div>
       <div class="csrow"><span class="cscmd">helm install/upgrade/uninstall</span><span class="csdesc">Gestor de paquetes de Kubernetes (charts).</span></div>
       <div class="csrow"><span class="cscmd">kustomize build · kubectl apply -k</span><span class="csdesc">Variantes de manifiestos sin plantillas.</span></div>
@@ -511,8 +578,99 @@
       <div class="csrow"><span class="cscmd">kubectl drain NODO --ignore-daemonsets</span><span class="csdesc">Preparación segura del nodo antes de mantenimiento o upgrade.</span></div>
       <div class="csrow"><span class="cscmd">etcdctl endpoint health · status</span><span class="csdesc">Salud y estado del almacén del clúster.</span></div>
       <div class="csrow"><span class="cscmd">crictl ps · crictl logs ID</span><span class="csdesc">Diagnóstico directo del runtime cuando kubectl no basta.</span></div>
+      <div class="csrow"><span class="cscmd">CNI · CSI · CRI</span><span class="csdesc">Interfaces estándar para red, almacenamiento y runtime de contenedores.</span></div>
+      <div class="csrow"><span class="cscmd">CRD · Operator</span><span class="csdesc">Amplía la API con nuevos recursos y controladores que los reconcilian.</span></div>
+    </div>
+    <div class="cs-panel" data-cs-panel="k8s-yaml" data-active="0">
+      <div class="cs-intro"><strong>Cómo leer un manifiesto:</strong> <span class="terminal-command">apiVersion + kind</span> dicen qué recurso es, <span class="terminal-command">metadata</span> lo identifica, <span class="terminal-command">spec</span> declara lo deseado y <span class="terminal-command">status</span> lo completa Kubernetes.</div>
+      <div class="cs-code-wrap">
+        <div class="cs-code-title">Deployment + Service</div>
+        <pre class="cs-code"><code><span class="yaml-key">apiVersion:</span> <span class="yaml-value">apps/v1</span>
+<span class="yaml-key">kind:</span> <span class="yaml-value">Deployment</span>
+<span class="yaml-key">metadata:</span>
+  <span class="yaml-key">name:</span> <span class="yaml-value">web</span>
+<span class="yaml-key">spec:</span>
+  <span class="yaml-key">replicas:</span> <span class="yaml-value">3</span>
+  <span class="yaml-key">selector:</span>
+    <span class="yaml-key">matchLabels:</span> { <span class="yaml-key">app:</span> <span class="yaml-value">web</span> }
+  <span class="yaml-key">template:</span>
+    <span class="yaml-key">metadata:</span>
+      <span class="yaml-key">labels:</span> { <span class="yaml-key">app:</span> <span class="yaml-value">web</span> }
+    <span class="yaml-key">spec:</span>
+      <span class="yaml-key">containers:</span>
+        - <span class="yaml-key">name:</span> <span class="yaml-value">nginx</span>
+          <span class="yaml-key">image:</span> <span class="yaml-value">nginx:1.27</span>
+          <span class="yaml-key">ports:</span>
+            - <span class="yaml-key">containerPort:</span> <span class="yaml-value">80</span>
+---
+<span class="yaml-key">apiVersion:</span> <span class="yaml-value">v1</span>
+<span class="yaml-key">kind:</span> <span class="yaml-value">Service</span>
+<span class="yaml-key">metadata:</span>
+  <span class="yaml-key">name:</span> <span class="yaml-value">web</span>
+<span class="yaml-key">spec:</span>
+  <span class="yaml-key">selector:</span> { <span class="yaml-key">app:</span> <span class="yaml-value">web</span> }
+  <span class="yaml-key">ports:</span>
+    - <span class="yaml-key">port:</span> <span class="yaml-value">80</span>
+      <span class="yaml-key">targetPort:</span> <span class="yaml-value">80</span></code></pre>
+      </div>
+      <div class="cs-code-wrap">
+        <div class="cs-code-title">Configuración, recursos y salud</div>
+        <pre class="cs-code"><code><span class="yaml-key">spec:</span>
+  <span class="yaml-key">containers:</span>
+    - <span class="yaml-key">name:</span> <span class="yaml-value">api</span>
+      <span class="yaml-key">image:</span> <span class="yaml-value">mi-api:1.4</span>
+      <span class="yaml-key">envFrom:</span>
+        - <span class="yaml-key">configMapRef:</span> { <span class="yaml-key">name:</span> <span class="yaml-value">api-config</span> }
+      <span class="yaml-key">resources:</span>
+        <span class="yaml-key">requests:</span> { <span class="yaml-key">cpu:</span> <span class="yaml-value">100m</span>, <span class="yaml-key">memory:</span> <span class="yaml-value">128Mi</span> }
+        <span class="yaml-key">limits:</span> { <span class="yaml-key">cpu:</span> <span class="yaml-value">500m</span>, <span class="yaml-key">memory:</span> <span class="yaml-value">256Mi</span> }
+      <span class="yaml-key">readinessProbe:</span>
+        <span class="yaml-key">httpGet:</span> { <span class="yaml-key">path:</span> <span class="yaml-value">/ready</span>, <span class="yaml-key">port:</span> <span class="yaml-value">8080</span> }
+      <span class="yaml-key">livenessProbe:</span>
+        <span class="yaml-key">httpGet:</span> { <span class="yaml-key">path:</span> <span class="yaml-value">/health</span>, <span class="yaml-key">port:</span> <span class="yaml-value">8080</span> }</code></pre>
+      </div>
+      <div class="cs-code-wrap">
+        <div class="cs-code-title">PVC y montaje persistente</div>
+        <pre class="cs-code"><code><span class="yaml-key">apiVersion:</span> <span class="yaml-value">v1</span>
+<span class="yaml-key">kind:</span> <span class="yaml-value">PersistentVolumeClaim</span>
+<span class="yaml-key">metadata:</span>
+  <span class="yaml-key">name:</span> <span class="yaml-value">datos</span>
+<span class="yaml-key">spec:</span>
+  <span class="yaml-key">accessModes:</span> [<span class="yaml-value">ReadWriteOnce</span>]
+  <span class="yaml-key">resources:</span>
+    <span class="yaml-key">requests:</span>
+      <span class="yaml-key">storage:</span> <span class="yaml-value">2Gi</span>
+
+<span class="yaml-comment"># Dentro de spec.template.spec:</span>
+<span class="yaml-key">volumes:</span>
+  - <span class="yaml-key">name:</span> <span class="yaml-value">datos</span>
+    <span class="yaml-key">persistentVolumeClaim:</span> { <span class="yaml-key">claimName:</span> <span class="yaml-value">datos</span> }
+<span class="yaml-comment"># Dentro del contenedor:</span>
+<span class="yaml-key">volumeMounts:</span>
+  - <span class="yaml-key">name:</span> <span class="yaml-value">datos</span>
+    <span class="yaml-key">mountPath:</span> <span class="yaml-value">/var/lib/app</span></code></pre>
+      </div>
+      <div class="cs-code-wrap">
+        <div class="cs-code-title">NetworkPolicy: entrada solo desde frontend</div>
+        <pre class="cs-code"><code><span class="yaml-key">apiVersion:</span> <span class="yaml-value">networking.k8s.io/v1</span>
+<span class="yaml-key">kind:</span> <span class="yaml-value">NetworkPolicy</span>
+<span class="yaml-key">metadata:</span>
+  <span class="yaml-key">name:</span> <span class="yaml-value">api-desde-frontend</span>
+<span class="yaml-key">spec:</span>
+  <span class="yaml-key">podSelector:</span>
+    <span class="yaml-key">matchLabels:</span> { <span class="yaml-key">app:</span> <span class="yaml-value">api</span> }
+  <span class="yaml-key">policyTypes:</span> [<span class="yaml-value">Ingress</span>]
+  <span class="yaml-key">ingress:</span>
+    - <span class="yaml-key">from:</span>
+        - <span class="yaml-key">podSelector:</span>
+            <span class="yaml-key">matchLabels:</span> { <span class="yaml-key">app:</span> <span class="yaml-value">frontend</span> }
+      <span class="yaml-key">ports:</span>
+        - <span class="yaml-key">protocol:</span> <span class="yaml-value">TCP</span>
+          <span class="yaml-key">port:</span> <span class="yaml-value">8080</span></code></pre>
+      </div>
     </div>
     <div class="cs-panel" data-cs-panel="k8s-trouble" data-active="0">
+      <div class="cs-intro"><strong>Orden de diagnóstico:</strong> estado → eventos → describe → logs → configuración → nodo/control plane. No reinicies antes de capturar la causa.</div>
       <div class="csrow"><span class="cscmd">kubectl get events --sort-by=.lastTimestamp</span><span class="csdesc">Qué ha pasado últimamente en el clúster.</span></div>
       <div class="csrow"><span class="cscmd">kubectl logs POD -c CONTENEDOR --previous</span><span class="csdesc">Logs del contenedor, incluso si reinició.</span></div>
       <div class="csrow"><span class="cscmd">kubectl describe pod POD</span><span class="csdesc">Motivo real de un Pending/CrashLoopBackOff.</span></div>

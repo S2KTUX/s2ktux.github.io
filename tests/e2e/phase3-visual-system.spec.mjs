@@ -40,3 +40,51 @@ test('Fase 3 · curso y terminal conservan lectura y ancho móvil', async ({ pag
   }
   await expect(page.locator('.site-header')).toBeVisible();
 });
+
+test('Fase 3 · terminal y paneles respetan su ancho de escritorio', async ({ page }) => {
+  await page.setViewportSize({ width: 1920, height: 1080 });
+  for (const mode of ['linux', 'docker', 'kubernetes']) {
+    await page.goto(`/terminal.html?mode=${mode}&enter=1`);
+    await page.waitForFunction(() => document.documentElement.dataset.terminalReady === 'true');
+
+    const layout = await page.evaluate(() => {
+      const viewportCenter = window.innerWidth / 2;
+      const measure = (selector) => {
+        const rect = document.querySelector(selector).getBoundingClientRect();
+        return { width: rect.width, center: rect.left + rect.width / 2, viewportCenter };
+      };
+      return {
+        stage: measure('.terminal-stage'),
+        cheatsheet: measure('.terminal-panel-section'),
+        practices: measure('.terminal-practice-section')
+      };
+    });
+
+    for (const [name, box] of Object.entries(layout)) {
+      expect(box.width, `${mode}: ${name} no debe superar el ancho de diseño`).toBeLessThanOrEqual(1200);
+      expect(Math.abs(box.center - box.viewportCenter), `${mode}: ${name} debe quedar centrado`).toBeLessThanOrEqual(1);
+    }
+  }
+});
+
+test('Cheatsheets · cada entorno muestra únicamente sus pestañas y contenido', async ({ page }) => {
+  const expected = {
+    linux: ['Shell y ficheros', 'SELinux', 'Arranque y tareas'],
+    docker: ['Flujo diario', 'Imágenes y Dockerfile', 'Docker Compose'],
+    kubernetes: ['kubectl y YAML', 'Administración', 'YAML útiles', 'Troubleshooting']
+  };
+
+  for (const [mode, labels] of Object.entries(expected)) {
+    await page.goto(`/terminal.html?mode=${mode}&enter=1`);
+    await page.waitForFunction(() => document.documentElement.dataset.terminalReady === 'true');
+    const visibleLabels = await page.locator('.cs-tab:not([hidden])').allTextContents();
+    for (const label of labels) expect(visibleLabels).toContain(label);
+    const foreign = await page.locator(`.cs-tab:not([data-modes="${mode}"]):not([hidden])`).count();
+    expect(foreign, `${mode}: no debe mezclar pestañas de otros entornos`).toBe(0);
+  }
+
+  await page.locator('#cheatsheet-title').evaluate((summary) => { summary.parentElement.open = true; });
+  await page.locator('.cs-tab[data-cs-tab="k8s-yaml"]').click();
+  await expect(page.locator('.cs-panel[data-cs-panel="k8s-yaml"]')).toContainText('kind: Deployment');
+  await expect(page.locator('.cs-panel[data-cs-panel="k8s-yaml"]')).toContainText('kind: NetworkPolicy');
+});

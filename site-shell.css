@@ -193,19 +193,19 @@ html.dark .site-theme-toggle [data-theme-icon]::after {
   overflow-x: clip;
 }
 
-.site-page-shell :where(
-  main,
-  [role="main"],
-  section,
-  footer,
-  .coursecard,
-  .pxcard,
-  .modcard,
-  .modcard-row,
-  .modcard-copy,
-  .acc,
-  .acc summary,
-  .acc summary > *
+:where(
+  .site-page-shell main,
+  .site-page-shell [role="main"],
+  .site-page-shell section,
+  .site-page-shell footer,
+  .site-page-shell .coursecard,
+  .site-page-shell .pxcard,
+  .site-page-shell .modcard,
+  .site-page-shell .modcard-row,
+  .site-page-shell .modcard-copy,
+  .site-page-shell .acc,
+  .site-page-shell .acc summary,
+  .site-page-shell .acc summary > *
 ) {
   min-width: 0;
   max-width: 100%;
