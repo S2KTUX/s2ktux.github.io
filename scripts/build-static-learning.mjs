@@ -32,7 +32,7 @@ const config = {
   },
   kubernetes: {
     folder: 'kubernetes-cka', label: 'Kubernetes / CKA', unit: 'Clase', exam: 'CKA',
-    files: Array(11).fill('')
+    files: []
   }
 };
 
@@ -125,9 +125,12 @@ for (const [key, cfg] of Object.entries(config)) {
     const available = active[index];
     const tag = available ? 'a' : 'article';
     const href = available ? ` href="${moduleRoutes[index]}"` : '';
+    const displayIndex = key === 'kubernetes' ? module.n : String(index + 1).padStart(2, '0');
+    const description = module.desc ? `<span class="module-description">${escapeHtml(module.desc)}</span>` : '';
+    const topics = module.topics.length ? `<span class="module-topics">${module.topics.length} apartados · ${module.video ? 'vídeo incluido' : 'guía escrita'}</span>` : '';
     return `<${tag}${href} class="module-row${available ? '' : ' coming'}">
-      <span class="module-index" aria-hidden="true">${String(index + 1).padStart(2, '0')}</span>
-      <span class="module-copy"><span class="module-number">${escapeHtml(cfg.unit.toUpperCase())} ${escapeHtml(module.n)}</span><span class="module-title">${escapeHtml(module.title)}</span><span class="module-description">${escapeHtml(module.desc)}</span><span class="module-topics">${module.topics.length} apartados · ${module.video ? 'vídeo incluido' : 'guía escrita'}</span></span>
+      <span class="module-index" aria-hidden="true">${escapeHtml(displayIndex)}</span>
+      <span class="module-copy"><span class="module-number">${escapeHtml(cfg.unit.toUpperCase())} ${escapeHtml(module.n)}</span><span class="module-title">${escapeHtml(module.title)}</span>${description}${topics}</span>
       <span class="module-state">${available ? 'ABRIR →' : 'PRÓXIMAMENTE'}</span>
     </${tag}>`;
   }).join('\n');
