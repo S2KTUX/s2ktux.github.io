@@ -40,6 +40,8 @@ if(defaultFinal){otherNode.searchParams.set('boot','grub');otherNode.searchParam
 document.querySelector('#other-node').href=otherNode.href;
 document.querySelector('#node-name').textContent='Máquina '+nodeName;
 if(recoveryScenario){
+ document.querySelector('h1').textContent='Recuperación de root';
+ document.querySelector('.lead').textContent='Una máquina aparte para recuperar la contraseña de root desde GRUB, sin conocer la contraseña inicial.';
  document.querySelector('#recovery-note').hidden=false;
  document.querySelector('#recovery-link').hidden=true;
  document.querySelector('#network-note').hidden=true;
