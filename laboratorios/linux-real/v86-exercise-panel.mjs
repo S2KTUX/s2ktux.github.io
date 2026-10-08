@@ -1,4 +1,4 @@
-import { exercises } from './v86-exercises.mjs';
+import { exercises } from './v86-exercises.mjs?v=20261008-console';
 
 export function mountExercisePanel(root, runCheck) {
   const select = root.querySelector('select');

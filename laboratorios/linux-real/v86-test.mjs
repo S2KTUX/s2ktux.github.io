@@ -1,15 +1,20 @@
 import {Terminal} from './vendor/xterm.mjs';
 import {ChunkDisk} from './v86-disk.mjs';
 import {LocalSessions,hashBytes} from './v86-sessions.mjs';
-import {mountExercisePanel} from './v86-exercise-panel.mjs';
-import {createCheckRunner,atShellPrompt} from './v86-check-runner.mjs';
+import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261008-console';
+import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261008-console';
+import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261008-console';
+import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261008-console';
 import {createSerialOutput,appendTranscript} from './v86-serial.mjs';
-const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:14,theme:{background:'#080c12',foreground:'#d2e2ed'}});
+const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono", monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
 terminal.open(document.querySelector('#terminal'));
 const status=document.querySelector('#status');globalThis.vmTranscript='';globalThis.vmTerminal=terminal;
 let emulator,identity,busy=false,savedRecord,activeSave,resetting=false,inputPending=false,serialOutput,displayTranscript='';
 const sessions=new LocalSessions();
 const params=new URL(location.href).searchParams;
+const recoveryScenario=params.get('scenario')==='recovery';
+let recoveryBootPending=recoveryScenario;
+let consolePrepared=false,consolePreparing=false;
 const defaultFinal=!['boot','disk','estado','motor','extras'].some(name=>params.has(name));
 const bootGrub=defaultFinal||params.get('boot')==='grub';
 const requestedDisk=params.get('disk')||(defaultFinal?'final':null);
@@ -27,16 +32,51 @@ const exercisePanel=mountExercisePanel(document.querySelector('#exercise-panel')
   try{return await promise;}
   finally{busy=false;document.querySelector('#save').disabled=!emulator;updateExerciseAvailability();}
 });
-function updateExerciseAvailability(){exercisePanel.setEnabled(supportsExercises&&!!emulator&&!busy&&!resetting&&!inputPending&&atShellPrompt(globalThis.vmTranscript));}
-const sessionKey='v86:'+stateName+':'+motorName+(bootGrub?':grub':'')+(diskProfile!=='grub'?':'+requestedDisk:'')+(extras?':extras':'')+(nodeName==='2'?':node2':'');
+function updateExerciseAvailability(){exercisePanel.setEnabled(supportsExercises&&!!emulator&&!busy&&!resetting&&!recoveryBootPending&&!inputPending&&atShellPrompt(globalThis.vmTranscript));document.querySelector('#reboot').disabled=!emulator||busy||resetting||recoveryBootPending;document.querySelector('#save').disabled=!emulator||busy||resetting||recoveryBootPending;}
+const sessionKey='v86:'+stateName+':'+motorName+(bootGrub?':grub':'')+(diskProfile!=='grub'?':'+requestedDisk:'')+(extras?':extras':'')+(nodeName==='2'?':node2':'')+(recoveryScenario?':recovery':'');
 const sessionStatus=document.querySelector('#session-status');
 const otherNode=new URL(location.href);otherNode.searchParams.set('node',nodeName==='1'?'2':'1');
 if(defaultFinal){otherNode.searchParams.set('boot','grub');otherNode.searchParams.set('disk','final');otherNode.searchParams.set('estado','grub-rhcsa-final');}
 document.querySelector('#other-node').href=otherNode.href;
 document.querySelector('#node-name').textContent='Máquina '+nodeName;
+if(recoveryScenario){
+ document.querySelector('#recovery-note').hidden=false;
+ document.querySelector('#recovery-link').hidden=true;
+ document.querySelector('#network-note').hidden=true;
+ document.querySelector('[data-lab-mode="exam"]').click();
+}
 const encoder=new TextEncoder();
 function sendSerialText(text){const bytes=encoder.encode(text);for(let offset=0;offset<bytes.length;offset+=16384)emulator.serial0_send(String.fromCharCode(...bytes.subarray(offset,offset+16384)));}
-terminal.onData(text=>{if(busy||resetting||!emulator)return;inputPending=true;updateExerciseAvailability();sendSerialText(text);});
+terminal.onData(text=>{if(busy||resetting||recoveryBootPending||!emulator)return;inputPending=true;updateExerciseAvailability();sendSerialText(text);});
+attachTerminalClipboard(terminal,document.querySelector('#terminal'),{
+ canPaste:()=>!!emulator&&!busy&&!resetting&&!recoveryBootPending,
+ notify:text=>{document.querySelector('#clipboard-status').textContent=text;}
+});
+async function prepareConsole(){
+ if(consolePrepared||consolePreparing||!emulator||busy||inputPending||!atShellPrompt(globalThis.vmTranscript))return;
+ // Una sesión guardada en vi, passwd o login no se interrumpe. Esperar a root.
+ const rootShell=/(?:^|\n)(?:V86TEST# |\[root@[^\n]+\]# )$/.test(cleanSerial(globalThis.vmTranscript.slice(-1500)));
+ consolePreparing=true;
+ status.textContent=recoveryScenario?'Preparando la práctica sin acceso automático a root…':'Preparando el prompt de Linux…';
+ const password=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');
+ try{
+   const promise=exerciseRunner.run({checks:[]},rootShell?consoleSetupCommand(recoveryScenario,password):"export PS1='[\\u@\\h \\W]\\$ '");
+   busy=true;document.querySelector('#save').disabled=true;updateExerciseAvailability();
+   const result=await promise;
+   consolePrepared=true;
+   if(recoveryScenario&&result.output.includes('\nRECOVERY_REBOOT_REQUIRED\n')){
+     document.documentElement.dataset.vmState='running';
+     status.textContent='Reiniciando para recuperar root desde GRUB…';
+     sendSerialText('reboot\n');
+   }else{
+     recoveryBootPending=false;
+     const actualPrompt='\r\n'+cleanSerial(result.output).split('\n').at(-1);
+     terminal.write(actualPrompt);displayTranscript=appendTranscript(displayTranscript,actualPrompt,100000);
+     document.documentElement.dataset.vmState='shell';status.textContent='Laboratorio disponible.';
+   }
+ }catch(error){status.textContent=error.message;document.documentElement.dataset.vmState='failed';}
+ finally{consolePreparing=false;busy=false;document.querySelector('#save').disabled=!emulator;updateExerciseAvailability();}
+}
 document.querySelector('#reset').onclick=async()=>{
   if(!confirm('¿Resetear esta máquina? Se borrará su sesión guardada y volverán a cero el sistema y el disco de prácticas. La otra máquina no cambia.'))return;
   resetting=true;busy=true;activeSave?.abort();
@@ -44,8 +84,15 @@ document.querySelector('#reset').onclick=async()=>{
   try{await sessions.delete(sessionKey);location.reload();}
   catch(error){resetting=false;busy=false;await emulator?.run();document.querySelector('#save').disabled=false;updateExerciseAvailability();sessionStatus.textContent='No se pudo borrar el guardado: '+error.message;}
 };
+document.querySelector('#reboot').onclick=async()=>{
+ if(!emulator||busy||resetting)return;
+ if(!confirm('¿Reiniciar la máquina para entrar en GRUB? Es un reinicio forzado, como pulsar el botón de reinicio de un ordenador. No borra los discos, pero puede perder escrituras pendientes. Si tienes una shell abierta, es preferible usar reboot.'))return;
+ document.documentElement.dataset.vmState='running';inputPending=true;updateExerciseAvailability();
+ status.textContent='Reiniciando la máquina desde el hardware virtual…';
+ emulator.restart();terminal.focus();
+};
 globalThis.vmSaveSession=async()=>{
-  if(!emulator||busy||!identity)throw Error('La máquina aún no está disponible para guardar.');
+  if(!emulator||busy||recoveryBootPending||!identity)throw Error('La máquina aún no está disponible para guardar.');
   busy=true;document.querySelector('#save').disabled=true;
   updateExerciseAvailability();
   const saveController=new AbortController();activeSave=saveController;
@@ -97,13 +144,14 @@ document.querySelector('#start').onclick=async()=>{
     }
     identity=await hashBytes(encoder.encode(JSON.stringify({format:1,node:nodeName,manifest,practice:practiceManifest,motor:motorName,
       motorBuild:motorName==='rhcsa'?'c064c94714c4b8eeace32782a4013b6132a2331ba5c008abfd67274cc2d29caf':motorName==='reinicio'?'7d13ee9c2494306a6b786a5266d5f875c7fba9178ca00361f5e7c1a12d70c10c':'upstream-1e4f43c95',
-      stateName,factory:metadata?.sha256||null,boot:bootGrub?'bios-grub-v1':'direct-kernel-v2-selinux-config'})));
+      stateName,...(recoveryScenario?{scenario:'recovery-v1'}:{}),factory:metadata?.sha256||null,boot:bootGrub?'bios-grub-v1':'direct-kernel-v2-selinux-config'})));
     savedRecord=await sessions.get(sessionKey);
     let initialState;
     if(savedRecord){
       status.textContent='Recuperando tu sesión guardada…';
       initialState={buffer:await sessions.unpack(savedRecord,identity)};
       globalThis.vmLoadedLocalSession=true;
+      recoveryBootPending=false;
       if(typeof savedRecord.terminalText==='string'){terminal.write(savedRecord.terminalText);globalThis.vmTranscript=savedRecord.terminalText;displayTranscript=savedRecord.terminalText;}
       sessionStatus.textContent='Recuperado el guardado del '+new Date(savedRecord.savedAt).toLocaleString()+'.';
     }else if(prepared){
@@ -132,7 +180,7 @@ document.querySelector('#start').onclick=async()=>{
         cmdline:'console=ttyS0,115200 root=/dev/sda rw net.ifnames=0 biosdevname=0 tsc=reliable nowatchdog security=selinux selinux=1'+(['selinux','persistente'].includes(stateName)?'':' enforcing=0')}),
       hda:disk,hdb:practice,
       initial_state:initialState,autostart:true,disable_keyboard:true,disable_mouse:true,disable_speaker:true});
-    globalThis.labWire=new BroadcastChannel('s2ktux-v86-private-network-v1:'+diskProfile+':'+stateName);
+    globalThis.labWire=new BroadcastChannel('s2ktux-v86-private-network-v1:'+diskProfile+':'+stateName+(recoveryScenario?':recovery':'') );
     globalThis.labFrames={sent:0,received:0};
     labWire.onmessage=event=>{if(event.data instanceof Uint8Array){labFrames.received++;emulator.bus.send('net0-receive',event.data);}};
     emulator.add_listener('net0-send',frame=>{labFrames.sent++;labWire.postMessage(frame);});
@@ -142,19 +190,22 @@ document.querySelector('#start').onclick=async()=>{
       // Mantener la detección de los límites de cada comprobación, incluso
       // cuando un bloque contiene su prompt y después mensajes del kernel.
       for(const character of text)if(!exerciseRunner.receive(character))visible.push(character);
-      if(visible.length){const output=visible.join('');terminal.write(output);displayTranscript=appendTranscript(displayTranscript,output,100000);}
+      if(visible.length&&!(prepared&&!savedRecord&&!consolePrepared)){const output=visible.join('');terminal.write(output);displayTranscript=appendTranscript(displayTranscript,output,100000);}
+      if(recoveryBootPending&&/GNU GRUB|login:\s*$/.test(cleanSerial(globalThis.vmTranscript.slice(-3000))))recoveryBootPending=false;
       if(atShellPrompt(globalThis.vmTranscript))inputPending=false;
-      if(/V86TEST#\s*$/.test(globalThis.vmTranscript.slice(-100))){document.documentElement.dataset.vmState='shell';status.textContent='Laboratorio disponible.';}
+      if(atShellPrompt(globalThis.vmTranscript)&&consolePrepared&&!consolePreparing){document.documentElement.dataset.vmState='shell';status.textContent='Laboratorio disponible.';}
+      if(!consolePrepared&&!consolePreparing)queueMicrotask(prepareConsole);
+      if(recoveryScenario&&/login:\s*$/.test(cleanSerial(globalThis.vmTranscript.slice(-300))))status.textContent='Recupera root desde GRUB: la contraseña inicial no se proporciona.';
       updateExerciseAvailability();
     });
     emulator.add_listener('serial0-output-byte',byte=>serialOutput.push(byte));
     emulator.add_listener('emulator-ready',()=>{status.textContent=prepared?'Reanudando Linux…':'Arrancando el kernel y systemd…';});
     let started=false;
     emulator.add_listener('emulator-started',()=>{
-      document.querySelector('#save').disabled=false;
+      document.querySelector('#save').disabled=recoveryBootPending;
       if(!started){
         started=true;
-        if(savedRecord){document.documentElement.dataset.vmState=/V86TEST#\s*$/.test(globalThis.vmTranscript.slice(-100))?'shell':'running';status.textContent='Tu máquina Linux ha sido recuperada.';updateExerciseAvailability();}
+        if(savedRecord){document.documentElement.dataset.vmState='running';status.textContent='Tu máquina Linux ha sido recuperada.';updateExerciseAvailability();queueMicrotask(prepareConsole);}
         else if(prepared)emulator.serial0_send('\n');
       }
     });

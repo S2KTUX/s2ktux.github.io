@@ -82,7 +82,7 @@ export const extraExercises = [
     explanation:'Flatpak usa un runtime y una aplicación auténticos del laboratorio. Haz la práctica desde una sesión normal de usuario para que funcione su sandbox, sin cambiar SELinux.',
     note:'Prepara la cuenta como root y entra por SSH local. Comprueba desde alumno-flatpak; tras desinstalar volverá a aparecer incompleto. El repositorio es local, no Flathub.',
     checkUser:'alumno-flatpak',interactive:true,
-    solution:'useradd -m -U -s /bin/bash alumno-flatpak\npasswd alumno-flatpak\nsystemctl start ssh\nssh alumno-flatpak@localhost\n# Ahora como alumno-flatpak:\nexport PS1=\'V86USER$ \'\nflatpak --user remote-add --no-gpg-verify curso-lab file:///srv/flatpak\nflatpak --user install -y curso-lab org.s2ktux.Hola\nflatpak --user run org.s2ktux.Hola\n\n# Tras comprobar, practica también:\n# flatpak --user uninstall org.s2ktux.Hola',
+    solution:'useradd -m -U -s /bin/bash alumno-flatpak\npasswd alumno-flatpak\nsystemctl start ssh\nssh alumno-flatpak@localhost\n# Ahora como alumno-flatpak:\nflatpak --user remote-add --no-gpg-verify curso-lab file:///srv/flatpak\nflatpak --user install -y curso-lab org.s2ktux.Hola\nflatpak --user run org.s2ktux.Hola\n\n# Tras comprobar, practica también:\n# flatpak --user uninstall org.s2ktux.Hola',
     checks:[['Remote local','flatpak --user remotes --columns=name,url | grep -Eq "^curso-lab[[:space:]]+file:///srv/flatpak/?$"'],['Aplicación y runtime','flatpak --user info org.s2ktux.Hola >/dev/null && flatpak --user info org.s2ktux.LabRuntime >/dev/null']],
   },
   {
