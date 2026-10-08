@@ -29,7 +29,14 @@ podman images</code></pre>
 <p>Este archivo es el sistema de archivos del contenedor, por eso usamos <code>import</code>, no <code>load</code>. La imagen no es <code>httpd</code> de Docker Hub: usa BusyBox, tiene <code>/bin/sh</code> en lugar de <code>/bin/bash</code> y su servidor de prácticas escucha en 8080 con los archivos en <code>/var/www</code>. Los comandos de ejecución están en las soluciones.</p>
 <p>Para rootless, inicia una sesión de usuario normal; no basta con cambiar variables de entorno en la sesión de root. Ese usuario debe importar la imagen en su propio almacén: no comparte automáticamente las imágenes de root.</p>
 <h2>Red y tiempos</h2>
-<p><strong>Abrir la otra máquina</strong> crea una segunda VM en otra pestaña del mismo navegador. Configura una dirección distinta en cada una, por ejemplo <code>10.42.0.10/24</code> y <code>10.42.0.20/24</code>, para las prácticas de SSH, NFS y NTP. No se conecta a Windows ni a una máquina compartida de otros alumnos.</p>
+<p><strong>Abrir la otra máquina</strong> crea una segunda VM en otra pestaña del mismo navegador. Ambas parten del mismo estado preparado: configura una IP y una MAC distintas antes de practicar SSH, NFS o NTP. No se conecta a Windows ni a una máquina compartida de otros alumnos.</p>
+<p>En Máquina 1:</p>
+<pre><code>nmcli con modify eth0 ipv4.method manual ipv4.addresses 10.42.0.20/24 ethernet.cloned-mac-address 02:00:00:42:00:20
+nmcli con up eth0</code></pre>
+<p>En Máquina 2:</p>
+<pre><code>nmcli con modify eth0 ipv4.method manual ipv4.addresses 10.42.0.21/24 ethernet.cloned-mac-address 02:00:00:42:00:21
+nmcli con up eth0</code></pre>
+<p>Comprueba desde Máquina 1 con <code>ping -c 2 10.42.0.21</code>. Son perfiles reales de NetworkManager; puedes cambiarlos para cada práctica.</p>
 <p>Mantén una sola pestaña por máquina. Abrir dos copias de «Máquina 1» repite su identidad de red y comparte su guardado, no crea una tercera máquina independiente.</p>
 <p>La primera entrada rápida se ha medido localmente en unos 26 segundos con una conexión controlada de 50 Mbps. Los reinicios completos y la recuperación de contraseña son más lentos: arrancan Linux de verdad, no recargan una terminal simulada. Consulta <strong>Estado de validación</strong> para los tiempos y límites de la candidata que estés probando.</p>
 <p>Si quieres preparar RHCSA en la distribución exacta del examen, complementa estas prácticas con una VM de RHEL. Este laboratorio sirve para practicar en la web sin instalar nada; no promete equivalencia absoluta con Red Hat.</p></main></body></html>

@@ -6,7 +6,7 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const lab = join(root, 'laboratorios/linux-real');
 const original = JSON.parse(await readFile(join(lab, 'publicacion.json'), 'utf8'));
-const permitted = new Set(['licencias/LEEME.md', 'licencias/LEEME.html', 'v86-test.html', 'PRACTICAS_V86.html']);
+const permitted = new Set(['licencias/LEEME.md', 'licencias/LEEME.html', 'v86-test.html', 'PRACTICAS_V86.html', 'GUIA_CURSO_LABORATORIO.md', 'GUIA_CURSO_LABORATORIO.html']);
 const changed = [];
 let total = 0;
 for (const record of original.records) {
@@ -26,7 +26,7 @@ const deployment = {
   route: '/laboratorios/linux-real/', imageSha256: original.imageSha256,
   originalFileCount: original.files, originalBytes: original.bytes,
   verifiedPackageBytes: total, modifications: changed,
-  note: 'publicacion.json y los informes describen la validación local anterior; este archivo identifica la integración web. Se añaden el enlace público de fuentes, atributos de seguridad de enlaces y tipos de botones. La máquina y el motor no se modifican.',
+  note: 'publicacion.json y los informes describen la validación local anterior; este archivo identifica la integración web. Se añaden el enlace público de fuentes, atributos de seguridad de enlaces, tipos de botones y la configuración explícita de MAC distintas al usar dos copias del estado preparado. La máquina y el motor no se modifican.',
   sources: { url: 'https://github.com/S2KTUX/s2ktux.github.io/releases/download/linux-real-beta-2026-10-08/fuentes-laboratorio-v3.tar.gz', bytes: 811556382, sha256: 'a3d493ab84e278f8318a85b42c5bc588f778770206844f102db8470940eb1017' },
   kind: 'beta independiente', replacesCurrentTerminal: false,
   knownLimits: ['Debian, no RHEL', 'DNF con RPM locales, sin repositorios generales', 'Sin Internet general', 'Recuperación de contraseña: 613 segundos en la prueba local', 'Guardado manual local al navegador']

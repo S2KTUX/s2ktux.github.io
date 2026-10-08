@@ -71,7 +71,23 @@ Para rootless, inicia una sesión de usuario normal; no basta con cambiar variab
 
 ## Red y tiempos
 
-**Abrir la otra máquina** crea una segunda VM en otra pestaña del mismo navegador. Configura una dirección distinta en cada una, por ejemplo `10.42.0.10/24` y `10.42.0.20/24`, para las prácticas de SSH, NFS y NTP. No se conecta a Windows ni a una máquina compartida de otros alumnos.
+**Abrir la otra máquina** crea una segunda VM en otra pestaña del mismo navegador. Ambas parten del mismo estado preparado: configura una IP y una MAC distintas antes de practicar SSH, NFS o NTP. No se conecta a Windows ni a una máquina compartida de otros alumnos.
+
+En Máquina 1:
+
+```bash
+nmcli con modify eth0 ipv4.method manual ipv4.addresses 10.42.0.20/24 ethernet.cloned-mac-address 02:00:00:42:00:20
+nmcli con up eth0
+```
+
+En Máquina 2:
+
+```bash
+nmcli con modify eth0 ipv4.method manual ipv4.addresses 10.42.0.21/24 ethernet.cloned-mac-address 02:00:00:42:00:21
+nmcli con up eth0
+```
+
+Comprueba desde Máquina 1 con `ping -c 2 10.42.0.21`. Son perfiles reales de NetworkManager; puedes cambiarlos para cada práctica.
 
 Mantén una sola pestaña por máquina. Abrir dos copias de «Máquina 1» repite su identidad de red y comparte su guardado, no crea una tercera máquina independiente.
 

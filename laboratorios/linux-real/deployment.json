@@ -3,13 +3,25 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715817218,
+  "verifiedPackageBytes": 715818222,
   "modifications": [
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "4fd5d4dd4f29a3c8ec40ee5fce6d702ac707c62b976cdc327ce1bb611b541762",
-      "bytes": 5091
+      "sha256": "7a07923821ada3ae1ddb7871fee2586519bb200250a7f04deab8c45ab0bfa02c",
+      "bytes": 5186
+    },
+    {
+      "path": "GUIA_CURSO_LABORATORIO.md",
+      "before": "4eabd8bd48db0231c399434c0d2867138f29ba5bb4122432753fb65fed828277",
+      "sha256": "6aef0764b6e01c8a368aa54eadee29038475e1956a35f2c73dad7b4f352c1b61",
+      "bytes": 7352
+    },
+    {
+      "path": "GUIA_CURSO_LABORATORIO.html",
+      "before": "103540cac5639e0fd9c0bceacf56b9fa17184089ac43a203c69d54e079cdc701",
+      "sha256": "567e25a1e095a5c8248ce92b5868ed8f66745c090e88b201ee2c0fd6cb037656",
+      "bytes": 8984
     },
     {
       "path": "PRACTICAS_V86.html",
@@ -30,7 +42,7 @@
       "bytes": 3198
     }
   ],
-  "note": "publicacion.json y los informes describen la validación local anterior; este archivo identifica la integración web. Se añaden el enlace público de fuentes, atributos de seguridad de enlaces y tipos de botones. La máquina y el motor no se modifican.",
+  "note": "publicacion.json y los informes describen la validación local anterior; este archivo identifica la integración web. Se añaden el enlace público de fuentes, atributos de seguridad de enlaces, tipos de botones y la configuración explícita de MAC distintas al usar dos copias del estado preparado. La máquina y el motor no se modifican.",
   "sources": {
     "url": "https://github.com/S2KTUX/s2ktux.github.io/releases/download/linux-real-beta-2026-10-08/fuentes-laboratorio-v3.tar.gz",
     "bytes": 811556382,
