@@ -31,7 +31,7 @@ const deployment = {
   route: '/laboratorios/linux-real/', imageSha256: original.imageSha256,
   originalFileCount: original.files, originalBytes: original.bytes,
   verifiedPackageBytes: total, modifications: changed, addedFiles,
-  note: 'publicacion.json y los informes describen la validación local anterior. La integración usa el diseño compartido de la web, copia por selección, pegado con clic derecho, un prompt configurado por Bash y un escenario de recuperación con guardado independiente. La configuración del prompt y la desactivación de autologin en el escenario se ejecutan en el Linux real, sobre sus discos locales; no se cambia la fábrica ni el motor.',
+  note: 'publicacion.json y los informes describen la validación local anterior. La integración usa el diseño compartido de la web, una entrada simplificada con prácticas, ayuda y opciones plegadas, copia por selección, pegado con clic derecho, un prompt configurado por Bash y un escenario de recuperación con guardado independiente. La configuración del prompt y la desactivación de autologin en el escenario se ejecutan en el Linux real, sobre sus discos locales; no se cambia la fábrica ni el motor.',
   sources: { url: 'https://github.com/S2KTUX/s2ktux.github.io/releases/download/linux-real-beta-2026-10-08/fuentes-laboratorio-v3.tar.gz', bytes: 811556382, sha256: 'a3d493ab84e278f8318a85b42c5bc588f778770206844f102db8470940eb1017' },
   kind: 'beta independiente', replacesCurrentTerminal: false,
   knownLimits: ['Debian, no RHEL', 'DNF con RPM locales, sin repositorios generales', 'Sin Internet general', 'Recuperación de contraseña: 613 segundos en la prueba local', 'Guardado manual local al navegador']

@@ -9,15 +9,47 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
   await expect(page.locator('#other-node')).toHaveAttribute('href', /node=2/);
   await expect(page.locator('.site-logo')).toHaveText('S2KTUX');
   await expect(page.locator('#recovery-link')).toHaveAttribute('href', /scenario=recovery/);
+  await expect(page.locator('#session-status')).toBeVisible();
+  await expect(page.locator('#session-status')).toContainText('no hay guardado automático');
+  for (const selector of ['#exercise-panel', '#lab-help', '#more-options']) {
+    expect(await page.locator(selector).evaluate(element => element.open)).toBe(false);
+  }
+  await expect(page.locator('#result')).toBeHidden();
+  expect((await page.locator('.console').boundingBox()).y).toBeLessThan(500);
+  await expect(page.locator('#reboot')).toBeHidden();
   await page.locator('[data-theme-toggle]').click();
   await expect(page.locator('html')).toHaveClass(/dark/);
+  await page.locator('#exercise-panel > summary').click();
   await page.locator('[data-practice-help]').click();
   await expect(page.locator('[data-exercise-check]')).toBeDisabled();
   await page.locator('[data-exercise-solution]').click();
   await expect(page.locator('#exercise-solution')).toBeVisible();
+  await page.locator('[data-lab-mode="exam"]').click();
+  await expect(page.locator('[data-exercise-solution]')).toBeHidden();
+  await page.locator('[data-exam-finish]').click();
+  await expect(page.locator('[data-exercise-solution]')).toBeVisible();
+  await page.locator('#more-options > summary').click();
+  await expect(page.locator('#reboot')).toBeVisible();
+  await expect(page.locator('#recovery-link')).toBeVisible();
   expect(await page.evaluate(() => typeof globalThis.vm)).toBe('undefined');
   await page.goto('/laboratorios/linux-real/licencias/LEEME.html');
   await expect(page.locator('a[href*="fuentes-laboratorio-v3.tar.gz"]')).toHaveCount(1);
+});
+
+test('Linux real · recuperación con reinicio accesible y error de arranque visible', async ({page}) => {
+  await page.goto('/laboratorios/linux-real/v86-test.html?scenario=recovery');
+  await expect(page.locator('#start')).toBeEnabled();
+  await expect(page.locator('h1')).toHaveText('Recuperación de root');
+  await expect(page.locator('#recovery-note')).toBeVisible();
+  await expect(page.locator('#reboot')).toBeVisible();
+  await expect(page.locator('#recovery-link')).toBeHidden();
+  await expect(page.locator('#network-note')).toBeHidden();
+  await expect(page.locator('#exercise-panel')).not.toHaveAttribute('open');
+  await page.route('**/disco-fragmentado.json', route => route.fulfill({status:503, body:'Sin imagen'}));
+  await page.locator('#start').click();
+  await expect(page.locator('#status')).toContainText('Laboratorio detenido');
+  await expect(page.locator('#result')).toBeVisible();
+  await expect(page.locator('#result')).toContainText('perderás el guardado');
 });
 
 test('Linux real · portapapeles bajo acción del usuario y errores visibles', async ({ page }) => {
