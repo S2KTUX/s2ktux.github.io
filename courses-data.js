@@ -83,10 +83,10 @@ window.S2KTUX_COURSES = {
     badge: "CKA",
     badgeColor: "#5b7fa6",
     title: "Kubernetes",
-    subtitle: "Preparación para CKA con Kubernetes 1.35. Clases 00–34; contenido pendiente de publicación.",
+    subtitle: "Preparación para CKA con Kubernetes 1.35. Clase 00 disponible; el resto de clases se publicará progresivamente.",
     note: "Del contenedor al clúster: pods, despliegues, red, almacenamiento y administración.",
     modules: [
-      { n: "00", title: "Fundamentos de Kubernetes", desc: "", video: "", topics: [] },
+      { n: "00", title: "Fundamentos de Kubernetes", desc: "Qué hace Kubernetes, su arquitectura básica y cómo es el examen CKA.", video: "", topics: ["Qué es Kubernetes", "Arquitectura", "CKA"] },
       { n: "01", title: "Preparación del laboratorio", desc: "", video: "", topics: [] },
       { n: "02", title: "Pods", desc: "", video: "", topics: [] },
       { n: "03", title: "ReplicaSet", desc: "", video: "", topics: [] },

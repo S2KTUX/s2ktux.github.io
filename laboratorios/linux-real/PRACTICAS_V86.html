@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Prueba nueva: Linux real en el navegador · S2KTUX</title><link rel="stylesheet" href="prototipo.css"><style>.guide-table{max-width:100%;overflow:auto}table{border-collapse:collapse;width:100%}th,td{text-align:left;vertical-align:top;padding:12px;border-bottom:1px solid #394250}li{line-height:1.7}code{overflow-wrap:anywhere}pre code{overflow-wrap:normal}</style></head><body><main><p><a href="v86-test.html">Volver al laboratorio</a> · <a href="PRACTICAS_V86.md">Versión Markdown</a></p><h1>Prueba nueva: Linux real en el navegador</h1>
+<p>Abre <code>v86-test.html</code> desde la vista previa y pulsa <strong>Iniciar laboratorio</strong>. La entrada normal selecciona la fábrica preparada. Es Debian 12 con herramientas reales y root administrativo normal, no Red Hat. La recuperación de contraseña es más lenta que las prácticas normales; consulta el estado de validación para sus tiempos reales. No se ha sustituido la web publicada.</p>
+<p>La entrada preparada recupera una máquina ya arrancada. Guardar sesión conserva tu RAM y los cambios de ambos discos en este navegador. Guarda antes de cerrar: no hay guardado automático. Reset elimina únicamente el guardado de ese perfil y recupera su base limpia. No borra archivos del portátil.</p>
+<h2>Dos formas de practicar</h2>
+<p><strong>Practicar Linux</strong> deja la terminal para tus propias pruebas. Si necesitas una propuesta, abre las prácticas guiadas; no son obligatorias.</p>
+<p><strong>Practicar modo examen</strong> contiene las 21 preguntas del simulacro, sin sumar las prácticas complementarias. Las soluciones, la chuleta y las comprobaciones aparecen al terminar el intento. Es un modo de estudio, no una evaluación vigilada.</p>
+<p>Ambos usan la misma máquina. Cambiar de modo no borra nada ni ejecuta comandos. Para empezar realmente desde cero, usa Reset; también eliminará el guardado de esa máquina.</p>
+<h2>Software: practicar DNF sin inventar respuestas</h2>
+<p>El repositorio local contiene RPM propios y firmados. Puedes instalar, actualizar y borrar estos paquetes con DNF de verdad. Los componentes Debian siguen gestionados por dpkg/APT: no puedes dar por hecho que <code>dnf install vim</code> o un upgrade de todo el sistema equivalgan a RHEL.</p>
+<pre><code>dnf repolist
+dnf install lab-notas
+rpm -q lab-notas lab-base
+cat /usr/share/s2ktux-lab/lab-notas/version.txt
+dnf --enablerepo=lab-updates upgrade lab-notas
+cat /usr/share/s2ktux-lab/lab-notas/version.txt
+dnf remove lab-notas lab-base</code></pre>
+<p>La versión inicial es 1.0 y la actualización ofrece 2.0. <code>lab-dependencia-rota</code> debe fallar porque su dependencia no existe. Ese fallo es un resultado real previsto, no un comando sin implementar.</p>
+<h2>Dos máquinas para NFS y autofs</h2>
+<p>Usa <strong>Abrir la otra máquina</strong>, en el mismo navegador. Cada máquina tiene su propio guardado y una MAC distinta. El enlace entre ellas es Ethernet privado; no hay DHCP ni acceso general a Internet. Configura direcciones IP distintas. Los comandos siguientes fijan también dos MAC diferentes para esta práctica.</p>
+<p>En la máquina 1:</p>
+<pre><code>nmcli con add type ethernet ifname eth0 con-name lab-nfs ipv4.method manual ipv4.addresses 10.42.0.10/24 ipv6.method disabled ethernet.cloned-mac-address 02:00:00:42:00:10
+nmcli con up lab-nfs
+useradd -m -u 1500 alumno-nfs</code></pre>
+<p>En la máquina 2:</p>
+<pre><code>nmcli con add type ethernet ifname eth0 con-name lab-nfs ipv4.method manual ipv4.addresses 10.42.0.11/24 ipv6.method disabled ethernet.cloned-mac-address 02:00:00:42:00:11
+nmcli con up lab-nfs
+useradd -m -u 1500 alumno-nfs
+mkdir -p /srv/compartido
+chown alumno-nfs:alumno-nfs /srv/compartido
+chmod 2775 /srv/compartido
+echo NFS_ENTRE_MAQUINAS &gt; /srv/compartido/dato
+chmod 644 /srv/compartido/dato
+printf '/srv/compartido 10.42.0.0/24(rw,sync,no_subtree_check,fsid=0)\n' &gt; /etc/exports
+setsebool nfs_export_all_rw on
+systemctl start nfs-server
+exportfs -rav
+firewall-cmd --add-service=nfs</code></pre>
+<p>La cuenta comparte UID 1500 entre ambos equipos. Se conserva root_squash: root remoto no se convierte en root del servidor. Escribe con alumno-nfs, que sí es propietario de la carpeta. El booleano SELinux y la regla de firewall de este ejercicio son temporales; esta prueba no acredita todavía su persistencia tras reiniciar.</p>
+<p>En la máquina 1, comprueba lectura y escritura:</p>
+<pre><code>ping -c 2 10.42.0.11
+mkdir -p /mnt/nfs
+mount -t nfs -o vers=4.2 10.42.0.11:/ /mnt/nfs
+cat /mnt/nfs/dato
+su - alumno-nfs -c 'echo ESCRITO_DESDE_CLIENTE &gt; /mnt/nfs/cliente'</code></pre>
+<p>En la máquina 2, <code>cat /srv/compartido/cliente</code> debe mostrar el dato escrito desde la otra máquina.</p>
+<p>Para probar autofs en la máquina 1:</p>
+<pre><code>umount /mnt/nfs
+mkdir -p /mnt/auto
+printf '/mnt/auto /etc/auto.lab --timeout=2\n' &gt; /etc/auto.master.d/lab.autofs
+printf 'datos -fstype=nfs4,rw,vers=4.2 10.42.0.11:/\n' &gt; /etc/auto.lab
+restorecon /etc/auto.lab /etc/auto.master.d/lab.autofs
+systemctl restart autofs
+cat /mnt/auto/datos/dato
+findmnt /mnt/auto/datos
+su - alumno-nfs -c 'echo ESCRITO_AUTOMOUNT &gt; /mnt/auto/datos/auto-cliente'</code></pre>
+<p>Reiniciar autofs hace que lea el mapa nuevo. Acceder a la carpeta provoca un montaje real; no se genera una salida simulada. Comprueba el segundo dato desde la máquina 2.</p>
+<h2>Discos de prácticas</h2>
+<p><code>/dev/sda</code> contiene el sistema y GRUB: no lo particiones. <code>/dev/sdb</code> es el disco vacío de prácticas: 2 GiB en los perfiles curso/RHCSA/ampliado y 1 GiB en la base anterior. Confirma siempre sus nombres y tamaño con <code>lsblk -f</code> y <code>lsblk</code> antes de modificar nada. Los dos son discos virtuales dentro del navegador, no discos del portátil.</p>
+<h2>Comprobar ejercicio y ver solución</h2>
+<p>El prototipo incluye un panel fuera de la terminal con 44 prácticas: ocho iniciales, las 21 preguntas del simulacro adaptadas y 15 prácticas adicionales del curso. Se abre con <code>v86-test.html?boot=grub&amp;disk=rhcsa&amp;estado=grub-rhcsa</code>. El catálogo ampliado sigue en validación y no sustituye la terminal publicada. Consulta <code>COBERTURA_RHCSA.md</code> para los resultados, no deduzcas que una práctica está aprobada solo por aparecer en el selector.</p>
+<p>«Comprobar ejercicio» consulta el estado real de Linux y muestra qué condiciones se cumplen y cuáles faltan. No ejecuta la solución ni corrige el ejercicio. Necesita la máquina arrancada, el prompt de root y una línea vacía; no se envían consultas a un editor o a un comando en marcha. Una consulta incompleta o sin respuesta no se considera aprobada.</p>
+<p>«Ver solución» despliega los comandos y una explicación breve en la página. No envía nada a Linux, no da el ejercicio por aprobado y funciona incluso antes de abrir la máquina. Es una forma de resolver la práctica, no una secuencia obligatoria: la evaluación mira el resultado.</p>
+<p>Los scripts son una excepción deliberada: el panel lee su sintaxis y estructura simple; no ejecuta código del alumno como root. Prueba tú la salida y los códigos de retorno. En rescate se verifica contraseña/Enforcing finales, no que hayas seguido necesariamente rd.break.</p>
+<p>La <a href="CHULETA_LINUX_REAL.html">chuleta del laboratorio real</a> explica comandos y diferencias de rutas/servicios respecto a RHEL. Los repositorios e imágenes de prácticas existen en el disco local; no se finge descargar recursos de Internet. Para NFS/chrony/autofs se prepara la segunda pestaña con el ejercicio de servidor.</p>
+<p>La práctica de timer fija <code>AccuracySec=1s</code>: el <a href="https://github.com/systemd/systemd/blob/main/man/systemd.timer.xml" target="_blank" rel="noopener">valor predeterminado de systemd</a> permite agrupar disparos dentro de un minuto. No se sustituye la ejecución por un archivo creado desde el comprobador.</p>
+<p>Cambiar de práctica conserva la máquina. Root, Guardar sesión y Reset siguen disponibles. La solución de LVM exige que el disco de prácticas esté vacío; no debe aplicarse sobre datos que quieras conservar. Comprobar fstab no demuestra por sí solo que el montaje sobreviva a un reinicio: reinicia y comprueba de nuevo.</p>
+<p>La consulta de tuned comprueba servicio activo, el perfil persistido, <code>tuned-adm verify</code> y el valor efectivo de swappiness. Lee el archivo de perfil definido por el <a href="https://github.com/redhat-performance/tuned/blob/master/tuned/consts.py" target="_blank" rel="noopener">proyecto oficial tuned</a>, sin cambiar permisos SELinux para redirigir la salida de la herramienta.</p>
+<h2>Lo que todavía no está cerrado</h2>
+<p>La cobertura completa está documentada en <code>AVANCES_2026-10-06.md</code>. No se considera validado el laboratorio RHCSA entero por tener instalados Flatpak, tuned o las demás herramientas. La recuperación Debian tampoco sustituye automáticamente el procedimiento rd.break de RHEL.</p></main></body></html>

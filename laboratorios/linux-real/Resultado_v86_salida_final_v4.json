@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-08T18:32:57.725Z",
+  "cases": [
+    {
+      "name": "salida-unicode-real",
+      "command": "printf 'Espa\\303\\261ol: \\303\\241 \\303\\261 \\360\\237\\231\\202\\n'",
+      "seconds": 0.084,
+      "code": 0,
+      "output": "Español: á ñ 🙂\n",
+      "transcript": "printf 'Espa\\303\\261ol: \\303\\241 \\303\\261 \\360\\237\\231\\202\\n'; printf \"\\n__CHECK_0__=%s\\n\" \"$?\"\nEspañol: á ñ 🙂\n\n__CHECK_0__=0\nV86TEST# "
+    },
+    {
+      "name": "reset-tras-salida-abundante",
+      "command": "test \"$(getenforce)\" = Enforcing && test ! -e /root/demo-curso.txt",
+      "seconds": 0.25,
+      "code": 0,
+      "output": "",
+      "transcript": "test \"$(getenforce)\" = Enforcing && test ! -e /root/demo-curso.txt; printf \"\\n__CHECK_1__=%s\\n\" \"$?\"\n\n__CHECK_1__=0\nV86TEST# "
+    }
+  ],
+  "errors": [],
+  "quietCommands": true,
+  "websiteModified": false,
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "realUnicodePassed": true,
+  "realUnicodeInputPassed": true,
+  "savedVisibleOutputOnlyPassed": true,
+  "largeOutputSeconds": 8.461,
+  "transcriptCharacters": 4194304,
+  "boundedHistoryPassed": true,
+  "resetAfterOutputPassed": true,
+  "collectionComplete": true,
+  "tail": "\r\n\u001b[?2004l\r\u001b[?2004hV86TEST# test \"$(getenforce)\" = Enforcing && test ! -e /root/demo-curso.txt; printf \"\\n__CHECK_1__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r\r\n__CHECK_1__=0\r\n\u001b[?2004hV86TEST# "
+}

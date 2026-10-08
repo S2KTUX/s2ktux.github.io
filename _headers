@@ -4,3 +4,5 @@
   X-Robots-Tag: noindex, nofollow, noarchive
 /_docker/*
   X-Robots-Tag: noindex, nofollow, noarchive
+/_kubernetes/*
+  X-Robots-Tag: noindex, nofollow, noarchive

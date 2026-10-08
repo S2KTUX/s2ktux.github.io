@@ -1,0 +1,14 @@
+{
+  "date": "2026-10-08T16:39:29.415Z",
+  "websiteModified": false,
+  "sourceFilesSelectedByExistingBuilder": {
+    "bytes": 9973266,
+    "files": 334
+  },
+  "lastExistingBuild": {
+    "bytes": 10951258,
+    "files": 366
+  },
+  "caveat": "El último _site puede no representar los cambios locales actuales. La suma definitiva se comprueba con el sitio compilado y la carpeta nueva.",
+  "publishedSiteLimitBytes": 1000000000
+}

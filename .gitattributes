@@ -1,0 +1,2 @@
+# La imagen, estados y manifiestos se validan por bytes, también en Windows.
+laboratorios/linux-real/** -text

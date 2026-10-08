@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import { readFileSync, statSync } from 'node:fs';
+import { createHash } from 'node:crypto';
+const root = new URL('../', import.meta.url);
+const read = path => readFileSync(new URL(path, root), 'utf8');
+const deployment = JSON.parse(read('laboratorios/linux-real/deployment.json'));
+assert.equal(deployment.replacesCurrentTerminal, false);
+assert.equal(deployment.imageSha256, '95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97');
+assert.deepEqual(deployment.modifications.map(item => item.path).sort(), ['GUIA_CURSO_LABORATORIO.html', 'GUIA_CURSO_LABORATORIO.md', 'PRACTICAS_V86.html', 'licencias/LEEME.html', 'licencias/LEEME.md', 'v86-test.html']);
+for (const item of deployment.modifications) assert.equal(createHash('sha256').update(readFileSync(new URL('laboratorios/linux-real/' + item.path, root))).digest('hex'), item.sha256);
+for (const path of ['index.html', 'v86-test.html', 'v86-test.mjs', 'GUIA_CURSO_LABORATORIO.html', 'CHULETA_LINUX_REAL.html', 'PRACTICAS_V86.html']) assert.ok(statSync(new URL('laboratorios/linux-real/' + path, root)).size > 0);
+assert.match(read('terminal.html'), /href="\/laboratorios\/linux-real\/"/);
+assert.match(read('sw.js'), /pathname\.startsWith\('\/laboratorios\/linux-real\/'\)\) return/);
+assert.match(read('laboratorios/linux-real/licencias/LEEME.html'), /releases\/download\/linux-real-beta-2026-10-08/);
+assert.doesNotMatch(read('laboratorios/linux-real/licencias/LEEME.html'), /Ese paso de publicación no se ha realizado/);
+console.log('✓ Linux real: beta independiente, fuentes públicas, paquete validado y sin caché del shell general.');

@@ -1,0 +1,211 @@
+{
+  "date": "2026-10-08T17:28:18.620Z",
+  "cases": [
+    {
+      "name": "resolver-archivo",
+      "command": "printf 'Linux real\\n' > /root/practica.txt && chown root:root /root/practica.txt && chmod 640 /root/practica.txt && cat /root/practica.txt && stat -c '%U:%G %a' /root/practica.txt",
+      "seconds": 0.211,
+      "code": 0,
+      "output": "Linux real\nroot:root 640\n",
+      "transcript": "printf 'Linux real\\n' > /root/practica.txt && chown root:root /root/practica.txt && chmod 640 /root/practica.txt && cat /root/practica.txt && stat -c '%U:%G %a' /root/practica.txt; printf \"\\n__CHECK_0__=%s\\n\" \"$?\"\nLinux real\nroot:root 640\n\n__CHECK_0__=0\nV86TEST# "
+    },
+    {
+      "name": "resolver-usuarios",
+      "command": "groupadd equipo && useradd -m -s /bin/bash -G equipo ana && id ana && getent passwd ana && ls -ld /home/ana",
+      "seconds": 4.993,
+      "code": 0,
+      "output": "uid=1000(ana) gid=1001(ana) groups=1001(ana),1000(equipo)\nana:x:1000:1001::/home/ana:/bin/bash\ndrwxr-xr-x. 2 ana ana 4096 Oct  8 16:55 /home/ana\n",
+      "transcript": "groupadd equipo && useradd -m -s /bin/bash -G equipo ana && id ana && getent passwd ana && ls -ld /home/ana; printf \"\\n__CHECK_1__=%s\\n\" \"$?\"\nuid=1000(ana) gid=1001(ana) groups=1001(ana),1000(equipo)\nana:x:1000:1001::/home/ana:/bin/bash\ndrwxr-xr-x. 2 ana ana 4096 Oct  8 16:55 /home/ana\n\n__CHECK_1__=0\nV86TEST# "
+    },
+    {
+      "name": "resolver-sgid",
+      "command": "getent group equipo >/dev/null || groupadd equipo && mkdir -p /datos/equipo && chown root:equipo /datos/equipo && chmod 2770 /datos/equipo && stat -c '%U:%G %a' /datos/equipo",
+      "seconds": 1.677,
+      "code": 0,
+      "output": "root:equipo 2770\n",
+      "transcript": "getent group equipo >/dev/null || groupadd equipo && mkdir -p /datos/equipo && chown root:equipo /datos/equipo && chmod 2770 /datos/equipo && stat -c '%U:%G %a' /datos/equipo; printf \"\\n__CHECK_2__=%s\\n\" \"$?\"\nroot:equipo 2770\n\n__CHECK_2__=0\nV86TEST# "
+    },
+    {
+      "name": "resolver-archivo-tar",
+      "command": "tar -czf /root/practica.tar.gz -C /root practica.txt && tar -tzf /root/practica.tar.gz && tar -xOzf /root/practica.tar.gz practica.txt",
+      "seconds": 0.727,
+      "code": 0,
+      "output": "practica.txt\nLinux real\n",
+      "transcript": "tar -czf /root/practica.tar.gz -C /root practica.txt && tar -tzf /root/practica.tar.gz && tar -xOzf /root/practica.tar.gz practica.txt; printf \"\\n__CHECK_3__=%s\\n\" \"$?\"\npractica.txt\nLinux real\n\n__CHECK_3__=0\nV86TEST# "
+    },
+    {
+      "name": "resolver-dnf",
+      "command": "dnf -y install lab-notas && dnf -y --enablerepo=lab-updates upgrade lab-notas && rpm -q lab-notas lab-base && cat /usr/share/s2ktux-lab/lab-notas/version.txt",
+      "seconds": 74.477,
+      "code": 0,
+      "output": "Repositorio RPM prop     [===                 ] ---  B/s |   0  B     --:-- ETARepositorio RPM prop     [===                 ] ---  B/s |   0  B     --:-- ETARepositorio RPM propio de practicas (no RHEL)   1.0 kB/s | 1.3 kB     00:01    \nLast metadata expiration check: 0:00:02 ago on Thu Oct  8 16:56:22 2026.\nDependencies resolved.\n================================================================================\n Package             Architecture     Version          Repository          Size\n================================================================================\nInstalling:\n lab-notas          \u000f noarch           1.0-1            lab-base           6.3 k\nInstalling dependencies:\n lab-base           \u000f noarch           1.0-1            lab-base           6.3 k\n\nTransaction Summary\n================================================================================\nInstall  2 Packages\n\nTotal size: 13 k\nInstalled size: 27  \nDownloading Packages:\nRunning transaction check\nTransaction check succeeded.\nRunning transaction test\nTransaction test succeeded.\nRunning transaction\n  Preparing        :  [=========================                          ] 1/1  Preparing        :                                                        1/1 \n  Installing       : lab-base-1.0-1.noarch [                              ] 1/2  Installing       : lab-base-1.0-1.noarch [=========                     ] 1/2  Installing       : lab-base-1.0-1.noarch [=====================         ] 1/2  Installing       : lab-base-1.0-1.noarch                                  1/2 \n  Installing       : lab-notas-1.0-1.noarch [                             ] 2/2  Installing       : lab-notas-1.0-1.noarch [=========                    ] 2/2  Installing       : lab-notas-1.0-1.noarch [====================         ] 2/2  Installing       : lab-notas-1.0-1.noarch                                 2/2 \n  Verifying        : lab-base-1.0-1.noarch                                  1/2 \n  Verifying        : lab-notas-1.0-1.noarch                                 2/2 \nNew leaves:\n  lab-notas.noarch\n\nInstalled:\n  lab-base-1.0-1.noarch                  lab-notas-1.0-1.noarch                 \n\nComplete!\nActualizaciones de l     [===                 ] ---  B/s |   0  B     --:-- ETAActualizaciones de los paquetes de practicas    5.0 kB/s | 954  B     00:00    \nLast metadata expiration check: 0:00:01 ago on Thu Oct  8 16:57:17 2026.\nDependencies resolved.\n================================================================================\n Package            Architecture    Version          Repository            Size\n================================================================================\nUpgrading:\n lab-notas         \u000f noarch          2.0-1            lab-updates          6.3 k\n\nTransaction Summary\n================================================================================\nUpgrade  1 Package\n\nTotal size: 6.3 k\nDownloading Packages:\nRunning transaction check\nTransaction check succeeded.\nRunning transaction test\nTransaction test succeeded.\nRunning transaction\n  Preparing        :  [=========================                          ] 1/1  Preparing        :                                                        1/1 \n  Upgrading        : lab-notas-2.0-1.noarch [                             ] 1/2  Upgrading        : lab-notas-2.0-1.noarch [=========                    ] 1/2  Upgrading        : lab-notas-2.0-1.noarch [====================         ] 1/2  Upgrading        : lab-notas-2.0-1.noarch                                 1/2 \n  Cleanup          : lab-notas-1.0-1.noarch [                             ] 2/2  Cleanup          : lab-notas-1.0-1.noarch                                 2/2 \n  Verifying        : lab-notas-2.0-1.noarch                                 1/2 \n  Verifying        : lab-notas-1.0-1.noarch                                 2/2 \n\nUpgraded:\n  lab-notas-2.0-1.noarch                                                        \n\nComplete!\nlab-notas-2.0-1.noarch\nlab-base-1.0-1.noarch\nlab-notas 2.0\n",
+      "transcript": "dnf -y install lab-notas && dnf -y --enablerepo=lab-updates upgrade lab-notas && rpm -q lab-notas lab-base && cat /usr/share/s2ktux-lab/lab-notas/version.txt; printf \"\\n__CHECK_4__=%s\\n\" \"$?\"\nRepositorio RPM prop     [===                 ] ---  B/s |   0  B     --:-- ETARepositorio RPM prop     [===                 ] ---  B/s |   0  B     --:-- ETARepositorio RPM propio de practicas (no RHEL)   1.0 kB/s | 1.3 kB     00:01    \nLast metadata expiration check: 0:00:02 ago on Thu Oct  8 16:56:22 2026.\nDependencies resolved.\n================================================================================\n Package             Architecture     Version          Repository          Size\n================================================================================\nInstalling:\n lab-notas          \u000f noarch           1.0-1            lab-base           6.3 k\nInstalling dependencies:\n lab-base           \u000f noarch           1.0-1            lab-base           6.3 k\n\nTransaction Summary\n================================================================================\nInstall  2 Packages\n\nTotal size: 13 k\nInstalled size: 27  \nDownloading Packages:\nRunning transaction check\nTransaction check succeeded.\nRunning transaction test\nTransaction test succeeded.\nRunning transaction\n  Preparing        :  [=========================                          ] 1/1  Preparing        :                                                        1/1 \n  Installing       : lab-base-1.0-1.noarch [                              ] 1/2  Installing       : lab-base-1.0-1.noarch [=========                     ] 1/2  Installing       : lab-base-1.0-1.noarch [=====================         ] 1/2  Installing       : lab-base-1.0-1.noarch                                  1/2 \n  Installing       : lab-notas-1.0-1.noarch [                             ] 2/2  Installing       : lab-notas-1.0-1.noarch [=========                    ] 2/2  Installing       : lab-notas-1.0-1.noarch [====================         ] 2/2  Installing       : lab-notas-1.0-1.noarch                                 2/2 \n  Verifying        : lab-base-1.0-1.noarch                                  1/2 \n  Verifying        : lab-notas-1.0-1.noarch                                 2/2 \nNew leaves:\n  lab-notas.noarch\n\nInstalled:\n  lab-base-1.0-1.noarch                  lab-notas-1.0-1.noarch                 \n\nComplete!\nActualizaciones de l     [===                 ] ---  B/s |   0  B     --:-- ETAActualizaciones de los paquetes de practicas    5.0 kB/s | 954  B     00:00    \nLast metadata expiration check: 0:00:01 ago on Thu Oct  8 16:57:17 2026.\nDependencies resolved.\n================================================================================\n Package            Architecture    Version          Repository            Size\n================================================================================\nUpgrading:\n lab-notas         \u000f noarch          2.0-1            lab-updates          6.3 k\n\nTransaction Summary\n================================================================================\nUpgrade  1 Package\n\nTotal size: 6.3 k\nDownloading Packages:\nRunning transaction check\nTransaction check succeeded.\nRunning transaction test\nTransaction test succeeded.\nRunning transaction\n  Preparing        :  [=========================                          ] 1/1  Preparing        :                                                        1/1 \n  Upgrading        : lab-notas-2.0-1.noarch [                             ] 1/2  Upgrading        : lab-notas-2.0-1.noarch [=========                    ] 1/2  Upgrading        : lab-notas-2.0-1.noarch [====================         ] 1/2  Upgrading        : lab-notas-2.0-1.noarch                                 1/2 \n  Cleanup          : lab-notas-1.0-1.noarch [                             ] 2/2  Cleanup          : lab-notas-1.0-1.noarch                                 2/2 \n  Verifying        : lab-notas-2.0-1.noarch                                 1/2 \n  Verifying        : lab-notas-1.0-1.noarch                                 2/2 \n\nUpgraded:\n  lab-notas-2.0-1.noarch                                                        \n\nComplete!\nlab-notas-2.0-1.noarch\nlab-base-1.0-1.noarch\nlab-notas 2.0\n\n__CHECK_4__=0\nV86TEST# "
+    },
+    {
+      "name": "disco-virtual-vacio",
+      "command": "test \"$(blockdev --getsize64 /dev/sdb)\" = 2147483648 && ! lsblk -nr -o TYPE /dev/sdb | grep -qx part && ! findmnt -rn -S /dev/sdb",
+      "seconds": 1.235,
+      "code": 0,
+      "output": "",
+      "transcript": "test \"$(blockdev --getsize64 /dev/sdb)\" = 2147483648 && ! lsblk -nr -o TYPE /dev/sdb | grep -qx part && ! findmnt -rn -S /dev/sdb; printf \"\\n__CHECK_5__=%s\\n\" \"$?\"\n\n__CHECK_5__=0\nV86TEST# "
+    },
+    {
+      "name": "resolver-lvm",
+      "command": "lsblk -f /dev/sdb && parted -s /dev/sdb mklabel gpt mkpart LVM 1MiB 100% set 1 lvm on && partprobe /dev/sdb && udevadm settle && pvcreate /dev/sdb1 && vgcreate practicas /dev/sdb1 && lvcreate -L 256M -n datos practicas && mkfs.ext4 /dev/practicas/datos && mkdir -p /mnt/datos && mount /dev/practicas/datos /mnt/datos && restorecon -RF /mnt/datos && printf 'UUID=%s /mnt/datos ext4 defaults 0 2\\n' \"$(blkid -s UUID -o value /dev/practicas/datos)\" >> /etc/fstab && systemctl daemon-reload && lvs practicas && findmnt /mnt/datos && findmnt --verify",
+      "seconds": 41.598,
+      "code": 0,
+      "output": "NAME FSTYPE FSVER LABEL UUID FSAVAIL FSUSE% MOUNTPOINTS\nsdb                                         \n[  346.982450]  sdb: sdb1\n[  351.861250]  sdb: sdb1\n  Physical volume \"/dev/sdb1\" successfully created.\n  Volume group \"practicas\" successfully created\n  Logical volume \"datos\" created.\nmke2fs 1.47.0 (5-Feb-2023)\nCreating filesystem with 262144 1k blocks and 65536 inodes\nFilesystem UUID: 5eb05609-7b29-44ad-bdaf-c1afad80db35\nSuperblock backups stored on blocks: \n\t8193, 24577, 40961, 57345, 73729, 204801, 221185\n\nAllocating group tables:  0/32\b\b\b\b\b     \b\b\b\b\bdone                            \nWriting inode tables:  0/32\b\b\b\b\b     \b\b\b\b\bdone                            \nCreating journal (8192 blocks): done\nWriting superblocks and filesystem accounting information:  0/32\b\b\b\b\b     \b\b\b\b\bdone\n\n[  365.816850] EXT4-fs (dm-0): mounted filesystem with ordered data mode. Quota mode: none.\n  LV    VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert\n  datos practicas -wi-ao---- 256.00m                                                    \nTARGET     SOURCE                      FSTYPE OPTIONS\n/mnt/datos /dev/mapper/practicas-datos ext4   rw,relatime,seclabel\nSuccess, no errors or warnings detected\n",
+      "transcript": "lsblk -f /dev/sdb && parted -s /dev/sdb mklabel gpt mkpart LVM 1MiB 100% set 1 lvm on && partprobe /dev/sdb && udevadm settle && pvcreate /dev/sdb1 && vgcreate practicas /dev/sdb1 && lvcreate -L 256M -n datos practicas && mkfs.ext4 /dev/practicas/datos && mkdir -p /mnt/datos && mount /dev/practicas/datos /mnt/datos && restorecon -RF /mnt/datos && printf 'UUID=%s /mnt/datos ext4 defaults 0 2\\n' \"$(blkid -s UUID -o value /dev/practicas/datos)\" >> /etc/fstab && systemctl daemon-reload && lvs practicas && findmnt /mnt/datos && findmnt --verify; printf \"\\n__CHECK_6__=%s\\n\" \"$?\"\nNAME FSTYPE FSVER LABEL UUID FSAVAIL FSUSE% MOUNTPOINTS\nsdb                                         \n[  346.982450]  sdb: sdb1\n[  351.861250]  sdb: sdb1\n  Physical volume \"/dev/sdb1\" successfully created.\n  Volume group \"practicas\" successfully created\n  Logical volume \"datos\" created.\nmke2fs 1.47.0 (5-Feb-2023)\nCreating filesystem with 262144 1k blocks and 65536 inodes\nFilesystem UUID: 5eb05609-7b29-44ad-bdaf-c1afad80db35\nSuperblock backups stored on blocks: \n\t8193, 24577, 40961, 57345, 73729, 204801, 221185\n\nAllocating group tables:  0/32\b\b\b\b\b     \b\b\b\b\bdone                            \nWriting inode tables:  0/32\b\b\b\b\b     \b\b\b\b\bdone                            \nCreating journal (8192 blocks): done\nWriting superblocks and filesystem accounting information:  0/32\b\b\b\b\b     \b\b\b\b\bdone\n\n[  365.816850] EXT4-fs (dm-0): mounted filesystem with ordered data mode. Quota mode: none.\n  LV    VG        Attr       LSize   Pool Origin Data%  Meta%  Move Log Cpy%Sync Convert\n  datos practicas -wi-ao---- 256.00m                                                    \nTARGET     SOURCE                      FSTYPE OPTIONS\n/mnt/datos /dev/mapper/practicas-datos ext4   rw,relatime,seclabel\nSuccess, no errors or warnings detected\n\n__CHECK_6__=0\nV86TEST# "
+    },
+    {
+      "name": "resolver-selinux",
+      "command": "mkdir -p /srv/practica-web && printf 'Practica web\\n' > /srv/practica-web/index.html && semanage fcontext -a -t httpd_sys_content_t '/srv/practica-web(/.*)?' && restorecon -RF /srv/practica-web && getenforce && ls -Zd /srv/practica-web /srv/practica-web/index.html && matchpathcon /srv/practica-web/index.html",
+      "seconds": 39.602,
+      "code": 0,
+      "output": "libsemanage.add_user: user sddm not in password file\n[  418.724650] SELinux:  Permission cmd in class io_uring not defined in policy.\n[  418.726250] SELinux:  Class user_namespace not defined in policy.\n[  418.726650] SELinux: the above unknown classes and permissions will be allowed\n[  418.736250] SELinux:  Converting 436 SID table entries...\n[  419.001050] SELinux:  policy capability network_peer_controls=1\n[  419.001650] SELinux:  policy capability open_perms=1\n[  419.002450] SELinux:  policy capability extended_socket_class=1\n[  419.003050] SELinux:  policy capability always_check_network=0\n[  419.003350] SELinux:  policy capability cgroup_seclabel=1\n[  419.003750] SELinux:  policy capability nnp_nosuid_transition=1\n[  419.006350] SELinux:  policy capability genfs_seclabel_symlinks=0\n[  419.006850] SELinux:  policy capability ioctl_skip_cloexec=0\nEnforcing\nsystem_u:object_r:httpd_sys_content_t:s0 /srv/practica-web\nsystem_u:object_r:httpd_sys_content_t:s0 /srv/practica-web/index.html\n/srv/practica-web/index.html\tsystem_u:object_r:httpd_sys_content_t:s0\n",
+      "transcript": "mkdir -p /srv/practica-web && printf 'Practica web\\n' > /srv/practica-web/index.html && semanage fcontext -a -t httpd_sys_content_t '/srv/practica-web(/.*)?' && restorecon -RF /srv/practica-web && getenforce && ls -Zd /srv/practica-web /srv/practica-web/index.html && matchpathcon /srv/practica-web/index.html; printf \"\\n__CHECK_7__=%s\\n\" \"$?\"\nlibsemanage.add_user: user sddm not in password file\n[  418.724650] SELinux:  Permission cmd in class io_uring not defined in policy.\n[  418.726250] SELinux:  Class user_namespace not defined in policy.\n[  418.726650] SELinux: the above unknown classes and permissions will be allowed\n[  418.736250] SELinux:  Converting 436 SID table entries...\n[  419.001050] SELinux:  policy capability network_peer_controls=1\n[  419.001650] SELinux:  policy capability open_perms=1\n[  419.002450] SELinux:  policy capability extended_socket_class=1\n[  419.003050] SELinux:  policy capability always_check_network=0\n[  419.003350] SELinux:  policy capability cgroup_seclabel=1\n[  419.003750] SELinux:  policy capability nnp_nosuid_transition=1\n[  419.006350] SELinux:  policy capability genfs_seclabel_symlinks=0\n[  419.006850] SELinux:  policy capability ioctl_skip_cloexec=0\nEnforcing\nsystem_u:object_r:httpd_sys_content_t:s0 /srv/practica-web\nsystem_u:object_r:httpd_sys_content_t:s0 /srv/practica-web/index.html\n/srv/practica-web/index.html\tsystem_u:object_r:httpd_sys_content_t:s0\n\n__CHECK_7__=0\n"
+    },
+    {
+      "name": "resolver-tuned",
+      "command": "tuned-adm profile virtual-guest && tuned-adm active && tuned-adm verify && sysctl vm.swappiness",
+      "seconds": 14.836,
+      "code": 0,
+      "output": "Current active profile: virtual-guest\nVerfication succeeded, current system settings match the preset profile.\nSee TuneD log file ('/var/log/tuned/tuned.log') for details.\nvm.swappiness = 30\n",
+      "transcript": "tuned-adm profile virtual-guest && tuned-adm active && tuned-adm verify && sysctl vm.swappiness; printf \"\\n__CHECK_8__=%s\\n\" \"$?\"\nCurrent active profile: virtual-guest\nVerfication succeeded, current system settings match the preset profile.\nSee TuneD log file ('/var/log/tuned/tuned.log') for details.\nvm.swappiness = 30\n\n__CHECK_8__=0\nV86TEST# "
+    },
+    {
+      "name": "permisos-incorrectos",
+      "command": "chmod 600 /root/practica.txt",
+      "seconds": 0.205,
+      "code": 0,
+      "output": "",
+      "transcript": "chmod 600 /root/practica.txt; printf \"\\n__CHECK_9__=%s\\n\" \"$?\"\n\n__CHECK_9__=0\nV86TEST# "
+    },
+    {
+      "name": "comprobar-no-repara",
+      "command": "test \"$(stat -c %a /root/practica.txt)\" = 600 && chmod 640 /root/practica.txt",
+      "seconds": 0.472,
+      "code": 0,
+      "output": "",
+      "transcript": "test \"$(stat -c %a /root/practica.txt)\" = 600 && chmod 640 /root/practica.txt; printf \"\\n__CHECK_10__=%s\\n\" \"$?\"\n\n__CHECK_10__=0\nV86TEST# "
+    },
+    {
+      "name": "editor-escribe-y-guarda-real",
+      "command": "test \"$(cat /root/edicion-curso)\" = EDITOR_REAL",
+      "seconds": 0.206,
+      "code": 0,
+      "output": "",
+      "transcript": "test \"$(cat /root/edicion-curso)\" = EDITOR_REAL; printf \"\\n__CHECK_11__=%s\\n\" \"$?\"\n\n__CHECK_11__=0\n"
+    }
+  ],
+  "errors": [],
+  "exerciseResults": [
+    {
+      "id": "archivo",
+      "result": "failed",
+      "text": "Todavía falta corregir lo indicado abajo.Pendiente: Archivo y contenidoPendiente: Propietario root:rootPendiente: Permisos 640"
+    },
+    {
+      "id": "usuarios",
+      "result": "failed",
+      "text": "Todavía falta corregir lo indicado abajo.Pendiente: Cuenta y shellPendiente: Grupo adicional equipoPendiente: Home propio"
+    },
+    {
+      "id": "sgid",
+      "result": "failed",
+      "text": "Todavía falta corregir lo indicado abajo.Pendiente: DirectorioPendiente: Propietario root:equipoPendiente: Permisos y SGID"
+    },
+    {
+      "id": "archivo-tar",
+      "result": "failed",
+      "text": "Todavía falta corregir lo indicado abajo.Pendiente: Archivo gzip válidoPendiente: Fichero incluidoPendiente: Contenido conservado"
+    },
+    {
+      "id": "dnf",
+      "result": "failed",
+      "text": "Todavía falta corregir lo indicado abajo.Pendiente: Versión RPM 2.0Pendiente: Dependencia instaladaPendiente: Contenido actualizado"
+    },
+    {
+      "id": "lvm",
+      "result": "failed",
+      "text": "Todavía falta corregir lo indicado abajo.Pendiente: PV en el disco de prácticasPendiente: LV de 256 MiB y ext4Pendiente: LV montado en /mnt/datosPendiente: Montaje configurado en fstab"
+    },
+    {
+      "id": "selinux",
+      "result": "failed",
+      "text": "Todavía falta corregir lo indicado abajo.Correcto: SELinux EnforcingPendiente: Fichero y contenidoPendiente: Etiquetas aplicadasPendiente: Regla persistente"
+    },
+    {
+      "id": "tuned",
+      "result": "failed",
+      "text": "Todavía falta corregir lo indicado abajo.Pendiente: Servicio y perfil virtual-guestPendiente: Ajustes verificadosPendiente: vm.swappiness aplicado"
+    },
+    {
+      "id": "archivo",
+      "result": "passed",
+      "text": "Ejercicio comprobado: todas las condiciones se cumplen.Correcto: Archivo y contenidoCorrecto: Propietario root:rootCorrecto: Permisos 640"
+    },
+    {
+      "id": "usuarios",
+      "result": "passed",
+      "text": "Ejercicio comprobado: todas las condiciones se cumplen.Correcto: Cuenta y shellCorrecto: Grupo adicional equipoCorrecto: Home propio"
+    },
+    {
+      "id": "sgid",
+      "result": "passed",
+      "text": "Ejercicio comprobado: todas las condiciones se cumplen.Correcto: DirectorioCorrecto: Propietario root:equipoCorrecto: Permisos y SGID"
+    },
+    {
+      "id": "archivo-tar",
+      "result": "passed",
+      "text": "Ejercicio comprobado: todas las condiciones se cumplen.Correcto: Archivo gzip válidoCorrecto: Fichero incluidoCorrecto: Contenido conservado"
+    },
+    {
+      "id": "dnf",
+      "result": "passed",
+      "text": "Ejercicio comprobado: todas las condiciones se cumplen.Correcto: Versión RPM 2.0Correcto: Dependencia instaladaCorrecto: Contenido actualizado"
+    },
+    {
+      "id": "lvm",
+      "result": "passed",
+      "text": "Ejercicio comprobado: todas las condiciones se cumplen.Correcto: PV en el disco de prácticasCorrecto: LV de 256 MiB y ext4Correcto: LV montado en /mnt/datosCorrecto: Montaje configurado en fstab"
+    },
+    {
+      "id": "selinux",
+      "result": "passed",
+      "text": "Ejercicio comprobado: todas las condiciones se cumplen.Correcto: SELinux EnforcingCorrecto: Fichero y contenidoCorrecto: Etiquetas aplicadasCorrecto: Regla persistente"
+    },
+    {
+      "id": "tuned",
+      "result": "passed",
+      "text": "Ejercicio comprobado: todas las condiciones se cumplen.Correcto: Servicio y perfil virtual-guestCorrecto: Ajustes verificadosCorrecto: vm.swappiness aplicado"
+    },
+    {
+      "id": "archivo",
+      "result": "failed",
+      "text": "Todavía falta corregir lo indicado abajo.Correcto: Archivo y contenidoCorrecto: Propietario root:rootPendiente: Permisos 640"
+    },
+    {
+      "id": "archivo",
+      "result": "passed",
+      "text": "Ejercicio comprobado: todas las condiciones se cumplen.Correcto: Archivo y contenidoCorrecto: Propietario root:rootCorrecto: Permisos 640"
+    }
+  ],
+  "quietCommands": true,
+  "websiteModified": false,
+  "fullRhcsaValidated": false,
+  "profile": "final",
+  "solutionWithoutStartingPassed": true,
+  "emptyMachineDoesNotPass": true,
+  "solutionDoesNotExecute": true,
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "positiveChecksPassed": true,
+  "wrongStateAndNoRepairPassed": true,
+  "editorNotInterruptedPassed": true,
+  "realEditorWritePassed": true,
+  "mobileNoOverflowPassed": true,
+  "collectionComplete": true,
+  "finalPage": {
+    "tail": "\\'' \"$result\"; fi'; printf '\\n__LAB_48baaad19f2c93295a68ad83_END=%s\\n' \"$?\"\r\n\u001b[?2004l\r__LAB_48baaad19f2c93295a68ad83_0=0\r\n__LAB_48baaad19f2c93295a68ad83_1=0\r\n__LAB_48baaad19f2c93295a68ad83_2=0\r\n__LAB_48baaad19f2c93295a68ad83_3=0\r\n\r\n__LAB_48baaad19f2c93295a68ad83_END=0\r\n\u001b[?2004hV86TEST# mkdir -p /srv/practica-web && printf 'Practica web\\n' > /srv/practica-web/index.html && semanage fcontext -a -t httpd_sys_content_t '/srv/practica-web(/.*)?' && restorecon -RF /srv/practica-web && getenforce && ls -Zd /srv/practica-web /srv/practica-web/index.html && matchpathcon /srv/practica-web/index.html; printf \"\\n__CHECK_7__=%s\\n\" \"$?\"\r\n\u001b[?2004l\rlibsemanage.add_user: user sddm not in password file\r\n[  418.724650] SELinux:  Permission cmd in class io_uring not defined in policy.\r\n[  418.726250] SELinux:  Class user_namespace not defined in policy.\r\n[  418.726650] SELinux: the above unknown classes and permissions will be allowed\r\n[  418.736250] SELinux:  Converting 436 SID table entries...\r\n[  419.001050] SELinux:  policy capability network_peer_controls=1\r\n[  419.001650] SELinux:  policy capability open_perms=1\r\n[  419.002450] SELinux:  policy capability extended_socket_class=1\r\n[  419.003050] SELinux:  policy capability always_check_network=0\r\n[  419.003350] SELinux:  policy capability cgroup_seclabel=1\r\n[  419.003750] SELinux:  policy capability nnp_nosuid_transition=1\r\n[  419.006350] SELinux:  policy capability genfs_seclabel_symlinks=0\r\n[  419.006850] SELinux:  policy capability ioctl_skip_cloexec=0\r\nEnforcing\r\nsystem_u:object_r:httpd_sys_content_t:s0 /srv/practica-web\r\nsystem_u:object_r:httpd_sys_content_t:s0 /srv/practica-web/index.html\r\n/srv/practica-web/index.html\tsystem_u:object_r:httpd_sys_content_t:s0\r\n\r\n__CHECK_7__=0\r\n\u001b[?2004hV86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(getenforce)\" = Enforcing'\\'' >/dev/null 2>&1; then printf '\\''__LAB_3c2d08f86b437d94526b470d_0=0\\n'\\''; else result=$?; printf '\\''__LAB_3c2d08f86b437d94526b470d_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test -f /srv/practica-web/index.html && test \"$(cat /srv/practica-web/index.html)\" = \"Practica web\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_3c2d08f86b437d94526b470d_1=0\\n'\\''; else result=$?; printf '\\''__LAB_3c2d08f86b437d94526b470d_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(stat -c %C /srv/practica-web | cut -d: -f3)\" = httpd_sys_content_t && test \"$(stat -c %C /srv/practica-web/index.html | cut -d: -f3)\" = httpd_sys_content_t'\\'' >/dev/null 2>&1; then printf '\\''__LAB_3c2d08f86b437d94526b470d_2=0\\n'\\''; else result=$?; printf '\\''__LAB_3c2d08f86b437d94526b470d_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(matchpathcon -n /srv/practica-web/index.html | cut -d: -f3)\" = httpd_sys_content_t'\\'' >/dev/null 2>&1; then printf '\\''__LAB_3c2d08f86b437d94526b470d_3=0\\n'\\''; else result=$?; printf '\\''__LAB_3c2d08f86b437d94526b470d_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_3c2d08f86b437d94526b470d_END=%s\\n' \"$?\"\r\n\u001b[?2004l\r__LAB_3c2d08f86b437d94526b470d_0=0\r\n__LAB_3c2d08f86b437d94526b470d_1=0\r\n__LAB_3c2d08f86b437d94526b470d_2=0\r\n__LAB_3c2d08f86b437d94526b470d_3=0\r\n\r\n__LAB_3c2d08f86b437d94526b470d_END=0\r\n\u001b[?2004hV86TEST# tuned-adm profile virtual-guest && tuned-adm active && tuned-adm verify && sysctl vm.swappiness; printf \"\\n__CHECK_8__=%s\\n\" \"$?\"\r\n\u001b[?2004l\rCurrent active profile: virtual-guest\r\nVerfication succeeded, current system settings match the preset profile.\r\nSee TuneD log file ('/var/log/tuned/tuned.log') for details.\r\nvm.swappiness = 30\r\n\r\n__CHECK_8__=0\r\n\u001b[?2004hV86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet tuned && test \"$(cat /etc/tuned/active_profile)\" = virtual-guest'\\'' >/dev/null 2>&1; then printf '\\''__LAB_bea36acfe994e89f0a160a0b_0=0\\n'\\''; else result=$?; printf '\\''__LAB_bea36acfe994e89f0a160a0b_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''tuned-adm verify >/dev/null 2>&1'\\'' >/dev/null 2>&1; then printf '\\''__LAB_bea36acfe994e89f0a160a0b_1=0\\n'\\''; else result=$?; printf '\\''__LAB_bea36acfe994e89f0a160a0b_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(sysctl -n vm.swappiness)\" = 30'\\'' >/dev/null 2>&1; then printf '\\''__LAB_bea36acfe994e89f0a160a0b_2=0\\n'\\''; else result=$?; printf '\\''__LAB_bea36acfe994e89f0a160a0b_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_bea36acfe994e89f0a160a0b_END=%s\\n' \"$?\"\r\n\u001b[?2004l\r__LAB_bea36acfe994e89f0a160a0b_0=0\r\n__LAB_bea36acfe994e89f0a160a0b_1=0\r\n__LAB_bea36acfe994e89f0a160a0b_2=0\r\n\r\n__LAB_bea36acfe994e89f0a160a0b_END=0\r\n\u001b[?2004hV86TEST# chmod 600 /root/practica.txt; printf \"\\n__CHECK_9__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r\r\n__CHECK_9__=0\r\n\u001b[?2004hV86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test -f /root/practica.txt && test \"$(cat /root/practica.txt)\" = \"Linux real\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_3a1502efa8d92df2482486c7_0=0\\n'\\''; else result=$?; printf '\\''__LAB_3a1502efa8d92df2482486c7_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(stat -c %u:%g /root/practica.txt)\" = 0:0'\\'' >/dev/null 2>&1; then printf '\\''__LAB_3a1502efa8d92df2482486c7_1=0\\n'\\''; else result=$?; printf '\\''__LAB_3a1502efa8d92df2482486c7_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(stat -c %a /root/practica.txt)\" = 640'\\'' >/dev/null 2>&1; then printf '\\''__LAB_3a1502efa8d92df2482486c7_2=0\\n'\\''; else result=$?; printf '\\''__LAB_3a1502efa8d92df2482486c7_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_3a1502efa8d92df2482486c7_END=%s\\n' \"$?\"\r\n\u001b[?2004l\r__LAB_3a1502efa8d92df2482486c7_0=0\r\n__LAB_3a1502efa8d92df2482486c7_1=0\r\n__LAB_3a1502efa8d92df2482486c7_2=1\r\n\r\n__LAB_3a1502efa8d92df2482486c7_END=0\r\n\u001b[?2004hV86TEST# test \"$(stat -c %a /root/practica.txt)\" = 600 && chmod 640 /root/practica.txt; printf \"\\n__CHECK_10__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r\r\n__CHECK_10__=0\r\n\u001b[?2004hV86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test -f /root/practica.txt && test \"$(cat /root/practica.txt)\" = \"Linux real\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_717dec9c1dc02162e2086b63_0=0\\n'\\''; else result=$?; printf '\\''__LAB_717dec9c1dc02162e2086b63_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(stat -c %u:%g /root/practica.txt)\" = 0:0'\\'' >/dev/null 2>&1; then printf '\\''__LAB_717dec9c1dc02162e2086b63_1=0\\n'\\''; else result=$?; printf '\\''__LAB_717dec9c1dc02162e2086b63_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(stat -c %a /root/practica.txt)\" = 640'\\'' >/dev/null 2>&1; then printf '\\''__LAB_717dec9c1dc02162e2086b63_2=0\\n'\\''; else result=$?; printf '\\''__LAB_717dec9c1dc02162e2086b63_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_717dec9c1dc02162e2086b63_END=%s\\n' \"$?\"\r\n\u001b[?2004l\r__LAB_717dec9c1dc02162e2086b63_0=0\r\n__LAB_717dec9c1dc02162e2086b63_1=0\r\n__LAB_717dec9c1dc02162e2086b63_2=0\r\n\r\n__LAB_717dec9c1dc02162e2086b63_END=0\r\n\u001b[?2004hV86TEST# vi /root/practica.txt\r\n\u001b[?2004l\r^[:q!\r\n\u001b[?1h\u001b=\u001b[1;24r\u001b[m\u001b[m\u001b[0m\u001b[H\u001b[J\u001b[24;1H\"~/practica.txt\" 1 line, 11 bytes\u001b[1;1HLinux real\r\n\u001b[1m~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\u001b[1;1H\u0007\u001b[0m\u001b[24;1H\u001b[K\u001b[24;1H:q!\r\u001b[?1l\u001b>\u001b[24;1H\u001b[K\u001b[24;1H\u001b[?2004hV86TEST# vi /root/edicion-curso\r\n\u001b[?2004l\r\u001b[?1h\u001b=\u001b[1;24r\u001b[m\u001b[m\u001b[0m\u001b[H\u001b[J\u001b[24;1H\"~/edicion-curso\" [New File]\u001b[2;1H\u001b[1m~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\r\n~\u001b[1;1H\u001b[0mEDITOR_REAL\u001b[2;1H\u001b[K\u001b[2;1H\u001b[24;1H\u001b[K\u001b[24;1H:wq\r\"edicion-curso\" [New File] 2 lines, 13 bytes written\r\u001b[?1l\u001b>\r\r\n\u001b[?2004hV86TEST# test \"$(cat /root/edicion-curso)\" = EDITOR_REAL; printf \"\\n__CHECK_11__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r\r\n__CHECK_11__=0\r\n\u001b[?2004hV86TEST# "
+  }
+}

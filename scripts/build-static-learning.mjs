@@ -32,7 +32,7 @@ const config = {
   },
   kubernetes: {
     folder: 'kubernetes-cka', label: 'Kubernetes / CKA', unit: 'Clase', exam: 'CKA',
-    files: []
+    files: ['kubernetes/00/00.html']
   }
 };
 
@@ -44,6 +44,7 @@ const slugify = (value) => String(value)
 const lessonSlug = (key, module, index) => {
   const cleaned = module.title.replace(/^Clase\s+\d+\s*[—-]\s*/i, '').replace(/^Tema\s+\d+\s*[—-]\s*/i, '');
   if (key === 'docker') return `clase-${index + 1}-${slugify(cleaned)}`;
+  if (key === 'kubernetes') return `clase-${module.n}-${slugify(cleaned)}`;
   if (key === 'lpic1') return `tema-${module.n}-${slugify(cleaned)}`;
   return `tema-${index + 1}-${slugify(cleaned)}`;
 };
@@ -82,7 +83,7 @@ const head = ({ title, description, canonical, jsonLd, type = 'article', robots 
 <meta property="og:image" content="${site}/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="${escapeHtml(title)}"><meta name="twitter:description" content="${escapeHtml(description)}"><meta name="twitter:image" content="${site}/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=${shellFingerprint}"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=${visualFingerprint}">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=${shellFingerprint}"><link rel="stylesheet" href="/learning-pages.css?v=${canonical.includes('/kubernetes-cka/') ? '20261008-clase00' : '20260826-phase3'}"><link rel="stylesheet" href="/visual-system.css?v=${visualFingerprint}">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">${escapeJson(jsonLd)}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
@@ -144,6 +145,8 @@ for (const [key, cfg] of Object.entries(config)) {
     if (!active[index]) continue;
     const module = data.modules[index];
     const lessonRoute = moduleRoutes[index];
+    const lessonNumber = key === 'kubernetes' ? module.n : index + 1;
+    const progressClass = key === 'kubernetes' ? 'lesson-progress-cka00' : 'u-inline-' + createHash('sha256').update(`width:${(index + 1) / data.modules.length * 100}%;`).digest('hex').slice(0, 10);
     sitemapUrls.push(lessonRoute);
     const sourcePath = cfg.files[index].replace(/^([^/]+)/, '_$1').replace(/\.html$/, '.inc');
     const fragment = (await fs.readFile(path.join(root, sourcePath), 'utf8'))
@@ -169,8 +172,8 @@ for (const [key, cfg] of Object.entries(config)) {
     const prev = index > 0 && moduleRoutes[index - 1] ? `<a class="lesson-nav-card" href="${moduleRoutes[index - 1]}"><small>← ANTERIOR</small><strong>${escapeHtml(data.modules[index - 1].title)}</strong></a>` : '<span></span>';
     const next = index < data.modules.length - 1 && moduleRoutes[index + 1] ? `<a class="lesson-nav-card next" href="${moduleRoutes[index + 1]}"><small>SIGUIENTE →</small><strong>${escapeHtml(data.modules[index + 1].title)}</strong></a>` : '<span></span>';
     const lessonHtml = `${head({ title, description, canonical:`${site}${lessonRoute}`, jsonLd:lessonLd })}<body><div class="lesson-section-meter" aria-hidden="true"></div><div class="site-page-shell site-app-shell">${header()}
-      <main id="main-content" class="learning-main"><nav class="learning-crumbs" aria-label="Migas de pan"><a href="/">Inicio</a><span>›</span><a href="/cursos.html">Cursos</a><span>›</span><a href="${courseRoute}">${escapeHtml(data.title)}</a><span>›</span><span aria-current="page">${escapeHtml(cfg.unit)} ${index + 1}</span></nav>
-      <div class="learning-shell"><div class="lesson-topline"><span class="lesson-counter">${escapeHtml(cfg.unit)} ${index + 1} / ${data.modules.length}</span><span class="lesson-progress" aria-label="Progreso del curso: ${Math.round((index + 1) / data.modules.length * 100)}%"><span style="width:${(index + 1) / data.modules.length * 100}%"></span></span></div>
+      <main id="main-content" class="learning-main"><nav class="learning-crumbs" aria-label="Migas de pan"><a href="/">Inicio</a><span>›</span><a href="/cursos.html">Cursos</a><span>›</span><a href="${courseRoute}">${escapeHtml(data.title)}</a><span>›</span><span aria-current="page">${escapeHtml(cfg.unit)} ${lessonNumber}</span></nav>
+      <div class="learning-shell"><div class="lesson-topline"><span class="lesson-counter">${escapeHtml(cfg.unit)} ${lessonNumber} / ${key === 'kubernetes' ? data.modules.at(-1).n : data.modules.length}</span><span class="lesson-progress" aria-label="Progreso del curso: ${Math.round((index + 1) / data.modules.length * 100)}%"><span class="${progressClass}"></span></span></div>
       ${fragment}
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones">${prev}<button class="lesson-read" type="button" data-lesson-read="${key}:${index}">Marcar como leída</button>${next}</nav></div></main>${footer}</div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>`;
     await fs.writeFile(path.join(lessonDir, 'index.html'), lessonHtml.replace(/[ \t]+$/gm, ''), 'utf8');
