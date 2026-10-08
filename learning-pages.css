@@ -126,3 +126,4 @@ a.module-row:hover{background:var(--bg);box-shadow:inset 6px 0 0 var(--accent)}
 .youtube-facade::after{content:'▶';display:inline-grid;place-items:center;margin-inline-start:.75rem;width:2.5rem;height:2.5rem;border-radius:50%;background:#c00;color:#fff}
 .youtube-facade:focus-visible{outline:3px solid currentColor;outline-offset:4px}
 .youtube-embed{display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:1rem;background:#000}
+.lesson-progress .lesson-progress-cka00{width:2.857142857142857%}

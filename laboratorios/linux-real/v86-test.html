@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Laboratorio Linux · S2KTUX</title><link rel="stylesheet" href="vendor/xterm.css"><link rel="stylesheet" href="prototipo.css"></head>
+<body><main><p class="eyebrow">S2KTUX · LABORATORIO DE PRÁCTICAS</p><h1>Laboratorio Linux</h1>
+<p class="lead">Un Linux real en tu navegador, con root para practicar el curso. Si lo rompes, Reset devuelve la máquina a su base limpia.</p>
+<p>Pulsa «Iniciar laboratorio» y trabaja en la terminal. Guarda antes de cerrar si quieres conservar los cambios: no se guarda automáticamente ni se comparte entre dispositivos.</p>
+<details><summary>Cómo funciona y diferencias con Red Hat</summary>
+<p>Es Debian con herramientas auténticas: systemd, SELinux Enforcing, LVM, DNF, Podman, tuned y Flatpak. Algunas rutas y servicios difieren de RHEL. DNF usa RPM locales de prácticas y no actualiza Debian; los contenedores utilizan imágenes locales. No hay respuestas simuladas ni un servidor que ejecute tus comandos.</p>
+<p>La entrada rápida recupera una máquina ya arrancada; reiniciar pasa por GRUB y el kernel reales. La recuperación de contraseña puede tardar varios minutos. Se recomienda un ordenador con Chrome o Edge actualizado; el tiempo depende de tu equipo y conexión.</p>
+<p>El guardado pertenece a este navegador y el navegador puede borrarlo si necesita espacio. Root administra únicamente los discos virtuales: no se montan carpetas de tu ordenador.</p>
+<p><a href="GUIA_CURSO_LABORATORIO.html" target="_blank" rel="noopener">Cómo seguir el curso en este laboratorio</a> · <a href="PRACTICAS_V86.html" target="_blank" rel="noopener">Prácticas</a> · <a href="ESTADO_VALIDACION.md" target="_blank" rel="noopener">Resultados de las pruebas</a> · <a href="?boot=grub&amp;disk=final&amp;estado=frio">Arranque completo sin estado preparado</a>.</p>
+</details>
+<div class="controls"><button type="button" id="start" disabled>Iniciar laboratorio</button><button type="button" id="save" disabled>Guardar sesión</button><button type="button" id="reset">Reset</button><span id="status" role="status" aria-live="polite">Cargando interfaz…</span></div>
+<p id="session-status">El guardado es local a este navegador y a esta dirección.</p>
+<p><span id="node-name">Máquina 1</span> · <a id="other-node" href="?boot=grub&amp;disk=final&amp;estado=grub-rhcsa-final&amp;node=2" target="_blank" rel="noopener">Abrir la otra máquina</a>. Cada una tiene su propio guardado y una MAC distinta. Configura sus IP para comunicar las pestañas por la red privada. No hay DHCP ni acceso general a Internet.</p>
+<section class="exercise-panel" id="exercise-panel" aria-label="Prácticas de Linux real">
+<h2>Tu laboratorio</h2>
+<div class="exercise-actions" role="group" aria-label="Modo del laboratorio">
+<button type="button" data-lab-mode="practice" aria-pressed="true">Practicar Linux</button>
+<button type="button" data-lab-mode="exam" aria-pressed="false">Practicar modo examen</button>
+</div>
+<p data-mode-note></p>
+<p>Cambiar de modo no borra la máquina ni ejecuta comandos. Usa Reset si quieres empezar con una máquina limpia; perderás los cambios y el guardado de esta máquina.</p>
+<p data-lab-aid><a href="CHULETA_LINUX_REAL.html" target="_blank" rel="noopener">Chuleta de comandos del laboratorio real</a>.</p>
+<button type="button" data-practice-help aria-expanded="false">Abrir prácticas guiadas</button>
+<div class="exercise-actions">
+<button type="button" data-exam-finish hidden>Terminar intento</button>
+<button type="button" data-exam-restart hidden>Nuevo intento (sin borrar la máquina)</button>
+</div>
+<p>Ver solución no ejecuta comandos. Para comprobar, vuelve al prompt del usuario indicado en la práctica y deja la línea vacía.</p>
+<div data-exercise-card hidden>
+<label for="exercise-select">Elige un ejercicio</label>
+<select id="exercise-select"></select>
+<h3 data-exercise-title></h3>
+<p data-exercise-goal></p>
+<p class="warning" data-exercise-note hidden></p>
+<div class="exercise-actions">
+<button type="button" data-exercise-check disabled>Comprobar ejercicio</button>
+<button type="button" data-exercise-solution aria-expanded="false" aria-controls="exercise-solution">Ver solución</button>
+</div>
+<div data-exercise-feedback role="status" aria-live="polite"></div>
+<div id="exercise-solution" data-exercise-solution-body hidden>
+<p data-exercise-explanation></p>
+<pre><code></code></pre>
+<p>Es una forma de resolverlo. Ver la solución no ejecuta comandos ni marca la práctica como completada.</p>
+</div>
+</div>
+</section>
+<section class="console" aria-label="Terminal del laboratorio"><div id="terminal"></div></section><p id="result">Versión de prueba independiente. La terminal actual de la web no cambia.</p><p id="downloads"></p>
+<p><a href="licencias/LEEME.html" target="_blank" rel="noopener">Procedencia, avisos y fuentes del software</a>.</p>
+</main><script src="assets/v86-test/libv86.js"></script><script type="module" src="v86-test.mjs"></script></body></html>

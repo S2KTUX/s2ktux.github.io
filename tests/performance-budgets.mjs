@@ -45,7 +45,7 @@ assert.match(bootstrap, /if \(!requested \|\| !allowed\.has\(requested\)\)/, 'El
 assert.ok(bootstrap.search(/import\('\.\/terminal-xterm-renderer\.js(?:\?[^']+)?'\)/) > bootstrap.indexOf('startTerminal(engine, runtime)'), 'xterm solo debe cargarse después de elegir e iniciar una máquina');
 
 const routes = JSON.parse(text('learning-routes.js').replace(/^window\.S2KTUX_LEARNING_ROUTES=/, '').replace(/;\s*$/, ''));
-assert.equal(Object.keys(routes.lessons).length, 24, 'Deben existir 24 lecciones estáticas activas');
+assert.equal(Object.keys(routes.lessons).length, 25, 'Deben existir 25 lecciones estáticas activas, incluida Kubernetes 00');
 for (const route of Object.values(routes.lessons)) {
   const html = text(path.join(route.replace(/^\//, ''), 'index.html'));
   assert.match(html, /<link rel="canonical" href="https:\/\/s2ktux\.github\.io\/cursos\//);

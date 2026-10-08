@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-08T17:32:18.017Z",
+  "profile": "final",
+  "cases": [
+    {
+      "name": "practica-archivo-real",
+      "command": "printf \"Linux real\\n\" > /root/practica.txt && chmod 640 /root/practica.txt",
+      "seconds": 0.206,
+      "code": 0,
+      "output": "",
+      "transcript": "printf \"Linux real\\n\" > /root/practica.txt && chmod 640 /root/practica.txt; printf \"\\n__CHECK_0__=%s\\n\" \"$?\"\n\n__CHECK_0__=0\nV86TEST# "
+    },
+    {
+      "name": "resolver-examen-directorio",
+      "command": "groupadd olimpo && mkdir -p /datos/olimpo && chown root:olimpo /datos/olimpo && chmod 2770 /datos/olimpo",
+      "seconds": 9.431,
+      "code": 0,
+      "output": "",
+      "transcript": "groupadd olimpo && mkdir -p /datos/olimpo && chown root:olimpo /datos/olimpo && chmod 2770 /datos/olimpo; printf \"\\n__CHECK_1__=%s\\n\" \"$?\"\n\n__CHECK_1__=0\nV86TEST# "
+    },
+    {
+      "name": "romper-permisos-examen",
+      "command": "chmod g-s /datos/olimpo",
+      "seconds": 0.463,
+      "code": 0,
+      "output": "",
+      "transcript": "chmod g-s /datos/olimpo; printf \"\\n__CHECK_2__=%s\\n\" \"$?\"\n\n__CHECK_2__=0\nV86TEST# "
+    },
+    {
+      "name": "no-repara-al-comprobar",
+      "command": "test \"$(stat -c %a /datos/olimpo)\" = 770",
+      "seconds": 0.346,
+      "code": 0,
+      "output": "",
+      "transcript": "test \"$(stat -c %a /datos/olimpo)\" = 770; printf \"\\n__CHECK_3__=%s\\n\" \"$?\"\n\n__CHECK_3__=0\nV86TEST# "
+    },
+    {
+      "name": "modo-no-reinicia",
+      "command": "test -f /root/practica.txt && test -d /datos/olimpo",
+      "seconds": 0.095,
+      "code": 0,
+      "output": "",
+      "transcript": "test -f /root/practica.txt && test -d /datos/olimpo; printf \"\\n__CHECK_4__=%s\\n\" \"$?\"\n\n__CHECK_4__=0\nV86TEST# "
+    }
+  ],
+  "errors": [],
+  "quietCommands": true,
+  "websiteModified": false,
+  "fullRhcsaValidated": false,
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "practiceRealCheck": true,
+  "examDoesNotSendCommands": true,
+  "examRealCheck": true,
+  "checkDoesNotRepair": true,
+  "modeDoesNotReset": true,
+  "collectionComplete": true
+}

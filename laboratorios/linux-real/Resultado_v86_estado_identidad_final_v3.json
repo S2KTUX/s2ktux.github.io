@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-08T17:28:16.895Z",
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "cases": [
+    {
+      "kind": "missing",
+      "rejected": true,
+      "emulatorNotStarted": true,
+      "status": "Laboratorio detenido: El estado preparado pertenece a otra versión de la fábrica."
+    },
+    {
+      "kind": "different",
+      "rejected": true,
+      "emulatorNotStarted": true,
+      "status": "Laboratorio detenido: El estado preparado pertenece a otra versión de la fábrica."
+    }
+  ],
+  "websiteModified": false,
+  "collectionComplete": true
+}

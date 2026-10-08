@@ -60,7 +60,7 @@ const sources=[
 ];
 const sitemap=await read('sitemap.xml');
 const urls=[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m=>m[1]);
-assert.equal(urls.length,34);
+assert.equal(urls.length,36);
 assert.equal(new Set(urls).size,urls.length);
 assert.doesNotMatch(sitemap,/changefreq|priority/);
 for(const url of urls){

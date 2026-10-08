@@ -1,0 +1,93 @@
+{
+  "file": "estado-grub-rhcsa-final.bin.gz",
+  "bytes": 467552912,
+  "packedBytes": 133231657,
+  "sha256": "62a42add604012be7295b73a7c3a4a5aa4b3218690e2065f3ba45b7415a47349",
+  "source": "Resultado_v86_base_final_consolidada.json",
+  "motorQualificationOnly": true,
+  "fullRhcsaValidated": false,
+  "diskProfile": "grub-rhcsa-final",
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "parts": [
+    {
+      "file": "estados/grub-rhcsa-final-000.gzpart",
+      "bytes": 8388608,
+      "sha256": "eb2a126252c328be1d724262b12a26fc4f8ced130b8134f6f606e35ef8b901d1"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-001.gzpart",
+      "bytes": 8388608,
+      "sha256": "6aef19f519f0b4023cc7870217d2354ed796b5a6b1a7df5756910f21a0998d05"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-002.gzpart",
+      "bytes": 8388608,
+      "sha256": "2de5a3448b9abb184ca0aedb37d9eb227ad13d9d418dde1d2fe4c7d1a48a832a"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-003.gzpart",
+      "bytes": 8388608,
+      "sha256": "7cfc2f424197aede43e399888b5d125285ed73ce856d34a9e06174351b064339"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-004.gzpart",
+      "bytes": 8388608,
+      "sha256": "5af1ad0d162a4f0390171aa91b45f13ad68b8821b436a20bb8a092021bf2b97f"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-005.gzpart",
+      "bytes": 8388608,
+      "sha256": "cf9e03d083f848b1435ba187ea84730d4a01acd6b1603192b56dc9a9900ba939"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-006.gzpart",
+      "bytes": 8388608,
+      "sha256": "a314ec5a10e10cdf98aeeef87631eae48d080b101f60d146c42eed0c77716e9c"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-007.gzpart",
+      "bytes": 8388608,
+      "sha256": "458f5b1893af229934bb25b50b3ace196e266730d7042b6ac5b4a8748501ae50"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-008.gzpart",
+      "bytes": 8388608,
+      "sha256": "9a09b37c5b933992cfc6f728b961ba834247d32298017e815a444ca165fb8a1b"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-009.gzpart",
+      "bytes": 8388608,
+      "sha256": "01f9c030109422419dfebc30092abf91b4158d2f28bbbe19245929afb8a60505"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-010.gzpart",
+      "bytes": 8388608,
+      "sha256": "b1933a1c5ac1df02918d7f0b17711f7961f7ed7b06a88def1f613c9104b76e12"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-011.gzpart",
+      "bytes": 8388608,
+      "sha256": "950d52126a003c12ebbdeb0aa9ad739e165ae14094d60a47618c554e29258e66"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-012.gzpart",
+      "bytes": 8388608,
+      "sha256": "c1f40def6b02f6d624bd820a46c2a9250cb19f2e03a3ce3b70124645e3083835"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-013.gzpart",
+      "bytes": 8388608,
+      "sha256": "a514aa51835e88b6944d6e0a8d2970b42f223392a60dd154964f528f4a718293"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-014.gzpart",
+      "bytes": 8388608,
+      "sha256": "01d94d865b06344db142c007de0b6e194edba25df414c48a4f27594f86f5d6fd"
+    },
+    {
+      "file": "estados/grub-rhcsa-final-015.gzpart",
+      "bytes": 7402537,
+      "sha256": "bfa65fe4a0e6928d72c82813f0d517aa91a93a4d8ee4bc5c7dad0e59555f1041"
+    }
+  ]
+}

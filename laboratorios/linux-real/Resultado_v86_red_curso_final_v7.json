@@ -1,0 +1,840 @@
+{
+  "date": "2026-10-08T18:00:12.620Z",
+  "cases": [
+    {
+      "name": "perfil-inicial-manual-0",
+      "command": "test \"$(nmcli -g ipv4.method con show eth0)\" = disabled && test \"$(nmcli -g ipv6.method con show eth0)\" = disabled && systemctl is-active --quiet NetworkManager && ! systemctl is-enabled --quiet podman-restart.service && test \"$(getenforce)\" = Enforcing",
+      "seconds": 6.38,
+      "code": 0,
+      "output": "",
+      "transcript": "test \"$(nmcli -g ipv4.method con show eth0)\" = disabled && test \"$(nmcli -g ipv6.method con show eth0)\" = disabled && systemctl is-active --quiet NetworkManager && ! systemctl is-enabled --quiet podman-restart.service && test \"$(getenforce)\" = Enforcing; printf \"\\n__CHECK_0__=%s\\n\" \"$?\"\n\n__CHECK_0__=0\n",
+      "guest": 0
+    },
+    {
+      "name": "perfil-inicial-manual-1",
+      "command": "test \"$(nmcli -g ipv4.method con show eth0)\" = disabled && test \"$(nmcli -g ipv6.method con show eth0)\" = disabled && systemctl is-active --quiet NetworkManager && ! systemctl is-enabled --quiet podman-restart.service && test \"$(getenforce)\" = Enforcing",
+      "seconds": 7.339,
+      "code": 0,
+      "output": "",
+      "transcript": "test \"$(nmcli -g ipv4.method con show eth0)\" = disabled && test \"$(nmcli -g ipv6.method con show eth0)\" = disabled && systemctl is-active --quiet NetworkManager && ! systemctl is-enabled --quiet podman-restart.service && test \"$(getenforce)\" = Enforcing; printf \"\\n__CHECK_1__=%s\\n\" \"$?\"\n\n__CHECK_1__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "sim-02-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(nmcli -g ipv4.addresses con show examen)\" = 10.42.0.20/24 && test \"$(nmcli -g ipv4.dns con show examen)\" = 10.42.0.11 && test \"$(nmcli -g connection.autoconnect con show examen)\" = yes'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:20'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /etc/hostname)\" = nodo1.lab.local && test \"$(hostname)\" = nodo1.lab.local'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 3.988,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=1\n__LAB_ba123456ba123456ba123456_1=1\n__LAB_ba123456ba123456ba123456_2=1\n__LAB_ba123456ba123456ba123456_3=1\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(nmcli -g ipv4.addresses con show examen)\" = 10.42.0.20/24 && test \"$(nmcli -g ipv4.dns con show examen)\" = 10.42.0.11 && test \"$(nmcli -g connection.autoconnect con show examen)\" = yes'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:20'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /etc/hostname)\" = nodo1.lab.local && test \"$(hostname)\" = nodo1.lab.local'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_2__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=1\n__LAB_ba123456ba123456ba123456_1=1\n__LAB_ba123456ba123456ba123456_2=1\n__LAB_ba123456ba123456ba123456_3=1\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_2__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "sim-02-resolver",
+      "command": "nmcli con add type ethernet ifname eth0 con-name examen ipv4.method manual ipv4.addresses 10.42.0.20/24 ipv4.dns 10.42.0.11 ethernet.cloned-mac-address 02:00:00:42:00:20 connection.autoconnect yes && nmcli con up examen && hostnamectl set-hostname nodo1.lab.local && printf \"\\n127.0.1.1 nodo1.lab.local nodo1\\n\" >> /etc/hosts && ip -4 addr show eth0 && nmcli con show examen && hostnamectl",
+      "seconds": 32.231,
+      "code": 0,
+      "output": "Connection 'examen' (f195cad5-3845-44aa-8e6a-80f2ce0a441a) successfully added.\nConnection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3)\n2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000\n    altname enp0s5\n    inet 10.42.0.20/24 brd 10.42.0.255 scope global noprefixroute eth0\n       valid_lft forever preferred_lft forever\nconnection.id:                          examen\nconnection.uuid:                        f195cad5-3845-44aa-8e6a-80f2ce0a441a\nconnection.stable-id:                   --\nconnection.type:                        802-3-ethernet\nconnection.interface-name:              eth0\nconnection.autoconnect:                 yes\nconnection.autoconnect-priority:        0\nconnection.autoconnect-retries:         -1 (default)\nconnection.multi-connect:               0 (default)\nconnection.auth-retries:                -1\nconnection.timestamp:                   1791478580\nconnection.read-only:                   no\nconnection.permissions:                 --\nconnection.zone:                        --\nconnection.master:                      --\nconnection.slave-type:                  --\nconnection.autoconnect-slaves:          -1 (default)\nconnection.secondaries:                 --\nconnection.gateway-ping-timeout:        0\nconnection.metered:                     unknown\nconnection.lldp:                        default\nconnection.mdns:                        -1 (default)\nconnection.llmnr:                       -1 (default)\nconnection.dns-over-tls:                -1 (default)\nconnection.mptcp-flags:                 0x0 (default)\nconnection.wait-device-timeout:         -1\nconnection.wait-activation-delay:       -1\n802-3-ethernet.port:                    --\n802-3-ethernet.speed:                   0\n802-3-ethernet.duplex:                  --\n802-3-ethernet.auto-negotiate:          no\n802-3-ethernet.mac-address:             --\n802-3-ethernet.cloned-mac-address:      02:00:00:42:00:20\n802-3-ethernet.generate-mac-address-mask:--\n802-3-ethernet.mac-address-blacklist:   --\n802-3-ethernet.mtu:                     auto\n802-3-ethernet.s390-subchannels:        --\n802-3-ethernet.s390-nettype:            --\n802-3-ethernet.s390-options:            --\n802-3-ethernet.wake-on-lan:             default\n802-3-ethernet.wake-on-lan-password:    --\n802-3-ethernet.accept-all-mac-addresses:-1 (default)\nipv4.method:                            manual\nipv4.dns:                               10.42.0.11\nipv4.dns-search:                        --\nipv4.dns-options:                       --\nipv4.dns-priority:                      0\nipv4.addresses:                         10.42.0.20/24\nipv4.gateway:                           --\nipv4.routes:                            --\nipv4.route-metric:                      -1\nipv4.route-table:                       0 (unspec)\nipv4.routing-rules:                     --\nipv4.replace-local-rule:                -1 (default)\nipv4.ignore-auto-routes:                no\nipv4.ignore-auto-dns:                   no\nipv4.dhcp-client-id:                    --\nipv4.dhcp-iaid:                         --\nipv4.dhcp-timeout:                      0 (default)\nipv4.dhcp-send-hostname:                yes\nipv4.dhcp-hostname:                     --\nipv4.dhcp-fqdn:                         --\nipv4.dhcp-hostname-flags:               0x0 (none)\nipv4.never-default:                     no\nipv4.may-fail:                          yes\nipv4.required-timeout:                  -1 (default)\nipv4.dad-timeout:                       -1 (default)\nipv4.dhcp-vendor-class-identifier:      --\nipv4.link-local:                        0 (default)\nipv4.dhcp-reject-servers:               --\nipv4.auto-route-ext-gw:                 -1 (default)\nipv6.method:                            auto\nipv6.dns:                               --\nipv6.dns-search:                        --\nipv6.dns-options:                       --\nipv6.dns-priority:                      0\nipv6.addresses:                         --\nipv6.gateway:                           --\nipv6.routes:                            --\nipv6.route-metric:                      -1\nipv6.route-table:                       0 (unspec)\nipv6.routing-rules:                     --\nipv6.replace-local-rule:                -1 (default)\nipv6.ignore-auto-routes:                no\nipv6.ignore-auto-dns:                   no\nipv6.never-default:                     no\nipv6.may-fail:                          yes\nipv6.required-timeout:                  -1 (default)\nipv6.ip6-privacy:                       -1 (unknown)\nipv6.addr-gen-mode:                     default\nipv6.ra-timeout:                        0 (default)\nipv6.mtu:                               auto\nipv6.dhcp-duid:                         --\nipv6.dhcp-iaid:                         --\nipv6.dhcp-timeout:                      0 (default)\nipv6.dhcp-send-hostname:                yes\nipv6.dhcp-hostname:                     --\nipv6.dhcp-hostname-flags:               0x0 (none)\nipv6.auto-route-ext-gw:                 -1 (default)\nipv6.token:                             --\nproxy.method:                           none\nproxy.browser-only:                     no\nproxy.pac-url:                          --\nproxy.pac-script:                       --\nGENERAL.NAME:                           examen\nGENERAL.UUID:                           f195cad5-3845-44aa-8e6a-80f2ce0a441a\nGENERAL.DEVICES:                        eth0\nGENERAL.IP-IFACE:                       eth0\nGENERAL.STATE:                          activated\nGENERAL.DEFAULT:                        no\nGENERAL.DEFAULT6:                       no\nGENERAL.SPEC-OBJECT:                    --\nGENERAL.VPN:                            no\nGENERAL.DBUS-PATH:                      /org/freedesktop/NetworkManager/ActiveConnection/3\nGENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/Settings/3\nGENERAL.ZONE:                           --\nGENERAL.MASTER-PATH:                    --\nIP4.ADDRESS[1]:                         10.42.0.20/24\nIP4.GATEWAY:                            --\nIP4.ROUTE[1]:                           dst = 10.42.0.0/24, nh = 0.0.0.0, mt = 100\nIP4.DNS[1]:                             10.42.0.11\nIP6.ADDRESS[1]:                         fe80::5b3:b601:e826:ff57/64\nIP6.GATEWAY:                            --\nIP6.ROUTE[1]:                           dst = fe80::/64, nh = ::, mt = 1024\n Static hostname: nodo1.lab.local\n       Icon name: computer-vm\n         Chassis: vm 🖴\n      Machine ID: 2f8e03412b444777a2d7ebdda9297583\n         Boot ID: 0bf9981fc30e4aa287a5db6d1ebe9891\n  Virtualization: vmware\nOperating System: \u001b]8;;https://www.debian.org/\u0007Debian GNU/Linux 12 (bookworm)\u001b]8;;\u0007  \n          Kernel: Linux 6.1.0-53-686\n    Architecture: x86\n",
+      "transcript": "nmcli con add type ethernet ifname eth0 con-name examen ipv4.method manual ipv4.addresses 10.42.0.20/24 ipv4.dns 10.42.0.11 ethernet.cloned-mac-address 02:00:00:42:00:20 connection.autoconnect yes && nmcli con up examen && hostnamectl set-hostname nodo1.lab.local && printf \"\\n127.0.1.1 nodo1.lab.local nodo1\\n\" >> /etc/hosts && ip -4 addr show eth0 && nmcli con show examen && hostnamectl; printf \"\\n__CHECK_3__=%s\\n\" \"$?\"\nConnection 'examen' (f195cad5-3845-44aa-8e6a-80f2ce0a441a) successfully added.\nConnection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3)\n2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000\n    altname enp0s5\n    inet 10.42.0.20/24 brd 10.42.0.255 scope global noprefixroute eth0\n       valid_lft forever preferred_lft forever\nconnection.id:                          examen\nconnection.uuid:                        f195cad5-3845-44aa-8e6a-80f2ce0a441a\nconnection.stable-id:                   --\nconnection.type:                        802-3-ethernet\nconnection.interface-name:              eth0\nconnection.autoconnect:                 yes\nconnection.autoconnect-priority:        0\nconnection.autoconnect-retries:         -1 (default)\nconnection.multi-connect:               0 (default)\nconnection.auth-retries:                -1\nconnection.timestamp:                   1791478580\nconnection.read-only:                   no\nconnection.permissions:                 --\nconnection.zone:                        --\nconnection.master:                      --\nconnection.slave-type:                  --\nconnection.autoconnect-slaves:          -1 (default)\nconnection.secondaries:                 --\nconnection.gateway-ping-timeout:        0\nconnection.metered:                     unknown\nconnection.lldp:                        default\nconnection.mdns:                        -1 (default)\nconnection.llmnr:                       -1 (default)\nconnection.dns-over-tls:                -1 (default)\nconnection.mptcp-flags:                 0x0 (default)\nconnection.wait-device-timeout:         -1\nconnection.wait-activation-delay:       -1\n802-3-ethernet.port:                    --\n802-3-ethernet.speed:                   0\n802-3-ethernet.duplex:                  --\n802-3-ethernet.auto-negotiate:          no\n802-3-ethernet.mac-address:             --\n802-3-ethernet.cloned-mac-address:      02:00:00:42:00:20\n802-3-ethernet.generate-mac-address-mask:--\n802-3-ethernet.mac-address-blacklist:   --\n802-3-ethernet.mtu:                     auto\n802-3-ethernet.s390-subchannels:        --\n802-3-ethernet.s390-nettype:            --\n802-3-ethernet.s390-options:            --\n802-3-ethernet.wake-on-lan:             default\n802-3-ethernet.wake-on-lan-password:    --\n802-3-ethernet.accept-all-mac-addresses:-1 (default)\nipv4.method:                            manual\nipv4.dns:                               10.42.0.11\nipv4.dns-search:                        --\nipv4.dns-options:                       --\nipv4.dns-priority:                      0\nipv4.addresses:                         10.42.0.20/24\nipv4.gateway:                           --\nipv4.routes:                            --\nipv4.route-metric:                      -1\nipv4.route-table:                       0 (unspec)\nipv4.routing-rules:                     --\nipv4.replace-local-rule:                -1 (default)\nipv4.ignore-auto-routes:                no\nipv4.ignore-auto-dns:                   no\nipv4.dhcp-client-id:                    --\nipv4.dhcp-iaid:                         --\nipv4.dhcp-timeout:                      0 (default)\nipv4.dhcp-send-hostname:                yes\nipv4.dhcp-hostname:                     --\nipv4.dhcp-fqdn:                         --\nipv4.dhcp-hostname-flags:               0x0 (none)\nipv4.never-default:                     no\nipv4.may-fail:                          yes\nipv4.required-timeout:                  -1 (default)\nipv4.dad-timeout:                       -1 (default)\nipv4.dhcp-vendor-class-identifier:      --\nipv4.link-local:                        0 (default)\nipv4.dhcp-reject-servers:               --\nipv4.auto-route-ext-gw:                 -1 (default)\nipv6.method:                            auto\nipv6.dns:                               --\nipv6.dns-search:                        --\nipv6.dns-options:                       --\nipv6.dns-priority:                      0\nipv6.addresses:                         --\nipv6.gateway:                           --\nipv6.routes:                            --\nipv6.route-metric:                      -1\nipv6.route-table:                       0 (unspec)\nipv6.routing-rules:                     --\nipv6.replace-local-rule:                -1 (default)\nipv6.ignore-auto-routes:                no\nipv6.ignore-auto-dns:                   no\nipv6.never-default:                     no\nipv6.may-fail:                          yes\nipv6.required-timeout:                  -1 (default)\nipv6.ip6-privacy:                       -1 (unknown)\nipv6.addr-gen-mode:                     default\nipv6.ra-timeout:                        0 (default)\nipv6.mtu:                               auto\nipv6.dhcp-duid:                         --\nipv6.dhcp-iaid:                         --\nipv6.dhcp-timeout:                      0 (default)\nipv6.dhcp-send-hostname:                yes\nipv6.dhcp-hostname:                     --\nipv6.dhcp-hostname-flags:               0x0 (none)\nipv6.auto-route-ext-gw:                 -1 (default)\nipv6.token:                             --\nproxy.method:                           none\nproxy.browser-only:                     no\nproxy.pac-url:                          --\nproxy.pac-script:                       --\nGENERAL.NAME:                           examen\nGENERAL.UUID:                           f195cad5-3845-44aa-8e6a-80f2ce0a441a\nGENERAL.DEVICES:                        eth0\nGENERAL.IP-IFACE:                       eth0\nGENERAL.STATE:                          activated\nGENERAL.DEFAULT:                        no\nGENERAL.DEFAULT6:                       no\nGENERAL.SPEC-OBJECT:                    --\nGENERAL.VPN:                            no\nGENERAL.DBUS-PATH:                      /org/freedesktop/NetworkManager/ActiveConnection/3\nGENERAL.CON-PATH:                       /org/freedesktop/NetworkManager/Settings/3\nGENERAL.ZONE:                           --\nGENERAL.MASTER-PATH:                    --\nIP4.ADDRESS[1]:                         10.42.0.20/24\nIP4.GATEWAY:                            --\nIP4.ROUTE[1]:                           dst = 10.42.0.0/24, nh = 0.0.0.0, mt = 100\nIP4.DNS[1]:                             10.42.0.11\nIP6.ADDRESS[1]:                         fe80::5b3:b601:e826:ff57/64\nIP6.GATEWAY:                            --\nIP6.ROUTE[1]:                           dst = fe80::/64, nh = ::, mt = 1024\n Static hostname: nodo1.lab.local\n       Icon name: computer-vm\n         Chassis: vm 🖴\n      Machine ID: 2f8e03412b444777a2d7ebdda9297583\n         Boot ID: 0bf9981fc30e4aa287a5db6d1ebe9891\n  Virtualization: vmware\nOperating System: \u001b]8;;https://www.debian.org/\u0007Debian GNU/Linux 12 (bookworm)\u001b]8;;\u0007  \n          Kernel: Linux 6.1.0-53-686\n    Architecture: x86\n\n__CHECK_3__=0\n",
+      "guest": 0
+    },
+    {
+      "name": "sim-02-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(nmcli -g ipv4.addresses con show examen)\" = 10.42.0.20/24 && test \"$(nmcli -g ipv4.dns con show examen)\" = 10.42.0.11 && test \"$(nmcli -g connection.autoconnect con show examen)\" = yes'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:20'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /etc/hostname)\" = nodo1.lab.local && test \"$(hostname)\" = nodo1.lab.local'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 5.935,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(nmcli -g ipv4.addresses con show examen)\" = 10.42.0.20/24 && test \"$(nmcli -g ipv4.dns con show examen)\" = 10.42.0.11 && test \"$(nmcli -g connection.autoconnect con show examen)\" = yes'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:20'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /etc/hostname)\" = nodo1.lab.local && test \"$(hostname)\" = nodo1.lab.local'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_4__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_4__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-servidor-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 39.315,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=1\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=1\n__LAB_ba123456ba123456ba123456_3=1\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_5__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=1\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=1\n__LAB_ba123456ba123456ba123456_3=1\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_5__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "curso-servidor-resolver",
+      "command": "nmcli con add type ethernet ifname eth0 con-name servidor ipv4.method manual ipv4.addresses 10.42.0.11/24 ethernet.cloned-mac-address 02:00:00:42:00:11 connection.autoconnect yes && nmcli con up servidor && printf 'local stratum 10\\nallow 10.42.0.0/24\\n' > /etc/chrony/chrony.conf && restorecon /etc/chrony/chrony.conf && systemctl enable chrony && systemctl restart chrony && mkdir -p /srv/curso-nfs && echo DATOS_NFS > /srv/curso-nfs/dato && chmod 755 /srv/curso-nfs && chmod 644 /srv/curso-nfs/dato && printf '/srv/curso-nfs 10.42.0.0/24(ro,sync,no_subtree_check,fsid=0)\\n' > /etc/exports && setsebool -P nfs_export_all_ro on && systemctl enable nfs-server && systemctl restart nfs-server && exportfs -rav && firewall-cmd --permanent --add-service=nfs && firewall-cmd --permanent --add-service=ntp && firewall-cmd --reload",
+      "seconds": 95.142,
+      "code": 0,
+      "output": "Connection 'servidor' (b6b4f8c0-7609-4763-b888-a977f7ca2580) successfully added.\nConnection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3)\nSynchronizing state of chrony.service with SysV service script with /lib/systemd/systemd-sysv-install.\nExecuting: /lib/systemd/systemd-sysv-install enable chrony\n[  384.097250] SELinux:  Permission cmd in class io_uring not defined in policy.\n[  384.098550] SELinux:  Class user_namespace not defined in policy.\n[  384.098650] SELinux: the above unknown classes and permissions will be allowed\n[  384.105650] SELinux:  Converting 429 SID table entries...\n[  384.214850] SELinux:  policy capability network_peer_controls=1\n[  384.214950] SELinux:  policy capability open_perms=1\n[  384.215050] SELinux:  policy capability extended_socket_class=1\n[  384.215075] SELinux:  policy capability always_check_network=0\n[  384.215100] SELinux:  policy capability cgroup_seclabel=1\n[  384.215150] SELinux:  policy capability nnp_nosuid_transition=1\n[  384.215550] SELinux:  policy capability genfs_seclabel_symlinks=0\n[  384.215650] SELinux:  policy capability ioctl_skip_cloexec=0\n[  392.659350] NFSD: Using nfsdcld client tracking operations.\n[  392.660750] NFSD: no clients to reclaim, skipping NFSv4 grace period (net f0000000)\nexporting 10.42.0.0/24:/srv/curso-nfs\nsuccess\nsuccess\nsuccess\n",
+      "transcript": "nmcli con add type ethernet ifname eth0 con-name servidor ipv4.method manual ipv4.addresses 10.42.0.11/24 ethernet.cloned-mac-address 02:00:00:42:00:11 connection.autoconnect yes && nmcli con up servidor && printf 'local stratum 10\\nallow 10.42.0.0/24\\n' > /etc/chrony/chrony.conf && restorecon /etc/chrony/chrony.conf && systemctl enable chrony && systemctl restart chrony && mkdir -p /srv/curso-nfs && echo DATOS_NFS > /srv/curso-nfs/dato && chmod 755 /srv/curso-nfs && chmod 644 /srv/curso-nfs/dato && printf '/srv/curso-nfs 10.42.0.0/24(ro,sync,no_subtree_check,fsid=0)\\n' > /etc/exports && setsebool -P nfs_export_all_ro on && systemctl enable nfs-server && systemctl restart nfs-server && exportfs -rav && firewall-cmd --permanent --add-service=nfs && firewall-cmd --permanent --add-service=ntp && firewall-cmd --reload; printf \"\\n__CHECK_6__=%s\\n\" \"$?\"\nConnection 'servidor' (b6b4f8c0-7609-4763-b888-a977f7ca2580) successfully added.\nConnection successfully activated (D-Bus active path: /org/freedesktop/NetworkManager/ActiveConnection/3)\nSynchronizing state of chrony.service with SysV service script with /lib/systemd/systemd-sysv-install.\nExecuting: /lib/systemd/systemd-sysv-install enable chrony\n[  384.097250] SELinux:  Permission cmd in class io_uring not defined in policy.\n[  384.098550] SELinux:  Class user_namespace not defined in policy.\n[  384.098650] SELinux: the above unknown classes and permissions will be allowed\n[  384.105650] SELinux:  Converting 429 SID table entries...\n[  384.214850] SELinux:  policy capability network_peer_controls=1\n[  384.214950] SELinux:  policy capability open_perms=1\n[  384.215050] SELinux:  policy capability extended_socket_class=1\n[  384.215075] SELinux:  policy capability always_check_network=0\n[  384.215100] SELinux:  policy capability cgroup_seclabel=1\n[  384.215150] SELinux:  policy capability nnp_nosuid_transition=1\n[  384.215550] SELinux:  policy capability genfs_seclabel_symlinks=0\n[  384.215650] SELinux:  policy capability ioctl_skip_cloexec=0\n[  392.659350] NFSD: Using nfsdcld client tracking operations.\n[  392.660750] NFSD: no clients to reclaim, skipping NFSv4 grace period (net f0000000)\nexporting 10.42.0.0/24:/srv/curso-nfs\nsuccess\nsuccess\nsuccess\n\n__CHECK_6__=0\n",
+      "guest": 1
+    },
+    {
+      "name": "curso-servidor-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 12.444,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_7__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_7__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "quitar-solo-ntp-permanente",
+      "command": "firewall-cmd --permanent --remove-service=ntp",
+      "seconds": 13.236,
+      "code": 0,
+      "output": "success\n",
+      "transcript": "firewall-cmd --permanent --remove-service=ntp; printf \"\\n__CHECK_8__=%s\\n\" \"$?\"\nsuccess\n\n__CHECK_8__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "curso-servidor-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 17.024,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=1\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_9__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=1\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_9__=0\n",
+      "guest": 1
+    },
+    {
+      "name": "restaurar-ntp-permanente",
+      "command": "firewall-cmd --permanent --add-service=ntp",
+      "seconds": 6.375,
+      "code": 0,
+      "output": "success\n",
+      "transcript": "firewall-cmd --permanent --add-service=ntp; printf \"\\n__CHECK_10__=%s\\n\" \"$?\"\nsuccess\n\n__CHECK_10__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "quitar-solo-nfs-actual",
+      "command": "firewall-cmd --remove-service=nfs",
+      "seconds": 5.26,
+      "code": 0,
+      "output": "success\n",
+      "transcript": "firewall-cmd --remove-service=nfs; printf \"\\n__CHECK_11__=%s\\n\" \"$?\"\nsuccess\n\n__CHECK_11__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "curso-servidor-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 4.804,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=1\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_12__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=1\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_12__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "restaurar-nfs-actual",
+      "command": "firewall-cmd --add-service=nfs",
+      "seconds": 4.205,
+      "code": 0,
+      "output": "success\n",
+      "transcript": "firewall-cmd --add-service=nfs; printf \"\\n__CHECK_13__=%s\\n\" \"$?\"\nsuccess\n\n__CHECK_13__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "curso-servidor-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 9.445,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_14__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_14__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "trafico-ipv4-autentico",
+      "command": "ping -c 2 -W 4 10.42.0.11",
+      "seconds": 1.15,
+      "code": 0,
+      "output": "PING 10.42.0.11 (10.42.0.11) 56(84) bytes of data.\n64 bytes from 10.42.0.11: icmp_seq=1 ttl=64 time=5.98 ms\n64 bytes from 10.42.0.11: icmp_seq=2 ttl=64 time=6.63 ms\n\n--- 10.42.0.11 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 5.982/6.307/6.633/0.325 ms\n",
+      "transcript": "ping -c 2 -W 4 10.42.0.11; printf \"\\n__CHECK_15__=%s\\n\" \"$?\"\nPING 10.42.0.11 (10.42.0.11) 56(84) bytes of data.\n64 bytes from 10.42.0.11: icmp_seq=1 ttl=64 time=5.98 ms\n64 bytes from 10.42.0.11: icmp_seq=2 ttl=64 time=6.63 ms\n\n--- 10.42.0.11 ping statistics ---\n2 packets transmitted, 2 received, 0% packet loss, time 1002ms\nrtt min/avg/max/mdev = 5.982/6.307/6.633/0.325 ms\n\n__CHECK_15__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-nfs-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.715,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=1\n__LAB_ba123456ba123456ba123456_1=1\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_16__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=1\n__LAB_ba123456ba123456ba123456_1=1\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_16__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-nfs-resolver",
+      "command": "mkdir -p /mnt/curso-nfs && mount -t nfs4 -o ro,vers=4.2 10.42.0.11:/ /mnt/curso-nfs && findmnt /mnt/curso-nfs && cat /mnt/curso-nfs/dato",
+      "seconds": 3.615,
+      "code": 0,
+      "output": "[  505.168550] FS-Cache: Loaded\n[  505.904350] Key type dns_resolver registered\n[  506.807350] NFS: Registering the id_resolver key type\n[  506.807550] Key type id_resolver registered\n[  506.807570] Key type id_legacy registered\nTARGET         SOURCE       FSTYPE OPTIONS\n/mnt/curso-nfs 10.42.0.11:/ nfs4   ro,relatime,vers=4.2,rsize=131072,wsize=13107\nDATOS_NFS\n",
+      "transcript": "mkdir -p /mnt/curso-nfs && mount -t nfs4 -o ro,vers=4.2 10.42.0.11:/ /mnt/curso-nfs && findmnt /mnt/curso-nfs && cat /mnt/curso-nfs/dato; printf \"\\n__CHECK_17__=%s\\n\" \"$?\"\n[  505.168550] FS-Cache: Loaded\n[  505.904350] Key type dns_resolver registered\n[  506.807350] NFS: Registering the id_resolver key type\n[  506.807550] Key type id_resolver registered\n[  506.807570] Key type id_legacy registered\nTARGET         SOURCE       FSTYPE OPTIONS\n/mnt/curso-nfs 10.42.0.11:/ nfs4   ro,relatime,vers=4.2,rsize=131072,wsize=13107\nDATOS_NFS\n\n__CHECK_17__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-nfs-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.396,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_18__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_18__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-autofs-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-enabled --quiet autofs && systemctl is-active --quiet autofs'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''grep -Eq \"^/mnt/curso-auto[[:space:]]+/etc/auto\\.curso\" /etc/auto.master.d/curso.autofs && grep -Eq \"^datos[[:space:]]+-fstype=nfs4,ro,vers=4\\.2[[:space:]]+10\\.42\\.0\\.11:/\" /etc/auto.curso'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-auto/datos/dato)\" = DATOS_NFS && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.72,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=2\n__LAB_ba123456ba123456ba123456_2=1\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-enabled --quiet autofs && systemctl is-active --quiet autofs'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''grep -Eq \"^/mnt/curso-auto[[:space:]]+/etc/auto\\.curso\" /etc/auto.master.d/curso.autofs && grep -Eq \"^datos[[:space:]]+-fstype=nfs4,ro,vers=4\\.2[[:space:]]+10\\.42\\.0\\.11:/\" /etc/auto.curso'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-auto/datos/dato)\" = DATOS_NFS && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_19__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=2\n__LAB_ba123456ba123456ba123456_2=1\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_19__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-autofs-resolver",
+      "command": "mkdir -p /mnt/curso-auto && printf '/mnt/curso-auto /etc/auto.curso --timeout=30\\n' > /etc/auto.master.d/curso.autofs && printf 'datos -fstype=nfs4,ro,vers=4.2 10.42.0.11:/\\n' > /etc/auto.curso && restorecon /etc/auto.curso /etc/auto.master.d/curso.autofs && systemctl enable autofs && systemctl restart autofs && cat /mnt/curso-auto/datos/dato && findmnt /mnt/curso-auto/datos",
+      "seconds": 34.436,
+      "code": 0,
+      "output": "Synchronizing state of autofs.service with SysV service script with /lib/systemd/systemd-sysv-install.\nExecuting: /lib/systemd/systemd-sysv-install enable autofs\nDATOS_NFS\nTARGET                SOURCE       FSTYPE OPTIONS\n/mnt/curso-auto/datos 10.42.0.11:/ nfs4   ro,relatime,vers=4.2,rsize=131072,wsiz\n",
+      "transcript": "mkdir -p /mnt/curso-auto && printf '/mnt/curso-auto /etc/auto.curso --timeout=30\\n' > /etc/auto.master.d/curso.autofs && printf 'datos -fstype=nfs4,ro,vers=4.2 10.42.0.11:/\\n' > /etc/auto.curso && restorecon /etc/auto.curso /etc/auto.master.d/curso.autofs && systemctl enable autofs && systemctl restart autofs && cat /mnt/curso-auto/datos/dato && findmnt /mnt/curso-auto/datos; printf \"\\n__CHECK_20__=%s\\n\" \"$?\"\nSynchronizing state of autofs.service with SysV service script with /lib/systemd/systemd-sysv-install.\nExecuting: /lib/systemd/systemd-sysv-install enable autofs\nDATOS_NFS\nTARGET                SOURCE       FSTYPE OPTIONS\n/mnt/curso-auto/datos 10.42.0.11:/ nfs4   ro,relatime,vers=4.2,rsize=131072,wsiz\n\n__CHECK_20__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-autofs-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-enabled --quiet autofs && systemctl is-active --quiet autofs'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''grep -Eq \"^/mnt/curso-auto[[:space:]]+/etc/auto\\.curso\" /etc/auto.master.d/curso.autofs && grep -Eq \"^datos[[:space:]]+-fstype=nfs4,ro,vers=4\\.2[[:space:]]+10\\.42\\.0\\.11:/\" /etc/auto.curso'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-auto/datos/dato)\" = DATOS_NFS && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.839,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-enabled --quiet autofs && systemctl is-active --quiet autofs'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''grep -Eq \"^/mnt/curso-auto[[:space:]]+/etc/auto\\.curso\" /etc/auto.master.d/curso.autofs && grep -Eq \"^datos[[:space:]]+-fstype=nfs4,ro,vers=4\\.2[[:space:]]+10\\.42\\.0\\.11:/\" /etc/auto.curso'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-auto/datos/dato)\" = DATOS_NFS && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_21__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_21__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "sim-10-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-enabled --quiet chrony'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''getent ahostsv4 ntp.lab.local | grep -Fq 10.42.0.11 && grep -Eq \"^server[[:space:]]+ntp\\.lab\\.local[[:space:]]\" /etc/chrony/chrony.conf'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.745,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=1\n__LAB_ba123456ba123456ba123456_2=1\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-enabled --quiet chrony'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''getent ahostsv4 ntp.lab.local | grep -Fq 10.42.0.11 && grep -Eq \"^server[[:space:]]+ntp\\.lab\\.local[[:space:]]\" /etc/chrony/chrony.conf'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_22__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=1\n__LAB_ba123456ba123456ba123456_2=1\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_22__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "sim-10-resolver",
+      "command": "printf '\\n10.42.0.11 ntp.lab.local\\n' >> /etc/hosts && printf 'server ntp.lab.local iburst minpoll 0 maxpoll 2\\nmakestep 1 -1\\n' > /etc/chrony/chrony.conf && restorecon /etc/chrony/chrony.conf && systemctl enable chrony && systemctl restart chrony && chronyc -n sources",
+      "seconds": 23.422,
+      "code": 0,
+      "output": "Synchronizing state of chrony.service with SysV service script with /lib/systemd/systemd-sysv-install.\nExecuting: /lib/systemd/systemd-sysv-install enable chrony\nMS Name/IP address         Stratum Poll Reach LastRx Last sample               \n===============================================================================\n^? 10.42.0.11                    0   0     0     -     +0ns[   +0ns] +/-    0ns\n",
+      "transcript": "printf '\\n10.42.0.11 ntp.lab.local\\n' >> /etc/hosts && printf 'server ntp.lab.local iburst minpoll 0 maxpoll 2\\nmakestep 1 -1\\n' > /etc/chrony/chrony.conf && restorecon /etc/chrony/chrony.conf && systemctl enable chrony && systemctl restart chrony && chronyc -n sources; printf \"\\n__CHECK_23__=%s\\n\" \"$?\"\nSynchronizing state of chrony.service with SysV service script with /lib/systemd/systemd-sysv-install.\nExecuting: /lib/systemd/systemd-sysv-install enable chrony\nMS Name/IP address         Stratum Poll Reach LastRx Last sample               \n===============================================================================\n^? 10.42.0.11                    0   0     0     -     +0ns[   +0ns] +/-    0ns\n\n__CHECK_23__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "esperar-fuente-ntp-real",
+      "command": "for n in {1..60}; do chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\" && break; sleep 1; done; chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\"",
+      "seconds": 1.366,
+      "code": 0,
+      "output": "[  569.371250] systemd-journald[395]: Time jumped backwards, rotating.\n",
+      "transcript": "for n in {1..60}; do chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\" && break; sleep 1; done; chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\"; printf \"\\n__CHECK_24__=%s\\n\" \"$?\"\n[  569.371250] systemd-journald[395]: Time jumped backwards, rotating.\n\n__CHECK_24__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "sim-10-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-enabled --quiet chrony'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''getent ahostsv4 ntp.lab.local | grep -Fq 10.42.0.11 && grep -Eq \"^server[[:space:]]+ntp\\.lab\\.local[[:space:]]\" /etc/chrony/chrony.conf'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.696,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-enabled --quiet chrony'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''getent ahostsv4 ntp.lab.local | grep -Fq 10.42.0.11 && grep -Eq \"^server[[:space:]]+ntp\\.lab\\.local[[:space:]]\" /etc/chrony/chrony.conf'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_25__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_25__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "cambiar-dato-servidor",
+      "command": "printf CAMBIO_SERVIDOR > /srv/curso-nfs/dato",
+      "seconds": 0.103,
+      "code": 0,
+      "output": "",
+      "transcript": "printf CAMBIO_SERVIDOR > /srv/curso-nfs/dato; printf \"\\n__CHECK_26__=%s\\n\" \"$?\"\n\n__CHECK_26__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "recibir-cambio-nfs-real",
+      "command": "for n in {1..30}; do test \"$(cat /mnt/curso-nfs/dato)\" = CAMBIO_SERVIDOR && break; sleep 1; done; test \"$(cat /mnt/curso-nfs/dato)\" = CAMBIO_SERVIDOR",
+      "seconds": 0.101,
+      "code": 0,
+      "output": "",
+      "transcript": "for n in {1..30}; do test \"$(cat /mnt/curso-nfs/dato)\" = CAMBIO_SERVIDOR && break; sleep 1; done; test \"$(cat /mnt/curso-nfs/dato)\" = CAMBIO_SERVIDOR; printf \"\\n__CHECK_27__=%s\\n\" \"$?\"\n\n__CHECK_27__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-nfs-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.223,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=1\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_28__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=1\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_28__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "restaurar-fixture-servidor",
+      "command": "echo DATOS_NFS > /srv/curso-nfs/dato",
+      "seconds": 0.057,
+      "code": 0,
+      "output": " \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\"\n",
+      "transcript": "echo DATOS_NFS > /srv/curso-nfs/dato; printf \"\\n__CHECK_29__=%s\\n\" \"$?\" \u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\u0000\"\n\n__CHECK_29__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "leer-dato-restaurado",
+      "command": "for n in {1..30}; do test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS && break; sleep 1; done; test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS",
+      "seconds": 0.119,
+      "code": 0,
+      "output": "",
+      "transcript": "for n in {1..30}; do test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS && break; sleep 1; done; test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS; printf \"\\n__CHECK_30__=%s\\n\" \"$?\"\n\n__CHECK_30__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-nfs-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.405,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_31__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_31__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "esperar-autoinicio-real-1",
+      "command": "for unit in chrony nfs-server; do for n in {1..90}; do test \"$(systemctl is-active \"$unit\")\" = active && break; sleep 1; done; test \"$(systemctl is-active \"$unit\")\" = active || exit 1; done",
+      "seconds": 8.186,
+      "code": 0,
+      "output": "[   84.595666] NFSD: Using nfsdcld client tracking operations.\n[   84.595800] NFSD: starting 90-second grace period (net f0000000)\n[   85.605300] NFSD: all clients done reclaiming, ending NFSv4 grace period (net f0000000)\n",
+      "transcript": "for unit in chrony nfs-server; do for n in {1..90}; do test \"$(systemctl is-active \"$unit\")\" = active && break; sleep 1; done; test \"$(systemctl is-active \"$unit\")\" = active || exit 1; done; printf \"\\n__CHECK_32__=%s\\n\" \"$?\"\n[   84.595666] NFSD: Using nfsdcld client tracking operations.\n[   84.595800] NFSD: starting 90-second grace period (net f0000000)\n[   85.605300] NFSD: all clients done reclaiming, ending NFSv4 grace period (net f0000000)\n\n__CHECK_32__=0\n",
+      "guest": 1
+    },
+    {
+      "name": "curso-servidor-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 14.929,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "V86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_33__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_33__=0\nV86TEST# ",
+      "guest": 1
+    },
+    {
+      "name": "esperar-ip-persistente-sin-reparar",
+      "command": "for n in {1..90}; do ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\" && break; sleep 1; done; nmcli -f NAME,DEVICE,STATE connection show --active; ip -4 addr show eth0; ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\"",
+      "seconds": 7.204,
+      "code": 0,
+      "output": "\u001b=NAME    DEVICE  STATE     \nexamen  eth0    activated \nlo      lo      activated \n\u001b>2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000\n    altname enp0s5\n    inet 10.42.0.20/24 brd 10.42.0.255 scope global noprefixroute eth0\n       valid_lft forever preferred_lft forever\n",
+      "transcript": "for n in {1..90}; do ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\" && break; sleep 1; done; nmcli -f NAME,DEVICE,STATE connection show --active; ip -4 addr show eth0; ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\"; printf \"\\n__CHECK_34__=%s\\n\" \"$?\"\n\u001b=NAME    DEVICE  STATE     \nexamen  eth0    activated \nlo      lo      activated \n\u001b>2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc fq_codel state UNKNOWN group default qlen 1000\n    altname enp0s5\n    inet 10.42.0.20/24 brd 10.42.0.255 scope global noprefixroute eth0\n       valid_lft forever preferred_lft forever\n\n__CHECK_34__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "sim-02-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(nmcli -g ipv4.addresses con show examen)\" = 10.42.0.20/24 && test \"$(nmcli -g ipv4.dns con show examen)\" = 10.42.0.11 && test \"$(nmcli -g connection.autoconnect con show examen)\" = yes'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:20'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /etc/hostname)\" = nodo1.lab.local && test \"$(hostname)\" = nodo1.lab.local'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 3.965,
+      "code": 0,
+      "output": "[   84.240000] NFSD: Using nfsdcld client tracking operations.\n[   84.240100] NFSD: no clients to reclaim, skipping NFSv4 grace period (net f0000000)\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq \"10.42.0.20/24\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(nmcli -g ipv4.addresses con show examen)\" = 10.42.0.20/24 && test \"$(nmcli -g ipv4.dns con show examen)\" = 10.42.0.11 && test \"$(nmcli -g connection.autoconnect con show examen)\" = yes'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:20'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /etc/hostname)\" = nodo1.lab.local && test \"$(hostname)\" = nodo1.lab.local'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_35__=%s\\n\" \"$?\"\n[   84.240000] NFSD: Using nfsdcld client tracking operations.\n[   84.240100] NFSD: no clients to reclaim, skipping NFSv4 grace period (net f0000000)\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n__LAB_ba123456ba123456ba123456_3=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_35__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "servicios-y-ntp-tras-reinicio",
+      "command": "test \"$(getenforce)\" = Enforcing && for n in {1..90}; do systemctl is-active --quiet autofs && chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\" && break; sleep 1; done; systemctl is-active --quiet autofs && test \"$(getenforce)\" = Enforcing",
+      "seconds": 0.473,
+      "code": 0,
+      "output": "",
+      "transcript": "test \"$(getenforce)\" = Enforcing && for n in {1..90}; do systemctl is-active --quiet autofs && chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\" && break; sleep 1; done; systemctl is-active --quiet autofs && test \"$(getenforce)\" = Enforcing; printf \"\\n__CHECK_36__=%s\\n\" \"$?\"\n\n__CHECK_36__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-autofs-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-enabled --quiet autofs && systemctl is-active --quiet autofs'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''grep -Eq \"^/mnt/curso-auto[[:space:]]+/etc/auto\\.curso\" /etc/auto.master.d/curso.autofs && grep -Eq \"^datos[[:space:]]+-fstype=nfs4,ro,vers=4\\.2[[:space:]]+10\\.42\\.0\\.11:/\" /etc/auto.curso'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-auto/datos/dato)\" = DATOS_NFS && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 2.748,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n[   88.753400] FS-Cache: Loaded\n[   89.226900] Key type dns_resolver registered\n[   89.951600] NFS: Registering the id_resolver key type\n[   89.951800] Key type id_resolver registered\n[   89.951900] Key type id_legacy registered\n__LAB_ba123456ba123456ba123456_2=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-enabled --quiet autofs && systemctl is-active --quiet autofs'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''grep -Eq \"^/mnt/curso-auto[[:space:]]+/etc/auto\\.curso\" /etc/auto.master.d/curso.autofs && grep -Eq \"^datos[[:space:]]+-fstype=nfs4,ro,vers=4\\.2[[:space:]]+10\\.42\\.0\\.11:/\" /etc/auto.curso'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-auto/datos/dato)\" = DATOS_NFS && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_37__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n[   88.753400] FS-Cache: Loaded\n[   89.226900] Key type dns_resolver registered\n[   89.951600] NFS: Registering the id_resolver key type\n[   89.951800] Key type id_resolver registered\n[   89.951900] Key type id_legacy registered\n__LAB_ba123456ba123456ba123456_2=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_37__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "sim-10-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-enabled --quiet chrony'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''getent ahostsv4 ntp.lab.local | grep -Fq 10.42.0.11 && grep -Eq \"^server[[:space:]]+ntp\\.lab\\.local[[:space:]]\" /etc/chrony/chrony.conf'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.584,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-enabled --quiet chrony'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''getent ahostsv4 ntp.lab.local | grep -Fq 10.42.0.11 && grep -Eq \"^server[[:space:]]+ntp\\.lab\\.local[[:space:]]\" /etc/chrony/chrony.conf'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_38__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n__LAB_ba123456ba123456ba123456_2=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_38__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-nfs-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.184,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=1\n__LAB_ba123456ba123456ba123456_1=1\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_39__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=1\n__LAB_ba123456ba123456ba123456_1=1\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_39__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-nfs-resolver",
+      "command": "mkdir -p /mnt/curso-nfs && mount -t nfs4 -o ro,vers=4.2 10.42.0.11:/ /mnt/curso-nfs && findmnt /mnt/curso-nfs && cat /mnt/curso-nfs/dato",
+      "seconds": 0.479,
+      "code": 0,
+      "output": "TARGET         SOURCE       FSTYPE OPTIONS\n/mnt/curso-nfs 10.42.0.11:/ nfs4   ro,relatime,vers=4.2,rsize=131072,wsize=13107\nDATOS_NFS\n",
+      "transcript": "mkdir -p /mnt/curso-nfs && mount -t nfs4 -o ro,vers=4.2 10.42.0.11:/ /mnt/curso-nfs && findmnt /mnt/curso-nfs && cat /mnt/curso-nfs/dato; printf \"\\n__CHECK_40__=%s\\n\" \"$?\"\nTARGET         SOURCE       FSTYPE OPTIONS\n/mnt/curso-nfs 10.42.0.11:/ nfs4   ro,relatime,vers=4.2,rsize=131072,wsize=13107\nDATOS_NFS\n\n__CHECK_40__=0\nV86TEST# ",
+      "guest": 0
+    },
+    {
+      "name": "curso-nfs-comprobar",
+      "command": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"",
+      "seconds": 0.166,
+      "code": 0,
+      "output": "__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n\n__LAB_ba123456ba123456ba123456_END=0\n",
+      "transcript": "/bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_41__=%s\\n\" \"$?\"\n__LAB_ba123456ba123456ba123456_0=0\n__LAB_ba123456ba123456ba123456_1=0\n\n__LAB_ba123456ba123456ba123456_END=0\n\n__CHECK_41__=0\nV86TEST# ",
+      "guest": 0
+    }
+  ],
+  "results": [
+    {
+      "guest": 0,
+      "id": "sim-02",
+      "expected": false,
+      "ok": false,
+      "results": [
+        {
+          "label": "Dirección aplicada",
+          "ok": false
+        },
+        {
+          "label": "Perfil persistente y DNS",
+          "ok": false
+        },
+        {
+          "label": "MAC única",
+          "ok": false
+        },
+        {
+          "label": "Hostname",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "sim-02",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Dirección aplicada",
+          "ok": true
+        },
+        {
+          "label": "Perfil persistente y DNS",
+          "ok": true
+        },
+        {
+          "label": "MAC única",
+          "ok": true
+        },
+        {
+          "label": "Hostname",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 1,
+      "id": "curso-servidor",
+      "expected": false,
+      "ok": false,
+      "results": [
+        {
+          "label": "Dirección del servidor",
+          "ok": false
+        },
+        {
+          "label": "Servicios",
+          "ok": true
+        },
+        {
+          "label": "Export y datos",
+          "ok": false
+        },
+        {
+          "label": "Firewall permanente y actual",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "guest": 1,
+      "id": "curso-servidor",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Dirección del servidor",
+          "ok": true
+        },
+        {
+          "label": "Servicios",
+          "ok": true
+        },
+        {
+          "label": "Export y datos",
+          "ok": true
+        },
+        {
+          "label": "Firewall permanente y actual",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 1,
+      "id": "curso-servidor",
+      "expected": false,
+      "ok": false,
+      "results": [
+        {
+          "label": "Dirección del servidor",
+          "ok": true
+        },
+        {
+          "label": "Servicios",
+          "ok": true
+        },
+        {
+          "label": "Export y datos",
+          "ok": true
+        },
+        {
+          "label": "Firewall permanente y actual",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "guest": 1,
+      "id": "curso-servidor",
+      "expected": false,
+      "ok": false,
+      "results": [
+        {
+          "label": "Dirección del servidor",
+          "ok": true
+        },
+        {
+          "label": "Servicios",
+          "ok": true
+        },
+        {
+          "label": "Export y datos",
+          "ok": true
+        },
+        {
+          "label": "Firewall permanente y actual",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "guest": 1,
+      "id": "curso-servidor",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Dirección del servidor",
+          "ok": true
+        },
+        {
+          "label": "Servicios",
+          "ok": true
+        },
+        {
+          "label": "Export y datos",
+          "ok": true
+        },
+        {
+          "label": "Firewall permanente y actual",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "curso-nfs",
+      "expected": false,
+      "ok": false,
+      "results": [
+        {
+          "label": "Montaje NFS del servidor",
+          "ok": false
+        },
+        {
+          "label": "Lectura real",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "curso-nfs",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Montaje NFS del servidor",
+          "ok": true
+        },
+        {
+          "label": "Lectura real",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "curso-autofs",
+      "expected": false,
+      "ok": false,
+      "results": [
+        {
+          "label": "Servicio habilitado",
+          "ok": true
+        },
+        {
+          "label": "Mapa persistente",
+          "ok": false
+        },
+        {
+          "label": "Dato y montaje automáticos",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "curso-autofs",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Servicio habilitado",
+          "ok": true
+        },
+        {
+          "label": "Mapa persistente",
+          "ok": true
+        },
+        {
+          "label": "Dato y montaje automáticos",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "sim-10",
+      "expected": false,
+      "ok": false,
+      "results": [
+        {
+          "label": "Servicio chrony",
+          "ok": true
+        },
+        {
+          "label": "Nombre y configuración",
+          "ok": false
+        },
+        {
+          "label": "Fuente realmente seleccionada",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "sim-10",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Servicio chrony",
+          "ok": true
+        },
+        {
+          "label": "Nombre y configuración",
+          "ok": true
+        },
+        {
+          "label": "Fuente realmente seleccionada",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "curso-nfs",
+      "expected": false,
+      "ok": false,
+      "results": [
+        {
+          "label": "Montaje NFS del servidor",
+          "ok": true
+        },
+        {
+          "label": "Lectura real",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "curso-nfs",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Montaje NFS del servidor",
+          "ok": true
+        },
+        {
+          "label": "Lectura real",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 1,
+      "id": "curso-servidor",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Dirección del servidor",
+          "ok": true
+        },
+        {
+          "label": "Servicios",
+          "ok": true
+        },
+        {
+          "label": "Export y datos",
+          "ok": true
+        },
+        {
+          "label": "Firewall permanente y actual",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "sim-02",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Dirección aplicada",
+          "ok": true
+        },
+        {
+          "label": "Perfil persistente y DNS",
+          "ok": true
+        },
+        {
+          "label": "MAC única",
+          "ok": true
+        },
+        {
+          "label": "Hostname",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "curso-autofs",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Servicio habilitado",
+          "ok": true
+        },
+        {
+          "label": "Mapa persistente",
+          "ok": true
+        },
+        {
+          "label": "Dato y montaje automáticos",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "sim-10",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Servicio chrony",
+          "ok": true
+        },
+        {
+          "label": "Nombre y configuración",
+          "ok": true
+        },
+        {
+          "label": "Fuente realmente seleccionada",
+          "ok": true
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "curso-nfs",
+      "expected": false,
+      "ok": false,
+      "results": [
+        {
+          "label": "Montaje NFS del servidor",
+          "ok": false
+        },
+        {
+          "label": "Lectura real",
+          "ok": false
+        }
+      ]
+    },
+    {
+      "guest": 0,
+      "id": "curso-nfs",
+      "expected": true,
+      "ok": true,
+      "results": [
+        {
+          "label": "Montaje NFS del servidor",
+          "ok": true
+        },
+        {
+          "label": "Lectura real",
+          "ok": true
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "quietCommands": true,
+  "websiteModified": false,
+  "fullRhcsaValidated": false,
+  "rootRemoteSshEnabled": false,
+  "rebootTargetSeconds": 180,
+  "rebootDiagnosticTimeoutSeconds": 480,
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "rebootSeconds": [
+    94.826,
+    104.896
+  ],
+  "postBootServicesSeconds": [
+    null,
+    8.187
+  ],
+  "collectionComplete": true,
+  "networkCoursePassed": true,
+  "rebootPerformancePassed": true,
+  "tails": [
+    "3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_35__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r[   84.240000] NFSD: Using nfsdcld client tracking operations.\r\n[   84.240100] NFSD: no clients to reclaim, skipping NFSv4 grace period (net f0000000)\r\n__LAB_ba123456ba123456ba123456_0=0\r\n__LAB_ba123456ba123456ba123456_1=0\r\n__LAB_ba123456ba123456ba123456_2=0\r\n__LAB_ba123456ba123456ba123456_3=0\r\n\r\n__LAB_ba123456ba123456ba123456_END=0\r\n\r\n__CHECK_35__=0\r\n\u001b[?2004hV86TEST# test \"$(getenforce)\" = Enforcing && for n in {1..90}; do systemctl is-active --quiet autofs && chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\" && break; sleep 1; done; systemctl is-active --quiet autofs && test \"$(getenforce)\" = Enforcing; printf \"\\n__CHECK_36__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r\r\n__CHECK_36__=0\r\n\u001b[?2004hV86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-enabled --quiet autofs && systemctl is-active --quiet autofs'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''grep -Eq \"^/mnt/curso-auto[[:space:]]+/etc/auto\\.curso\" /etc/auto.master.d/curso.autofs && grep -Eq \"^datos[[:space:]]+-fstype=nfs4,ro,vers=4\\.2[[:space:]]+10\\.42\\.0\\.11:/\" /etc/auto.curso'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-auto/datos/dato)\" = DATOS_NFS && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-auto/datos -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_37__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r__LAB_ba123456ba123456ba123456_0=0\r\n__LAB_ba123456ba123456ba123456_1=0\r\n[   88.753400] FS-Cache: Loaded\r\n[   89.226900] Key type dns_resolver registered\r\n[   89.951600] NFS: Registering the id_resolver key type\r\n[   89.951800] Key type id_resolver registered\r\n[   89.951900] Key type id_legacy registered\r\n__LAB_ba123456ba123456ba123456_2=0\r\n\r\n__LAB_ba123456ba123456ba123456_END=0\r\n\r\n__CHECK_37__=0\r\n\u001b[?2004hV86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-enabled --quiet chrony'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''getent ahostsv4 ntp.lab.local | grep -Fq 10.42.0.11 && grep -Eq \"^server[[:space:]]+ntp\\.lab\\.local[[:space:]]\" /etc/chrony/chrony.conf'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''chronyc -n sources | grep -Eq \"^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]\"'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_38__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r__LAB_ba123456ba123456ba123456_0=0\r\n__LAB_ba123456ba123456ba123456_1=0\r\n__LAB_ba123456ba123456ba123456_2=0\r\n\r\n__LAB_ba123456ba123456ba123456_END=0\r\n\r\n__CHECK_38__=0\r\n\u001b[?2004hV86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_39__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r__LAB_ba123456ba123456ba123456_0=1\r\n__LAB_ba123456ba123456ba123456_1=1\r\n\r\n__LAB_ba123456ba123456ba123456_END=0\r\n\r\n__CHECK_39__=0\r\n\u001b[?2004hV86TEST# mkdir -p /mnt/curso-nfs && mount -t nfs4 -o ro,vers=4.2 10.42.0.11:/ /mnt/curso-nfs && findmnt /mnt/curso-nfs && cat /mnt/curso-nfs/dato; printf \"\\n__CHECK_40__=%s\\n\" \"$?\"\r\n\u001b[?2004l\rTARGET         SOURCE       FSTYPE OPTIONS\r\n/mnt/curso-nfs 10.42.0.11:/ nfs4   ro,relatime,vers=4.2,rsize=131072,wsize=13107\r\nDATOS_NFS\r\n\r\n__CHECK_40__=0\r\n\u001b[?2004hV86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(findmnt -rn -M /mnt/curso-nfs -o FSTYPE)\" = nfs4 && test \"$(findmnt -rn -M /mnt/curso-nfs -o SOURCE)\" = 10.42.0.11:/'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''test \"$(cat /mnt/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_41__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r__LAB_ba123456ba123456ba123456_0=0\r\n__LAB_ba123456ba123456ba123456_1=0\r\n\r\n__LAB_ba123456ba123456ba123456_END=0\r\n\r\n__CHECK_41__=0\r\n\u001b[?2004hV86TEST# ",
+    "on.service\u001b[0m -…kground program processing daemon.\r\r\n         Starting \u001b[0;1;39mdbus.service\u001b[0m - D-Bus System Message Bus...\r\r\n         Starting \u001b[0;1;39mdracut-shutdown.s…tore /run/initramfs on shutdown...\r\r\n         Starting \u001b[0;1;39me2scrub_reap.serv…e ext4 Metadata Check Snapshots...\r\r\n         Starting \u001b[0;1;39msystemd-logind.se…ice\u001b[0m - User Login Management...\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39matd.service\u001b[0m - Deferred execution scheduler.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Finished \u001b[0;1;39mdracut-shutdown.s…estore /run/initramfs on shutdown.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mdbus.service\u001b[0m - D-Bus System Message Bus.\r\r\n         Starting \u001b[0;1;39mfirewalld.service…walld - dynamic firewall daemon...\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39msystemd-logind.service\u001b[0m - User Login Management.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Finished \u001b[0;1;39me2scrub_reap.serv…ine ext4 Metadata Check Snapshots.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mfirewalld.service\u001b…rewalld - dynamic firewall daemon.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Reached target \u001b[0;1;39mnetwork-pre…get\u001b[0m - Preparation for Network.\r\r\n         Starting \u001b[0;1;39mNetworkManager.service\u001b[0m - Network Manager...\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mNetworkManager.service\u001b[0m - Network Manager.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Reached target \u001b[0;1;39mnetwork.target\u001b[0m - Network.\r\r\n         Starting \u001b[0;1;39mNetworkManager-wa…m - Network Manager Wait Online...\r\r\n         Starting \u001b[0;1;39mchrony.service\u001b[0m - chrony, an NTP client/server...\r\r\n         Starting \u001b[0;1;39mssh.service\u001b[0m - OpenBSD Secure Shell server...\r\r\n         Starting \u001b[0;1;39msystemd-user-sess…vice\u001b[0m - Permit User Sessions...\r\r\n         Starting \u001b[0;1;39mtuned.service\u001b[0m - Dynamic System Tuning Daemon...\r\r\n         Starting \u001b[0;1;39msystemd-hostnamed.service\u001b[0m - Hostname Service...\r\r\n[\u001b[0;32m  OK  \u001b[0m] Finished \u001b[0;1;39msystemd-user-sess…ervice\u001b[0m - Permit User Sessions.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mgetty@tty1.service\u001b[0m - Getty on tty1.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mserial-getty@ttyS0…rvice\u001b[0m - Serial Getty on ttyS0.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Reached target \u001b[0;1;39mgetty.target\u001b[0m - Login Prompts.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mchrony.service\u001b[0m - chrony, an NTP client/server.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Reached target \u001b[0;1;39mtime-sync.t…et\u001b[0m - System Time Synchronized.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mdpkg-db-backup.tim… Daily dpkg database backup timer.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39me2scrub_all.timer\u001b…etadata Check for All Filesystems.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mfstrim.timer\u001b[0m - Discard unused blocks once a week.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mman-db.timer\u001b[0m - Daily man-db regeneration.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Reached target \u001b[0;1;39mtimers.target\u001b[0m - Timer Units.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39mssh.service\u001b[0m - OpenBSD Secure Shell server.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Started \u001b[0;1;39msystemd-hostnamed.service\u001b[0m - Hostname Service.\r\r\n[\u001b[0;32m  OK  \u001b[0m] Listening on \u001b[0;1;39msystemd-rfkil…l Switch Status /dev/rfkill Watch.\r\r\n\r\r\nDebian GNU/Linux 12 debian-motor-test ttyS0\r\n\r\ndebian-motor-test login: root (automatic login)\r\n\r\r\nLinux debian-motor-test 6.1.0-53-686 #1 SMP PREEMPT_DYNAMIC Debian 6.1.187-1 (2026-09-07) i686\r\n\r\nThe programs included with the Debian GNU/Linux system are free software;\r\nthe exact distribution terms for each program are described in the\r\nindividual files in /usr/share/doc/*/copyright.\r\n\r\nDebian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent\r\npermitted by applicable law.\r\nLast login: Thu Oct  8 16:53:28 UTC 2026 on ttyS0\r\n\u001b[?2004hV86TEST# for unit in chrony nfs-server; do for n in {1..90}; do test \"$(systemctl is-active \"$unit\")\" = active && break; sleep 1; done; test \"$(systemctl is-active \"$unit\")\" = active || exit 1; done; printf \"\\n__CHECK_32__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r[   84.595666] NFSD: Using nfsdcld client tracking operations.\r\n[   84.595800] NFSD: starting 90-second grace period (net f0000000)\r\n[   85.605300] NFSD: all clients done reclaiming, ending NFSv4 grace period (net f0000000)\r\n\r\n__CHECK_32__=0\r\n\u001b[?2004hV86TEST# /bin/sh -c 'export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat; test \"$(id -u)\" = 0 || exit 77; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''ip -4 -o addr show eth0 | grep -Fq 10.42.0.11/24 && test \"$(cat /sys/class/net/eth0/address)\" = 02:00:00:42:00:11'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_0=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_0=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''systemctl is-active --quiet chrony && systemctl is-active --quiet nfs-server && systemctl is-enabled --quiet chrony && systemctl is-enabled --quiet nfs-server'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_1=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_1=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 20 /bin/sh -c '\\''exportfs -v | grep -Fq /srv/curso-nfs && test \"$(cat /srv/curso-nfs/dato)\" = DATOS_NFS'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_2=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_2=%s\\n'\\'' \"$result\"; fi; if /usr/bin/timeout -k 2 60 /bin/sh -c '\\''for mode in runtime permanent; do if test \"$mode\" = permanent; then services=$(firewall-cmd --permanent --list-services) || exit 1; else services=$(firewall-cmd --list-services) || exit 1; fi; for svc in nfs ntp; do printf \"%s\\n\" \"$services\" | tr \" \" \"\\n\" | grep -Fxq \"$svc\" || exit 1; done; done'\\'' >/dev/null 2>&1; then printf '\\''__LAB_ba123456ba123456ba123456_3=0\\n'\\''; else result=$?; printf '\\''__LAB_ba123456ba123456ba123456_3=%s\\n'\\'' \"$result\"; fi'; printf '\\n__LAB_ba123456ba123456ba123456_END=%s\\n' \"$?\"; printf \"\\n__CHECK_33__=%s\\n\" \"$?\"\r\n\u001b[?2004l\r__LAB_ba123456ba123456ba123456_0=0\r\n__LAB_ba123456ba123456ba123456_1=0\r\n__LAB_ba123456ba123456ba123456_2=0\r\n__LAB_ba123456ba123456ba123456_3=0\r\n\r\n__LAB_ba123456ba123456ba123456_END=0\r\n\r\n__CHECK_33__=0\r\n\u001b[?2004hV86TEST# "
+  ]
+}

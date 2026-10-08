@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-08T16:55:30.787Z",
+  "cases": [
+    {
+      "name": "base-limpia-preparada",
+      "command": "test \"$(getenforce)\" = Enforcing && test \"$(cat /proc/1/comm)\" = systemd && test -f /boot/grub/grub.cfg && test ! -e /usr/share/s2ktux-lab/lab-notas/version.txt && dnf -q repolist",
+      "seconds": 9.402,
+      "code": 0,
+      "output": "repo id               repo name\nlab-base              Repositorio RPM propio de practicas (no RHEL)\n",
+      "transcript": "test \"$(getenforce)\" = Enforcing && test \"$(cat /proc/1/comm)\" = systemd && test -f /boot/grub/grub.cfg && test ! -e /usr/share/s2ktux-lab/lab-notas/version.txt && dnf -q repolist; printf \"\\n__CHECK_0__=%s\\n\" \"$?\"\nrepo id               repo name\nlab-base              Repositorio RPM propio de practicas (no RHEL)\n\n__CHECK_0__=0\nV86TEST# "
+    }
+  ],
+  "errors": [],
+  "websiteModified": false,
+  "fullRhcsaValidated": false,
+  "limitMbps": 50,
+  "latencyMs": 40,
+  "sharedNetworkBudget": true,
+  "freshBrowser": true,
+  "staticIsolationHeaders": false,
+  "firstEntrySeconds": 26.132,
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "disk": {
+    "requests": 0,
+    "downloadedBytes": 0,
+    "reads": 0,
+    "writes": 73
+  },
+  "collectionComplete": true,
+  "seconds": 35.591
+}

@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-08T16:49:56.309Z",
+  "complete": true,
+  "sourceFactory": "/mnt/d/RIVALIA/prototipo-linux-navegador/assets/v86-test/grub-rhcsa.raw",
+  "privateCopy": "v86-diagnostico-gsbcbdgt",
+  "nativeReport": "tools/v86-diagnostico-gsbcbdgt/resultado.json",
+  "disk": "D:\\RIVALIA\\prototipo-linux-navegador\\assets\\v86-test\\grub-rhcsa-final.raw",
+  "rootSelinuxProfile": "unconfined_u:unconfined_r:unconfined_t",
+  "rootPodmanEntry": "/usr/sbin/podman",
+  "websiteModified": false,
+  "originalModified": false,
+  "fullRhcsaValidated": false,
+  "rhelDistribution": false,
+  "browserValidationPassed": false,
+  "readyForStudents": false,
+  "pending": "Pruebas de esta misma candidata en navegador; la construcción nativa no sustituye su validación.",
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "grubTunedConfigReadOnlyFix": true,
+  "grubNativePassed": true
+}

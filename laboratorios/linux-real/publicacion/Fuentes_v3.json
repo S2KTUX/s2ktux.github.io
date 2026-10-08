@@ -1,0 +1,13 @@
+{
+  "date": "2026-10-08T17:10:45.374Z",
+  "file": "fuentes-laboratorio-v3.tar.gz",
+  "bytes": 811556382,
+  "sha256": "a3d493ab84e278f8318a85b42c5bc588f778770206844f102db8470940eb1017",
+  "exactSourceVersions": 261,
+  "sourceFiles": 845,
+  "includesGuestNotices": true,
+  "includesMotorAndBiosSources": true,
+  "includesLocalBuildRecipes": true,
+  "published": false,
+  "websiteModified": false
+}

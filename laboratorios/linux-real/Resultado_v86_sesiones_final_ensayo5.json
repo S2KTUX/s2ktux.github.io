@@ -1,0 +1,87 @@
+{
+  "date": "2026-10-08T17:32:51.361Z",
+  "cases": [
+    {
+      "name": "crear-datos-reales",
+      "command": "echo GUARDADO_REAL > /root/sesion-real && mkfs.ext4 -F /dev/sdb && mkdir -p /mnt/practica && mount /dev/sdb /mnt/practica && restorecon -RF /mnt/practica && echo SEGUNDO_DISCO_REAL > /mnt/practica/dato && sync",
+      "seconds": 13.668,
+      "code": 0,
+      "output": "mke2fs 1.47.0 (5-Feb-2023)\nCreating filesystem with 524288 4k blocks and 131072 inodes\nFilesystem UUID: 4456ce9b-0be8-4c55-89a9-1cb2b0127f95\nSuperblock backups stored on blocks: \n\t32768, 98304, 163840, 229376, 294912\n\nAllocating group tables:  0/16\b\b\b\b\b 4/16\b\b\b\b\b     \b\b\b\b\bdone                            \nWriting inode tables:  0/16\b\b\b\b\b     \b\b\b\b\bdone                            \nCreating journal (16384 blocks): done\nWriting superblocks and filesystem accounting information:  0/16\b\b\b\b\b     \b\b\b\b\bdone\n\n[  239.160450] EXT4-fs (sdb): mounted filesystem with ordered data mode. Quota mode: none.\n",
+      "transcript": "echo GUARDADO_REAL > /root/sesion-real && mkfs.ext4 -F /dev/sdb && mkdir -p /mnt/practica && mount /dev/sdb /mnt/practica && restorecon -RF /mnt/practica && echo SEGUNDO_DISCO_REAL > /mnt/practica/dato && sync; printf \"\\n__CHECK_0__=%s\\n\" \"$?\"\nmke2fs 1.47.0 (5-Feb-2023)\nCreating filesystem with 524288 4k blocks and 131072 inodes\nFilesystem UUID: 4456ce9b-0be8-4c55-89a9-1cb2b0127f95\nSuperblock backups stored on blocks: \n\t32768, 98304, 163840, 229376, 294912\n\nAllocating group tables:  0/16\b\b\b\b\b 4/16\b\b\b\b\b     \b\b\b\b\bdone                            \nWriting inode tables:  0/16\b\b\b\b\b     \b\b\b\b\bdone                            \nCreating journal (16384 blocks): done\nWriting superblocks and filesystem accounting information:  0/16\b\b\b\b\b     \b\b\b\b\bdone\n\n[  239.160450] EXT4-fs (sdb): mounted filesystem with ordered data mode. Quota mode: none.\n\n__CHECK_0__=0\nV86TEST# "
+    },
+    {
+      "name": "modificacion-no-guardada",
+      "command": "echo NO_GUARDADO > /root/cambio-posterior",
+      "seconds": 0.331,
+      "code": 0,
+      "output": "",
+      "transcript": "[  265.205416] rcu: INFO: rcu_preempt self-detected stall on CPU\n[  265.208650] rcu: \t0-...!: (1 ticks this GP) idle=8664/0/0x1 softirq=36116/36116 fqs=0\n[  265.208950] \t(t=5614 jiffies g=76469 q=19 ncpus=1)\n[  265.209250] rcu: rcu_preempt kthread timer wakeup didn't happen for 5613 jiffies! g76469 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402\n[  265.209550] rcu: \tPossible timer handling issue on cpu=0 timer-softirq=20299\n[  265.209750] rcu: rcu_preempt kthread starved for 5614 jiffies! g76469 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402 ->cpu=0\n[  265.209850] rcu: \tUnless rcu_preempt kthread gets sufficient CPU time, OOM is now expected behavior.\n[  265.209950] rcu: RCU grace-period kthread stack dump:\n[  265.212350] task:rcu_preempt     state:I stack:0     pid:15    ppid:2      flags:0x00004000\n[  265.212650] Call Trace:\n[  265.212850]  __schedule+0x399/0xa80\n[  265.213250]  schedule+0x58/0xe0\n[  265.213550]  schedule_timeout+0x7b/0x130\n[  265.213850]  ? __bpf_trace_hrtimer_expire_entry+0x20/0x20\n[  265.214250]  rcu_gp_fqs_loop+0x10a/0x520\n[  265.236350]  rcu_gp_kthread+0xe5/0x180\n[  265.237650]  kthread+0xcc/0xf0\n[  265.238150]  ? rcu_gp_init+0x4d0/0x4d0\n[  265.238450]  ? kthread_complete_and_exit+0x20/0x20\n[  265.238650]  ret_from_fork+0x1c/0x28\n[  265.238750] rcu: Stack dump where RCU GP kthread last ran:\n[  265.238950] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.1.0-53-686 #1  Debian 6.1.187-1\n[  265.239050] EIP: default_idle+0x13/0x20\n[  265.240950] Code: 00 00 31 c0 e9 4b fe ff ff e8 39 64 ff ff cc cc cc cc cc cc cc cc cc 3e 8d 74 26 00 55 89 e5 eb 07 0f 00 2d c4 0b 92 cb fb f4 <5d> c3 8d b4 26 00 00 00 00 8d 74 26 00 3e 8d 74 26 00 55 64 a1 e8\n[  265.241250] EAX: cb91ac00 EBX: cbc484c0 ECX: cbc484c0 EDX: effcfdc0\n[  265.241350] ESI: 00000000 EDI: 00000000 EBP: cbc3ff28 ESP: cbc3ff28\n[  265.241450] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00200212\n[  265.241550] CR0: 80050033 CR2: 0197cb10 CR3: 027fb000 CR4: 00000690\n[  265.241750] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000\n[  265.241850] DR6: 00000000 DR7: 00000000\n[  265.242350] Call Trace:\n[  265.242450]  arch_cpu_idle+0x12/0x20\n[  265.242550]  default_idle_call+0x39/0xe0\n[  265.242750]  do_idle+0x18d/0x1f0\n[  265.242950]  cpu_startup_entry+0x2d/0x30\n[  265.243050]  rest_init+0xac/0xb0\n[  265.243450]  arch_call_rest_init+0xd/0x17\n[  265.243750]  start_kernel+0x610/0x62f\n[  265.244350]  i386_start_kernel+0x48/0x4a\n[  265.244450]  startup_32_smp+0x161/0x164\n[  265.244850] CPU: 0 PID: 0 Comm: swapper/0 Not tainted 6.1.0-53-686 #1  Debian 6.1.187-1\n[  265.245050] EIP: default_idle+0x13/0x20\n[  265.245150] Code: 00 00 31 c0 e9 4b fe ff ff e8 39 64 ff ff cc cc cc cc cc cc cc cc cc 3e 8d 74 26 00 55 89 e5 eb 07 0f 00 2d c4 0b 92 cb fb f4 <5d> c3 8d b4 26 00 00 00 00 8d 74 26 00 3e 8d 74 26 00 55 64 a1 e8\n[  265.246050] EAX: cb91ac00 EBX: cbc484c0 ECX: cbc484c0 EDX: effcfdc0\n[  265.250650] ESI: 00000000 EDI: 00000000 EBP: cbc3ff28 ESP: cbc3ff28\n[  265.250850] DS: 007b ES: 007b FS: 00d8 GS: 0000 SS: 0068 EFLAGS: 00200212\n[  265.250950] CR0: 80050033 CR2: 0197cb10 CR3: 027fb000 CR4: 00000690\n[  265.258950] DR0: 00000000 DR1: 00000000 DR2: 00000000 DR3: 00000000\n[  265.259050] DR6: 00000000 DR7: 00000000\n[  265.259250] Call Trace:\n[  265.259350]  arch_cpu_idle+0x12/0x20\n[  265.259850]  default_idle_call+0x39/0xe0\n[  265.260050]  do_idle+0x18d/0x1f0\n[  265.260650]  cpu_startup_entry+0x2d/0x30\n[  265.260850]  rest_init+0xac/0xb0\n[  265.260950]  arch_call_rest_init+0xd/0x17\n[  265.261150]  start_kernel+0x610/0x62f\n[  265.261250]  i386_start_kernel+0x48/0x4a\n[  265.261350]  startup_32_smp+0x161/0x164\necho NO_GUARDADO > /root/cambio-posterior; printf \"\\n__CHECK_1__=%s\\n\" \"$?\"\n\n__CHECK_1__=0\nV86TEST# "
+    },
+    {
+      "name": "recuperar-ambos-discos",
+      "command": "cat /root/sesion-real /mnt/practica/dato && test ! -e /root/cambio-posterior && findmnt /mnt/practica && getenforce && test \"$(getenforce)\" = Enforcing",
+      "seconds": 1.062,
+      "code": 0,
+      "output": "GUARDADO_REAL\nSEGUNDO_DISCO_REAL\nTARGET        SOURCE   FSTYPE OPTIONS\n/mnt/practica /dev/sdb ext4   rw,relatime,seclabel\nEnforcing\n",
+      "transcript": "cat /root/sesion-real /mnt/practica/dato && test ! -e /root/cambio-posterior && findmnt /mnt/practica && getenforce && test \"$(getenforce)\" = Enforcing; printf \"\\n__CHECK_2__=%s\\n\" \"$?\"\nGUARDADO_REAL\nSEGUNDO_DISCO_REAL\nTARGET        SOURCE   FSTYPE OPTIONS\n/mnt/practica /dev/sdb ext4   rw,relatime,seclabel\nEnforcing\n\n__CHECK_2__=0\nV86TEST# "
+    },
+    {
+      "name": "romper-arranque-invitado-privado",
+      "command": "test -f /boot/grub/grub.cfg && mv /boot/grub/grub.cfg /boot/grub/grub.cfg.roto && printf \"UUID=inexistente / ext4 defaults 0 1\\n\" > /etc/fstab && sync",
+      "seconds": 1.127,
+      "code": 0,
+      "output": "",
+      "transcript": "test -f /boot/grub/grub.cfg && mv /boot/grub/grub.cfg /boot/grub/grub.cfg.roto && printf \"UUID=inexistente / ext4 defaults 0 1\\n\" > /etc/fstab && sync; printf \"\\n__CHECK_3__=%s\\n\" \"$?\"\n\n__CHECK_3__=0\nV86TEST# "
+    },
+    {
+      "name": "reset-limpio",
+      "command": "test ! -e /root/sesion-real && test ! -e /root/cambio-posterior && test ! -e /mnt/practica/dato && test -f /boot/grub/grub.cfg && test ! -e /boot/grub/grub.cfg.roto && ! grep -q inexistente /etc/fstab && test \"$(getenforce)\" = Enforcing && echo RESET_LIMPIO_REAL",
+      "seconds": 1.12,
+      "code": 0,
+      "output": "RESET_LIMPIO_REAL\n",
+      "transcript": "test ! -e /root/sesion-real && test ! -e /root/cambio-posterior && test ! -e /mnt/practica/dato && test -f /boot/grub/grub.cfg && test ! -e /boot/grub/grub.cfg.roto && ! grep -q inexistente /etc/fstab && test \"$(getenforce)\" = Enforcing && echo RESET_LIMPIO_REAL; printf \"\\n__CHECK_4__=%s\\n\" \"$?\"\nRESET_LIMPIO_REAL\n\n__CHECK_4__=0\nV86TEST# "
+    },
+    {
+      "name": "cambio-antes-de-reset-durante-guardado",
+      "command": "echo NO_DEBE_REAPARECER > /root/reset-durante-guardado && sync",
+      "seconds": 3.025,
+      "code": 0,
+      "output": "",
+      "transcript": "echo NO_DEBE_REAPARECER > /root/reset-durante-guardado && sync; printf \"\\n__CHECK_5__=%s\\n\" \"$?\"\n\n__CHECK_5__=0\nV86TEST# "
+    },
+    {
+      "name": "reset-cancela-guardado-tardio",
+      "command": "test ! -e /root/reset-durante-guardado && test \"$(getenforce)\" = Enforcing && echo RESET_DURANTE_GUARDADO_REAL",
+      "seconds": 0.478,
+      "code": 0,
+      "output": "RESET_DURANTE_GUARDADO_REAL\n",
+      "transcript": "test ! -e /root/reset-durante-guardado && test \"$(getenforce)\" = Enforcing && echo RESET_DURANTE_GUARDADO_REAL; printf \"\\n__CHECK_6__=%s\\n\" \"$?\"\nRESET_DURANTE_GUARDADO_REAL\n\n__CHECK_6__=0\nV86TEST# "
+    }
+  ],
+  "errors": [],
+  "profile": "D:\\RIVALIA\\prototipo-linux-navegador\\tools\\v86-test\\browser-session-aAkYRH",
+  "websiteModified": false,
+  "fullRhcsaValidated": false,
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "saved": {
+    "savedAt": "2026-10-08T17:33:30.463Z",
+    "bytes": 572906064,
+    "packedBytes": 134108915
+  },
+  "saveSeconds": 20.573,
+  "restoreSeconds": 8.439,
+  "browserRestartPassed": true,
+  "atomicFailurePassed": true,
+  "corruptionRefused": true,
+  "brokenGuestResetPassed": true,
+  "resetDuringSavePassed": true,
+  "resetPassed": true,
+  "collectionComplete": true,
+  "finalPage": {
+    "state": "shell",
+    "status": "Laboratorio disponible.",
+    "session": "El guardado es local a este navegador y a esta dirección.",
+    "tail": "\r\n\u001b[?2004l\r\u001b[?2004hV86TEST# test ! -e /root/reset-durante-guardado && test \"$(getenforce)\" = Enforcing && echo RESET_DURANTE_GUARDADO_REAL; printf \"\\n__CHECK_6__=%s\\n\" \"$?\"\r\n\u001b[?2004l\rRESET_DURANTE_GUARDADO_REAL\r\n\r\n__CHECK_6__=0\r\n\u001b[?2004hV86TEST# "
+  },
+  "seconds": 109.018
+}

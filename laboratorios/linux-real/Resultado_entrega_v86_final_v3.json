@@ -1,0 +1,485 @@
+{
+  "date": "2026-10-08T18:34:28.804Z",
+  "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
+  "evidenceCoherencePassed": true,
+  "functionalBrowserValidationPassed": true,
+  "publicExerciseCount": 44,
+  "exercises": [
+    {
+      "id": "archivo",
+      "title": "Archivo y permisos",
+      "evidence": [
+        "Resultado_v86_ejercicios_final_v3.json"
+      ]
+    },
+    {
+      "id": "usuarios",
+      "title": "Usuario y grupo",
+      "evidence": [
+        "Resultado_v86_ejercicios_final_v3.json"
+      ]
+    },
+    {
+      "id": "sgid",
+      "title": "Directorio compartido",
+      "evidence": [
+        "Resultado_v86_ejercicios_final_v3.json"
+      ]
+    },
+    {
+      "id": "archivo-tar",
+      "title": "Copia comprimida",
+      "evidence": [
+        "Resultado_v86_ejercicios_final_v3.json"
+      ]
+    },
+    {
+      "id": "dnf",
+      "title": "Instalar y actualizar un RPM",
+      "evidence": [
+        "Resultado_v86_ejercicios_final_v3.json"
+      ]
+    },
+    {
+      "id": "lvm",
+      "title": "LVM y montaje persistente",
+      "evidence": [
+        "Resultado_v86_ejercicios_final_v3.json"
+      ]
+    },
+    {
+      "id": "selinux",
+      "title": "Etiqueta SELinux persistente",
+      "evidence": [
+        "Resultado_v86_ejercicios_final_v3.json"
+      ]
+    },
+    {
+      "id": "tuned",
+      "title": "Aplicar un perfil tuned",
+      "evidence": [
+        "Resultado_v86_ejercicios_final_v3.json"
+      ]
+    },
+    {
+      "id": "sim-01",
+      "title": "Simulacro 01 · Recuperar root",
+      "evidence": [
+        "Resultado_v86_rdbreak_final_v8.json"
+      ]
+    },
+    {
+      "id": "sim-02",
+      "title": "Simulacro 02 · Red y hostname",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json",
+        "Resultado_v86_red_curso_final_v7.json"
+      ]
+    },
+    {
+      "id": "sim-03",
+      "title": "Simulacro 03 · Repositorios RPM",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-04",
+      "title": "Simulacro 04 · Puerto Apache y SELinux",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-05",
+      "title": "Simulacro 05 · Usuarios y grupos",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-06",
+      "title": "Simulacro 06 · Directorio colaborativo",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-07",
+      "title": "Simulacro 07 · Cron de hera",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-08",
+      "title": "Simulacro 08 · Tar y bzip2",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-09",
+      "title": "Simulacro 09 · Permisos con ACL",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-10",
+      "title": "Simulacro 10 · Cliente chrony",
+      "evidence": [
+        "Resultado_v86_red_curso_final_v7.json"
+      ]
+    },
+    {
+      "id": "sim-11",
+      "title": "Simulacro 11 · Buscar archivos de hera",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-12",
+      "title": "Simulacro 12 · Filtrar con grep",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-13",
+      "title": "Simulacro 13 · UID concreto",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-14",
+      "title": "Simulacro 14 · Sudo sin contraseña",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-15",
+      "title": "Simulacro 15 · LV por extents",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-16",
+      "title": "Simulacro 16 · Swap persistente",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-17",
+      "title": "Simulacro 17 · Reducir ext4 sin perder datos",
+      "evidence": [
+        "Resultado_v86_complementarias_final_v7.json"
+      ]
+    },
+    {
+      "id": "sim-18",
+      "title": "Simulacro 18 · Perfil tuned",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-19",
+      "title": "Simulacro 19 · Script de saludo",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-20",
+      "title": "Simulacro 20 · Web, SELinux y firewall",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "sim-21",
+      "title": "Simulacro 21 · Podman como servicio de usuario",
+      "evidence": [
+        "Resultado_v86_complementarias_final_v7.json"
+      ]
+    },
+    {
+      "id": "curso-ssh",
+      "title": "Curso · SSH con clave y copia de archivos",
+      "evidence": [
+        "Resultado_v86_complementarias_final_v7.json"
+      ]
+    },
+    {
+      "id": "curso-procesos",
+      "title": "Curso · Procesos y prioridad",
+      "evidence": [
+        "Resultado_v86_complementarias_final_v7.json"
+      ]
+    },
+    {
+      "id": "curso-target",
+      "title": "Curso · Objetivo de arranque",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "curso-shell",
+      "title": "Curso · Shell, enlaces y documentación",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "curso-script",
+      "title": "Curso · Script con argumento y bucle",
+      "evidence": [
+        "Resultado_v86_complementarias_final_v7.json"
+      ]
+    },
+    {
+      "id": "curso-timer",
+      "title": "Curso · Timer systemd",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "curso-journal",
+      "title": "Curso · Journal persistente",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "curso-caducidad",
+      "title": "Curso · Caducidad y umask",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "curso-ipv6",
+      "title": "Curso · IPv6 y resolución local",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "curso-selinux",
+      "title": "Curso · Booleano SELinux persistente",
+      "evidence": [
+        "Resultado_v86_catalogo_final_v9.json"
+      ]
+    },
+    {
+      "id": "curso-flatpak",
+      "title": "Curso · Flatpak local",
+      "evidence": [
+        "Resultado_v86_flatpak_usuario_final_v5.json"
+      ]
+    },
+    {
+      "id": "curso-servidor",
+      "title": "Curso · Servidor NFS/NTP (máquina 2)",
+      "evidence": [
+        "Resultado_v86_red_curso_final_v7.json"
+      ]
+    },
+    {
+      "id": "curso-nfs",
+      "title": "Curso · Cliente NFS",
+      "evidence": [
+        "Resultado_v86_red_curso_final_v7.json"
+      ]
+    },
+    {
+      "id": "curso-autofs",
+      "title": "Curso · Autofs",
+      "evidence": [
+        "Resultado_v86_red_curso_final_v7.json"
+      ]
+    },
+    {
+      "id": "curso-xfs",
+      "title": "Curso · Ampliar XFS",
+      "evidence": [
+        "Resultado_v86_complementarias_final_v7.json"
+      ]
+    }
+  ],
+  "reports": [
+    {
+      "file": "Resultado_v86_base_final_consolidada.json",
+      "flags": [
+        "baseBootPassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_catalogo_final_v9.json",
+      "flags": [
+        "catalogPassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_aplicaciones_final_v6.json",
+      "flags": [
+        "apachePassed",
+        "apacheSelinuxDenialPassed",
+        "podmanRootlessPassed",
+        "podmanVolumeAndPortPassed",
+        "podmanUserServicePassed",
+        "podmanRootServicePassed",
+        "applicationPersistencePassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_sesiones_final_ensayo5.json",
+      "flags": [
+        "browserRestartPassed",
+        "atomicFailurePassed",
+        "corruptionRefused",
+        "brokenGuestResetPassed",
+        "resetDuringSavePassed",
+        "resetPassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_modos_final_v4.json",
+      "flags": [
+        "practiceRealCheck",
+        "examDoesNotSendCommands",
+        "examRealCheck",
+        "checkDoesNotRepair",
+        "modeDoesNotReset"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_sintaxis_final_v4.json",
+      "flags": [
+        "syntaxPassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_estado_identidad_final_v3.json",
+      "flags": [],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_flatpak_usuario_final_v5.json",
+      "flags": [
+        "flatpakUserPassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_almacenamiento_final_ensayo6.json",
+      "flags": [
+        "storagePassed",
+        "persistencePassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_red_curso_final_v7.json",
+      "flags": [
+        "networkCoursePassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_complementarias_final_v7.json",
+      "flags": [],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_ejercicios_final_v3.json",
+      "flags": [
+        "positiveChecksPassed",
+        "wrongStateAndNoRepairPassed",
+        "editorNotInterruptedPassed",
+        "realEditorWritePassed",
+        "mobileNoOverflowPassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_rdbreak_final_v8.json",
+      "flags": [
+        "rdBreakProcedurePassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_prepublicacion_v2.json",
+      "flags": [
+        "defaultEntryPassed",
+        "rpmHistoryDownloadPassed",
+        "firewallConfigurationPassed",
+        "grubPersistentArgumentPassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_cobertura_final_v2.json",
+      "flags": [
+        "matrixPassed",
+        "persistencePassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_procedencia_final_v3.json",
+      "flags": [
+        "sourceInventoryMatchesFactory",
+        "guideContainerImportAndShellPassed"
+      ],
+      "complete": true
+    },
+    {
+      "file": "Resultado_v86_salida_final_v4.json",
+      "flags": [
+        "realUnicodePassed",
+        "realUnicodeInputPassed",
+        "savedVisibleOutputOnlyPassed",
+        "boundedHistoryPassed",
+        "resetAfterOutputPassed"
+      ],
+      "complete": true
+    }
+  ],
+  "recoveryProcedurePassed": true,
+  "recoveryResumeSeconds": 613.334,
+  "recoveryTargetSeconds": 180,
+  "recoveryPerformancePassed": false,
+  "fullRhcsaValidated": false,
+  "rhelDistribution": false,
+  "readyForStudents": false,
+  "published": false,
+  "websiteModified": false,
+  "sourceRedistributionReviewComplete": false,
+  "limitations": [
+    "Recuperación superior al objetivo de 180 s",
+    "Debian con herramientas auténticas, no equivalencia completa con RHEL",
+    "DNF y contenedores con recursos locales, sin Internet general",
+    "Falta subir públicamente la página y su archivo de fuentes y probar la dirección publicada"
+  ],
+  "sourceMaterialPrepared": true,
+  "sourceVersions": 261,
+  "sourcePublicUploadPending": true,
+  "readyForTrialUpload": true,
+  "grubPersistentArgumentPassed": true
+}
