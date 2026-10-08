@@ -34,7 +34,7 @@ export function createCheckRunner(send, idle, timeoutMs) {
             const end = new RegExp('(?:^|\\n)__SETUP_' + pending.nonce + '=(\\d+)\\n').exec(output);
             if (end) {
               if (Number(end[1]) !== 0) throw Error('Linux no pudo preparar la consola. Usa Reset o revisa tu sesión.');
-              result = {output};
+              result = {output, serial: pending.output};
             }
           } else result = parseProbe(pending.exercise, pending.nonce, output);
         }

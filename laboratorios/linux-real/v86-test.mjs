@@ -65,14 +65,17 @@ async function prepareConsole(){
    const promise=exerciseRunner.run({checks:[]},rootShell?consoleSetupCommand(recoveryScenario,password):"export PS1='[\\u@\\h \\W]\\$ '");
    busy=true;document.querySelector('#save').disabled=true;updateExerciseAvailability();
    const result=await promise;
+   // Conservar los controles reales de Readline (incluido bracketed paste).
+   // Ocultar los comandos de preparación no debe cambiar el protocolo de la TTY.
+   const actualPrompt='\r\n'+result.serial.slice(result.serial.lastIndexOf('\n')+1);
    consolePrepared=true;
    if(recoveryScenario&&result.output.includes('\nRECOVERY_REBOOT_REQUIRED\n')){
+     terminal.write((actualPrompt.match(/\x1b\[\?2004[hl]/g)||[]).join(''));
      document.documentElement.dataset.vmState='running';
      status.textContent='Reiniciando para recuperar root desde GRUB…';
      sendSerialText('reboot\n');
    }else{
      recoveryBootPending=false;
-     const actualPrompt='\r\n'+cleanSerial(result.output).split('\n').at(-1);
      terminal.write(actualPrompt);displayTranscript=appendTranscript(displayTranscript,actualPrompt,100000);
      document.documentElement.dataset.vmState='shell';status.textContent='Laboratorio disponible.';
    }
