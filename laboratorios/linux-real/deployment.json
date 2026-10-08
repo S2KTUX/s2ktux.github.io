@@ -3,19 +3,19 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715826358,
+  "verifiedPackageBytes": 715826550,
   "modifications": [
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "4b4fc5400ef17bb01c573dc01fecdc8613b29ef679c154ef8d60fe00359307b8",
-      "bytes": 7410
+      "sha256": "e8e5f7b89a2289dfcb7750fb11795905b4c4ad72dd48855aa991366485d66b9a",
+      "bytes": 7549
     },
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "39a7d2507465d3a8e7425645cb34ec6ced51bef9f26125ea8c08f56d98d7cd8a",
-      "bytes": 19189
+      "sha256": "95842cb3f5827072a57ceb64efbb9011d73c6309181600763b1db45726789df2",
+      "bytes": 19242
     },
     {
       "path": "v86-exercise-panel.mjs",
@@ -81,8 +81,8 @@
   "addedFiles": [
     {
       "path": "linux-real.css",
-      "sha256": "78843de022848c1e8c5b9c9c5465ef791efb489874481adbfbcfe1af6a3c2a27",
-      "bytes": 2755
+      "sha256": "452b0f0bc9ad95f8baa769f731b0e0464b71d02d93cd647ad27d971bc5e08215",
+      "bytes": 2785
     },
     {
       "path": "v86-clipboard.mjs",
@@ -95,7 +95,7 @@
       "bytes": 1640
     }
   ],
-  "note": "publicacion.json y los informes describen la validación local anterior. La integración usa el diseño compartido de la web, copia por selección, pegado con clic derecho, un prompt configurado por Bash y un escenario de recuperación con guardado independiente. La configuración del prompt y la desactivación de autologin en el escenario se ejecutan en el Linux real, sobre sus discos locales; no se cambia la fábrica ni el motor.",
+  "note": "publicacion.json y los informes describen la validación local anterior. La integración usa el diseño compartido de la web, una entrada simplificada con prácticas, ayuda y opciones plegadas, copia por selección, pegado con clic derecho, un prompt configurado por Bash y un escenario de recuperación con guardado independiente. La configuración del prompt y la desactivación de autologin en el escenario se ejecutan en el Linux real, sobre sus discos locales; no se cambia la fábrica ni el motor.",
   "sources": {
     "url": "https://github.com/S2KTUX/s2ktux.github.io/releases/download/linux-real-beta-2026-10-08/fuentes-laboratorio-v3.tar.gz",
     "bytes": 811556382,

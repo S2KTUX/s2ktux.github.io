@@ -1,7 +1,7 @@
 import {Terminal} from './vendor/xterm.mjs';
 import {ChunkDisk} from './v86-disk.mjs';
 import {LocalSessions,hashBytes} from './v86-sessions.mjs';
-import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261008-console';
+import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261008-simple';
 import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261008-console';
 import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261008-console';
 import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261008-console';
@@ -45,6 +45,7 @@ if(recoveryScenario){
  document.querySelector('#recovery-note').hidden=false;
  document.querySelector('#recovery-link').hidden=true;
  document.querySelector('#network-note').hidden=true;
+ document.querySelector('#more-options').open=true;
  document.querySelector('[data-lab-mode="exam"]').click();
 }
 const encoder=new TextEncoder();
@@ -116,7 +117,7 @@ document.querySelector('#save').onclick=()=>globalThis.vmSaveSession().catch(con
 document.querySelector('#start').onclick=async()=>{
   document.querySelector('#start').disabled=true;status.textContent='Cargando Linux real…';
   const base=new URL('./assets/v86-test/',import.meta.url);
-  const fail=error=>{document.documentElement.dataset.vmState='failed';status.textContent='Laboratorio detenido: '+error.message;document.querySelector('#result').textContent='No se da por válido un arranque incompleto. Puedes usar Reset para empezar con la base limpia; perderás el guardado de esta máquina.';console.error(error);emulator?.stop();};
+  const fail=error=>{document.documentElement.dataset.vmState='failed';status.textContent='Laboratorio detenido: '+error.message;document.querySelector('#result').hidden=false;document.querySelector('#result').textContent='Puedes usar Reset para empezar con la base limpia; perderás el guardado de esta máquina.';console.error(error);emulator?.stop();};
   try{
     if(diskProfile!=='grub'&&!bootGrub)throw Error('La nueva imagen requiere arranque BIOS/GRUB.');
     const diskBase=bootGrub?new URL(diskProfile+'/',base):base;
