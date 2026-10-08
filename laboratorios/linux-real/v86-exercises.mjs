@@ -1,7 +1,7 @@
 // Prácticas de la candidata Debian: no equivalencia automática con RHEL.
 // Los checks consultan resultados; nunca ejecutan la solución ni preparan datos.
-import { courseExercises } from './v86-course-exercises.mjs';
-import { extraExercises } from './v86-extra-exercises.mjs';
+import { courseExercises } from './v86-course-exercises.mjs?v=20261008-console';
+import { extraExercises } from './v86-extra-exercises.mjs?v=20261008-console';
 export const introExercises = [
   {
     id: 'archivo', title: 'Archivo y permisos',

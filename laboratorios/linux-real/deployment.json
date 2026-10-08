@@ -3,13 +3,49 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715818222,
+  "verifiedPackageBytes": 715826358,
   "modifications": [
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "7a07923821ada3ae1ddb7871fee2586519bb200250a7f04deab8c45ab0bfa02c",
-      "bytes": 5186
+      "sha256": "4b4fc5400ef17bb01c573dc01fecdc8613b29ef679c154ef8d60fe00359307b8",
+      "bytes": 7410
+    },
+    {
+      "path": "v86-test.mjs",
+      "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
+      "sha256": "39a7d2507465d3a8e7425645cb34ec6ced51bef9f26125ea8c08f56d98d7cd8a",
+      "bytes": 19189
+    },
+    {
+      "path": "v86-exercise-panel.mjs",
+      "before": "c55728a98f164a821d7d0791b96cdb16065202b2cd2f33f1ab60ab9b88858505",
+      "sha256": "1ca7440af3d474ca74d3f3be22bd3ac3b2e0c3e5ac5faa6ecc66124d8a13bfc5",
+      "bytes": 6193
+    },
+    {
+      "path": "v86-check-runner.mjs",
+      "before": "2edebe2280441661c34e3d9a2fc16d3255438c4a50e47d402a413fd3e9ae0400",
+      "sha256": "f3c38879ec653d1e73f89164dc410a868a06977dc5d81a3883e8ddc66e2300e2",
+      "bytes": 2803
+    },
+    {
+      "path": "v86-exercises.mjs",
+      "before": "172951a817f4989725d6c56308a126f890e6b650f1056f827ba6a7d00075ef04",
+      "sha256": "3b9a1ab9b1b828a1b2d6f4d087b228a2b0303555cf5d8fb10dde581dbde40300",
+      "bytes": 11268
+    },
+    {
+      "path": "v86-course-exercises.mjs",
+      "before": "6f026061b53c2b8712734e285ba760f465a49398f5def615a6113d886de7f03e",
+      "sha256": "7c05edfff18cf7998a5ae7d27008ad69c4172cc8830cabe6e8c2443d97dac0e8",
+      "bytes": 25369
+    },
+    {
+      "path": "v86-extra-exercises.mjs",
+      "before": "2b3bef5151ec0890c34ad149e3bae9cb9d94008527b97b79b848d3c7600fae7a",
+      "sha256": "26ef6d25006437271d6e511ca01b2753a112a90dff5dfa7955bb36875e98e13c",
+      "bytes": 18369
     },
     {
       "path": "GUIA_CURSO_LABORATORIO.md",
@@ -42,7 +78,24 @@
       "bytes": 3198
     }
   ],
-  "note": "publicacion.json y los informes describen la validación local anterior; este archivo identifica la integración web. Se añaden el enlace público de fuentes, atributos de seguridad de enlaces, tipos de botones y la configuración explícita de MAC distintas al usar dos copias del estado preparado. La máquina y el motor no se modifican.",
+  "addedFiles": [
+    {
+      "path": "linux-real.css",
+      "sha256": "78843de022848c1e8c5b9c9c5465ef791efb489874481adbfbcfe1af6a3c2a27",
+      "bytes": 2755
+    },
+    {
+      "path": "v86-clipboard.mjs",
+      "sha256": "dba302fcb73651d90cdd8731defb1e4ccff52211a542e9c5e4be5af05e302c2c",
+      "bytes": 1897
+    },
+    {
+      "path": "v86-guest-console.mjs",
+      "sha256": "2abdb7217e8ac0a6cb979158f229dc6f0fc44717f4eda1268d347b7ef3be910a",
+      "bytes": 1640
+    }
+  ],
+  "note": "publicacion.json y los informes describen la validación local anterior. La integración usa el diseño compartido de la web, copia por selección, pegado con clic derecho, un prompt configurado por Bash y un escenario de recuperación con guardado independiente. La configuración del prompt y la desactivación de autologin en el escenario se ejecutan en el Linux real, sobre sus discos locales; no se cambia la fábrica ni el motor.",
   "sources": {
     "url": "https://github.com/S2KTUX/s2ktux.github.io/releases/download/linux-real-beta-2026-10-08/fuentes-laboratorio-v3.tar.gz",
     "bytes": 811556382,

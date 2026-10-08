@@ -1,0 +1,29 @@
+.linux-real-page { width: min(1120px, 100%); margin: 0 auto; padding: 32px var(--space-page); flex: 1; }
+.linux-real-page h1, .linux-real-page h2, .linux-real-page h3 { color: var(--head); }
+.linux-real-page h1 { font: 22px/1.6 'Press Start 2P', monospace; margin: 12px 0 22px; }
+.linux-real-page h2 { font: 14px/1.6 'Press Start 2P', monospace; margin: 0 0 18px; }
+.linux-real-page h3 { font-size: 18px; margin: 16px 0 10px; }
+.linux-real-page p { margin: 12px 0; overflow-wrap: anywhere; }
+.linux-real-page .eyebrow { font: 10px/1.8 'Press Start 2P', monospace; color: #d97757; }
+.linux-real-page .lead { font-size: 18px; }
+.linux-real-page details, .exercise-panel { border: 3px solid var(--line); background: var(--surface); box-shadow: var(--pixel-shadow-md); margin: 24px 0; padding: 18px; }
+.linux-real-page summary { cursor: pointer; color: var(--head); }
+.linux-real-page button, .linux-real-page select { font: 14px/1.5 'Share Tech Mono', monospace; border: 2px solid var(--line); border-radius: 0; color: var(--head); background: var(--surface2); padding: 10px 12px; min-height: 42px; }
+.linux-real-page button { box-shadow: var(--pixel-shadow-sm); cursor: pointer; }
+.linux-real-page button:hover:not(:disabled) { background: var(--surface); }
+.linux-real-page button:disabled { opacity: .55; cursor: not-allowed; }
+.linux-real-page [aria-pressed="true"] { background: var(--head); color: var(--bg); }
+.linux-real-page [hidden] { display: none !important; }
+.controls, .exercise-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 18px 0; }
+.console { margin: 24px 0 12px; border: 3px solid var(--line); box-shadow: var(--pixel-shadow-md); background: #161009; }
+.console-bar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 10px 14px; border-bottom: 2px solid var(--line); background: #2c2218; color: #e0a458; font: 14px/1.5 'Share Tech Mono', monospace; }
+.console-bar span { color: #b5a58a; }
+.console-scroll { padding: 14px; overflow-x: auto; }
+#terminal { min-width: 870px; }
+#clipboard-status, #session-status, #downloads, #result { color: var(--muted); font-size: 14px; }
+.warning { border-left: 4px solid #d97757; padding: 10px 14px; background: var(--surface2); }
+.exercise-panel select { display: block; width: 100%; margin: 12px 0; }
+.exercise-panel pre { padding: 18px; overflow-x: auto; background: #161009; color: #e9ddc7; border: 2px solid var(--line); font: 16px/1.55 'Share Tech Mono', monospace; }
+.exercise-panel ul { padding-left: 24px; }
+[data-exercise-feedback][data-result="passed"] { color: var(--head); }
+@media (max-width: 600px) { .linux-real-page h1 { font-size: 16px; } .linux-real-page { padding-top: 24px; } .exercise-panel { padding: 14px; } }
