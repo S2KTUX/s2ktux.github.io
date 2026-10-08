@@ -7,3 +7,4 @@ Sitemap: https://s2ktux.github.io/sitemap.xml
 Disallow: /_rhcsa/
 Disallow: /_lpic/
 Disallow: /_docker/
+Disallow: /_kubernetes/

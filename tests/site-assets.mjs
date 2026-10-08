@@ -186,7 +186,7 @@ for (const htmlPath of nonTerminalHtml) {
     if (!/\btype=["'](?:button|submit|reset)["']/i.test(match[0])) integrityIssues.push(`${rel} -> button without explicit type`);
   }
 
-  const isLessonFragment = /^_(?:rhcsa|lpic|docker)\//.test(rel);
+  const isLessonFragment = /^_(?:rhcsa|lpic|docker|kubernetes)\//.test(rel);
   if (!isLessonFragment) continue;
   const contentTags = [...html.matchAll(/<div\b[^>]*\bclass=["'][^"']*\bcourse-content\b[^"']*["'][^>]*>/gi)];
   if (contentTags.length !== 1) integrityIssues.push(`${rel} -> expected one course-content block`);
@@ -285,10 +285,11 @@ for (const expected of ['sobre.html', '/cursos/rhcsa-9/', '/cursos/lpic-1/', '/c
   assert.ok(sitemap.includes(expected), `Sitemap entry is missing: ${expected}`);
 }
 assert.doesNotMatch(sitemap, /leccion\.html\?|curso\.html\?/, 'Legacy query routes must not be in the sitemap');
-assert.doesNotMatch(sitemap, /https:\/\/s2ktux\.github\.io\/cursos\/kubernetes-cka\/<\/loc>/, 'The planned Kubernetes course must stay out of the sitemap until lessons exist');
-assert.doesNotMatch(sitemap, /kubernetes-cka\/clase-/i, 'Placeholder Kubernetes lessons must not be in the sitemap');
+assert.match(sitemap, /https:\/\/s2ktux\.github\.io\/cursos\/kubernetes-cka\/<\/loc>/, 'The course has a published introduction');
+assert.match(sitemap, /kubernetes-cka\/clase-00-fundamentos-de-kubernetes\//i);
+assert.doesNotMatch(sitemap, /kubernetes-cka\/clase-(?:0[1-9]|[1-9]\d)-/i, 'Unpublished Kubernetes lessons must not be in the sitemap');
 const plannedKubernetes = await readFile(join(root, 'cursos/kubernetes-cka/index.html'), 'utf8');
-assert.match(plannedKubernetes, /name="robots" content="noindex,follow"/, 'The planned Kubernetes route must be noindex');
+assert.match(plannedKubernetes, /name="robots" content="index,follow,max-image-preview:large"/, 'The published course must be indexable');
 assert.doesNotMatch(plannedKubernetes, /CKA · CKA/, 'Kubernetes kicker must not repeat CKA');
 
 const dockerVideos = [
