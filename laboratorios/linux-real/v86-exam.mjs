@@ -1,4 +1,5 @@
-import {examQuestions,EXAM_SECONDS,EXAM_TOTAL,EXAM_PASS,scoreQuestion} from './v86-exam-data.mjs?v=20261009-intuitive';
+import {examQuestions,EXAM_SECONDS,EXAM_TOTAL,EXAM_PASS,scoreQuestion} from './v86-exam-data.mjs?v=20261010-exam';
+import {examNode2Information} from './v86-exam-fixtures.mjs?v=20261010-exam';
 const $=s=>document.querySelector(s),make=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e;};
 const attempt=Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>b.toString(16).padStart(2,'0')).join('');
 const machines=new Map(),pending=new Map(),indices=new Map([['1',0],['2',0]]);
@@ -9,7 +10,8 @@ const timeText=s=>[Math.floor(s/3600),Math.floor(s%3600/60),s%60].map(v=>String(
 function renderQuestions(){
  const list=questions(),i=indices.get(selected),q=list[i],root=$('#exam-questions');
  root.replaceChildren();const item=make('article','');item.className='exam-question';
- item.append(make('h2',q.title),make('p',q.goal));if(q.note)item.append(make('p',q.note));root.append(item);
+ if(selected==='2'){const info=make('p',examNode2Information);info.className='exam-machine-info';root.append(info);}
+ item.append(make('h2',q.title));for(const paragraph of q.goal.split('\n\n'))item.append(make('p',paragraph));if(q.note)item.append(make('p',q.note));root.append(item);
  const select=$('#question-select');select.replaceChildren();
  list.forEach((q,i)=>{const o=make('option',`${label(q)} · ${q.title}`);o.value=i;select.append(o);});
  select.value=i;$('#question-prev').disabled=i===0;$('#question-next').disabled=i===list.length-1;
@@ -24,7 +26,7 @@ function selectNode(node){
  $('#exam-machine-placeholder').hidden=machines.has(node);
  $('#exam-machine-start').disabled=phase==='preparing'||phase==='grading';
  $('#exam-machine-start').textContent=phase==='preparing'?'Espera a la máquina 1…':'Iniciar máquina 2';
- $('#exam-machine-description').textContent='La máquina 2 está apagada. Iníciala para trabajar en ella y disponer del servidor NFS/NTP de las preguntas 7 y 10. El cronómetro se pausa solo durante su preparación inicial.';
+ $('#exam-machine-description').textContent='La máquina 2 está apagada. Iníciala para trabajar en ella. Tras su arranque normal estarán disponibles los servicios de la red del examen. El cronómetro se pausa solo durante su preparación inicial.';
  renderQuestions();
 }
 for(const b of document.querySelectorAll('[data-exam-node]'))b.onclick=()=>selectNode(b.dataset.examNode);

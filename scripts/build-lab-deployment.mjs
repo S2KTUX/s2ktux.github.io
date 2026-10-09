@@ -7,7 +7,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const lab = join(root, 'laboratorios/linux-real');
 const original = JSON.parse(await readFile(join(lab, 'publicacion.json'), 'utf8'));
 const permitted = new Set(['licencias/LEEME.md', 'licencias/LEEME.html', 'v86-test.html', 'PRACTICAS_V86.html', 'GUIA_CURSO_LABORATORIO.md', 'GUIA_CURSO_LABORATORIO.html', 'v86-test.mjs', 'v86-check-runner.mjs', 'v86-exercise-panel.mjs', 'v86-exercises.mjs', 'v86-course-exercises.mjs', 'v86-extra-exercises.mjs']);
-const additions = ['linux-real.css', 'v86-clipboard.mjs', 'v86-guest-console.mjs', 'examen.html', 'v86-exam.mjs', 'v86-exam-data.mjs', 'v86-exam-setup.mjs', 'v86-exam-console.mjs', 'v86-network.mjs', 'v86-ethernet-internet.mjs', 'v86-restart.mjs'];
+const additions = ['linux-real.css', 'v86-clipboard.mjs', 'v86-guest-console.mjs', 'examen.html', 'v86-exam.mjs', 'v86-exam-data.mjs', 'v86-exam-setup.mjs', 'v86-exam-fixtures.mjs', 'v86-exam-console.mjs', 'v86-network.mjs', 'v86-ethernet-internet.mjs', 'v86-restart.mjs'];
 const changed = [];
 let total = 0;
 for (const record of original.records) {
