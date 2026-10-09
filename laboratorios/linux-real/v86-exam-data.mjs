@@ -27,8 +27,8 @@ export const examQuestions = [
   question(7,1,20,extra('autofs'),[['Mapas y montaje','cat /etc/auto.master.d/curso.autofs /etc/auto.curso; findmnt -M /mnt/curso-auto/datos']],{note:'El servidor está en la máquina 2. Durante su recuperación/reinicio no está disponible; vuelve a comprobar cuando termine de arrancar.'}),
   question(8,1,10,course(8),[['Archivo comprimido','ls -l /root/varlog-backup.tar.bz2; tar -tjf /root/varlog-backup.tar.bz2 | head -n 20']]),
   question(9,1,15,course(9),[['Permisos efectivos','stat -c "%U:%G %a" /var/tmp/hosts; getfacl -cp /var/tmp/hosts']],{
-    note:'Puedes copiar antes o después de añadir las entradas del hostname/NTP. La corrección ignora solo esas entradas, que cambian en otras preguntas.',
-    checks:course(9).checks.map((c,i)=>i===0?['Copia y propietario',`test "$(stat -c %U:%G /var/tmp/hosts)" = root:root && python3 -c 'def clean(p):\n return [x for x in open(p).readlines() if not {"ntp.lab.local","nodo1.lab.local"}.intersection(x.split())]\nassert clean("/etc/hosts")==clean("/var/tmp/hosts")'`]:c),
+    note:'Puedes copiar antes o después de añadir las entradas del hostname/NTP. La corrección ignora esas entradas y las líneas vacías; el resto de la copia se comprueba.',
+    checks:course(9).checks.map((c,i)=>i===0?['Copia y propietario',`test "$(stat -c %U:%G /var/tmp/hosts)" = root:root && python3 -c 'def clean(p):\n return [x for x in open(p).readlines() if x.strip() and not {"ntp.lab.local","nodo1.lab.local"}.intersection(x.split())]\nassert clean("/etc/hosts")==clean("/var/tmp/hosts")'`]:c),
   }),
   question(10,1,15,course(10),[['Chrony','cat /etc/chrony/chrony.conf; chronyc -n sources']],{goal:course(10).goal.replace('de la segunda pestaña','de la máquina 2')}),
   question(11,1,10,course(11),[['Archivos copiados','find /root/herafiles -type f | head -n 30']]),
@@ -61,7 +61,7 @@ export const examQuestions = [
   },[['Imagen de hermes',asHermes('podman images; podman image inspect localhost/curso-examen:1')]]),
   question(21,2,15,podman,[['Servicio y contenedor',asHermes('systemctl --user status container-webapp.service --no-pager; podman ps; podman inspect webapp')]],{
     goal:'Como hermes, usa localhost/curso-examen:1 para webapp, con /opt/entrada → /data/in y /opt/salida → /data/out. Configura su unidad systemd de usuario y linger. Reinicia la máquina 2 y comprueba que arranca sin iniciar sesión como hermes.',
-    solution:podman.solution.replace('useradd -m -U -s /bin/bash hermes\npasswd hermes\n','').replace('podman import /srv/curso-contenedor/imagen.tar localhost/curso-busybox:1\n','').replaceAll('localhost/curso-busybox:1','localhost/curso-examen:1'),
+    solution:podman.solution.replace('useradd -m -U -s /bin/bash hermes\npasswd hermes\n','').replace('podman import /srv/curso-contenedor/imagen.tar localhost/curso-busybox:1\n','').replaceAll('localhost/curso-busybox:1','localhost/curso-examen:1').replace('# Tras arrancar, vuelve a la sesión de hermes:\nssh hermes@localhost\n# Ahora pulsa Comprobar ejercicio.','# Tras arrancar, entra como root.\n# El servicio debe estar en marcha sin iniciar sesión como hermes.\n# Deja ambas terminales en un prompt de root vacío antes de Finalizar examen.'),
     checks:[...podman.checks.map(c=>[c[0],asHermes(c[1]),c[2]]),['Reinicio después de crear el servicio','test "$(stat -c %Y /home/hermes/.config/systemd/user/container-webapp.service)" -lt "$(awk \'/^btime / {print $2}\' /proc/stat)"']],
   }),
 ];

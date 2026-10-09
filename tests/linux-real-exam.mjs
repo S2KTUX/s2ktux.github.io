@@ -9,6 +9,7 @@ assert.equal(examQuestions.reduce((n,q)=>n+q.points,0),EXAM_TOTAL);
 assert.equal(EXAM_TOTAL,300);assert.equal(EXAM_PASS,210);assert.equal(EXAM_SECONDS,10800);
 for(const q of examQuestions){
   assert.ok(q.goal&&q.solution&&q.observations.length&&q.checks.length);
+  assert.doesNotMatch(q.solution,/pulsa Comprobar ejercicio/,'El examen no tiene comprobación por ejercicio durante el intento');
   assert.ok([1,2].includes(q.node));assert.equal(q.checkUser,undefined);
   const outcomes=ok=>({results:q.checks.map(([label])=>({label,ok})),observations:[]});
   assert.equal(scoreQuestion(q,outcomes(true)).points,q.points);
@@ -18,6 +19,7 @@ for(const q of examQuestions){
   assert.throws(()=>scoreQuestion(q,{results:[]}));
 }
 const lv=examQuestions.find(q=>q.number===15),reduce=examQuestions.find(q=>q.number===17);
+assert.match(examQuestions.find(q=>q.number===9).checks[0][1],/if x\.strip\(\) and not/,'Las líneas vacías de las tareas de red no deben invalidar la copia de hosts');
 assert.doesNotMatch(lv.solution,/mklabel/);assert.match(lv.solution,/exam_disk/);assert.match(lv.solution,/2147483648/);
 assert.doesNotMatch(reduce.solution,/mkfs|lvcreate/);assert.match(reduce.solution,/seedvg/);
 for(const number of [20,21]){
