@@ -3,19 +3,19 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715829102,
+  "verifiedPackageBytes": 715829600,
   "modifications": [
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "36a54d3276e58e75aa64ea33e07930680e8c6531eaa17888f4df4285a89614eb",
-      "bytes": 4682
+      "sha256": "5cef7040431bffe551f9bb29daa7f9784be3fc2c95e21f08fab80fb092eeaccc",
+      "bytes": 4652
     },
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "fc46ea299712a04faa8b27d756934902c95f0eb9b36681b990261bba30a33e24",
-      "bytes": 23777
+      "sha256": "99e515aaff9acac5e5cf58f314165e0bc76bad0ca08db41d373bcc55bbb20768",
+      "bytes": 23790
     },
     {
       "path": "v86-exercise-panel.mjs",
@@ -50,14 +50,14 @@
     {
       "path": "GUIA_CURSO_LABORATORIO.md",
       "before": "4eabd8bd48db0231c399434c0d2867138f29ba5bb4122432753fb65fed828277",
-      "sha256": "af9880c2e0d5b1c8253735c40199ff49b17ddce7e3500349ec98bd0308c33a62",
-      "bytes": 8384
+      "sha256": "12ce1c6df002b6de51e7309b750514885bc1c18385c4df361aff68754344b47f",
+      "bytes": 8630
     },
     {
       "path": "GUIA_CURSO_LABORATORIO.html",
       "before": "103540cac5639e0fd9c0bceacf56b9fa17184089ac43a203c69d54e079cdc701",
-      "sha256": "ae3400dcbd82904071b52353a87b23ef41d7cc3dd2b4ef2ea6d0d1d4ae79803b",
-      "bytes": 9943
+      "sha256": "efee493aa005c69f0e9435a7bc25f84d816843422dab5583435637d6e84d4dab",
+      "bytes": 10212
     },
     {
       "path": "PRACTICAS_V86.html",
@@ -81,8 +81,8 @@
   "addedFiles": [
     {
       "path": "linux-real.css",
-      "sha256": "593ca3163e199f0766b2df75356e231e8af4340e9bef41272abc299c58e8a2aa",
-      "bytes": 5420
+      "sha256": "35e3fee89e50d46c3986473faf296f88137b811bd66ff51672b8378defa542ae",
+      "bytes": 5563
     },
     {
       "path": "v86-clipboard.mjs",
@@ -96,13 +96,13 @@
     },
     {
       "path": "examen.html",
-      "sha256": "f05f5823b38268cc037c2b00999e9d1e200607ffa10e93a6d36a0056b01ab057",
-      "bytes": 3780
+      "sha256": "cea7ad69693ce223f0d2ee5086c7407cafcf195879afdee52e6e6128761eb9d0",
+      "bytes": 3777
     },
     {
       "path": "v86-exam.mjs",
-      "sha256": "530528723869d5aee3659bc01aba3962ac0334d350eabb5e0c5c819f589a650b",
-      "bytes": 9814
+      "sha256": "acc31131b5680a8fc6dd5034ba615e73e3cd69d87088bf96e78b2b45bdfe6ad6",
+      "bytes": 9731
     },
     {
       "path": "v86-exam-data.mjs",
@@ -125,12 +125,17 @@
       "bytes": 2217
     },
     {
+      "path": "v86-ethernet-internet.mjs",
+      "sha256": "80ee7217b95dd43b24786de914a7043eda4b5444549c6825b3949f343f455e4b",
+      "bytes": 8305
+    },
+    {
       "path": "v86-restart.mjs",
       "sha256": "3ab323a9ff92507590c25e3ac67a77deb153e7b5027258c5bc8bc3f8bdf68397",
       "bytes": 345
     }
   ],
-  "note": "Los informes históricos describen la validación anterior. 44 prácticas y examen independiente: dos VM nuevas, inicio explícito de la segunda, 22 tareas, 3 horas y rúbrica educativa de 300 puntos (aprobado desde 210). Una pregunta cada vez, sin pistas ni puntuación durante el intento. Puede finalizarse vacío o parcial; una segunda TTY consulta resultados reales sin interrumpir el editor del alumno. Práctica nueva sin IP inicial: Internet TCP por Wisp público y DNS por Cloudflare se configura desde Linux, sin selector externo ni respuestas de ping/NTP fabricadas. Los guardados conservan su configuración. La fábrica y el motor no cambian.",
+  "note": "Los informes históricos describen la validación anterior. 44 prácticas y examen independiente: dos VM nuevas, inicio explícito de la segunda, 22 tareas, 3 horas y rúbrica educativa de 300 puntos (aprobado desde 210). Una pregunta cada vez, sin pistas ni puntuación durante el intento. Puede finalizarse vacío o parcial; una segunda TTY consulta resultados reales sin interrumpir el editor del alumno. Avisos discretos con asterisco. Práctica nueva sin IP inicial: Internet IPv4 mediante relay.widgetry.org autorizado, con NAT y filtrado de respuestas a tráfico TCP/UDP/ICMP iniciado por la VM; DNS y ping reales. Sin selector externo ni respuestas de ping/NTP fabricadas. Examen en red privada, sin puente externo. Los guardados conservan su configuración. La fábrica y el motor no cambian.",
   "sources": {
     "url": "https://github.com/S2KTUX/s2ktux.github.io/releases/download/linux-real-beta-2026-10-08/fuentes-laboratorio-v3.tar.gz",
     "bytes": 811556382,
@@ -141,7 +146,7 @@
   "knownLimits": [
     "Debian i386, no RHEL; no equivale al examen oficial",
     "DNF con RPM locales, no actualiza Debian",
-    "Internet experimental depende de un relay ajeno; TCP/IPv4 y DNS, sin ping/UDP externos ni puertos entrantes",
+    "Internet de práctica depende de un relay público ajeno que podría observar tráfico sin cifrar; solo IPv4 TCP/UDP/echo ICMP de salida, sin entrada no solicitada, IPv6 externo ni fragmentos IPv4. Examen privado sin acceso externo.",
     "Recuperación de root y reetiquetado: aproximadamente 5–10 minutos según equipo; puede tardar más",
     "Guardado manual local; no conserva conexiones externas",
     "Examen sin guardado automático, sin vigilancia ni protección antitrampas; necesita memoria para dos VM",

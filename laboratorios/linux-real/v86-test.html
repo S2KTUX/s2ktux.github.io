@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="/terminal-page.css?v=20260826-phase3">
 <link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b">
 <link rel="stylesheet" href="vendor/xterm.css">
-<link rel="stylesheet" href="linux-real.css?v=20261009-selected">
+<link rel="stylesheet" href="linux-real.css?v=20261009-network">
 <script defer src="/site-shell.js?v=20260828-hardening"></script>
 </head>
 <body><div class="site-page-shell site-app-shell">
@@ -32,8 +32,8 @@
 <div class="controls terminal-controls"><button type="button" id="reboot" disabled>Reiniciar máquina</button><a class="lab-button" id="other-node" href="?node=2" target="_blank" rel="noopener">Abrir máquina 2</a><a class="lab-button" id="recovery-link" href="?scenario=recovery" target="_blank" rel="noopener">Practicar recuperación de root</a></div>
 <p id="clipboard-status" role="status" aria-live="polite"></p>
 <p id="result" class="warning" role="status" hidden></p>
-<aside class="lab-information" aria-label="Información del laboratorio"><p>Es Debian, no Red Hat: algunos servicios y rutas cambian. DNF trabaja con RPM locales de prácticas; APT administra Debian.</p><p>La recuperación de root y el reetiquetado pueden tardar aproximadamente 5–10 minutos, o más según el equipo.</p>
-<p id="network-note"><span id="node-name">Máquina 1</span> · Red: 10.42.0.20/24 (máquina 2: 10.42.0.11/24), gateway y DNS 10.42.0.1. Configúrala desde Linux. Las conexiones externas usan Wisp y Cloudflare; no envíes datos privados. TCP/DNS disponibles; no ping externo.</p></aside>
-<p id="downloads" hidden></p><p class="lab-legal"><a href="licencias/LEEME.html" target="_blank" rel="noopener">Avisos y fuentes del software</a></p>
+<p id="network-note" class="lab-network"><span id="node-name">Máquina 1</span> · Configura la red desde Linux: IP 10.42.0.20/24 para la máquina 1 o 10.42.0.11/24 para la máquina 2; puerta de enlace y DNS 10.42.0.1.</p>
+<aside class="lab-information" aria-label="Información del laboratorio"><p><small>* Es Debian, no Red Hat: algunos servicios y rutas cambian. DNF trabaja con RPM locales de prácticas; APT administra Debian.</small></p><p><small>* La recuperación de root y el reetiquetado pueden tardar aproximadamente 5–10 minutos, o más según el equipo.</small></p><p><small>* La conexión a Internet utiliza servicios públicos externos. Usa solo datos de prácticas.</small></p></aside>
+<p id="downloads" hidden></p>
 </main><footer class="site-footer"><div class="site-footer-inner"><a class="site-footer-brand" href="/">S2KTUX</a><p>Aprender practicando · Laboratorio local en tu navegador</p></div></footer>
-</div><script src="assets/v86-test/libv86.js"></script><script type="module" src="v86-test.mjs?v=20261009-intuitive"></script></body></html>
+</div><script src="assets/v86-test/libv86.js"></script><script type="module" src="v86-test.mjs?v=20261009-network"></script></body></html>
