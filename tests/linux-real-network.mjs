@@ -19,4 +19,4 @@ const sent=[];const adapter={send:b=>sent.push(b),wispws:{readyState:1}};restric
 adapter.send(packet(1,[8,8,8,8]));adapter.send(packet(6,[1,1,1,1]));assert.equal(sent.length,1);
 adapter.wispws.readyState=3;adapter.send(packet(6,[1,1,1,1]));assert.equal(sent.length,1,'Puente caído sin éxito inventado ni excepción');
 assert.throws(()=>restrictInternetAdapter({}));assert.match(internetOptions('1').relay_url,/^wisps:\/\//);
-console.log('✓ Red: TCP público opcional, DNS real, sin ping/NTP fabricados ni interceptar a la otra VM.');
+console.log('✓ Red: TCP público integrado, DNS real, sin ping/NTP fabricados ni interceptar a la otra VM.');

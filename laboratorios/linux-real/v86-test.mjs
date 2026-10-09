@@ -1,15 +1,16 @@
 import {Terminal} from './vendor/xterm.mjs';
 import {ChunkDisk} from './v86-disk.mjs';
 import {LocalSessions,hashBytes} from './v86-sessions.mjs';
-import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261009-exam';
-import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261009-exam';
-import {examSetupCommand} from './v86-exam-setup.mjs?v=20261009-exam';
-import {examQuestions} from './v86-exam-data.mjs?v=20261009-exam';
-import {internetOptions,restrictInternetAdapter} from './v86-network.mjs?v=20261009-exam';
-import {restartMachine} from './v86-restart.mjs?v=20261009-exam';
+import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261009-intuitive';
+import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261009-intuitive';
+import {examSetupCommand} from './v86-exam-setup.mjs?v=20261009-intuitive';
+import {examQuestions} from './v86-exam-data.mjs?v=20261009-intuitive';
+import {internetOptions,restrictInternetAdapter} from './v86-network.mjs?v=20261009-intuitive';
+import {restartMachine} from './v86-restart.mjs?v=20261009-intuitive';
 import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261008-console';
-import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261009-exam';
+import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261009-intuitive';
 import {createSerialOutput,appendTranscript} from './v86-serial.mjs';
+import {createExamConsole,examConsoleSetupCommand,createExamBootDetector} from './v86-exam-console.mjs?v=20261009-intuitive';
 const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono", monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
 terminal.open(document.querySelector('#terminal'));
 const status=document.querySelector('#status');globalThis.vmTranscript='';globalThis.vmTerminal=terminal;
@@ -18,7 +19,7 @@ const sessions=new LocalSessions();
 const params=new URL(location.href).searchParams;
 const examAttempt=params.get('exam');
 const examMode=/^[a-f0-9]{32}$/.test(examAttempt||'')&&params.get('embed')==='exam'&&parent!==window;
-let examPrepared=false,examReadySent=false,examLocked=false;
+let examPrepared=false,examReadySent=false,examLocked=false,examConsole,examBootDetector;
 if(examMode)document.documentElement.classList.add('exam-embed');
 const recoveryScenario=params.get('scenario')==='recovery';
 let recoveryBootPending=recoveryScenario;
@@ -52,11 +53,10 @@ if(recoveryScenario){
  document.querySelector('#recovery-note').hidden=false;
  document.querySelector('#recovery-link').hidden=true;
  document.querySelector('#network-note').hidden=true;
- document.querySelector('#more-options').open=true;
 }
 const encoder=new TextEncoder();
 function sendSerialText(text){const bytes=encoder.encode(text);for(let offset=0;offset<bytes.length;offset+=16384)emulator.serial0_send(String.fromCharCode(...bytes.subarray(offset,offset+16384)));}
-terminal.onData(text=>{if(examLocked||busy||resetting||recoveryBootPending||!emulator)return;inputPending=true;updateExerciseAvailability();sendSerialText(text);});
+terminal.onData(text=>{if(examLocked||busy||resetting||recoveryBootPending||!emulator)return;if(examMode)parent.postMessage({kind:'s2ktux-exam-activity',attempt:examAttempt},location.origin);inputPending=true;updateExerciseAvailability();sendSerialText(text);});
 attachTerminalClipboard(terminal,document.querySelector('#terminal'),{
  canPaste:()=>!examLocked&&!!emulator&&!busy&&!resetting&&!recoveryBootPending,
  notify:text=>{document.querySelector('#clipboard-status').textContent=text;}
@@ -69,11 +69,12 @@ async function prepareConsole(){
  status.textContent=recoveryScenario?'Preparando la práctica sin acceso automático a root…':'Preparando el prompt de Linux…';
  const password=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');
  try{
-   const initialClock=!savedRecord||document.querySelector('#internet').checked?Math.floor(Date.now()/1000):undefined;
-   const setup=rootShell?(examMode?examSetupCommand(examAttempt,nodeName)+' && ':'')+consoleSetupCommand(recoveryScenario,password,initialClock):"export PS1='[\\u@\\h \\W]\\$ '";
+   const initialClock=!savedRecord?Math.floor(Date.now()/1000):undefined;
+   const setup=rootShell?(examMode?examSetupCommand(examAttempt,nodeName)+' && '+examConsoleSetupCommand()+' && ':'')+consoleSetupCommand(recoveryScenario,password,initialClock,!savedRecord&&!examMode):"export PS1='[\\u@\\h \\W]\\$ '";
    const promise=exerciseRunner.run({checks:[]},setup);
    busy=true;document.querySelector('#save').disabled=true;updateExerciseAvailability();
    const result=await promise;
+   if(examMode)await examConsole.wait();
    // Conservar los controles reales de Readline (incluido bracketed paste).
    // Ocultar los comandos de preparación no debe cambiar el protocolo de la TTY.
    const actualPrompt='\r\n'+result.serial.slice(result.serial.lastIndexOf('\n')+1);
@@ -130,8 +131,7 @@ globalThis.vmSaveSession=async()=>{
 document.querySelector('#save').onclick=()=>globalThis.vmSaveSession().catch(console.error);
 document.querySelector('#start').onclick=async()=>{
   document.querySelector('#start').disabled=true;status.textContent='Cargando Linux real…';
-  const internetEnabled=!examMode&&document.querySelector('#internet').checked;
-  document.querySelector('#internet').disabled=true;
+  const internetEnabled=!examMode;
   const base=new URL('./assets/v86-test/',import.meta.url);
   const fail=error=>{document.documentElement.dataset.vmState='failed';status.textContent='Laboratorio detenido: '+error.message;document.querySelector('#result').hidden=false;document.querySelector('#result').textContent='Puedes usar Reset para empezar con la base limpia; perderás el guardado de esta máquina.';console.error(error);emulator?.stop();if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);};
   try{
@@ -201,13 +201,14 @@ document.querySelector('#start').onclick=async()=>{
       ...(bootGrub?{}:{bzimage:{url:new URL('vmlinuz',base).href},initrd:{url:new URL('initrd.img',base).href},
         cmdline:'console=ttyS0,115200 root=/dev/sda rw net.ifnames=0 biosdevname=0 tsc=reliable nowatchdog security=selinux selinux=1'+(['selinux','persistente'].includes(stateName)?'':' enforcing=0')}),
       hda:disk,hdb:practice,...(internetEnabled?{net_device:internetOptions(nodeName)}:{}),
-      initial_state:initialState,autostart:!internetEnabled,disable_keyboard:true,disable_mouse:true,disable_speaker:true};
+      initial_state:initialState,preserve_mac_from_state_image:true,autostart:!internetEnabled,disable_keyboard:true,disable_mouse:true,disable_speaker:true};
     emulator=globalThis.vm=new Motor(machineOptions);
     globalThis.labWire=new BroadcastChannel(examMode?'s2ktux-v86-exam-network:'+examAttempt:'s2ktux-v86-private-network-v1:'+diskProfile+':'+stateName+(recoveryScenario?':recovery':''));
     globalThis.labFrames={sent:0,received:0};
     labWire.onmessage=event=>{if(event.data instanceof Uint8Array){labFrames.received++;emulator.bus.send('net0-receive',event.data);}};
     emulator.add_listener('net0-send',frame=>{labFrames.sent++;labWire.postMessage(frame);});
     serialOutput=createSerialOutput(text=>{
+      examBootDetector?.(text);
       globalThis.vmTranscript=appendTranscript(globalThis.vmTranscript,text);
       const visible=[];
       // Mantener la detección de los límites de cada comprobación, incluso
@@ -229,6 +230,7 @@ document.querySelector('#start').onclick=async()=>{
       // Ya está restaurado: las opciones del motor no deben retener otra copia
       // de toda la RAM, especialmente al abrir las dos máquinas del examen.
       delete machineOptions.initial_state;initialState=undefined;
+      if(examMode){examConsole=createExamConsole(emulator);examBootDetector=createExamBootDetector(()=>examConsole.invalidate());}
       if(internetEnabled){try{restrictInternetAdapter(emulator.network_adapter);emulator.run();}catch(error){fail(error);}}
     });
     let started=false;
@@ -253,16 +255,23 @@ if(examMode){
    if(event.origin!==location.origin||event.source!==parent||data?.kind!=='s2ktux-exam-request'||data.attempt!==examAttempt||typeof data.requestId!=='string')return;
    let result,error;
    try{
-     if(data.action==='lock'){examLocked=true;document.querySelector('#reboot').disabled=true;result={locked:true};}
+     if(data.action==='lock'){examLocked=true;document.querySelector('#reboot').disabled=true;result={locked:true,available:examConsole?await examConsole.reconnect():false};}
      else if(data.action==='stop'&&examLocked){await emulator.stop();globalThis.labWire.close();result={stopped:true};}
      else if(data.action==='check'&&examLocked){
        const exercise=examQuestions.find(q=>q.id===data.id&&String(q.node)===nodeName);
        if(!exercise)throw Error('Pregunta no autorizada en esta máquina.');
-       const task=exerciseRunner.run(exercise);busy=true;
+       if(!examPrepared)throw Error('La máquina no terminó su preparación.');
+       await examConsole.wait();
+       const task=examConsole.run(exercise);busy=true;
        try{result=await task;}finally{busy=false;}
      }else throw Error('Acción de examen no autorizada.');
    }catch(caught){error=caught.message;}
    parent.postMessage({kind:'s2ktux-exam-result',attempt:examAttempt,requestId:data.requestId,result,error},location.origin);
  });
  document.querySelector('#start').click();
+}
+if(examMode){
+  // Evitar una segunda barra de desplazamiento dentro de la terminal.
+  const resize=()=>parent.postMessage({kind:'s2ktux-exam-size',attempt:examAttempt,height:Math.ceil(document.querySelector('#main').scrollHeight)+24},location.origin);
+  new ResizeObserver(resize).observe(document.querySelector('#main'));resize();
 }

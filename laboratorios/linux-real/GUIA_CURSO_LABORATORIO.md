@@ -8,7 +8,7 @@ Pulsa **Iniciar laboratorio**. La primera entrada descarga una máquina preparad
 
 **Practicar Linux** ofrece 44 ejercicios con comprobación y solución. **Modo examen** abre dos máquinas nuevas: 21 preguntas y una tarea de recuperación de root, 3 horas y nota sobre 300 (aprobado desde 210). No muestra ayudas durante el intento ni modifica el guardado de la práctica libre. Al finalizar comprueba resultados reales; no resuelve ni repara ejercicios. Es una rúbrica educativa propia, no el baremo oficial de Red Hat.
 
-La red privada funciona sin Internet. En **Más opciones** puedes activar Internet experimental antes de iniciar: TCP por el puente público Wisp y DNS por Cloudflare. Después configura IP, gateway y DNS con NetworkManager: 10.42.0.20/24 (máquina 2: 10.42.0.11/24), gateway y DNS 10.42.0.1. No admite ping/UDP externos ni conexiones entrantes. No envíes credenciales o datos privados; la disponibilidad depende del servicio externo. APT gestiona Debian; DNF conserva sus RPM locales.
+Una máquina nueva empieza sin IP. Configura la red desde Linux: el acceso TCP a Internet utiliza el puente público Wisp y DNS de Cloudflare, sin selector externo. Después configura IP, gateway y DNS con NetworkManager: 10.42.0.20/24 (máquina 2: 10.42.0.11/24), gateway y DNS 10.42.0.1. No admite ping/UDP externos ni conexiones entrantes. No envíes credenciales o datos privados; la disponibilidad depende del servicio externo. APT gestiona Debian; DNF conserva sus RPM locales.
 
 Hay un disco del sistema y otro para particionar y practicar LVM. Comprueba siempre sus nombres con `lsblk`: no borres el disco que contiene `/`. Si rompes el arranque o los discos virtuales, Reset recupera la fábrica limpia de esa máquina. No tiene acceso a los discos de tu portátil.
 
@@ -23,7 +23,7 @@ Hay un disco del sistema y otro para particionar y practicar LVM. Comprueba siem
 | 5 · Almacenamiento | GPT, particiones, PV, VG, LV, UUID, LABEL y swap se practican en discos virtuales reales. Los cambios sobreviven a un reinicio y se eliminan con Reset. |
 | 6 · Sistemas de archivos | ext4, XFS, VFAT, ampliación, reducción de ext4, permisos y ACL funcionan de verdad. Para NFS y autofs abre la otra máquina y configura la red privada. |
 | 7 · Administración | Cron, at, timers, servicios, targets y chrony funcionan. Para regenerar GRUB se usa `update-grub`; no hay `grubby` ni sus rutas de RHEL. No se practica el registro de suscripciones de Red Hat. |
-| 8 · Red | NetworkManager, hostname, IPv4, IPv6 y firewalld trabajan en la red privada. No hay DHCP. Internet es opcional y limitado a TCP/IPv4 y DNS: configura las direcciones y las rutas que necesite cada práctica. |
+| 8 · Red | NetworkManager, hostname, IPv4, IPv6 y firewalld trabajan en la red privada. No hay DHCP. El acceso externo está integrado, limitado a TCP/IPv4 y DNS: configura las direcciones y las rutas que necesite cada práctica. |
 | 9 · Usuarios | Usuarios, grupos, contraseñas, caducidad y sudo son reales. No des por hecho que existe `wheel` ni que tiene permisos: consulta los grupos y configura sudoers con `visudo`. |
 | 10 · Seguridad | SELinux está Enforcing. Se pueden practicar etiquetas, puertos, booleanos y diagnóstico de denegaciones, además de SSH y firewalld. Apache se llama `apache2`, no `httpd`. |
 | 11 · Contenedores y repaso | Podman funciona con root y sin root, con volúmenes y unidades systemd generadas. Importa la imagen local de prácticas; no se descargan imágenes de Docker Hub. La recuperación de contraseña utiliza GRUB, `rd.break`, `passwd` y el relabel real. |
@@ -75,21 +75,21 @@ Para rootless, inicia una sesión de usuario normal; no basta con cambiar variab
 
 **Abrir la otra máquina** crea una segunda VM en otra pestaña del mismo navegador. Ambas parten del mismo estado preparado: configura una IP y una MAC distintas antes de practicar SSH, NFS o NTP. No se conecta a Windows ni a una máquina compartida de otros alumnos.
 
-En Máquina 1:
+En una Máquina 1 nueva:
 
 ```bash
-nmcli con modify eth0 ipv4.method manual ipv4.addresses 10.42.0.20/24 ethernet.cloned-mac-address 02:00:00:42:00:20
-nmcli con up eth0
+nmcli con add type ethernet ifname eth0 con-name curso ipv4.method manual ipv4.addresses 10.42.0.20/24 ipv4.gateway 10.42.0.1 ipv4.dns 10.42.0.1 ethernet.cloned-mac-address 02:00:00:42:00:20 connection.autoconnect yes
+nmcli con up curso
 ```
 
-En Máquina 2:
+En una Máquina 2 nueva:
 
 ```bash
-nmcli con modify eth0 ipv4.method manual ipv4.addresses 10.42.0.21/24 ethernet.cloned-mac-address 02:00:00:42:00:21
-nmcli con up eth0
+nmcli con add type ethernet ifname eth0 con-name curso ipv4.method manual ipv4.addresses 10.42.0.11/24 ipv4.gateway 10.42.0.1 ipv4.dns 10.42.0.1 ethernet.cloned-mac-address 02:00:00:42:00:11 connection.autoconnect yes
+nmcli con up curso
 ```
 
-Comprueba desde Máquina 1 con `ping -c 2 10.42.0.21`. Son perfiles reales de NetworkManager; puedes cambiarlos para cada práctica.
+Comprueba desde Máquina 1 con `ping -c 2 10.42.0.11`. Son perfiles reales de NetworkManager; puedes cambiarlos para cada práctica. Si recuperas una sesión que ya tiene el perfil, usa `nmcli con modify curso` en lugar de crearlo otra vez.
 
 Mantén una sola pestaña por máquina. Abrir dos copias de «Máquina 1» repite su identidad de red y comparte su guardado, no crea una tercera máquina independiente.
 

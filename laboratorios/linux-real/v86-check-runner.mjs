@@ -1,4 +1,4 @@
-import { buildProbe, parseProbe, probeTimeoutMs } from './v86-exercises.mjs?v=20261009-exam';
+import { buildProbe, parseProbe, probeTimeoutMs } from './v86-exercises.mjs?v=20261009-intuitive';
 
 export const cleanSerial = text => text.replace(/\r/g, '').replace(/\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)/g, '').replace(/\x1b\[[0-?]*[ -/]*[@-~]/g, '');
 // Un aviso del kernel puede llegar después del prompt, sin que Bash esté
