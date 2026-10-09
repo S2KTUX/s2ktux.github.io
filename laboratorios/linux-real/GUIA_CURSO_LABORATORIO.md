@@ -75,21 +75,21 @@ Para rootless, inicia una sesión de usuario normal; no basta con cambiar variab
 
 **Abrir la otra máquina** crea una segunda VM en otra pestaña del mismo navegador. Ambas parten del mismo estado preparado: configura una IP y una MAC distintas antes de practicar SSH, NFS o NTP. No se conecta a Windows ni a una máquina compartida de otros alumnos.
 
-En Máquina 1:
+En una Máquina 1 nueva:
 
 ```bash
-nmcli con modify eth0 ipv4.method manual ipv4.addresses 10.42.0.20/24 ethernet.cloned-mac-address 02:00:00:42:00:20
-nmcli con up eth0
+nmcli con add type ethernet ifname eth0 con-name curso ipv4.method manual ipv4.addresses 10.42.0.20/24 ipv4.gateway 10.42.0.1 ipv4.dns 10.42.0.1 ethernet.cloned-mac-address 02:00:00:42:00:20 connection.autoconnect yes
+nmcli con up curso
 ```
 
-En Máquina 2:
+En una Máquina 2 nueva:
 
 ```bash
-nmcli con modify eth0 ipv4.method manual ipv4.addresses 10.42.0.21/24 ethernet.cloned-mac-address 02:00:00:42:00:21
-nmcli con up eth0
+nmcli con add type ethernet ifname eth0 con-name curso ipv4.method manual ipv4.addresses 10.42.0.11/24 ipv4.gateway 10.42.0.1 ipv4.dns 10.42.0.1 ethernet.cloned-mac-address 02:00:00:42:00:11 connection.autoconnect yes
+nmcli con up curso
 ```
 
-Comprueba desde Máquina 1 con `ping -c 2 10.42.0.21`. Son perfiles reales de NetworkManager; puedes cambiarlos para cada práctica.
+Comprueba desde Máquina 1 con `ping -c 2 10.42.0.11`. Son perfiles reales de NetworkManager; puedes cambiarlos para cada práctica. Si recuperas una sesión que ya tiene el perfil, usa `nmcli con modify curso` en lugar de crearlo otra vez.
 
 Mantén una sola pestaña por máquina. Abrir dos copias de «Máquina 1» repite su identidad de red y comparte su guardado, no crea una tercera máquina independiente.
 

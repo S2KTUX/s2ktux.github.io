@@ -3,7 +3,7 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715828424,
+  "verifiedPackageBytes": 715829103,
   "modifications": [
     {
       "path": "v86-test.html",
@@ -50,14 +50,14 @@
     {
       "path": "GUIA_CURSO_LABORATORIO.md",
       "before": "4eabd8bd48db0231c399434c0d2867138f29ba5bb4122432753fb65fed828277",
-      "sha256": "12f7dc90713846b394f9b59d423a222f212c8b01ebce7b5ee56035b12fbd2de6",
-      "bytes": 8050
+      "sha256": "af9880c2e0d5b1c8253735c40199ff49b17ddce7e3500349ec98bd0308c33a62",
+      "bytes": 8384
     },
     {
       "path": "GUIA_CURSO_LABORATORIO.html",
       "before": "103540cac5639e0fd9c0bceacf56b9fa17184089ac43a203c69d54e079cdc701",
-      "sha256": "748748aaaca5cefb265daf672d6f742d535b63ccf36c20d66816b0a3a8ddee0e",
-      "bytes": 9598
+      "sha256": "ae3400dcbd82904071b52353a87b23ef41d7cc3dd2b4ef2ea6d0d1d4ae79803b",
+      "bytes": 9943
     },
     {
       "path": "PRACTICAS_V86.html",
