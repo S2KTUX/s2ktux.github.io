@@ -15,4 +15,6 @@ assert.match(setup,/export PS1=/);assert.doesNotMatch(setup,/chpasswd|autologin|
 const recovery=consoleSetupCommand(true,'a'.repeat(48));
 assert.match(recovery,/chpasswd/);assert.match(recovery,/zz-recovery\.conf/);assert.doesNotMatch(recovery,/--autologin/);
 assert.throws(()=>consoleSetupCommand(true,'unsafe; value'));
+assert.match(consoleSetupCommand(false,undefined,1791494400),/date -u -s/);
+assert.throws(()=>consoleSetupCommand(false,undefined,'unsafe;value'));
 console.log('✓ Consola Linux: prompt real, línea vacía, setup comprobado y recuperación sin autologin.');

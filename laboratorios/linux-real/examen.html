@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Examen Linux · S2KTUX</title>
+<script src="/theme-bootstrap.js?v=20260828-hardening"></script>
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/visual-system.css?v=35555b4494e9"><link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b"><link rel="stylesheet" href="linux-real.css?v=20261009-exam">
+<script defer src="/site-shell.js?v=20260828-hardening"></script></head>
+<body><div class="site-page-shell site-app-shell">
+<header class="site-header"><div class="site-header-inner"><a class="site-logo" href="/">S2KTUX</a><nav class="site-nav" aria-label="Navegación principal"><a class="navlink" href="/">Inicio</a><a class="navlink" href="/cursos.html">Cursos</a><a class="navlink" href="/terminal.html">Terminal</a><button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Activar tema oscuro"><span data-theme-icon aria-hidden="true">☾</span></button></nav></div></header>
+<main id="main" class="linux-real-page"><h1>Modo examen</h1>
+<section id="exam-intro">
+<p>Dos máquinas nuevas, 3 horas y 300 puntos. Aprobado desde 210. La práctica libre no se modifica.</p>
+<p>Es un simulacro educativo orientado a RHCSA 9, sobre Debian. Las preguntas y el reparto de puntos son propios, no el baremo interno de Red Hat. Las rutas y servicios que cambian se indican en los enunciados.</p>
+<p>La máquina 1 inicia como root. En la máquina 2 tendrás que recuperar su contraseña. Este proceso puede tardar aproximadamente 5–10 minutos.</p>
+<p>Durante el examen solo verás terminales y preguntas. Al finalizar aparecerán la nota, las comprobaciones y una solución por ejercicio. No cierres ni recargues: el intento no tiene guardado automático.</p>
+<p>Las dos máquinas comparten recursos de tu equipo. Necesitarás más memoria que en la práctica libre; la preparación queda fuera del tiempo del examen.</p>
+<div class="controls"><button id="exam-start" type="button" disabled>Iniciar examen</button><a href="v86-test.html">Volver a practicar</a></div>
+</section>
+<p id="exam-status" role="status" aria-live="polite"></p>
+<section id="exam-workspace" hidden>
+<div class="controls"><button type="button" data-exam-node="1" aria-pressed="true">Máquina 1</button><button type="button" data-exam-node="2" aria-pressed="false">Máquina 2</button><span id="exam-time" role="timer">03:00:00</span><button type="button" id="exam-finish" disabled>Finalizar examen</button></div>
+<div class="exam-machines" id="exam-machines"></div>
+<section id="exam-questions" aria-label="Preguntas del examen"></section>
+</section>
+<section id="exam-results" class="exam-results" hidden aria-labelledby="exam-score"><h2 id="exam-score"></h2><p id="exam-verdict"></p><div id="exam-report"></div><div class="controls"><button type="button" id="exam-retry">Nuevo examen</button><a href="v86-test.html">Volver a practicar</a></div></section>
+</main><footer class="site-footer"><div class="site-footer-inner"><a class="site-footer-brand" href="/">S2KTUX</a><p>Aprender practicando</p></div></footer>
+</div><script type="module" src="v86-exam.mjs?v=20261009-exam"></script></body></html>

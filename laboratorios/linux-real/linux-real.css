@@ -12,6 +12,20 @@
 .linux-real-page button { box-shadow: var(--pixel-shadow-sm); cursor: pointer; }
 .linux-real-page button:hover:not(:disabled) { background: var(--surface); }
 .linux-real-page button:disabled { opacity: .55; cursor: not-allowed; }
+.linux-real-page .lab-button { display: inline-block; font: 14px/1.5 'Share Tech Mono', monospace; border: 2px solid var(--line); color: var(--head); background: var(--surface2); padding: 10px 12px; box-shadow: var(--pixel-shadow-sm); text-decoration: none; }
+#session-status:empty, #clipboard-status:empty { display: none; }
+.exam-embed .site-header, .exam-embed .site-footer, .exam-embed .skip-link, .exam-embed h1, .exam-embed .lead, .exam-embed #main > .controls:not(.terminal-controls), .exam-embed #session-status, .exam-embed #recovery-note, .exam-embed details { display: none; }
+.exam-embed .linux-real-page { padding: 0; width: 100%; }
+.exam-embed .console { margin-top: 0; }
+.exam-embed .terminal-controls { margin-left: 8px; }
+.exam-running .site-header, .exam-running .site-footer, .exam-running .skip-link { display: none; }
+.exam-machines iframe { width: 100%; height: 615px; border: 0; display: block; }
+.exam-machines iframe[hidden] { display: block !important; position: absolute; left: -20000px; width: 1000px; visibility: hidden; }
+.exam-machines { position: relative; }
+.exam-question { border-bottom: 1px solid var(--line); padding: 8px 0; }
+.exam-question summary { font-size: 18px; }
+.exam-results pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px; background: var(--surface2); }
+.exam-results details { margin-bottom: 12px; }
 .linux-real-page [aria-pressed="true"] { background: var(--head); color: var(--bg); }
 .linux-real-page [hidden] { display: none !important; }
 .controls, .exercise-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 18px 0; }

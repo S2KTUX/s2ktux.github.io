@@ -1,10 +1,12 @@
 const quote = text => "'" + text.replaceAll("'", "'\\''") + "'";
 // Configuración ejecutada por Linux. No se dibuja ni se sustituye el prompt.
-export function consoleSetupCommand(recovery, password) {
+export function consoleSetupCommand(recovery, password, epochSeconds) {
   if (recovery && !/^[a-f0-9]{48}$/.test(password)) throw Error('Contraseña de preparación inválida');
+  if(epochSeconds!==undefined&&(!Number.isSafeInteger(epochSeconds)||epochSeconds<1577836800||epochSeconds>4102444800))throw Error('Reloj inicial inválido');
   const script = [
     'set -e',
     'test "$(id -u)" = 0',
+    ...(epochSeconds!==undefined?[`date -u -s '@${epochSeconds}'`]:[]),
     'if test ! -f /etc/profile.d/s2ktux-prompt.sh; then',
     "printf '%s\\n' " + quote("export PS1='[\\u@\\h \\W]\\$ '") + ' > /etc/profile.d/s2ktux-prompt.sh',
     // Debian lee .bashrc después de /etc/profile; corregir también el marcador del prototipo.

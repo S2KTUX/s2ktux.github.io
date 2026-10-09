@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="/terminal-page.css?v=20260826-phase3">
 <link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b">
 <link rel="stylesheet" href="vendor/xterm.css">
-<link rel="stylesheet" href="linux-real.css?v=20261008-simple">
+<link rel="stylesheet" href="linux-real.css?v=20261009-exam">
 <script defer src="/site-shell.js?v=20260828-hardening"></script>
 </head>
 <body><div class="site-page-shell site-app-shell">
@@ -18,25 +18,22 @@
 <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Activar tema oscuro"><span data-theme-icon aria-hidden="true">☾</span></button>
 </nav></div></header>
 <main id="main" class="linux-real-page"><h1>Laboratorio Linux</h1>
-<p class="lead">Un Linux real para practicar en tu navegador. Pulsa «Iniciar laboratorio» para empezar.</p>
+<p class="lead" hidden></p>
 <div class="controls"><button type="button" id="start" disabled>Iniciar laboratorio</button><button type="button" id="save" disabled>Guardar sesión</button><button type="button" id="reset">Reset</button><span id="status" role="status" aria-live="polite">Cargando interfaz…</span></div>
-<p id="session-status" role="status" aria-live="polite">Guarda antes de cerrar: no hay guardado automático y la sesión se conserva solo en este navegador.</p>
-<p id="recovery-note" class="warning" hidden>Esta máquina no inicia sesión automáticamente y no conoces la contraseña de root. Usa «Reiniciar máquina (GRUB)» en Más opciones y sigue los pasos del curso. Su guardado y su Reset son independientes del laboratorio libre.</p>
+<p id="session-status" role="status" aria-live="polite"></p>
+<p id="recovery-note" class="warning" hidden>Esta máquina no inicia sesión automáticamente. Recupera root desde GRUB siguiendo el curso. Su guardado y su Reset son independientes de la práctica libre.</p>
 <section class="console" aria-label="Terminal del laboratorio"><div class="console-bar">Terminal <span># root · $ usuario</span></div><div class="console-scroll"><div id="terminal"></div></div></section>
-<p id="clipboard-status" role="status" aria-live="polite">Selecciona texto para copiarlo. Clic derecho para pegar; el navegador puede pedir permiso.</p>
+<div class="controls terminal-controls"><button type="button" id="reboot" disabled>Reiniciar máquina</button></div>
+<p id="clipboard-status" role="status" aria-live="polite"></p>
 <p id="result" class="warning" role="status" hidden></p>
 <details class="exercise-panel" id="exercise-panel"><summary>Prácticas (opcional)</summary>
 <div class="exercise-actions" role="group" aria-label="Modo del laboratorio">
 <button type="button" data-lab-mode="practice" aria-pressed="true">Practicar Linux</button>
-<button type="button" data-lab-mode="exam" aria-pressed="false">Modo examen</button>
+<a class="lab-button" href="examen.html">Modo examen</a>
 </div>
 <p data-mode-note></p>
 <p data-lab-aid><a href="CHULETA_LINUX_REAL.html" target="_blank" rel="noopener">Consultar la chuleta de comandos</a></p>
 <button type="button" data-practice-help aria-expanded="false">Abrir prácticas guiadas</button>
-<div class="exercise-actions">
-<button type="button" data-exam-finish hidden>Terminar intento</button>
-<button type="button" data-exam-restart hidden>Nuevo intento (sin borrar la máquina)</button>
-</div>
 <div data-exercise-card hidden>
 <label for="exercise-select">Elige un ejercicio</label>
 <select id="exercise-select"></select>
@@ -56,24 +53,19 @@
 </div>
 </div>
 </details>
-<details id="lab-help"><summary>Ayuda para empezar</summary>
-<p>Escribe los comandos en la terminal y pulsa Intro. Tienes acceso a root, el usuario administrador. Puedes seguir el curso o abrir las prácticas de arriba.</p>
-<p>«Guardar sesión» conserva la máquina en este navegador. No se comparte entre dispositivos y puede perderse al borrar los datos del navegador o si este necesita espacio.</p>
-<p>Si quieres empezar de cero, usa Reset: borra los cambios y el guardado de esta máquina. No afecta a la otra máquina ni a tus archivos personales; root solo administra los discos virtuales.</p>
-<p><a href="GUIA_CURSO_LABORATORIO.html" target="_blank" rel="noopener">Guía para seguir el curso</a> · <a href="PRACTICAS_V86.html" target="_blank" rel="noopener">Consultar las prácticas</a></p>
-<h3>Qué debes tener en cuenta</h3>
-<p>El sistema es Debian, no Red Hat. Incluye systemd, SELinux, LVM, DNF, Podman, tuned y Flatpak, pero algunas rutas y servicios difieren de RHEL. DNF utiliza RPM locales de prácticas y no actualiza Debian; los contenedores usan imágenes locales. No hay acceso general a Internet.</p>
-<p>Los comandos se ejecutan en un Linux real dentro de tu navegador, no en un servidor. La entrada rápida recupera una máquina ya arrancada. El tiempo de carga depende de tu equipo y conexión; se recomienda un ordenador con Chrome o Edge actualizado.</p>
+<details id="lab-help"><summary>Notas</summary>
+<p>Es Debian, no Red Hat: algunos servicios y rutas cambian. DNF trabaja con RPM locales de prácticas; APT administra Debian.</p>
+<p>La recuperación de root y el reetiquetado pueden tardar aproximadamente 5–10 minutos, según el equipo.</p>
+<p>El guardado es manual y solo se conserva en este navegador. Reset devuelve esta máquina a su estado inicial; no toca los archivos del ordenador.</p>
 </details>
 <details id="more-options"><summary>Más opciones</summary>
-<button type="button" id="reboot" disabled>Reiniciar máquina (GRUB)</button>
-<p>Si puedes usar la terminal, es preferible escribir <code>reboot</code>. El botón fuerza el reinicio y puede perder escrituras pendientes; no borra los discos.</p>
+<label><input id="internet" type="checkbox"> Probar Internet (experimental)</label>
+<p id="internet-note">Actívalo antes de iniciar. Usa el puente público wisp.mercurywork.shop para TCP y Cloudflare para DNS; no envíes credenciales ni datos privados. No admite ping/UDP externos y bloquea los destinos privados. Para configurar Linux: IP 10.42.0.20/24 (máquina 2: 10.42.0.11/24), gateway y DNS 10.42.0.1. El servicio externo puede fallar.</p>
 <p><a id="recovery-link" href="?boot=grub&amp;disk=final&amp;estado=grub-rhcsa-final&amp;scenario=recovery" target="_blank" rel="noopener">Practicar recuperación de la contraseña de root</a></p>
-<p>La recuperación pasa por GRUB y el kernel reales y puede tardar varios minutos. El escenario de recuperación tiene su propia sesión y una contraseña inicial desconocida.</p>
-<p id="network-note"><span id="node-name">Máquina 1</span> · <a id="other-node" href="?boot=grub&amp;disk=final&amp;estado=grub-rhcsa-final&amp;node=2" target="_blank" rel="noopener">Abrir la otra máquina</a>. Cada una tiene su propio guardado. Para comunicarlas, configura IP y MAC distintas con NetworkManager siguiendo la guía del curso. La red es privada entre pestañas, sin DHCP ni acceso general a Internet.</p>
+<p id="network-note"><span id="node-name">Máquina 1</span> · <a id="other-node" href="?boot=grub&amp;disk=final&amp;estado=grub-rhcsa-final&amp;node=2" target="_blank" rel="noopener">Abrir la otra máquina</a>. Cada una tiene su propio guardado. La red entre ellas es privada: configura IP y MAC distintas. Internet es una opción aparte.</p>
 <p><a href="?boot=grub&amp;disk=final&amp;estado=frio">Arrancar desde cero, sin el estado preparado</a></p>
 <p id="downloads"></p>
 <p><a href="ESTADO_VALIDACION.md" target="_blank" rel="noopener">Resultados de las pruebas</a> · <a href="licencias/LEEME.html" target="_blank" rel="noopener">Avisos y fuentes del software</a></p>
 </details>
 </main><footer class="site-footer"><div class="site-footer-inner"><a class="site-footer-brand" href="/">S2KTUX</a><p>Aprender practicando · Laboratorio local en tu navegador</p></div></footer>
-</div><script src="assets/v86-test/libv86.js"></script><script type="module" src="v86-test.mjs?v=20261008-simple"></script></body></html>
+</div><script src="assets/v86-test/libv86.js"></script><script type="module" src="v86-test.mjs?v=20261009-exam"></script></body></html>

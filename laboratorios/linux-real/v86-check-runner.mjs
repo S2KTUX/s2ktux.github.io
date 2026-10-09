@@ -1,4 +1,4 @@
-import { buildProbe, parseProbe, probeTimeoutMs } from './v86-exercises.mjs?v=20261008-console';
+import { buildProbe, parseProbe, probeTimeoutMs } from './v86-exercises.mjs?v=20261009-exam';
 
 export const cleanSerial = text => text.replace(/\r/g, '').replace(/\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)/g, '').replace(/\x1b\[[0-?]*[ -/]*[@-~]/g, '');
 export const atShellPrompt = text => /(?:^|\n)(?:V86TEST# |V86USER\$ |\[[a-z_][a-z0-9_-]*@[a-zA-Z0-9_.-]+ [^\n\]]*\][#$] |[a-z_][a-z0-9_-]*@[a-zA-Z0-9_.-]+:[^\n]*[#$] )$/.test(cleanSerial(text.slice(-1500)).slice(-500));
