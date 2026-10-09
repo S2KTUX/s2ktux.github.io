@@ -3,13 +3,13 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715829103,
+  "verifiedPackageBytes": 715829102,
   "modifications": [
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "1db45801d6ede4a4ba985fb4c1fa42cd1049d3dfa087ffea5cc665bed9e3a28f",
-      "bytes": 4683
+      "sha256": "36a54d3276e58e75aa64ea33e07930680e8c6531eaa17888f4df4285a89614eb",
+      "bytes": 4682
     },
     {
       "path": "v86-test.mjs",
@@ -81,8 +81,8 @@
   "addedFiles": [
     {
       "path": "linux-real.css",
-      "sha256": "f1fba487e0e1f03f409e9324a164cda9c85585dbc72a8034b8d9c3845d6ba108",
-      "bytes": 5307
+      "sha256": "593ca3163e199f0766b2df75356e231e8af4340e9bef41272abc299c58e8a2aa",
+      "bytes": 5420
     },
     {
       "path": "v86-clipboard.mjs",
@@ -96,13 +96,13 @@
     },
     {
       "path": "examen.html",
-      "sha256": "4a2b790ef7f4d46b5f3ae3f90fc46b731432b6510adc47d8f0657b2ccdf07d28",
-      "bytes": 3782
+      "sha256": "f05f5823b38268cc037c2b00999e9d1e200607ffa10e93a6d36a0056b01ab057",
+      "bytes": 3780
     },
     {
       "path": "v86-exam.mjs",
-      "sha256": "69333ea881cab6cdf651201be7b682a9481d0893b67a393a924c04c4ee868ce5",
-      "bytes": 9706
+      "sha256": "530528723869d5aee3659bc01aba3962ac0334d350eabb5e0c5c819f589a650b",
+      "bytes": 9814
     },
     {
       "path": "v86-exam-data.mjs",

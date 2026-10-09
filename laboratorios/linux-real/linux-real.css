@@ -41,6 +41,7 @@
 .exam-results pre { white-space: pre-wrap; overflow-wrap: anywhere; padding: 14px; background: var(--surface2); }
 .exam-results details { margin-bottom: 12px; }
 .linux-real-page [aria-pressed="true"] { background: var(--head); color: var(--bg); }
+.linux-real-page button[aria-pressed="true"]:hover:not(:disabled) { background: var(--head); color: var(--bg); }
 .linux-real-page [hidden] { display: none !important; }
 .controls, .exercise-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; margin: 18px 0; }
 .controls { margin-bottom: 10px; }

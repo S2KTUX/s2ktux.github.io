@@ -23,6 +23,7 @@ function selectNode(node){
  for(const b of document.querySelectorAll('[data-exam-node]'))b.setAttribute('aria-pressed',String(b.dataset.examNode===node));
  $('#exam-machine-placeholder').hidden=machines.has(node);
  $('#exam-machine-start').disabled=phase==='preparing'||phase==='grading';
+ $('#exam-machine-start').textContent=phase==='preparing'?'Espera a la máquina 1…':'Iniciar máquina 2';
  $('#exam-machine-description').textContent='La máquina 2 está apagada. Iníciala para trabajar en ella y disponer del servidor NFS/NTP de las preguntas 7 y 10. El cronómetro se pausa solo durante su preparación inicial.';
  renderQuestions();
 }

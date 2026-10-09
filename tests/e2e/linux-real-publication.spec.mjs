@@ -46,6 +46,9 @@ test('Linux real · examen separado, sin ayudas y con errores de preparación vi
   await expect(page.locator('#exam-questions')).not.toContainText('puntos');
   await expect(page.frameLocator('iframe').locator('#exercise-panel')).toBeHidden();
   await page.locator('[data-exam-node="2"]').click();
+  await page.locator('[data-exam-node="2"]').hover();
+  const selectedColors=await page.locator('[data-exam-node="2"]').evaluate(e=>({background:getComputedStyle(e).backgroundColor,heading:getComputedStyle(document.querySelector('h1')).color}));
+  expect(selectedColors.background).toBe(selectedColors.heading);
   await expect(page.locator('#exam-machine-start')).toBeVisible();
   await expect(page.locator('iframe')).toHaveCount(1);
   await expect(page.locator('#exam-questions')).not.toContainText('rd.break');
@@ -66,6 +69,8 @@ test('Linux real · finalizar sin esperar al arranque',async({page})=>{
   page.on('dialog',dialog=>dialog.accept());
   await page.locator('#exam-start').click();
   await expect(page.locator('#exam-finish')).toBeEnabled();
+  await page.locator('[data-exam-node="2"]').click();
+  await expect(page.locator('#exam-machine-start')).toHaveText('Espera a la máquina 1…');
   await page.locator('#exam-finish').click();
   await expect(page.locator('#exam-score')).toHaveText('0/300 puntos');
   await expect(page.locator('#exam-report details')).toHaveCount(22);
