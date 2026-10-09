@@ -3,7 +3,7 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715828835,
+  "verifiedPackageBytes": 715829287,
   "modifications": [
     {
       "path": "v86-test.html",
@@ -14,8 +14,8 @@
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "52eee7d89f182b8ccc69269026de103c3863c5c8172b22fb1e01bc797ee6eae0",
-      "bytes": 22432
+      "sha256": "9d2d4941ebdf0e7193e1560668a7aa7c8fbf834aa5bf1de4fae859c92865a9c1",
+      "bytes": 22884
     },
     {
       "path": "v86-exercise-panel.mjs",
@@ -118,6 +118,11 @@
       "path": "v86-network.mjs",
       "sha256": "8ddc919fe7f511020a32f5a1e2b500db941b6705091241a04cb66b8db420bb21",
       "bytes": 2217
+    },
+    {
+      "path": "v86-restart.mjs",
+      "sha256": "3ab323a9ff92507590c25e3ac67a77deb153e7b5027258c5bc8bc3f8bdf68397",
+      "bytes": 345
     }
   ],
   "note": "Los informes históricos describen la validación anterior. Esta interfaz añade 44 prácticas y un examen independiente con dos VM nuevas, red privada propia, 22 tareas, 3 horas y rúbrica educativa de 300 puntos (aprobado desde 210). Comprueba estado real, no el texto exacto de los comandos; muestra criterios y observaciones después de finalizar. Internet es voluntario y experimental: TCP real por Wisp público y DNS por DoH de Cloudflare, sin ICMP/UDP externos ni respuestas de ping/NTP fabricadas. El reloj inicial se ajusta al del navegador para conservar la verificación de fechas y firmas de APT. La fábrica y el motor no cambian.",

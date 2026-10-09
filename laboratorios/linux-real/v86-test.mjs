@@ -6,6 +6,7 @@ import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mj
 import {examSetupCommand} from './v86-exam-setup.mjs?v=20261009-exam';
 import {examQuestions} from './v86-exam-data.mjs?v=20261009-exam';
 import {internetOptions,restrictInternetAdapter} from './v86-network.mjs?v=20261009-exam';
+import {restartMachine} from './v86-restart.mjs?v=20261009-exam';
 import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261008-console';
 import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261009-exam';
 import {createSerialOutput,appendTranscript} from './v86-serial.mjs';
@@ -102,9 +103,12 @@ document.querySelector('#reset').onclick=async()=>{
 document.querySelector('#reboot').onclick=async()=>{
  if(examLocked||!emulator||busy||resetting)return;
  if(!confirm('¿Reiniciar la máquina para entrar en GRUB? Es un reinicio forzado, como pulsar el botón de reinicio de un ordenador. No borra los discos, pero puede perder escrituras pendientes. Si tienes una shell abierta, es preferible usar reboot.'))return;
- document.documentElement.dataset.vmState='running';inputPending=true;updateExerciseAvailability();
+ document.documentElement.dataset.vmState='running';inputPending=true;busy=true;updateExerciseAvailability();
  status.textContent='Reiniciando la máquina desde el hardware virtual…';
- emulator.restart();terminal.focus();
+ document.querySelector('#result').hidden=true;
+ try{await restartMachine(emulator,[vmDisk,vmPracticeDisk]);terminal.focus();}
+ catch(error){document.documentElement.dataset.vmState='failed';status.textContent='No se pudo reiniciar: '+error.message;document.querySelector('#result').textContent=status.textContent;document.querySelector('#result').hidden=false;}
+ finally{busy=false;updateExerciseAvailability();}
 };
 globalThis.vmSaveSession=async()=>{
   if(examMode)throw Error('El modo examen no tiene guardado de sesión. La práctica libre no se modifica.');
