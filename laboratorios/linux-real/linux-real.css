@@ -16,7 +16,10 @@
 .lab-modes { display: flex; gap: 24px; margin: 0 0 28px; border-bottom: 2px solid var(--surface2); }
 .lab-modes a { padding: 12px 6px; color: var(--muted); font-size: 18px; }
 .lab-modes a[aria-current="page"] { color: var(--head); border-bottom: 3px solid var(--head); font-weight: bold; }
-.lab-information { border-top: 1px solid var(--line); margin-top: 30px; padding-top: 10px; color: var(--muted); font-size: 14px; }
+.lab-information { margin-top: 20px; color: var(--muted); font-size: 12px; line-height: 1.45; }
+.linux-real-page .lab-information p { margin: 4px 0; }
+.lab-information small { font: inherit; }
+.lab-network { color: var(--muted); font-size: 14px; }
 .lab-legal { font-size: 13px; }
 .exercise-panel { margin: 20px 0; }
 .exam-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; justify-content: space-between; margin-bottom: 14px; }
@@ -27,7 +30,7 @@
 .exam-machine-placeholder { padding: 20px 0; }
 .exam-result-state { font-weight: bold; }
 #session-status:empty, #clipboard-status:empty { display: none; }
-.exam-embed .site-header, .exam-embed .site-footer, .exam-embed .skip-link, .exam-embed h1, .exam-embed .lab-modes, .exam-embed .lab-information, .exam-embed .lab-legal, .exam-embed #exercise-panel, .exam-embed #other-node, .exam-embed #recovery-link, .exam-embed #main > .controls:not(.terminal-controls), .exam-embed #session-status, .exam-embed #recovery-note { display: none; }
+.exam-embed .site-header, .exam-embed .site-footer, .exam-embed .skip-link, .exam-embed h1, .exam-embed .lab-modes, .exam-embed .lab-information, .exam-embed .lab-network, .exam-embed .lab-legal, .exam-embed #exercise-panel, .exam-embed #other-node, .exam-embed #recovery-link, .exam-embed #main > .controls:not(.terminal-controls), .exam-embed #session-status, .exam-embed #recovery-note { display: none; }
 .exam-embed .site-app-shell { min-height: 0; }
 .exam-embed .linux-real-page { padding: 0; width: 100%; }
 .exam-embed .console { margin-top: 0; }

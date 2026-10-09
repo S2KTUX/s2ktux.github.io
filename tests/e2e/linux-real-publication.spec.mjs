@@ -11,7 +11,10 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
   await expect(page.locator('#session-status')).toBeHidden();
   await expect(page.locator('#clipboard-status')).toBeHidden();
   await expect(page.locator('.lab-modes')).toBeVisible();
-  for(const selector of ['#lab-help','#more-options','#internet','a[href="CHULETA_LINUX_REAL.html"]'])await expect(page.locator(selector)).toHaveCount(0);
+  for(const selector of ['#lab-help','#more-options','#internet','a[href="CHULETA_LINUX_REAL.html"]','.lab-legal'])await expect(page.locator(selector)).toHaveCount(0);
+  await expect(page.locator('.lab-information small')).toHaveCount(3);
+  expect(await page.locator('.lab-information').evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeLessThan(14);
+  await expect(page.locator('#network-note')).not.toContainText('no ping externo');
   await expect(page.locator('[data-exercise-card]')).toBeHidden();
   await expect(page.locator('#result')).toBeHidden();
   expect((await page.locator('.console').boundingBox()).y).toBeLessThan(500);
@@ -34,7 +37,8 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
 test('Linux real · examen separado, sin ayudas y con errores de preparación visibles',async({page})=>{
   await page.goto('/laboratorios/linux-real/examen.html');
   await expect(page.locator('#exam-start')).toBeEnabled();
-  await expect(page.locator('#exam-intro')).toContainText('300 puntos');
+  await expect(page.locator('#exam-intro')).toContainText('210/300 como mínimo');
+  await expect(page.locator('#exam-information small')).toHaveCount(2);
   await expect(page.locator('#exam-results')).toBeHidden();
   await page.route('**/disco-fragmentado.json',route=>route.fulfill({status:503,body:'Sin imagen'}));
   await page.locator('#exam-start').click();
@@ -61,6 +65,7 @@ test('Linux real · examen separado, sin ayudas y con errores de preparación vi
   await expect(page.locator('#exam-report [data-result="unanswered"]')).toHaveCount(22);
   await page.locator('#exam-report details').first().locator('summary').click();
   await expect(page.locator('#exam-report details').first()).toContainText('Una solución válida');
+  await expect(page.locator('#exam-report')).not.toContainText('Se comprueba el resultado');
 });
 
 test('Linux real · finalizar sin esperar al arranque',async({page})=>{

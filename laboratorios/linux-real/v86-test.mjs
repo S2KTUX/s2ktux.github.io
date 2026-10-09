@@ -5,7 +5,7 @@ import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261009-intuitive'
 import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261009-intuitive';
 import {examSetupCommand} from './v86-exam-setup.mjs?v=20261009-intuitive';
 import {examQuestions} from './v86-exam-data.mjs?v=20261009-intuitive';
-import {internetOptions,restrictInternetAdapter} from './v86-network.mjs?v=20261009-intuitive';
+import {createEthernetInternet} from './v86-ethernet-internet.mjs?v=20261009-network';
 import {restartMachine} from './v86-restart.mjs?v=20261009-intuitive';
 import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261008-console';
 import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261009-intuitive';
@@ -15,6 +15,7 @@ const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFa
 terminal.open(document.querySelector('#terminal'));
 const status=document.querySelector('#status');globalThis.vmTranscript='';globalThis.vmTerminal=terminal;
 let emulator,identity,busy=false,savedRecord,activeSave,resetting=false,inputPending=false,serialOutput,displayTranscript='';
+window.addEventListener('pagehide',()=>globalThis.labInternet?.destroy());
 const sessions=new LocalSessions();
 const params=new URL(location.href).searchParams;
 const examAttempt=params.get('exam');
@@ -200,7 +201,7 @@ document.querySelector('#start').onclick=async()=>{
       bios:{url:new URL('seabios.bin',base).href},vga_bios:{url:new URL('vgabios.bin',base).href},
       ...(bootGrub?{}:{bzimage:{url:new URL('vmlinuz',base).href},initrd:{url:new URL('initrd.img',base).href},
         cmdline:'console=ttyS0,115200 root=/dev/sda rw net.ifnames=0 biosdevname=0 tsc=reliable nowatchdog security=selinux selinux=1'+(['selinux','persistente'].includes(stateName)?'':' enforcing=0')}),
-      hda:disk,hdb:practice,...(internetEnabled?{net_device:internetOptions(nodeName)}:{}),
+      hda:disk,hdb:practice,
       initial_state:initialState,preserve_mac_from_state_image:true,autostart:!internetEnabled,disable_keyboard:true,disable_mouse:true,disable_speaker:true};
     emulator=globalThis.vm=new Motor(machineOptions);
     globalThis.labWire=new BroadcastChannel(examMode?'s2ktux-v86-exam-network:'+examAttempt:'s2ktux-v86-private-network-v1:'+diskProfile+':'+stateName+(recoveryScenario?':recovery':''));
@@ -231,7 +232,7 @@ document.querySelector('#start').onclick=async()=>{
       // de toda la RAM, especialmente al abrir las dos máquinas del examen.
       delete machineOptions.initial_state;initialState=undefined;
       if(examMode){examConsole=createExamConsole(emulator);examBootDetector=createExamBootDetector(()=>examConsole.invalidate());}
-      if(internetEnabled){try{restrictInternetAdapter(emulator.network_adapter);emulator.run();}catch(error){fail(error);}}
+      if(internetEnabled){try{globalThis.labInternet=createEthernetInternet(emulator.bus);emulator.run();}catch(error){fail(error);}}
     });
     let started=false;
     emulator.add_listener('emulator-started',()=>{

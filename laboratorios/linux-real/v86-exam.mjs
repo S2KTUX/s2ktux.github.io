@@ -107,7 +107,7 @@ async function finish(expired=false){
    for(const c of r.criteria)item.append(make('p',`${c.ok?'Cumplido':'No cumplido'} · ${c.label}`));
    for(const o of r.observations)item.append(make('h4',o.label),make('pre',o.text||'(sin salida)'));
   }
-  item.append(make('h3','Una solución válida'),make('p','Se comprueba el resultado, no que hayas escrito estos mismos comandos.'),make('pre',q.solution));root.append(item);
+  item.append(make('h3','Una solución válida'),make('pre',q.solution));root.append(item);
  }
  globalThis.examReport={startedAt,finishedAt:Date.now(),score,total:EXAM_TOTAL,incomplete,reports};
  for(const m of machines.values())clearTimeout(m.timer);
