@@ -8,7 +8,7 @@ import {examQuestions} from './v86-exam-data.mjs?v=20261009-intuitive';
 import {createEthernetInternet} from './v86-ethernet-internet.mjs?v=20261009-network';
 import {restartMachine} from './v86-restart.mjs?v=20261009-intuitive';
 import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261008-console';
-import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261009-intuitive';
+import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261009-hostname';
 import {createSerialOutput,appendTranscript} from './v86-serial.mjs';
 import {createExamConsole,examConsoleSetupCommand,createExamBootDetector} from './v86-exam-console.mjs?v=20261009-intuitive';
 const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono", monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
@@ -71,7 +71,7 @@ async function prepareConsole(){
  const password=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');
  try{
    const initialClock=!savedRecord?Math.floor(Date.now()/1000):undefined;
-   const setup=rootShell?(examMode?examSetupCommand(examAttempt,nodeName)+' && '+examConsoleSetupCommand()+' && ':'')+consoleSetupCommand(recoveryScenario,password,initialClock,!savedRecord&&!examMode):"export PS1='[\\u@\\h \\W]\\$ '";
+   const setup=rootShell?(examMode?examSetupCommand(examAttempt,nodeName)+' && '+examConsoleSetupCommand()+' && ':'')+consoleSetupCommand(recoveryScenario,password,initialClock,!savedRecord&&!examMode,examMode?undefined:nodeName==='2'?'s2ktux-lab-2':'s2ktux-lab'):"export PS1='[\\u@\\h \\W]\\$ '";
    const promise=exerciseRunner.run({checks:[]},setup);
    busy=true;document.querySelector('#save').disabled=true;updateExerciseAvailability();
    const result=await promise;

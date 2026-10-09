@@ -1,8 +1,9 @@
 const quote = text => "'" + text.replaceAll("'", "'\\''") + "'";
 // Configuración ejecutada por Linux. No se dibuja ni se sustituye el prompt.
-export function consoleSetupCommand(recovery, password, epochSeconds, initializeNetwork=false) {
+export function consoleSetupCommand(recovery, password, epochSeconds, initializeNetwork=false, labHostname) {
   if (recovery && !/^[a-f0-9]{48}$/.test(password)) throw Error('Contraseña de preparación inválida');
   if(epochSeconds!==undefined&&(!Number.isSafeInteger(epochSeconds)||epochSeconds<1577836800||epochSeconds>4102444800))throw Error('Reloj inicial inválido');
+  if(labHostname!==undefined&&!['s2ktux-lab','s2ktux-lab-2'].includes(labHostname))throw Error('Nombre de laboratorio inválido');
   const script = [
     'set -e',
     'test "$(id -u)" = 0',
@@ -17,6 +18,15 @@ export function consoleSetupCommand(recovery, password, epochSeconds, initialize
     'restorecon /etc/profile.d/s2ktux-prompt.sh /root/.bashrc /etc/skel/.bashrc',
     'fi',
   ];
+  // Migrar solo el nombre de fábrica. Conservar nombres elegidos en prácticas
+  // y no intervenir en los hostnames que forman parte del examen.
+  if(labHostname)script.push(
+    'if test "$(hostname)" = debian-motor-test; then',
+    'hostnamectl set-hostname '+labHostname,
+    "sed -i 's/\\<debian-motor-test\\>/"+labHostname+"/g' /etc/hosts",
+    'restorecon /etc/hostname /etc/hosts',
+    'fi',
+  );
   if(initializeNetwork)script.push(
     'mkdir -p /etc/NetworkManager/conf.d',
     "printf '[main]\\nno-auto-default=*\\n' > /etc/NetworkManager/conf.d/99-lab-no-auto.conf",
@@ -37,5 +47,7 @@ export function consoleSetupCommand(recovery, password, epochSeconds, initialize
     "printf 'RECOVERY_REBOOT_REQUIRED\\n'",
     'fi',
   );
-  return '/bin/sh -c ' + quote(script.join('\n')) + ' && . /etc/profile.d/s2ktux-prompt.sh';
+  // Bash conserva \h desde el inicio de la shell del snapshot. Leer el nombre
+  // real en su variable HOSTNAME evita mostrar el nombre anterior de fábrica.
+  return '/bin/sh -c ' + quote(script.join('\n')) + ' && . /etc/profile.d/s2ktux-prompt.sh && export HOSTNAME="$(hostname)" && export PS1=' + quote('[\\u@${HOSTNAME%%.*} \\W]\\$ ');
 }
