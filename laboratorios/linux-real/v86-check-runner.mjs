@@ -1,7 +1,10 @@
 import { buildProbe, parseProbe, probeTimeoutMs } from './v86-exercises.mjs?v=20261009-exam';
 
 export const cleanSerial = text => text.replace(/\r/g, '').replace(/\x1b\][^\x07\x1b]*(?:\x07|\x1b\\)/g, '').replace(/\x1b\[[0-?]*[ -/]*[@-~]/g, '');
-export const atShellPrompt = text => /(?:^|\n)(?:V86TEST# |V86USER\$ |\[[a-z_][a-z0-9_-]*@[a-zA-Z0-9_.-]+ [^\n\]]*\][#$] |[a-z_][a-z0-9_-]*@[a-zA-Z0-9_.-]+:[^\n]*[#$] )$/.test(cleanSerial(text.slice(-1500)).slice(-500));
+// Un aviso del kernel puede llegar después del prompt, sin que Bash esté
+// ocupado. Admitir solo sus líneas completas con marca de tiempo; no salida
+// arbitraria ni una línea donde el usuario ya haya empezado a escribir.
+export const atShellPrompt = text => /(?:^|\n)(?:V86TEST# |V86USER\$ |\[[a-z_][a-z0-9_-]*@[a-zA-Z0-9_.-]+ [^\n\]]*\][#$] |[a-z_][a-z0-9_-]*@[a-zA-Z0-9_.-]+:[^\n]*[#$] )(?:(?:\[\s*\d+\.\d+\][^\n]*\n)|\n)*$/.test(cleanSerial(text.slice(-1500)));
 
 // Una sola comprobación por consola. No interrumpe vi, passwd ni otro comando.
 // La salida interna no llena la terminal: el resultado se presenta en el panel.
