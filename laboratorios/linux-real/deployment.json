@@ -3,37 +3,37 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715826550,
+  "verifiedPackageBytes": 715829538,
   "modifications": [
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "e8e5f7b89a2289dfcb7750fb11795905b4c4ad72dd48855aa991366485d66b9a",
-      "bytes": 7549
+      "sha256": "e53ca954351f5fed55b22e594ba8e13b5a156b1d61f2abdfff3c560bcfb91bc4",
+      "bytes": 6100
     },
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "95842cb3f5827072a57ceb64efbb9011d73c6309181600763b1db45726789df2",
-      "bytes": 19242
+      "sha256": "9d2d4941ebdf0e7193e1560668a7aa7c8fbf834aa5bf1de4fae859c92865a9c1",
+      "bytes": 22884
     },
     {
       "path": "v86-exercise-panel.mjs",
       "before": "c55728a98f164a821d7d0791b96cdb16065202b2cd2f33f1ab60ab9b88858505",
-      "sha256": "1ca7440af3d474ca74d3f3be22bd3ac3b2e0c3e5ac5faa6ecc66124d8a13bfc5",
-      "bytes": 6193
+      "sha256": "10491f731a039901d1ce929a990626d80dbed6b62bf212e98a75de85b1f33be4",
+      "bytes": 4720
     },
     {
       "path": "v86-check-runner.mjs",
       "before": "2edebe2280441661c34e3d9a2fc16d3255438c4a50e47d402a413fd3e9ae0400",
-      "sha256": "f3c38879ec653d1e73f89164dc410a868a06977dc5d81a3883e8ddc66e2300e2",
-      "bytes": 2803
+      "sha256": "18aaa5cd9e33a67ee6e7c6c9ea0967dc59c48d77c4aab9b214dd0bd0c98d7033",
+      "bytes": 3051
     },
     {
       "path": "v86-exercises.mjs",
       "before": "172951a817f4989725d6c56308a126f890e6b650f1056f827ba6a7d00075ef04",
-      "sha256": "3b9a1ab9b1b828a1b2d6f4d087b228a2b0303555cf5d8fb10dde581dbde40300",
-      "bytes": 11268
+      "sha256": "e9ae3900125a6112a403a466c21d598c1bc08798cd9143ec939fdc7bd4164e39",
+      "bytes": 11984
     },
     {
       "path": "v86-course-exercises.mjs",
@@ -50,20 +50,20 @@
     {
       "path": "GUIA_CURSO_LABORATORIO.md",
       "before": "4eabd8bd48db0231c399434c0d2867138f29ba5bb4122432753fb65fed828277",
-      "sha256": "6aef0764b6e01c8a368aa54eadee29038475e1956a35f2c73dad7b4f352c1b61",
-      "bytes": 7352
+      "sha256": "f2e6a5ec526a66841d0ced80616972165b4c90e7685eefa7460a34a709683e48",
+      "bytes": 8041
     },
     {
       "path": "GUIA_CURSO_LABORATORIO.html",
       "before": "103540cac5639e0fd9c0bceacf56b9fa17184089ac43a203c69d54e079cdc701",
-      "sha256": "567e25a1e095a5c8248ce92b5868ed8f66745c090e88b201ee2c0fd6cb037656",
-      "bytes": 8984
+      "sha256": "7307f8a26c0f8ed44a8117cd0699ae6e14f8a635eac596176139de3f5eb1151f",
+      "bytes": 9576
     },
     {
       "path": "PRACTICAS_V86.html",
       "before": "4b95b1ae772ebdada11e03a9f384846910ba5a92cfcb8ca6859205d767ffef48",
-      "sha256": "98ebab68ef470594c3929f0541a0c23d527021a7613e5e769497ef9f19ee2f72",
-      "bytes": 9161
+      "sha256": "8521f2dda6b37918462d459364503da69772e034f7ae1e734a042dda8a91e0f3",
+      "bytes": 9184
     },
     {
       "path": "licencias/LEEME.html",
@@ -81,8 +81,8 @@
   "addedFiles": [
     {
       "path": "linux-real.css",
-      "sha256": "452b0f0bc9ad95f8baa769f731b0e0464b71d02d93cd647ad27d971bc5e08215",
-      "bytes": 2785
+      "sha256": "a6c6b2ab87ff290f6fba01bd7c2d74aca3d12d44220585b27566d689111d8886",
+      "bytes": 4154
     },
     {
       "path": "v86-clipboard.mjs",
@@ -91,11 +91,41 @@
     },
     {
       "path": "v86-guest-console.mjs",
-      "sha256": "2abdb7217e8ac0a6cb979158f229dc6f0fc44717f4eda1268d347b7ef3be910a",
-      "bytes": 1640
+      "sha256": "d2e4613de65508df46153882648879110e9c2e3ed4a2cfbdc9f967d42d3551e3",
+      "bytes": 1885
+    },
+    {
+      "path": "examen.html",
+      "sha256": "6148d80bc38aeba3b9b2105bf12da98a83389d797847e5165c9adf7da15c532d",
+      "bytes": 3287
+    },
+    {
+      "path": "v86-exam.mjs",
+      "sha256": "e2a2ae4a1d5a7cdd9a0e5d5a01a5b4243bbc6e395ce26cdd819630cd44db12e1",
+      "bytes": 7440
+    },
+    {
+      "path": "v86-exam-data.mjs",
+      "sha256": "f4982a0c4d8cc4cc15039e6404089b6dcacb205360a1677d5623c7f1fd5e6080",
+      "bytes": 11128
+    },
+    {
+      "path": "v86-exam-setup.mjs",
+      "sha256": "e73664532aad834b24c1e52bfe6340fd1a30f6ef14a742936dbc36cd69e0fc44",
+      "bytes": 1878
+    },
+    {
+      "path": "v86-network.mjs",
+      "sha256": "8ddc919fe7f511020a32f5a1e2b500db941b6705091241a04cb66b8db420bb21",
+      "bytes": 2217
+    },
+    {
+      "path": "v86-restart.mjs",
+      "sha256": "3ab323a9ff92507590c25e3ac67a77deb153e7b5027258c5bc8bc3f8bdf68397",
+      "bytes": 345
     }
   ],
-  "note": "publicacion.json y los informes describen la validación local anterior. La integración usa el diseño compartido de la web, una entrada simplificada con prácticas, ayuda y opciones plegadas, copia por selección, pegado con clic derecho, un prompt configurado por Bash y un escenario de recuperación con guardado independiente. La configuración del prompt y la desactivación de autologin en el escenario se ejecutan en el Linux real, sobre sus discos locales; no se cambia la fábrica ni el motor.",
+  "note": "Los informes históricos describen la validación anterior. Esta interfaz añade 44 prácticas y un examen independiente con dos VM nuevas, red privada propia, 22 tareas, 3 horas y rúbrica educativa de 300 puntos (aprobado desde 210). Comprueba estado real, no el texto exacto de los comandos; muestra criterios y observaciones después de finalizar. Internet es voluntario y experimental: TCP real por Wisp público y DNS por DoH de Cloudflare, sin ICMP/UDP externos ni respuestas de ping/NTP fabricadas. El reloj inicial se ajusta al del navegador para conservar la verificación de fechas y firmas de APT. La fábrica y el motor no cambian.",
   "sources": {
     "url": "https://github.com/S2KTUX/s2ktux.github.io/releases/download/linux-real-beta-2026-10-08/fuentes-laboratorio-v3.tar.gz",
     "bytes": 811556382,
@@ -104,10 +134,12 @@
   "kind": "beta independiente",
   "replacesCurrentTerminal": false,
   "knownLimits": [
-    "Debian, no RHEL",
-    "DNF con RPM locales, sin repositorios generales",
-    "Sin Internet general",
-    "Recuperación de contraseña: 613 segundos en la prueba local",
-    "Guardado manual local al navegador"
+    "Debian i386, no RHEL; no equivale al examen oficial",
+    "DNF con RPM locales, no actualiza Debian",
+    "Internet experimental depende de un relay ajeno; TCP/IPv4 y DNS, sin ping/UDP externos ni puertos entrantes",
+    "Recuperación de root y reetiquetado: aproximadamente 5–10 minutos según equipo; puede tardar más",
+    "Guardado manual local; no conserva conexiones externas",
+    "Examen sin guardado automático, sin vigilancia ni protección antitrampas; necesita memoria para dos VM",
+    "La corrección exige una shell root vacía en ambas máquinas; un error de consulta se muestra como incompleto, no como aprobado"
   ]
 }

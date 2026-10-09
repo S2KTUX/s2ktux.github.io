@@ -5,18 +5,18 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
   await page.locator('#mode-select a[href="/laboratorios/linux-real/"]').click();
   await expect(page).toHaveURL(/\/laboratorios\/linux-real\/v86-test\.html/);
   await expect(page.locator('#start')).toBeEnabled();
-  await expect(page.locator('.lead')).toContainText('Linux real');
+  await expect(page.locator('.lead')).toBeHidden();
   await expect(page.locator('#other-node')).toHaveAttribute('href', /node=2/);
   await expect(page.locator('.site-logo')).toHaveText('S2KTUX');
   await expect(page.locator('#recovery-link')).toHaveAttribute('href', /scenario=recovery/);
-  await expect(page.locator('#session-status')).toBeVisible();
-  await expect(page.locator('#session-status')).toContainText('no hay guardado automático');
+  await expect(page.locator('#session-status')).toBeHidden();
+  await expect(page.locator('#clipboard-status')).toBeHidden();
   for (const selector of ['#exercise-panel', '#lab-help', '#more-options']) {
     expect(await page.locator(selector).evaluate(element => element.open)).toBe(false);
   }
   await expect(page.locator('#result')).toBeHidden();
   expect((await page.locator('.console').boundingBox()).y).toBeLessThan(500);
-  await expect(page.locator('#reboot')).toBeHidden();
+  await expect(page.locator('#reboot')).toBeVisible();
   await page.locator('[data-theme-toggle]').click();
   await expect(page.locator('html')).toHaveClass(/dark/);
   await page.locator('#exercise-panel > summary').click();
@@ -24,16 +24,29 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
   await expect(page.locator('[data-exercise-check]')).toBeDisabled();
   await page.locator('[data-exercise-solution]').click();
   await expect(page.locator('#exercise-solution')).toBeVisible();
-  await page.locator('[data-lab-mode="exam"]').click();
-  await expect(page.locator('[data-exercise-solution]')).toBeHidden();
-  await page.locator('[data-exam-finish]').click();
-  await expect(page.locator('[data-exercise-solution]')).toBeVisible();
+  await expect(page.locator('a[href="examen.html"]')).toHaveText('Modo examen');
+  await expect(page.locator('#exercise-select option')).toHaveCount(44);
   await page.locator('#more-options > summary').click();
   await expect(page.locator('#reboot')).toBeVisible();
   await expect(page.locator('#recovery-link')).toBeVisible();
   expect(await page.evaluate(() => typeof globalThis.vm)).toBe('undefined');
   await page.goto('/laboratorios/linux-real/licencias/LEEME.html');
   await expect(page.locator('a[href*="fuentes-laboratorio-v3.tar.gz"]')).toHaveCount(1);
+});
+
+test('Linux real · examen separado, sin ayudas y con errores de preparación visibles',async({page})=>{
+  await page.goto('/laboratorios/linux-real/examen.html');
+  await expect(page.locator('#exam-start')).toBeEnabled();
+  await expect(page.locator('#exam-intro')).toContainText('300 puntos');
+  await expect(page.locator('#exam-results')).toBeHidden();
+  await page.route('**/disco-fragmentado.json',route=>route.fulfill({status:503,body:'Sin imagen'}));
+  await page.locator('#exam-start').click();
+  await expect(page.locator('.site-header')).toBeHidden();
+  await expect(page.locator('#exam-intro')).toBeHidden();
+  await expect(page.locator('#exam-status')).toContainText('Máquina 1:');
+  await expect(page.locator('#exam-finish')).toBeDisabled();
+  await expect(page.frameLocator('iframe').locator('#exercise-panel')).toBeHidden();
+  await expect(page.frameLocator('iframe').locator('#lab-help')).toBeHidden();
 });
 
 test('Linux real · recuperación con reinicio accesible y error de arranque visible', async ({page}) => {

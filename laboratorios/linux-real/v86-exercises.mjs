@@ -100,7 +100,7 @@ export const introExercises = [
 
 export const exercises = [
   ...introExercises.map(e => ({...e, group:'Prácticas iniciales'})),
-  ...courseExercises.map(e => ({...e, group:'Simulacro adaptado'})),
+  ...courseExercises.map(e => ({...e, title:e.title.replace('Simulacro','Práctica'), group:'Prácticas RHCSA'})),
   ...extraExercises.map(e => ({...e, group:'Prácticas del curso'})),
 ];
 
@@ -111,7 +111,7 @@ const conditionTimeout=check=>{
   if(!Number.isInteger(seconds)||seconds<1||seconds>60)throw Error('Plazo de comprobación inválido');
   return seconds;
 };
-export const probeTimeoutMs=exercise=>10000+exercise.checks.reduce((ms,check)=>ms+(conditionTimeout(check)+2)*1000,0);
+export const probeTimeoutMs=exercise=>10000+exercise.checks.reduce((ms,check)=>ms+(conditionTimeout(check)+2)*1000,0)+(exercise.observations?.length||0)*12000;
 
 export function buildProbe(exercise, nonce) {
   if (!/^[a-f0-9]{24}$/.test(nonce)) throw Error('Identificador de comprobación inválido');
@@ -122,6 +122,9 @@ export function buildProbe(exercise, nonce) {
   exercise.checks.forEach((condition, index) => {
     const [,check]=condition;
     lines.push(`if /usr/bin/timeout -k 2 ${conditionTimeout(condition)} /bin/sh -c ${shellQuote(check)} >/dev/null 2>&1; then printf '${prefix}${index}=0\\n'; else result=$?; printf '${prefix}${index}=%s\\n' "$result"; fi`);
+  });
+  (exercise.observations||[]).forEach(([,command],index)=>{
+    lines.push(`observed=$(/usr/bin/timeout -k 2 10 /bin/sh -c ${shellQuote(command)} 2>&1 | head -c 4096 | base64 -w0); printf '${prefix}OBS${index}=%s\\n' "$observed"`);
   });
   return `/bin/sh -c ${shellQuote(lines.join('; '))}; printf '\\n${prefix}END=%s\\n' "$?"`;
 }
@@ -139,5 +142,10 @@ export function parseProbe(exercise, nonce, output) {
     if (code === 124 || code === 137) throw Error('Una consulta tardó demasiado. No se considera aprobada.');
     return { label, ok: code === 0 };
   });
-  return { ok: results.every(result => result.ok), results };
+  const observations=(exercise.observations||[]).map(([label],index)=>{
+    const match=new RegExp('(?:^|\\n)'+prefix+'OBS'+index+'=([A-Za-z0-9+/=]*)\\n').exec(output);
+    if(!match)throw Error('No se pudo recoger el estado observado.');
+    return {label,text:new TextDecoder().decode(Uint8Array.from(atob(match[1]),c=>c.charCodeAt(0)))};
+  });
+  return { ok: results.every(result => result.ok), results, ...(observations.length?{observations}:{}) };
 }

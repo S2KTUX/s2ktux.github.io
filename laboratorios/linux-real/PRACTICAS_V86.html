@@ -4,8 +4,8 @@
 <p>La entrada preparada recupera una máquina ya arrancada. Guardar sesión conserva tu RAM y los cambios de ambos discos en este navegador. Guarda antes de cerrar: no hay guardado automático. Reset elimina únicamente el guardado de ese perfil y recupera su base limpia. No borra archivos del portátil.</p>
 <h2>Dos formas de practicar</h2>
 <p><strong>Practicar Linux</strong> deja la terminal para tus propias pruebas. Si necesitas una propuesta, abre las prácticas guiadas; no son obligatorias.</p>
-<p><strong>Practicar modo examen</strong> contiene las 21 preguntas del simulacro, sin sumar las prácticas complementarias. Las soluciones, la chuleta y las comprobaciones aparecen al terminar el intento. Es un modo de estudio, no una evaluación vigilada.</p>
-<p>Ambos usan la misma máquina. Cambiar de modo no borra nada ni ejecuta comandos. Para empezar realmente desde cero, usa Reset; también eliminará el guardado de esa máquina.</p>
+<p><a href="examen.html">Modo examen</a> abre dos máquinas nuevas con 21 preguntas y una tarea de recuperación de root, sin ayudas durante el intento. Al finalizar muestra la nota sobre 300, los criterios comprobados y las soluciones. Aprobado desde 210 con nuestra rúbrica educativa; no es una evaluación oficial ni vigilada.</p>
+<p>El examen no modifica la práctica libre. Para empezar la práctica desde cero, usa Reset: también elimina su guardado. El examen no tiene guardado automático.</p>
 <h2>Software: practicar DNF sin inventar respuestas</h2>
 <p>El repositorio local contiene RPM propios y firmados. Puedes instalar, actualizar y borrar estos paquetes con DNF de verdad. Los componentes Debian siguen gestionados por dpkg/APT: no puedes dar por hecho que <code>dnf install vim</code> o un upgrade de todo el sistema equivalgan a RHEL.</p>
 <pre><code>dnf repolist
@@ -17,7 +17,7 @@ cat /usr/share/s2ktux-lab/lab-notas/version.txt
 dnf remove lab-notas lab-base</code></pre>
 <p>La versión inicial es 1.0 y la actualización ofrece 2.0. <code>lab-dependencia-rota</code> debe fallar porque su dependencia no existe. Ese fallo es un resultado real previsto, no un comando sin implementar.</p>
 <h2>Dos máquinas para NFS y autofs</h2>
-<p>Usa <strong>Abrir la otra máquina</strong>, en el mismo navegador. Cada máquina tiene su propio guardado y una MAC distinta. El enlace entre ellas es Ethernet privado; no hay DHCP ni acceso general a Internet. Configura direcciones IP distintas. Los comandos siguientes fijan también dos MAC diferentes para esta práctica.</p>
+<p>Usa <strong>Abrir la otra máquina</strong>, en el mismo navegador. Cada máquina tiene su propio guardado. El enlace entre ellas es Ethernet privado, sin DHCP. Configura IP y MAC distintas. Internet se activa aparte, de forma voluntaria y experimental; no hace falta para estas prácticas.</p>
 <p>En la máquina 1:</p>
 <pre><code>nmcli con add type ethernet ifname eth0 con-name lab-nfs ipv4.method manual ipv4.addresses 10.42.0.10/24 ipv6.method disabled ethernet.cloned-mac-address 02:00:00:42:00:10
 nmcli con up lab-nfs

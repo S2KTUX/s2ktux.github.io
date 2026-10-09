@@ -1,4 +1,4 @@
-import { exercises } from './v86-exercises.mjs?v=20261008-console';
+import { exercises } from './v86-exercises.mjs?v=20261009-exam';
 
 export function mountExercisePanel(root, runCheck) {
   const select = root.querySelector('select');
@@ -15,12 +15,10 @@ export function mountExercisePanel(root, runCheck) {
   const help = root.querySelector('[data-practice-help]');
   const card = root.querySelector('[data-exercise-card]');
   const aid = root.querySelector('[data-lab-aid]');
-  const finish = root.querySelector('[data-exam-finish]');
-  const restart = root.querySelector('[data-exam-restart]');
   const modeNote = root.querySelector('[data-mode-note]');
   let enabled = false, checking = false, generation = 0;
-  let mode = 'practice', practiceHelp = false, finished = false;
-  const available = () => exercises.filter(e => (e.group === 'Simulacro adaptado') === (mode === 'exam'));
+  let practiceHelp = false;
+  const available = () => exercises;
   const populate = () => {
     select.replaceChildren();
     const groups = new Map();
@@ -34,63 +32,42 @@ export function mountExercisePanel(root, runCheck) {
     }
   };
   const selected = () => available().find(exercise => exercise.id === select.value);
-  const reviewAllowed = () => mode === 'practice' || finished;
   const sync = () => {
-    check.disabled = !enabled || checking || !reviewAllowed();
-    select.disabled = checking; toggle.hidden = !reviewAllowed();
+    check.disabled = !enabled || checking;
+    select.disabled = checking;
     toggle.disabled = checking;
     for (const button of modes) {
       button.disabled = checking;
-      button.setAttribute('aria-pressed', String(button.dataset.labMode === mode));
+      button.setAttribute('aria-pressed', 'true');
     }
-    help.hidden = mode !== 'practice'; help.disabled = checking;
+    help.disabled = checking;
     help.textContent = practiceHelp ? 'Ocultar prácticas guiadas' : 'Abrir prácticas guiadas';
     help.setAttribute('aria-expanded', String(practiceHelp));
-    card.hidden = mode === 'practice' && !practiceHelp;
-    aid.hidden = mode === 'exam' && !finished;
-    finish.hidden = mode !== 'exam' || finished; finish.disabled = checking;
-    restart.hidden = mode !== 'exam' || !finished; restart.disabled = checking;
-    modeNote.textContent = mode === 'practice'
-      ? 'Prueba lo que quieras en la terminal. Las prácticas y las ayudas son opcionales.'
-      : finished ? 'Intento terminado. Ahora puedes comprobar cada ejercicio y consultar su solución.'
-      : 'Resuelve las 21 preguntas sin ayudas. Al terminar podrás comprobarlas y ver las soluciones. Es un simulacro de práctica, no un examen oficial.';
+    card.hidden = !practiceHelp;aid.hidden=false;
+    modeNote.textContent='Prueba lo que quieras en la terminal. Las prácticas y las ayudas son opcionales.';
   };
   const render = () => {
     generation++;
     const exercise = selected();
     title.textContent = exercise.title; goal.textContent = exercise.goal;
     note.textContent = exercise.note || ''; note.hidden = !exercise.note;
-    explanation.textContent = reviewAllowed() ? exercise.explanation : '';
-    code.textContent = reviewAllowed() ? exercise.solution : '';
+    explanation.textContent = exercise.explanation;
+    code.textContent = exercise.solution;
     solution.hidden = true; toggle.textContent = 'Ver solución'; toggle.setAttribute('aria-expanded', 'false');
-    feedback.replaceChildren(); feedback.textContent = reviewAllowed()
-      ? 'Haz la práctica en Linux y comprueba el resultado cuando termines.'
-      : 'Las comprobaciones estarán disponibles al terminar el intento.';
+    feedback.replaceChildren(); feedback.textContent='Haz la práctica en Linux y comprueba el resultado cuando termines.';
     feedback.dataset.result = 'pending'; sync();
   };
-  for (const button of modes) button.addEventListener('click', () => {
-    if (checking || mode === button.dataset.labMode) return;
-    mode = button.dataset.labMode; finished = false;
-    populate(); render();
-  });
+  for (const button of modes) button.addEventListener('click',()=>{practiceHelp=true;sync();});
   help.addEventListener('click', () => { practiceHelp = !practiceHelp; sync(); });
-  finish.addEventListener('click', () => {
-    if (checking || mode !== 'exam') return;
-    finished = true; render();
-  });
-  restart.addEventListener('click', () => {
-    if (checking || mode !== 'exam') return;
-    finished = false; render();
-  });
   select.addEventListener('change', render);
   toggle.addEventListener('click', () => {
-    if (!reviewAllowed() || checking) return;
+    if (checking) return;
     solution.hidden = !solution.hidden;
     toggle.textContent = solution.hidden ? 'Ver solución' : 'Ocultar solución';
     toggle.setAttribute('aria-expanded', String(!solution.hidden));
   });
   check.addEventListener('click', async () => {
-    if (!enabled || checking || !reviewAllowed()) return;
+    if (!enabled || checking) return;
     checking = true; sync();
     const current = generation, exercise = selected();
     feedback.textContent = 'Comprobando el estado real de Linux…'; feedback.dataset.result = 'pending';

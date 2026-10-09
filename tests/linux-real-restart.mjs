@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {restartMachine} from '../laboratorios/linux-real/v86-restart.mjs';
+const events=[];
+let release;
+const io=new Promise(resolve=>{release=resolve;});
+const emulator={stop:async()=>events.push('stop'),restart:()=>events.push('reset'),run:async()=>events.push('run')};
+const promise=restartMachine(emulator,[{settle:async()=>{events.push('disk');await io;}}]);
+await Promise.resolve();await Promise.resolve();assert.deepEqual(events,['stop','disk']);
+release();await promise;assert.deepEqual(events,['stop','disk','reset','run']);
+events.length=0;
+await assert.rejects(restartMachine(emulator,[{settle:async()=>{throw Error('Lectura pendiente fallida');}}]));
+assert.deepEqual(events,['stop']);
+console.log('✓ Reinicio: detener, drenar disco y resetear; nunca reiniciar tras una lectura fallida.');

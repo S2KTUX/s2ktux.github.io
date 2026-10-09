@@ -7,6 +7,9 @@ for (const prompt of ['V86TEST# ', 'V86USER$ ', '[root@laboratorio ~]# ', '[ana@
   assert.equal(atShellPrompt('\n'+prompt+' '), false, 'No enviar comprobaciones sobre una línea escrita');
 }
 for (const text of ['Password: ', 'Retype new password: ', 'login: ', 'grub> ', 'switch_root:/# ', 'bash-5.2# ', '[root@nodo ~]# vim /etc/fstab']) assert.equal(atShellPrompt(text), false, text);
+assert.equal(atShellPrompt('[root@nodo ~]# [ 1943.250450] systemd-journald[395]: Time jumped backwards, rotating.\r\n\r\n'), true, 'Aviso real del kernel posterior al prompt');
+assert.equal(atShellPrompt('[root@nodo ~]# \n[ 1943.250450] aviso\n[ 1944.125000] otro aviso\n'), true);
+for(const text of ['[root@nodo ~]# echo hola\n[ 1.000000] aviso\n','[root@nodo ~]# salida sin marca de kernel\n','[root@nodo ~]# [ 1.000000] aviso sin terminar','[root@nodo ~]# \nPassword: '])assert.equal(atShellPrompt(text),false,'No confundir comandos ni otras salidas con el prompt');
 const runner=createCheckRunner(text=>{const nonce=/__SETUP_([a-f0-9]{24})/.exec(text)[1];queueMicrotask(()=>runner.receive(`\n__SETUP_${nonce}=0\n\x1b[?2004h[root@nodo ~]# `));},()=>true);
 const result=await runner.run({checks:[]},'true');
 assert.match(result.output,/__SETUP_/);assert.match(result.serial,/\x1b\[\?2004h/);
@@ -15,4 +18,6 @@ assert.match(setup,/export PS1=/);assert.doesNotMatch(setup,/chpasswd|autologin|
 const recovery=consoleSetupCommand(true,'a'.repeat(48));
 assert.match(recovery,/chpasswd/);assert.match(recovery,/zz-recovery\.conf/);assert.doesNotMatch(recovery,/--autologin/);
 assert.throws(()=>consoleSetupCommand(true,'unsafe; value'));
+assert.match(consoleSetupCommand(false,undefined,1791494400),/date -u -s/);
+assert.throws(()=>consoleSetupCommand(false,undefined,'unsafe;value'));
 console.log('✓ Consola Linux: prompt real, línea vacía, setup comprobado y recuperación sin autologin.');
