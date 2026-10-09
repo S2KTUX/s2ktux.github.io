@@ -3,7 +3,7 @@ import {ChunkDisk} from './v86-disk.mjs';
 import {LocalSessions,hashBytes} from './v86-sessions.mjs';
 import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261009-intuitive';
 import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261009-intuitive';
-import {examSetupCommand} from './v86-exam-setup.mjs?v=20261009-intuitive';
+import {examSetupCommand} from './v86-exam-setup.mjs?v=20261009-nodos';
 import {examQuestions} from './v86-exam-data.mjs?v=20261009-intuitive';
 import {createEthernetInternet} from './v86-ethernet-internet.mjs?v=20261009-network';
 import {restartMachine} from './v86-restart.mjs?v=20261009-intuitive';

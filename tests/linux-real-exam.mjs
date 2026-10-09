@@ -34,6 +34,14 @@ assert.throws(()=>examSetupCommand('bad; rm', '1'));
 assert.throws(()=>examSetupCommand('a'.repeat(32), '3'));
 assert.doesNotMatch(examSetupCommand('a'.repeat(32),'1'),/mklabel|pvcreate/);
 assert.match(examSetupCommand('a'.repeat(32),'2'),/nfs-server|seedvg/);
+for(const node of ['1','2']){
+  const setup=examSetupCommand('a'.repeat(32),node);
+  assert.match(setup,new RegExp('hostnamectl set-hostname nodo'+node+'\\n'));
+  assert.match(setup,/restorecon \/etc\/hostname \/etc\/hosts/);
+  assert.doesNotMatch(setup,/pendiente1|hostnamectl set-hostname nodo1\.lab\.local/,'La preparación no resuelve el cambio de nombre del ejercicio');
+}
+assert.match(examQuestions[0].goal,/hostname nodo1\.lab\.local/);
+assert.match(examQuestions[0].checks[3][1],/hostname.* = nodo1\.lab\.local/,'Corregir el nombre final, no el nombre inicial');
 const nonce='a'.repeat(24),q=examQuestions[0];
 const output=q.checks.map((c,i)=>`__LAB_${nonce}_${i}=0\n`).join('')+`__LAB_${nonce}_OBS0=${Buffer.from('estado real á').toString('base64')}\n__LAB_${nonce}_END=0\n`;
 assert.equal(parseProbe(q,nonce,output).observations[0].text,'estado real á');
@@ -41,6 +49,7 @@ assert.match(buildProbe(q,nonce),/base64 -w0/);
 assert.throws(()=>parseProbe(q,nonce,output.replace(`__LAB_${nonce}_0=0`,`__LAB_${nonce}_0=124`)));
 assert.throws(()=>parseProbe(q,nonce,output.replace(/__LAB_[a-f0-9]{24}_OBS0=[^\n]+\n/,'')));
 const guest=readFileSync(new URL('../laboratorios/linux-real/v86-test.mjs',import.meta.url),'utf8');
+assert.match(guest,/v86-exam-setup\.mjs\?v=20261009-nodos/,'Renovar la caché de la preparación de examen');
 assert.match(guest,/v86-guest-console\.mjs\?v=20261009-hostname/,'La configuración del nombre no debe reutilizar la caché anterior');
 assert.match(guest,/examMode\?undefined:nodeName==='2'\?'s2ktux-lab-2':'s2ktux-lab'/,'No renombrar las máquinas del examen');
 assert.match(guest,/examConsole\.run\(exercise\)/,'El corrector no utiliza la consola del alumno');
