@@ -106,8 +106,8 @@
     },
     {
       "path": "v86-exam-data.mjs",
-      "sha256": "c0dfd9130cd162df8aa49463d421e6cb5cca0f5509642c421b8a2e89aac02d38",
-      "bytes": 11096
+      "sha256": "3b3134e7e8832e1bffd504bced2e85f15f21b8e9e569af66887eb3f22945aad5",
+      "bytes": 11097
     },
     {
       "path": "v86-exam-setup.mjs",

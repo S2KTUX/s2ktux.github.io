@@ -21,6 +21,7 @@ for(const q of examQuestions){
 const lv=examQuestions.find(q=>q.number===15),reduce=examQuestions.find(q=>q.number===17);
 assert.match(examQuestions.find(q=>q.number===9).checks[0][1],/if x\.strip\(\) and not/,'Las líneas vacías de las tareas de red no deben invalidar la copia de hosts');
 assert.doesNotMatch(lv.solution,/mklabel/);assert.match(lv.solution,/exam_disk/);assert.match(lv.solution,/2147483648/);
+assert.match(lv.solution,/lsblk -dno PKNAME/,'La identificación debe consultar solo la partición PV, no sus LV hijos');
 assert.doesNotMatch(reduce.solution,/mkfs|lvcreate/);assert.match(reduce.solution,/seedvg/);
 for(const number of [20,21]){
   const podmanQuestion=examQuestions.find(q=>q.number===number);

@@ -11,7 +11,7 @@ const question = (number, node, points, exercise, observations, changes={}) => (
 });
 const users = course(5), sudo = course(14);
 const lv = course(15), swap = course(16), reduce = course(17);
-const examDisk=`exam_pv=$(pvs --noheadings -o pv_name -S vg_name=seedvg | xargs) && test -b "$exam_pv" && exam_disk="/dev/$(lsblk -no PKNAME "$exam_pv")" && test -b "$exam_disk" && test "$(blockdev --getsize64 "$exam_disk")" = 2147483648`;
+const examDisk=`exam_pv=$(pvs --noheadings -o pv_name -S vg_name=seedvg | xargs) && test -b "$exam_pv" && exam_disk="/dev/$(lsblk -dno PKNAME "$exam_pv")" && test -b "$exam_disk" && test "$(blockdev --getsize64 "$exam_disk")" = 2147483648`;
 const diskIdentification=examDisk+' || { echo "No se ha identificado el disco de prácticas de 2 GiB"; exit 1; }\nlsblk "$exam_disk"\n';
 const podman = course(21);
 const asHermes = command => `uid=$(id -u hermes) && test -S /run/user/$uid/bus && runuser -u hermes -- env HOME=/home/hermes XDG_RUNTIME_DIR=/run/user/$uid DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus /bin/sh -c ${shellQuote(`cd /home/hermes && ${command}`)}`;
