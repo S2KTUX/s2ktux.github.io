@@ -118,7 +118,7 @@ export function buildProbe(exercise, nonce) {
   const prefix = '__LAB_' + nonce + '_';
   if (exercise.checkUser && !/^[a-z_][a-z0-9_-]{0,31}$/.test(exercise.checkUser)) throw Error('Usuario de comprobación inválido');
   const actor = exercise.checkUser ? `test "$(id -un)" = ${shellQuote(exercise.checkUser)} || exit 77` : 'test "$(id -u)" = 0 || exit 77';
-  const lines = ['export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat', actor];
+  const lines = ['export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat RES_OPTIONS="attempts:1 timeout:1"', actor];
   exercise.checks.forEach((condition, index) => {
     const [,check]=condition;
     lines.push(`if /usr/bin/timeout -k 2 ${conditionTimeout(condition)} /bin/sh -c ${shellQuote(check)} >/dev/null 2>&1; then printf '${prefix}${index}=0\\n'; else result=$?; printf '${prefix}${index}=%s\\n' "$result"; fi`);

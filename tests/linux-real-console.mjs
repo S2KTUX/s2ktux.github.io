@@ -20,4 +20,6 @@ assert.match(recovery,/chpasswd/);assert.match(recovery,/zz-recovery\.conf/);ass
 assert.throws(()=>consoleSetupCommand(true,'unsafe; value'));
 assert.match(consoleSetupCommand(false,undefined,1791494400),/date -u -s/);
 assert.throws(()=>consoleSetupCommand(false,undefined,'unsafe;value'));
+assert.match(consoleSetupCommand(false,undefined,undefined,true),/no-auto-default|ip addr flush/);
+assert.doesNotMatch(consoleSetupCommand(false),/ip addr flush|nmcli con delete/,'No borrar la red de una sesión recuperada');
 console.log('✓ Consola Linux: prompt real, línea vacía, setup comprobado y recuperación sin autologin.');

@@ -1,4 +1,4 @@
-import { exercises } from './v86-exercises.mjs?v=20261009-exam';
+import { exercises } from './v86-exercises.mjs?v=20261009-intuitive';
 
 export function mountExercisePanel(root, runCheck) {
   const select = root.querySelector('select');
@@ -11,16 +11,12 @@ export function mountExercisePanel(root, runCheck) {
   const explanation = root.querySelector('[data-exercise-explanation]');
   const code = root.querySelector('pre code');
   const feedback = root.querySelector('[data-exercise-feedback]');
-  const modes = [...root.querySelectorAll('[data-lab-mode]')];
-  const help = root.querySelector('[data-practice-help]');
   const card = root.querySelector('[data-exercise-card]');
-  const aid = root.querySelector('[data-lab-aid]');
-  const modeNote = root.querySelector('[data-mode-note]');
   let enabled = false, checking = false, generation = 0;
-  let practiceHelp = false;
   const available = () => exercises;
   const populate = () => {
     select.replaceChildren();
+    const free=document.createElement('option');free.value='';free.textContent='Práctica libre';select.append(free);
     const groups = new Map();
     for (const exercise of available()) {
       if (!groups.has(exercise.group)) {
@@ -36,19 +32,12 @@ export function mountExercisePanel(root, runCheck) {
     check.disabled = !enabled || checking;
     select.disabled = checking;
     toggle.disabled = checking;
-    for (const button of modes) {
-      button.disabled = checking;
-      button.setAttribute('aria-pressed', 'true');
-    }
-    help.disabled = checking;
-    help.textContent = practiceHelp ? 'Ocultar prácticas guiadas' : 'Abrir prácticas guiadas';
-    help.setAttribute('aria-expanded', String(practiceHelp));
-    card.hidden = !practiceHelp;aid.hidden=false;
-    modeNote.textContent='Prueba lo que quieras en la terminal. Las prácticas y las ayudas son opcionales.';
+    card.hidden = !selected();
   };
   const render = () => {
     generation++;
     const exercise = selected();
+    if(!exercise){card.hidden=true;feedback.replaceChildren();solution.hidden=true;sync();return;}
     title.textContent = exercise.title; goal.textContent = exercise.goal;
     note.textContent = exercise.note || ''; note.hidden = !exercise.note;
     explanation.textContent = exercise.explanation;
@@ -57,8 +46,6 @@ export function mountExercisePanel(root, runCheck) {
     feedback.replaceChildren(); feedback.textContent='Haz la práctica en Linux y comprueba el resultado cuando termines.';
     feedback.dataset.result = 'pending'; sync();
   };
-  for (const button of modes) button.addEventListener('click',()=>{practiceHelp=true;sync();});
-  help.addEventListener('click', () => { practiceHelp = !practiceHelp; sync(); });
   select.addEventListener('change', render);
   toggle.addEventListener('click', () => {
     if (checking) return;

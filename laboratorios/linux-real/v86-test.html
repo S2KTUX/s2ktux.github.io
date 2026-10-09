@@ -6,7 +6,7 @@
 <link rel="stylesheet" href="/terminal-page.css?v=20260826-phase3">
 <link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b">
 <link rel="stylesheet" href="vendor/xterm.css">
-<link rel="stylesheet" href="linux-real.css?v=20261009-exam">
+<link rel="stylesheet" href="linux-real.css?v=20261009-intuitive">
 <script defer src="/site-shell.js?v=20260828-hardening"></script>
 </head>
 <body><div class="site-page-shell site-app-shell">
@@ -18,54 +18,22 @@
 <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Activar tema oscuro"><span data-theme-icon aria-hidden="true">☾</span></button>
 </nav></div></header>
 <main id="main" class="linux-real-page"><h1>Laboratorio Linux</h1>
-<p class="lead" hidden></p>
+<nav class="lab-modes" aria-label="Modo del laboratorio"><a href="v86-test.html" aria-current="page">Modo práctica</a><a href="examen.html">Modo examen</a></nav>
+<section class="exercise-panel" id="exercise-panel" aria-label="Prácticas">
+<label for="exercise-select">¿Qué quieres practicar?</label><select id="exercise-select"></select>
+<div data-exercise-card hidden><h2 data-exercise-title></h2><p data-exercise-goal></p><p class="warning" data-exercise-note hidden></p>
+<div class="exercise-actions"><button type="button" data-exercise-check disabled>Comprobar ejercicio</button><button type="button" data-exercise-solution aria-expanded="false" aria-controls="exercise-solution">Ver solución</button></div>
+<div data-exercise-feedback role="status" aria-live="polite"></div><div id="exercise-solution" data-exercise-solution-body hidden><p data-exercise-explanation></p><pre><code></code></pre></div></div>
+</section>
 <div class="controls"><button type="button" id="start" disabled>Iniciar laboratorio</button><button type="button" id="save" disabled>Guardar sesión</button><button type="button" id="reset">Reset</button><span id="status" role="status" aria-live="polite">Cargando interfaz…</span></div>
 <p id="session-status" role="status" aria-live="polite"></p>
 <p id="recovery-note" class="warning" hidden>Esta máquina no inicia sesión automáticamente. Recupera root desde GRUB siguiendo el curso. Su guardado y su Reset son independientes de la práctica libre.</p>
 <section class="console" aria-label="Terminal del laboratorio"><div class="console-bar">Terminal <span># root · $ usuario</span></div><div class="console-scroll"><div id="terminal"></div></div></section>
-<div class="controls terminal-controls"><button type="button" id="reboot" disabled>Reiniciar máquina</button></div>
+<div class="controls terminal-controls"><button type="button" id="reboot" disabled>Reiniciar máquina</button><a class="lab-button" id="other-node" href="?node=2" target="_blank" rel="noopener">Abrir máquina 2</a><a class="lab-button" id="recovery-link" href="?scenario=recovery" target="_blank" rel="noopener">Practicar recuperación de root</a></div>
 <p id="clipboard-status" role="status" aria-live="polite"></p>
 <p id="result" class="warning" role="status" hidden></p>
-<details class="exercise-panel" id="exercise-panel"><summary>Prácticas (opcional)</summary>
-<div class="exercise-actions" role="group" aria-label="Modo del laboratorio">
-<button type="button" data-lab-mode="practice" aria-pressed="true">Practicar Linux</button>
-<a class="lab-button" href="examen.html">Modo examen</a>
-</div>
-<p data-mode-note></p>
-<p data-lab-aid><a href="CHULETA_LINUX_REAL.html" target="_blank" rel="noopener">Consultar la chuleta de comandos</a></p>
-<button type="button" data-practice-help aria-expanded="false">Abrir prácticas guiadas</button>
-<div data-exercise-card hidden>
-<label for="exercise-select">Elige un ejercicio</label>
-<select id="exercise-select"></select>
-<h3 data-exercise-title></h3>
-<p data-exercise-goal></p>
-<p class="warning" data-exercise-note hidden></p>
-<p class="exercise-hint">Para comprobar, vuelve al prompt del usuario indicado y deja la línea vacía. Ver la solución no ejecuta comandos.</p>
-<div class="exercise-actions">
-<button type="button" data-exercise-check disabled>Comprobar ejercicio</button>
-<button type="button" data-exercise-solution aria-expanded="false" aria-controls="exercise-solution">Ver solución</button>
-</div>
-<div data-exercise-feedback role="status" aria-live="polite"></div>
-<div id="exercise-solution" data-exercise-solution-body hidden>
-<p data-exercise-explanation></p>
-<pre><code></code></pre>
-<p>Es una forma de resolverlo, no una práctica completada.</p>
-</div>
-</div>
-</details>
-<details id="lab-help"><summary>Notas</summary>
-<p>Es Debian, no Red Hat: algunos servicios y rutas cambian. DNF trabaja con RPM locales de prácticas; APT administra Debian.</p>
-<p>La recuperación de root y el reetiquetado pueden tardar aproximadamente 5–10 minutos, o más según el equipo.</p>
-<p>El guardado es manual y solo se conserva en este navegador. Reset devuelve esta máquina a su estado inicial; no toca los archivos del ordenador.</p>
-</details>
-<details id="more-options"><summary>Más opciones</summary>
-<label><input id="internet" type="checkbox"> Probar Internet (experimental)</label>
-<p id="internet-note">Actívalo antes de iniciar. Usa el puente público wisp.mercurywork.shop para TCP y Cloudflare para DNS; no envíes credenciales ni datos privados. No admite ping/UDP externos y bloquea los destinos privados. Para configurar Linux: IP 10.42.0.20/24 (máquina 2: 10.42.0.11/24), gateway y DNS 10.42.0.1. El servicio externo puede fallar.</p>
-<p><a id="recovery-link" href="?boot=grub&amp;disk=final&amp;estado=grub-rhcsa-final&amp;scenario=recovery" target="_blank" rel="noopener">Practicar recuperación de la contraseña de root</a></p>
-<p id="network-note"><span id="node-name">Máquina 1</span> · <a id="other-node" href="?boot=grub&amp;disk=final&amp;estado=grub-rhcsa-final&amp;node=2" target="_blank" rel="noopener">Abrir la otra máquina</a>. Cada una tiene su propio guardado. La red entre ellas es privada: configura IP y MAC distintas. Internet es una opción aparte.</p>
-<p><a href="?boot=grub&amp;disk=final&amp;estado=frio">Arrancar desde cero, sin el estado preparado</a></p>
-<p id="downloads"></p>
-<p><a href="ESTADO_VALIDACION.md" target="_blank" rel="noopener">Pruebas de la imagen base</a> · <a href="licencias/LEEME.html" target="_blank" rel="noopener">Avisos y fuentes del software</a></p>
-</details>
+<aside class="lab-information" aria-label="Información del laboratorio"><p>Es Debian, no Red Hat: algunos servicios y rutas cambian. DNF trabaja con RPM locales de prácticas; APT administra Debian.</p><p>La recuperación de root y el reetiquetado pueden tardar aproximadamente 5–10 minutos, o más según el equipo.</p>
+<p id="network-note"><span id="node-name">Máquina 1</span> · Red: 10.42.0.20/24 (máquina 2: 10.42.0.11/24), gateway y DNS 10.42.0.1. Configúrala desde Linux. Las conexiones externas usan Wisp y Cloudflare; no envíes datos privados. TCP/DNS disponibles; no ping externo.</p></aside>
+<p id="downloads" hidden></p><p class="lab-legal"><a href="licencias/LEEME.html" target="_blank" rel="noopener">Avisos y fuentes del software</a></p>
 </main><footer class="site-footer"><div class="site-footer-inner"><a class="site-footer-brand" href="/">S2KTUX</a><p>Aprender practicando · Laboratorio local en tu navegador</p></div></footer>
-</div><script src="assets/v86-test/libv86.js"></script><script type="module" src="v86-test.mjs?v=20261009-exam"></script></body></html>
+</div><script src="assets/v86-test/libv86.js"></script><script type="module" src="v86-test.mjs?v=20261009-intuitive"></script></body></html>

@@ -3,25 +3,25 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715829538,
+  "verifiedPackageBytes": 715828369,
   "modifications": [
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "e53ca954351f5fed55b22e594ba8e13b5a156b1d61f2abdfff3c560bcfb91bc4",
-      "bytes": 6100
+      "sha256": "1db45801d6ede4a4ba985fb4c1fa42cd1049d3dfa087ffea5cc665bed9e3a28f",
+      "bytes": 4683
     },
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "9d2d4941ebdf0e7193e1560668a7aa7c8fbf834aa5bf1de4fae859c92865a9c1",
-      "bytes": 22884
+      "sha256": "750c7bd4b8fe03511e0b4199f71be099af725f9ec2955d637a817e75f3213474",
+      "bytes": 23727
     },
     {
       "path": "v86-exercise-panel.mjs",
       "before": "c55728a98f164a821d7d0791b96cdb16065202b2cd2f33f1ab60ab9b88858505",
-      "sha256": "10491f731a039901d1ce929a990626d80dbed6b62bf212e98a75de85b1f33be4",
-      "bytes": 4720
+      "sha256": "f5c4de61a7873c2f551704682ab2536ff7c42be3ddd6da4e3422c3ff7b5ec367",
+      "bytes": 4059
     },
     {
       "path": "v86-check-runner.mjs",
@@ -32,8 +32,8 @@
     {
       "path": "v86-exercises.mjs",
       "before": "172951a817f4989725d6c56308a126f890e6b650f1056f827ba6a7d00075ef04",
-      "sha256": "e9ae3900125a6112a403a466c21d598c1bc08798cd9143ec939fdc7bd4164e39",
-      "bytes": 11984
+      "sha256": "2a83df4d35024a6ae8e4d7057502354dc1d64281b00a1c75340c6c2e3f470dd5",
+      "bytes": 12019
     },
     {
       "path": "v86-course-exercises.mjs",
@@ -50,14 +50,14 @@
     {
       "path": "GUIA_CURSO_LABORATORIO.md",
       "before": "4eabd8bd48db0231c399434c0d2867138f29ba5bb4122432753fb65fed828277",
-      "sha256": "f2e6a5ec526a66841d0ced80616972165b4c90e7685eefa7460a34a709683e48",
-      "bytes": 8041
+      "sha256": "12f7dc90713846b394f9b59d423a222f212c8b01ebce7b5ee56035b12fbd2de6",
+      "bytes": 8050
     },
     {
       "path": "GUIA_CURSO_LABORATORIO.html",
       "before": "103540cac5639e0fd9c0bceacf56b9fa17184089ac43a203c69d54e079cdc701",
-      "sha256": "7307f8a26c0f8ed44a8117cd0699ae6e14f8a635eac596176139de3f5eb1151f",
-      "bytes": 9576
+      "sha256": "748748aaaca5cefb265daf672d6f742d535b63ccf36c20d66816b0a3a8ddee0e",
+      "bytes": 9598
     },
     {
       "path": "PRACTICAS_V86.html",
@@ -81,8 +81,8 @@
   "addedFiles": [
     {
       "path": "linux-real.css",
-      "sha256": "a6c6b2ab87ff290f6fba01bd7c2d74aca3d12d44220585b27566d689111d8886",
-      "bytes": 4154
+      "sha256": "f1fba487e0e1f03f409e9324a164cda9c85585dbc72a8034b8d9c3845d6ba108",
+      "bytes": 5307
     },
     {
       "path": "v86-clipboard.mjs",
@@ -91,28 +91,33 @@
     },
     {
       "path": "v86-guest-console.mjs",
-      "sha256": "d2e4613de65508df46153882648879110e9c2e3ed4a2cfbdc9f967d42d3551e3",
-      "bytes": 1885
+      "sha256": "077ba2cd775a0088a773172c4bb4593a86f79346db8c8c175a57be8dbf14a233",
+      "bytes": 2351
     },
     {
       "path": "examen.html",
-      "sha256": "6148d80bc38aeba3b9b2105bf12da98a83389d797847e5165c9adf7da15c532d",
-      "bytes": 3287
+      "sha256": "4a2b790ef7f4d46b5f3ae3f90fc46b731432b6510adc47d8f0657b2ccdf07d28",
+      "bytes": 3782
     },
     {
       "path": "v86-exam.mjs",
-      "sha256": "e2a2ae4a1d5a7cdd9a0e5d5a01a5b4243bbc6e395ce26cdd819630cd44db12e1",
-      "bytes": 7440
+      "sha256": "69333ea881cab6cdf651201be7b682a9481d0893b67a393a924c04c4ee868ce5",
+      "bytes": 9706
     },
     {
       "path": "v86-exam-data.mjs",
-      "sha256": "f4982a0c4d8cc4cc15039e6404089b6dcacb205360a1677d5623c7f1fd5e6080",
-      "bytes": 11128
+      "sha256": "669e1c6344a51b357e2ed2725e318062e4807e50dbd3ce005266585cc14ad4c4",
+      "bytes": 13321
     },
     {
       "path": "v86-exam-setup.mjs",
-      "sha256": "e73664532aad834b24c1e52bfe6340fd1a30f6ef14a742936dbc36cd69e0fc44",
-      "bytes": 1878
+      "sha256": "e776bb61aba02252dfdb5c027db2e262ab22eaa994edbebbffe49b785a7a2208",
+      "bytes": 1962
+    },
+    {
+      "path": "v86-exam-console.mjs",
+      "sha256": "ebbc74b891b850abc240d650d1a8448132606913e523dc30fe7b984e95d2119b",
+      "bytes": 2563
     },
     {
       "path": "v86-network.mjs",
@@ -125,7 +130,7 @@
       "bytes": 345
     }
   ],
-  "note": "Los informes históricos describen la validación anterior. Esta interfaz añade 44 prácticas y un examen independiente con dos VM nuevas, red privada propia, 22 tareas, 3 horas y rúbrica educativa de 300 puntos (aprobado desde 210). Comprueba estado real, no el texto exacto de los comandos; muestra criterios y observaciones después de finalizar. Internet es voluntario y experimental: TCP real por Wisp público y DNS por DoH de Cloudflare, sin ICMP/UDP externos ni respuestas de ping/NTP fabricadas. El reloj inicial se ajusta al del navegador para conservar la verificación de fechas y firmas de APT. La fábrica y el motor no cambian.",
+  "note": "Los informes históricos describen la validación anterior. 44 prácticas y examen independiente: dos VM nuevas, inicio explícito de la segunda, 22 tareas, 3 horas y rúbrica educativa de 300 puntos (aprobado desde 210). Una pregunta cada vez, sin pistas ni puntuación durante el intento. Puede finalizarse vacío o parcial; una segunda TTY consulta resultados reales sin interrumpir el editor del alumno. Práctica nueva sin IP inicial: Internet TCP por Wisp público y DNS por Cloudflare se configura desde Linux, sin selector externo ni respuestas de ping/NTP fabricadas. Los guardados conservan su configuración. La fábrica y el motor no cambian.",
   "sources": {
     "url": "https://github.com/S2KTUX/s2ktux.github.io/releases/download/linux-real-beta-2026-10-08/fuentes-laboratorio-v3.tar.gz",
     "bytes": 811556382,
@@ -140,6 +145,6 @@
     "Recuperación de root y reetiquetado: aproximadamente 5–10 minutos según equipo; puede tardar más",
     "Guardado manual local; no conserva conexiones externas",
     "Examen sin guardado automático, sin vigilancia ni protección antitrampas; necesita memoria para dos VM",
-    "La corrección exige una shell root vacía en ambas máquinas; un error de consulta se muestra como incompleto, no como aprobado"
+    "Una VM bloqueada, apagada o en recuperación puede no responder al corrector; los errores de consulta no se presentan como aprobados"
   ]
 }

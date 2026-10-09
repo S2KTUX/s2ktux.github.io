@@ -13,12 +13,26 @@
 .linux-real-page button:hover:not(:disabled) { background: var(--surface); }
 .linux-real-page button:disabled { opacity: .55; cursor: not-allowed; }
 .linux-real-page .lab-button { display: inline-block; font: 14px/1.5 'Share Tech Mono', monospace; border: 2px solid var(--line); color: var(--head); background: var(--surface2); padding: 10px 12px; box-shadow: var(--pixel-shadow-sm); text-decoration: none; }
+.lab-modes { display: flex; gap: 24px; margin: 0 0 28px; border-bottom: 2px solid var(--surface2); }
+.lab-modes a { padding: 12px 6px; color: var(--muted); font-size: 18px; }
+.lab-modes a[aria-current="page"] { color: var(--head); border-bottom: 3px solid var(--head); font-weight: bold; }
+.lab-information { border-top: 1px solid var(--line); margin-top: 30px; padding-top: 10px; color: var(--muted); font-size: 14px; }
+.lab-legal { font-size: 13px; }
+.exercise-panel { margin: 20px 0; }
+.exam-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; justify-content: space-between; margin-bottom: 14px; }
+.exam-toolbar .controls { margin: 0; }
+.question-navigation { display: flex; align-items: center; gap: 12px; margin: 18px 0; }
+.question-navigation select { flex: 1; min-width: 0; }
+.exam-question-workspace { padding: 0 0 16px; border-bottom: 2px solid var(--line); }
+.exam-machine-placeholder { padding: 20px 0; }
+.exam-result-state { font-weight: bold; }
 #session-status:empty, #clipboard-status:empty { display: none; }
-.exam-embed .site-header, .exam-embed .site-footer, .exam-embed .skip-link, .exam-embed h1, .exam-embed .lead, .exam-embed #main > .controls:not(.terminal-controls), .exam-embed #session-status, .exam-embed #recovery-note, .exam-embed details { display: none; }
+.exam-embed .site-header, .exam-embed .site-footer, .exam-embed .skip-link, .exam-embed h1, .exam-embed .lab-modes, .exam-embed .lab-information, .exam-embed .lab-legal, .exam-embed #exercise-panel, .exam-embed #other-node, .exam-embed #recovery-link, .exam-embed #main > .controls:not(.terminal-controls), .exam-embed #session-status, .exam-embed #recovery-note { display: none; }
+.exam-embed .site-app-shell { min-height: 0; }
 .exam-embed .linux-real-page { padding: 0; width: 100%; }
 .exam-embed .console { margin-top: 0; }
 .exam-embed .terminal-controls { margin-left: 8px; }
-.exam-running .site-header, .exam-running .site-footer, .exam-running .skip-link { display: none; }
+.exam-running .site-footer, .exam-running #exam-information, .exam-running .lab-modes { display: none; }
 .exam-machines iframe { width: 100%; height: 615px; border: 0; display: block; }
 .exam-machines iframe[hidden] { display: block !important; position: absolute; left: -20000px; width: 1000px; visibility: hidden; }
 .exam-machines { position: relative; }

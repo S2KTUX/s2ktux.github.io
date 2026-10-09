@@ -7,7 +7,7 @@ const deployment = JSON.parse(read('laboratorios/linux-real/deployment.json'));
 assert.equal(deployment.replacesCurrentTerminal, false);
 assert.equal(deployment.imageSha256, '95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97');
 assert.deepEqual(deployment.modifications.map(item => item.path).sort(), ['GUIA_CURSO_LABORATORIO.html', 'GUIA_CURSO_LABORATORIO.md', 'PRACTICAS_V86.html', 'licencias/LEEME.html', 'licencias/LEEME.md', 'v86-check-runner.mjs', 'v86-course-exercises.mjs', 'v86-exercise-panel.mjs', 'v86-exercises.mjs', 'v86-extra-exercises.mjs', 'v86-test.html', 'v86-test.mjs']);
-assert.deepEqual(deployment.addedFiles.map(item => item.path).sort(), ['examen.html', 'linux-real.css', 'v86-clipboard.mjs', 'v86-exam-data.mjs', 'v86-exam-setup.mjs', 'v86-exam.mjs', 'v86-guest-console.mjs', 'v86-network.mjs', 'v86-restart.mjs']);
+assert.deepEqual(deployment.addedFiles.map(item => item.path).sort(), ['examen.html', 'linux-real.css', 'v86-clipboard.mjs', 'v86-exam-console.mjs', 'v86-exam-data.mjs', 'v86-exam-setup.mjs', 'v86-exam.mjs', 'v86-guest-console.mjs', 'v86-network.mjs', 'v86-restart.mjs']);
 for (const item of [...deployment.modifications, ...deployment.addedFiles]) assert.equal(createHash('sha256').update(readFileSync(new URL('laboratorios/linux-real/' + item.path, root))).digest('hex'), item.sha256);
 for (const path of ['index.html', 'v86-test.html', 'v86-test.mjs', 'GUIA_CURSO_LABORATORIO.html', 'CHULETA_LINUX_REAL.html', 'PRACTICAS_V86.html']) assert.ok(statSync(new URL('laboratorios/linux-real/' + path, root)).size > 0);
 assert.match(read('terminal.html'), /href="\/laboratorios\/linux-real\/"/);

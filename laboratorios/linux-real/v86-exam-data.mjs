@@ -1,6 +1,6 @@
 import {courseExercises} from './v86-course-exercises.mjs?v=20261008-console';
 import {extraExercises} from './v86-extra-exercises.mjs?v=20261008-console';
-import {introExercises, shellQuote} from './v86-exercises.mjs?v=20261009-exam';
+import {introExercises, shellQuote} from './v86-exercises.mjs?v=20261009-intuitive';
 
 const course = id => structuredClone(courseExercises.find(e => e.id === `sim-${String(id).padStart(2,'0')}`));
 const extra = id => structuredClone(extraExercises.find(e => e.id === `curso-${id}`));
@@ -15,29 +15,44 @@ const examDisk=`exam_pv=$(pvs --noheadings -o pv_name -S vg_name=seedvg | xargs)
 const diskIdentification=examDisk+' || { echo "No se ha identificado el disco de prácticas de 2 GiB"; exit 1; }\nlsblk "$exam_disk"\n';
 const podman = course(21);
 const asHermes = command => `uid=$(id -u hermes) && test -S /run/user/$uid/bus && runuser -u hermes -- env HOME=/home/hermes XDG_RUNTIME_DIR=/run/user/$uid DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus /bin/sh -c ${shellQuote(`cd /home/hermes && ${command}`)}`;
+const webappUnit=`pid=$(podman inspect -f '{{.State.ConmonPid}}' webapp) && test "$pid" -gt 0 && unit=$(sed -n 's|.*/\\([^/]*\\.service\\)\\(/.*\\)\\?$|\\1|p' /proc/$pid/cgroup | tail -n 1) && test -n "$unit" && systemctl --user is-active --quiet "$unit" && systemctl --user is-enabled --quiet "$unit"`;
+const cronTask=`python3 -c 'import glob,subprocess,shlex
+def entries(text,system=False):
+ for line in text.splitlines():
+  if not line.strip() or line.lstrip().startswith("#"): continue
+  p=shlex.split(line)
+  if len(p)>5 and p[:5]==["*"]*5 and (not system or len(p)>6 and p[5]=="hera"): return True
+ return False
+r=subprocess.run(["crontab","-u","hera","-l"],capture_output=True,text=True)
+assert entries(r.stdout) or any(entries(open(p).read(),True) for p in ["/etc/crontab"]+glob.glob("/etc/cron.d/*") if __import__("os").path.isfile(p))'`;
 
 // Ejercicios originales de aprendizaje. Ni preguntas filtradas ni baremo oficial.
 export const examQuestions = [
-  question(1,1,20,course(2),[['Red y perfiles','ip -4 addr show eth0; nmcli con show examen; hostnamectl']],{note:'La red del examen es privada. El servidor 10.42.0.11 ya está preparado en la máquina 2.'}),
-  question(2,1,10,course(3),[['Repositorio','cat /etc/yum.repos.d/curso.repo; rpm -q gpg-pubkey']]),
+  question(1,1,20,course(2),[['Red y perfiles','ip -4 addr show eth0; nmcli -f NAME,UUID,TYPE,DEVICE con show; hostnamectl']],{
+    checks:course(2).checks.map((c,i)=>i!==1?c:[c[0],`for uuid in $(nmcli -t -f UUID,TYPE con show | awk -F: '$2=="802-3-ethernet" {print $1}'); do test "$(nmcli -g ipv4.addresses con show "$uuid")" = 10.42.0.20/24 && test "$(nmcli -g ipv4.dns con show "$uuid")" = 10.42.0.11 && test "$(nmcli -g connection.autoconnect con show "$uuid")" = yes && exit 0; done; exit 1`]),
+  }),
+  question(2,1,10,course(3),[['Repositorio','cat /etc/yum.repos.d/curso.repo; rpm -q gpg-pubkey']],{requireFirst:true}),
   question(3,1,15,course(4),[['Servicio y puerto','systemctl is-active apache2; ss -ltn; getenforce; curl --max-time 5 -sS http://127.0.0.1:8090/']]),
-  question(4,1,20,users,[['Cuentas y sudo','id zeus; id hera; getent passwd ares; sudo -l -U zeus']],{goal:users.goal+' '+sudo.goal,checks:[...users.checks,...sudo.checks],solution:users.solution+'\n\n'+sudo.solution}),
+  question(4,1,20,users,[['Cuentas y sudo','id zeus; id hera; getent passwd ares; getent passwd zeus >/dev/null && RES_OPTIONS="attempts:1 timeout:1" sudo -l -U zeus']],{goal:users.goal+' '+sudo.goal,checks:[...users.checks.map((c,i)=>i!==2?c:[c[0],'getent passwd zeus >/dev/null && getent passwd hera >/dev/null && getent passwd ares >/dev/null && '+c[1]]),...sudo.checks.map(c=>[c[0],'getent passwd zeus >/dev/null && '+c[1],c[2]])],solution:users.solution+'\n\n'+sudo.solution}),
   question(5,1,10,extra('caducidad'),[['Caducidad y archivo','chage -l hera; stat -c "%U:%G %a" /home/hera/umask-curso; cat /home/hera/umask-curso']]),
-  question(6,1,10,course(7),[['Cron y journal','crontab -u hera -l; systemctl is-active cron; journalctl --no-pager -t hera -o cat -n 10']],{checks:course(7).checks.map((c,i)=>i===2?[c[0],`journalctl --no-pager -t hera -o cat | grep -Fxq "Backup diario"`]:c)}),
-  question(7,1,20,extra('autofs'),[['Mapas y montaje','cat /etc/auto.master.d/curso.autofs /etc/auto.curso; findmnt -M /mnt/curso-auto/datos']],{note:'El servidor está en la máquina 2. Durante su recuperación/reinicio no está disponible; vuelve a comprobar cuando termine de arrancar.'}),
+  question(6,1,10,course(7),[['Cron y journal','crontab -u hera -l; grep -h hera /etc/crontab /etc/cron.d/*; systemctl is-active cron; uid=$(id -u hera) && journalctl --no-pager _UID=$uid -o cat -n 10']],{goal:'Programa una tarea de hera que escriba «Backup diario» en el journal cada minuto. El servicio cron debe estar activo y habilitado.',checks:course(7).checks.map((c,i)=>i===0?[c[0],cronTask]:i===2?[c[0],`uid=$(id -u hera) && journalctl --no-pager _UID=$uid -o cat | grep -Fxq "Backup diario"`]:c)}),
+  question(7,1,20,extra('autofs'),[['Mapas y montaje','automount -m; findmnt -M /mnt/curso-auto/datos']],{
+    note:'El servidor NFS está en la máquina 2. Debe estar iniciado para que el cliente pueda acceder a sus datos.',
+    checks:extra('autofs').checks.map((c,i)=>i===1?[c[0],`automount -m | grep -Fq '10.42.0.11:/' && findmnt -rn -t autofs -o TARGET | grep -Eq '^/mnt/curso-auto(/datos)?$'`]:c),
+  }),
   question(8,1,10,course(8),[['Archivo comprimido','ls -l /root/varlog-backup.tar.bz2; tar -tjf /root/varlog-backup.tar.bz2 | head -n 20']]),
   question(9,1,15,course(9),[['Permisos efectivos','stat -c "%U:%G %a" /var/tmp/hosts; getfacl -cp /var/tmp/hosts']],{
     note:'Puedes copiar antes o después de añadir las entradas del hostname/NTP. La corrección ignora esas entradas y las líneas vacías; el resto de la copia se comprueba.',
     checks:course(9).checks.map((c,i)=>i===0?['Copia y propietario',`test "$(stat -c %U:%G /var/tmp/hosts)" = root:root && python3 -c 'def clean(p):\n return [x for x in open(p).readlines() if x.strip() and not {"ntp.lab.local","nodo1.lab.local"}.intersection(x.split())]\nassert clean("/etc/hosts")==clean("/var/tmp/hosts")'`]:c),
   }),
-  question(10,1,15,course(10),[['Chrony','cat /etc/chrony/chrony.conf; chronyc -n sources']],{goal:course(10).goal.replace('de la segunda pestaña','de la máquina 2')}),
+  question(10,1,15,course(10),[['Chrony','cat /etc/chrony/chrony.conf; chronyc -n sources']],{goal:course(10).goal.replace('de la segunda pestaña','de la máquina 2'),checks:course(10).checks.map((c,i)=>i!==1?c:[c[0],`getent ahostsv4 ntp.lab.local | grep -Fq 10.42.0.11 && grep -REq '^server[[:space:]]+(ntp\\.lab\\.local|10\\.42\\.0\\.11)[[:space:]]' /etc/chrony`])}),
   question(11,1,10,course(11),[['Archivos copiados','find /root/herafiles -type f | head -n 30']]),
   question(12,1,10,course(12),[['Resultado de grep','wc -l /root/coincidencias; head -n 20 /root/coincidencias']]),
   question(13,1,10,course(13),[['Cuenta','getent passwd apolo; id apolo']]),
-  question('root',2,20,course(1),[['Estado tras recuperar root','cat /proc/1/comm; getenforce; test -e /.autorelabel && echo "Reetiquetado pendiente"; systemctl show serial-getty@ttyS0.service -p ExecStart --value']],{title:'Recuperar la contraseña de root',note:'La contraseña inicial no se proporciona. La recuperación y el reetiquetado pueden tardar aproximadamente 5–10 minutos.',solution:course(1).solution.replace('# Abre la máquina de recuperación y pulsa Iniciar laboratorio.\n# Si ya pasó GRUB, pulsa Reiniciar máquina (GRUB).','# Trabaja en la máquina 2.\n# Si ya pasó GRUB, pulsa Reiniciar máquina.')}),
+  question('root',2,20,course(1),[['Estado tras recuperar root','cat /proc/1/comm; getenforce; test -e /.autorelabel && echo "Reetiquetado pendiente"; systemctl show serial-getty@ttyS0.service -p ExecStart --value']],{title:'Recuperar la contraseña de root',goal:'La contraseña inicial de root no se proporciona. Recupera el acceso y establece titanio7 como nueva contraseña. Deja la máquina arrancada normalmente, con SELinux Enforcing.',requireFirst:true,solution:course(1).solution.replace('# Abre la máquina de recuperación y pulsa Iniciar laboratorio.\n# Si ya pasó GRUB, pulsa Reiniciar máquina (GRUB).','# Trabaja en la máquina 2.\n# Si ya pasó GRUB, pulsa Reiniciar máquina.')}),
   question(14,2,10,introExercises.find(e=>e.id==='dnf'),[['RPM instalado','rpm -q lab-notas lab-base; cat /usr/share/s2ktux-lab/lab-notas/version.txt']]),
   question(15,2,20,lv,[['Volúmenes y montaje','pvs; vgs; lvs; findmnt -M /mnt/appvol; cat /etc/fstab']],{
-    goal:'Identifica el disco de prácticas de 2 GiB con lsblk y pvs: su partición 1 contiene seedvg/reducible y no debe borrarse. Crea la partición 2 entre 769 y 1535 MiB y, sobre ella, datavg con extents de 4 MiB y appvol de 60 extents (240 MiB). Usa ext4 y montaje persistente en /mnt/appvol. Los nombres sda/sdb pueden cambiar al reiniciar.',
+    goal:'El disco de prácticas tiene 2 GiB. Su partición 1 contiene seedvg/reducible y no debe borrarse. Crea la partición 2 entre 769 y 1535 MiB y, sobre ella, datavg con extents de 4 MiB y appvol de 60 extents (240 MiB). Usa ext4 y montaje persistente en /mnt/appvol. Los nombres sda/sdb pueden cambiar al reiniciar.',
     solution:diskIdentification+lv.solution.replace('lsblk /dev/sdb\n# Solo si el disco de prácticas está vacío:\nparted -s /dev/sdb mklabel gpt mkpart LVM 1MiB 1024MiB set 1 lvm on','parted -s "$exam_disk" mkpart LVM 769MiB 1535MiB set 2 lvm on').replaceAll('/dev/sdb1','"${exam_disk}2"').replaceAll('/dev/sdb','"$exam_disk"'),
     checks:lv.checks.map((c,i)=>[c[0],i===0?examDisk+' && '+c[1].replaceAll('/dev/sdb1','"${exam_disk}2"'):c[1],i===0?60:c[2]]),
   }),
@@ -61,8 +76,8 @@ export const examQuestions = [
   },[['Imagen de hermes',asHermes('podman images; podman image inspect localhost/curso-examen:1')]]),
   question(21,2,15,podman,[['Servicio y contenedor',asHermes('systemctl --user status container-webapp.service --no-pager; podman ps; podman inspect webapp')]],{
     goal:'Como hermes, usa localhost/curso-examen:1 para webapp, con /opt/entrada → /data/in y /opt/salida → /data/out. Configura su unidad systemd de usuario y linger. Reinicia la máquina 2 y comprueba que arranca sin iniciar sesión como hermes.',
-    solution:podman.solution.replace('useradd -m -U -s /bin/bash hermes\npasswd hermes\n','').replace('podman import /srv/curso-contenedor/imagen.tar localhost/curso-busybox:1\n','').replaceAll('localhost/curso-busybox:1','localhost/curso-examen:1').replace('# Tras arrancar, vuelve a la sesión de hermes:\nssh hermes@localhost\n# Ahora pulsa Comprobar ejercicio.','# Tras arrancar, entra como root.\n# El servicio debe estar en marcha sin iniciar sesión como hermes.\n# Deja ambas terminales en un prompt de root vacío antes de Finalizar examen.'),
-    checks:[...podman.checks.map(c=>[c[0],asHermes(c[1]),c[2]]),['Reinicio después de crear el servicio','test "$(stat -c %Y /home/hermes/.config/systemd/user/container-webapp.service)" -lt "$(awk \'/^btime / {print $2}\' /proc/stat)"']],
+    solution:podman.solution.replace('useradd -m -U -s /bin/bash hermes\npasswd hermes\n','').replace('podman import /srv/curso-contenedor/imagen.tar localhost/curso-busybox:1\n','').replaceAll('localhost/curso-busybox:1','localhost/curso-examen:1').replace('# Tras arrancar, vuelve a la sesión de hermes:\nssh hermes@localhost\n# Ahora pulsa Comprobar ejercicio.','# Tras arrancar, el servicio debe estar en marcha sin iniciar sesión como hermes.'),
+    checks:[...podman.checks.map((c,i)=>[c[0],asHermes(i===1?webappUnit:i===2?c[1].replace('assert c["State"]["Running"];','assert c["State"]["Running"] and c["ImageName"]=="localhost/curso-examen:1";'):c[1]),c[2]]),['Reinicio después de crear el servicio',asHermes(webappUnit+` && file=$(systemctl --user show "$unit" -p FragmentPath --value) && test "$(stat -c %Y "$file")" -lt "$(awk '/^btime / {print $2}' /proc/stat)"`)]],
   }),
 ];
 
@@ -74,5 +89,6 @@ export function scoreQuestion(question,result){
   if(result.results.some((r,i)=>r.label!==question.checks[i][0]||typeof r.ok!=='boolean'))throw Error('Criterios de corrección inválidos');
   const base=Math.floor(question.points/question.checks.length),remainder=question.points%question.checks.length;
   const criteria=result.results.map((r,i)=>({...r,points:base+(i<remainder?1:0)}));
-  return {id:question.id,points:criteria.reduce((n,r)=>n+(r.ok?r.points:0),0),max:question.points,criteria,observations:result.observations||[]};
+  const points=question.requireFirst&&!criteria[0].ok?0:criteria.reduce((n,r)=>n+(r.ok?r.points:0),0);
+  return {id:question.id,points,max:question.points,criteria,observations:result.observations||[]};
 }
