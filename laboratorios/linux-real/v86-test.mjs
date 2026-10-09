@@ -10,7 +10,7 @@ import {restartMachine} from './v86-restart.mjs?v=20261009-intuitive';
 import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261008-console';
 import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261009-intuitive';
 import {createSerialOutput,appendTranscript} from './v86-serial.mjs';
-import {createExamConsole,examConsoleSetupCommand} from './v86-exam-console.mjs?v=20261009-intuitive';
+import {createExamConsole,examConsoleSetupCommand,createExamBootDetector} from './v86-exam-console.mjs?v=20261009-intuitive';
 const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono", monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
 terminal.open(document.querySelector('#terminal'));
 const status=document.querySelector('#status');globalThis.vmTranscript='';globalThis.vmTerminal=terminal;
@@ -19,7 +19,7 @@ const sessions=new LocalSessions();
 const params=new URL(location.href).searchParams;
 const examAttempt=params.get('exam');
 const examMode=/^[a-f0-9]{32}$/.test(examAttempt||'')&&params.get('embed')==='exam'&&parent!==window;
-let examPrepared=false,examReadySent=false,examLocked=false,examConsole;
+let examPrepared=false,examReadySent=false,examLocked=false,examConsole,examBootDetector;
 if(examMode)document.documentElement.classList.add('exam-embed');
 const recoveryScenario=params.get('scenario')==='recovery';
 let recoveryBootPending=recoveryScenario;
@@ -208,7 +208,7 @@ document.querySelector('#start').onclick=async()=>{
     labWire.onmessage=event=>{if(event.data instanceof Uint8Array){labFrames.received++;emulator.bus.send('net0-receive',event.data);}};
     emulator.add_listener('net0-send',frame=>{labFrames.sent++;labWire.postMessage(frame);});
     serialOutput=createSerialOutput(text=>{
-      if(examMode&&/GNU GRUB|reboot: Restarting system/.test(text))examConsole?.invalidate();
+      examBootDetector?.(text);
       globalThis.vmTranscript=appendTranscript(globalThis.vmTranscript,text);
       const visible=[];
       // Mantener la detección de los límites de cada comprobación, incluso
@@ -230,7 +230,7 @@ document.querySelector('#start').onclick=async()=>{
       // Ya está restaurado: las opciones del motor no deben retener otra copia
       // de toda la RAM, especialmente al abrir las dos máquinas del examen.
       delete machineOptions.initial_state;initialState=undefined;
-      if(examMode)examConsole=createExamConsole(emulator);
+      if(examMode){examConsole=createExamConsole(emulator);examBootDetector=createExamBootDetector(()=>examConsole.invalidate());}
       if(internetEnabled){try{restrictInternetAdapter(emulator.network_adapter);emulator.run();}catch(error){fail(error);}}
     });
     let started=false;

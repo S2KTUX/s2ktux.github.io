@@ -1,4 +1,4 @@
-import {shellQuote} from './v86-exercises.mjs?v=20261009-exam';
+import {shellQuote} from './v86-exercises.mjs?v=20261009-intuitive';
 import {extraExercises} from './v86-extra-exercises.mjs?v=20261008-console';
 
 // Solo sobre las nuevas VM de examen, nunca sobre la sesión de práctica.

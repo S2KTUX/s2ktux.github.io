@@ -1,6 +1,13 @@
 import {createCheckRunner,atShellPrompt} from './v86-check-runner.mjs?v=20261009-intuitive';
 import {shellQuote} from './v86-exercises.mjs?v=20261009-intuitive';
 
+// Los avisos del arranque pueden llegar divididos entre bloques de salida.
+// Detectar únicamente los marcadores nuevos, no repetir uno que siga en la cola.
+export function createExamBootDetector(onBoot){
+  let tail='';
+  return text=>{const previous=tail.length,combined=tail+text;for(const match of combined.matchAll(/GNU\s+GRUB|reboot:\s*Restarting system/g))if(match.index+match[0].length>previous)onBoot();tail=combined.slice(-64);};
+}
+
 // Segunda TTY real, únicamente en las máquinas desechables del examen.
 // No escribe en el editor, login o comando que esté usando el alumno.
 export function createExamConsole(vm){

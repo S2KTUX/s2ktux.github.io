@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 import {examQuestions,scoreQuestion,EXAM_TOTAL,EXAM_PASS,EXAM_SECONDS} from '../laboratorios/linux-real/v86-exam-data.mjs';
 import {examSetupCommand} from '../laboratorios/linux-real/v86-exam-setup.mjs';
 import {buildProbe,parseProbe} from '../laboratorios/linux-real/v86-exercises.mjs';
+import {createExamBootDetector,createExamConsole} from '../laboratorios/linux-real/v86-exam-console.mjs';
 assert.equal(examQuestions.length,22);
 assert.equal(new Set(examQuestions.map(q=>q.id)).size,22);
 assert.equal(examQuestions.reduce((n,q)=>n+q.points,0),EXAM_TOTAL);
@@ -46,6 +47,18 @@ assert.match(guest,/await examConsole\.reconnect\(\)/,'Reconectar la consola ind
 const examConsole=readFileSync(new URL('../laboratorios/linux-real/v86-exam-console.mjs',import.meta.url),'utf8');
 assert.match(examConsole,/KillSignal=SIGHUP/,'Bash interactivo debe detenerse sin esperar a SIGTERM');
 assert.match(examConsole,/TimeoutStopSec=3/);
+let boots=0;const detectBoot=createExamBootDetector(()=>boots++);
+for(const text of ['salida GNU ','GR','UB',' más texto',' continúa'])detectBoot(text);
+assert.equal(boots,1,'Detectar GRUB aunque el motor divida las palabras entre bloques');
+for(const text of ['\nreboot: Rest','arting sys','tem','\nLinux'])detectBoot(text);
+assert.equal(boots,2,'No repetir un marcador viejo ni perder el reinicio del kernel');
+const listeners=new Map();class UART{constructor(cpu,port){assert.equal(port,0x2f8);}}
+const fakeVm={v86:{cpu:{devices:{uart0:new UART(null,0x2f8)}}},emulator_bus:{},add_listener:(name,cb)=>listeners.set(name,cb),bus:{send:(name,byte)=>{assert.equal(name,'serial1-input');if(byte===10)for(const c of '\r\nV86TEST# ')listeners.get('serial1-output-byte')(c.charCodeAt(0));}}};
+const consoleApi=createExamConsole(fakeVm);
+for(const c of 'V86TEST# V86TEST# ')listeners.get('serial1-output-byte')(c.charCodeAt(0));
+assert.equal(consoleApi.ready(),false,'Dos prompts concatenados de arranques distintos no son una línea vacía');
+assert.equal(await consoleApi.reconnect(),true,'La reconexión solo envía una línea vacía a COM2, nunca al editor del alumno');
+consoleApi.invalidate();assert.equal(consoleApi.ready(),false);
 for(const q of examQuestions)assert.doesNotMatch(q.goal+' '+q.note,/rd\.break|init=|pulsa Comprobar|con lsblk|espera al menos/i,'Sin pistas del procedimiento durante el examen');
 assert.doesNotMatch(examQuestions[0].checks[1][1],/con show examen/,'El nombre del perfil no es una condición oculta');
 const recovery=examQuestions.find(q=>q.number==='root');
