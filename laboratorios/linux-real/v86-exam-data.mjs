@@ -14,7 +14,7 @@ const lv = course(15), swap = course(16), reduce = course(17);
 const examDisk=`exam_pv=$(pvs --noheadings -o pv_name -S vg_name=seedvg | xargs) && test -b "$exam_pv" && exam_disk="/dev/$(lsblk -no PKNAME "$exam_pv")" && test -b "$exam_disk" && test "$(blockdev --getsize64 "$exam_disk")" = 2147483648`;
 const diskIdentification=examDisk+' || { echo "No se ha identificado el disco de prácticas de 2 GiB"; exit 1; }\nlsblk "$exam_disk"\n';
 const podman = course(21);
-const asHermes = command => `uid=$(id -u hermes) && test -S /run/user/$uid/bus && runuser -u hermes -- env HOME=/home/hermes XDG_RUNTIME_DIR=/run/user/$uid DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus /bin/sh -c ${shellQuote(command)}`;
+const asHermes = command => `uid=$(id -u hermes) && test -S /run/user/$uid/bus && runuser -u hermes -- env HOME=/home/hermes XDG_RUNTIME_DIR=/run/user/$uid DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus /bin/sh -c ${shellQuote(`cd /home/hermes && ${command}`)}`;
 
 // Ejercicios originales de aprendizaje. Ni preguntas filtradas ni baremo oficial.
 export const examQuestions = [
@@ -41,7 +41,7 @@ export const examQuestions = [
     solution:diskIdentification+lv.solution.replace('lsblk /dev/sdb\n# Solo si el disco de prácticas está vacío:\nparted -s /dev/sdb mklabel gpt mkpart LVM 1MiB 1024MiB set 1 lvm on','parted -s "$exam_disk" mkpart LVM 769MiB 1535MiB set 2 lvm on').replaceAll('/dev/sdb1','"${exam_disk}2"').replaceAll('/dev/sdb','"$exam_disk"'),
     checks:lv.checks.map((c,i)=>[c[0],i===0?examDisk+' && '+c[1].replaceAll('/dev/sdb1','"${exam_disk}2"'):c[1],c[2]]),
   }),
-  question(16,2,10,swap,[['Swap','lsblk -f /dev/sdb; swapon --show; cat /etc/fstab']],{
+  question(16,2,10,swap,[['Swap','lsblk -f; swapon --show; cat /etc/fstab']],{
     goal:'En el mismo disco de prácticas de 2 GiB, crea la partición 3 entre 1535 y 2047 MiB como swap de 512 MiB. Actívala y configura su uso persistente en fstab. No borres las particiones existentes.',
     solution:diskIdentification+swap.solution.replaceAll('/dev/sdb2','${exam_disk}3').replaceAll('/dev/sdb','"$exam_disk"').replace('1024MiB 1536MiB','1535MiB 2047MiB'),
     checks:swap.checks.map(c=>[c[0],examDisk+' && '+c[1].replaceAll('/dev/sdb2','${exam_disk}3'),c[2]]),

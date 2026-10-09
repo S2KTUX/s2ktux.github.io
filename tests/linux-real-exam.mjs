@@ -20,6 +20,12 @@ for(const q of examQuestions){
 const lv=examQuestions.find(q=>q.number===15),reduce=examQuestions.find(q=>q.number===17);
 assert.doesNotMatch(lv.solution,/mklabel/);assert.match(lv.solution,/exam_disk/);assert.match(lv.solution,/2147483648/);
 assert.doesNotMatch(reduce.solution,/mkfs|lvcreate/);assert.match(reduce.solution,/seedvg/);
+for(const number of [20,21]){
+  const podmanQuestion=examQuestions.find(q=>q.number===number);
+  for(const check of podmanQuestion.checks.filter(c=>c[1].includes('runuser -u hermes'))){
+    assert.match(check[1],/cd \/home\/hermes &&/,'Podman rootless no debe heredar el directorio /root del corrector');
+  }
+}
 assert.throws(()=>examSetupCommand('bad; rm', '1'));
 assert.throws(()=>examSetupCommand('a'.repeat(32), '3'));
 assert.doesNotMatch(examSetupCommand('a'.repeat(32),'1'),/mklabel|pvcreate/);
