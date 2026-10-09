@@ -7,7 +7,7 @@ import {examSetupCommand} from './v86-exam-setup.mjs?v=20261009-exam';
 import {examQuestions} from './v86-exam-data.mjs?v=20261009-exam';
 import {internetOptions,restrictInternetAdapter} from './v86-network.mjs?v=20261009-exam';
 import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261008-console';
-import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261008-console';
+import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261009-exam';
 import {createSerialOutput,appendTranscript} from './v86-serial.mjs';
 const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono", monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
 terminal.open(document.querySelector('#terminal'));

@@ -40,6 +40,7 @@ assert.match(buildProbe(q,nonce),/base64 -w0/);
 assert.throws(()=>parseProbe(q,nonce,output.replace(`__LAB_${nonce}_0=0`,`__LAB_${nonce}_0=124`)));
 assert.throws(()=>parseProbe(q,nonce,output.replace(/__LAB_[a-f0-9]{24}_OBS0=[^\n]+\n/,'')));
 const guest=readFileSync(new URL('../laboratorios/linux-real/v86-test.mjs',import.meta.url),'utf8');
+assert.match(guest,/v86-guest-console\.mjs\?v=20261009-exam/,'La versión con reloj inicial no debe reutilizar la caché de la consola anterior');
 assert.match(guest,/examMode\?':exam:'\+examAttempt/);
 assert.match(guest,/if\(examMode\)throw Error\('El modo examen no tiene guardado/);
 assert.match(guest,/savedRecord=examMode\?null:/);

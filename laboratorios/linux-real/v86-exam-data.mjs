@@ -39,7 +39,7 @@ export const examQuestions = [
   question(15,2,20,lv,[['Volúmenes y montaje','pvs; vgs; lvs; findmnt -M /mnt/appvol; cat /etc/fstab']],{
     goal:'Identifica el disco de prácticas de 2 GiB con lsblk y pvs: su partición 1 contiene seedvg/reducible y no debe borrarse. Crea la partición 2 entre 769 y 1535 MiB y, sobre ella, datavg con extents de 4 MiB y appvol de 60 extents (240 MiB). Usa ext4 y montaje persistente en /mnt/appvol. Los nombres sda/sdb pueden cambiar al reiniciar.',
     solution:diskIdentification+lv.solution.replace('lsblk /dev/sdb\n# Solo si el disco de prácticas está vacío:\nparted -s /dev/sdb mklabel gpt mkpart LVM 1MiB 1024MiB set 1 lvm on','parted -s "$exam_disk" mkpart LVM 769MiB 1535MiB set 2 lvm on').replaceAll('/dev/sdb1','"${exam_disk}2"').replaceAll('/dev/sdb','"$exam_disk"'),
-    checks:lv.checks.map((c,i)=>[c[0],i===0?examDisk+' && '+c[1].replaceAll('/dev/sdb1','"${exam_disk}2"'):c[1],c[2]]),
+    checks:lv.checks.map((c,i)=>[c[0],i===0?examDisk+' && '+c[1].replaceAll('/dev/sdb1','"${exam_disk}2"'):c[1],i===0?60:c[2]]),
   }),
   question(16,2,10,swap,[['Swap','lsblk -f; swapon --show; cat /etc/fstab']],{
     goal:'En el mismo disco de prácticas de 2 GiB, crea la partición 3 entre 1535 y 2047 MiB como swap de 512 MiB. Actívala y configura su uso persistente en fstab. No borres las particiones existentes.',
@@ -51,7 +51,7 @@ export const examQuestions = [
     solution:'umount /mnt/reducible\ne2fsck -f /dev/seedvg/reducible\nlvreduce -r -L 248M /dev/seedvg/reducible\nmount /mnt/reducible\ncat /mnt/reducible/dato\nlvs seedvg',
     checks:[...reduce.checks.map(c=>[c[0],`test "$(blockdev --getsize64 /dev/seedvg/reducible)" = 260046848 && `+c[1].replaceAll('/dev/datavg/reducible','/dev/seedvg/reducible'),c[2]]),['Montaje persistente','test "$(blockdev --getsize64 /dev/seedvg/reducible)" = 260046848 && uuid=$(blkid -s UUID -o value /dev/seedvg/reducible) && awk -v u="UUID=$uuid" \'$0 !~ /^#/ && ($1==u || $1=="/dev/seedvg/reducible" || $1=="/dev/mapper/seedvg-reducible") && $2=="/mnt/reducible" && $3=="ext4" {n++} END {exit n!=1}\' /etc/fstab']],
   }),
-  question(18,2,10,course(18),[['Perfil y ajustes','tuned-adm active; tuned-adm verify; sysctl vm.swappiness']]),
+  question(18,2,10,course(18),[['Perfil y ajustes','cat /etc/tuned/active_profile; systemctl is-active tuned; sysctl vm.swappiness']]),
   question(19,2,10,course(19),[['Script','stat -c "%U:%G %a" /usr/local/bin/saludo; cat /usr/local/bin/saludo']],{checks:[course(19).checks[0],['Salida real sin privilegios','test "$(runuser -u nobody -- timeout -k 2 3 /usr/local/bin/saludo)" = "Hola equipo olimpo"']]}),
   question(20,2,10,{
     title:'Construir una imagen con Podman',
