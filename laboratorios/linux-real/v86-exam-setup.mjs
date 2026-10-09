@@ -6,7 +6,10 @@ export function examSetupCommand(attempt,node){
   if(!/^[a-f0-9]{32}$/.test(attempt)||!['1','2'].includes(node))throw Error('Sesión de examen inválida');
   const lines=['set -e','test "$(id -u)" = 0',`test ! -e /var/lib/s2ktux-exam-${attempt} || exit 0`,
     'test "$(blockdev --getsize64 /dev/sdb)" = 2147483648',
-    `hostnamectl set-hostname ${node==='1'?'pendiente1':'nodo2'}.lab.local`,
+    `hostnamectl set-hostname nodo${node}`,
+    // Nombres iniciales, distintos del hostname solicitado en la pregunta 1.
+    `sed -i 's/\\<debian-motor-test\\>/nodo${node}/g' /etc/hosts`,
+    'restorecon /etc/hostname /etc/hosts',
     'mkdir -p /var/lib/s2ktux-exam',
     'cat /proc/sys/kernel/random/boot_id > /var/lib/s2ktux-exam/initial-boot-id',
   ];
