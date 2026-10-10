@@ -57,6 +57,8 @@ test('Linux real · examen separado, sin ayudas y con errores de preparación vi
   await expect(page.locator('iframe')).toHaveCount(1);
   await expect(page.locator('#exam-questions')).not.toContainText('rd.break');
   await expect(page.locator('#exam-questions')).not.toContainText('init=');
+  await expect(page.locator('.exam-machine-info')).toContainText('seedvg/reducible');
+  await expect(page.locator('.exam-machine-info')).toContainText('hermes');
   page.on('dialog',dialog=>dialog.accept());
   await page.locator('#exam-finish').click();
   await expect(page.locator('#exam-score')).toHaveText('0/300 puntos');

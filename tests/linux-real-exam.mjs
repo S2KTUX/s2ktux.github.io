@@ -4,10 +4,38 @@ import {examQuestions,scoreQuestion,EXAM_TOTAL,EXAM_PASS,EXAM_SECONDS} from '../
 import {examSetupCommand} from '../laboratorios/linux-real/v86-exam-setup.mjs';
 import {buildProbe,parseProbe} from '../laboratorios/linux-real/v86-exercises.mjs';
 import {createExamBootDetector,createExamConsole} from '../laboratorios/linux-real/v86-exam-console.mjs';
+import {examContainerfile,examDnsPython,examGatewayScript,examNode2Information} from '../laboratorios/linux-real/v86-exam-fixtures.mjs';
 assert.equal(examQuestions.length,22);
 assert.equal(new Set(examQuestions.map(q=>q.id)).size,22);
 assert.equal(examQuestions.reduce((n,q)=>n+q.points,0),EXAM_TOTAL);
 assert.equal(EXAM_TOTAL,300);assert.equal(EXAM_PASS,210);assert.equal(EXAM_SECONDS,10800);
+const task=number=>examQuestions.find(q=>q.number===number);
+assert.match(task(1).goal,/puerta de enlace 10\.42\.0\.11/);
+assert.doesNotMatch(task(1).goal,/MAC/);
+assert.match(task(3).goal,/puerto 82/);
+assert.match(task(4).goal,/sysadmin.*harry.*natasha.*sara/);
+assert.doesNotMatch(task(5).goal,/umask/);
+assert.match(task(6).goal,/EX200 testing/);
+assert.match(task(7).goal,/lectura y escritura/);
+assert.match(task(8).goal,/\/root\/backup\.tar\.bz2/);
+assert.match(task(12).goal,/líneas.*seismic/);
+assert.doesNotMatch(task(14).goal,/instala|actualiza/);
+assert.match(task(15).goal,/Wgroup.*8 MiB.*WCR.*50 extents/);
+assert.doesNotMatch(task(15).goal+task(16).goal,/partición [23]|769|1535|2047/,'No imponer números ni sectores no indicados');
+assert.match(task(17).checks[0][1],/dumpe2fs/,'Comprobar el ext4, no solo el dispositivo');
+assert.match(task(19).checks[0][1],/runuser -l hermes/);
+assert.match(task(20).goal,/http:\/\/10\.42\.0\.11:8080\/Containerfile/);
+assert.match(task(21).goal,/mycontainer.*\/opt\/file.*\/opt\/incoming.*\/opt\/process.*\/opt\/output/);
+assert.doesNotMatch(task(21).checks[2][1],/container-mycontainer\.service/,'Aceptar nombres distintos de unidad');
+assert.match(task(21).checks[1][1],/podman exec/,'Comprobar escritura dentro del contenedor');
+assert.match(task(4).checks[3][1],/sudo -k -n.*passwd --help/,'No confundir sudo -l con ejecución sin contraseña');
+assert.match(examContainerfile,/FROM localhost\/curso-busybox:1/);
+assert.match(examDnsPython,/SOCK_DGRAM/);assert.match(examDnsPython,/tcp_loop/);
+assert.match(examGatewayScript,/net\.ipv4\.ip_forward=1/);
+assert.match(examNode2Information,/hermes.*2 GiB.*seedvg\/reducible/);
+assert.match(examSetupCommand('a'.repeat(32),'2'),/NetworkNamespacePath=\/run\/netns\/exam-servicios/);
+assert.match(examSetupCommand('a'.repeat(32),'2'),/loginctl disable-linger hermes/,'No resolver la persistencia antes del alumno');
+assert.match(examSetupCommand('a'.repeat(32),'1'),/web-files\.sha256/);
 for(const q of examQuestions){
   assert.ok(q.goal&&q.solution&&q.observations.length&&q.checks.length);
   assert.doesNotMatch(q.solution,/pulsa Comprobar ejercicio/,'El examen no tiene comprobación por ejercicio durante el intento');
@@ -40,8 +68,8 @@ for(const node of ['1','2']){
   assert.match(setup,/restorecon \/etc\/hostname \/etc\/hosts/);
   assert.doesNotMatch(setup,/pendiente1|hostnamectl set-hostname nodo1\.lab\.local/,'La preparación no resuelve el cambio de nombre del ejercicio');
 }
-assert.match(examQuestions[0].goal,/hostname nodo1\.lab\.local/);
-assert.match(examQuestions[0].checks[3][1],/hostname.* = nodo1\.lab\.local/,'Corregir el nombre final, no el nombre inicial');
+assert.match(examQuestions[0].goal,/hostname a serverA\.example\.com/);
+assert.match(examQuestions[0].checks[3][1],/hostname.* = servera\.example\.com/,'Corregir el nombre final, no el nombre inicial');
 const nonce='a'.repeat(24),q=examQuestions[0];
 const output=q.checks.map((c,i)=>`__LAB_${nonce}_${i}=0\n`).join('')+`__LAB_${nonce}_OBS0=${Buffer.from('estado real á').toString('base64')}\n__LAB_${nonce}_END=0\n`;
 assert.equal(parseProbe(q,nonce,output).observations[0].text,'estado real á');
@@ -49,7 +77,7 @@ assert.match(buildProbe(q,nonce),/base64 -w0/);
 assert.throws(()=>parseProbe(q,nonce,output.replace(`__LAB_${nonce}_0=0`,`__LAB_${nonce}_0=124`)));
 assert.throws(()=>parseProbe(q,nonce,output.replace(/__LAB_[a-f0-9]{24}_OBS0=[^\n]+\n/,'')));
 const guest=readFileSync(new URL('../laboratorios/linux-real/v86-test.mjs',import.meta.url),'utf8');
-assert.match(guest,/v86-exam-setup\.mjs\?v=20261009-nodos/,'Renovar la caché de la preparación de examen');
+assert.match(guest,/v86-exam-setup\.mjs\?v=20261010-exam/,'Renovar la caché de la preparación de examen');
 assert.match(guest,/v86-guest-console\.mjs\?v=20261009-hostname/,'La configuración del nombre no debe reutilizar la caché anterior');
 assert.match(guest,/examMode\?undefined:nodeName==='2'\?'s2ktux-lab-2':'s2ktux-lab'/,'No renombrar las máquinas del examen');
 assert.match(guest,/examConsole\.run\(exercise\)/,'El corrector no utiliza la consola del alumno');
@@ -73,7 +101,17 @@ for(const q of examQuestions)assert.doesNotMatch(q.goal+' '+q.note,/rd\.break|in
 assert.doesNotMatch(examQuestions[0].checks[1][1],/con show examen/,'El nombre del perfil no es una condición oculta');
 const recovery=examQuestions.find(q=>q.number==='root');
 assert.equal(scoreQuestion(recovery,{results:recovery.checks.map(([label],i)=>({label,ok:i!==0}))}).points,0,'No regalar puntos por la preparación de la recuperación');
+for(const number of [3,17]){
+ const question=task(number);
+ assert.equal(scoreQuestion(question,{results:question.checks.map(([label],i)=>({label,ok:i!==0}))}).points,0,'No regalar puntos por SELinux activo o por el LV sin reducir que ya viene montado');
+}
 assert.match(guest,/examMode\?':exam:'\+examAttempt/);
 assert.match(guest,/if\(examMode\)throw Error\('El modo examen no tiene guardado/);
 assert.match(guest,/savedRecord=examMode\?null:/);
+assert.match(guest,/initialRecoveryRestart&&\/reboot:/);
+assert.match(guest,/examMode\?600000:undefined/,'La preparación completa de la segunda máquina puede superar cinco minutos');
+assert.match(guest,/consolePreparationFailed\|\|!emulator/,'No reintentar silenciosamente una preparación fallida');
+assert.match(guest,/if\(examMode\)consolePreparationFailed=true/);
+assert.match(readFileSync(new URL('../laboratorios/linux-real/v86-exam.mjs',import.meta.url),'utf8'),/no pudo prepararse[\s\S]*?900000/,'La página debe esperar la preparación y el reinicio inicial');
+assert.match(guest,/queueMicrotask\(\(\)=>restartMachine\(emulator,\[disk,practice\]\)/,'Drenar los discos tras el apagado limpio de la preparación');
 console.log('✓ Examen Linux: dos nodos, 22 tareas, 300 puntos, parcial, observaciones reales y límites explícitos.');

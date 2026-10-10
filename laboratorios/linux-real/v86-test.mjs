@@ -3,8 +3,8 @@ import {ChunkDisk} from './v86-disk.mjs';
 import {LocalSessions,hashBytes} from './v86-sessions.mjs';
 import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261009-intuitive';
 import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261009-intuitive';
-import {examSetupCommand} from './v86-exam-setup.mjs?v=20261009-nodos';
-import {examQuestions} from './v86-exam-data.mjs?v=20261009-intuitive';
+import {examSetupCommand} from './v86-exam-setup.mjs?v=20261010-exam';
+import {examQuestions} from './v86-exam-data.mjs?v=20261010-exam';
 import {createEthernetInternet} from './v86-ethernet-internet.mjs?v=20261009-network';
 import {restartMachine} from './v86-restart.mjs?v=20261009-intuitive';
 import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261008-console';
@@ -21,10 +21,11 @@ const params=new URL(location.href).searchParams;
 const examAttempt=params.get('exam');
 const examMode=/^[a-f0-9]{32}$/.test(examAttempt||'')&&params.get('embed')==='exam'&&parent!==window;
 let examPrepared=false,examReadySent=false,examLocked=false,examConsole,examBootDetector;
+let initialRecoveryRestart=false;
 if(examMode)document.documentElement.classList.add('exam-embed');
 const recoveryScenario=params.get('scenario')==='recovery';
 let recoveryBootPending=recoveryScenario;
-let consolePrepared=false,consolePreparing=false;
+let consolePrepared=false,consolePreparing=false,consolePreparationFailed=false;
 const defaultFinal=!['boot','disk','estado','motor','extras'].some(name=>params.has(name));
 const bootGrub=defaultFinal||params.get('boot')==='grub';
 const requestedDisk=params.get('disk')||(defaultFinal?'final':null);
@@ -34,7 +35,7 @@ const motorName=new URL(location.href).searchParams.get('motor')==='original'?'o
 const extras=new URL(location.href).searchParams.get('extras')==='yes';
 const nodeName=new URL(location.href).searchParams.get('node')==='2'?'2':'1';
 const supportsExercises=['grub-curso','grub-rhcsa','grub-rhcsa-final'].includes(diskProfile);
-const exerciseRunner=createCheckRunner(text=>sendSerialText(text),()=>!!emulator&&!busy&&!inputPending&&atShellPrompt(globalThis.vmTranscript),examMode?300000:undefined);
+const exerciseRunner=createCheckRunner(text=>sendSerialText(text),()=>!!emulator&&!busy&&!inputPending&&atShellPrompt(globalThis.vmTranscript),examMode?600000:undefined);
 const exercisePanel=mountExercisePanel(document.querySelector('#exercise-panel'),async exercise=>{
     if(busy||inputPending||!atShellPrompt(globalThis.vmTranscript))throw Error('Vuelve al prompt de Linux y deja la línea vacía antes de comprobar. No se interrumpen comandos ni editores.');
   const promise=exerciseRunner.run(exercise);
@@ -63,7 +64,7 @@ attachTerminalClipboard(terminal,document.querySelector('#terminal'),{
  notify:text=>{document.querySelector('#clipboard-status').textContent=text;}
 });
 async function prepareConsole(){
- if(consolePrepared||consolePreparing||!emulator||busy||inputPending||!atShellPrompt(globalThis.vmTranscript))return;
+ if(consolePrepared||consolePreparing||consolePreparationFailed||!emulator||busy||inputPending||!atShellPrompt(globalThis.vmTranscript))return;
  // Una sesión guardada en vi, passwd o login no se interrumpe. Esperar a root.
  const rootShell=/(?:^|\n)(?:V86TEST# |\[root@[^\n]+\]# )$/.test(cleanSerial(globalThis.vmTranscript.slice(-1500)));
  consolePreparing=true;
@@ -85,6 +86,7 @@ async function prepareConsole(){
      terminal.write((actualPrompt.match(/\x1b\[\?2004[hl]/g)||[]).join(''));
      document.documentElement.dataset.vmState='running';
      status.textContent='Reiniciando para recuperar root desde GRUB…';
+     initialRecoveryRestart=true;
      sendSerialText('reboot\n');
    }else{
      recoveryBootPending=false;
@@ -92,7 +94,7 @@ async function prepareConsole(){
      document.documentElement.dataset.vmState='shell';status.textContent='Laboratorio disponible.';
      if(examMode&&!examReadySent){examReadySent=true;parent.postMessage({kind:'s2ktux-exam-ready',attempt:examAttempt},location.origin);}
    }
- }catch(error){status.textContent=error.message;document.documentElement.dataset.vmState='failed';if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);}
+ }catch(error){if(examMode)consolePreparationFailed=true;status.textContent=error.message;document.documentElement.dataset.vmState='failed';if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);}
  finally{consolePreparing=false;busy=false;document.querySelector('#save').disabled=!emulator;updateExerciseAvailability();}
 }
 document.querySelector('#reset').onclick=async()=>{
@@ -211,6 +213,12 @@ document.querySelector('#start').onclick=async()=>{
     serialOutput=createSerialOutput(text=>{
       examBootDetector?.(text);
       globalThis.vmTranscript=appendTranscript(globalThis.vmTranscript,text);
+      // Solo el reinicio inicial preparado: Linux ya desmontó y sincronizó
+      // sus discos. Drenar el motor evita callbacks viejos tras el reset.
+      if(initialRecoveryRestart&&/reboot:\s*Restarting system/.test(globalThis.vmTranscript.slice(-200))){
+        initialRecoveryRestart=false;
+        queueMicrotask(()=>restartMachine(emulator,[disk,practice]).catch(fail));
+      }
       const visible=[];
       // Mantener la detección de los límites de cada comprobación, incluso
       // cuando un bloque contiene su prompt y después mensajes del kernel.
