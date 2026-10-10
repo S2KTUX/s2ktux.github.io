@@ -101,6 +101,10 @@ for(const q of examQuestions)assert.doesNotMatch(q.goal+' '+q.note,/rd\.break|in
 assert.doesNotMatch(examQuestions[0].checks[1][1],/con show examen/,'El nombre del perfil no es una condición oculta');
 const recovery=examQuestions.find(q=>q.number==='root');
 assert.equal(scoreQuestion(recovery,{results:recovery.checks.map(([label],i)=>({label,ok:i!==0}))}).points,0,'No regalar puntos por la preparación de la recuperación');
+for(const number of [3,17]){
+ const question=task(number);
+ assert.equal(scoreQuestion(question,{results:question.checks.map(([label],i)=>({label,ok:i!==0}))}).points,0,'No regalar puntos por SELinux activo o por el LV sin reducir que ya viene montado');
+}
 assert.match(guest,/examMode\?':exam:'\+examAttempt/);
 assert.match(guest,/if\(examMode\)throw Error\('El modo examen no tiene guardado/);
 assert.match(guest,/savedRecord=examMode\?null:/);
