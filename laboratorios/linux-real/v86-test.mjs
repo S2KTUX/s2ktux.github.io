@@ -25,7 +25,7 @@ let initialRecoveryRestart=false;
 if(examMode)document.documentElement.classList.add('exam-embed');
 const recoveryScenario=params.get('scenario')==='recovery';
 let recoveryBootPending=recoveryScenario;
-let consolePrepared=false,consolePreparing=false;
+let consolePrepared=false,consolePreparing=false,consolePreparationFailed=false;
 const defaultFinal=!['boot','disk','estado','motor','extras'].some(name=>params.has(name));
 const bootGrub=defaultFinal||params.get('boot')==='grub';
 const requestedDisk=params.get('disk')||(defaultFinal?'final':null);
@@ -35,7 +35,7 @@ const motorName=new URL(location.href).searchParams.get('motor')==='original'?'o
 const extras=new URL(location.href).searchParams.get('extras')==='yes';
 const nodeName=new URL(location.href).searchParams.get('node')==='2'?'2':'1';
 const supportsExercises=['grub-curso','grub-rhcsa','grub-rhcsa-final'].includes(diskProfile);
-const exerciseRunner=createCheckRunner(text=>sendSerialText(text),()=>!!emulator&&!busy&&!inputPending&&atShellPrompt(globalThis.vmTranscript),examMode?300000:undefined);
+const exerciseRunner=createCheckRunner(text=>sendSerialText(text),()=>!!emulator&&!busy&&!inputPending&&atShellPrompt(globalThis.vmTranscript),examMode?600000:undefined);
 const exercisePanel=mountExercisePanel(document.querySelector('#exercise-panel'),async exercise=>{
     if(busy||inputPending||!atShellPrompt(globalThis.vmTranscript))throw Error('Vuelve al prompt de Linux y deja la línea vacía antes de comprobar. No se interrumpen comandos ni editores.');
   const promise=exerciseRunner.run(exercise);
@@ -64,7 +64,7 @@ attachTerminalClipboard(terminal,document.querySelector('#terminal'),{
  notify:text=>{document.querySelector('#clipboard-status').textContent=text;}
 });
 async function prepareConsole(){
- if(consolePrepared||consolePreparing||!emulator||busy||inputPending||!atShellPrompt(globalThis.vmTranscript))return;
+ if(consolePrepared||consolePreparing||consolePreparationFailed||!emulator||busy||inputPending||!atShellPrompt(globalThis.vmTranscript))return;
  // Una sesión guardada en vi, passwd o login no se interrumpe. Esperar a root.
  const rootShell=/(?:^|\n)(?:V86TEST# |\[root@[^\n]+\]# )$/.test(cleanSerial(globalThis.vmTranscript.slice(-1500)));
  consolePreparing=true;
@@ -94,7 +94,7 @@ async function prepareConsole(){
      document.documentElement.dataset.vmState='shell';status.textContent='Laboratorio disponible.';
      if(examMode&&!examReadySent){examReadySent=true;parent.postMessage({kind:'s2ktux-exam-ready',attempt:examAttempt},location.origin);}
    }
- }catch(error){status.textContent=error.message;document.documentElement.dataset.vmState='failed';if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);}
+ }catch(error){if(examMode)consolePreparationFailed=true;status.textContent=error.message;document.documentElement.dataset.vmState='failed';if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);}
  finally{consolePreparing=false;busy=false;document.querySelector('#save').disabled=!emulator;updateExerciseAvailability();}
 }
 document.querySelector('#reset').onclick=async()=>{

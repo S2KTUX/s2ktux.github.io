@@ -54,7 +54,7 @@ window.addEventListener('message',event=>{
 async function createMachine(node){
  const frame=document.createElement('iframe');frame.title=`Terminal de la máquina ${node}`;frame.allow='clipboard-read; clipboard-write';frame.hidden=node!==selected;
  const ready=new Promise((resolve,reject)=>{
-  const timer=setTimeout(()=>reject(Error(`La máquina ${node} no pudo prepararse.`)),420000);
+  const timer=setTimeout(()=>reject(Error(`La máquina ${node} no pudo prepararse.`)),900000);
   machines.set(node,{frame,ready:false,touched:false,timer,resolve:()=>{clearTimeout(timer);resolve();},reject:e=>{clearTimeout(timer);reject(e);}});
  });
  const url=new URL('v86-test.html',location.href);url.searchParams.set('exam',attempt);url.searchParams.set('node',node);url.searchParams.set('embed','exam');

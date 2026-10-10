@@ -3,7 +3,7 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715831106,
+  "verifiedPackageBytes": 715831205,
   "modifications": [
     {
       "path": "v86-test.html",
@@ -14,8 +14,8 @@
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "6233c20c622e75c0b405b6f4158f0a12c6852b86f4758e3d553818341bf7edab",
-      "bytes": 24297
+      "sha256": "693985c8dd5e61e88f5559b6e5ea6b0a00faccec6dc1654193b3d2b2d5a07890",
+      "bytes": 24396
     },
     {
       "path": "v86-exercise-panel.mjs",
@@ -101,7 +101,7 @@
     },
     {
       "path": "v86-exam.mjs",
-      "sha256": "f2e3eb90e5f86dbb1395c79e2fe6da921e73d20c71fead37819060ef5c77cb5f",
+      "sha256": "9da71798285e6648eb9bba4b77882a8cfe10e936ab7372ee1851e271caa2cc07",
       "bytes": 10006
     },
     {
