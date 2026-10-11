@@ -19,7 +19,7 @@ export function createDockerChecks(send,idle,onFinish){
    pending.output+=text;
    const output=clean(pending.output),prompt=/(?:^|\n)(\[[^\n@\]]+@[^\n\]]+ [^\n\]]*\][#$] )$/.exec(output);
    if(prompt){
-    const lines=output.split('\n'),results=pending.exercise.checks.map(([label],i)=>{const line=lines.find(l=>l.startsWith(pending.prefix+i+'='));return {label,ok:line===pending.prefix+i+'=0',found:!!line};});
+    const lines=output.split('\n'),results=pending.exercise.checks.map(([label],i)=>{const key=pending.prefix+i+'=';const line=lines.find(l=>l.startsWith(key)&&/^[0-9]+$/.test(l.slice(key.length)));return {label,ok:line===key+'0',found:!!line};});
     if(results.every(r=>r.found)){const task=pending;clearTimeout(task.timer);pending=undefined;onFinish('\r\n'+prompt[1]);task.resolve({ok:results.every(r=>r.ok),results});}
    }
    return true;
