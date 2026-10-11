@@ -174,6 +174,7 @@ const thirdPartyAnalytics = {
   url: 'https://plausible.io/js/script.js', headers: new Headers()
 };
 assert.equal(await dispatchFetch(thirdPartyAnalytics), null, 'Non-allowlisted third parties must bypass Cache Storage');
+for(const lab of ['linux-real','docker-real'])assert.equal(await dispatchFetch({...terminalNavigation,url:`${scope}laboratorios/${lab}/`}),null,'Real laboratories must bypass the shell cache');
 
 await memoryCaches.open('unrelated-app-v1');
 await memoryCaches.open('s2ktux-v12');

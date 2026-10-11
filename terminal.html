@@ -72,15 +72,16 @@
   if(explicitEntry){ params.delete('enter'); history.replaceState(history.state,'','terminal.html?'+params.toString()); }
   window.addEventListener('pageshow',function(e){ var restored=getMode(new URLSearchParams(location.search)); if(e.persisted&&restored){ clearAllTerminalSessions(); location.replace(selectionUrl()); } });
   document.addEventListener('click', function(e){
-    var b = e.target && e.target.closest && e.target.closest('[data-pick-mode]');
-    if(b){ var selected=b.getAttribute('data-pick-mode'); clearModeSession(selected); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
+    var b = e.target && e.target.closest && e.target.closest('[data-pick-mode], [data-legacy-mode]');
+    if(b && b.getAttribute('data-pick-mode')==='docker'){ location.href='/laboratorios/docker-real/'; return; }
+    if(b){ var selected=b.getAttribute('data-pick-mode')||b.getAttribute('data-legacy-mode'); clearModeSession(selected); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
     var cm = e.target && e.target.closest && e.target.closest('[data-change-mode]');
     if(cm){ location.href=selectionUrl(); }
   });
   function initSelectorKeyboard(){
     var slots=[].slice.call(document.querySelectorAll('.terminal-slot')),selected=0;
     var command=document.getElementById('selector-current-command'),status=document.getElementById('selector-current-status');
-    var info={linux:['linux-rhcsa9','Rocky Linux 9.4 · preparado'],docker:['docker-host','Docker Engine · preparado'],kubernetes:['kubernetes-cka','Clúster CKA · preparado']};
+    var info={linux:['linux-rhcsa9','Rocky Linux 9.4 · preparado'],docker:['docker-lab','Alpine · Docker Engine real'],kubernetes:['kubernetes-cka','Clúster CKA · preparado']};
     function choose(i,focus){selected=(i+slots.length)%slots.length;slots.forEach(function(s,n){var on=n===selected;s.setAttribute('data-selected',on?'1':'0');s.setAttribute('aria-selected',on?'true':'false');});var mode=slots[selected]&&slots[selected].getAttribute('data-pick-mode'),data=info[mode];if(data&&command)command.textContent=data[0];if(data&&status){var led=status.querySelector('i');status.textContent=' '+data[1];if(led)status.insertBefore(led,status.firstChild);}if(focus&&slots[selected])slots[selected].focus();}
     slots.forEach(function(s,i){s.addEventListener('mouseenter',function(){choose(i,false);});s.addEventListener('focus',function(){choose(i,false);});});
     document.addEventListener('keydown',function(e){var sel=document.getElementById('mode-select');if(!sel||sel.style.display==='none'||!slots.length)return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();choose(selected+1,true);}else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();choose(selected-1,true);}else if(e.key==='Enter'){e.preventDefault();slots[selected].click();}});
@@ -131,7 +132,8 @@
           </button>
       </div>
       <p><a href="/laboratorios/linux-real/">Probar Linux real (beta)</a> · Debian en tu navegador, con root y Reset.</p>
-      <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> entrar</span><span>Sesión efímera · F5 crea una máquina limpia.</span></div>
+      <p><a href="terminal.html?mode=docker&amp;enter=1" data-legacy-mode="docker">Docker simulado (versión anterior)</a></p>
+      <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> entrar</span><span>Docker real permite guardar y resetear su máquina.</span></div>
     </div>
   </div>
 </div>

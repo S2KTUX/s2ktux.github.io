@@ -12,7 +12,7 @@ function captureRuntimeErrors(page){
 
 async function openMode(page,mode,{solved=mode==='linux'}={}){
   await page.goto('/terminal.html');
-  await page.locator('[data-pick-mode="'+mode+'"]').click();
+  await page.locator('['+(mode==='docker'?'data-legacy-mode':'data-pick-mode')+'="'+mode+'"]').click();
   await expect(page).toHaveURL(new RegExp('mode='+mode));
   await expect(page.locator('#terminal-shell')).toBeVisible();
   await expect(page.locator('#term-input')).toBeAttached();
@@ -395,7 +395,7 @@ for(const mode of MODES){
     if(mode!=='linux') await run(page,'touch /tmp/no-debe-sobrevivir');
     await page.reload();
     await expect(page.locator('#mode-select')).toBeVisible();
-    await page.locator('[data-pick-mode="'+mode+'"]').click();
+    await page.locator('['+(mode==='docker'?'data-legacy-mode':'data-pick-mode')+'="'+mode+'"]').click();
     await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
     if(mode==='linux') await page.locator('#term-solved').click();
     await waitForShell(page);
@@ -408,7 +408,7 @@ test('@mobile cabecera, selector, terminal y controles no desbordan',async({page
   await expect(page.locator('#mode-select')).toBeVisible();
   const selectorFits=await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1);
   expect(selectorFits).toBeTruthy();
-  await page.locator('[data-pick-mode="docker"]').click();
+  await page.locator('[data-legacy-mode="docker"]').click();
   await expect(page.locator('#terminal-shell')).toBeVisible();
   const metrics=await page.evaluate(()=>({
     viewport:window.innerWidth,
