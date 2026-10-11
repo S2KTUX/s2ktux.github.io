@@ -6,7 +6,7 @@ const expectedEngineThread=workerDisabled?'fallback':'worker';
 test('Fase 2 · el parser vive en un Worker y conserva PS2 sin degradar la carga',async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('/terminal.html');
-  await page.locator('[data-pick-mode="docker"]').click();
+  await page.locator('[data-legacy-mode="docker"]').click();
   await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   expect(await page.evaluate(()=>document.documentElement.dataset.terminalEngineThread)).toBe(expectedEngineThread);
   const duration=await page.evaluate(()=>performance.getEntriesByName('s2ktux-time-to-terminal-interactive').at(-1)?.duration||0);
@@ -136,7 +136,7 @@ test('Bloque 2 · Docker reinicia y resincroniza el último estado confirmado',a
     };
   });
   await page.goto('/terminal.html');
-  await page.locator('[data-pick-mode="docker"]').click();
+  await page.locator('[data-legacy-mode="docker"]').click();
   await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   const input=page.locator('#term-input');
   const submit=value=>input.evaluate((element,command)=>{element.value=command;element.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));},value);
@@ -159,7 +159,7 @@ test('Bloque 2 · Docker degrada explícitamente si también falla el reinicio',
     };
   });
   await page.goto('/terminal.html');
-  await page.locator('[data-pick-mode="docker"]').click();
+  await page.locator('[data-legacy-mode="docker"]').click();
   await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   await expect(page.locator('#term-body')).toContainText('El entorno Docker se ha desconectado');
   await expect(page.locator('#term-body')).toContainText('No se pudo reiniciar Docker tras 3 intentos',{timeout:12000});

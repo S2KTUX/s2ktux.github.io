@@ -1,4 +1,4 @@
-const VERSION = 'v31';
+const VERSION = 'v32';
 const CACHE_PREFIX = 's2ktux-';
 const STATIC_CACHE = `${CACHE_PREFIX}static-${VERSION}`;
 const PAGE_CACHE = `${CACHE_PREFIX}pages-${VERSION}`;
@@ -142,6 +142,7 @@ self.addEventListener('fetch', event => {
   // El laboratorio tiene sus propios discos y guardados. No duplicar su
   // caché ni mezclar una imagen nueva con código antiguo del shell general.
   if (sameOrigin && url.pathname.startsWith('/laboratorios/linux-real/')) return;
+  if (sameOrigin && url.pathname.startsWith('/laboratorios/docker-real/')) return;
 
   if (req.mode === 'navigate') {
     event.respondWith(networkFirst(req, PAGE_CACHE, PAGE_CACHE_LIMIT));
