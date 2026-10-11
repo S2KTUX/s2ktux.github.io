@@ -89,7 +89,7 @@ docker exec captura-restaurada cat /mensaje.txt
   checks:[
    ['Nueva imagen y contenedor activo',`${image('captura-restaurada','captura:1')} && ${running('captura-restaurada')}`],
    ['Archivo conservado',`test "$(docker exec captura-restaurada cat /mensaje.txt)" = Conservado`],
-   ['Archivo sin volumen',"docker inspect -f '{{range .Mounts}}{{.Destination}}{{println}}{{end}}' captura-restaurada | grep -qx /mensaje.txt; test $? -eq 1"],
+   ['Archivo sin volumen',"mounts=$(docker inspect -f '{{range .Mounts}}{{.Destination}}{{println}}{{end}}' captura-restaurada) && ! printf '%s\\n' \"$mounts\" | grep -Eq '^(/|/mensaje.txt)$'"],
   ],
  },
  {
@@ -179,7 +179,7 @@ docker pull localhost:5000/curso/alpine:1
 docker run --name registro-verificado localhost:5000/curso/alpine:1 echo PUBLICADA`,
   checks:[
    ['Registro activo y persistente',`${running('registro-curso')} && ${mount('registro-curso','volume','registro-datos','/var/lib/registry')}`],
-   ['Imagen publicada en el registro',"curl -fsS --max-time 5 http://127.0.0.1:5000/v2/curso/alpine/tags/list | grep -Eq '\"tags\":\\[\"1\"\\]'"],
+   ['Imagen publicada en el registro',"curl -fsS --max-time 5 http://127.0.0.1:5000/v2/curso/alpine/tags/list | grep -Eq '\"tags\"[[:space:]]*:[[:space:]]*\\[[^]]*\"1\"[[:space:]]*(,|\\])'"],
    ['Imagen ejecutada',`${image('registro-verificado','localhost:5000/curso/alpine:1')} && test "$(docker logs registro-verificado)" = PUBLICADA`],
   ],
  },
@@ -207,7 +207,7 @@ docker compose -p repaso logs app`,
    ['Un servicio app activo',`test "$(docker ps -q --filter label=com.docker.compose.project=repaso --filter label=com.docker.compose.service=app | wc -l)" = 1`],
    ['Contenido de la imagen propia',`cid=$(docker ps -q --filter label=com.docker.compose.project=repaso --filter label=com.docker.compose.service=app); test "$(docker exec "$cid" cat /app/creado.txt)" = 'Imagen propia'`],
    ['Variable inyectada y registrada',`cid=$(docker ps -q --filter label=com.docker.compose.project=repaso --filter label=com.docker.compose.service=app); test "$(docker exec "$cid" printenv MENSAJE)" = 'Compose funciona' && docker logs "$cid" | grep -qx 'Compose funciona' && grep -qx 'MENSAJE=Compose funciona' /root/repaso/.env`],
-   ['Mensaje fuera de la imagen',`cid=$(docker ps -q --filter label=com.docker.compose.project=repaso --filter label=com.docker.compose.service=app); iid=$(docker inspect -f '{{.Image}}' "$cid"); docker image inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$iid" | grep -q '^MENSAJE='; test $? -eq 1`],
+   ['Mensaje fuera de la imagen',`cid=$(docker ps -q --filter label=com.docker.compose.project=repaso --filter label=com.docker.compose.service=app); test -n "$cid" || exit 1; iid=$(docker inspect -f '{{.Image}}' "$cid") || exit 1; envs=$(docker image inspect -f '{{range .Config.Env}}{{println .}}{{end}}' "$iid") && ! printf '%s\\n' "$envs" | grep -q '^MENSAJE='`],
   ],
  },
  {
