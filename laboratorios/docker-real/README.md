@@ -4,6 +4,8 @@ Máquina estática para las tres clases de Docker de S2KTUX. Alpine 3.23.6 x86, 
 
 Entrada: `/laboratorios/docker-real/`. Las imágenes de prácticas están precargadas y tienen nombres propios, sin hacerlas pasar por las oficiales. Una CPU emulada, 1 GiB de RAM, arquitectura `linux/386`. Usar curl dentro de Linux para los puertos publicados; no son puertos de localhost del portátil.
 
+Hay 30 prácticas agrupadas por las tres clases del curso. Las 15 adicionales son independientes y reutilizan las imágenes precargadas: variables de entorno, logs y códigos de salida, ARG/ENV, CMD/ENTRYPOINT, commit, save/load, cp, recreación con volúmenes, bind de solo lectura, cambio de red, registro local, Compose con build/env_file, USER/.dockerignore, salud y actualización de recursos. La solución se muestra solo al solicitarla. Las comprobaciones consultan el resultado real; no exigen reproducir los mismos comandos de la solución ni prueban todo el historial de pasos intermedios.
+
 Guardar conserva RAM, disco modificado, archivos, contenedores y volúmenes en IndexedDB, bajo `s2ktux-docker-v86-v1`. Se verifica identidad e integridad y no se sobrescribe un guardado cambiado por otra pestaña. Reset elimina exclusivamente esa clave y vuelve a la fábrica. No hay guardado automático.
 
 La red Ethernet real del invitado usa NAT hacia el puente público `relay.widgetry.org`. Se permiten respuestas a conexiones iniciadas por la VM hacia direcciones IPv4 públicas, no tráfico entrante no solicitado ni conexiones a redes privadas. Utilizar únicamente datos de prácticas. Disponibilidad y velocidad de Internet dependen también del puente externo.
