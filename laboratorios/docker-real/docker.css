@@ -6,7 +6,9 @@
 .console {background:#161009;border:2px solid var(--line,#ad9575);overflow:auto}
 .console-bar {font:14px 'Share Tech Mono',monospace;padding:12px 16px;color:#e0a458;border-bottom:1px solid #ad9575}
 #terminal {padding:12px;min-height:480px}
-.lab-note {font-size:12px;line-height:1.5;color:var(--muted,#665c50)}
+.lab-information {margin-top:20px;font-size:12px;line-height:1.45;color:var(--muted,#665c50)}
+.lab-information p {margin:4px 0}
+.lab-information small {font:inherit}
 #saved-status:empty {display:none}
 .exercise-choice {display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:18px 0}
 .exercise-choice select {max-width:100%;font:inherit;color:var(--head);background:var(--surface2);border:1px solid var(--line);padding:9px}
