@@ -1,3 +1,18 @@
+/* Base visual de la página principal, compartida por las dos páginas de Docker. */
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);font-family:'Space Mono',monospace;color:var(--text)}
+:root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a}
+html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#e6d5b8;--head:#f8cf90;--muted:#c4ab89;--soft2:#0f0b06}
+html,body{transition:background-color .25s ease,color .25s ease}
+svg{stroke:var(--head)}
+a{color:#d97757;text-decoration:none}
+a:hover{color:#c2650a}
+html.dark a{color:#ef8a5f}
+html.dark a:hover{color:#f2a071}
+::selection{background:#d97757;color:#fff}
+a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #d97757;outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 .docker-page {width:min(1120px,100%);margin:0 auto;padding:32px var(--space-page,24px);flex:1}
 .docker-page h1 {font:22px/1.6 'Press Start 2P',monospace;color:var(--head,#161009);margin:0 0 24px}
 .controls {display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:18px}

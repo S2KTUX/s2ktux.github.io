@@ -8,6 +8,22 @@ test('Docker real · tema compartido y móvil sin desbordamiento @mobile',async(
 });
 
 for(const path of ['/laboratorios/docker-real/','/laboratorios/docker-real/informacion.html']){
+ test(`Docker real · colores reales de la web en ambos temas ${path}`,async({page})=>{
+  const palette=()=>({background:getComputedStyle(document.body).backgroundColor,text:getComputedStyle(document.body).color,header:getComputedStyle(document.querySelector('.site-header')).backgroundColor,border:getComputedStyle(document.querySelector('.site-header')).borderBottomColor,logo:getComputedStyle(document.querySelector('.site-logo')).color});
+  await page.goto('/');
+  const light=await page.evaluate(palette);
+  await page.locator('[data-theme-toggle]').click();
+  await expect(page.locator('body')).toHaveCSS('background-color','rgb(30, 24, 17)');
+  const dark=await page.evaluate(palette);
+  await page.goto(path);
+  await expect(page.locator('body')).toHaveCSS('background-color',dark.background);
+  expect(await page.evaluate(palette)).toEqual(dark);
+  await page.locator('[data-theme-toggle]').click();
+  await expect(page.locator('body')).toHaveCSS('background-color',light.background);
+  expect(await page.evaluate(palette)).toEqual(light);
+  await expect(page.locator('.site-logo')).toHaveCSS('text-decoration-line','none');
+  await expect(page.locator('body')).toHaveCSS('margin','0px');
+ });
  test(`Docker real · navegación completa ${path}`,async({page})=>{
   await page.goto(path);
   await expect(page.locator('.site-nav .navlink')).toHaveText(['Inicio','Cursos','Terminal','Proyectos']);
@@ -23,9 +39,10 @@ for(const path of ['/laboratorios/docker-real/','/laboratorios/docker-real/infor
 }
 test('Docker real · notas breves sin bloque de explicación técnica',async({page})=>{
  await page.goto('/laboratorios/docker-real/');
- await expect(page.locator('.lab-information p')).toHaveCount(3);
+ await expect(page.locator('.lab-information p')).toHaveCount(2);
  await expect(page.locator('main a[href="informacion.html"]')).toHaveCount(0);
  await expect(page.locator('.lab-information')).not.toContainText('Alpine');
+ await expect(page.locator('.lab-information')).not.toContainText('puente público');
  expect(await page.locator('.lab-information').evaluate(e=>getComputedStyle(e).fontSize)).toBe('12px');
  await page.goto('/laboratorios/docker-real/informacion.html');
  await expect(page.locator('h1')).toHaveText('Software del laboratorio');
