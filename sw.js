@@ -143,6 +143,7 @@ self.addEventListener('fetch', event => {
   // caché ni mezclar una imagen nueva con código antiguo del shell general.
   if (sameOrigin && url.pathname.startsWith('/laboratorios/linux-real/')) return;
   if (sameOrigin && url.pathname.startsWith('/laboratorios/docker-real/')) return;
+  if (sameOrigin && url.pathname.startsWith('/laboratorios/kubernetes-real/')) return;
 
   if (req.mode === 'navigate') {
     event.respondWith(networkFirst(req, PAGE_CACHE, PAGE_CACHE_LIMIT));
