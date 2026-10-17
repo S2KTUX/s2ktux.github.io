@@ -9,11 +9,12 @@ test('Kubernetes · primero modo y después exactamente tres laboratorios',async
  await expect(page.locator('#practice-configuration')).toBeHidden();await expect(page.locator('#exam-configuration')).toBeHidden();
  await page.locator('#mode-practice').click();await expect(page.locator('#practice-configuration')).toBeVisible();
  await expect(page.locator('[data-choose-stage]')).toHaveCount(3);await expect(page.locator('[data-class]')).toHaveCount(0);
- await expect(page.locator('#entry-position')).toContainText('Clases 00–06');await expect(page.locator('#entry-intro')).toContainText('14 preguntas');
- await page.locator('[data-choose-stage=intermedio]').click();await expect(page.locator('#entry-position')).toContainText('Clases 07–23');
+ await expect(page.getByText('¿Cómo quieres practicar?',{exact:true})).toHaveCount(0);
+ await expect(page.locator('#entry-class-outline')).toHaveCount(0);await expect(page.locator('#lab-entry')).not.toContainText('Clases 00–06');
+ await expect(page.locator('[data-choose-stage]')).toHaveText(['Inicial','Intermedio','Avanzado']);await expect(page.locator('#entry-intro')).toContainText('14 preguntas');
+ await page.locator('[data-choose-stage=intermedio]').click();await expect(page.locator('[data-choose-stage=intermedio]')).toHaveAttribute('aria-pressed','true');
  await expect(page.locator('#entry-intro')).toContainText('10 preguntas');await expect(page.locator('#enter-lab')).toHaveText('Abrir laboratorio intermedio');
- await expect(page.locator('#entry-class-list [data-lesson]')).toHaveCount(17);
- await page.locator('[data-choose-stage=avanzado]').click();await expect(page.locator('#entry-class-list [data-lesson]')).toHaveCount(11);
+ await page.locator('[data-choose-stage=avanzado]').click();
  await expect(page.locator('#enter-lab')).toBeDisabled();await expect(page.locator('#entry-intro')).toContainText('Próximamente');
  await expect(page.locator('#nodes iframe')).toHaveCount(0);expect(errors).toEqual([]);
 });
@@ -21,11 +22,13 @@ test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arr
  await mockBoot(page);await page.goto(root);await page.locator('#mode-practice').click();await page.locator('#enter-lab').click();
  await expect(page.locator('#exercise-class-select')).toHaveValue('0');await expect(page.locator('#exercise-class-select option')).toHaveCount(7);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Inicial');
+ await expect(page.locator('#lab-course-note')).toHaveText('* Clases 00–06 del curso.');
+ expect(await page.locator('#lab-course-note').evaluate(node=>parseFloat(getComputedStyle(node).fontSize))).toBeLessThan(13);
  for(const number of ['1','2','3','4','5','6']){
   await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(2);
   await page.selectOption('#exercise-select','1');await expect(page.locator('#exercise-count')).toHaveText('Práctica 2 / 2');expect(await page.evaluate(()=>testStarts)).toBe(1);
  }
- await page.locator('#change-lab').click();await expect(page.locator('#entry-position')).toContainText('Laboratorio inicial');
+ await page.locator('#change-lab').click();await expect(page.locator('#enter-lab')).toContainText('laboratorio inicial');
  await page.locator('[data-choose-stage=intermedio]').click();await page.locator('#enter-lab').click();
  await expect(page.locator('#exercise-class-select')).toHaveValue('7');await expect(page.locator('#exercise-class-select option')).toHaveCount(17);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Intermedio');
@@ -44,8 +47,10 @@ test('Kubernetes · pendientes bloqueados incluso por enlaces y acciones directa
 test('Kubernetes · examen separado, español e inglés y sin un intento ficticio',async({page})=>{
  await page.goto(root);await page.locator('#mode-exam').click();await expect(page.locator('#practice-configuration')).toBeHidden();
  await expect(page.locator('#exam-configuration')).toBeVisible();await expect(page.locator('#start-exam')).toBeDisabled();await expect(page.locator('#exam-language-note')).toContainText('no es un idioma oficial');
- await page.selectOption('#exam-language','en');await expect(page.locator('#exam-heading')).toHaveText('CKA mock exam');await expect(page.locator('#exam-pending')).toContainText('Coming soon');
- await expect(page.locator('#exam-configuration')).toHaveAttribute('lang','en');await page.selectOption('#exam-language','es');await expect(page.locator('#exam-heading')).toHaveText('Simulacro CKA');
+ await expect(page.locator('#exam-language')).toHaveCount(0);
+ await page.locator('[data-exam-language=en]').click();await expect(page.locator('[data-exam-language=en]')).toHaveAttribute('aria-pressed','true');
+ await expect(page.locator('#exam-heading')).toHaveText('CKA mock exam');await expect(page.locator('#exam-pending')).toContainText('Coming soon');
+ await expect(page.locator('#exam-configuration')).toHaveAttribute('lang','en');await page.locator('[data-exam-language=es]').click();await expect(page.locator('#exam-heading')).toHaveText('Simulacro CKA');
  await page.evaluate(async()=>{await document.querySelector('#start-cluster').onclick();await document.querySelector('#enter-lab').onclick();});await expect(page.locator('#nodes iframe')).toHaveCount(0);
  await page.goto(root+'debian/multinodo.html?mode=course&level=inicial&view=exam&enter=1');
  await expect(page.locator('#exam-configuration')).toBeVisible();await expect(page.locator('#lab-workspace')).toBeHidden();await expect(page.locator('#nodes iframe')).toHaveCount(0);
@@ -63,7 +68,7 @@ test('Kubernetes · consultar clases y modos conserva la sesión existente',asyn
 });
 test('Kubernetes · móvil conserva cabecera, modos y dificultades @mobile',async({page})=>{
  await page.goto(root);await page.locator('#lab-entry').waitFor();await page.locator('#mode-practice').click();await page.locator('[data-choose-stage=intermedio]').click();
- await page.locator('#entry-class-outline summary').click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
- await page.locator('#mode-exam').click();await page.selectOption('#exam-language','en');expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ await page.locator('#mode-exam').click();await page.locator('[data-exam-language=en]').click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  await page.locator('[data-theme-toggle]').click();await expect(page.locator('html')).toHaveClass(/dark/);await expect(page.locator('.site-nav a[href="/proyectos.html"]')).toBeVisible();
 });

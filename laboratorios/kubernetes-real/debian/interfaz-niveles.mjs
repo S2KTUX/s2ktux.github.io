@@ -12,7 +12,8 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  globalThis.kubeDebianLearningMode=null;
  const remembered=new Map([[level,activeClass]]);
  document.title='Kubernetes · '+config.title+' | S2KTUX';
- $('mode-stamp').textContent='Modo práctica · '+config.name+' · Clases '+config.classes;
+ $('mode-stamp').textContent='Modo práctica · '+config.name;
+ $('lab-course-note').textContent='* Clases '+config.classes+' del curso.';
  $('course-intro').hidden=true;$('course-progression').hidden=true;$('mode-topology').hidden=true;$('change-lab').hidden=false;
  $('exercise-class-select').replaceChildren(...clasesNivel(level).map(lesson=>{
   const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number);option.textContent=lesson.id+' — '+lesson.title+(option.disabled?' · Próximamente':'');return option;
@@ -22,15 +23,9 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  function task(){return tasks()[Number($('exercise-select').value)];}
  function buildIndex(){
   $('course-index').replaceChildren(...Object.entries(NIVELES).map(([key,item])=>{
-   const row=document.createElement('div');row.className='course-stage';row.dataset.stage=key;
    const button=document.createElement('button');button.type='button';button.className='stage-toggle';button.dataset.chooseStage=key;
    button.id='stage-'+key;
-   const number=document.createElement('span');number.className='stage-number';number.textContent=item.number;
-   const heading=document.createElement('span'),title=document.createElement('span'),range=document.createElement('span');
-   title.textContent=item.name+' — '+item.title;title.className='stage-title';range.className='stage-range';range.textContent='Clases '+item.classes;
-   heading.append(title,range);const indicator=document.createElement('span');indicator.className='stage-indicator';indicator.textContent=nivelDisponible(key)?'':'Próximamente';
-   button.append(number,heading,indicator);button.onclick=()=>browse(key);
-   row.append(button);return row;
+   button.textContent=item.name;button.onclick=()=>browse(key);return button;
   }));
  }
  function renderEntry(){
@@ -39,16 +34,13 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   for(const button of $('course-index').querySelectorAll('[data-choose-stage]')){
    button.setAttribute('aria-pressed',String(button.dataset.chooseStage===preview));
   }
-  $('entry-class-list').replaceChildren(...lessons.map(lesson=>{const row=document.createElement('li');row.textContent=lesson.id+' — '+lesson.title+(claseDisponible(lesson.number)?'':' · Próximamente');row.dataset.lesson=String(lesson.number);return row;}));
-  $('entry-position').textContent='Laboratorio '+selected.name.toLowerCase()+' · Clases '+selected.classes;
   const count=lessons.reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
-  $('entry-intro').textContent=available?selected.intro+' '+count+' preguntas disponibles. Cambiar de clase no reinicia las máquinas.':'Próximamente. Este laboratorio o la clase solicitada todavía no está disponible.';
-  $('entry-machines').textContent=!available?'':selected.nodes===1?'Un nodo para comenzar.':'Control plane y un worker.';
-  $('entry-note').hidden=true;update();
+  $('entry-intro').textContent=available?(selected.nodes===1?'Un nodo':'Control plane y un worker')+' · '+count+' preguntas disponibles.':'Próximamente. Este laboratorio o la clase solicitada todavía no está disponible.';
+  update();
  }
  function browse(value){
   if(getState().busy||switching||checking||!Object.hasOwn(NIVELES,value))return;
-  preview=value;const previous=remembered.get(value);previewClass=claseDisponible(previous)?previous:clasesNivel(value)[0].number;$('entry-class-outline').open=false;renderEntry();
+  preview=value;const previous=remembered.get(value);previewClass=claseDisponible(previous)?previous:clasesNivel(value)[0].number;renderEntry();
  }
  function showEntry(){preview=level;previewClass=activeClass;remembered.set(level,activeClass);$('lab-entry').hidden=false;$('lab-workspace').hidden=true;renderEntry();}
  function showWorkspace(){
@@ -98,14 +90,16 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   $('practice-configuration').hidden=value!=='practice';$('exam-configuration').hidden=value!=='exam';update();
  }
  $('mode-practice').onclick=()=>selectLearningMode('practice');$('mode-exam').onclick=()=>selectLearningMode('exam');
- $('exam-language').onchange=()=>{
-  const english=$('exam-language').value==='en';$('exam-configuration').lang=english?'en':'es';
+ function selectExamLanguage(language){
+  const english=language==='en';$('exam-configuration').lang=english?'en':'es';
+  for(const button of document.querySelectorAll('[data-exam-language]'))button.setAttribute('aria-pressed',String(button.dataset.examLanguage===language));
   $('exam-heading').textContent=english?'CKA mock exam':'Simulacro CKA';
   $('exam-description').textContent=english?'Two hours, hands-on tasks across different topics and a pass mark of 66/100. No hints or solutions during the attempt.':'Dos horas, preguntas prácticas de distintos temas y aprobado desde 66/100. Sin pistas ni soluciones durante el intento.';
-  $('exam-language-note').textContent=english?'Spanish is a learning aid in this simulator, not an official CKA exam language.':'El castellano es una ayuda de este simulacro; no es un idioma oficial del examen CKA.';
+  $('exam-language-note').textContent=english?'* Spanish is a learning aid in this simulator, not an official CKA exam language.':'* El castellano es una ayuda de este simulacro; no es un idioma oficial del examen CKA.';
   $('exam-pending').textContent=english?'Coming soon. The mock exam is not available yet.':'Próximamente. El simulacro todavía no está disponible.';
   $('start-exam').textContent=english?'Start exam · Coming soon':'Iniciar examen · Próximamente';
- };
+ }
+ for(const button of document.querySelectorAll('[data-exam-language]'))button.onclick=()=>selectExamLanguage(button.dataset.examLanguage);
  $('change-lab').onclick=()=>{showEntry();$('stage-'+level).focus();};
  $('return-lab').onclick=()=>{showWorkspace();$('change-lab').focus();};
  $('exercise-class-select').onchange=event=>{
