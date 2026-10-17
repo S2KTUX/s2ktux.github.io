@@ -19,7 +19,8 @@ test('Kubernetes · primero modo y después exactamente tres laboratorios',async
  await expect(page.locator('[data-choose-stage]')).toHaveCount(3);await expect(page.locator('[data-class]')).toHaveCount(0);
  await expect(page.getByText('¿Cómo quieres practicar?',{exact:true})).toHaveCount(0);
  await expect(page.locator('#entry-class-outline')).toHaveCount(0);await expect(page.locator('#lab-entry')).not.toContainText('Clases 00–06');
- await expect(page.locator('[data-choose-stage]')).toHaveText(['Inicial','Intermedio','Avanzado']);await expect(page.locator('#entry-intro')).toContainText('14 preguntas');
+ await expect(page.locator('[data-level-name]')).toHaveText(['Inicial','Intermedio','Avanzado']);await expect(page.locator('#entry-intro')).toContainText('14 preguntas');
+ await expect(page.locator('.level-summary')).toHaveText(['Pods, réplicas y servicios.','Configuración, almacenamiento y redes.','Instalación, mantenimiento y diagnóstico.']);
  await page.locator('[data-choose-stage=intermedio]').click();await expect(page.locator('[data-choose-stage=intermedio]')).toHaveAttribute('aria-pressed','true');
  await expect(page.locator('#entry-intro')).toContainText('10 preguntas');await expect(page.locator('#enter-lab')).toHaveText('Abrir laboratorio intermedio');
  await page.locator('[data-choose-stage=avanzado]').click();
@@ -59,6 +60,8 @@ test('Kubernetes · examen separado, español e inglés y sin un intento fictici
  await page.locator('[data-exam-language=en]').click();await expect(page.locator('[data-exam-language=en]')).toHaveAttribute('aria-pressed','true');
  await expect(page.locator('#exam-heading')).toHaveText('CKA mock exam');await expect(page.locator('#exam-pending')).toContainText('Coming soon');
  await expect(page.locator('#exam-configuration')).toHaveAttribute('lang','en');await page.locator('[data-exam-language=es]').click();await expect(page.locator('#exam-heading')).toHaveText('Simulacro CKA');
+ const gaps=await page.evaluate(()=>({heading:document.querySelector('#exam-description').getBoundingClientRect().top-document.querySelector('.exam-heading-row').getBoundingClientRect().bottom,note:document.querySelector('#exam-language-note').getBoundingClientRect().top-document.querySelector('#start-exam').getBoundingClientRect().bottom}));
+ expect(gaps.heading).toBeGreaterThanOrEqual(28);expect(gaps.note).toBeGreaterThanOrEqual(28);
  await page.evaluate(async()=>{await document.querySelector('#start-cluster').onclick();await document.querySelector('#enter-lab').onclick();});await expect(page.locator('#nodes iframe')).toHaveCount(0);
  await page.goto(root+'debian/multinodo.html?mode=course&level=inicial&view=exam&enter=1');
  await expect(page.locator('#exam-configuration')).toBeVisible();await expect(page.locator('#lab-workspace')).toBeHidden();await expect(page.locator('#nodes iframe')).toHaveCount(0);

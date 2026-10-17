@@ -22,10 +22,13 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  function tasks(){return claseDisponible(activeClass)?ejerciciosClase(activeClass):[];}
  function task(){return tasks()[Number($('exercise-select').value)];}
  function buildIndex(){
+  const summaries={inicial:'Pods, réplicas y servicios.',intermedio:'Configuración, almacenamiento y redes.',avanzado:'Instalación, mantenimiento y diagnóstico.'};
   $('course-index').replaceChildren(...Object.entries(NIVELES).map(([key,item])=>{
    const button=document.createElement('button');button.type='button';button.className='stage-toggle';button.dataset.chooseStage=key;
    button.id='stage-'+key;
-   button.textContent=item.name;button.onclick=()=>browse(key);return button;
+   const name=document.createElement('span');name.dataset.levelName='';name.className='level-name';name.textContent=item.name;
+   const summary=document.createElement('span');summary.className='level-summary';summary.id='stage-summary-'+key;summary.textContent=summaries[key];
+   button.setAttribute('aria-label',item.name);button.setAttribute('aria-describedby',summary.id);button.append(name,summary);button.onclick=()=>browse(key);return button;
   }));
  }
  function renderEntry(){

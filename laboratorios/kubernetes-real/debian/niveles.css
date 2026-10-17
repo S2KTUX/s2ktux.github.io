@@ -1,19 +1,25 @@
 .lab-levels{--mode-accent:var(--head)}
 .lab-levels [hidden]{display:none!important}
 .lab-entry{max-width:780px;margin:28px 0 44px}
-.level-picker{display:flex;align-items:baseline;flex-wrap:wrap;gap:10px 22px}
-.level-caption{font-size:12px;opacity:.7}
-.course-index{display:flex;flex-wrap:wrap;gap:10px 22px}
-.stage-toggle{border:0;background:transparent;color:var(--text);font:inherit;font-size:13px;padding:4px 0;cursor:pointer}
-.stage-toggle[aria-pressed=true]{color:var(--head);text-decoration:underline;text-underline-offset:6px;text-decoration-thickness:2px}
+.level-picker{margin:32px 0 24px}
+.course-index{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.stage-toggle{display:flex;flex-direction:column;gap:12px;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);font:inherit;padding:16px 0 20px;cursor:pointer}
+.level-name{font-size:15px}.level-summary{font-size:12px;line-height:1.8;opacity:.8;max-width:25ch}
+.stage-toggle[aria-pressed=true]{border-bottom:3px solid var(--head);padding-bottom:18px;color:var(--head)}
+.stage-toggle[aria-pressed=true] .level-name{font-weight:bold}
+@media(max-width:540px){.course-index{grid-template-columns:1fr;gap:0}.stage-toggle{display:grid;grid-template-columns:100px 1fr;gap:16px;align-items:baseline;padding:18px 0}.stage-toggle[aria-pressed=true]{padding-bottom:16px}.level-summary{max-width:none}}
 .learning-modes{display:flex;gap:24px;border-bottom:1px solid var(--line);margin-bottom:24px}
 .learning-modes button{border:0;border-bottom:2px solid transparent;background:transparent;color:var(--text);padding:10px 0;font:inherit;font-size:15px;cursor:pointer}
 .learning-modes button[aria-pressed=true]{border-bottom-color:var(--head);color:var(--head)}
 #exam-configuration{max-width:65ch;font-size:14px}#exam-configuration h3{font:16px/1.6 'Space Mono',monospace}
-.exam-heading-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 24px;margin-bottom:16px}
+.exam-heading-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px 24px;margin:32px 0}
 .exam-heading-row h3{margin:0}.exam-languages{display:flex;align-items:center;gap:8px;font-size:12px}
 .exam-languages span{opacity:.45}.exam-languages button{font:inherit;border:0;background:transparent;color:var(--text);padding:5px 0;cursor:pointer;opacity:.65}
 .exam-languages button[aria-pressed=true]{opacity:1;color:var(--head);text-decoration:underline;text-underline-offset:4px}
+#exam-description{margin:0 0 28px;line-height:1.9;max-width:58ch}
+#exam-pending{margin:0 0 24px;font-size:12px;opacity:.75}
+#exam-configuration #start-exam{margin:8px 0 0}
+#exam-configuration .lab-footnote{margin-top:32px}
 .lab-footnote{font-size:11px;line-height:1.6;opacity:.75;margin:24px 0 0;max-width:80ch}
 .course-index button:disabled{opacity:.5;cursor:wait}
 .entry-enter:disabled{cursor:default}
