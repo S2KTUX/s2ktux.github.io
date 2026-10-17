@@ -1,0 +1,124 @@
+# Candidato privado, todavía no validado. Las imágenes son BusyBox locales
+# con binarios propios montados en lectura; no imágenes oficiales linux/386.
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: InitConfiguration
+localAPIEndpoint:
+  advertiseAddress: 10.77.0.20
+  bindPort: 6443
+nodeRegistration:
+  name: controlplane
+  criSocket: unix:///run/containerd/containerd.sock
+  kubeletExtraArgs:
+    - name: node-ip
+      value: 10.77.0.20
+timeouts:
+  controlPlaneComponentHealthCheck: 10m
+  kubeletHealthCheck: 4m
+  kubernetesAPICall: 5m
+patches:
+  directory: /etc/kubernetes/patches
+---
+apiVersion: kubeadm.k8s.io/v1beta4
+kind: ClusterConfiguration
+kubernetesVersion: v1.35.9
+clusterName: s2ktux-estatico-privado
+encryptionAlgorithm: ECDSA-P256
+controlPlaneEndpoint: 10.77.0.20:6443
+imageRepository: docker.io/s2ktux
+dns:
+  disabled: true
+proxy:
+  disabled: true
+networking:
+  podSubnet: 192.168.0.0/16
+  serviceSubnet: 10.96.0.0/12
+apiServer:
+  certSANs: [localhost, 127.0.0.1]
+  extraArgs:
+    - name: request-timeout
+      value: 3m
+  extraVolumes:
+    - name: binarios-laboratorio
+      hostPath: /mnt/kube-client/bin
+      mountPath: /usr/local/bin
+      readOnly: true
+      pathType: Directory
+controllerManager:
+  extraArgs:
+    - name: tls-cert-file
+      value: /mnt/kube-client/serving/kube-controller-manager.crt
+    - name: tls-private-key-file
+      value: /mnt/kube-client/serving/kube-controller-manager.key
+    - name: controller-start-interval
+      value: 250ms
+    - name: kube-api-qps
+      value: "10"
+    - name: kube-api-burst
+      value: "15"
+    - name: leader-elect-lease-duration
+      value: 60s
+    - name: leader-elect-renew-deadline
+      value: 40s
+    - name: leader-elect-retry-period
+      value: 5s
+  extraVolumes:
+    - name: binarios-laboratorio
+      hostPath: /mnt/kube-client/bin
+      mountPath: /usr/local/bin
+      readOnly: true
+      pathType: Directory
+    - name: certificados-laboratorio
+      hostPath: /mnt/kube-client/serving
+      mountPath: /mnt/kube-client/serving
+      readOnly: true
+      pathType: Directory
+scheduler:
+  extraArgs:
+    - name: kube-api-qps
+      value: "10"
+    - name: kube-api-burst
+      value: "15"
+    - name: tls-cert-file
+      value: /mnt/kube-client/serving/kube-scheduler.crt
+    - name: tls-private-key-file
+      value: /mnt/kube-client/serving/kube-scheduler.key
+    - name: leader-elect-lease-duration
+      value: 60s
+    - name: leader-elect-renew-deadline
+      value: 40s
+    - name: leader-elect-retry-period
+      value: 5s
+  extraVolumes:
+    - name: binarios-laboratorio
+      hostPath: /mnt/kube-client/bin
+      mountPath: /usr/local/bin
+      readOnly: true
+      pathType: Directory
+    - name: certificados-laboratorio
+      hostPath: /mnt/kube-client/serving
+      mountPath: /mnt/kube-client/serving
+      readOnly: true
+      pathType: Directory
+etcd:
+  local:
+    imageRepository: docker.io/s2ktux
+    imageTag: 3.6.6-lab1
+    extraArgs:
+      - name: quota-backend-bytes
+        value: "134217728"
+    extraEnvs:
+      - name: ETCD_UNSUPPORTED_ARCH
+        value: "386"
+---
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+cgroupDriver: cgroupfs
+containerRuntimeEndpoint: unix:///run/containerd/containerd.sock
+staticPodPath: /etc/kubernetes/manifests
+clusterDomain: cluster.local
+clusterDNS: [10.96.0.10]
+rotateCertificates: true
+serializeImagePulls: true
+systemReserved:
+  cpu: 250m
+  memory: 350Mi

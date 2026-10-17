@@ -1,0 +1,24 @@
+apiVersion: kubelet.config.k8s.io/v1beta1
+kind: KubeletConfiguration
+address: 0.0.0.0
+authentication:
+  anonymous:
+    enabled: false
+  webhook:
+    enabled: true
+  x509:
+    clientCAFile: /etc/kubernetes/pki/ca.crt
+authorization:
+  mode: Webhook
+cgroupDriver: cgroupfs
+containerRuntimeEndpoint: unix:///run/containerd/containerd.sock
+staticPodPath: /etc/kubernetes/manifests
+clusterDomain: cluster.local
+clusterDNS:
+  - 10.96.0.10
+failSwapOn: true
+rotateCertificates: true
+serializeImagePulls: true
+systemReserved:
+  cpu: 250m
+  memory: 350Mi

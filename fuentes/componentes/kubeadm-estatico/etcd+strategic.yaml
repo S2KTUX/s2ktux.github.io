@@ -1,0 +1,14 @@
+# kubeadm aplica este parche estratégico al manifiesto auténtico de etcd. Se conservan
+# sus certificados, hostPath de datos, probes y argumentos generados.
+spec:
+  containers:
+    - name: etcd
+      volumeMounts:
+        - name: binarios-laboratorio
+          mountPath: /usr/local/bin
+          readOnly: true
+  volumes:
+    - name: binarios-laboratorio
+      hostPath:
+        path: /mnt/kube-client/bin
+        type: Directory
