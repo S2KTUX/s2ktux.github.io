@@ -15,5 +15,5 @@ test('Kubernetes preliminar · móvil y tema compartido @mobile',async({page})=>
  await page.goto('/laboratorios/kubernetes-real/');await expect(page.locator('#lab-entry')).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  await page.locator('[data-theme-toggle]').click();await expect(page.locator('html')).toHaveClass(/dark/);
- await expect(page.locator('.site-nav a[href="https://s2ktux.github.io/proyectos.html"]')).toBeVisible();
+ await expect(page.locator('.site-nav a[href="/proyectos.html"]')).toBeVisible();
 });

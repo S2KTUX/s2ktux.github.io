@@ -113,8 +113,8 @@
     },
     {
       "path": "debian/index.html",
-      "bytes": 1903,
-      "sha256": "ee58f8775419c6884b4f17f66102444a8a37f05cad0ff02d9a76885cc9fb4cda"
+      "bytes": 1689,
+      "sha256": "b3e4e2a9ef353fae2d3a29b1dc0c0472e4708f5cfd8722bb77dc40e92c78d143"
     },
     {
       "path": "debian/interfaz-niveles.mjs",
@@ -143,8 +143,8 @@
     },
     {
       "path": "debian/multinodo.html",
-      "bytes": 5569,
-      "sha256": "7516f0b0d4514b7d0051fd13fbf8ff9b9652cc365c76c3ba0fa3a73f105b03d0"
+      "bytes": 5467,
+      "sha256": "e624342c6917b659eb195adeec015a82bc3d37aed88e5c297ccdec0fef045efe"
     },
     {
       "path": "debian/multinodo.mjs",
