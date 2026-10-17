@@ -11,7 +11,7 @@ import {montarInterfazNiveles} from './interfaz-niveles.mjs';
 import {comprobarSaludInicial} from './salud-inicial.mjs';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs';
-const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
+const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
 const level=progressive?nivelDesdeURL(new URLSearchParams(location.search)):'inicial';

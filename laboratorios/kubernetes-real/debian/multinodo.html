@@ -6,18 +6,29 @@
 <p id="lab-loading" role="status">Cargando el laboratorio…</p><button id="lab-retry" type="button" hidden>Volver a cargar</button>
 <noscript><p>Activa JavaScript para abrir el laboratorio.</p></noscript>
 <section id="lab-entry" class="lab-entry" aria-label="Elegir laboratorio" hidden>
-<h2 class="entry-heading">Prácticas por clase</h2>
-<p class="entry-introduction">Elige la etapa que estás siguiendo en el curso.</p>
+<h2 class="entry-heading">¿Cómo quieres practicar?</h2>
+<div class="learning-modes" role="group" aria-label="Modo de aprendizaje"><button id="mode-practice" type="button" aria-pressed="false">Modo práctica</button><button id="mode-exam" type="button" aria-pressed="false">Modo examen</button></div>
+<div id="practice-configuration" hidden>
+<p class="entry-introduction">Elige tu laboratorio. Dentro encontrarás sus clases y preguntas.</p>
 <div id="course-index" class="course-index" aria-label="Etapas y clases del curso"></div>
-<p id="exam-pending" class="mode-note">Modo examen · Próximamente</p>
+<details id="entry-class-outline" class="entry-class-outline"><summary>Clases de este laboratorio</summary><ol id="entry-class-list"></ol></details>
 <div class="entry-copy" aria-live="polite" aria-atomic="true"><p id="entry-position" class="entry-position"></p><p id="entry-intro"></p><p id="entry-machines" class="entry-position"></p></div>
 <button id="enter-lab" class="entry-enter" type="button">Abrir laboratorio</button>
 <p id="entry-note" class="mode-note" hidden></p>
 <button id="return-lab" class="lab-link" type="button" hidden>Volver al laboratorio abierto</button>
+</div>
+<section id="exam-configuration" aria-labelledby="exam-heading" hidden>
+<h3 id="exam-heading">Simulacro CKA</h3>
+<label for="exam-language">Idioma / Language</label><select id="exam-language"><option value="es">Castellano</option><option value="en">English</option></select>
+<p id="exam-description">Dos horas, preguntas prácticas de distintos temas y aprobado desde 66/100. Sin pistas ni soluciones durante el intento.</p>
+<p id="exam-language-note" class="mode-note">El castellano es una ayuda de este simulacro; no es un idioma oficial del examen CKA.</p>
+<p id="exam-pending" role="status">Próximamente. El simulacro todavía no está disponible.</p>
+<button id="start-exam" class="entry-enter" type="button" disabled>Iniciar examen · Próximamente</button>
+</section>
 </section>
 <section id="lab-workspace" aria-label="Laboratorio de Kubernetes" hidden>
 <section id="mode-scene" class="mode-scene" aria-label="Modo seleccionado">
-<div class="mode-heading"><span id="mode-stamp" class="mode-stamp">Laboratorio</span><div id="mode-topology" class="mode-topology" aria-label="Configuración del laboratorio"></div><button id="change-lab" class="lab-link" type="button" hidden>Cambiar etapa</button></div>
+<div class="mode-heading"><span id="mode-stamp" class="mode-stamp">Laboratorio</span><div id="mode-topology" class="mode-topology" aria-label="Configuración del laboratorio"></div><button id="change-lab" class="lab-link" type="button" hidden>Cambiar laboratorio</button></div>
 <p id="course-intro">Control plane y workers con systemd.</p><p id="course-progression" class="mode-note" hidden></p>
 </section>
 <div class="controls lab-controls" aria-busy="false"><button id="start-cluster" type="button">Iniciar laboratorio</button><button id="add-worker" type="button" disabled>Añadir segundo worker</button><button id="save-cluster" type="button" disabled>Guardar</button><button id="reset-cluster" type="button" disabled>Reset</button><span id="cluster-status" role="status">Listo para iniciar.</span></div>

@@ -1,17 +1,18 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
-import {CLASES,clasesNivel,claseDesdeURL} from './clases-curso.mjs';
+import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
 import {ejerciciosClase} from './ejercicios-niveles.mjs';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs';
-import {claseDisponible} from './disponibilidad-curso.mjs';
+import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
  const currentURL=new URL(location.href),prepared=new Set();
  let activeClass=claseDesdeURL(currentURL.searchParams,level),preview=level,previewClass=activeClass;
- let switching=false,checking=false,entered=false,wasInitialized=false;
+ let switching=false,checking=false,entered=false,wasInitialized=false,learningMode=null;
+ globalThis.kubeDebianLearningMode=null;
  const remembered=new Map([[level,activeClass]]);
  document.title='Kubernetes · '+config.title+' | S2KTUX';
- $('mode-stamp').textContent='Etapa '+config.stage+' · Clases '+config.classes;
+ $('mode-stamp').textContent='Modo práctica · '+config.name+' · Clases '+config.classes;
  $('course-intro').hidden=true;$('course-progression').hidden=true;$('mode-topology').hidden=true;$('change-lab').hidden=false;
  $('exercise-class-select').replaceChildren(...clasesNivel(level).map(lesson=>{
   const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number);option.textContent=lesson.id+' — '+lesson.title+(option.disabled?' · Próximamente':'');return option;
@@ -21,45 +22,33 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  function task(){return tasks()[Number($('exercise-select').value)];}
  function buildIndex(){
   $('course-index').replaceChildren(...Object.entries(NIVELES).map(([key,item])=>{
-   const row=document.createElement('section');row.className='course-stage';row.dataset.stage=key;
+   const row=document.createElement('div');row.className='course-stage';row.dataset.stage=key;
    const button=document.createElement('button');button.type='button';button.className='stage-toggle';button.dataset.chooseStage=key;
-   button.id='stage-'+key;button.setAttribute('aria-controls','stage-body-'+key);
+   button.id='stage-'+key;
    const number=document.createElement('span');number.className='stage-number';number.textContent=item.number;
    const heading=document.createElement('span'),title=document.createElement('span'),range=document.createElement('span');
-   title.textContent=item.title;title.className='stage-title';range.className='stage-range';range.textContent=item.name+' · Clases '+item.classes;
-   heading.append(title,range);const indicator=document.createElement('span');indicator.className='stage-indicator';indicator.setAttribute('aria-hidden','true');
+   title.textContent=item.name+' — '+item.title;title.className='stage-title';range.className='stage-range';range.textContent='Clases '+item.classes;
+   heading.append(title,range);const indicator=document.createElement('span');indicator.className='stage-indicator';indicator.textContent=nivelDisponible(key)?'':'Próximamente';
    button.append(number,heading,indicator);button.onclick=()=>browse(key);
-   const body=document.createElement('div');body.className='stage-body';body.id='stage-body-'+key;body.setAttribute('role','region');body.setAttribute('aria-labelledby',button.id);
-   const intro=document.createElement('p');intro.className='stage-intro';intro.textContent=item.intro;
-   const list=document.createElement('div');list.className='stage-classes';
-   list.replaceChildren(...clasesNivel(key).map(lesson=>{
-    const choice=document.createElement('button');choice.type='button';choice.className='class-choice';choice.dataset.class=String(lesson.number);
-    const number=document.createElement('span');number.className='class-number';number.textContent=lesson.id;
-    const name=document.createElement('span');name.textContent=lesson.title;choice.append(number,name);
-    if(!claseDisponible(lesson.number)){const soon=document.createElement('small');soon.textContent='Próximamente';choice.append(soon);choice.dataset.pending='true';}
-    choice.onclick=()=>{if(!claseDisponible(lesson.number)||getState().busy||switching||checking)return;preview=key;previewClass=lesson.number;remembered.set(key,previewClass);renderEntry();};
-    return choice;
-   }));
-   body.append(intro,list);row.append(button,body);return row;
+   row.append(button);return row;
   }));
  }
  function renderEntry(){
-  const selected=NIVELES[preview],lesson=CLASES[previewClass];
+  const selected=NIVELES[preview],lessons=clasesNivel(preview),available=nivelDisponible(preview)&&claseDisponible(previewClass);
   $('lab-entry').dataset.preview=preview;document.querySelector('main').dataset.level=preview;
   for(const button of $('course-index').querySelectorAll('[data-choose-stage]')){
-   const expanded=button.dataset.chooseStage===preview;button.setAttribute('aria-expanded',String(expanded));
-   $(button.getAttribute('aria-controls')).hidden=!expanded;button.querySelector('.stage-indicator').textContent=expanded?'−':'+';
+   button.setAttribute('aria-pressed',String(button.dataset.chooseStage===preview));
   }
-  for(const button of $('course-index').querySelectorAll('[data-class]'))button.setAttribute('aria-pressed',String(Number(button.dataset.class)===previewClass));
-  $('entry-position').textContent='Clase '+lesson.id+' — '+lesson.title;
-  const available=claseDisponible(previewClass),count=available?ejerciciosClase(previewClass).length:0;
-  $('entry-intro').textContent=available?count+' prácticas disponibles para esta clase.':'Próximamente. Esta clase todavía no está disponible en el laboratorio.';
+  $('entry-class-list').replaceChildren(...lessons.map(lesson=>{const row=document.createElement('li');row.textContent=lesson.id+' — '+lesson.title+(claseDisponible(lesson.number)?'':' · Próximamente');row.dataset.lesson=String(lesson.number);return row;}));
+  $('entry-position').textContent='Laboratorio '+selected.name.toLowerCase()+' · Clases '+selected.classes;
+  const count=lessons.reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
+  $('entry-intro').textContent=available?selected.intro+' '+count+' preguntas disponibles. Cambiar de clase no reinicia las máquinas.':'Próximamente. Este laboratorio o la clase solicitada todavía no está disponible.';
   $('entry-machines').textContent=!available?'':selected.nodes===1?'Un nodo para comenzar.':'Control plane y un worker.';
   $('entry-note').hidden=true;update();
  }
  function browse(value){
   if(getState().busy||switching||checking||!Object.hasOwn(NIVELES,value))return;
-  preview=value;previewClass=remembered.get(value)??clasesNivel(value)[0].number;renderEntry();
+  preview=value;const previous=remembered.get(value);previewClass=claseDisponible(previous)?previous:clasesNivel(value)[0].number;$('entry-class-outline').open=false;renderEntry();
  }
  function showEntry(){preview=level;previewClass=activeClass;remembered.set(level,activeClass);$('lab-entry').hidden=false;$('lab-workspace').hidden=true;renderEntry();}
  function showWorkspace(){
@@ -83,24 +72,40 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  function update(){
   const state=getState(),blocked=state.busy||switching||checking,current=task();
   if(wasInitialized&&!state.initialized)prepared.clear();wasInitialized=state.initialized;
-  $('enter-lab').disabled=blocked||!claseDisponible(previewClass);
-  for(const button of $('course-index').querySelectorAll('button'))button.disabled=blocked||button.dataset.pending==='true';
+  $('enter-lab').disabled=blocked||learningMode!=='practice'||!nivelDisponible(preview)||!claseDisponible(previewClass);
+  for(const button of $('course-index').querySelectorAll('button'))button.disabled=blocked;
+  $('mode-practice').disabled=$('mode-exam').disabled=blocked;
   $('change-lab').disabled=$('return-lab').disabled=blocked;$('return-lab').hidden=!entered;
-  $('enter-lab').textContent=!claseDisponible(previewClass)?'Próximamente':preview===level&&state.nodeCount>0?'Abrir clase '+CLASES[previewClass].id:'Abrir laboratorio · Clase '+CLASES[previewClass].id;
+  $('enter-lab').textContent=!nivelDisponible(preview)||!claseDisponible(previewClass)?'Próximamente':(preview===level&&state.nodeCount>0?'Volver al laboratorio ':'Abrir laboratorio ')+NIVELES[preview].name.toLowerCase();
   $('exercise-class-select').disabled=$('exercise-select').disabled=blocked;
   $('exercise-check').hidden=!current;$('exercise-check').disabled=blocked||!state.initialized||!current;
   $('exercise-prepare').hidden=!current?.prepare?.length;$('exercise-prepare').disabled=blocked||!state.initialized||prepared.has(current?.id);
   $('start-cluster').hidden=state.busy||state.initialized||state.nodeCount>0;
+  $('start-cluster').disabled=blocked||learningMode!=='practice'||!nivelDisponible(level)||!claseDisponible(activeClass)||state.nodeCount>0;
   $('nodes').hidden=state.busy&&!state.initialized;$('lab-idle').hidden=state.nodeCount>0||state.busy;
   document.querySelector('.lab-controls').setAttribute('aria-busy',String(state.busy));
  }
  async function enter(){
-  if(!claseDisponible(previewClass)||getState().busy||switching||checking)return;
+  if(learningMode!=='practice'||!nivelDisponible(preview)||!claseDisponible(previewClass)||getState().busy||switching||checking)return;
   if(preview!==level){const href=new URL(urlNivel(location.href,preview));href.searchParams.set('clase',String(previewClass));href.searchParams.set('enter','1');await requestChange(preview,href.href);return;}
   activeClass=previewClass;populateTasks();const href=new URL(location.href);href.searchParams.set('clase',String(activeClass));history.replaceState(history.state,'',href.href);
   showWorkspace();if(!getState().nodeCount&&!getState().initialized)start();update();
  }
  $('enter-lab').onclick=()=>enter();
+ function selectLearningMode(value){
+  if(getState().busy||switching||checking)return;
+  learningMode=value;globalThis.kubeDebianLearningMode=value;$('mode-practice').setAttribute('aria-pressed',String(value==='practice'));$('mode-exam').setAttribute('aria-pressed',String(value==='exam'));
+  $('practice-configuration').hidden=value!=='practice';$('exam-configuration').hidden=value!=='exam';update();
+ }
+ $('mode-practice').onclick=()=>selectLearningMode('practice');$('mode-exam').onclick=()=>selectLearningMode('exam');
+ $('exam-language').onchange=()=>{
+  const english=$('exam-language').value==='en';$('exam-configuration').lang=english?'en':'es';
+  $('exam-heading').textContent=english?'CKA mock exam':'Simulacro CKA';
+  $('exam-description').textContent=english?'Two hours, hands-on tasks across different topics and a pass mark of 66/100. No hints or solutions during the attempt.':'Dos horas, preguntas prácticas de distintos temas y aprobado desde 66/100. Sin pistas ni soluciones durante el intento.';
+  $('exam-language-note').textContent=english?'Spanish is a learning aid in this simulator, not an official CKA exam language.':'El castellano es una ayuda de este simulacro; no es un idioma oficial del examen CKA.';
+  $('exam-pending').textContent=english?'Coming soon. The mock exam is not available yet.':'Próximamente. El simulacro todavía no está disponible.';
+  $('start-exam').textContent=english?'Start exam · Coming soon':'Iniciar examen · Próximamente';
+ };
  $('change-lab').onclick=()=>{showEntry();$('stage-'+level).focus();};
  $('return-lab').onclick=()=>{showWorkspace();$('change-lab').focus();};
  $('exercise-class-select').onchange=event=>{
@@ -145,7 +150,9 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  };
  globalThis.kubeDebianSelectedLevel=level;globalThis.kubeDebianExerciseCheck=()=>exercise(false);globalThis.kubeDebianPracticePrepare=()=>exercise(true);
  buildIndex();populateTasks();showEntry();
- const autoEnter=currentURL.searchParams.get('enter')==='1';
+ if(currentURL.searchParams.get('view')==='exam')selectLearningMode('exam');
+ else if(currentURL.searchParams.get('view')==='practice'||currentURL.searchParams.has('clase')||currentURL.searchParams.get('enter')==='1')selectLearningMode('practice');
+ const autoEnter=learningMode==='practice'&&currentURL.searchParams.get('enter')==='1';
  if(currentURL.searchParams.has('enter')){currentURL.searchParams.delete('enter');history.replaceState(history.state,'',currentURL.href);}
  if(autoEnter)queueMicrotask(()=>enter());
  return {update};
