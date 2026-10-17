@@ -1,6 +1,14 @@
 import {test,expect} from '@playwright/test';
 const root='/laboratorios/kubernetes-real/';
 async function mockBoot(page){await page.addInitScript(()=>{const original=HTMLButtonElement.prototype.click;HTMLButtonElement.prototype.click=function(...args){if(this.id==='start-cluster'){globalThis.testStarts=(globalThis.testStarts||0)+1;return;}return original.apply(this,args);};});}
+test('Kubernetes · la entrada nueva no reutiliza módulos antiguos sin versión',async({page})=>{
+ const stale=[];const errors=[];page.on('pageerror',error=>errors.push(error.message));
+ await page.route(/\/(?:entrada-laboratorio|multinodo|interfaz-niveles)\.mjs$/,route=>{stale.push(route.request().url());return route.fulfill({status:200,contentType:'text/javascript',body:'throw Error("Módulo antiguo reutilizado");'});});
+ await page.goto(root);await expect(page.locator('#lab-loading')).toBeHidden();await page.locator('#mode-practice').click();
+ await expect(page.locator('[data-choose-stage]')).toHaveCount(3);expect(stale).toEqual([]);expect(errors).toEqual([]);
+ await page.reload();await page.locator('#mode-exam').click();await page.locator('[data-exam-language=en]').click();
+ await expect(page.locator('#exam-heading')).toHaveText('CKA mock exam');expect(stale).toEqual([]);
+});
 test('Kubernetes · primero modo y después exactamente tres laboratorios',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
  await page.goto('/terminal.html');await page.locator('a[href="'+root+'"]').click();
