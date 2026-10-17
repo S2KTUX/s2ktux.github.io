@@ -8,7 +8,10 @@ import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from '
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
 import {montarInterfazNiveles} from './interfaz-niveles.mjs';
+import {comprobarSaludInicial} from './salud-inicial.mjs';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
+import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs';
+const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
 const level=progressive?nivelDesdeURL(new URLSearchParams(location.search)):'inicial';
@@ -24,7 +27,7 @@ const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'
 const workerComponents=factoryVersion==='v8'?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
 const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
-function updateControls(){save.disabled=busy||!initialized;reset.disabled=busy||!readSaved;add.disabled=busy||!initialized||!siguienteWorker(nodes.keys());add.textContent=textoWorker(nodes.keys());add.hidden=progressive&&(level==='inicial'||!initialized||nodes.has('worker2'));start.disabled=busy||nodes.size>0;levelUI?.update();}
+function updateControls(){save.disabled=busy||!initialized;reset.disabled=busy||!readSaved;add.disabled=true;add.hidden=true;start.disabled=busy||nodes.size>0||!releaseAvailable();levelUI?.update();}
 if(progressive){document.querySelector('h1').textContent='Kubernetes';start.textContent='Iniciar laboratorio';add.textContent='Añadir primer worker';}
 globalThis.kubeDebianClusterNodes=nodes;globalThis.kubeDebianClusterErrors=[];globalThis.kubeDebianClusterReady=false;globalThis.kubeDebianClusterStages=[];
 globalThis.kubeDebianClusterProfile={level,factoryVersion,workerComponents,progressive};
@@ -88,11 +91,12 @@ async function addWorker(index){
 }
 globalThis.kubeDebianClusterRun=phase;
 start.onclick=async()=>{
- if(busy||nodes.size)return;busy=true;start.disabled=true;status.textContent='Recuperando cka-cp1…';updateControls();
+ if(busy||nodes.size||!releaseAvailable())return;busy=true;start.disabled=true;status.textContent='Recuperando cka-cp1…';updateControls();
  try{
   saved=await sessions.getRawCluster();readSaved=true;
   if(saved){
    saved=await sessions.getCluster();
+   if(saved.nodes.length>limiteNodos(level))throw Error('Este guardado corresponde a una configuración todavía no publicada. Se conserva sin modificarlo.');
    for(const record of saved.nodes)await createNode(record.id,record.id==='controlplane'?'warm=1':'worker='+record.id.slice(-1)+'&threaded=1',record);
    // Recuperar los datos y averías, sin reescribir CNI, rutas ni unidades.
    initialized=true;globalThis.kubeDebianClusterRecovered=true;status.textContent='Clúster guardado recuperado. Tus cambios se conservan.';
@@ -117,6 +121,7 @@ start.onclick=async()=>{
    if(NIVELES[level].nodes>=2){await addWorker('1');await phase('controlplane','Separar coordinación y aplicaciones',separarControlPlane);}
    if(NIVELES[level].nodes>=3)await addWorker('2');
    if(integratedPolicies)await instalarPoliticasDebian(phase);
+   await phase('controlplane','Comprobar la API y los nodos antes de abrir el laboratorio',comprobarSaludInicial,240000);
    initialized=true;kubeDebianClusterReady=true;status.textContent=`Modo ${NIVELES[level].name.toLowerCase()} listo · ${nodes.size} ${nodes.size===1?'nodo':'nodos'}.`;
    return;
   }
@@ -128,7 +133,7 @@ start.onclick=async()=>{
  }catch(error){fail(error);}finally{for(const node of nodes.values())try{node.window.kubeDebianOpenTerminal({diagnostic:!kubeDebianClusterReady});}catch(error){fail(error);}busy=false;updateControls();}
 };
 add.onclick=async()=>{
- const index=siguienteWorker(nodes.keys());if(busy||!initialized||!index||(progressive&&level==='inicial'))return;busy=true;updateControls();
+ const index=siguienteWorker(nodes.keys());if(!releaseAvailable()||nodes.size>=limiteNodos(level)||busy||!initialized||!index||(progressive&&level==='inicial'))return;busy=true;updateControls();
  try{await phase('controlplane','Comprobar la API antes de añadir un nodo','kubectl get --raw=/readyz --request-timeout=15s',45000);if(!networks.size){for(const [id,node] of nodes){const name=id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name,ip=id==='controlplane'?'10.77.0.10':perfilWorker(id.slice(-1)).ip;const cidr=await value('controlplane',`kubectl get node ${name} -o jsonpath='{.spec.podCIDR}'`);if(!/^10\.244\.\d{1,3}\.0\/24$/.test(cidr))throw Error('CIDR recuperado inválido');networks.set(id,{cidr,ip});}}await addWorker(index);if(progressive&&index==='1')await phase('controlplane','Reservar el control plane para coordinar; conservar los Pods existentes',separarControlPlane);if(integratedPolicies)await phase('controlplane','Comprobar políticas en el nuevo worker','kubectl -n kube-system rollout status daemonset/kube-network-policies --timeout=180s',240000);kubeDebianClusterReady=true;status.textContent=index==='1'?'Primer worker disponible. Los Pods existentes se conservan; los nuevos sin toleración al control plane se programan en el worker.':'Control plane y dos workers disponibles. Prueba privada.';}catch(error){fail(error);}finally{for(const node of nodes.values())try{node.window.kubeDebianOpenTerminal({diagnostic:!kubeDebianClusterReady});}catch(error){fail(error);}busy=false;updateControls();}
 };
 globalThis.kubeDebianClusterSave=async()=>{
@@ -163,5 +168,12 @@ async function stopForLevelChange(){
  if(results.some(result=>result.status==='rejected'))throw Error('No se han podido detener todas las máquinas; no se inicia otro modo');
  for(const node of nodes.values())node.frame.remove();nodes.clear();networks.clear();initialized=false;kubeDebianClusterReady=false;
 }
-if(progressive)levelUI=montarInterfazNiveles({level,getState:()=>({busy,initialized,nodeCount:nodes.size,nodes:[...nodes].map(([id,node])=>({name:id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name,consoleReady:!!node.window.kubeDebianReady,error:!!node.window.kubeDebianErrors?.length}))}),run:phase,setBusy:value=>{busy=value;updateControls();},save:()=>kubeDebianClusterSave(),stop:stopForLevelChange});
+async function runForPractice(id,label,command,timeout=180000){
+ const node=nodes.get(id);if(!node)throw Error('No está disponible la terminal del nodo');
+ status.textContent=label+'…';
+ // Un exit code no cero es un resultado válido del corrector, no un fallo de transporte.
+ return node.window.kubeDebianRun(label,command,timeout);
+}
+globalThis.kubeDebianClusterCheck=runForPractice;
+if(progressive)levelUI=montarInterfazNiveles({level,getState:()=>({busy,initialized,nodeCount:nodes.size,nodes:[...nodes].map(([id,node])=>({name:id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name,consoleReady:!!node.window.kubeDebianReady,error:!!node.window.kubeDebianErrors?.length}))}),run:runForPractice,setBusy:value=>{busy=value;updateControls();},save:()=>kubeDebianClusterSave(),stop:stopForLevelChange});
 updateControls();

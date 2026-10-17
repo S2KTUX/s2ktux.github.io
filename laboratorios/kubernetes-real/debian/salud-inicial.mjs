@@ -1,0 +1,2 @@
+// Solo para fábricas nuevas, nunca para reparar/ocultar averías del alumno.
+export const comprobarSaludInicial='set -eu; deadline=$(($(date +%s)+180)); consecutive=0; while test "$(date +%s)" -lt "$deadline"; do if test "$(kubectl get --raw=/readyz --request-timeout=10s 2>/dev/null)" = ok; then consecutive=$((consecutive+1)); if test "$consecutive" -ge 3; then kubectl wait --for=condition=Ready nodes --all --timeout=60s && exit 0; fi; else consecutive=0; fi; sleep 2; done; kubectl get --raw=/readyz?verbose --request-timeout=10s; exit 1';

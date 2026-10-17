@@ -2,6 +2,9 @@ import {readFile,writeFile} from 'node:fs/promises';
 import {createHash} from 'node:crypto';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
+for(const path of ['debian/disponibilidad-curso.mjs','debian/clases-curso.mjs','debian/ejercicios-iniciales.mjs','debian/comprobaciones-json.mjs','debian/motor-practicas.mjs','debian/salud-inicial.mjs','debian/ejercicios-intermedios.mjs','debian/herramientas-practicas.mjs','debian/criterios-equivalentes.mjs']){
+ if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
+}
 for(const record of manifest.files){
  if(!/^[a-zA-Z0-9_.\/-]+$/.test(record.path)||record.path.split('/').includes('..'))throw Error('Ruta fuera de la entrega');
  const path=new URL(record.path,base);let bytes=await readFile(path);

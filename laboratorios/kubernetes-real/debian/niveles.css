@@ -2,6 +2,23 @@
 .lab-levels [hidden]{display:none!important}
 .lab-entry{max-width:780px;margin:28px 0 44px}
 .entry-heading{font:18px/1.6 'Space Mono',monospace;color:var(--head);margin:0 0 24px}
+.entry-introduction{font-size:14px;margin:0 0 24px;max-width:65ch}
+.course-index{border-top:1px solid var(--line)}
+.course-stage{border-bottom:1px solid var(--line)}
+.stage-toggle{display:grid;grid-template-columns:28px 1fr 20px;align-items:center;gap:16px;width:100%;padding:18px 0;text-align:left;border:0;background:transparent;color:var(--text);font:14px/1.6 'Space Mono',monospace;cursor:pointer}
+.stage-number,.stage-range{font-size:12px;opacity:.75}.stage-title,.stage-range{display:block}
+.stage-toggle[aria-expanded=true] .stage-title{color:var(--head);text-decoration:underline;text-underline-offset:5px}
+.stage-indicator{text-align:right}.stage-body{padding:0 0 22px 44px}.stage-intro{font-size:13px;max-width:65ch;margin:0 0 16px}
+.stage-classes{display:grid;grid-template-columns:1fr 1fr;gap:4px 22px}
+.class-choice{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:7px 0;border:0;background:transparent;color:var(--text);font:12px/1.6 'Space Mono',monospace;cursor:pointer}
+.class-number{opacity:.7;flex:0 0 22px}.class-choice[aria-pressed=true]{color:var(--head);text-decoration:underline;text-underline-offset:4px}
+.course-index button:disabled{opacity:.5;cursor:wait}
+.course-index .class-choice[data-pending=true]{opacity:.55;cursor:default;text-decoration:none}
+.class-choice small{margin-left:auto;font-size:10px;white-space:nowrap}
+.entry-enter:disabled{cursor:default}
+.exercise-nav label{font-size:12px}.exercise-nav #exercise-class-select{flex-basis:75%;min-width:0}
+#exercise-result[data-result=correct]{font-weight:bold}
+@media(max-width:600px){.stage-classes{grid-template-columns:1fr}.stage-body{padding-left:34px}.stage-toggle{grid-template-columns:20px 1fr 16px;gap:14px}.class-choice{padding:10px 0}.exercise-nav #exercise-class-select{flex-basis:100%}}
 .lab-entry label{display:block;font-size:13px;margin-bottom:8px}
 #environment-select{width:100%;max-width:460px;font:inherit;padding:10px 12px;border:2px solid var(--line);color:var(--text);background:var(--surface)}
 .entry-copy{margin:18px 0 24px;max-width:70ch;font-size:14px}
@@ -34,7 +51,7 @@
 .exercise-count{font-size:12px;opacity:.8}.lab-exercises h2{font:18px/1.6 'Space Mono',monospace;margin:18px 0 8px}
 .lab-exercises p{max-width:80ch}.lab-exercises details{margin-top:16px}.lab-exercises summary{cursor:pointer;color:var(--head)}
 .exercise-solution{white-space:pre;overflow:auto;background:var(--surface2);border-left:3px solid var(--line);padding:16px;font:14px/1.6 'Share Tech Mono',monospace}
-.exercise-result{font-size:14px;margin-top:12px}.exercise-result[data-result=pass]{font-weight:bold}
+.exercise-result{font-size:14px;margin-top:12px}.exercise-result[data-result=correct]{font-weight:bold}
 .mode-dialog{max-width:500px;width:calc(100% - 32px);border:3px solid var(--line);background:var(--surface);color:var(--text);padding:24px;font:inherit}
 .mode-dialog::backdrop{background:rgba(0,0,0,.6)}.mode-dialog h2{font:17px/1.7 'Space Mono',monospace;margin:0}.mode-dialog .controls{margin-top:20px;gap:12px}.mode-dialog button{font:inherit}
 @keyframes work-pulse{50%{opacity:.3}}
