@@ -6,25 +6,26 @@
 <p id="lab-loading" role="status">Cargando el laboratorio…</p><button id="lab-retry" type="button" hidden>Volver a cargar</button>
 <noscript><p>Activa JavaScript para abrir el laboratorio.</p></noscript>
 <section id="lab-entry" class="lab-entry" aria-label="Elegir laboratorio" hidden>
-<h2 class="entry-heading">Entorno de práctica</h2>
-<label for="environment-select">Configuración</label>
-<select id="environment-select"><option value="inicial">Un nodo</option><option value="intermedio">Control plane + un worker</option><option value="avanzado">Control plane + dos workers</option></select>
-<div class="entry-copy" aria-live="polite" aria-atomic="true"><p id="entry-position" class="entry-position"></p><p id="entry-intro"></p></div>
-<div class="entry-node-list"><table><caption>Nodos que utiliza este entorno</caption><thead><tr><th scope="col">Nodo</th><th scope="col">Función</th><th scope="col">Sesión</th></tr></thead><tbody id="entry-nodes"></tbody></table></div>
-<button id="enter-lab" class="entry-enter" type="button">Iniciar laboratorio</button>
+<h2 class="entry-heading">Prácticas por clase</h2>
+<p class="entry-introduction">Elige la etapa que estás siguiendo en el curso.</p>
+<div id="course-index" class="course-index" aria-label="Etapas y clases del curso"></div>
+<p id="exam-pending" class="mode-note">Modo examen · Próximamente</p>
+<div class="entry-copy" aria-live="polite" aria-atomic="true"><p id="entry-position" class="entry-position"></p><p id="entry-intro"></p><p id="entry-machines" class="entry-position"></p></div>
+<button id="enter-lab" class="entry-enter" type="button">Abrir laboratorio</button>
 <p id="entry-note" class="mode-note" hidden></p>
 <button id="return-lab" class="lab-link" type="button" hidden>Volver al laboratorio abierto</button>
 </section>
 <section id="lab-workspace" aria-label="Laboratorio de Kubernetes" hidden>
 <section id="mode-scene" class="mode-scene" aria-label="Modo seleccionado">
-<div class="mode-heading"><span id="mode-stamp" class="mode-stamp">Laboratorio</span><div id="mode-topology" class="mode-topology" aria-label="Configuración del laboratorio"></div><button id="change-lab" class="lab-link" type="button" hidden>Cambiar laboratorio</button></div>
+<div class="mode-heading"><span id="mode-stamp" class="mode-stamp">Laboratorio</span><div id="mode-topology" class="mode-topology" aria-label="Configuración del laboratorio"></div><button id="change-lab" class="lab-link" type="button" hidden>Cambiar etapa</button></div>
 <p id="course-intro">Control plane y workers con systemd.</p><p id="course-progression" class="mode-note" hidden></p>
 </section>
 <div class="controls lab-controls" aria-busy="false"><button id="start-cluster" type="button">Iniciar laboratorio</button><button id="add-worker" type="button" disabled>Añadir segundo worker</button><button id="save-cluster" type="button" disabled>Guardar</button><button id="reset-cluster" type="button" disabled>Reset</button><span id="cluster-status" role="status">Listo para iniciar.</span></div>
 <div class="controls" aria-label="Elegir nodo"><button type="button" data-node="controlplane" hidden aria-pressed="true">cka-cp1</button><button type="button" data-node="worker1" hidden aria-pressed="false">cka-w1</button><button type="button" data-node="worker2" hidden aria-pressed="false">cka-w2</button></div>
 <section id="nodes" aria-label="Terminales de los nodos"></section><p id="lab-idle" class="lab-idle">Pulsa «Iniciar laboratorio» para abrir la terminal de este modo.</p>
 <section id="exercises" class="lab-exercises" aria-label="Prácticas del nivel" hidden>
-<div class="exercise-nav"><span id="exercise-count" class="exercise-count"></span><select id="exercise-select" aria-label="Elegir práctica"></select></div>
+<div class="exercise-nav"><label for="exercise-class-select">Clase</label><select id="exercise-class-select"></select><span id="exercise-count" class="exercise-count"></span><select id="exercise-select" aria-label="Elegir práctica"></select></div>
+<p id="class-empty" class="mode-note" hidden>Próximamente. Esta clase todavía no está disponible en el laboratorio.</p>
 <h2 id="exercise-title"></h2><p id="exercise-prompt"></p>
 <div class="controls"><button type="button" id="exercise-prepare" hidden disabled>Preparar ejercicio</button><button type="button" id="exercise-check" disabled>Comprobar ejercicio</button></div><p id="exercise-result" class="exercise-result" role="status"></p>
 <details id="exercise-help"><summary>Ver solución</summary><pre id="exercise-solution" class="exercise-solution"></pre><button id="exercise-copy" type="button">Copiar comandos</button></details>
