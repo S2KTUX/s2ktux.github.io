@@ -1,0 +1,5 @@
+// Solo preparación fría de administración 1.35. Dos copias idénticas del
+// launcher no comparten páginas Linux. Un bind RO sobre el kit auxiliar
+// conserva /usr/bin/kubelet como archivo del paquete y comparte su inode.
+// El destino 1.36 tiene su binario propio en la imagen, no usa este montaje.
+export const ordenCompartirEjecutableAdmin=`set -eu; source=/usr/bin/kubelet; target=/mnt/kube-client/bin/kube-browser-shared; test ! -e /etc/kubernetes/admin.conf; test -f "$source" && test ! -L "$source" && test -f "$target" && test ! -L "$target"; expected=be88a89cce97c1458120fcfb9836732e7d39dbc47cd10a7ed04114c5f11f1274; test "$(sha256sum "$source" | cut -d ' ' -f1)" = "$expected"; test "$(sha256sum "$target" | cut -d ' ' -f1)" = "$expected"; if ! mountpoint -q "$target"; then mount --bind "$source" "$target"; mount -o remount,bind,ro "$target"; fi; test "$(stat -Lc '%d:%i' "$source")" = "$(stat -Lc '%d:%i' "$target")"; test ! -L "$source"; findmnt -n -T "$target" -o OPTIONS | grep -Eq '(^|,)ro(,|$)'`;
