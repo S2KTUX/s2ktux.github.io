@@ -5,7 +5,8 @@ export const courseGroups={
 const linuxClasses={archivo:1,usuarios:9,sgid:6,'archivo-tar':1,dnf:2,lvm:5,selinux:10,tuned:4,podman:11};
 const simLinuxClasses=[4,8,2,10,9,6,7,1,6,7,11,1,9,9,5,5,5,4,3,10,11];
 const simDockerClasses=[1,1,1,1,1,1,1,2,2,2,2,3,2,2,3];
-const simKubernetesClasses=[0,6,4,4,10,2,19,27,12,5,15,13,32,33,28,27,34];
+// Las tareas que combinan temas van después de introducir todos sus conceptos.
+const simKubernetesClasses=[0,6,5,5,11,2,20,27,12,5,21,14,32,33,28,27,34];
 export function practiceClasses(mode,task,index){return task.classes||[task.class??linuxClasses[task.id]??(mode==='linux'?simLinuxClasses[index]:mode==='docker'?simDockerClasses[index]:simKubernetesClasses[index])??1];}
 // Conserva los identificadores y los correctores. Solo filtra la vista.
 export function mountGroups({select,mode,tasks,indexed=false,onChange=()=>{},loadTasks,groups=courseGroups[mode],firstClass=1}){
