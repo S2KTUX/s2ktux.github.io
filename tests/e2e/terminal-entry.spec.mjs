@@ -11,12 +11,12 @@ for(const mode of ['linux','docker']){
  });
  test('Entrada alternativa · '+mode+' ofrece su simulador dentro del laboratorio',async({page})=>{
   await page.goto(mode==='linux'?'/laboratorios/linux-real/v86-test.html':'/laboratorios/docker-real/');
-  const opened=page.waitForEvent('popup');
-  await page.locator('a[href="/terminal.html?mode='+mode+'&enter=1"]').click();const alternative=await opened;
+  const pages=page.context().pages().length;
+  await page.locator('a[href="/terminal.html?mode='+mode+'&enter=1"]').click();const alternative=page;
   await alternative.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   await expect(alternative).toHaveURL(new RegExp('terminal.html\\?mode='+mode+'$'));
   await expect(alternative.locator('#terminal-shell')).toBeVisible();
-  await expect(alternative.locator('#main-content')).not.toContainText('Probar Linux real');await alternative.close();
+  await expect(alternative.locator('#main-content')).not.toContainText('Probar Linux real');expect(page.context().pages()).toHaveLength(pages);
  });
 }
 

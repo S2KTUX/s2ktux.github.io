@@ -1,5 +1,6 @@
 import {extraExercises} from './docker-exercises-extra.mjs';
 import {commonPractice} from '../../practice-common.mjs';
+import {withHTTPWait} from '../solution-options.mjs?v=20261018';
 const running=name=>`test "$(docker inspect -f '{{.State.Running}}' ${name})" = true`;
 const published=(name,port)=>`docker inspect -f '{{range (index .HostConfig.PortBindings "80/tcp")}}{{.HostPort}}{{end}}' ${name} | grep -qx ${port}`;
 const mounted=(name,type,source,target)=>`docker inspect -f '{{range .Mounts}}{{.Type}} {{if .Name}}{{.Name}}{{else}}{{.Source}}{{end}} {{.Destination}}{{println}}{{end}}' ${name} | grep -Fxq '${type} ${source} ${target}'`;
@@ -21,4 +22,4 @@ export const exercises=[
  {id:'compose-scale',class:2,solution:'cd /root/stack\ndocker compose -p tienda config\ndocker compose -p tienda ps\ndocker compose -p tienda logs\ndocker compose -p tienda up -d --scale web=3',checks:[['Tres réplicas activas',`test "$(docker ps -q --filter label=com.docker.compose.project=tienda --filter label=com.docker.compose.service=web | wc -l)" = 3`]]},
  {id:'multistage',class:3,title:'Construye una imagen multi-stage',goal:'Crea /root/produccion/Dockerfile con una etapa de Go llamada build y una etapa final scratch. Construye miapp:prod; debe ejecutar una aplicación autónoma, no llevar el compilador.',solution:`mkdir -p /root/produccion\ncat > /root/produccion/main.go <<'EOF'\npackage main\nimport "fmt"\nfunc main() { fmt.Println("Mi aplicación") }\nEOF\ncat > /root/produccion/Dockerfile <<'EOF'\nFROM s2ktux/go-lab:ligero AS build\nWORKDIR /app\nCOPY main.go .\nRUN go build -o miapp main.go\nFROM scratch\nCOPY --from=build /app/miapp /miapp\nUSER 1000\nCMD ["/miapp"]\nEOF\ndocker build -t miapp:prod /root/produccion\ndocker run --rm miapp:prod`,checks:[['Etapas declaradas',`test "$(grep -ic '^FROM ' /root/produccion/Dockerfile)" -ge 2 && grep -Ei '^FROM .+ AS build' /root/produccion/Dockerfile >/dev/null && grep -Ei '^FROM scratch' /root/produccion/Dockerfile >/dev/null`],['Imagen construida','docker image inspect miapp:prod >/dev/null']]},
  ...extraExercises,
-].map(exercise=>commonPractice('docker',exercise));
+].map(exercise=>commonPractice('docker',{...exercise,solution:withHTTPWait(exercise.solution)}));

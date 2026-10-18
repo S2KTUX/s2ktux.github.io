@@ -1,0 +1,29 @@
+/* Estructura común; cada laboratorio conserva sus controles específicos. */
+.lab-page .lab-modes{display:flex;gap:24px;margin:0 0 28px;border-bottom:2px solid var(--surface2)}
+.lab-page .lab-modes a{padding:12px 6px;color:var(--muted);font-size:18px}
+.lab-page .lab-modes a[aria-current=page]{color:var(--head);border-bottom:3px solid var(--head);font-weight:bold}
+.lab-page .lab-practices{margin:20px 0 26px;padding:0;border:0;background:transparent;box-shadow:none}
+.lab-page .lab-practices>label,.lab-page .lab-practice-label{display:block;color:var(--head);margin:0 0 10px}
+.lab-page .lab-practices select{width:100%;min-width:0;max-width:100%;font:14px/1.5 'Share Tech Mono',monospace;border:2px solid var(--line);border-radius:0;color:var(--head);background:var(--surface2);padding:10px 12px;min-height:42px}
+.lab-page .lab-practices h2{font:14px/1.7 'Press Start 2P',monospace;color:var(--head);margin:24px 0 18px;overflow-wrap:anywhere}
+.lab-page .lab-practices p{line-height:1.8;overflow-wrap:anywhere}
+.lab-page .lab-practices #exercise-prompt{line-height:1.8;margin:12px 0}
+.lab-page .lab-machine-actions,.lab-page .lab-practice-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin:18px 0}
+.lab-page .lab-machine-actions button,.lab-page .lab-practice-actions button,.lab-page .lab-solution-copy{font:14px/1.5 'Share Tech Mono',monospace;border:2px solid var(--line);border-radius:0;color:var(--head);background:var(--surface2);padding:10px 12px;min-height:42px;box-shadow:var(--pixel-shadow-sm);cursor:pointer}
+.lab-page .lab-machine-actions button:hover:not(:disabled),.lab-page .lab-practice-actions button:hover:not(:disabled),.lab-page .lab-solution-copy:hover{background:var(--surface)}
+.lab-page button:disabled{opacity:.55;cursor:not-allowed}
+.lab-page .lab-solutions{margin:18px 0}
+.lab-page .lab-solution{margin:0 0 24px;min-width:0}
+.lab-page .lab-solution h3{font:16px/1.6 'Space Mono',monospace;color:var(--head);margin:20px 0 10px}
+.lab-page .lab-solution pre{margin:12px 0;white-space:pre;overflow:auto;max-width:100%;padding:18px;border:2px solid var(--line);background:#161009;color:#e9ddc7;font:14px/1.6 'Share Tech Mono',monospace}
+.lab-page .lab-solution code{font:inherit;color:inherit}
+.lab-page .lab-solution-copy{font-size:13px;min-height:36px;padding:6px 10px}
+.lab-page .lab-copy-status{font-size:12px;color:var(--muted);margin-left:12px}
+.lab-page .lab-console-placeholder{min-height:480px;padding:18px;color:#b5a58a;font:14px/1.6 'Share Tech Mono',monospace}
+.lab-page .console{margin:16px 0 12px;border:3px solid var(--line);box-shadow:var(--pixel-shadow-md);background:#161009}
+.lab-page .console-bar{display:flex;justify-content:space-between;gap:10px;padding:10px 14px;border-bottom:2px solid var(--line);background:#2c2218;color:#e0a458;font:14px/1.5 'Share Tech Mono',monospace}
+.lab-page .lab-machine-status{display:block;flex-basis:100%;font-size:14px;line-height:1.6}
+.lab-page .lab-practices .exercise-field{min-width:0}
+.lab-page .lab-practices .exercise-count{margin-bottom:0}
+.lab-page .lab-practices .exercise-nav{gap:14px 24px}
+@media(max-width:600px){.lab-page h1{font-size:clamp(12px,3.5vw,16px)}.lab-page .lab-practices{padding:0}.lab-page .lab-practices h2{font-size:12px}.lab-page .lab-solution pre{padding:12px}.lab-page .lab-copy-status{display:block;margin:8px 0 0}}

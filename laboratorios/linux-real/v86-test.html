@@ -7,6 +7,7 @@
 <link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b">
 <link rel="stylesheet" href="vendor/xterm.css">
 <link rel="stylesheet" href="linux-real.css?v=20261018-alternativa">
+<link rel="stylesheet" href="/laboratorios/lab-ui.css?v=20261018">
 <script defer src="/site-shell.js?v=20260828-hardening"></script>
 </head>
 <body><div class="site-page-shell site-app-shell">
@@ -17,15 +18,15 @@
 <a class="navlink nav-home" href="/">Inicio</a><a class="navlink" href="/cursos.html">Cursos</a><a class="navlink" href="/terminal.html" aria-current="page">Terminal</a><a class="navlink" href="/proyectos.html">Proyectos</a>
 <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Activar tema oscuro"><span data-theme-icon aria-hidden="true">☾</span></button>
 </nav></div></header>
-<main id="main" class="linux-real-page"><h1>Laboratorio Linux</h1>
+<main id="main" class="linux-real-page lab-page"><h1>Laboratorio Linux</h1>
 <nav class="lab-modes" aria-label="Modo del laboratorio"><a href="v86-test.html" aria-current="page">Modo práctica</a><a href="examen.html">Modo examen</a></nav>
-<section class="exercise-panel" id="exercise-panel" aria-label="Prácticas">
-<label for="exercise-select">¿Qué quieres practicar?</label><select id="exercise-select"></select>
+<section class="exercise-panel lab-practices" id="exercise-panel" aria-label="Prácticas">
+<label for="exercise-select">Prácticas:</label><select id="exercise-select"></select>
 <div data-exercise-card hidden><h2 data-exercise-title></h2><p data-exercise-goal></p><p class="warning" data-exercise-note hidden></p>
-<div class="exercise-actions"><button type="button" data-exercise-check disabled>Comprobar ejercicio</button><button type="button" data-exercise-solution aria-expanded="false" aria-controls="exercise-solution">Ver solución</button></div>
-<div data-exercise-feedback role="status" aria-live="polite"></div><div id="exercise-solution" data-exercise-solution-body hidden><p data-exercise-explanation></p><pre><code></code></pre></div></div>
+<div class="exercise-actions lab-practice-actions"><button type="button" data-exercise-check disabled>Comprobar ejercicio</button><button type="button" data-exercise-solution aria-expanded="false" aria-controls="exercise-solution">Ver solución</button></div>
+<div data-exercise-feedback role="status" aria-live="polite"></div><div id="exercise-solution" class="lab-solutions" data-exercise-solution-body hidden></div></div>
 </section>
-<div class="controls"><button type="button" id="start" disabled>Iniciar laboratorio</button><button type="button" id="save" disabled>Guardar sesión</button><button type="button" id="reset">Reset</button><span id="status" role="status" aria-live="polite">Cargando interfaz…</span></div>
+<div class="controls lab-machine-actions"><button type="button" id="start" disabled>Iniciar laboratorio</button><button type="button" id="save" disabled>Guardar sesión</button><button type="button" id="reset">Reset</button><span id="status" class="lab-machine-status" role="status" aria-live="polite">Cargando interfaz…</span></div>
 <p id="session-status" role="status" aria-live="polite"></p>
 <p id="recovery-note" class="warning" hidden>Esta máquina no inicia sesión automáticamente. Recupera root desde GRUB siguiendo el curso. Su guardado y su Reset son independientes de la práctica libre.</p>
 <section class="console" aria-label="Terminal del laboratorio"><div class="console-bar">Terminal <span># root · $ usuario</span></div><div class="console-scroll"><div id="terminal"></div></div></section>
@@ -34,7 +35,7 @@
 <p id="result" class="warning" role="status" hidden></p>
 <p id="network-note" class="lab-network"><span id="node-name">Máquina 1</span> · Configura la red desde Linux: IP 10.42.0.20/24 para la máquina 1 o 10.42.0.11/24 para la máquina 2; puerta de enlace y DNS 10.42.0.1.</p>
 <aside class="lab-information" aria-label="Información del laboratorio"><p><small>* Es Debian, no Red Hat: algunos servicios y rutas cambian. DNF trabaja con RPM locales de prácticas; APT administra Debian.</small></p><p><small>* La recuperación de root y el reetiquetado pueden tardar aproximadamente 5–10 minutos, o más según el equipo.</small></p><p><small>* La conexión a Internet utiliza servicios públicos externos. Usa solo datos de prácticas.</small></p></aside>
-<p class="lab-information"><small>* Si el laboratorio va lento o falla, puedes usar la <a href="/terminal.html?mode=linux&amp;enter=1" target="_blank" rel="noopener" title="Abrir en otra pestaña">versión simulada</a>. Los ejercicios comunes comparten enunciado; cada versión mantiene su propio banco.</small></p>
+<p class="lab-information"><small>* Si el laboratorio va lento o falla, puedes usar la <a href="/terminal.html?mode=linux&amp;enter=1">versión simulada</a>.</small></p>
 <p id="downloads" hidden></p>
 </main><footer class="site-footer"><div class="site-footer-inner"><a class="site-footer-brand" href="/">S2KTUX</a><p>Aprender practicando · Laboratorio local en tu navegador</p></div></footer>
-</div><script src="assets/v86-test/libv86.js"></script><script type="module" src="v86-test.mjs?v=20261010-exam"></script></body></html>
+</div><script src="assets/v86-test/libv86.js"></script><script type="module" src="v86-test.mjs?v=20261018-solutions"></script></body></html>

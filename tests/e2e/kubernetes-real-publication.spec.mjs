@@ -37,12 +37,12 @@ test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arr
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Inicial');
  await expect(page.locator('.exercise-field label')).toHaveText(['Clase','Pregunta']);
  const practiceGaps=await page.evaluate(()=>({prompt:document.querySelector('#exercise-prompt').getBoundingClientRect().top-document.querySelector('#exercise-title').getBoundingClientRect().bottom,padding:parseFloat(getComputedStyle(document.querySelector('#exercises')).paddingTop)}));
- expect(practiceGaps.prompt).toBeGreaterThanOrEqual(16);expect(practiceGaps.padding).toBeGreaterThanOrEqual(20);
+ expect(practiceGaps.prompt).toBeGreaterThanOrEqual(16);expect(practiceGaps.padding).toBe(0);
  await expect(page.locator('#lab-course-note')).toHaveText('* Clases 00–06 · Un nodo · 14 preguntas disponibles.');
  expect(await page.locator('#lab-course-note').evaluate(node=>parseFloat(getComputedStyle(node).fontSize))).toBeLessThan(13);
  for(const number of ['1','2','3','4','5','6']){
   await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(2);
-  await page.selectOption('#exercise-select','1');await expect(page.locator('#exercise-count')).toHaveText('Práctica 2 / 2');expect(await page.evaluate(()=>testStarts)).toBe(1);
+  await page.selectOption('#exercise-select','1');await expect(page.locator('#exercise-count')).toHaveText('Práctica 2 / 2');expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);
  }
  await page.locator('#change-lab').click();await expect(page.locator('#enter-lab')).toContainText('laboratorio inicial');
  await page.locator('[data-choose-stage=intermedio]').click();await page.locator('#enter-lab').click();
@@ -50,7 +50,7 @@ test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arr
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Intermedio');
  await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 10 preguntas disponibles.');
  for(const number of ['8','9','10','11']){await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(2);}
- expect(await page.evaluate(()=>testStarts)).toBe(1);await expect(page.locator('#exercise-class-select option[value="12"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
+ expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);await expect(page.locator('#exercise-class-select option[value="12"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
 });
 test('Kubernetes · pendientes bloqueados incluso por enlaces y acciones directas',async({page})=>{
  for(const [level,number] of [['intermedio',12],['intermedio',19],['avanzado',28],['avanzado',34]]){
