@@ -14,6 +14,11 @@ for(const file of ['debian/disco-v6/disco-fragmentado.json','componentes/disco-v
  for(const part of manifest.parts)if(part.file){assert.match(part.file,/^[a-f0-9]{64}\.(gz|part)$/);assert.equal(resolve(new URL('fragmentos/'+part.file,new URL(file,base))).hostname,'raw.githubusercontent.com');}
 }
 const page=await read('debian/multinodo.html'),hub=await readFile(new URL('../terminal.html',import.meta.url),'utf8');
+const uiRevision=async path=>createHash('sha256').update((await read(path)).replaceAll('\r\n','\n')).digest('hex').slice(0,16);
+assert.ok(page.includes('src="entrada-laboratorio.mjs?v='+await uiRevision('debian/entrada-laboratorio.mjs')+'"'));
+assert.ok(page.includes('href="niveles.css?v='+await uiRevision('debian/niveles.css')+'"'));
+assert.ok((await read('debian/entrada-laboratorio.mjs')).includes("import('./multinodo.mjs?v="+await uiRevision('debian/multinodo.mjs')+"')"));
+assert.ok((await read('debian/multinodo.mjs')).includes("from './interfaz-niveles.mjs?v="+await uiRevision('debian/interfaz-niveles.mjs')+"'"));
 assert.match(page,/Versión preliminar/);assert.doesNotMatch(page,/Prototipo local|pendientes|completo de CKA/i);assert.match(hub,/href="\/laboratorios\/kubernetes-real\/"/);
 assert.match(await readFile(new URL('../sw.js',import.meta.url),'utf8'),/pathname\.startsWith\('\/laboratorios\/kubernetes-real\/'\)/);
 assert.match(await read('perfil-motor.mjs'),/checked\(recursoPesado\(wasm\)/);

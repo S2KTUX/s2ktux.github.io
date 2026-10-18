@@ -1,37 +1,51 @@
 <!doctype html>
 <html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>Laboratorio Kubernetes · S2KTUX</title>
-<script src="/theme-bootstrap.js"></script><link rel="stylesheet" href="/fonts.css"><link rel="stylesheet" href="/visual-system.css"><link rel="stylesheet" href="/site-shell.css"><link rel="stylesheet" href="/laboratorios/docker-real/docker.css"><link rel="stylesheet" href="niveles.css"><script defer src="/site-shell.js"></script></head>
+<script src="/theme-bootstrap.js"></script><link rel="stylesheet" href="/fonts.css"><link rel="stylesheet" href="/visual-system.css"><link rel="stylesheet" href="/site-shell.css"><link rel="stylesheet" href="/laboratorios/docker-real/docker.css"><link rel="stylesheet" href="niveles.css?v=da987294841581d2"><script defer src="/site-shell.js"></script></head>
 <body><div class="site-page-shell site-app-shell"><header class="site-header"><div class="site-header-inner"><a class="site-logo" href="/">S2KTUX</a><nav class="site-nav" aria-label="Navegación principal"><a class="navlink" href="/">Inicio</a><a class="navlink" href="/cursos.html">Cursos</a><a class="navlink" href="/terminal.html" aria-current="page">Terminal</a><a class="navlink" href="/proyectos.html">Proyectos</a><button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Activar tema oscuro"><span data-theme-icon aria-hidden="true">☾</span></button></nav></div></header>
 <main class="docker-page lab-levels" data-level="inicial"><h1>Kubernetes</h1>
 <p id="lab-loading" role="status">Cargando el laboratorio…</p><button id="lab-retry" type="button" hidden>Volver a cargar</button>
 <noscript><p>Activa JavaScript para abrir el laboratorio.</p></noscript>
 <section id="lab-entry" class="lab-entry" aria-label="Elegir laboratorio" hidden>
-<h2 class="entry-heading">Prácticas por clase</h2>
-<p class="entry-introduction">Elige la etapa que estás siguiendo en el curso.</p>
-<div id="course-index" class="course-index" aria-label="Etapas y clases del curso"></div>
-<p id="exam-pending" class="mode-note">Modo examen · Próximamente</p>
-<div class="entry-copy" aria-live="polite" aria-atomic="true"><p id="entry-position" class="entry-position"></p><p id="entry-intro"></p><p id="entry-machines" class="entry-position"></p></div>
+<div class="learning-modes" role="group" aria-label="Modo de aprendizaje"><button id="mode-practice" type="button" aria-pressed="false">Modo práctica</button><button id="mode-exam" type="button" aria-pressed="false">Modo examen</button></div>
+<div id="practice-configuration" hidden>
+<div class="level-picker"><div id="course-index" class="course-index" role="group" aria-label="Nivel del laboratorio"></div></div>
+<p id="entry-intro" class="entry-copy mode-note" aria-live="polite" aria-atomic="true"></p>
 <button id="enter-lab" class="entry-enter" type="button">Abrir laboratorio</button>
-<p id="entry-note" class="mode-note" hidden></p>
 <button id="return-lab" class="lab-link" type="button" hidden>Volver al laboratorio abierto</button>
+</div>
+<section id="exam-configuration" aria-labelledby="exam-heading" hidden>
+<div class="exam-sheet">
+<div class="exam-body">
+<div class="exam-heading-row"><h3 id="exam-heading">Simulacro CKA</h3>
+<div class="exam-languages" role="group" aria-label="Idioma del simulacro"><button type="button" data-exam-language="es" aria-label="Castellano" lang="es" aria-pressed="true">ES</button><span aria-hidden="true">/</span><button type="button" data-exam-language="en" aria-label="English" lang="en" aria-pressed="false">EN</button></div></div>
+<p id="exam-description">Dos horas para resolver tareas prácticas de administración de Kubernetes. Para aprobar se necesita al menos 66/100. Se recomienda realizar el simulacro consultando únicamente la documentación oficial de Kubernetes.</p>
+<p id="exam-pending" role="status">Próximamente. El simulacro todavía no está disponible.</p>
+<div class="exam-actions">
+<button id="start-exam" class="entry-enter" type="button" disabled>Iniciar examen · Próximamente</button>
+</div>
+</div>
+</div>
+<p id="exam-language-note" class="lab-footnote">* El castellano es una ayuda de este simulacro; no es un idioma oficial del examen CKA.</p>
+</section>
 </section>
 <section id="lab-workspace" aria-label="Laboratorio de Kubernetes" hidden>
 <section id="mode-scene" class="mode-scene" aria-label="Modo seleccionado">
-<div class="mode-heading"><span id="mode-stamp" class="mode-stamp">Laboratorio</span><div id="mode-topology" class="mode-topology" aria-label="Configuración del laboratorio"></div><button id="change-lab" class="lab-link" type="button" hidden>Cambiar etapa</button></div>
+<div class="mode-heading"><span id="mode-stamp" class="mode-stamp">Laboratorio</span><div id="mode-topology" class="mode-topology" aria-label="Configuración del laboratorio"></div><button id="change-lab" class="lab-link" type="button" hidden>Cambiar laboratorio</button></div>
 <p id="course-intro">Control plane y workers con systemd.</p><p id="course-progression" class="mode-note" hidden></p>
 </section>
 <div class="controls lab-controls" aria-busy="false"><button id="start-cluster" type="button">Iniciar laboratorio</button><button id="add-worker" type="button" disabled>Añadir segundo worker</button><button id="save-cluster" type="button" disabled>Guardar</button><button id="reset-cluster" type="button" disabled>Reset</button><span id="cluster-status" role="status">Listo para iniciar.</span></div>
 <div class="controls" aria-label="Elegir nodo"><button type="button" data-node="controlplane" hidden aria-pressed="true">cka-cp1</button><button type="button" data-node="worker1" hidden aria-pressed="false">cka-w1</button><button type="button" data-node="worker2" hidden aria-pressed="false">cka-w2</button></div>
 <section id="nodes" aria-label="Terminales de los nodos"></section><p id="lab-idle" class="lab-idle">Pulsa «Iniciar laboratorio» para abrir la terminal de este modo.</p>
 <section id="exercises" class="lab-exercises" aria-label="Prácticas del nivel" hidden>
-<div class="exercise-nav"><label for="exercise-class-select">Clase</label><select id="exercise-class-select"></select><span id="exercise-count" class="exercise-count"></span><select id="exercise-select" aria-label="Elegir práctica"></select></div>
+<div class="exercise-nav"><div class="exercise-field"><label for="exercise-class-select">Clase</label><select id="exercise-class-select"></select></div><div class="exercise-field"><label for="exercise-select">Pregunta</label><select id="exercise-select" aria-label="Elegir práctica"></select></div><span id="exercise-count" class="exercise-count"></span></div>
 <p id="class-empty" class="mode-note" hidden>Próximamente. Esta clase todavía no está disponible en el laboratorio.</p>
 <h2 id="exercise-title"></h2><p id="exercise-prompt"></p>
 <div class="controls"><button type="button" id="exercise-prepare" hidden disabled>Preparar ejercicio</button><button type="button" id="exercise-check" disabled>Comprobar ejercicio</button></div><p id="exercise-result" class="exercise-result" role="status"></p>
 <details id="exercise-help"><summary>Ver solución</summary><pre id="exercise-solution" class="exercise-solution"></pre><button id="exercise-copy" type="button">Copiar comandos</button></details>
 </section>
+<p id="lab-course-note" class="lab-footnote"></p>
 </section>
 <p class="mode-note"><small>* Versión preliminar.</small></p>
 </main><footer class="site-footer"><div class="site-footer-inner"><a class="site-footer-brand" href="/">S2KTUX</a><p>Aprender practicando</p></div></footer></div>
 <dialog id="switch-level-dialog" class="mode-dialog" aria-labelledby="switch-level-title"><h2 id="switch-level-title">Cambiar de modo</h2><p id="switch-level-description"></p><p id="switch-level-error" role="alert"></p><div class="controls"><button type="button" data-switch-action="save">Guardar y cambiar</button><button type="button" data-switch-action="discard">Cambiar sin guardar</button><button type="button" data-switch-action="cancel">Cancelar</button></div></dialog>
-<script type="module" src="entrada-laboratorio.mjs"></script></body></html>
+<script type="module" src="entrada-laboratorio.mjs?v=596cbf06e39a7fdc"></script></body></html>
