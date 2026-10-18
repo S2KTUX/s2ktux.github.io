@@ -43,7 +43,7 @@ test('Fase 2 · las rutas antiguas redirigen al HTML estático',async({page})=>{
 test('Bloque 2 · Kubernetes sincroniza reconciliación en Worker y F5 destruye el clúster',async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));
   await page.goto('/terminal.html');
-  await page.locator('[data-pick-mode="kubernetes"]').click();
+  await page.goto('/terminal.html?mode=kubernetes&enter=1');
   await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   expect(await page.evaluate(()=>document.documentElement.dataset.terminalEngineThread)).toBe(expectedEngineThread);
   await page.evaluate(()=>{
@@ -65,7 +65,7 @@ test('Bloque 2 · Kubernetes sincroniza reconciliación en Worker y F5 destruye 
 
   await page.reload();
   await expect(page.locator('#mode-select')).toBeVisible();
-  await page.locator('[data-pick-mode="kubernetes"]').click();
+  await page.goto('/terminal.html?mode=kubernetes&enter=1');
   await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   await submit('kubectl get pod worker-sync');
   await page.waitForFunction(()=>!document.querySelector('#term-input')?.readOnly);
@@ -83,7 +83,7 @@ test('Bloque 2 · una excepción no controlada cierra el Worker Kubernetes a mit
   });
   await page.goto('/terminal.html');
   const workerStarted=page.waitForEvent('worker');
-  await page.locator('[data-pick-mode="kubernetes"]').click();
+  await page.goto('/terminal.html?mode=kubernetes&enter=1');
   const worker=await workerStarted;
   await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   expect(worker.url()).toMatch(/^blob:/);
@@ -111,7 +111,7 @@ test('Bloque 2 · Kubernetes recrea el Worker sin confundir reinicio con resincr
   });
   const workers=[];page.on('worker',worker=>workers.push(worker));
   await page.goto('/terminal.html');
-  await page.locator('[data-pick-mode="kubernetes"]').click();
+  await page.goto('/terminal.html?mode=kubernetes&enter=1');
   await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   await expect(page.locator('#term-body')).toContainText('El entorno Kubernetes se ha desconectado');
   await expect(page.locator('#term-body')).toContainText('Reinicio automático de Kubernetes · intento 1/3');

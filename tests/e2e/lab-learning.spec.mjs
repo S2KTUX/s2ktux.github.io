@@ -1,0 +1,26 @@
+import {test,expect} from '@playwright/test';
+async function command(page,text){await page.locator('#term-input').evaluate((input,value)=>{input.value=value;input.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));},text);await page.waitForFunction(()=>{const input=document.querySelector('#term-input');return input&&!input.readOnly&&!input.disabled&&input.value===''&&/[@#$] ?$/.test(document.querySelector('#term-prompt')?.textContent||'');});}
+for(const mode of ['linux','docker','kubernetes'])test(mode+' simulado · misma estructura y progresión sin la antigua cheatsheet',async({page})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('/terminal.html?mode='+mode+'&enter=1');await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
+ await expect(page.locator('main')).toHaveClass(/lab-page/);await expect(page.locator('#cheatsheet-title')).toHaveCount(0);await expect(page.locator('.exercise-field label')).toHaveText(['Clase','Pregunta']);
+ const order=await page.evaluate(()=>['.exercise-nav','#chal-body','.lab-practice-actions'].map(selector=>document.querySelector(selector).getBoundingClientRect().top));expect(order[0]).toBeLessThanOrEqual(order[1]);
+ await page.selectOption('#chal-select-class',mode==='kubernetes'?'0':'1');await expect(page.locator('#chal-select-class')).toBeEnabled();
+ await expect(page.locator('[data-practice-title]')).not.toBeEmpty();await page.click('#chal-solution');await expect(page.locator('#chal-solution-body > pre')).toHaveCount(1);await expect(page.locator('#chal-solution-body')).toContainText('# Solución 1');await expect(page.locator('#chal-solution-body button')).toHaveCount(0);
+ if(mode==='linux'){
+  await expect(page.locator('[data-practice-title]')).toHaveText('Crear y leer un archivo');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
+  for(const text of ['mkdir -p /root/inicio','echo "Hola Linux" > /root/inicio/saludo.txt'])await command(page,text);await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
+  await command(page,'echo Distinto > /root/inicio/saludo.txt');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
+  await page.selectOption('#chal-select-class','9');await expect(page.locator('[data-practice-title]')).toHaveText('Crear una cuenta');await command(page,'useradd -m -s /bin/bash principiante');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
+ }
+ if(mode==='docker'){await page.selectOption('#chal-select-class','2');await expect(page.locator('[data-practice-title]')).toHaveText('Crear un volumen');await command(page,'docker volume create primer-dato');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');}
+ await page.selectOption('#chal-select','');await expect(page.locator('#chal-body')).toBeEmpty();await expect(page.locator('#chal-check')).toBeHidden();expect(errors).toEqual([]);
+});
+test('Linux · entrada directa sin salto de documento y caducidad separada de umask',async({page})=>{
+ const navigations=[];page.on('framenavigated',frame=>{if(frame===page.mainFrame())navigations.push(frame.url());});await page.goto('/laboratorios/linux-real/');await expect(page.locator('#start')).toBeEnabled();expect(navigations).toHaveLength(1);await expect(page.locator('#exercise-select-class')).toBeVisible();
+ await page.selectOption('#exercise-select-class','9');await expect(page.locator('[data-exercise-title]')).toHaveText('Crear una cuenta');await page.selectOption('#exercise-select','curso-caducidad');await page.click('[data-exercise-solution]');await expect(page.locator('#exercise-solution')).not.toContainText('runuser');await expect(page.locator('#exercise-solution')).not.toContainText('umask');
+ await page.selectOption('#exercise-select-class','10');await expect(page.locator('[data-exercise-title]')).toHaveText('Entender umask con un archivo nuevo');
+ await page.locator('.lab-reference summary').click();await expect(page.locator('.lab-reference')).toContainText('su - USUARIO');expect(await page.evaluate(()=>!!globalThis.vm)).toBe(false);
+});
+test('Kubernetes · entrada con niveles, consulta sencilla y práctica libre',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');await expect(page.locator('#practice-configuration')).toBeVisible();await expect(page.locator('[data-choose-stage]')).toHaveCount(3);await page.click('#enter-lab');await page.click('#exercise-solution-toggle');await expect(page.locator('#exercise-solution')).not.toContainText('jsonpath');await expect(page.locator('#exercise-solution')).not.toContainText('jq');await page.selectOption('#exercise-class-select','free');await expect(page.locator('#class-empty')).toContainText('Práctica libre');await expect(page.locator('#exercise-check')).toBeHidden();await expect(page.locator('#nodes iframe')).toHaveCount(0);
+});

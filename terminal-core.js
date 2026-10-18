@@ -38,6 +38,9 @@ import {
 } from "./terminal-resource-limits.js?v=20260826-phase5";
 import { createTerminalFidelity } from "./terminal-fidelity.js?v=20260826-block1";
 import {dockerHttpRoot,dockerHttpDocument} from './terminal-docker-http.js';
+import {mountSimulatedLayout} from './laboratorios/simulated-lab-ui.mjs';
+import {mountGroups} from './laboratorios/lab-groups.mjs';
+import {renderSolutions} from './laboratorios/lab-solutions.mjs';
 import {
   dnfVersionLines,
   evaluateVirtualWrite,
@@ -103,16 +106,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
   setText("term-heading", ENV.heading);
   setText("term-machine-label", ENV.machine);
   setText("term-os-label", ENV.os);
-  setText("cheatsheet-title", ENV.cheat);
   setText("practice-title", ENV.practice);
   {
-    const cs = document.querySelector("details.cs");
-    if (cs) {
-      cs.setAttribute("data-mode", MODE);
-      cs.open = false;
-    }
     const practice = document.getElementById("practice-panel");
-    if (practice) practice.open = false;
+    if (practice) practice.open = true;
   }
   {
     const d = document.getElementById("term-description");
@@ -133,28 +130,6 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       input.disabled = !m;
     }
   }
-  document.querySelectorAll(".cs-tab").forEach((t) => {
-    const modes = (t.getAttribute("data-modes") || "").split(",");
-    const show = modes.indexOf(MODE) !== -1;
-    t.hidden = !show;
-    t.style.display = show ? "" : "none";
-  });
-  {
-    const tabs = [...document.querySelectorAll(".cs-tab")].filter(
-      (t) => !t.hidden,
-    );
-    const panels = [...document.querySelectorAll(".cs-panel")];
-    tabs.forEach((t, i) => t.setAttribute("data-active", i === 0 ? "1" : "0"));
-    const firstKey = tabs[0] && tabs[0].getAttribute("data-cs-tab");
-    const allowed = new Set(tabs.map((t) => t.getAttribute("data-cs-tab")));
-    panels.forEach((p) => {
-      const key = p.getAttribute("data-cs-panel");
-      p.hidden = !allowed.has(key);
-      p.setAttribute("aria-hidden", allowed.has(key) ? "false" : "true");
-      p.setAttribute("data-active", key === firstKey ? "1" : "0");
-    });
-  }
-  if (typeof window.__syncCheatTabs === "function") window.__syncCheatTabs();
   if (MODE !== "linux")
     document.querySelectorAll("#term-reboot,#term-solved").forEach((b) => {
       if (b) b.style.display = "none";
@@ -19054,9 +19029,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     }
     {
       const pr = document.querySelector("#chal-progress");
-      if (pr)
-        pr.innerHTML =
-          '<div style="display:flex;justify-content:space-between;align-items:baseline;font-family:&quot;Press Start 2P&quot;,monospace;font-size:10px;color:var(--head);margin-bottom:8px"><span>PROGRESO</span><span style="color:#8fa876">21 / 21  (100%)</span></div><div style="height:16px;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:2px"><div style="height:100%;width:100%;background:repeating-linear-gradient(90deg,#8fa876 0 10px,#7d9866 10px 12px)"></div></div>';
+      if (pr) pr.textContent = '21 / 21 (100%)';
       const cg = document.querySelector("#chal-congrats");
       if (cg) {
         cg.style.display = "none";
@@ -19253,6 +19226,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
   }
 
   if (MODE === "linux") {
+    if(!savedScroll){currentUser='root';cwd=['root'];loggedIn=true;}
     if (loggedIn) setPrompt();
     else startLogin();
   } else {
@@ -19271,6 +19245,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
   }, 100);
 
   // ---------------- prácticas guiadas (propiedad del runtime elegido) ----------------
+  mountSimulatedLayout(MODE);
   const CH =
     typeof runtime.createChallenges === "function"
       ? runtime.createChallenges(runtimeContext)
@@ -19348,7 +19323,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         score: total,
         message:
           (automatic ? "Tiempo agotado. " : "") +
-          (total >= 74
+          (total >= 66
             ? "Resultado orientativo: aprobado."
             : "Resultado orientativo: sigue practicando las tareas pendientes."),
         at: Date.now(),
@@ -19439,16 +19414,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         if (chalDone[i]) done++;
       }
       const pct = Math.round((done / total) * 100);
-      pr.innerHTML =
-        '<div style="display:flex;justify-content:space-between;align-items:baseline;font-family:&quot;Press Start 2P&quot;,monospace;font-size:10px;color:var(--head);margin-bottom:8px"><span>PROGRESO</span><span style="color:#8fa876">' +
-        done +
-        " / " +
-        total +
-        "  (" +
-        pct +
-        '%)</span></div><div style="height:16px;background:var(--surface);border:3px solid var(--line);box-shadow:3px 3px 0 var(--surface2);padding:2px"><div style="height:100%;width:' +
-        pct +
-        '%;background:repeating-linear-gradient(90deg,#8fa876 0 10px,#7d9866 10px 12px);transition:width .3s"></div></div>';
+      pr.textContent = done + ' / ' + total + ' (' + pct + '%)';
     };
     selEl.replaceChildren();
     CH.forEach((c, i) => {
@@ -19479,29 +19445,21 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         "</span>";
     };
     const renderChal = () => {
-      const i = selEl.value || "0";
-      const c = CH[Number(i)];
+      const i = selEl.value;
+      const c = i===''?null:CH[Number(i)];
       if (!c) {
-        bodyEl.textContent =
-          "No se han podido cargar las prácticas de este entorno.";
-        btnEl.disabled = true;
+        bodyEl.textContent = '';
+        btnEl.hidden=true;solutionBtn.hidden=true;solutionBody.hidden=true;resEl.textContent='';
         return;
       }
-      bodyEl.innerHTML =
-        '<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">' +
-        c.badge +
-        (chalDone[i] ? "  ✔ completado" : "") +
-        '</div><div data-practice-title style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">' +
-        c.title +
-        '</div><div data-practice-goal style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">' +
-        c.goal +
-        "</div>";
+      btnEl.hidden=false;btnEl.disabled=false;
+      bodyEl.innerHTML = '<h2 data-practice-title>'+c.title+'</h2><p data-practice-goal>'+c.goal+'</p>';
       if (solutionBtn && solutionBody) {
-        const hasSolution = MODE === "docker" && !!c.solution && !examActive;
+        const hasSolution = !!(c.solution||c.loadSolution) && !examActive;
         solutionBtn.hidden = !hasSolution;
-        solutionBtn.textContent = "VER SOLUCIÓN";
+        solutionBtn.textContent = "Ver solución";
         solutionBody.hidden = true;
-        solutionBody.textContent = hasSolution ? c.solution : "";
+        renderSolutions(solutionBody,hasSolution&&c.solution?[{code:c.solution},...(c.solutions||[])]:[]);
       }
       if (examActive) {
         resEl.innerHTML =
@@ -19514,47 +19472,22 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     };
     selEl.addEventListener("change", renderChal);
     if (solutionBtn && solutionBody)
-      solutionBtn.addEventListener("click", () => {
+      solutionBtn.addEventListener("click", async () => {
+        const current=CH[Number(selEl.value)];if(!current||selEl.value===''||examActive)return;
+        if(!current.solution&&current.loadSolution){
+          const selected=selEl.value;solutionBtn.disabled=true;
+          try{const code=await current.loadSolution();if(selEl.value!==selected)return;current.solution=code;renderSolutions(solutionBody,[{code}]);}
+          catch{solutionBody.textContent='No se pudo cargar la solución. Vuelve a intentarlo.';solutionBody.hidden=false;return;}
+          finally{solutionBtn.disabled=false;}
+        }
         const isHidden = solutionBody.hidden;
         solutionBody.hidden = !isHidden;
-        solutionBtn.textContent = isHidden ? "OCULTAR SOLUCIÓN" : "VER SOLUCIÓN";
+        solutionBtn.textContent = isHidden ? "Ocultar solución" : "Ver solución";
       });
+    const free=document.createElement('option');free.value='';free.textContent='Práctica libre';selEl.prepend(free);selEl.value='';
+    if(!IS_EXAM)mountGroups({select:selEl,mode:MODE,tasks:CH,indexed:true,onChange:renderChal,loadTasks:runtime.loadLearningChallenges?()=>runtime.loadLearningChallenges(runtimeContext):undefined,groups:runtime.practiceGroups,firstClass:runtime.firstPracticeClass});
     renderChal();
     updateProgress();
-    const MKEY = "s2ktux-chal-manual-v12-" + MODE + (IS_EXAM ? "-exam" : "");
-    let manualDone = {};
-    try {
-      const legacy = !IS_EXAM
-        ? localStorage.getItem(
-            "s2ktux-chal-manual-v11-" + MODE + "-principal",
-          ) || localStorage.getItem("s2ktux-chal-manual-v10-" + MODE)
-        : null;
-      manualDone =
-        JSON.parse(localStorage.getItem(MKEY) || legacy || "{}") || {};
-    } catch (e) {}
-    const congrats = () => {
-      const total = CH.length;
-      let m = 0;
-      for (let i = 0; i < total; i++) if (manualDone[i]) m++;
-      if (m >= total) {
-        const d = document.querySelector("#chal-congrats");
-        if (d) {
-          d.style.display = "block";
-          const cert =
-            MODE === "kubernetes"
-              ? "ESTÁS PREPARADO PARA EL CKA"
-              : MODE === "docker"
-                ? "DOMINAS LOS FUNDAMENTOS DE DOCKER"
-                : "ESTÁS PREPARADO PARA " + (CERTIFICATION || "RHCSA 9");
-          d.innerHTML =
-            '<div style="margin-top:18px;padding:20px 22px;background:#1a2410;border:3px solid #8fa876;box-shadow:5px 5px 0 var(--line);text-align:center"><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:15px;color:#8fa876;line-height:1.6">🏆 FELICIDADES</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:12px;color:#e9ddc7;line-height:1.7;margin-top:12px">' +
-            cert +
-            '</div><div style="font-family:&quot;Share Tech Mono&quot;,monospace;font-size:15px;color:#a2957d;margin-top:12px">Has completado las ' +
-            total +
-            " prácticas por tu cuenta.</div></div>";
-        }
-      }
-    };
     btnEl.addEventListener("click", () => {
       if (examActive) return;
       const i = selEl.value;
@@ -19579,18 +19512,15 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       saveReports();
       if (r.ok && !chalDone[i]) {
         chalDone[i] = true;
-        manualDone[i] = true;
         try {
           localStorage.setItem(CHKEY, JSON.stringify(chalDone));
-          localStorage.setItem(MKEY, JSON.stringify(manualDone));
         } catch (e) {}
-        selEl.options[i].textContent = "✔ " + (Number(i) + 1) + ". " + c.title;
+        const completedOption=[...selEl.options].find(option=>option.value===i);
+        if(completedOption)completedOption.textContent = "✔ " + c.title;
         updateProgress();
-        congrats();
       }
       showResult(visible);
     });
-    congrats();
     syncExamUI();
     renderChal();
   }

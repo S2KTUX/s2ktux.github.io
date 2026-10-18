@@ -1,4 +1,4 @@
-import {IMAGEN,q,aplicar,contenedor,http,pod,deployment,esperarPod,esperarDeployment,obtener,listo,crearPractica} from './herramientas-practicas.mjs?v=20261018-solutions';
+import {IMAGEN,q,aplicar,contenedor,http,pod,deployment,esperarPod,esperarDeployment,obtener,listo,crearPractica} from './herramientas-practicas.mjs?v=20261018-aprender';
 import {equivalenciaJQ,sondaEnPuerto} from './criterios-equivalentes.mjs';
 const entries=[];
 const recursos={requests:{cpu:'50m',memory:'16Mi'},limits:{cpu:'200m',memory:'64Mi'}};

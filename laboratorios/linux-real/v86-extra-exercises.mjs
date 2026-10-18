@@ -54,12 +54,12 @@ export const extraExercises = [
     checks:[['Almacenamiento persistente','grep -Eq "^Storage=persistent$" /etc/systemd/journald.conf.d/curso.conf && test -n "$(find /var/log/journal -name \x27*.journal\x27 -print -quit)"'],['Marca guardada','journalctl --no-pager -o cat | grep -Fxq JOURNAL_CURSO']],
   },
   {
-    id:'curso-caducidad',title:'Curso · Caducidad y umask',classes:[9,10],
-    goal:'Para hera, configura máximo 90 días, mínimo 1 y aviso de 7. Crea /home/hera/umask-curso usando umask 027: debe pertenecer a hera y tener permisos 640.',
+    id:'curso-caducidad',title:'Caducidad de una contraseña',classes:[9],
+    goal:'Para hera, configura una duración máxima de contraseña de 90 días, un mínimo de 1 día entre cambios y un aviso de 7 días antes de caducar. Consulta el resultado.',
     note:'Requiere la práctica de usuarios del simulacro.',
-    explanation:'chage cambia los campos de shadow. umask afecta a los archivos nuevos; no cambia los que ya existían.',
-    solution:"chage -M 90 -m 1 -W 7 hera\nrunuser -u hera -- /bin/bash -c 'umask 027; echo UMASK > /home/hera/umask-curso'\n\nchage -l hera\nstat -c '%U %a' /home/hera/umask-curso",
-    checks:[['Caducidad',`chage -l hera | awk -F ': *' '/^Minimum number of days/ {min=$2} /^Maximum number of days/ {max=$2} /^Number of days of warning/ {warn=$2} END {exit !(min==1 && max==90 && warn==7)}'`],['Archivo con permisos 640','test "$(stat -c %U /home/hera/umask-curso)" = hera && test "$(stat -c %a /home/hera/umask-curso)" = 640 && test "$(cat /home/hera/umask-curso)" = UMASK']],
+    explanation:'chage cambia la política de contraseña de esa cuenta. Con -l puedes consultar los valores guardados.',
+    solution:'chage -M 90 -m 1 -W 7 hera\nchage -l hera',
+    checks:[['Caducidad',`chage -l hera | awk -F ': *' '/^Minimum number of days/ {min=$2} /^Maximum number of days/ {max=$2} /^Number of days of warning/ {warn=$2} END {exit !(min==1 && max==90 && warn==7)}'`]],
   },
   {
     id:'curso-ipv6',title:'Curso · IPv6 y resolución local',classes:[8],

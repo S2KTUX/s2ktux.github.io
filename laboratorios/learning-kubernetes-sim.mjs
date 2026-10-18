@@ -1,0 +1,7 @@
+export function simulatedLearningKubernetes(ctx){
+ const tasks=[
+  {classes:[0],order:0,title:'Ver los nodos',goal:'Consulta los nodos del clúster y guarda el listado en /root/nodos-inicio.txt. No cambies sus recursos.',solution:'kubectl get nodes\nkubectl get nodes > /root/nodos-inicio.txt',check:()=>{const text=ctx.getNode(['root','nodos-inicio.txt'])?.content||'',names=text.split(/\r?\n/).map(line=>line.trim().split(/\s+/)[0]);return ctx.state.k8s.nodes.length>0&&ctx.state.k8s.nodes.every(node=>names.includes(node.name));}},
+  {classes:[2],order:1,title:'Crear un Pod sencillo',goal:'Crea el Pod primer-pod con nginx en el namespace default. Consulta su estado.',solution:'kubectl run primer-pod --image=nginx\nkubectl get pods',check:()=>ctx.state.k8s.pods.some(pod=>pod.name==='primer-pod'&&pod.namespace==='default'&&pod.status==='Running')},
+  {classes:[6],order:2,title:'Crear un namespace',goal:'Crea el namespace aprendizaje y comprueba que aparece en el listado. Todavía no hace falta crear Pods.',solution:'kubectl create namespace aprendizaje\nkubectl get namespaces',check:()=>ctx.state.k8s.namespaces.includes('aprendizaje')},
+ ];return tasks.map((task,index)=>({...task,id:'inicio-k8s-'+index,badge:'PRÁCTICA',check:()=>({ok:Boolean(task.check()),msg:'Comprueba el resultado indicado en el enunciado.'})}));
+}

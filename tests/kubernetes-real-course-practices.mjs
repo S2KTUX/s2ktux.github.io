@@ -13,7 +13,7 @@ assert.equal(nivelClase(23),'intermedio');assert.equal(nivelClase(24),'avanzado'
 assert.equal(claseDesdeURL(new URLSearchParams('clase=19'),'intermedio'),19);assert.throws(()=>claseDesdeURL(new URLSearchParams('clase=19'),'inicial'));
 assert.equal(EJERCICIOS_INICIALES.length,14);
 assert.equal(EJERCICIOS_INTERMEDIOS.length,10);
-for(let number=0;number<=11;number++)assert.equal(ejerciciosClase(number).length,2);
+for(let number=0;number<=11;number++)assert.equal(ejerciciosClase(number).length,[4,6,7,8,9,10,11].includes(number)?3:2);
 for(let number=12;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
 assert.equal(nivelDisponible('avanzado'),false);assert.equal(limiteNodos('intermedio'),2);
 const safeParams=parametrosPublicos('mode=other&factory=v8&fast=1&use-scheduling-api=1&clase=28&level=avanzado&enter=1');

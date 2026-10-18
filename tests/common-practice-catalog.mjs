@@ -21,7 +21,7 @@ for(const [mode,runtime,real] of [['linux',linux,realLinux],['docker',docker,rea
   assert.ok(Array.isArray(native.checks));
  }
  assert.equal(simulated.length,mode==='linux'?21:15);
- assert.equal(real.length,mode==='linux'?44:30);
+ assert.equal(real.length,mode==='linux'?55:32);
 }
 assert.equal(commonPractices.linux.length,10);
 assert.equal(commonPractices.docker.length,11);

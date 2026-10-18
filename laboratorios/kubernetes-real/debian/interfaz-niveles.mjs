@@ -1,16 +1,16 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase} from './ejercicios-niveles.mjs?v=20261018-solutions';
+import {ejerciciosClase} from './ejercicios-niveles.mjs?v=20261018-aprender';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs';
 import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs';
-import {renderSolutions} from '../../lab-solutions.mjs?v=20261018';
+import {renderSolutions} from '../../lab-solutions.mjs?v=20261018-aprender';
 import {solutionsFor} from '../../solution-options.mjs?v=20261018';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
  const currentURL=new URL(location.href),prepared=new Set();
  let activeClass=claseDesdeURL(currentURL.searchParams,level),preview=level,previewClass=activeClass;
- let switching=false,checking=false,entered=false,wasInitialized=false,learningMode=null;
+ let switching=false,checking=false,entered=false,wasInitialized=false,learningMode=null,freeMode=false;
  globalThis.kubeDebianLearningMode=null;
  const remembered=new Map([[level,activeClass]]);
  document.title='Kubernetes · '+config.title+' | S2KTUX';
@@ -22,9 +22,10 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  $('exercise-class-select').replaceChildren(...clasesNivel(level).map(lesson=>{
   const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number);option.textContent=lesson.id+' — '+lesson.title+(option.disabled?' · Próximamente':'');return option;
  }));
+ const free=document.createElement('option');free.value='free';free.textContent='Práctica libre';$('exercise-class-select').prepend(free);
  $('exercises').hidden=false;
  function tasks(){return claseDisponible(activeClass)?ejerciciosClase(activeClass):[];}
- function task(){return tasks()[Number($('exercise-select').value)];}
+ function task(){return freeMode?null:tasks()[Number($('exercise-select').value)];}
  function buildIndex(){
   const summaries={inicial:'Pods, réplicas y servicios.',intermedio:'Configuración, almacenamiento y redes.',avanzado:'Instalación, mantenimiento y diagnóstico.'};
   $('course-index').replaceChildren(...Object.entries(NIVELES).map(([key,item])=>{
@@ -55,6 +56,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   entered=true;$('lab-entry').hidden=true;$('lab-workspace').hidden=false;document.querySelector('main').dataset.level=level;update();
  }
  function populateTasks(){
+  freeMode=false;
   $('exercise-class-select').value=String(activeClass);
   $('exercise-select').replaceChildren(...tasks().map((item,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent=item.title;return option;}));
   render();
@@ -62,6 +64,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  function render(){
   globalThis.kubeDebianExerciseResult=null;
   const current=task(),items=tasks();$('class-empty').hidden=!!current;
+  $('class-empty').textContent=freeMode?'Práctica libre: utiliza la terminal sin un ejercicio seleccionado.':'Próximamente. Esta clase todavía no está disponible en el laboratorio.';
   $('exercise-title').hidden=$('exercise-prompt').hidden=$('exercise-solution-toggle').hidden=!current;
   $('exercise-select').hidden=$('exercise-count').hidden=!current;
   $('exercise-title').textContent=current?.title||'';$('exercise-prompt').textContent=current?.prompt||'';
@@ -114,7 +117,9 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  $('change-lab').onclick=()=>{showEntry();$('stage-'+level).focus();};
  $('return-lab').onclick=()=>{showWorkspace();$('change-lab').focus();};
  $('exercise-class-select').onchange=event=>{
+  if(event.target.value==='free'){freeMode=true;render();return;}
   const value=Number(event.target.value);if(!claseDisponible(value)||switching||checking||!clasesNivel(level).some(lesson=>lesson.number===value))return;
+  freeMode=false;
   activeClass=value;remembered.set(level,value);const href=new URL(location.href);href.searchParams.set('clase',String(value));history.replaceState(history.state,'',href.href);populateTasks();
  };
  $('exercise-select').onchange=render;
@@ -149,14 +154,14 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
    }
   }finally{switching=false;update();}
  }
- for(const anchor of document.querySelectorAll('.site-header a,.site-footer a'))anchor.onclick=event=>{
+ for(const anchor of document.querySelectorAll('.site-header a,.site-footer a,main a'))anchor.onclick=event=>{
   if(event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey)return;
   event.preventDefault();requestChange(null,anchor.href).catch(error=>{$('exercise-result').textContent='No se ha salido: '+(error.message||error);});
  };
  globalThis.kubeDebianSelectedLevel=level;globalThis.kubeDebianExerciseCheck=()=>exercise(false);globalThis.kubeDebianPracticePrepare=()=>exercise(true);
  buildIndex();populateTasks();showEntry();
  if(currentURL.searchParams.get('view')==='exam')selectLearningMode('exam');
- else if(currentURL.searchParams.get('view')==='practice'||currentURL.searchParams.has('clase')||currentURL.searchParams.get('enter')==='1')selectLearningMode('practice');
+ else selectLearningMode('practice');
  const autoEnter=learningMode==='practice'&&currentURL.searchParams.get('enter')==='1';
  if(currentURL.searchParams.has('enter')){currentURL.searchParams.delete('enter');history.replaceState(history.state,'',currentURL.href);}
  if(autoEnter)queueMicrotask(()=>enter());

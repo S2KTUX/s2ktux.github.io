@@ -5,7 +5,7 @@ for(const mode of ['linux','docker']){
   await page.goto('/terminal.html');
   await expect(page.locator('#mode-select')).not.toContainText('Probar Linux real');
   await page.locator('[data-pick-mode="'+mode+'"]').click();
-  await expect(page).toHaveURL(mode==='linux'?/\/laboratorios\/linux-real\/v86-test\.html(?:\?|$)/:/\/laboratorios\/docker-real\/$/);
+  await expect(page).toHaveURL(mode==='linux'?/\/laboratorios\/linux-real\/(?:v86-test\.html)?(?:\?|$)/:/\/laboratorios\/docker-real\/$/);
   await expect(page.locator('#start')).toBeEnabled();
   expect(await page.evaluate(()=>typeof globalThis.vm)).toBe('undefined');
  });
@@ -22,11 +22,11 @@ for(const mode of ['linux','docker']){
 
 test('Entrada principal · Enter abre Linux real',async({page})=>{
  await page.goto('/terminal.html');await page.locator('[data-pick-mode="linux"]').focus();await page.keyboard.press('Enter');
- await expect(page).toHaveURL(/\/laboratorios\/linux-real\/v86-test\.html(?:\?|$)/);
+ await expect(page).toHaveURL(/\/laboratorios\/linux-real\/(?:v86-test\.html)?(?:\?|$)/);
 });
 
 test('Entrada preliminar · Enter respeta el enlace de Kubernetes',async({page})=>{
- await page.goto('/terminal.html');await page.locator('#mode-select a[href="/laboratorios/kubernetes-real/"]').focus();await page.keyboard.press('Enter');
+ await page.goto('/terminal.html');await page.locator('[data-pick-mode="kubernetes"]').focus();await page.keyboard.press('Enter');
  await expect(page).toHaveURL(/\/laboratorios\/kubernetes-real\/debian\/multinodo\.html\?/);
  expect(new URL(page.url()).searchParams.get('view')).toBe('presentacion');
 });
@@ -38,8 +38,7 @@ test('Menú inicial · no ofrece alternativas simuladas de Linux ni Docker',asyn
  await expect(selector.locator('a[href*="mode=linux"],a[href*="mode=docker"],[data-legacy-mode]')).toHaveCount(0);
 });
 
-test('Entrada principal · Kubernetes conserva la versión simulada',async({page})=>{
+test('Entrada principal · Kubernetes abre el laboratorio y ofrece la simulada dentro',async({page})=>{
  await page.goto('/terminal.html');await page.locator('[data-pick-mode="kubernetes"]').click();
- await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
- await expect(page).toHaveURL(/terminal.html\?mode=kubernetes$/);await expect(page.locator('#terminal-shell')).toBeVisible();
+ await expect(page).toHaveURL(/laboratorios\/kubernetes-real/);await expect(page.locator('#practice-configuration')).toBeVisible();await expect(page.getByRole('link',{name:'versión simulada antigua'})).toBeVisible();
 });

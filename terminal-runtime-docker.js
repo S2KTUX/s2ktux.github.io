@@ -50,22 +50,23 @@ export default {
       "mkdir -p /root/produccion\ncat > /root/produccion/Dockerfile <<'EOF'\nFROM node:20-alpine AS build\nWORKDIR /app\nCOPY . .\nRUN npm run build\nFROM nginx:alpine\nCOPY --from=build /app/dist /usr/share/nginx/html\nEOF\ndocker build -t miapp:prod /root/produccion\ndocker history miapp:prod"
     ];
     const challenges=[
-      {badge:'NIVEL 1 · IMÁGENES',title:'Prepara Alpine',goal:'Busca la imagen oficial de Alpine y deja descargada localmente su etiqueta <b>latest</b>.',check:checks[0]},
-      {badge:'NIVEL 1 · EJECUCIÓN',check:checks[1]},
-      {badge:'NIVEL 1 · CICLO DE VIDA',check:checks[2]},
-      {badge:'NIVEL 2 · PUERTOS',check:checks[3]},
-      {badge:'NIVEL 2 · DIAGNÓSTICO',check:checks[4]},
-      {badge:'NIVEL 3 · DOCKERFILE',title:'Crea una imagen propia',goal:'Crea en <b>/root/miweb</b> un Dockerfile que parta de nginx y copie un index.html propio. Construye la imagen resultante como <b>miweb:v1</b>.',check:checks[5]},
-      {badge:'NIVEL 3 · IMAGEN PROPIA',check:checks[6]},
-      {badge:'NIVEL 3 · TRANSPORTE',check:checks[7]},
-      {badge:'NIVEL 4 · VOLÚMENES',check:checks[8]},
-      {badge:'NIVEL 4 · BIND MOUNT',check:checks[9]},
-      {badge:'NIVEL 4 · REDES',check:checks[10]},
-      {badge:'NIVEL 5 · RECURSOS',check:checks[11]},
-      {badge:'NIVEL 5 · COMPOSE',title:'Escribe una aplicación Compose',goal:'Crea <b>/root/stack/compose.yaml</b> con un servicio <b>web</b> basado en nginx, un servicio <b>db</b> basado en MariaDB y un volumen con nombre para la base de datos. Despliega el proyecto como <b>tienda</b>.',check:checks[12]},
-      {badge:'NIVEL 5 · OPERACIÓN COMPOSE',check:checks[13]},
-      {badge:'NIVEL 6 · PRODUCCIÓN',title:'Construye una imagen multi-stage',goal:'Crea <b>/root/produccion/Dockerfile</b> con una etapa de construcción nombrada mediante <b>AS</b> y una segunda etapa final. Construye el resultado como <b>miapp:prod</b>.',check:checks[14]}
+      {title:'Prepara Alpine',goal:'Busca la imagen oficial de Alpine y deja descargada localmente su etiqueta <b>latest</b>.',check:checks[0]},
+      {check:checks[1]},
+      {check:checks[2]},
+      {check:checks[3]},
+      {check:checks[4]},
+      {title:'Crea una imagen propia',goal:'Crea en <b>/root/miweb</b> un Dockerfile que parta de nginx y copie un index.html propio. Construye la imagen resultante como <b>miweb:v1</b>.',check:checks[5]},
+      {check:checks[6]},
+      {check:checks[7]},
+      {check:checks[8]},
+      {check:checks[9]},
+      {check:checks[10]},
+      {check:checks[11]},
+      {title:'Escribe una aplicación Compose',goal:'Crea <b>/root/stack/compose.yaml</b> con un servicio <b>web</b> basado en nginx, un servicio <b>db</b> basado en MariaDB y un volumen con nombre para la base de datos. Despliega el proyecto como <b>tienda</b>.',check:checks[12]},
+      {check:checks[13]},
+      {title:'Construye una imagen multi-stage',goal:'Crea <b>/root/produccion/Dockerfile</b> con una etapa de construcción nombrada mediante <b>AS</b> y una segunda etapa final. Construye el resultado como <b>miapp:prod</b>.',check:checks[14]}
     ];
     return challenges.map((challenge,index)=>commonPractice('docker',{...challenge,solution:solutions[index]},index));
-  }
+  },
+  loadLearningChallenges:async ctx=>(await import('./laboratorios/learning-docker.mjs')).simulatedLearningDocker(ctx),
 };

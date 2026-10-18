@@ -73,9 +73,9 @@ export async function attachTerminalRenderer() {
 
   const term = new Terminal({
     cursorBlink:true, cursorStyle:'block', convertEol:true, scrollback:TERMINAL_LIMITS.xtermScrollbackLines,
-    fontFamily:'"Share Tech Mono", "Cascadia Mono", monospace', fontSize:17,
+    fontFamily:'"Share Tech Mono", "Cascadia Mono", monospace', fontSize:15,
     lineHeight:1.18, letterSpacing:0, screenReaderMode:true, minimumContrastRatio:4.5,
-    theme:{ background:'#12100b', foreground:'#d8cbad', cursor:'#e0a458', cursorAccent:'#12100b', selectionBackground:'#66543b99', black:'#12100b', red:'#ef8a7a', green:'#8fa876', yellow:'#e0a458', blue:'#6b8e9e', magenta:'#b887a4', cyan:'#7aa9a0', white:'#e9ddc7', brightBlack:'#6f6250', brightRed:'#ff9c8f', brightGreen:'#aac991', brightYellow:'#f2bd72', brightBlue:'#91afc0', brightMagenta:'#d1a1bd', brightCyan:'#96c5bc', brightWhite:'#fff7e8' }
+    theme:{ background:'#161009', foreground:'#e9ddc7', cursor:'#e0a458', cursorAccent:'#161009', selectionBackground:'#66543b99', black:'#161009', red:'#ef8a7a', green:'#8fa876', yellow:'#e0a458', blue:'#6b8e9e', magenta:'#b887a4', cyan:'#7aa9a0', white:'#e9ddc7', brightBlack:'#6f6250', brightRed:'#ff9c8f', brightGreen:'#aac991', brightYellow:'#f2bd72', brightBlue:'#91afc0', brightMagenta:'#d1a1bd', brightCyan:'#96c5bc', brightWhite:'#fff7e8' }
   });
   const fit = new FitAddon();
   term.loadAddon(fit);

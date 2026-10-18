@@ -1,0 +1,27 @@
+.simulated-lab-page .terminal-hero{margin:0;padding:0;border:0;box-shadow:none;background:none;max-width:none;text-align:left}
+.simulated-lab-page #term-heading{font:22px/1.6 'Press Start 2P',monospace;color:var(--head);text-shadow:none;text-align:left;margin:0 0 30px}
+.simulated-lab-page .terminal-panel-section,.simulated-lab-page .terminal-stage{margin:0;padding:0;max-width:none}
+.simulated-lab-page #practice-panel{border:0;background:transparent;box-shadow:none;padding:0}
+.simulated-lab-page #practice-title{font:17px/1.7 'Space Mono',monospace;color:var(--head);padding:0;margin-bottom:10px;cursor:default}
+.simulated-lab-page #practice-title::after{display:none}
+.simulated-lab-page #practice-title{list-style:none;display:block}
+.simulated-lab-page #practice-title::-webkit-details-marker{display:none}
+.simulated-lab-page #practice-panel>div{padding:0!important}
+.simulated-lab-page #chal-progress,.simulated-lab-page #chal-congrats,.simulated-lab-page #terminal-keyboard-help,.simulated-lab-page #practice-panel .u-inline-904cf8e39d{display:none}
+.simulated-lab-page #chal-select{width:100%;margin:0}
+.simulated-lab-page #chal-body{margin:0;padding:0;border:0;box-shadow:none;background:transparent}
+.simulated-lab-page #chal-body>div:first-child{display:none}
+.simulated-lab-page #chal-body [data-practice-title]{font:14px/1.7 'Press Start 2P',monospace!important;margin:24px 0 18px!important}
+.simulated-lab-page #chal-body [data-practice-goal]{font:17px/1.8 'Space Mono',monospace!important}
+.simulated-lab-page .terminal-window{border:3px solid var(--line);box-shadow:var(--pixel-shadow-md);margin:16px 0 12px;border-radius:0;background:#161009}
+.simulated-lab-page .terminal-screen{height:530px;min-height:0}
+.simulated-lab-page .terminal-chrome{padding:10px 14px;border-bottom:2px solid var(--line);background:#2c2218;color:#e0a458;font:14px/1.5 'Share Tech Mono',monospace}
+.simulated-lab-page .terminal-light,.simulated-lab-page #term-title{display:none}
+.simulated-lab-page #term-os-label{margin-left:auto;font:12px/1.5 'Share Tech Mono',monospace;color:#b5a58a}
+.simulated-lab-page .u-inline-e771d89710{display:block;margin:0;padding:0}
+.simulated-lab-page .u-inline-a6caf2b82b{min-width:0;width:100%;margin:0}
+.simulated-lab-page .u-inline-6685fe3cc9{display:none}
+.simulated-lab-page .lab-machine-actions button{font:14px/1.5 'Share Tech Mono',monospace!important}
+.simulated-lab-page #term-actions{justify-content:flex-start;gap:12px;margin:18px 0}
+.simulated-exam .lab-reference,.simulated-exam .lab-solutions{display:none!important}
+@media(max-width:600px){.simulated-lab-page #term-heading{font-size:clamp(12px,3.5vw,16px)}}

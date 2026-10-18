@@ -1,6 +1,7 @@
-import { exercises } from './v86-exercises.mjs?v=20261018-solutions';
-import {renderSolutions} from '../lab-solutions.mjs?v=20261018';
+import { exercises } from './v86-exercises.mjs?v=20261018-aprender';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261018-aprender';
 import {solutionsFor} from '../solution-options.mjs?v=20261018';
+import {mountGroups} from '../lab-groups.mjs';
 
 export function mountExercisePanel(root, runCheck) {
   const select = root.querySelector('select');
@@ -31,6 +32,7 @@ export function mountExercisePanel(root, runCheck) {
   const sync = () => {
     check.disabled = !enabled || checking;
     select.disabled = checking;
+    const classSelect=document.getElementById(select.id+'-class');if(classSelect)classSelect.disabled=checking;
     toggle.disabled = checking;
     card.hidden = !selected();
   };
@@ -42,7 +44,7 @@ export function mountExercisePanel(root, runCheck) {
     note.textContent = exercise.note || ''; note.hidden = !exercise.note;
     renderSolutions(solution,solutionsFor('linux',exercise));
     solution.hidden = true; toggle.textContent = 'Ver solución'; toggle.setAttribute('aria-expanded', 'false');
-    feedback.replaceChildren(); feedback.textContent='Haz la práctica en Linux y comprueba el resultado cuando termines.';
+    feedback.replaceChildren();
     feedback.dataset.result = 'pending'; sync();
   };
   select.addEventListener('change', render);
@@ -76,5 +78,6 @@ export function mountExercisePanel(root, runCheck) {
     } finally { checking = false; sync(); }
   });
   populate(); render();
-  return { setEnabled(value) { enabled = !!value; sync(); } };
+  const classSelect=mountGroups({select,mode:'linux',tasks:exercises,onChange:render});
+  return { setEnabled(value) { enabled = !!value; classSelect.disabled=checking; sync(); } };
 }

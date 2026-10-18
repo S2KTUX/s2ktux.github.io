@@ -49,10 +49,10 @@ const service=(name,nodePort)=>`kubectl apply -f - <<'EOF'\napiVersion: v1\nkind
 function kubernetes(e){
  const code=e.solutionDisplay||e.solution;
  const basic={
-  'c00-a':()=>option('Columnas sin cabecera',"kubectl get nodes --no-headers -o custom-columns=NAME:.metadata.name > /root/nodos-curso.txt"),
-  'c00-b':()=>option('Seleccionar por etiquetas',"kubectl -n kube-system get pods -l 'component in (kube-apiserver,etcd,kube-scheduler,kube-controller-manager)' --no-headers -o custom-columns=NAME:.metadata.name > /root/control-plane.txt"),
-  'c01-a':()=>option('Leer los nombres con jq',replace(code,`kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\\n"}{end}'`,"kubectl get nodes -o json | jq -r '.items[].metadata.name'")),
-  'c01-b':()=>option('Comprobar antes de escribir',"systemctl is-active --quiet kubelet && systemctl is-active --quiet containerd && printf 'kubelet=active\\ncontainerd=active\\n' > /root/servicios-laboratorio.txt"),
+  'c00-a':()=>option('Ver también las direcciones',"kubectl get nodes -o wide > /root/nodos-curso.txt\ncat /root/nodos-curso.txt"),
+  'c00-b':()=>option('Listado ampliado',"kubectl get pods -n kube-system -o wide > /root/control-plane.txt\ncat /root/control-plane.txt"),
+  'c01-a':()=>option('Listado ampliado',"kubectl get nodes -o wide > /root/laboratorio-nodos.txt\nkubectl get --raw=/readyz > /root/laboratorio-api.txt"),
+  'c01-b':()=>option('Consultar uno cada vez',"systemctl is-active kubelet > /root/servicios-laboratorio.txt\nsystemctl is-active containerd >> /root/servicios-laboratorio.txt\ncat /root/servicios-laboratorio.txt"),
   'c02-a':()=>option('Con un manifiesto',pod('saludo',['sh','-c','echo Hola Kubernetes'],'Never')+"\nkubectl -n default wait --for=jsonpath='{.status.phase}'=Succeeded pod/saludo --timeout=120s"),
   'c02-b':()=>option('Con un manifiesto',pod('utilidades',['sleep','3600'])+"\nkubectl -n default wait --for=condition=Ready pod/utilidades --timeout=120s\nkubectl -n default exec utilidades -- sh -c 'echo PRACTICA_PODS >/tmp/mensaje.txt'"),
   'c03-a':()=>option('Crear una réplica y escalar',replace(code,'replicas: 2','replicas: 1').replace("kubectl -n default wait",'kubectl -n default scale rs replicas --replicas=2\nkubectl -n default wait')),
