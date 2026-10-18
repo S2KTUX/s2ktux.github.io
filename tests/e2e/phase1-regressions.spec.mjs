@@ -28,7 +28,7 @@ test('Fase 1 · Docker conserva opciones repetidas y F5 destruye el estado', asy
   expect(listing).toContain('8443');
   await page.reload();
   await expect(page.locator('#mode-select')).toBeVisible();
-  await page.locator('[data-legacy-mode="docker"]').click();
+  await page.goto('/terminal.html?mode=docker&enter=1');
   await page.waitForFunction(() => document.documentElement.dataset.terminalReady === 'true');
   await expect(await run(page, 'docker ps --all')).not.toContain('multi');
 });
