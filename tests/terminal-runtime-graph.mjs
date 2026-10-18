@@ -5,6 +5,7 @@ import { createDefaultKubernetesState } from '../terminal-kubernetes-state.js';
 import { createKubectlCommand } from '../terminal-kubernetes-command.js';
 import { executeDockerCommand, repairDockerState } from '../terminal-docker-command.js';
 import { createTerminalFidelity } from '../terminal-fidelity.js';
+import {practiceClasses} from '../laboratorios/lab-groups.mjs';
 
 const names=['linux','docker','kubernetes'];
 const read=path=>readFile(new URL('../'+path,import.meta.url),'utf8');
@@ -49,12 +50,12 @@ for(const name of names){
   assert.ok(Object.keys(mod.completions||{}).length>0,'Completions no aisladas: '+name);
   const challenges=mod.createChallenges({state:{},getNode(){return null;}});
   assert.ok(challenges.length>=14,'Catálogo de prácticas incompleto: '+name);
-  assert.ok(challenges.every(c=>c.badge&&c.title&&c.goal&&typeof c.check==='function'),'Contrato de práctica inválido: '+name);
+  assert.ok(challenges.every((c,index)=>c.title&&c.goal&&typeof c.check==='function'&&practiceClasses(name,c,index).every(Number.isInteger)),'Contrato de práctica por clase inválido: '+name);
   assert.ok(Buffer.byteLength(source)<30000,'Runtime demasiado grande: '+name);
 }
 
 assert.doesNotMatch(core,/NIVEL 1 · INSTALACIÓN|CKA · CONTEXTO|PREGUNTA 1 · RESCATE/);
-assert.match(sources.linux,/PREGUNTA 1 · RESCATE/);
+assert.match(sources.linux,/linuxPracticeChecks/);
 assert.doesNotMatch(sources.docker,/NIVEL 1 · INSTALACIÓN|NIVEL 1 · DAEMON/);
 assert.match(sources.docker,/NIVEL 1 · IMÁGENES/);
 assert.match(sources.docker,/docker-ce-cli/);

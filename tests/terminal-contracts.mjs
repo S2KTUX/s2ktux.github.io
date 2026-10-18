@@ -86,7 +86,7 @@ const contracts = [
   ['Docker ready from first prompt', /MODE==='docker'[\s\S]*?services\.docker=\{active:true,enabled:true/.test(core) && /dockerInstalled=MODE==='docker'/.test(core) && /docker-ce/.test(runtimeDocker) && !/NIVEL 1 · INSTALACIÓN|NIVEL 1 · DAEMON/.test(runtimeDocker)],
   ['Docker registry transfer realism', /const registryCatalog=/.test(core) && /const pullImage=/.test(core) && /Pulling fs layer/.test(core) && /Downloading  \[/.test(core) && /Extracting   \[/.test(core) && /Downloaded newer image/.test(core)],
   ['Docker bare latest references', /!String\(ref\)\.includes\(':'\)&&item\.repo===ref&&item\.tag==='latest'/.test(core) && /docker save/.test(core)],
-  ['Docker progressive practices', (runtimeDocker.match(/badge:/g)||[]).length===15 && /DOCKERFILE/.test(runtimeDocker) && /COMPOSE/.test(runtimeDocker) && /\/root\/site/.test(runtimeDocker) && /\/var\/lib\/app/.test(runtimeDocker)],
+  ['Docker progressive practices', (runtimeDocker.match(/check:checks\[/g)||[]).length===15 && /Dockerfile/.test(runtimeDocker) && /docker compose/.test(runtimeDocker) && /\/root\/site/.test(runtimeDocker) && /\/var\/lib\/app/.test(runtimeDocker) && /loadLearningChallenges/.test(runtimeDocker)],
   ['Fresh machine on every selection', /clearModeSession\(selected\)/.test(page)],
   ['Kubernetes lifecycle tools', /args\[0\]==='init'/.test(runtimeKubernetes) && /args\[0\]==='join'/.test(runtimeKubernetes) && /args\[0\]==='reset'/.test(runtimeKubernetes) && /sub==='stats'/.test(runtimeKubernetes) && /sub==='exec'/.test(runtimeKubernetes)],
 ];
