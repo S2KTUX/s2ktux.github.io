@@ -27,10 +27,6 @@ a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,s
 #saved-status:empty {display:none}
 .exercise-choice {display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:18px 0}
 .exercise-choice select {max-width:100%;font:inherit;color:var(--head);background:var(--surface2);border:1px solid var(--line);padding:9px}
-#exercise-card h2 {font:17px/1.5 'Space Mono',monospace;margin:18px 0 8px}
-#exercise-card p {line-height:1.7;margin:0 0 18px}
-#exercise-actions {margin:16px 0 0}
 #feedback p {margin:8px 0;font-size:14px}
-#solution pre {overflow:auto;padding:18px;background:var(--surface2);border:1px solid var(--line);line-height:1.7}
 [hidden] {display:none!important}
 @media(max-width:600px){.docker-page h1{font-size:17px}.docker-page{padding:20px 12px}}

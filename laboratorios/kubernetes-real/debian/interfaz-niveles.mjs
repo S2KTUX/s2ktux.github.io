@@ -1,8 +1,10 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase} from './ejercicios-niveles.mjs';
+import {ejerciciosClase} from './ejercicios-niveles.mjs?v=20261018-solutions';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs';
 import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs';
+import {renderSolutions} from '../../lab-solutions.mjs?v=20261018';
+import {solutionsFor} from '../../solution-options.mjs?v=20261018';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
@@ -60,12 +62,12 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  function render(){
   globalThis.kubeDebianExerciseResult=null;
   const current=task(),items=tasks();$('class-empty').hidden=!!current;
-  $('exercise-title').hidden=$('exercise-prompt').hidden=$('exercise-help').hidden=!current;
+  $('exercise-title').hidden=$('exercise-prompt').hidden=$('exercise-solution-toggle').hidden=!current;
   $('exercise-select').hidden=$('exercise-count').hidden=!current;
   $('exercise-title').textContent=current?.title||'';$('exercise-prompt').textContent=current?.prompt||'';
-  $('exercise-solution').textContent=current?.solutionDisplay||current?.solution||'';
+  renderSolutions($('exercise-solution'),current?solutionsFor('kubernetes',current):[]);
   $('exercise-count').textContent=current?'Práctica '+(Number($('exercise-select').value)+1)+' / '+items.length:'';
-  $('exercise-help').open=false;$('exercise-result').textContent='';delete $('exercise-result').dataset.result;$('exercise-copy').textContent='Copiar comandos';update();
+  $('exercise-help').hidden=true;$('exercise-solution-toggle').textContent='Ver solución';$('exercise-solution-toggle').setAttribute('aria-expanded','false');$('exercise-result').textContent='';delete $('exercise-result').dataset.result;update();
  }
  function update(){
   const state=getState(),blocked=state.busy||switching||checking,current=task();
@@ -75,19 +77,22 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   $('mode-practice').disabled=$('mode-exam').disabled=blocked;
   $('change-lab').disabled=$('return-lab').disabled=blocked;$('return-lab').hidden=!entered;
   $('enter-lab').textContent=!nivelDisponible(preview)||!claseDisponible(previewClass)?'Próximamente':(preview===level&&state.nodeCount>0?'Volver al laboratorio ':'Abrir laboratorio ')+NIVELES[preview].name.toLowerCase();
-  $('exercise-class-select').disabled=$('exercise-select').disabled=blocked;
+  $('exercise-class-select').disabled=$('exercise-select').disabled=checking||switching;
+  $('exercise-solution-toggle').disabled=checking;
   $('exercise-check').hidden=!current;$('exercise-check').disabled=blocked||!state.initialized||!current;
-  $('exercise-prepare').hidden=!current?.prepare?.length;$('exercise-prepare').disabled=blocked||!state.initialized||prepared.has(current?.id);
-  $('start-cluster').hidden=state.busy||state.initialized||state.nodeCount>0;
+  const needsPreparation=!!current?.prepare?.some(command=>command!==current.preflight);
+  $('exercise-setup').hidden=$('exercise-prepare').hidden=!needsPreparation;$('exercise-prepare').disabled=blocked||!state.initialized||prepared.has(current?.id);
+  $('start-cluster').hidden=false;
   $('start-cluster').disabled=blocked||learningMode!=='practice'||!nivelDisponible(level)||!claseDisponible(activeClass)||state.nodeCount>0;
-  $('nodes').hidden=state.busy&&!state.initialized;$('lab-idle').hidden=state.nodeCount>0||state.busy;
+  $('nodes').hidden=false;$('lab-idle').hidden=$('nodes').childElementCount>0;
+  $('node-controls').hidden=state.nodeCount===0;
   document.querySelector('.lab-controls').setAttribute('aria-busy',String(state.busy));
  }
  async function enter(){
   if(learningMode!=='practice'||!nivelDisponible(preview)||!claseDisponible(previewClass)||getState().busy||switching||checking)return;
   if(preview!==level){const href=new URL(urlNivel(location.href,preview));href.searchParams.set('clase',String(previewClass));href.searchParams.set('enter','1');await requestChange(preview,href.href);return;}
   activeClass=previewClass;populateTasks();const href=new URL(location.href);href.searchParams.set('clase',String(activeClass));history.replaceState(history.state,'',href.href);
-  showWorkspace();if(!getState().nodeCount&&!getState().initialized)start();update();
+  showWorkspace();update();
  }
  $('enter-lab').onclick=()=>enter();
  function selectLearningMode(value){
@@ -109,7 +114,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  $('change-lab').onclick=()=>{showEntry();$('stage-'+level).focus();};
  $('return-lab').onclick=()=>{showWorkspace();$('change-lab').focus();};
  $('exercise-class-select').onchange=event=>{
-  const value=Number(event.target.value);if(!claseDisponible(value)||getState().busy||switching||checking||!clasesNivel(level).some(lesson=>lesson.number===value))return;
+  const value=Number(event.target.value);if(!claseDisponible(value)||switching||checking||!clasesNivel(level).some(lesson=>lesson.number===value))return;
   activeClass=value;remembered.set(level,value);const href=new URL(location.href);href.searchParams.set('clase',String(value));history.replaceState(history.state,'',href.href);populateTasks();
  };
  $('exercise-select').onchange=render;
@@ -123,7 +128,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   finally{checking=false;setBusy(false);update();}
  }
  $('exercise-check').onclick=()=>exercise(false);$('exercise-prepare').onclick=()=>exercise(true);
- $('exercise-copy').onclick=async()=>{if(!task())return;try{await navigator.clipboard.writeText(task().solutionDisplay||task().solution);$('exercise-copy').textContent='Copiado';}catch{$('exercise-copy').textContent='Selecciona los comandos para copiarlos';}};
+ $('exercise-solution-toggle').onclick=()=>{const body=$('exercise-help');body.hidden=!body.hidden;$('exercise-solution-toggle').textContent=body.hidden?'Ver solución':'Ocultar solución';$('exercise-solution-toggle').setAttribute('aria-expanded',String(!body.hidden));};
  const dialog=$('switch-level-dialog');for(const button of dialog.querySelectorAll('[data-switch-action]'))button.onclick=()=>dialog.close(button.dataset.switchAction);
  async function choose(destination){
   $('switch-level-title').textContent=destination?'Entrar en la etapa '+NIVELES[destination].stage:'Salir del laboratorio';

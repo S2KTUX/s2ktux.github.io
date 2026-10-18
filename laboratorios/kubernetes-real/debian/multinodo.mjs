@@ -7,7 +7,7 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=7812e150edb9ff57';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=1720a2d16bd71f18';
 import {comprobarSaludInicial} from './salud-inicial.mjs';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs';
@@ -28,7 +28,7 @@ const workerComponents=factoryVersion==='v8'?'v7':new URLSearchParams(location.s
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
 const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
 function updateControls(){save.disabled=busy||!initialized;reset.disabled=busy||!readSaved;add.disabled=true;add.hidden=true;start.disabled=busy||nodes.size>0||!releaseAvailable();levelUI?.update();}
-if(progressive){document.querySelector('h1').textContent='Kubernetes';start.textContent='Iniciar laboratorio';add.textContent='Añadir primer worker';}
+if(progressive){document.querySelector('h1').textContent='Laboratorio Kubernetes';start.textContent='Iniciar laboratorio';add.textContent='Añadir primer worker';}
 globalThis.kubeDebianClusterNodes=nodes;globalThis.kubeDebianClusterErrors=[];globalThis.kubeDebianClusterReady=false;globalThis.kubeDebianClusterStages=[];
 globalThis.kubeDebianClusterProfile={level,factoryVersion,workerComponents,progressive};
 function fail(error){kubeDebianClusterReady=false;kubeDebianClusterErrors.push(String(error.message||error));status.textContent='No se pudo completar la operación: '+(error.message||error)+'. Puedes usar Reset o cambiar de modo; tus guardados no se borran automáticamente.';}
@@ -46,7 +46,7 @@ async function value(id,command){
 }
 async function createNode(id,query,restore){
  const frame=document.createElement('iframe');frame.className='node-frame';frame.title='Terminal '+id;frame.hidden=id!=='controlplane';frame.src='index.html?base='+(factoryVersion==='v8'?'admin-v2':['v5','v6'].includes(factoryVersion)?'v6':factoryVersion==='v4'?'v5':'v4')+'&kube=1&components='+(id==='controlplane'?'v7':workerComponents)+'&cluster=1&factory='+factoryVersion+'&'+query+(classicalTls?'&tls=classical':'')+(schedulingAPI?'&use-scheduling-api=1':'');
- const loaded=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(Error('No se cargó '+id));});document.querySelector('#nodes').append(frame);await loaded;
+ const loaded=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(Error('No se cargó '+id));});document.querySelector('#nodes').append(frame);levelUI?.update();await loaded;
  const child=frame.contentWindow;nodes.set(id,{id,frame,window:child});levelUI?.update();
  const moduleDeadline=Date.now()+30000;while(!child.kubeDebianProfile){if(Date.now()>moduleDeadline)throw Error('No se inicializó '+id);await new Promise(r=>setTimeout(r,100));}
  const css=child.document.createElement('style');css.textContent='.site-header,.site-footer,main>h1,main>p,main>.controls{display:none}.docker-page{margin:0;padding:0}';child.document.head.append(css);

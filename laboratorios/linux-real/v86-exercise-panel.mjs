@@ -1,4 +1,6 @@
-import { exercises } from './v86-exercises.mjs?v=20261009-intuitive';
+import { exercises } from './v86-exercises.mjs?v=20261018-solutions';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261018';
+import {solutionsFor} from '../solution-options.mjs?v=20261018';
 
 export function mountExercisePanel(root, runCheck) {
   const select = root.querySelector('select');
@@ -8,8 +10,6 @@ export function mountExercisePanel(root, runCheck) {
   const check = root.querySelector('[data-exercise-check]');
   const toggle = root.querySelector('[data-exercise-solution]');
   const solution = root.querySelector('[data-exercise-solution-body]');
-  const explanation = root.querySelector('[data-exercise-explanation]');
-  const code = root.querySelector('pre code');
   const feedback = root.querySelector('[data-exercise-feedback]');
   const card = root.querySelector('[data-exercise-card]');
   let enabled = false, checking = false, generation = 0;
@@ -40,8 +40,7 @@ export function mountExercisePanel(root, runCheck) {
     if(!exercise){card.hidden=true;feedback.replaceChildren();solution.hidden=true;sync();return;}
     title.textContent = exercise.title; goal.textContent = exercise.goal;
     note.textContent = exercise.note || ''; note.hidden = !exercise.note;
-    explanation.textContent = exercise.explanation;
-    code.textContent = exercise.solution;
+    renderSolutions(solution,solutionsFor('linux',exercise));
     solution.hidden = true; toggle.textContent = 'Ver solución'; toggle.setAttribute('aria-expanded', 'false');
     feedback.replaceChildren(); feedback.textContent='Haz la práctica en Linux y comprueba el resultado cuando termines.';
     feedback.dataset.result = 'pending'; sync();

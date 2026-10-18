@@ -31,13 +31,14 @@ for(const [path,mode,count] of [['/laboratorios/docker-real/','docker',15],['/la
   await expect(link).toHaveCount(1);await expect(link).toBeVisible();
   expect(await link.evaluate(node=>parseFloat(getComputedStyle(node.closest('.lab-information')).fontSize))).toBeLessThanOrEqual(12);
   if(mode==='docker')await expect(page.locator('.lab-information')).toContainText('32 bits');
-  await expect(link).toHaveAttribute('target','_blank');
-  const opened=page.waitForEvent('popup');await link.click();const alternative=await opened;
+  expect(await link.getAttribute('target')).toBeNull();const pages=page.context().pages().length;
+  await expect(page.locator('main')).not.toContainText('Los ejercicios comunes comparten enunciado');
+  await link.click();const alternative=page;
   await alternative.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   await expect(alternative.locator('#chal-select option')).toHaveCount(count);await expect(alternative.locator('#terminal-shell')).toBeVisible();
   if(mode==='docker')expect(await submit(alternative,'echo ALTERNATIVA_OK')).toContain('ALTERNATIVA_OK');
   else await expect(alternative.locator('#term-prompt')).toContainText('login:');
-  await expect(page).toHaveURL(new RegExp(path.replaceAll('.','\\.')+'$'));await alternative.close();
+  await expect(page).toHaveURL(new RegExp('terminal.html\\?mode='+mode+'$'));expect(page.context().pages()).toHaveLength(pages);
   expect(errors).toEqual([]);
  });
 }

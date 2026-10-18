@@ -1,5 +1,5 @@
 import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs';
-import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs';
+import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261018-solutions';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
 import {claseDisponible} from './disponibilidad-curso.mjs';

@@ -27,7 +27,8 @@ export const workerReady='kubectl wait --for=condition=Ready node/cka-w1 --timeo
 export function crearPractica(number,letter,title,prompt,solution,check,options={}){
  const id='c'+String(number).padStart(2,'0')+'-'+letter,ns='p'+String(number).padStart(2,'0')+letter;
  let solutionDisplay=solution;for(const [command,display]of readable)solutionDisplay=solutionDisplay.split(command).join(display);
- return Object.freeze({id,classNumber:number,title,prompt,solution,solutionDisplay,check:exigirJSON(check),preflight:API,validation:'external-report',...options,
+ let alternativeDisplay=options.alternative;for(const [command,display]of readable)if(alternativeDisplay)alternativeDisplay=alternativeDisplay.split(command).join(display);
+ return Object.freeze({id,classNumber:number,title,prompt,solution,solutionDisplay,alternativeDisplay,check:exigirJSON(check),preflight:API,validation:'external-report',...options,
   prepare:Object.freeze([API,workerReady,'test -z "$(kubectl get namespace '+ns+' --ignore-not-found -o name)"','kubectl create namespace '+ns,'kubectl -n '+ns+' wait --for=create serviceaccount/default --timeout=90s',...options.prepare||[]]),
   cleanup:'kubectl delete namespace '+ns+' --ignore-not-found --wait=true --timeout=120s'+(options.cleanup?'\n'+options.cleanup:'')});
 }

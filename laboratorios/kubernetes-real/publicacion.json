@@ -78,13 +78,13 @@
     },
     {
       "path": "debian/ejercicios-niveles.mjs",
-      "bytes": 3983,
-      "sha256": "168a0ee2e57ab674e005d91c3f87419a15cfbc5f92296f1cdb4049c48686281d"
+      "bytes": 4004,
+      "sha256": "c04e1faf642a55ff32999101379578f1525f69eceda33adcc4a80b438c8e2747"
     },
     {
       "path": "debian/entrada-laboratorio.mjs",
       "bytes": 611,
-      "sha256": "596cbf06e39a7fdc9e9b794170f94285ced3d2c2a2f35a60709f3af58eb4a117"
+      "sha256": "f27522b6ed9a0f216b84046738bd5795e42f2d5064f7b5a98ad9c91c774f6639"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -118,8 +118,8 @@
     },
     {
       "path": "debian/interfaz-niveles.mjs",
-      "bytes": 14140,
-      "sha256": "7812e150edb9ff573382e7f665e3a24191fa099ce4cf6c18ab45a5321a6c1154"
+      "bytes": 14479,
+      "sha256": "1720a2d16bd71f18355687396eabeec5788f46a470d1f6b8bfe8bd394f44cdba"
     },
     {
       "path": "debian/kernel-perfil.mjs",
@@ -143,13 +143,13 @@
     },
     {
       "path": "debian/multinodo.html",
-      "bytes": 6840,
-      "sha256": "6d450e42473fe0131f9c3f71a66645d84d2b60643ddda612ced71d65b7cf4446"
+      "bytes": 7279,
+      "sha256": "f103f452b34378afee392d6e26d3e250beab7058aebb35baec603b05be1481af"
     },
     {
       "path": "debian/multinodo.mjs",
-      "bytes": 19949,
-      "sha256": "9a2f96ed8e425ef4008b101daa31177f5db92f82cca1b2c82c30c459376ba3a3"
+      "bytes": 19979,
+      "sha256": "a60068c944e26cd10513a9ad585356da4f77cf3b0093f5f4503c2f1cf22f0df7"
     },
     {
       "path": "debian/niveles.css",
@@ -318,13 +318,13 @@
     },
     {
       "path": "debian/ejercicios-intermedios.mjs",
-      "bytes": 14250,
-      "sha256": "876b656ec6dbc7d877d730742fd2d06e3258495c7ca787c03cbd8ff266cb0446"
+      "bytes": 14271,
+      "sha256": "4429db9a11fb40de5fbef9dd4432e97281654136796eae5e8802e673b463cdc6"
     },
     {
       "path": "debian/herramientas-practicas.mjs",
-      "bytes": 3184,
-      "sha256": "3127bc004c1654c485da887f18fd141d442b9b90814b5f5cdadfecb030b22fc5"
+      "bytes": 3376,
+      "sha256": "aca1da16a8f33e90deba97e88f97cd4272dbfb4b9914ef2b331c693709b817f6"
     },
     {
       "path": "debian/criterios-equivalentes.mjs",
