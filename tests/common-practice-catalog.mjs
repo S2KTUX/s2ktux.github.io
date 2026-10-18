@@ -34,4 +34,4 @@ const copy=commonPractice('linux',original);
 assert.equal(original.title,'Anterior');assert.equal(copy.check,checker);assert.equal(copy.checks,checks);assert.equal(copy.solution,'original');assert.equal(copy.note,'original');
 for(const id of ['sim-02','sim-03','sim-07','sim-10','sim-11','sim-15','sim-16','sim-17','sim-18','sim-20','sim-21'])assert.equal(realLinux.find(item=>item.id===id).commonId,undefined,'Conservar variante específica '+id);
 for(const id of ['alpine','build','compose','multistage','entorno','salud'])assert.equal(realDocker.find(item=>item.id===id).commonId,undefined,'Conservar variante específica '+id);
-console.log('Enunciados idénticos: 10 Linux y 11 Docker; se mantienen 21/44 y 15/30 prácticas, sus correctores propios y el examen de 22 tareas.');
+console.log('Enunciados comunes: 10 Linux y 11 Docker; catálogos reales de 55/32 prácticas, introducciones por clase y examen RHCSA de 22 tareas separado.');

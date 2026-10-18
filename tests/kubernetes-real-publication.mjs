@@ -23,4 +23,4 @@ assert.doesNotMatch(page,/Versión preliminar/);assert.match(page,/versión simu
 assert.match(await readFile(new URL('../sw.js',import.meta.url),'utf8'),/pathname\.startsWith\('\/laboratorios\/kubernetes-real\/'\)/);
 assert.match(await read('perfil-motor.mjs'),/checked\(recursoPesado\(wasm\)/);
 assert.match(await read('disco-kubernetes.mjs'),/packed\.length!==part\.packedBytes\|\|await digest\(packed\)!==part\.packedSha256/);
-console.log('✓ Kubernetes beta: interfaz íntegra, recursos inmutables, sin perfiles/informes privados y sin sustituir la terminal actual.');
+console.log('✓ Kubernetes: entrada principal real, interfaz íntegra, recursos inmutables y sin perfiles o informes privados publicados.');

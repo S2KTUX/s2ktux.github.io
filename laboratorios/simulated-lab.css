@@ -8,7 +8,7 @@
 .simulated-lab-page #practice-title::-webkit-details-marker{display:none}
 .simulated-lab-page #practice-panel>div{padding:0!important}
 .simulated-lab-page #chal-progress,.simulated-lab-page #chal-congrats,.simulated-lab-page #terminal-keyboard-help,.simulated-lab-page #practice-panel .u-inline-904cf8e39d{display:none}
-.simulated-lab-page #chal-select{width:100%;margin:0}
+.simulated-lab-page #chal-select{width:100%;margin:0;box-shadow:none;appearance:auto;-webkit-appearance:menulist}
 .simulated-lab-page #chal-body{margin:0;padding:0;border:0;box-shadow:none;background:transparent}
 .simulated-lab-page #chal-body>div:first-child{display:none}
 .simulated-lab-page #chal-body [data-practice-title]{font:14px/1.7 'Press Start 2P',monospace!important;margin:24px 0 18px!important}

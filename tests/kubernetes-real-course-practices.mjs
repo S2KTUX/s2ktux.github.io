@@ -39,4 +39,4 @@ assert.match(exigirJSON('test "$(kubectl get --raw=/readyz)" = ok && kubectl get
 assert.match(comprobarSaludInicial,/consecutive/);assert.doesNotMatch(comprobarSaludInicial,/restart|reset|patch|delete|apply/);
 const page=await readFile(new URL('../laboratorios/kubernetes-real/debian/multinodo.html',import.meta.url),'utf8');
 assert.match(page,/id="course-index"/);assert.doesNotMatch(page,/id="environment-select"/);assert.match(page,/id="exercise-class-select"/);
-console.log('Kubernetes: índice de 35 clases, 24 contratos de la 00 a la 11 y resultados correcto/incompleto/no verificado protegidos; no acredita ejecución nativa.');
+console.log('Kubernetes: índice de 35 clases, 31 prácticas disponibles de la 00 a la 11 y resultados correcto/incompleto/no verificado protegidos; este test no acredita ejecución nativa.');
