@@ -70,8 +70,8 @@ test('Kubernetes · examen separado, español e inglés y sin un intento fictici
  await expect(page.locator('#exam-configuration')).toHaveAttribute('lang','en');await page.locator('[data-exam-language=es]').click();await expect(page.locator('#exam-heading')).toHaveText('Simulacro CKA');
  const gaps=await page.evaluate(()=>({heading:document.querySelector('#exam-description').getBoundingClientRect().top-document.querySelector('.exam-heading-row').getBoundingClientRect().bottom,note:document.querySelector('#exam-language-note').getBoundingClientRect().top-document.querySelector('#start-exam').getBoundingClientRect().bottom}));
  expect(gaps.heading).toBeGreaterThanOrEqual(28);expect(gaps.note).toBeGreaterThanOrEqual(28);
- const examStyle=await page.locator('.exam-sheet').evaluate(node=>({shadow:getComputedStyle(node).boxShadow,padding:parseFloat(getComputedStyle(node.querySelector('.exam-body')).paddingTop)}));
- expect(examStyle.shadow).not.toBe('none');expect(examStyle.padding).toBeGreaterThanOrEqual(28);
+ const examStyle=await page.locator('.exam-sheet').evaluate(node=>({shadow:getComputedStyle(node).boxShadow,gap:parseFloat(getComputedStyle(node.querySelector('.exam-body')).columnGap),separator:parseFloat(getComputedStyle(node.querySelector('.exam-actions')).borderLeftWidth)}));
+ expect(examStyle.shadow).toBe('none');expect(examStyle.gap).toBeGreaterThanOrEqual(32);expect(examStyle.separator).toBe(2);
  const languageColors=await page.locator('[data-exam-language]').evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).backgroundColor));expect(languageColors[0]).not.toBe(languageColors[1]);
  await page.evaluate(async()=>{await document.querySelector('#start-cluster').onclick();await document.querySelector('#enter-lab').onclick();});await expect(page.locator('#nodes iframe')).toHaveCount(0);
  await page.goto(root+'debian/multinodo.html?mode=course&level=inicial&view=exam&enter=1');
