@@ -13,7 +13,9 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  const remembered=new Map([[level,activeClass]]);
  document.title='Kubernetes · '+config.title+' | S2KTUX';
  $('mode-stamp').textContent='Modo práctica · '+config.name;
- $('lab-course-note').textContent='* Clases '+config.classes+' del curso.';
+ const levelQuestions=clasesNivel(level).reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
+ const levelNodes=config.nodes===1?'Un nodo':config.nodes===2?'Control plane y un worker':'Control plane y dos workers';
+ $('lab-course-note').textContent='* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
  $('course-intro').hidden=true;$('course-progression').hidden=true;$('mode-topology').hidden=true;$('change-lab').hidden=false;
  $('exercise-class-select').replaceChildren(...clasesNivel(level).map(lesson=>{
   const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number);option.textContent=lesson.id+' — '+lesson.title+(option.disabled?' · Próximamente':'');return option;
@@ -28,17 +30,18 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
    button.id='stage-'+key;
    const name=document.createElement('span');name.dataset.levelName='';name.className='level-name';name.textContent=item.name;
    const summary=document.createElement('span');summary.className='level-summary';summary.id='stage-summary-'+key;summary.textContent=summaries[key];
-   button.setAttribute('aria-label',item.name);button.setAttribute('aria-describedby',summary.id);button.append(name,summary);button.onclick=()=>browse(key);return button;
+   const range=document.createElement('small');range.className='level-range';range.id='stage-range-'+key;range.textContent='Clases '+item.classes;
+   button.setAttribute('aria-label',item.name);button.setAttribute('aria-describedby',summary.id+' '+range.id);button.append(name,summary,range);button.onclick=()=>browse(key);return button;
   }));
  }
  function renderEntry(){
-  const selected=NIVELES[preview],lessons=clasesNivel(preview),available=nivelDisponible(preview)&&claseDisponible(previewClass);
+  const available=nivelDisponible(preview)&&claseDisponible(previewClass);
   $('lab-entry').dataset.preview=preview;document.querySelector('main').dataset.level=preview;
   for(const button of $('course-index').querySelectorAll('[data-choose-stage]')){
    button.setAttribute('aria-pressed',String(button.dataset.chooseStage===preview));
   }
-  const count=lessons.reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
-  $('entry-intro').textContent=available?(selected.nodes===1?'Un nodo':'Control plane y un worker')+' · '+count+' preguntas disponibles.':'Próximamente. Este laboratorio o la clase solicitada todavía no está disponible.';
+  $('entry-intro').textContent=available?'':'Próximamente. Este laboratorio o la clase solicitada todavía no está disponible.';
+  $('entry-intro').hidden=available;
   update();
  }
  function browse(value){

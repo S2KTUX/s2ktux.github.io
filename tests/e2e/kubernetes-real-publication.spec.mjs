@@ -18,11 +18,13 @@ test('Kubernetes · primero modo y después exactamente tres laboratorios',async
  await page.locator('#mode-practice').click();await expect(page.locator('#practice-configuration')).toBeVisible();
  await expect(page.locator('[data-choose-stage]')).toHaveCount(3);await expect(page.locator('[data-class]')).toHaveCount(0);
  await expect(page.getByText('¿Cómo quieres practicar?',{exact:true})).toHaveCount(0);
- await expect(page.locator('#entry-class-outline')).toHaveCount(0);await expect(page.locator('#lab-entry')).not.toContainText('Clases 00–06');
- await expect(page.locator('[data-level-name]')).toHaveText(['Inicial','Intermedio','Avanzado']);await expect(page.locator('#entry-intro')).toContainText('14 preguntas');
+ await expect(page.locator('#entry-class-outline')).toHaveCount(0);
+ await expect(page.locator('[data-level-name]')).toHaveText(['Inicial','Intermedio','Avanzado']);await expect(page.locator('#entry-intro')).toBeHidden();
+ await expect(page.locator('.level-range')).toHaveText(['Clases 00–06','Clases 07–23','Clases 24–34']);
+ await expect(page.locator('#lab-entry')).not.toContainText('14 preguntas disponibles');
  await expect(page.locator('.level-summary')).toHaveText(['Pods, réplicas y servicios.','Configuración, almacenamiento y redes.','Instalación, mantenimiento y diagnóstico.']);
  await page.locator('[data-choose-stage=intermedio]').click();await expect(page.locator('[data-choose-stage=intermedio]')).toHaveAttribute('aria-pressed','true');
- await expect(page.locator('#entry-intro')).toContainText('10 preguntas');await expect(page.locator('#enter-lab')).toHaveText('Abrir laboratorio intermedio');
+ await expect(page.locator('#entry-intro')).toBeHidden();await expect(page.locator('#lab-entry')).not.toContainText('Control plane y un worker');await expect(page.locator('#enter-lab')).toHaveText('Abrir laboratorio intermedio');
  await page.locator('[data-choose-stage=avanzado]').click();
  await expect(page.locator('#enter-lab')).toBeDisabled();await expect(page.locator('#entry-intro')).toContainText('Próximamente');
  await expect(page.locator('#nodes iframe')).toHaveCount(0);expect(errors).toEqual([]);
@@ -31,7 +33,7 @@ test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arr
  await mockBoot(page);await page.goto(root);await page.locator('#mode-practice').click();await page.locator('#enter-lab').click();
  await expect(page.locator('#exercise-class-select')).toHaveValue('0');await expect(page.locator('#exercise-class-select option')).toHaveCount(7);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Inicial');
- await expect(page.locator('#lab-course-note')).toHaveText('* Clases 00–06 del curso.');
+ await expect(page.locator('#lab-course-note')).toHaveText('* Clases 00–06 · Un nodo · 14 preguntas disponibles.');
  expect(await page.locator('#lab-course-note').evaluate(node=>parseFloat(getComputedStyle(node).fontSize))).toBeLessThan(13);
  for(const number of ['1','2','3','4','5','6']){
   await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(2);
@@ -41,6 +43,7 @@ test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arr
  await page.locator('[data-choose-stage=intermedio]').click();await page.locator('#enter-lab').click();
  await expect(page.locator('#exercise-class-select')).toHaveValue('7');await expect(page.locator('#exercise-class-select option')).toHaveCount(17);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Intermedio');
+ await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 10 preguntas disponibles.');
  for(const number of ['8','9','10','11']){await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(2);}
  expect(await page.evaluate(()=>testStarts)).toBe(1);await expect(page.locator('#exercise-class-select option[value="12"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
 });

@@ -5,9 +5,10 @@
 .course-index{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
 .stage-toggle{display:flex;flex-direction:column;gap:12px;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--text);font:inherit;padding:16px 0 20px;cursor:pointer}
 .level-name{font-size:15px}.level-summary{font-size:12px;line-height:1.8;opacity:.8;max-width:25ch}
+.level-range{font-size:10px;line-height:1.6;opacity:.7;margin-top:auto;padding-top:8px}
 .stage-toggle[aria-pressed=true]{border-bottom:3px solid var(--head);padding-bottom:18px;color:var(--head)}
 .stage-toggle[aria-pressed=true] .level-name{font-weight:bold}
-@media(max-width:540px){.course-index{grid-template-columns:1fr;gap:0}.stage-toggle{display:grid;grid-template-columns:100px 1fr;gap:16px;align-items:baseline;padding:18px 0}.stage-toggle[aria-pressed=true]{padding-bottom:16px}.level-summary{max-width:none}}
+@media(max-width:540px){.course-index{grid-template-columns:1fr;gap:0}.stage-toggle{display:grid;grid-template-columns:100px 1fr;gap:6px 16px;align-items:baseline;padding:18px 0}.stage-toggle[aria-pressed=true]{padding-bottom:16px}.level-summary{max-width:none}.level-range{grid-column:2;margin-top:0;padding-top:0}}
 .learning-modes{display:flex;gap:24px;border-bottom:1px solid var(--line);margin-bottom:24px}
 .learning-modes button{border:0;border-bottom:2px solid transparent;background:transparent;color:var(--text);padding:10px 0;font:inherit;font-size:15px;cursor:pointer}
 .learning-modes button[aria-pressed=true]{border-bottom-color:var(--head);color:var(--head)}

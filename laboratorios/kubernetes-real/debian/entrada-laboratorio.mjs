@@ -5,7 +5,7 @@ const publicURL=new URL(location.href);publicURL.search=parametrosPublicos(publi
 history.replaceState(history.state,'',publicURL.href);
 retry.onclick=()=>location.reload();
 try{
- await import('./multinodo.mjs?v=07d4429efc814483');
+ await import('./multinodo.mjs?v=aa205c4d72d6f829');
  status.hidden=true;
 }catch(error){
  status.textContent='No se ha podido cargar el laboratorio. Vuelve a intentarlo.';
