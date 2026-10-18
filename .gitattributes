@@ -1,2 +1,7 @@
 # La imagen, estados y manifiestos se validan por bytes, también en Windows.
 laboratorios/linux-real/** -text
+# La interfaz de Kubernetes tiene hashes calculados sobre texto LF.
+laboratorios/kubernetes-real/**/*.mjs text eol=lf
+laboratorios/kubernetes-real/**/*.html text eol=lf
+laboratorios/kubernetes-real/**/*.css text eol=lf
+laboratorios/kubernetes-real/**/*.json text eol=lf
