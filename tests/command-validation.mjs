@@ -3,6 +3,8 @@ import { commandValidationCoverage, validateCommandInvocation } from '../termina
 
 const accepted = [
   ['ls', ['-la', '/etc'], 'linux'],
+  ['ls', ['-ld', '/datos/olimpo'], 'linux'],
+  ['ls', ['-l', '--directory', '/datos/olimpo'], 'linux'],
   ['find', ['/var', '-name', '*.log', '-mtime', '-1'], 'linux'],
   ['find', ['/tmp', '-exec', 'rm', '{}', ';'], 'linux'],
   ['firewall-cmd', ['--add-service=http', '--permanent'], 'linux'],

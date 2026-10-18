@@ -1577,6 +1577,15 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     return out(text, "#ef8a7a");
   };
   const ok = (t) => out(t, "#8fa876");
+  const creationGroup = (parent) => /[sS]/.test(parent?.mode?.[5] || "")
+    ? parent.group
+    : users[currentUser]?.primary || users[currentUser]?.groups?.[0] || currentUser;
+  const creationDirectoryMode = (parent) => {
+    const mode = maskedMode("777");
+    return /[sS]/.test(parent?.mode?.[5] || "")
+      ? mode.slice(0,5) + (mode[5] === "x" ? "s" : "S") + mode.slice(6)
+      : mode;
+  };
   const virtualWrite = (node, nextContent, label = "") => {
     const available = Math.max(
         0,
@@ -4898,7 +4907,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     if (!parent.children[fn])
       parent.children[fn] = file("", {
         owner: currentUser,
-        group: currentUser,
+        group: creationGroup(parent),
+        mode: maskedMode("666"),
       });
     parent.children[fn].content = nextContent;
     s.parent = parent;
@@ -10260,21 +10270,21 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             );
             return;
           }
-          if (targets.length > 1 && node.type === "dir") {
+          if (targets.length > 1 && node.type === "dir" && !flags.includes("d")) {
             if (targetIndex) out("");
             out(target + ":");
           }
-          if (node.type !== "dir") {
+          if (node.type !== "dir" || flags.includes("d")) {
             const symlink = node.type === "symlink",
               size = symlink
                 ? String(node.target || "").length
-                : node.content
+                : node.type === "dir" ? 4096 : node.content
                   ? node.content.length
                   : 0,
               context = selinuxContextFor(segs, node);
             if (flags.includes("l"))
               out(
-                (symlink ? "l" : "-") +
+                (node.type === "dir" ? "d" : symlink ? "l" : "-") +
                   (node.mode || "rw-r--r--") +
                   "  1 " +
                   (node.owner || "root").padEnd(7) +
@@ -10549,10 +10559,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
                   {},
                   {
                     owner: currentUser,
-                    group: users[currentUser]?.primary || currentUser,
+                    group: creationGroup(cur),
                   },
                 );
-                cur.children[s].mode = maskedMode("777");
+                cur.children[s].mode = creationDirectoryMode(cur);
               }
               cur = cur.children[s];
             }
@@ -10588,10 +10598,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             {},
             {
               owner: currentUser,
-              group: users[currentUser]?.primary || currentUser,
+              group: creationGroup(p),
             },
           );
-          p.children[nm].mode = maskedMode("777");
+          p.children[nm].mode = creationDirectoryMode(p);
         };
         const targets = args.filter((a) => !a.startsWith("-"));
         if (!targets.length) {
@@ -10653,7 +10663,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
           if (!ex)
             p.children[nm] = file("", {
               owner: currentUser,
-              group: users[currentUser]?.primary || currentUser,
+              group: creationGroup(p),
               mode: maskedMode("666"),
             });
           else ex.mtime = Date.now();
@@ -17693,8 +17703,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         existing ||
         file("", {
           owner: currentUser,
-          group:
-            (users[currentUser]?.groups || [currentUser])[0] || currentUser,
+          group: creationGroup(parent),
+          mode: maskedMode("666"),
         });
       if (!existing) parent.children[name] = node;
       if (!item.append) node.content = "";
@@ -17793,8 +17803,9 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             err("-bash: " + target + ": No existe el fichero o el directorio");
           else if (virtualWrite(existing, content, target))
             parent.children[fn] = file(content, {
-              owner: currentUser,
-              group: currentUser,
+              owner: existing?.owner || currentUser,
+              group: existing?.group || creationGroup(parent),
+              mode: existing?.mode || maskedMode("666"),
             });
         } else lines.forEach((l) => out(l));
         save();
@@ -19453,9 +19464,9 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         '<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">' +
         c.badge +
         (chalDone[i] ? "  ✔ completado" : "") +
-        '</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">' +
+        '</div><div data-practice-title style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">' +
         c.title +
-        '</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">' +
+        '</div><div data-practice-goal style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">' +
         c.goal +
         "</div>";
       if (solutionBtn && solutionBody) {

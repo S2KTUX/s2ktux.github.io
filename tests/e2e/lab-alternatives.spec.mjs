@@ -72,6 +72,13 @@ test('Alternativa ligera · notas sin desbordamiento @mobile',async({page})=>{
  }
 });
 
+test('Linux simulado · SGID hereda grupo en archivos y subdirectorios',async({page})=>{
+ await ready(page,'linux');await page.locator('#term-solved').click();await expect(page.locator('#term-prompt')).toContainText('root@');
+ for(const command of ['groupadd cooperacion','mkdir /tmp/sgid-nuevo','chown root:cooperacion /tmp/sgid-nuevo','chmod 2770 /tmp/sgid-nuevo','touch /tmp/sgid-nuevo/tocado',"printf 'dato' > /tmp/sgid-nuevo/redirigido",'mkdir /tmp/sgid-nuevo/sub','mkdir -p /tmp/sgid-nuevo/otra/anidada','touch /tmp/sgid-nuevo/otra/anidada/dato'])await submit(page,command);
+ for(const path of ['tocado','redirigido','otra/anidada/dato'])expect(await submit(page,'ls -l /tmp/sgid-nuevo/'+path)).toMatch(/root\s+cooperacion/);
+ for(const path of ['sub','otra','otra/anidada'])expect(await submit(page,'ls -ld /tmp/sgid-nuevo/'+path)).toMatch(/drwxr-sr-x.*root\s+cooperacion/);
+});
+
 test('Linux simulado · Podman rootless resuelto con comandos desde cero',async({page})=>{
  test.setTimeout(120000);const errors=[];page.on('pageerror',error=>errors.push(error.message));await ready(page,'linux');
  const raw=command=>page.locator('#term-input').evaluate((input,value)=>{input.focus();input.value=value;input.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));},command);

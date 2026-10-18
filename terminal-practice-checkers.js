@@ -35,7 +35,7 @@ export function linuxPracticeChecks(ctx){
  const active=unit=>Boolean(s.services[unit]?.active);
  const pass=(ok,msg)=>result(ok,msg);
  return [
-  ()=>pass(s.rootRecovered&&s.users.root?.password==='titanio7','root recuperado con la contraseña pedida.'),
+  ()=>pass(s.rootRecovered&&s.users.root?.password==='titanio7'&&s.selinux.mode==='Enforcing','root recuperado con la contraseña pedida.'),
   ()=>pass(file('/etc/hostname')?.content.trim()==='nodo1.lab.local'&&s.net.eth0.ip==='192.168.1.20'&&s.net.eth0.prefix===24&&s.net.eth0.gw==='192.168.1.1'&&s.net.eth0.dns==='192.168.1.254','Red y hostname configurados.'),
   ()=>{
    const directory=file('/etc/yum.repos.d');
@@ -45,10 +45,10 @@ export function linuxPracticeChecks(ctx){
   ()=>{
    const configs=[file('/etc/httpd/conf/httpd.conf'),...Object.values(file('/etc/httpd/conf.d')?.children||{})];
    const listens=configs.some(node=>node?.type==='file'&&lines(node.content).some(line=>/^Listen\s+(?:\S+:)?8090(?:\s|$)/i.test(line)));
-   return pass(listens&&s.selinux.mode==='Enforcing'&&s.selinux.httpPorts.includes(8090)&&active('httpd')&&(!originalWeb||sameNode(originalWeb,file('/var/www/html'))),'httpd escucha en el puerto 8090 con SELinux activo.');
+   return pass(listens&&s.selinux.mode==='Enforcing'&&s.selinux.httpPorts.includes(8090)&&active('httpd')&&s.services.httpd.enabled&&(!originalWeb||sameNode(originalWeb,file('/var/www/html'))),'httpd escucha en el puerto 8090 con SELinux activo.');
   },
-  ()=>pass(s.groupsDb.has('olimpo')&&['zeus','hera'].every(user=>s.users[user]?.groups.includes('olimpo'))&&['/sbin/nologin','/usr/sbin/nologin'].includes(s.users.ares?.shell)&&!s.users.ares.groups.includes('olimpo')&&['zeus','hera','ares'].every(user=>s.users[user]?.password==='cambiame1'),'Usuarios y grupos correctos.'),
-  ()=>{const node=file('/datos/olimpo');return pass(node?.type==='dir'&&node.group==='olimpo'&&node.mode?.slice(3,6)==='rws'&&node.mode.slice(6)==='---','Directorio colaborativo con SGID correcto.');},
+  ()=>pass(s.groupsDb.has('olimpo')&&['zeus','hera'].every(user=>s.users[user]?.groups.includes('olimpo')&&s.users[user].primary!=='olimpo')&&['/sbin/nologin','/usr/sbin/nologin'].includes(s.users.ares?.shell)&&!s.users.ares.groups.includes('olimpo')&&['zeus','hera','ares'].every(user=>s.users[user]?.password==='cambiame1'),'Usuarios y grupos correctos.'),
+  ()=>{const node=file('/datos/olimpo');return pass(node?.type==='dir'&&node.owner==='root'&&node.group==='olimpo'&&node.mode==='rwxrws---','Directorio colaborativo con SGID correcto.');},
   ()=>pass(lines(file('/var/spool/cron/hera')?.content).some(line=>{
    const parts=words(line);return parts.length===8&&parts.slice(0,5).every(part=>['*','*/1'].includes(part))&&['logger','/usr/bin/logger','/bin/logger'].includes(parts[5])&&parts.slice(6).join(' ')==='Backup diario';
   })||lines(file('/var/spool/cron/hera')?.content).some(line=>{
@@ -81,7 +81,11 @@ export function linuxPracticeChecks(ctx){
    return pass(expected&&destination?.type==='file'&&textLines(destination.content).join('\n')===expected.join('\n'),'Todas las líneas coincidentes están copiadas.');
   },
   ()=>pass(s.users.apolo?.uid===4120&&s.users.apolo.password==='orquidea3','Usuario apolo (UID 4120) creado.'),
-  ()=>{const rule=s.users.zeus&&ctx.helpers?.sudoersRuleFor?.('zeus','ALL');return pass(rule?.nopasswd&&rule.commands.includes('ALL'),'sudo NOPASSWD configurado para zeus.');},
+  ()=>{
+   const rule=s.users.zeus&&ctx.helpers?.sudoersRuleFor?.('zeus','ALL');
+   const configs=[file('/etc/sudoers'),...Object.entries(file('/etc/sudoers.d')?.children||{}).filter(([name])=>!/[.~]/.test(name)).map(([,node])=>node)];
+   return pass(rule?.nopasswd&&rule.commands.includes('ALL')&&configs.every(node=>node?.type!=='file'||(ctx.helpers?.sudoersSyntaxError?.(node.content)??-1)<0),'sudo NOPASSWD configurado para zeus.');
+  },
   ()=>{
    const lv=s.lvm.lvs.find(item=>item.name==='appvol'&&item.vg==='datavg'&&item.extents===60&&item.fstype==='ext4'&&item.mount==='/mnt/appvol');
    return pass(lv&&persistent(get,'/dev/datavg/appvol','/mnt/appvol','ext4',['/dev/mapper/datavg-appvol',lv.uuid&&'UUID='+lv.uuid,lv.label&&'LABEL='+lv.label]),'LV appvol montado y persistente.');
@@ -94,7 +98,8 @@ export function linuxPracticeChecks(ctx){
   ()=>pass(s.tunedProfile===(ctx.helpers?.tunedRecommendedProfile?.()||'virtual-host'),'Perfil tuned recomendado aplicado.'),
   ()=>{
    const node=file('/usr/local/bin/saludo');
-   const prints=lines(node?.content).some(line=>/^(?:\/usr\/bin\/|\/bin\/)?(?:echo\s+(?:-e\s+)?["']?Hola equipo olimpo["']?|printf\s+(?:["']Hola equipo olimpo(?:\\n)?["']|["']%s(?:\\n)?["']\s+["']Hola equipo olimpo["']))\s*;?$/.test(line));
+   const script=lines(node?.content);
+   const prints=script.length===1&&/^(?:\/usr\/bin\/|\/bin\/)?(?:echo\s+(?:-e\s+)?(?:"Hola equipo olimpo"|'Hola equipo olimpo'|Hola equipo olimpo)|printf\s+(?:"Hola equipo olimpo(?:\\n)?"|'Hola equipo olimpo(?:\\n)?'|(?:"%s(?:\\n)?"|'%s(?:\\n)?')\s+(?:"Hola equipo olimpo"|'Hola equipo olimpo')))\s*;?$/.test(script[0]);
    return pass(node?.type==='file'&&[2,5,8].every(index=>node.mode?.[index]==='x'&&node.mode[index-2]==='r')&&prints,'Script saludo ejecutable por todos.');
   },
   ()=>{
@@ -139,9 +144,9 @@ export function dockerPracticeChecks(ctx){
    const original=image('miweb','v1'),tagged=image('alumno/miweb','1.0');
    return result(original&&tagged&&original.id===tagged.id&&bundle?.format==='s2ktux-docker-image'&&bundle.image?.id===original.id&&bundle.image.repo==='alumno/miweb'&&bundle.image.tag==='1.0','La misma imagen está etiquetada y exportada.');
   },
-  ()=>result(s.dockerVolumes.some(volume=>volume.name==='datos')&&container('persistente')?.mounts?.some(mount=>mount.type==='volume'&&mount.source==='datos'&&mount.target==='/var/lib/app'),'El volumen está montado en la ruta solicitada.'),
+  ()=>result(running('persistente')&&s.dockerVolumes.some(volume=>volume.name==='datos')&&container('persistente')?.mounts?.some(mount=>mount.type==='volume'&&mount.source==='datos'&&mount.target==='/var/lib/app'),'El volumen está montado en la ruta solicitada.'),
   ()=>result(running('bindweb')&&imageIs(container('bindweb')?.image,'nginx')&&port('bindweb',8082)&&file('/root/site/index.html')?.type==='file'&&container('bindweb')?.mounts?.some(mount=>mount.type==='bind'&&mount.source==='/root/site'&&mount.target==='/usr/share/nginx/html'),'Contenido web, bind mount y puerto configurados.'),
-  ()=>result(s.dockerNetworks.some(network=>network.name==='labnet')&&['frontend','backend'].every(name=>running(name)&&container(name)?.networks?.labnet)&&s.history.some(line=>{const tokens=words(line);return tokens[0]==='docker'&&tokens[1]==='network'&&tokens[2]==='inspect'&&tokens.includes('labnet');}),'Aplicación conectada y red comprobada.'),
+  ()=>result(s.dockerNetworks.some(network=>network.name==='labnet')&&imageIs(container('backend')?.image,'nginx')&&['frontend','backend'].every(name=>running(name)&&container(name)?.networks?.labnet)&&s.history.some(line=>{const tokens=words(line);return tokens[0]==='docker'&&tokens[1]==='network'&&tokens[2]==='inspect'&&tokens.includes('labnet');}),'Aplicación conectada y red comprobada.'),
   ()=>result(running('limitado')&&sizeMiB(container('limitado')?.mem)===256&&Number(container('limitado')?.cpus)===0.5&&container('limitado')?.restart==='unless-stopped'&&history('stats'),'Límites aplicados y consumo revisado.'),
   ()=>{
    const spec=file('/root/stack/compose.yaml'),state=s.composeProjects.tienda;

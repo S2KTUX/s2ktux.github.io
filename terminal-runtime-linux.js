@@ -1,4 +1,5 @@
 import {linuxPracticeChecks} from './terminal-practice-checkers.js';
+import {commonPractice} from './practice-common.mjs';
 const packages = [
   'bash','coreutils','glibc','systemd','dnf','rpm','util-linux','findutils',
   'procps-ng','iproute','iputils','NetworkManager','openssh-server',
@@ -50,27 +51,27 @@ export default {
     const checks=linuxPracticeChecks(ctx);
     const s=ctx.state, getNode=ctx.getNode, sudoersRuleFor=ctx.helpers?.sudoersRuleFor||(()=>null);
     return [
-      {badge:'PREGUNTA 1 · RESCATE',title:'Recupera la contraseña de root',goal:'No conoces la contraseña de root. Recupera el acceso desde el arranque y déjala como <b>titanio7</b>.',check:checks[0]},
+      {badge:'PREGUNTA 1 · RESCATE',check:checks[0]},
       {badge:'PREGUNTA 2 · RED',title:'Configura TCP/IP y el hostname',goal:'Configura <code>eth0</code>: IP <b>192.168.1.20</b>, máscara <b>255.255.255.0</b>, gateway <b>192.168.1.1</b>, DNS <b>192.168.1.254</b>. Hostname del sistema: <b>nodo1.lab.local</b>.',check:checks[1]},
       {badge:'PREGUNTA 3 · REPOSITORIOS',title:'Configura los repositorios YUM',goal:'Configura los repos de la distribución: BaseOS en <code>http://mirror.lab.local/rocky9/x86_64/BaseOS</code> y AppStream en <code>http://mirror.lab.local/rocky9/x86_64/AppStream</code>, ambos habilitados y sin comprobación de firma.',check:checks[2]},
-      {badge:'PREGUNTA 4 · SELINUX PUERTO',title:'Haz que httpd escuche en un puerto no estándar',goal:'El servicio <code>httpd</code> debe arrancar y escuchar en el <b>puerto 8090</b> (no cambies los ficheros de /var/www/html). Resuelve el problema de SELinux para que el servicio arranque en ese puerto.',check:checks[3]},
-      {badge:'PREGUNTA 5 · USUARIOS Y GRUPOS',title:'Crea usuarios, grupos y pertenencias',goal:'Crea el grupo <b>olimpo</b>. Usuarios <b>zeus</b> y <b>hera</b> como miembros secundarios de olimpo; <b>ares</b> sin shell interactiva y fuera de olimpo. Los tres con contraseña <b>cambiame1</b>.',check:checks[4]},
-      {badge:'PREGUNTA 6 · DIRECTORIO COLABORATIVO',title:'Crea un directorio colaborativo',goal:'Crea <code>/datos/olimpo</code> con grupo propietario <b>olimpo</b>, accesible solo para miembros de olimpo, y con <b>SGID</b> para que los ficheros nuevos hereden el grupo.',check:checks[5]},
+      {badge:'PREGUNTA 4 · SELINUX PUERTO',check:checks[3]},
+      {badge:'PREGUNTA 5 · USUARIOS Y GRUPOS',check:checks[4]},
+      {badge:'PREGUNTA 6 · DIRECTORIO COLABORATIVO',check:checks[5]},
       {badge:'PREGUNTA 7 · CRON',title:'Tarea de cron para un usuario',goal:'Programa una tarea de cron del usuario <b>hera</b> que se ejecute <b>cada minuto</b> y lance <code>logger "Backup diario"</code>.',check:checks[6]},
-      {badge:'PREGUNTA 8 · TAR BZIP2',title:'Copia de /var/log comprimida con bzip2',goal:'Crea un archivo tar de <code>/var/log</code> comprimido con <b>bzip2</b>, llamado <code>/root/varlog-backup.tar.bz2</code>.',check:checks[7]},
-      {badge:'PREGUNTA 9 · PERMISOS',title:'Copia un fichero y ajusta permisos finos',goal:'Copia <code>/etc/hosts</code> a <code>/var/tmp/hosts</code>. Debe pertenecer a <b>root:root</b>, no ser ejecutable por nadie, que <b>zeus</b> pueda leer y escribir, que <b>ares</b> no pueda ni leer ni escribir, y el resto pueda leer.',check:checks[8]},
+      {badge:'PREGUNTA 8 · TAR BZIP2',check:checks[7]},
+      {badge:'PREGUNTA 9 · PERMISOS',check:checks[8]},
       {badge:'PREGUNTA 10 · CHRONY',title:'Sincroniza la hora con un servidor',goal:'Configura el sistema para sincronizar la hora desde <b>ntp.lab.local</b> y deja el servicio activo.',check:checks[9]},
       {badge:'PREGUNTA 11 · FIND POR USUARIO',title:'Copia los ficheros de un usuario',goal:'Busca todos los ficheros y directorios cuyo propietario sea <b>hera</b> y cópialos dentro de <code>/root/herafiles</code>.',check:checks[10]},
-      {badge:'PREGUNTA 12 · GREP',title:'Extrae cadenas a un fichero',goal:'Busca todas las líneas que contengan <b>rich</b> en <code>/usr/share/dict/words</code> y guárdalas en <code>/root/coincidencias</code>.',check:checks[11]},
-      {badge:'PREGUNTA 13 · USUARIO CON UID',title:'Crea un usuario con UID concreto',goal:'Crea el usuario <b>apolo</b> con UID <b>4120</b> y contraseña <b>orquidea3</b>.',check:checks[12]},
-      {badge:'PREGUNTA 14 · SUDOERS',title:'Permite administrar sin pedir contraseña',goal:'Crea el usuario <b>zeus</b> (si no existe) y configura sudo para que pueda ejecutar comandos <b>sin que se le pida contraseña</b> (por ejemplo con un fichero en <code>/etc/sudoers.d/</code>).',check:checks[13]},
+      {badge:'PREGUNTA 12 · GREP',check:checks[11]},
+      {badge:'PREGUNTA 13 · USUARIO CON UID',check:checks[12]},
+      {badge:'PREGUNTA 14 · SUDOERS',check:checks[13]},
       {badge:'PREGUNTA 15 · LVM POR EXTENTS',title:'Crea un LV con nº de extents',goal:'Crea un volumen lógico <b>appvol</b> en el VG <b>datavg</b>: tamaño <b>60 extents</b>, formatea en <b>ext4</b> y móntalo de forma persistente en <code>/mnt/appvol</code>.',check:checks[14]},
       {badge:'PREGUNTA 16 · SWAP',title:'Crea una swap persistente',goal:'Crea una partición <b>swap de 512M</b> en <code>/dev/sdb</code>, actívala y hazla <b>permanente</b>.',check:checks[15]},
       {badge:'PREGUNTA 17 · REDIMENSIONAR LV',title:'Redimensiona un volumen lógico',goal:'Ajusta un volumen lógico para que quede en <b>~250 MB</b> (se acepta entre 230 y 260 MB reales).',check:checks[16]},
       {badge:'PREGUNTA 18 · TUNED',title:'Aplica el perfil de tuned recomendado',goal:'Aplica el perfil de <code>tuned</code> <b>recomendado</b> para este sistema.',check:checks[17]},
-      {badge:'PREGUNTA 19 · SCRIPT',title:'Crea un script que salude',goal:'Crea un ejecutable <code>/usr/local/bin/saludo</code> que imprima <b>«Hola equipo olimpo»</b> y sea ejecutable por todos.',check:checks[18]},
+      {badge:'PREGUNTA 19 · SCRIPT',check:checks[18]},
       {badge:'PREGUNTA 20 · HTTPD RUTA PERSONALIZADA',title:'Publica una web en un DocumentRoot propio',goal:'Haz que Apache sirva desde <code>/sitio/web</code> (esa ruta no existe: créala). Ajusta el <b>DocumentRoot</b> en la configuración, los permisos, el contexto de <b>SELinux</b> y el <b>firewall</b>, y consíguela con <code>curl localhost</code>.',check:checks[19]},
       {badge:'PREGUNTA 21 · PODMAN ROOTLESS',title:'Contenedor como servicio de un usuario',goal:'Como el usuario <b>hermes</b> (créalo y accede por SSH): descarga <code>httpd</code>, crea el contenedor <b>webapp</b> mapeando <code>/opt/entrada</code>→<code>/data/in</code> y <code>/opt/salida</code>→<code>/data/out</code>, genera su servicio systemd de usuario, habilita <b>linger</b> y déjalo activo con <code>systemctl --user enable --now</code> para que arranque solo tras reiniciar.',check:checks[20]}
-    ];
+    ].map((exercise,index)=>commonPractice('linux',exercise,index));
   }
 };

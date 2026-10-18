@@ -15,7 +15,7 @@ const sources=Object.fromEntries(await Promise.all(names.map(async name=>[name,a
 const modules={};
 const interactiveSharedPaths=['terminal-bootstrap.js','terminal-shell-parser.js','terminal-command-schema.js','terminal-virtual-fs.js','terminal-fidelity.js','terminal-process-state.js','terminal-network-state.js','terminal-docker-state.js','terminal-worker-client.js','terminal-worker-protocol.js','terminal-simulation-worker.js','terminal-xterm-renderer.js','vendor/xterm/xterm.mjs'];
 const interactiveShared=Object.fromEntries(await Promise.all(interactiveSharedPaths.map(async path=>[path,await read(path)])));
-const modeInteractivePaths={linux:['terminal-practice-checkers.js'],docker:['terminal-practice-checkers.js'],kubernetes:['terminal-kubernetes-state.js','terminal-kubernetes-command.js']};
+const modeInteractivePaths={linux:['terminal-practice-checkers.js','practice-common.mjs'],docker:['terminal-practice-checkers.js','practice-common.mjs'],kubernetes:['terminal-kubernetes-state.js','terminal-kubernetes-command.js']};
 const modeInteractive=Object.fromEntries(await Promise.all(names.map(async name=>[name,Object.fromEntries(await Promise.all(modeInteractivePaths[name].map(async path=>[path,await read(path)]))) ])));
 
 for(const name of names){
