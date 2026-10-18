@@ -38,5 +38,9 @@ assert.match(exigirJSON('kubectl get rs replicas -o json | jq -e true'),/object=
 assert.match(exigirJSON('test "$(kubectl get --raw=/readyz)" = ok && kubectl get nodes -o json | jq -e true'),/test "\$\(kubectl get --raw=\/readyz\)" = ok/);
 assert.match(comprobarSaludInicial,/consecutive/);assert.doesNotMatch(comprobarSaludInicial,/restart|reset|patch|delete|apply/);
 const page=await readFile(new URL('../laboratorios/kubernetes-real/debian/multinodo.html',import.meta.url),'utf8');
+const startup=await readFile(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8');
+assert.match(startup,/level==='avanzado'\|\|claseDisponible\(15\)/);
+assert.match(startup,/level!=='inicial'&&claseDisponible\(21\)/);
+for(let number=7;number<=11;number++)for(const task of ejerciciosClase(number))assert.doesNotMatch(task.solution+task.check,/\/opt\/curso/,'Las primeras prácticas intermedias no necesitan los materiales de clases posteriores');
 assert.match(page,/id="course-index"/);assert.doesNotMatch(page,/id="environment-select"/);assert.match(page,/id="exercise-class-select"/);
 console.log('Kubernetes: índice de 35 clases, 31 prácticas disponibles de la 00 a la 11 y resultados correcto/incompleto/no verificado protegidos; este test no acredita ejecución nativa.');

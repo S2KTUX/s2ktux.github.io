@@ -16,7 +16,7 @@ const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
 const level=progressive?nivelDesdeURL(new URLSearchParams(location.search)):'inicial';
 const experimentalFast=new URLSearchParams(location.search).get('fast')==='1';
-const integratedPolicies=new URLSearchParams(location.search).has('policies')?new URLSearchParams(location.search).get('policies')==='1':progressive&&level!=='inicial';
+const integratedPolicies=new URLSearchParams(location.search).has('policies')?new URLSearchParams(location.search).get('policies')==='1':progressive&&level!=='inicial'&&claseDisponible(21);
 if(progressive&&level==='inicial'&&integratedPolicies)throw Error('Las políticas se preparan en el modo intermedio, con workers.');
 const persistentNetwork=new URLSearchParams(location.search).get('persistent-network')==='1';
 const factoryVersion=new URLSearchParams(location.search).get('factory')||(progressive?'v6':'v1');
@@ -116,7 +116,7 @@ start.onclick=async()=>{
   await phase('controlplane','Repartir CPU nativa del sistema y del control plane','systemctl set-property --runtime system.slice CPUWeight=10 && test "$(cat /sys/fs/cgroup/system.slice/cpu.weight)" = 10');
   if(progressive){
    await phase('controlplane',level==='inicial'?'Preparar un único nodo para las primeras prácticas':'Preparar el control plane del modo '+level,permitirAplicacionesIniciales);
-   if(level!=='inicial'){const {prepararMaterialesCurso}=await import('./materiales-curso.mjs');await prepararMaterialesCurso(phase);}
+   if(level!=='inicial'&&(level==='avanzado'||claseDisponible(15))){const {prepararMaterialesCurso}=await import('./materiales-curso.mjs');await prepararMaterialesCurso(phase);}
    await remember('controlplane','cka-cp1','10.77.0.10');
    if(NIVELES[level].nodes>=2){await addWorker('1');await phase('controlplane','Separar coordinación y aplicaciones',separarControlPlane);}
    if(NIVELES[level].nodes>=3)await addWorker('2');
