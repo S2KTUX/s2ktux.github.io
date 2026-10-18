@@ -108,6 +108,9 @@ const initializeDocker=async payload=>{
 
 const executeDocker=async payload=>{
   if(!dockerSession)throw new Error('Docker no está inicializado en el Worker');
+  // Los comandos dentro del contenedor y los montajes se aplican en el hilo UI.
+  // Recuperarlos antes de ejecutar evita resucitar archivos borrados o perder escrituras.
+  for(const key of ['containers','volumes'])if(payload[key]!==undefined)dockerSession[key]=clone(payload[key]);
   if(payload.fs)dockerSession.fs=clone(payload.fs);
   if(Array.isArray(payload.cwd))dockerSession.cwd=payload.cwd.slice();
   if(payload.currentUser)dockerSession.currentUser=payload.currentUser;

@@ -37,6 +37,7 @@ import {
   utf8Bytes,
 } from "./terminal-resource-limits.js?v=20260826-phase5";
 import { createTerminalFidelity } from "./terminal-fidelity.js?v=20260826-block1";
+import {dockerHttpRoot,dockerHttpDocument} from './terminal-docker-http.js';
 import {
   dnfVersionLines,
   evaluateVirtualWrite,
@@ -8044,6 +8045,26 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         ]);
       return;
     }
+    if (c.kind === "docker" && ["wget","curl"].includes(name)) {
+      const raw=args.find(value=>/^https?:\/\//.test(value));
+      let url;try{url=new URL(raw);}catch{err(name+": invalid URL",2);return;}
+      if(url.protocol!=="http:"){err(name+": this simulation supports internal HTTP only",2);return;}
+      if(name==="wget"&&!args.includes("-qO-")&&!args.includes("-O-")&&!(args.includes("-O")&&args[args.indexOf("-O")+1]==="-")&&!args.includes("--output-document=-")){
+        err("wget: use -O- for the simulated HTTP response",2);return;
+      }
+      if(name==="curl"&&args.some(value=>['-o','-O','--output','-d','--data','-X','--request'].includes(value))){err("curl: this simulation supports HTTP GET to stdout only",2);return;}
+      const mine=c.owner?.networks||{},local=['localhost','127.0.0.1'].includes(url.hostname);
+      const peer=local?c.owner:containers.find(item=>Object.entries(item.networks||{}).some(([network,link])=>mine[network]&&(link.ip===url.hostname||(network!=='bridge'&&item.name===url.hostname))));
+      if(!peer){err(name+": could not resolve or reach "+url.hostname,6);return;}
+      if(!peer.running||peer.paused||Number(url.port||80)!==80||!dockerHttpRoot(peer)){
+        err(name+": connection refused by "+url.hostname,7);return;
+      }
+      const body=dockerHttpDocument(peer,url.pathname,path=>{
+        const node=getNode(norm(path));return node?.type==='file'?node.content:undefined;
+      },(volume,path)=>dockerVolumeByName(volume)?.data?.[path]);
+      if(body===undefined){err(name+": HTTP 404 Not Found",22);return;}
+      out(String(body));return;
+    }
     if (name === "id") {
       out("uid=0(root) gid=0(root) groups=0(root)");
       return;
@@ -9126,6 +9147,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       .catch(() => {});
   }
   const applyDockerWorkerResult = async (result) => {
+    let effectStatus = 0;
     acceptDockerState(result.state);
     for (const item of result.outputs || []) {
       if (item.fd === 2) err(item.text, result.status || 1);
@@ -9153,11 +9175,14 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             fs: containerFsView(container),
           };
           try {
+            lastStatus = 0;
+            lastFail = false;
             containerDispatch(
               (effect.args || []).join(" "),
               (effect.args || [])[0],
               (effect.args || []).slice(1),
             );
+            effectStatus = lastStatus || effectStatus;
           } finally {
             containerShell = old;
             setPrompt();
@@ -9175,7 +9200,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             ["GET / 200", "healthcheck ok", "worker heartbeat"][index % 3],
         );
     }
-    lastStatus = Number.isInteger(result.status) ? result.status : 0;
+    lastStatus = effectStatus || (Number.isInteger(result.status) ? result.status : 0);
     lastFail = lastStatus !== 0;
     save();
   };
@@ -9186,6 +9211,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         name,
         args,
         cmd,
+        containers,
+        volumes: dockerVolumes,
         fs,
         cwd,
         currentUser,

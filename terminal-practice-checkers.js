@@ -1,6 +1,7 @@
 // Correctores de estado: no ejecutan soluciones ni modifican la máquina.
 import {publishedPortEntries} from './terminal-network-state.js';
 import {parseDockerImageReference} from './terminal-docker-state.js';
+import {dockerHttpDocument} from './terminal-docker-http.js';
 
 const result=(ok,msg)=>({ok:Boolean(ok),msg:ok?msg:'El estado actual todavía no cumple todos los requisitos del enunciado.'});
 const lines=text=>String(text||'').split(/\r?\n/).map(line=>line.trim()).filter(line=>line&&!line.startsWith('#'));
@@ -128,6 +129,7 @@ export function dockerPracticeChecks(ctx){
  const history=(operation,ref)=>s.history.some(line=>{const tokens=words(line);if(tokens[0]==='sudo')tokens.shift();if(tokens[0]!=='docker')return false;if(tokens[1]==='container')tokens.splice(1,1);return tokens[1]===operation&&(!ref||tokens.slice(2).some(token=>token===ref||container(ref)?.id?.startsWith(token)));});
  const project=name=>s.containers.filter(item=>item.composeProject==='tienda'&&item.composeService===name);
  const composeHistory=operation=>s.history.some(line=>/^\s*(?:docker\s+compose|docker-compose)\b/.test(line)&&words(line).includes(operation));
+ const httpPage=item=>item&&dockerHttpDocument(item,'/',path=>{const node=file(path);return node?.type==='file'?node.content:undefined;},(name,path)=>s.dockerVolumes.find(volume=>volume.name===name)?.data?.[path])!==undefined;
  return [
   ()=>result(image('alpine','latest')&&history('search','alpine'),'Alpine está localizada y descargada.'),
   ()=>result(running('primer-alpine')&&imageIs(container('primer-alpine')?.image,'alpine'),'El primer contenedor está activo.'),
@@ -146,7 +148,7 @@ export function dockerPracticeChecks(ctx){
   },
   ()=>result(running('persistente')&&s.dockerVolumes.some(volume=>volume.name==='datos')&&container('persistente')?.mounts?.some(mount=>mount.type==='volume'&&mount.source==='datos'&&mount.target==='/var/lib/app'),'El volumen está montado en la ruta solicitada.'),
   ()=>result(running('bindweb')&&imageIs(container('bindweb')?.image,'nginx')&&port('bindweb',8082)&&file('/root/site/index.html')?.type==='file'&&container('bindweb')?.mounts?.some(mount=>mount.type==='bind'&&mount.source==='/root/site'&&mount.target==='/usr/share/nginx/html'),'Contenido web, bind mount y puerto configurados.'),
-  ()=>result(s.dockerNetworks.some(network=>network.name==='labnet')&&imageIs(container('backend')?.image,'nginx')&&['frontend','backend'].every(name=>running(name)&&container(name)?.networks?.labnet)&&s.history.some(line=>{const tokens=words(line);return tokens[0]==='docker'&&tokens[1]==='network'&&tokens[2]==='inspect'&&tokens.includes('labnet');}),'Aplicación conectada y red comprobada.'),
+  ()=>result(s.dockerNetworks.some(network=>network.name==='labnet')&&imageIs(container('backend')?.image,'nginx')&&httpPage(container('backend'))&&['frontend','backend'].every(name=>running(name)&&container(name)?.networks?.labnet)&&s.history.some(line=>{const tokens=words(line);return tokens[0]==='docker'&&tokens[1]==='network'&&tokens[2]==='inspect'&&tokens.includes('labnet');}),'Aplicación conectada y red comprobada.'),
   ()=>result(running('limitado')&&sizeMiB(container('limitado')?.mem)===256&&Number(container('limitado')?.cpus)===0.5&&container('limitado')?.restart==='unless-stopped'&&history('stats'),'Límites aplicados y consumo revisado.'),
   ()=>{
    const spec=file('/root/stack/compose.yaml'),state=s.composeProjects.tienda;

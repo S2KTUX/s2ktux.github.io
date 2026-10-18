@@ -48,7 +48,10 @@ test('Docker simulado · las quince soluciones llegan a sus correctores',async({
  for(let index=0;index<challenges.length;index++){
   await test.step(challenges[index].title,async()=>{
    await page.selectOption('#chal-select',String(index));await page.locator('#chal-check').click();await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
-   for(const command of solutionCommands(challenges[index].solution))await submit(page,command);
+   for(const command of solutionCommands(challenges[index].solution)){
+    const output=await submit(page,command);
+    if(command==='docker exec frontend wget -qO- http://backend/')expect(output).toContain('Welcome to nginx');
+   }
    await page.locator('#chal-check').click();await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
   });
  }
@@ -77,6 +80,18 @@ test('Linux simulado · SGID hereda grupo en archivos y subdirectorios',async({p
  for(const command of ['groupadd cooperacion','mkdir /tmp/sgid-nuevo','chown root:cooperacion /tmp/sgid-nuevo','chmod 2770 /tmp/sgid-nuevo','touch /tmp/sgid-nuevo/tocado',"printf 'dato' > /tmp/sgid-nuevo/redirigido",'mkdir /tmp/sgid-nuevo/sub','mkdir -p /tmp/sgid-nuevo/otra/anidada','touch /tmp/sgid-nuevo/otra/anidada/dato'])await submit(page,command);
  for(const path of ['tocado','redirigido','otra/anidada/dato'])expect(await submit(page,'ls -l /tmp/sgid-nuevo/'+path)).toMatch(/root\s+cooperacion/);
  for(const path of ['sub','otra','otra/anidada'])expect(await submit(page,'ls -ld /tmp/sgid-nuevo/'+path)).toMatch(/drwxr-sr-x.*root\s+cooperacion/);
+});
+
+test('Docker simulado · HTTP entre contenedores depende del estado real del modelo',async({page})=>{
+ await ready(page,'docker');
+ for(const command of ['docker network create labnet','docker run -d --name backend --network labnet nginx','docker run -d --name frontend --network labnet alpine sleep 3600'])await submit(page,command);
+ const request='docker exec frontend wget -qO- http://backend/';
+ expect(await submit(page,request)).toContain('Welcome to nginx');expect(await submit(page,'echo $?')).toMatch(/\n0(?:\n|$)/);
+ await submit(page,'docker stop backend');expect(await submit(page,request)).toContain('connection refused');expect(await submit(page,'echo $?')).toMatch(/\n7(?:\n|$)/);
+ await submit(page,'docker start backend');await submit(page,'docker network disconnect labnet frontend');expect(await submit(page,request)).toContain('could not resolve');
+ await submit(page,'docker network connect labnet frontend');expect(await submit(page,'docker exec frontend curl http://backend/')).toContain('Welcome to nginx');
+ await submit(page,'docker exec backend rm /usr/share/nginx/html/index.html');expect(await submit(page,request)).toContain('HTTP 404');expect(await submit(page,'echo $?')).toMatch(/\n22(?:\n|$)/);
+ await page.selectOption('#chal-select','10');await submit(page,'docker network inspect labnet');await page.locator('#chal-check').click();await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
 });
 
 test('Linux simulado · Podman rootless resuelto con comandos desde cero',async({page})=>{

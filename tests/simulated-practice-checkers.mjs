@@ -10,6 +10,7 @@ import {examQuestions} from '../laboratorios/linux-real/v86-exam-data.mjs';
 import {executeDockerCommand} from '../terminal-docker-command.js';
 import {executeLinuxCommand} from '../terminal-linux-command.js';
 import {createTerminalFidelity} from '../terminal-fidelity.js';
+import {dockerImageFiles,dockerHttpDocument} from '../terminal-docker-http.js';
 
 function fixture(){
  const root=createDirectory();
@@ -65,7 +66,7 @@ check('docker',6,f=>f.container('miweb-app',{image:'miweb:v1',ports:'8081:80'}),
 check('docker',7,f=>{f.image('miweb','v1','shared');const tagged=f.image('alumno/miweb','1.0','shared');f.put('/root/miweb-1.0.tar',JSON.stringify({format:'s2ktux-docker-image',image:tagged}));},[f=>f.put('/root/miweb-1.0.tar','vacío'),f=>f.s.images[1].id='otra']);
 check('docker',8,f=>{f.s.dockerVolumes.push({name:'datos'});f.container('persistente',{mounts:[{type:'volume',source:'datos',target:'/var/lib/app'}]});},[f=>f.s.containers[0].mounts[0].target='/otro',f=>f.s.containers[0].running=false]);
 check('docker',9,f=>{f.container('bindweb',{ports:'8082:80',mounts:[{type:'bind',source:'/root/site',target:'/usr/share/nginx/html'}]});f.put('/root/site/index.html','web');},[f=>delete f.get('/root/site').children['index.html'],f=>f.s.containers[0].image='redis:latest']);
-check('docker',10,f=>{f.s.dockerNetworks.push({name:'labnet'});for(const name of ['frontend','backend'])f.container(name,{networks:{labnet:{ip:'1.2.3.4'}}});f.s.history=['docker network inspect --verbose labnet'];},[f=>f.s.containers[0].networks={},f=>f.s.containers[1].image='redis:latest',f=>f.s.history=['echo docker network inspect labnet']]);
+check('docker',10,f=>{f.s.dockerNetworks.push({name:'labnet'});for(const name of ['frontend','backend'])f.container(name,{fs:dockerImageFiles('nginx'),networks:{labnet:{ip:'1.2.3.4'}}});f.s.history=['docker network inspect --verbose labnet'];},[f=>f.s.containers[0].networks={},f=>f.s.containers[1].image='redis:latest',f=>f.s.containers[1].fs={},f=>f.s.containers[1].cmd='sleep 3600',f=>f.s.history=['echo docker network inspect labnet']]);
 check('docker',11,f=>{f.container('limitado',{mem:'256m',cpus:'0.50',restart:'unless-stopped'});f.s.history=['docker stats --no-stream limitado'];},[f=>f.s.containers[0].mem='1256m',f=>f.s.containers[0].cpus='0.75'],[f=>{f.s.containers[0].mem='268435456';f.s.containers[0].cpus='0.5';}]);
 check('docker',12,f=>{f.put('/root/stack/compose.yaml','services:\n  web:\n    image: nginx\n  db:\n    image: mariadb');f.s.composeProjects.tienda={running:true};f.container('tienda-web-1',{composeProject:'tienda',composeService:'web'});f.container('tienda-db-1',{image:'mariadb:latest',composeProject:'tienda',composeService:'db',mounts:[{type:'volume',source:'tienda_datos',target:'/var/lib/mysql'}]});f.s.dockerVolumes.push({name:'tienda_datos'});},[f=>f.s.containers[1].mounts=[],f=>f.s.containers[1].image='postgres:latest',f=>f.s.containers[0].running=false]);
 check('docker',13,f=>{for(let i=0;i<3;i++)f.container('web-'+i,{composeProject:'tienda',composeService:'web'});f.s.history=['docker compose -p tienda config','docker compose -p tienda ps','docker compose -p tienda logs'];},[f=>f.s.containers[0].running=false,f=>f.s.history=[]],[f=>f.s.history=['docker-compose -p tienda config','docker-compose -p tienda ps','docker-compose -p tienda logs']]);
@@ -76,6 +77,10 @@ assert.equal(docker.createChallenges(fixture().ctx).length,15);
 assert.equal(realDocker.length,30);
 assert.equal(introExercises.length+courseExercises.length+extraExercises.length,44);
 assert.equal(examQuestions.length,22);
+const http={image:'nginx',fs:dockerImageFiles('nginx'),mounts:[]};
+assert.match(dockerHttpDocument(http),/Welcome to nginx/);delete http.fs['/usr/share/nginx/html/index.html'];assert.equal(dockerHttpDocument(http),undefined);
+http.mounts=[{type:'bind',source:'/root/site',target:'/usr/share/nginx/html'}];assert.equal(dockerHttpDocument(http,'/',path=>path==='/root/site/index.html'?'CONTENIDO_REAL_DEL_MODELO':undefined),'CONTENIDO_REAL_DEL_MODELO');
+http.cmd='sleep 3600';assert.equal(dockerHttpDocument(http,'/',()=> 'No debe servirse'),undefined);
 const compose=fixture();compose.s.fs=compose.root;compose.s.cwd=['root','stack'];compose.s.currentUser='root';compose.s.services.docker={active:true};
 compose.put('/root/stack/compose.yaml','services:\n  web:\n    image: nginx\n  db:\n    image: mariadb\n    volumes:\n      - datos_db:/var/lib/mysql\nvolumes:\n  datos_db:\n');
 let actual=await executeDockerCommand(compose.s,{name:'docker',args:['compose','-p','tienda','up','-d','--scale','web=3']});
