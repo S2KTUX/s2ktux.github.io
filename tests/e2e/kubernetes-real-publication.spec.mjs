@@ -67,11 +67,13 @@ test('Kubernetes · examen separado, español e inglés y sin un intento fictici
  await expect(page.locator('#exam-language')).toHaveCount(0);
  await page.locator('[data-exam-language=en]').click();await expect(page.locator('[data-exam-language=en]')).toHaveAttribute('aria-pressed','true');
  await expect(page.locator('#exam-heading')).toHaveText('CKA mock exam');await expect(page.locator('#exam-pending')).toContainText('Coming soon');
+ await expect(page.locator('.exam-fact dt')).toHaveText(['Duration','Tasks','Pass mark']);await expect(page.locator('#exam-time-value')).toHaveText('2 hours');await expect(page.locator('#exam-format-value')).toHaveText('Hands-on');await expect(page.locator('#exam-format-note')).toHaveText('Across different topics');
  await expect(page.locator('#exam-configuration')).toHaveAttribute('lang','en');await page.locator('[data-exam-language=es]').click();await expect(page.locator('#exam-heading')).toHaveText('Simulacro CKA');
  const gaps=await page.evaluate(()=>({heading:document.querySelector('#exam-description').getBoundingClientRect().top-document.querySelector('.exam-heading-row').getBoundingClientRect().bottom,note:document.querySelector('#exam-language-note').getBoundingClientRect().top-document.querySelector('#start-exam').getBoundingClientRect().bottom}));
  expect(gaps.heading).toBeGreaterThanOrEqual(28);expect(gaps.note).toBeGreaterThanOrEqual(28);
- const examStyle=await page.locator('.exam-sheet').evaluate(node=>({shadow:getComputedStyle(node).boxShadow,gap:parseFloat(getComputedStyle(node.querySelector('.exam-body')).columnGap),separator:parseFloat(getComputedStyle(node.querySelector('.exam-actions')).borderLeftWidth)}));
- expect(examStyle.shadow).toBe('none');expect(examStyle.gap).toBeGreaterThanOrEqual(32);expect(examStyle.separator).toBe(2);
+ await expect(page.locator('.exam-fact')).toHaveCount(3);await expect(page.locator('.exam-fact dd:not(.exam-fact-note)')).toHaveText(['2 horas','Prácticos','66/100']);
+ const examStyle=await page.locator('.exam-fact').evaluateAll(nodes=>nodes.map(node=>({shadow:getComputedStyle(node).boxShadow,border:getComputedStyle(node).borderColor})));
+ expect(examStyle.every(item=>item.shadow!=='none')).toBe(true);expect(examStyle[0].border).toBe(await page.locator('.stage-toggle[aria-pressed=false]').first().evaluate(node=>getComputedStyle(node).borderColor));
  const languageColors=await page.locator('[data-exam-language]').evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).backgroundColor));expect(languageColors[0]).not.toBe(languageColors[1]);
  await page.evaluate(async()=>{await document.querySelector('#start-cluster').onclick();await document.querySelector('#enter-lab').onclick();});await expect(page.locator('#nodes iframe')).toHaveCount(0);
  await page.goto(root+'debian/multinodo.html?mode=course&level=inicial&view=exam&enter=1');

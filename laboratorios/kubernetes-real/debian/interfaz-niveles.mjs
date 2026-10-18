@@ -100,7 +100,9 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   const english=language==='en';$('exam-configuration').lang=english?'en':'es';
   for(const button of document.querySelectorAll('[data-exam-language]'))button.setAttribute('aria-pressed',String(button.dataset.examLanguage===language));
   $('exam-heading').textContent=english?'CKA mock exam':'Simulacro CKA';
-  $('exam-description').textContent=english?'Two hours, hands-on tasks across different topics and a pass mark of 66/100. No hints or solutions during the attempt.':'Dos horas, preguntas prácticas de distintos temas y aprobado desde 66/100. Sin pistas ni soluciones durante el intento.';
+  const facts=english?['Duration','2 hours','Tasks','Hands-on','Across different topics','Pass mark']:['Duración','2 horas','Ejercicios','Prácticos','De distintos temas','Aprobado desde'];
+  ['exam-time-label','exam-time-value','exam-format-label','exam-format-value','exam-format-note','exam-pass-label'].forEach((id,index)=>{$(id).textContent=facts[index];});
+  $('exam-description').textContent=english?'No hints or solutions during the attempt.':'Sin pistas ni soluciones durante el intento.';
   $('exam-language-note').textContent=english?'* Spanish is a learning aid in this simulator, not an official CKA exam language.':'* El castellano es una ayuda de este simulacro; no es un idioma oficial del examen CKA.';
   $('exam-pending').textContent=english?'Coming soon. The mock exam is not available yet.':'Próximamente. El simulacro todavía no está disponible.';
   $('start-exam').textContent=english?'Start exam · Coming soon':'Iniciar examen · Próximamente';
