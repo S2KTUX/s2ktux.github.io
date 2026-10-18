@@ -19485,7 +19485,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         solutionBtn.textContent = isHidden ? "Ocultar solución" : "Ver solución";
       });
     const free=document.createElement('option');free.value='';free.textContent='Práctica libre';selEl.prepend(free);selEl.value='';
-    if(!IS_EXAM)mountGroups({select:selEl,mode:MODE,tasks:CH,indexed:true,onChange:renderChal,loadTasks:runtime.loadLearningChallenges?()=>runtime.loadLearningChallenges(runtimeContext):undefined,groups:runtime.practiceGroups,firstClass:runtime.firstPracticeClass});
+    if(!IS_EXAM)mountGroups({select:selEl,mode:MODE,tasks:CH,indexed:true,onChange:renderChal,loadTasks:runtime.loadLearningChallenges?()=>runtime.loadLearningChallenges(runtimeContext):undefined,groups:runtime.practiceGroups,firstClass:runtime.firstPracticeClass,learningClasses:runtime.learningClasses});
     renderChal();
     updateProgress();
     btnEl.addEventListener("click", () => {

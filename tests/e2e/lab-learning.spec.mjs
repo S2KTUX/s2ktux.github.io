@@ -13,6 +13,7 @@ for(const mode of ['linux','docker','kubernetes'])test(mode+' simulado · misma 
   await page.selectOption('#chal-select-class','9');await expect(page.locator('[data-practice-title]')).toHaveText('Crear una cuenta');await command(page,'useradd -m -s /bin/bash principiante');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
  }
  if(mode==='docker'){await page.selectOption('#chal-select-class','2');await expect(page.locator('[data-practice-title]')).toHaveText('Crear un volumen');await command(page,'docker volume create primer-dato');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');}
+ if(mode==='kubernetes'){await page.selectOption('#chal-select-class','4');await expect(page.locator('[data-practice-title]')).toHaveText('Crear un Deployment sencillo');await command(page,'kubectl create deployment inicio-web --image=nginx');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');}
  await page.selectOption('#chal-select','');await expect(page.locator('#chal-body')).toBeEmpty();await expect(page.locator('#chal-check')).toBeHidden();expect(errors).toEqual([]);
 });
 test('Linux · entrada directa sin salto de documento y caducidad separada de umask',async({page})=>{

@@ -13,6 +13,7 @@ export default {
   mode: 'kubernetes',
   practiceGroups:CLASES.map(lesson=>lesson.title),
   firstPracticeClass:0,
+  learningClasses:[0,2,4,6],
   loadLearningChallenges:async ctx=>(await import('./laboratorios/learning-kubernetes-sim.mjs')).simulatedLearningKubernetes(ctx),
   profile: {
     initialUser: 'root',

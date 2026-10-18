@@ -9,7 +9,7 @@ const simDockerClasses=[1,1,1,1,1,1,1,2,2,2,2,3,2,2,3];
 const simKubernetesClasses=[0,6,5,5,11,2,20,27,12,5,21,14,32,33,28,27,34];
 export function practiceClasses(mode,task,index){return task.classes||[task.class??linuxClasses[task.id]??(mode==='linux'?simLinuxClasses[index]:mode==='docker'?simDockerClasses[index]:simKubernetesClasses[index])??1];}
 // Conserva los identificadores y los correctores. Solo filtra la vista.
-export function mountGroups({select,mode,tasks,indexed=false,onChange=()=>{},loadTasks,groups=courseGroups[mode],firstClass=1}){
+export function mountGroups({select,mode,tasks,indexed=false,onChange=()=>{},loadTasks,groups=courseGroups[mode],firstClass=1,learningClasses=[]}){
  const wrapper=document.createElement('div');wrapper.className='exercise-nav';
  const classField=document.createElement('div'),questionField=document.createElement('div');classField.className=questionField.className='exercise-field';
  const classSelect=document.createElement('select');classSelect.id=select.id+'-class';
@@ -17,7 +17,7 @@ export function mountGroups({select,mode,tasks,indexed=false,onChange=()=>{},loa
  const questionLabel=document.createElement('label');questionLabel.htmlFor=select.id;questionLabel.textContent='Pregunta';
  select.before(wrapper);questionField.append(questionLabel,select);wrapper.append(classField,questionField);
  const option=(value,text)=>{const node=document.createElement('option');node.value=value;node.textContent=text;return node;};
- classSelect.append(option('all','Todas las clases'),...groups.map((name,i)=>{const number=i+firstClass,item=option(String(number),String(number).padStart(2,'0')+' — '+name);if(mode==='kubernetes'&&!tasks.some((task,index)=>practiceClasses(mode,task,index).includes(number))){item.disabled=true;item.textContent+=' · Próximamente';}return item;}));
+ classSelect.append(option('all','Todas las clases'),...groups.map((name,i)=>{const number=i+firstClass,item=option(String(number),String(number).padStart(2,'0')+' — '+name);if(mode==='kubernetes'&&!learningClasses.includes(number)&&!tasks.some((task,index)=>practiceClasses(mode,task,index).includes(number))){item.disabled=true;item.textContent+=' · Próximamente';}return item;}));
  const originals=[...select.options].map(node=>node.cloneNode(true));
  function populate(){
   const previous=select.value,number=classSelect.value;select.replaceChildren();
