@@ -12217,8 +12217,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       case "logout": {
         if (userStack.length) {
           const prev = userStack.pop();
-          currentUser = prev.user;
-          cwd = prev.cwd;
+          currentUser = typeof prev === "string" ? prev : prev.user;
+          cwd = typeof prev === "string" ? (users[prev]?.home || "/home/" + prev).split("/").filter(Boolean) : prev.cwd;
           setPrompt();
         } else out("(no hay sesión su que cerrar)", "#a2957d");
         break;
@@ -12588,9 +12588,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
               break;
             }
             userUnits[currentUser] = userUnits[currentUser] || {};
+            const previous = userUnits[currentUser][uunit] || {};
             userUnits[currentUser][uunit] = {
-              enabled: sub === "enable",
-              active: true,
+              enabled: sub === "enable" || !!previous.enabled,
+              active: sub !== "enable" || args.includes("--now") || !!previous.active,
             };
             ok("");
             break;
@@ -13342,7 +13343,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
                 " from 192.168.1.50",
               "#a2957d",
             );
-            userStack.push(currentUser);
+            userStack.push({ user: currentUser, cwd: cwd.slice() });
             currentUser = user;
             cwd = (users[user] ? users[user].home : "/home/" + user)
               .split("/")

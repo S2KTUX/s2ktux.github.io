@@ -4,6 +4,7 @@ import {
   normalizeVirtualPath,
   resolveVirtualNode,
   resolveVirtualParent,
+  hasVirtualPermission,
 } from "./terminal-virtual-fs.js";
 
 const clone = (value) => structuredClone(value);
@@ -1112,11 +1113,39 @@ export async function executeLinuxCommand(input, payload = {}) {
       }
     }
   } else if (name === "podman") {
+    const visible = state.containers.filter((item) =>
+      (item.owner || "root") === state.currentUser,
+    );
+    if (args[0] === "generate" && args[1] === "systemd") {
+      const reference = args.slice(2).filter((item) => !item.startsWith("-")).at(-1);
+      const container = visible.find((item) => item.name === reference || item.id === reference);
+      if (!container) err("Error: no such container: " + (reference || ""));
+      else {
+        const unit = "container-" + container.name + ".service";
+        const quote = (value) => '"' + String(value).replaceAll("\\", "\\\\").replaceAll('"', '\\"').replaceAll("%", "%%") + '"';
+        const start = args.includes("--new")
+          ? "run --name " + quote(container.name) + " " + (container.mounts || []).map((mount) => "-v " + quote(mount.source + ":" + mount.target + (mount.readOnly ? ":ro" : ""))).join(" ") + (container.ports ? " -p " + quote(container.ports) : "") + " " + quote(container.image)
+          : "start " + quote(container.name);
+        const content = "[Unit]\nDescription=Podman " + container.name + "\nWants=network-online.target\nAfter=network-online.target\n\n[Service]\nType=oneshot\nRemainAfterExit=yes\nExecStart=/usr/bin/podman " + start + "\nExecStop=/usr/bin/podman stop " + quote(container.name) + "\n\n[Install]\nWantedBy=default.target\n";
+        if (args.includes("--files") || args.includes("-f")) {
+          const parent = getNode(state.cwd);
+          if (!parent || parent.type !== "dir") err("Error: no such directory");
+          else if (!hasVirtualPermission(parent, "w", state.currentUser, state.users)) err("Error: permission denied");
+          else {
+            parent.children[unit] = createFile(content, { owner: state.currentUser, group: state.currentUser });
+            out("/" + [...state.cwd, unit].join("/"));
+          }
+        } else out(content);
+      }
+      return { state: clone(state), outputs: ctx.outputs, effects, status: ctx.status };
+    }
     const { executeDockerCommand, repairDockerState } =
       await import("./terminal-docker-command.js");
+    const existingIds = new Set(visible.map((item) => item.id));
+    const hidden = state.containers.filter((item) => !visible.includes(item));
     const dockerState = repairDockerState({
       images: state.images,
-      containers: state.containers,
+      containers: visible,
       networks: state.dockerNetworks,
       volumes: state.dockerVolumes,
       composeProjects: state.composeProjects,
@@ -1135,7 +1164,9 @@ export async function executeLinuxCommand(input, payload = {}) {
       system: { DOCKER_VERSION: "4.9.4" },
     });
     state.images = result.state.images;
-    state.containers = result.state.containers;
+    state.containers = hidden.concat(result.state.containers.map((item) =>
+      existingIds.has(item.id) ? item : { ...item, owner: state.currentUser, engine: "podman" },
+    ));
     state.dockerNetworks = result.state.networks;
     state.dockerVolumes = result.state.volumes;
     state.composeProjects = result.state.composeProjects;
@@ -1157,6 +1188,7 @@ export async function executeLinuxCommand(input, payload = {}) {
           : effect,
       ),
     );
+    return { state: clone(state), outputs: ctx.outputs, effects, status: result.status };
   }
   return {
     state: clone(state),
