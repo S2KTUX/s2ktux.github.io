@@ -8,7 +8,7 @@ const app=await read('docker.mjs'),html=await read('index.html'),hub=await readF
 assert.equal(exercises.length,30);assert.equal(new Set(exercises.map(e=>e.id)).size,30);assert.deepEqual([...new Set(exercises.map(e=>e.class))].sort(),[1,2,3]);
 for(const e of exercises){assert.ok(e.goal.length>30);assert.ok(e.solution.trim());assert.ok(e.checks.every(([label,command])=>label&&command));}
 assert.match(app,/new V86\(/);assert.match(app,/createEthernetInternet\(vm.bus\)/);assert.match(app,/date -u -s @/);assert.match(app,/await sessions.delete\(sessionKey\)/);assert.doesNotMatch(app,/sessions\.delete\(['"]s2ktux-(?:linux|kubernetes)/);
-assert.match(html,/id="solution" hidden/);assert.match(html,/Guardar máquina/);assert.match(hub,/data-pick-mode'\)==='docker'[^\n]+laboratorios\/docker-real/);assert.match(hub,/data-legacy-mode="docker"/);
+assert.match(html,/id="solution" hidden/);assert.match(html,/Guardar máquina/);assert.match(hub,/data-pick-mode'\)==='docker'[^\n]+laboratorios\/docker-real/);assert.doesNotMatch(hub,/data-legacy-mode=/);assert.match(html,/href="\/terminal.html\?mode=docker&amp;enter=1"/);
 const manifest=JSON.parse(await read('artefactos/disco-v4/disco-fragmentado.json'));assert.equal(manifest.format,'s2ktux-blocks-v1');assert.equal(manifest.parts.length,manifest.bytes/manifest.chunkSize);
 const zero=Buffer.alloc(manifest.chunkSize),whole=createHash('sha256');
 for(const [i,p] of manifest.parts.entries()){

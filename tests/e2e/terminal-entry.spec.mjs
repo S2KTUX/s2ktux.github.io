@@ -9,12 +9,14 @@ for(const mode of ['linux','docker']){
   await expect(page.locator('#start')).toBeEnabled();
   expect(await page.evaluate(()=>typeof globalThis.vm)).toBe('undefined');
  });
- test('Entrada alternativa · '+mode+' mantiene su simulador',async({page})=>{
-  await page.goto('/terminal.html');await page.locator('[data-legacy-mode="'+mode+'"]').click();
-  await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
-  await expect(page).toHaveURL(new RegExp('terminal.html\\?mode='+mode+'$'));
-  await expect(page.locator('#terminal-shell')).toBeVisible();
-  await expect(page.locator('#main-content')).not.toContainText('Probar Linux real');
+ test('Entrada alternativa · '+mode+' ofrece su simulador dentro del laboratorio',async({page})=>{
+  await page.goto(mode==='linux'?'/laboratorios/linux-real/v86-test.html':'/laboratorios/docker-real/');
+  const opened=page.waitForEvent('popup');
+  await page.locator('a[href="/terminal.html?mode='+mode+'&enter=1"]').click();const alternative=await opened;
+  await alternative.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
+  await expect(alternative).toHaveURL(new RegExp('terminal.html\\?mode='+mode+'$'));
+  await expect(alternative.locator('#terminal-shell')).toBeVisible();
+  await expect(alternative.locator('#main-content')).not.toContainText('Probar Linux real');await alternative.close();
  });
 }
 
@@ -23,7 +25,20 @@ test('Entrada principal · Enter abre Linux real',async({page})=>{
  await expect(page).toHaveURL(/\/laboratorios\/linux-real\/v86-test\.html(?:\?|$)/);
 });
 
-test('Entrada alternativa · Enter respeta el enlace simulado',async({page})=>{
- await page.goto('/terminal.html');await page.locator('[data-legacy-mode="linux"]').focus();await page.keyboard.press('Enter');
- await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');await expect(page).toHaveURL(/terminal.html\?mode=linux$/);
+test('Entrada preliminar · Enter respeta el enlace de Kubernetes',async({page})=>{
+ await page.goto('/terminal.html');await page.locator('#mode-select a[href="/laboratorios/kubernetes-real/"]').focus();await page.keyboard.press('Enter');
+ await expect(page).toHaveURL(/\/laboratorios\/kubernetes-real\/$/);
+});
+
+test('Menú inicial · no ofrece alternativas simuladas de Linux ni Docker',async({page})=>{
+ await page.goto('/terminal.html');const selector=page.locator('#mode-select');
+ await expect(selector.locator('[data-pick-mode]')).toHaveCount(3);
+ await expect(selector).not.toContainText('Versiones simuladas');
+ await expect(selector.locator('a[href*="mode=linux"],a[href*="mode=docker"],[data-legacy-mode]')).toHaveCount(0);
+});
+
+test('Entrada principal · Kubernetes conserva la versión simulada',async({page})=>{
+ await page.goto('/terminal.html');await page.locator('[data-pick-mode="kubernetes"]').click();
+ await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
+ await expect(page).toHaveURL(/terminal.html\?mode=kubernetes$/);await expect(page.locator('#terminal-shell')).toBeVisible();
 });

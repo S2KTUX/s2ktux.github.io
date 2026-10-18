@@ -72,10 +72,10 @@
   if(explicitEntry){ params.delete('enter'); history.replaceState(history.state,'','terminal.html?'+params.toString()); }
   window.addEventListener('pageshow',function(e){ var restored=getMode(new URLSearchParams(location.search)); if(e.persisted&&restored){ clearAllTerminalSessions(); location.replace(selectionUrl()); } });
   document.addEventListener('click', function(e){
-    var b = e.target && e.target.closest && e.target.closest('[data-pick-mode], [data-legacy-mode]');
+    var b = e.target && e.target.closest && e.target.closest('[data-pick-mode]');
     if(b && b.getAttribute('data-pick-mode')==='linux'){ location.href='/laboratorios/linux-real/'; return; }
     if(b && b.getAttribute('data-pick-mode')==='docker'){ location.href='/laboratorios/docker-real/'; return; }
-    if(b){ var selected=b.getAttribute('data-pick-mode')||b.getAttribute('data-legacy-mode'); clearModeSession(selected); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
+    if(b){ var selected=b.getAttribute('data-pick-mode'); clearModeSession(selected); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
     var cm = e.target && e.target.closest && e.target.closest('[data-change-mode]');
     if(cm){ location.href=selectionUrl(); }
   });
@@ -133,7 +133,6 @@
           </button>
       </div>
       <p><a href="/laboratorios/kubernetes-real/">Probar Kubernetes (versión preliminar)</a></p>
-      <p><small>Versiones simuladas: <a href="terminal.html?mode=linux&amp;enter=1" data-legacy-mode="linux">Linux</a> · <a href="terminal.html?mode=docker&amp;enter=1" data-legacy-mode="docker">Docker</a></small></p>
       <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> entrar</span><span>Linux y Docker permiten guardar y resetear su máquina.</span></div>
     </div>
   </div>
