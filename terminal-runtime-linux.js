@@ -51,27 +51,28 @@ export default {
     const checks=linuxPracticeChecks(ctx);
     const s=ctx.state, getNode=ctx.getNode, sudoersRuleFor=ctx.helpers?.sudoersRuleFor||(()=>null);
     return [
-      {badge:'PREGUNTA 1 · RESCATE',check:checks[0]},
-      {badge:'PREGUNTA 2 · RED',title:'Configura TCP/IP y el hostname',goal:'Configura <code>eth0</code>: IP <b>192.168.1.20</b>, máscara <b>255.255.255.0</b>, gateway <b>192.168.1.1</b>, DNS <b>192.168.1.254</b>. Hostname del sistema: <b>nodo1.lab.local</b>.',check:checks[1]},
-      {badge:'PREGUNTA 3 · REPOSITORIOS',title:'Configura los repositorios YUM',goal:'Configura los repos de la distribución: BaseOS en <code>http://mirror.lab.local/rocky9/x86_64/BaseOS</code> y AppStream en <code>http://mirror.lab.local/rocky9/x86_64/AppStream</code>, ambos habilitados y sin comprobación de firma.',check:checks[2]},
-      {badge:'PREGUNTA 4 · SELINUX PUERTO',check:checks[3]},
-      {badge:'PREGUNTA 5 · USUARIOS Y GRUPOS',check:checks[4]},
-      {badge:'PREGUNTA 6 · DIRECTORIO COLABORATIVO',check:checks[5]},
-      {badge:'PREGUNTA 7 · CRON',title:'Tarea de cron para un usuario',goal:'Programa una tarea de cron del usuario <b>hera</b> que se ejecute <b>cada minuto</b> y lance <code>logger "Backup diario"</code>.',check:checks[6]},
-      {badge:'PREGUNTA 8 · TAR BZIP2',check:checks[7]},
-      {badge:'PREGUNTA 9 · PERMISOS',check:checks[8]},
-      {badge:'PREGUNTA 10 · CHRONY',title:'Sincroniza la hora con un servidor',goal:'Configura el sistema para sincronizar la hora desde <b>ntp.lab.local</b> y deja el servicio activo.',check:checks[9]},
-      {badge:'PREGUNTA 11 · FIND POR USUARIO',title:'Copia los ficheros de un usuario',goal:'Busca todos los ficheros y directorios cuyo propietario sea <b>hera</b> y cópialos dentro de <code>/root/herafiles</code>.',check:checks[10]},
-      {badge:'PREGUNTA 12 · GREP',check:checks[11]},
-      {badge:'PREGUNTA 13 · USUARIO CON UID',check:checks[12]},
-      {badge:'PREGUNTA 14 · SUDOERS',check:checks[13]},
-      {badge:'PREGUNTA 15 · LVM POR EXTENTS',title:'Crea un LV con nº de extents',goal:'Crea un volumen lógico <b>appvol</b> en el VG <b>datavg</b>: tamaño <b>60 extents</b>, formatea en <b>ext4</b> y móntalo de forma persistente en <code>/mnt/appvol</code>.',check:checks[14]},
-      {badge:'PREGUNTA 16 · SWAP',title:'Crea una swap persistente',goal:'Crea una partición <b>swap de 512M</b> en <code>/dev/sdb</code>, actívala y hazla <b>permanente</b>.',check:checks[15]},
-      {badge:'PREGUNTA 17 · REDIMENSIONAR LV',title:'Redimensiona un volumen lógico',goal:'Ajusta un volumen lógico para que quede en <b>~250 MB</b> (se acepta entre 230 y 260 MB reales).',check:checks[16]},
-      {badge:'PREGUNTA 18 · TUNED',title:'Aplica el perfil de tuned recomendado',goal:'Aplica el perfil de <code>tuned</code> <b>recomendado</b> para este sistema.',check:checks[17]},
-      {badge:'PREGUNTA 19 · SCRIPT',check:checks[18]},
-      {badge:'PREGUNTA 20 · HTTPD RUTA PERSONALIZADA',title:'Publica una web en un DocumentRoot propio',goal:'Haz que Apache sirva desde <code>/sitio/web</code> (esa ruta no existe: créala). Ajusta el <b>DocumentRoot</b> en la configuración, los permisos, el contexto de <b>SELinux</b> y el <b>firewall</b>, y consíguela con <code>curl localhost</code>.',check:checks[19]},
-      {badge:'PREGUNTA 21 · PODMAN ROOTLESS',title:'Contenedor como servicio de un usuario',goal:'Como el usuario <b>hermes</b> (créalo y accede por SSH): descarga <code>httpd</code>, crea el contenedor <b>webapp</b> mapeando <code>/opt/entrada</code>→<code>/data/in</code> y <code>/opt/salida</code>→<code>/data/out</code>, genera su servicio systemd de usuario, habilita <b>linger</b> y déjalo activo con <code>systemctl --user enable --now</code> para que arranque solo tras reiniciar.',check:checks[20]}
-    ].map((exercise,index)=>commonPractice('linux',exercise,index));
-  }
+      {check:checks[0]},
+      {title:'Configura TCP/IP y el hostname',goal:'Configura <code>eth0</code>: IP <b>192.168.1.20</b>, máscara <b>255.255.255.0</b>, gateway <b>192.168.1.1</b>, DNS <b>192.168.1.254</b>. Hostname del sistema: <b>nodo1.lab.local</b>.',check:checks[1]},
+      {title:'Configura los repositorios YUM',goal:'Configura los repos de la distribución: BaseOS en <code>http://mirror.lab.local/rocky9/x86_64/BaseOS</code> y AppStream en <code>http://mirror.lab.local/rocky9/x86_64/AppStream</code>, ambos habilitados y sin comprobación de firma.',check:checks[2]},
+      {check:checks[3]},
+      {check:checks[4]},
+      {check:checks[5]},
+      {title:'Tarea de cron para un usuario',goal:'Programa una tarea de cron del usuario <b>hera</b> que se ejecute <b>cada minuto</b> y lance <code>logger "Backup diario"</code>.',check:checks[6]},
+      {check:checks[7]},
+      {check:checks[8]},
+      {title:'Sincroniza la hora con un servidor',goal:'Configura el sistema para sincronizar la hora desde <b>ntp.lab.local</b> y deja el servicio activo.',check:checks[9]},
+      {title:'Copia los ficheros de un usuario',goal:'Busca todos los ficheros y directorios cuyo propietario sea <b>hera</b> y cópialos dentro de <code>/root/herafiles</code>.',check:checks[10]},
+      {check:checks[11]},
+      {check:checks[12]},
+      {check:checks[13]},
+      {title:'Crea un LV con nº de extents',goal:'Crea un volumen lógico <b>appvol</b> en el VG <b>datavg</b>: tamaño <b>60 extents</b>, formatea en <b>ext4</b> y móntalo de forma persistente en <code>/mnt/appvol</code>.',check:checks[14]},
+      {title:'Crea una swap persistente',goal:'Crea una partición <b>swap de 512M</b> en <code>/dev/sdb</code>, actívala y hazla <b>permanente</b>.',check:checks[15]},
+      {title:'Redimensiona un volumen lógico',goal:'Ajusta un volumen lógico para que quede en <b>~250 MB</b> (se acepta entre 230 y 260 MB reales).',check:checks[16]},
+      {title:'Aplica el perfil de tuned recomendado',goal:'Aplica el perfil de <code>tuned</code> <b>recomendado</b> para este sistema.',check:checks[17]},
+      {check:checks[18]},
+      {title:'Publica una web en un DocumentRoot propio',goal:'Haz que Apache sirva desde <code>/sitio/web</code> (esa ruta no existe: créala). Ajusta el <b>DocumentRoot</b> en la configuración, los permisos, el contexto de <b>SELinux</b> y el <b>firewall</b>, y consíguela con <code>curl localhost</code>.',check:checks[19]},
+      {title:'Contenedor como servicio de un usuario',goal:'Como el usuario <b>hermes</b> (créalo y accede por SSH): descarga <code>httpd</code>, crea el contenedor <b>webapp</b> mapeando <code>/opt/entrada</code>→<code>/data/in</code> y <code>/opt/salida</code>→<code>/data/out</code>, genera su servicio systemd de usuario, habilita <b>linger</b> y déjalo activo con <code>systemctl --user enable --now</code> para que arranque solo tras reiniciar.',check:checks[20]}
+    ].map((exercise,index)=>commonPractice('linux',{...exercise,loadSolution:()=>import('./laboratorios/simulated-linux-solutions.mjs').then(module=>module.simulatedLinuxSolutions[index])},index));
+  },
+  loadLearningChallenges:async ctx=>(await import('./laboratorios/learning-linux.mjs')).simulatedLearningLinux(ctx),
 };

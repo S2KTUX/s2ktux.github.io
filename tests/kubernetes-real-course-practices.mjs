@@ -13,7 +13,7 @@ assert.equal(nivelClase(23),'intermedio');assert.equal(nivelClase(24),'avanzado'
 assert.equal(claseDesdeURL(new URLSearchParams('clase=19'),'intermedio'),19);assert.throws(()=>claseDesdeURL(new URLSearchParams('clase=19'),'inicial'));
 assert.equal(EJERCICIOS_INICIALES.length,14);
 assert.equal(EJERCICIOS_INTERMEDIOS.length,10);
-for(let number=0;number<=11;number++)assert.equal(ejerciciosClase(number).length,2);
+for(let number=0;number<=11;number++)assert.equal(ejerciciosClase(number).length,[4,6,7,8,9,10,11].includes(number)?3:2);
 for(let number=12;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
 assert.equal(nivelDisponible('avanzado'),false);assert.equal(limiteNodos('intermedio'),2);
 const safeParams=parametrosPublicos('mode=other&factory=v8&fast=1&use-scheduling-api=1&clase=28&level=avanzado&enter=1');
@@ -38,5 +38,9 @@ assert.match(exigirJSON('kubectl get rs replicas -o json | jq -e true'),/object=
 assert.match(exigirJSON('test "$(kubectl get --raw=/readyz)" = ok && kubectl get nodes -o json | jq -e true'),/test "\$\(kubectl get --raw=\/readyz\)" = ok/);
 assert.match(comprobarSaludInicial,/consecutive/);assert.doesNotMatch(comprobarSaludInicial,/restart|reset|patch|delete|apply/);
 const page=await readFile(new URL('../laboratorios/kubernetes-real/debian/multinodo.html',import.meta.url),'utf8');
+const startup=await readFile(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8');
+assert.match(startup,/level==='avanzado'\|\|claseDisponible\(15\)/);
+assert.match(startup,/level!=='inicial'&&claseDisponible\(21\)/);
+for(let number=7;number<=11;number++)for(const task of ejerciciosClase(number))assert.doesNotMatch(task.solution+task.check,/\/opt\/curso/,'Las primeras prácticas intermedias no necesitan los materiales de clases posteriores');
 assert.match(page,/id="course-index"/);assert.doesNotMatch(page,/id="environment-select"/);assert.match(page,/id="exercise-class-select"/);
-console.log('Kubernetes: índice de 35 clases, 24 contratos de la 00 a la 11 y resultados correcto/incompleto/no verificado protegidos; no acredita ejecución nativa.');
+console.log('Kubernetes: índice de 35 clases, 31 prácticas disponibles de la 00 a la 11 y resultados correcto/incompleto/no verificado protegidos; este test no acredita ejecución nativa.');

@@ -4,10 +4,11 @@ import {ChunkDisk} from './v86-disk.mjs';
 import {LocalSessions,hashBytes} from './v86-sessions.mjs';
 import {createEthernetInternet} from './ethernet-internet.mjs';
 import {attachTerminalClipboard} from './v86-clipboard.mjs';
-import {exercises} from './docker-exercises.mjs?v=20261018-solutions';
+import {exercises} from './docker-exercises.mjs?v=20261018-aprender';
 import {createDockerChecks} from './docker-checks.mjs';
-import {renderSolutions} from '../lab-solutions.mjs?v=20261018';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261018-aprender';
 import {solutionsFor} from '../solution-options.mjs?v=20261018';
+import {mountGroups} from '../lab-groups.mjs';
 const start=document.querySelector('#start'),save=document.querySelector('#save'),reset=document.querySelector('#reset'),status=document.querySelector('#status'),savedStatus=document.querySelector('#saved-status');
 const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono",monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
 terminal.open(document.querySelector('#terminal'));
@@ -64,6 +65,7 @@ for(const number of [1,2,3]){const group=document.createElement('optgroup');grou
 function selected(){return exercises.find(e=>e.id===choose.value);}
 function syncPractice(){check.disabled=busy||!dockerShellReady;}
 choose.onchange=()=>{const e=selected();card.hidden=!e;document.querySelector('#exercise-actions').hidden=!e;solution.hidden=true;toggle.textContent='Ver solución';toggle.setAttribute('aria-expanded','false');feedback.textContent='';if(e){title.textContent=e.title;goal.textContent=e.goal;renderSolutions(solution,solutionsFor('docker',e));check.hidden=!e.checks.length;}syncPractice();};
+const classChoose=mountGroups({select:choose,mode:'docker',tasks:exercises,onChange:()=>choose.onchange()});
 toggle.onclick=()=>{solution.hidden=!solution.hidden;toggle.textContent=solution.hidden?'Ver solución':'Ocultar solución';toggle.setAttribute('aria-expanded',String(!solution.hidden));};
-globalThis.dockerCheck=async id=>{const e=exercises.find(e=>e.id===id);if(!e)throw Error('Ejercicio desconocido.');const promise=checker.run(e);busy=true;save.disabled=true;reset.disabled=true;choose.disabled=true;check.disabled=true;toggle.disabled=true;try{return await promise;}finally{busy=false;save.disabled=!vm;reset.disabled=false;choose.disabled=false;toggle.disabled=false;syncPractice();}};
+globalThis.dockerCheck=async id=>{const e=exercises.find(e=>e.id===id);if(!e)throw Error('Ejercicio desconocido.');const promise=checker.run(e);busy=true;save.disabled=true;reset.disabled=true;choose.disabled=classChoose.disabled=true;check.disabled=true;toggle.disabled=true;try{return await promise;}finally{busy=false;save.disabled=!vm;reset.disabled=false;choose.disabled=classChoose.disabled=false;toggle.disabled=false;syncPractice();}};
 check.onclick=async()=>{feedback.textContent='Comprobando…';try{const result=await dockerCheck(selected().id);feedback.replaceChildren();const summary=document.createElement('p');summary.textContent=result.ok?'Correcto.':'Todavía queda algo por corregir.';feedback.append(summary);for(const r of result.results){const p=document.createElement('p');p.textContent=(r.ok?'✓ ':'· ')+r.label+(r.ok?'':' — pendiente');feedback.append(p);}}catch(e){feedback.textContent=e.message;}};

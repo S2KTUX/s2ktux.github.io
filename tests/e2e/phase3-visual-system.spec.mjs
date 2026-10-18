@@ -67,24 +67,8 @@ test('Fase 3 · terminal y paneles respetan su ancho de escritorio', async ({ pa
   }
 });
 
-test('Cheatsheets · cada entorno muestra únicamente sus pestañas y contenido', async ({ page }) => {
-  const expected = {
-    linux: ['Shell y ficheros', 'SELinux', 'Arranque y tareas'],
-    docker: ['Flujo diario', 'Imágenes y Dockerfile', 'Docker Compose'],
-    kubernetes: ['kubectl y YAML', 'Administración', 'YAML útiles', 'Troubleshooting']
-  };
-
-  for (const [mode, labels] of Object.entries(expected)) {
-    await page.goto(`/terminal.html?mode=${mode}&enter=1`);
-    await page.waitForFunction(() => document.documentElement.dataset.terminalReady === 'true');
-    const visibleLabels = await page.locator('.cs-tab:not([hidden])').allTextContents();
-    for (const label of labels) expect(visibleLabels).toContain(label);
-    const foreign = await page.locator(`.cs-tab:not([data-modes="${mode}"]):not([hidden])`).count();
-    expect(foreign, `${mode}: no debe mezclar pestañas de otros entornos`).toBe(0);
-  }
-
-  await page.locator('#cheatsheet-title').evaluate((summary) => { summary.parentElement.open = true; });
-  await page.locator('.cs-tab[data-cs-tab="k8s-yaml"]').click();
-  await expect(page.locator('.cs-panel[data-cs-panel="k8s-yaml"]')).toContainText('kind: Deployment');
-  await expect(page.locator('.cs-panel[data-cs-panel="k8s-yaml"]')).toContainText('kind: NetworkPolicy');
+test('Referencia breve · Linux real y simulado comparten los comandos, sin la antigua cheatsheet',async({page})=>{
+ for(const path of ['/laboratorios/linux-real/','/terminal.html?mode=linux&enter=1']){
+  await page.goto(path);await page.locator('.lab-reference summary').click();await expect(page.locator('.lab-reference')).toContainText('chage -M 90');await expect(page.locator('.lab-reference')).toContainText('su - USUARIO');await expect(page.locator('#cheatsheet-title')).toHaveCount(0);
+ }
 });

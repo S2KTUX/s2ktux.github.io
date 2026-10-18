@@ -2,7 +2,7 @@ import {test,expect} from '@playwright/test';
 const cases=[['Linux','/laboratorios/linux-real/v86-test.html','#exercise-select','archivo','[data-exercise-solution]','#exercise-solution'],['Docker','/laboratorios/docker-real/','#exercise','web','#solution-toggle','#solution'],['Kubernetes','/laboratorios/kubernetes-real/','#exercise-select','0','#exercise-solution-toggle','#exercise-solution']];
 async function enter(page,name,path){await page.goto(path);if(name==='Kubernetes'){await page.locator('#mode-practice').click();await page.locator('#enter-lab').click();await expect(page.locator('#nodes iframe')).toHaveCount(0);}}
 for(const [name,path,select,value,toggle,solution]of cases){
- test(name+' · estructura común, soluciones y copia sin iniciar máquina',async({page})=>{
+ test(name+' · estructura común y soluciones compactas sin iniciar máquina',async({page})=>{
   const errors=[];page.on('pageerror',error=>errors.push(error.message));await page.addInitScript(()=>Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:async text=>{globalThis.copiedLabText=text;}}}));
   await enter(page,name,path);await page.selectOption(select,value);
   await expect(page.locator('.lab-practice-actions button')).toHaveText(['Comprobar ejercicio','Ver solución']);
@@ -10,10 +10,9 @@ for(const [name,path,select,value,toggle,solution]of cases){
   const main=await page.locator('.lab-machine-actions button:visible').allTextContents();expect(main).toEqual(['Iniciar laboratorio','Guardar sesión','Reset']);
   await expect(page.locator('.lab-practices')).not.toContainText('¿Qué quieres practicar?');
   const order=await page.evaluate(()=>{const nodes=['.lab-practices','.lab-machine-actions','.console'];return nodes.map(s=>document.querySelector(s).getBoundingClientRect().top);});expect(order[0]).toBeLessThan(order[1]);expect(order[1]).toBeLessThan(order[2]);
-  await page.locator(toggle).click();await expect(page.locator(solution+' .lab-solution')).toHaveCount(2);
-  const second=page.locator(solution+' .lab-solution').nth(1);await second.locator('button').click();expect(await page.evaluate(()=>copiedLabText)).toBe(await second.locator('code').textContent());
-  await expect(second.locator('[role=status]')).toHaveText('Copiado.');
-  const style=await second.locator('button').evaluate(e=>({font:getComputedStyle(e).fontFamily,border:getComputedStyle(e).borderTopWidth}));expect(style.font).toContain('Share Tech Mono');expect(style.border).toBe('2px');
+  await page.locator(toggle).click();
+  await expect(page.locator(solution+' > pre')).toHaveCount(1);await expect(page.locator(solution+' button')).toHaveCount(0);
+  await expect(page.locator(solution)).toContainText('# Solución 1');await expect(page.locator(solution)).toContainText('# Solución 2');
   expect(await page.evaluate(()=>!!globalThis.vm||!!globalThis.dockerVM||!!globalThis.kubeDebianClusterNodes?.size)).toBe(false);expect(errors).toEqual([]);
  });
 }

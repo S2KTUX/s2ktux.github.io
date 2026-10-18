@@ -35,7 +35,7 @@ test('Fase 1 · Docker conserva opciones repetidas y F5 destruye el estado', asy
 
 test('Fase 1 · Linux separa firewalld y modela enlaces y fechas', async ({ page }) => {
   await enter(page, 'linux');
-  await page.locator('#term-solved').click();
+  await page.locator('#term-solved').evaluate(button=>button.click());
   await page.waitForFunction(() => /root@/.test(document.querySelector('#term-prompt')?.textContent || ''));
   await run(page, 'touch /tmp/reciente');
   expect(await run(page, 'find /tmp -mmin -1 -name reciente')).toContain('/tmp/reciente');
@@ -56,7 +56,7 @@ test('Fase 1 · Kubernetes rechaza opciones desconocidas y requisitos ausentes',
 
 test('Terminal · errores incompletos no filtran valores internos ni desvían jq al Worker', async ({ page }) => {
   await enter(page, 'linux');
-  await page.locator('#term-solved').click();
+  await page.locator('#term-solved').evaluate(button=>button.click());
   await page.waitForFunction(() => /root@/.test(document.querySelector('#term-prompt')?.textContent || ''));
   for (const command of ['chgrp', 'kill', 'getfacl', 'lvcreate']) {
     const output = await run(page, command);

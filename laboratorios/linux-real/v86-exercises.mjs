@@ -1,7 +1,8 @@
 // Prácticas de la candidata Debian: no equivalencia automática con RHEL.
 // Los checks consultan resultados; nunca ejecutan la solución ni preparan datos.
-import { courseExercises } from './v86-course-exercises.mjs?v=20261008-console';
-import { extraExercises } from './v86-extra-exercises.mjs?v=20261008-console';
+import { courseExercises } from './v86-course-exercises.mjs?v=20261018-aprender';
+import { extraExercises } from './v86-extra-exercises.mjs?v=20261018-aprender';
+import {nativeLearningLinux} from '../learning-linux.mjs';
 export const introExercises = [
   {
     id: 'archivo', title: 'Archivo y permisos',
@@ -99,6 +100,7 @@ export const introExercises = [
 ];
 
 export const exercises = [
+  ...nativeLearningLinux,
   ...introExercises.map(e => ({...e, group:'Prácticas iniciales'})),
   ...courseExercises.map(e => ({...e, title:e.title.replace('Simulacro','Práctica'), group:'Prácticas RHCSA'})),
   ...extraExercises.map(e => ({...e, group:'Prácticas del curso'})),

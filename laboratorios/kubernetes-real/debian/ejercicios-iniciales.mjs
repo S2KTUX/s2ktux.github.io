@@ -30,25 +30,25 @@ function add(classNumber,letter,title,prompt,solution,check,options={}){
  entries.push(Object.freeze({id:'c'+String(classNumber).padStart(2,'0')+'-'+letter,classNumber,title,prompt,solution,solutionDisplay,preflight:api,cleanup:options.cleanup||'',negative:options.negative,validation:'external-report',...options,check:exigirJSON(check),prepare:Object.freeze([api,...options.prepare||[]])}));
 }
 add(0,'a','Reconocer los nodos',
- 'Guarda en /root/nodos-curso.txt los nombres de todos los nodos del clúster, uno por línea. No cambies su configuración.',
- 'kubectl get nodes -o jsonpath=\'{range .items[*]}{.metadata.name}{"\\n"}{end}\' > /root/nodos-curso.txt',
- 'test -s /root/nodos-curso.txt && kubectl get nodes -o json | jq -e --rawfile answer /root/nodos-curso.txt \'([.items[].metadata.name]|sort)==($answer|split("\\n")|map(select(length>0))|sort)\'',
- {cleanup:'rm -f /root/nodos-curso.txt',negative:"printf '%s\\n' inexistente >/root/nodos-curso.txt"});
-add(0,'b','Localizar el control plane',
- 'Guarda en /root/control-plane.txt los nombres de los Pods de kube-apiserver, etcd, kube-scheduler y kube-controller-manager de kube-system, uno por línea. No modifiques esos Pods.',
- 'kubectl -n kube-system get pods -o json | jq -r \'.items[] | select(.metadata.labels.component=="kube-apiserver" or .metadata.labels.component=="etcd" or .metadata.labels.component=="kube-scheduler" or .metadata.labels.component=="kube-controller-manager") | .metadata.name\' > /root/control-plane.txt',
- 'test -s /root/control-plane.txt && kubectl -n kube-system get pods -o json | jq -e --rawfile answer /root/control-plane.txt \'([.items[]|select(.metadata.labels.component=="kube-apiserver" or .metadata.labels.component=="etcd" or .metadata.labels.component=="kube-scheduler" or .metadata.labels.component=="kube-controller-manager")|.metadata.name]|sort) as $expected | ($expected|length)>=4 and ($expected==($answer|split("\\n")|map(select(length>0))|sort))\'',
- {cleanup:'rm -f /root/control-plane.txt',negative:"printf '%s\\n' coredns >/root/control-plane.txt"});
+ 'Consulta los nodos del clúster y guarda el listado completo en /root/nodos-curso.txt. No cambies su configuración.',
+ 'kubectl get nodes\nkubectl get nodes > /root/nodos-curso.txt\ncat /root/nodos-curso.txt',
+ 'test -s /root/nodos-curso.txt && kubectl get nodes -o json | jq -e --rawfile answer /root/nodos-curso.txt \'[.items[].metadata.name] as $names | ($names|length)>0 and all($names[]; . as $name | $answer|split("\\n")|any(split(" ")|map(select(length>0))|.[0]==$name))\'',
+ {cleanup:'rm -f /root/nodos-curso.txt',negative:"echo inexistente >/root/nodos-curso.txt"});
+add(0,'b','Ver los componentes del clúster',
+ 'Consulta los Pods de kube-system. Guarda el listado completo en /root/control-plane.txt y localiza los nombres que empiezan por kube-apiserver, etcd, kube-scheduler y kube-controller-manager. No modifiques esos Pods.',
+ 'kubectl get pods -n kube-system\nkubectl get pods -n kube-system > /root/control-plane.txt\ncat /root/control-plane.txt',
+ 'test -s /root/control-plane.txt && for component in kube-apiserver etcd kube-scheduler kube-controller-manager; do grep -q "^$component-" /root/control-plane.txt || exit 1; done',
+ {cleanup:'rm -f /root/control-plane.txt',negative:"echo coredns >/root/control-plane.txt"});
 add(1,'a','Comprobar el laboratorio',
- 'Comprueba que los nodos están Ready y que la API responde correctamente. Guarda sus nombres, uno por línea, en /root/laboratorio-nodos.txt y la respuesta de salud en /root/laboratorio-api.txt.',
- 'kubectl wait --for=condition=Ready nodes --all --timeout=120s\nkubectl get nodes -o jsonpath=\'{range .items[*]}{.metadata.name}{"\\n"}{end}\' >/root/laboratorio-nodos.txt\n'+api+' >/root/laboratorio-api.txt',
- 'test "$(cat /root/laboratorio-api.txt)" = ok && test "$('+api+')" = ok && kubectl get nodes -o json | jq -e --rawfile answer /root/laboratorio-nodos.txt \'(.items|length)>0 and all(.items[]; any(.status.conditions[]; .type=="Ready" and .status=="True")) and (([.items[].metadata.name]|sort)==($answer|split("\\n")|map(select(length>0))|sort))\'',
- {cleanup:'rm -f /root/laboratorio-nodos.txt /root/laboratorio-api.txt',negative:"printf '%s\\n' error >/root/laboratorio-api.txt"});
+ 'Comprueba que los nodos están Ready. Guarda su listado completo en /root/laboratorio-nodos.txt y la respuesta de salud de la API en /root/laboratorio-api.txt.',
+ 'kubectl get nodes > /root/laboratorio-nodos.txt\nkubectl get --raw=/readyz > /root/laboratorio-api.txt\ncat /root/laboratorio-nodos.txt\ncat /root/laboratorio-api.txt',
+ 'test "$(cat /root/laboratorio-api.txt)" = ok && test "$('+api+')" = ok && kubectl get nodes -o json | jq -e --rawfile answer /root/laboratorio-nodos.txt \'(.items|length)>0 and all(.items[]; any(.status.conditions[]; .type=="Ready" and .status=="True")) and all(.items[].metadata.name; . as $name | $answer|split("\\n")|any(split(" ")|map(select(length>0))|.[0]==$name))\'',
+ {cleanup:'rm -f /root/laboratorio-nodos.txt /root/laboratorio-api.txt',negative:"echo error >/root/laboratorio-api.txt"});
 add(1,'b','Comprobar los servicios de Linux',
- 'En cka-cp1 comprueba que kubelet y containerd están activos. Guarda en /root/servicios-laboratorio.txt las líneas kubelet=active y containerd=active, solo si esos servicios están realmente activos.',
- 'systemctl is-active kubelet containerd\nprintf \'kubelet=%s\\ncontainerd=%s\\n\' "$(systemctl is-active kubelet)" "$(systemctl is-active containerd)" > /root/servicios-laboratorio.txt',
- 'systemctl is-active --quiet kubelet && systemctl is-active --quiet containerd && test "$(sort /root/servicios-laboratorio.txt)" = "$(printf \'containerd=active\\nkubelet=active\')"',
- {cleanup:'rm -f /root/servicios-laboratorio.txt',negative:"printf '%s\\n' kubelet=inactive containerd=active >/root/servicios-laboratorio.txt"});
+ 'En cka-cp1 consulta kubelet y containerd. Guarda sus dos estados en /root/servicios-laboratorio.txt. Ambos deben estar activos.',
+ 'systemctl is-active kubelet containerd\nsystemctl is-active kubelet containerd > /root/servicios-laboratorio.txt\ncat /root/servicios-laboratorio.txt',
+ 'systemctl is-active --quiet kubelet && systemctl is-active --quiet containerd && test "$(cat /root/servicios-laboratorio.txt)" = "$(printf \'active\\nactive\\n\')"',
+ {cleanup:'rm -f /root/servicios-laboratorio.txt',negative:"printf '%s\\n' inactive active >/root/servicios-laboratorio.txt"});
 add(2,'a','Tu primer Pod',
  'En default crea el Pod saludo con '+image+'. Debe escribir Hola Kubernetes una sola vez y terminar correctamente, sin reiniciarse.',
  'kubectl -n default run saludo --image='+image+' --image-pull-policy=Never --restart=Never --command -- sh -c \'echo Hola Kubernetes\'\nkubectl -n default wait --for=jsonpath=\'{.status.phase}\'=Succeeded pod/saludo --timeout=120s',
@@ -77,7 +77,7 @@ add(4,'a','Desplegar una aplicación',
  {prepare:[absent('deployment','web')],cleanup:cleanupResource('deployment','web'),negative:'kubectl -n default scale deployment web --replicas=1'});
 add(4,'b','Actualizar y volver a la revisión anterior',
  'El Deployment versiones de default sirve VERSION_UNO. Actualiza su plantilla para servir VERSION_DOS y guarda esa respuesta en /root/version-dos.txt. Después vuelve a la revisión anterior. Debe conservar su identidad, dos réplicas Ready y servir VERSION_UNO.',
- 'kubectl -n default patch deployment versiones --type=strategic -p '+quote(JSON.stringify({spec:{template:{spec:{containers:[container(http('VERSION_DOS'))]}}}}))+'\n'+rollout('versiones')+'\nkubectl -n default exec deployment/versiones -- wget -T 5 -qO- http://127.0.0.1:8080/ >/root/version-dos.txt\nkubectl -n default rollout undo deployment/versiones\n'+rollout('versiones'),
+ deploy('versiones','VERSION_DOS',2)+'\n'+rollout('versiones')+'\nkubectl -n default exec deployment/versiones -- wget -T 5 -qO- http://127.0.0.1:8080/ >/root/version-dos.txt\nkubectl -n default rollout undo deployment/versiones\n'+rollout('versiones'),
  'test "$(cat /root/version-dos.txt)" = VERSION_DOS && kubectl -n default get deployment versiones -o json | jq -e --arg uid "$(cat /tmp/practica-c04-b.uid)" \'.metadata.uid==$uid and .spec.replicas==2 and .status.readyReplicas==2 and .status.observedGeneration==.metadata.generation\' && '+serving('versiones','VERSION_UNO'),
  {prepare:[absent('deployment','versiones'),deploy('versiones','VERSION_UNO',2),rollout('versiones'),'kubectl -n default get deployment versiones -o jsonpath=\'{.metadata.uid}\' >/tmp/practica-c04-b.uid'],cleanup:cleanupResource('deployment','versiones')+'; rm -f /root/version-dos.txt',negative:"printf '%s\\n' VERSION_UNO >/root/version-dos.txt"});
 const backend=(name,text)=>[absent('deployment',name),absent('service',name),deploy(name,text),rollout(name)];

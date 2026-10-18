@@ -11,10 +11,10 @@ test('Kubernetes · la entrada nueva no reutiliza módulos antiguos sin versión
 });
 test('Kubernetes · primero modo y después exactamente tres laboratorios',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));
- await page.goto('/terminal.html');await page.locator('a[href="'+root+'"]').click();
+ await page.goto('/terminal.html');await page.locator('[data-pick-mode="kubernetes"]').click();
  await expect(page.locator('#lab-entry')).toBeVisible();await expect(page.locator('#lab-loading')).toBeHidden();
  await expect(page.locator('.site-nav .navlink')).toHaveText(['Inicio','Cursos','Terminal','Proyectos']);
- await expect(page.locator('#practice-configuration')).toBeHidden();await expect(page.locator('#exam-configuration')).toBeHidden();
+ await expect(page.locator('#practice-configuration')).toBeVisible();await expect(page.locator('#exam-configuration')).toBeHidden();
  await page.locator('#mode-practice').click();await expect(page.locator('#practice-configuration')).toBeVisible();
  await expect(page.locator('[data-choose-stage]')).toHaveCount(3);await expect(page.locator('[data-class]')).toHaveCount(0);
  await expect(page.getByText('¿Cómo quieres practicar?',{exact:true})).toHaveCount(0);
@@ -33,23 +33,23 @@ test('Kubernetes · primero modo y después exactamente tres laboratorios',async
 });
 test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arrancarlo',async({page})=>{
  await mockBoot(page);await page.goto(root);await page.locator('#mode-practice').click();await page.locator('#enter-lab').click();
- await expect(page.locator('#exercise-class-select')).toHaveValue('0');await expect(page.locator('#exercise-class-select option')).toHaveCount(7);
+ await expect(page.locator('#exercise-class-select')).toHaveValue('0');await expect(page.locator('#exercise-class-select option')).toHaveCount(8);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Inicial');
  await expect(page.locator('.exercise-field label')).toHaveText(['Clase','Pregunta']);
  const practiceGaps=await page.evaluate(()=>({prompt:document.querySelector('#exercise-prompt').getBoundingClientRect().top-document.querySelector('#exercise-title').getBoundingClientRect().bottom,padding:parseFloat(getComputedStyle(document.querySelector('#exercises')).paddingTop)}));
  expect(practiceGaps.prompt).toBeGreaterThanOrEqual(16);expect(practiceGaps.padding).toBe(0);
- await expect(page.locator('#lab-course-note')).toHaveText('* Clases 00–06 · Un nodo · 14 preguntas disponibles.');
+ await expect(page.locator('#lab-course-note')).toHaveText('* Clases 00–06 · Un nodo · 16 preguntas disponibles.');
  expect(await page.locator('#lab-course-note').evaluate(node=>parseFloat(getComputedStyle(node).fontSize))).toBeLessThan(13);
  for(const number of ['1','2','3','4','5','6']){
-  await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(2);
-  await page.selectOption('#exercise-select','1');await expect(page.locator('#exercise-count')).toHaveText('Práctica 2 / 2');expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);
+  await page.selectOption('#exercise-class-select',number);const count=['4','6'].includes(number)?3:2;await expect(page.locator('#exercise-select option')).toHaveCount(count);
+  await page.selectOption('#exercise-select','1');await expect(page.locator('#exercise-count')).toHaveText('Práctica 2 / '+count);expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);
  }
  await page.locator('#change-lab').click();await expect(page.locator('#enter-lab')).toContainText('laboratorio inicial');
  await page.locator('[data-choose-stage=intermedio]').click();await page.locator('#enter-lab').click();
- await expect(page.locator('#exercise-class-select')).toHaveValue('7');await expect(page.locator('#exercise-class-select option')).toHaveCount(17);
+ await expect(page.locator('#exercise-class-select')).toHaveValue('7');await expect(page.locator('#exercise-class-select option')).toHaveCount(18);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Intermedio');
- await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 10 preguntas disponibles.');
- for(const number of ['8','9','10','11']){await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(2);}
+ await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 15 preguntas disponibles.');
+ for(const number of ['8','9','10','11']){await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(3);}
  expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);await expect(page.locator('#exercise-class-select option[value="12"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
 });
 test('Kubernetes · pendientes bloqueados incluso por enlaces y acciones directas',async({page})=>{

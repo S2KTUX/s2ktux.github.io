@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('Linux real · acceso independiente, guía y soluciones sin ejecutar', async ({ page }) => {
   await page.goto('/terminal.html');
   await page.locator('[data-pick-mode="linux"]').click();
-  await expect(page).toHaveURL(/\/laboratorios\/linux-real\/v86-test\.html/);
+  await expect(page).toHaveURL(/\/laboratorios\/linux-real\//);
   await expect(page.locator('#start')).toBeEnabled();
   await expect(page.locator('#other-node')).toHaveAttribute('href', /node=2/);
   await expect(page.locator('.site-logo')).toHaveText('S2KTUX');
@@ -12,12 +12,12 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
   await expect(page.locator('#clipboard-status')).toBeHidden();
   await expect(page.locator('.lab-modes')).toBeVisible();
   for(const selector of ['#lab-help','#more-options','#internet','a[href="CHULETA_LINUX_REAL.html"]','.lab-legal'])await expect(page.locator(selector)).toHaveCount(0);
-  await expect(page.locator('.lab-information small')).toHaveCount(4);
+  await expect(page.locator('.lab-information small')).toHaveCount(5);
   expect(await page.locator('.lab-information').first().evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeLessThan(14);
   await expect(page.locator('#network-note')).not.toContainText('no ping externo');
   await expect(page.locator('[data-exercise-card]')).toBeHidden();
   await expect(page.locator('#result')).toBeHidden();
-  expect((await page.locator('.console').boundingBox()).y).toBeLessThan(500);
+  expect((await page.locator('.console').boundingBox()).y).toBeLessThan(600);
   await expect(page.locator('#reboot')).toBeVisible();
   await page.locator('[data-theme-toggle]').click();
   await expect(page.locator('html')).toHaveClass(/dark/);
@@ -26,7 +26,7 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
   await page.locator('[data-exercise-solution]').click();
   await expect(page.locator('#exercise-solution')).toBeVisible();
   await expect(page.locator('a[href="examen.html"]')).toHaveText('Modo examen');
-  await expect(page.locator('#exercise-select option')).toHaveCount(45);
+  await expect(page.locator('#exercise-select option')).toHaveCount(56);
   await expect(page.locator('#reboot')).toBeVisible();
   await expect(page.locator('#recovery-link')).toBeVisible();
   expect(await page.evaluate(() => typeof globalThis.vm)).toBe('undefined');

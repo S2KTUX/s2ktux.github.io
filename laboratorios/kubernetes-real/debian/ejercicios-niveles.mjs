@@ -1,8 +1,9 @@
 import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs';
-import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261018-solutions';
+import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261018-aprender';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
 import {claseDisponible} from './disponibilidad-curso.mjs';
+import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
 const image='busybox:1.37.0-musl';
 const http="sh -c 'mkdir -p /www; echo WEB_LISTA >/www/index.html; httpd -f -p 8080 -h /www'";
 export const EJERCICIOS=Object.freeze({
@@ -21,4 +22,4 @@ export function ejerciciosNivel(level){
  if(!Object.hasOwn(EJERCICIOS,level))throw Error('Prácticas de nivel desconocido');
  return level==='inicial'?EJERCICIOS_INICIALES:EJERCICIOS[level].map(task=>({...task,preflight:task.preflight||API,check:exigirJSON(task.check),classNumber:task.classNumber??classForLegacy[task.id]}));
 }
-export function ejerciciosClase(number){return claseDisponible(number)?['inicial','intermedio','avanzado'].flatMap(ejerciciosNivel).filter(task=>task.classNumber===number):[];}
+export function ejerciciosClase(number){return claseDisponible(number)?[...EJERCICIOS_APRENDER,...['inicial','intermedio','avanzado'].flatMap(ejerciciosNivel)].filter(task=>task.classNumber===number):[];}
