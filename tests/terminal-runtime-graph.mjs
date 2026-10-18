@@ -57,9 +57,9 @@ for(const name of names){
 assert.doesNotMatch(core,/NIVEL 1 · INSTALACIÓN|CKA · CONTEXTO|PREGUNTA 1 · RESCATE/);
 assert.match(sources.linux,/linuxPracticeChecks/);
 assert.doesNotMatch(sources.docker,/NIVEL 1 · INSTALACIÓN|NIVEL 1 · DAEMON/);
-assert.match(sources.docker,/NIVEL 1 · IMÁGENES/);
+assert.match(sources.docker,/dockerPracticeChecks/);
 assert.match(sources.docker,/docker-ce-cli/);
-assert.match(sources.kubernetes,/CKA · CONTEXTO/);
+assert.match(sources.kubernetes,/practiceGroups:CLASES/);
 
 const output=[];
 const io={out:value=>output.push(String(value)),outMany:values=>values.forEach(value=>output.push(String(value))),err:value=>output.push(String(value)),ok:value=>output.push(String(value))};
