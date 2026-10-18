@@ -9,6 +9,7 @@ const words=line=>(String(line).match(/"[^"]*"|'[^']*'|[^\s]+/g)||[]).map(word=>
 const imageIs=(reference,repo,tag)=>{const parsed=parseDockerImageReference(reference);return parsed.repo===repo&&(!tag||parsed.tag===tag);};
 const sizeMiB=value=>{const match=String(value||'').match(/^(\d+(?:\.\d+)?)\s*([kmgt]?)(?:i?b)?$/i);return match?Number(match[1])*({k:1/1024,m:1,g:1024,t:1024*1024,'':1/1048576}[match[2].toLowerCase()]):NaN;};
 const sameNode=(a,b)=>Boolean(a&&b&&a.type===b.type&&(a.type==='file'?a.content===b.content:a.type==='symlink'?a.target===b.target:Object.keys(a.children||{}).every(name=>sameNode(a.children[name],b.children?.[name]))));
+const containsPaths=(a,b)=>!a||Boolean(b&&a.type===b.type&&(a.type!=='dir'||Object.keys(a.children||{}).every(name=>containsPaths(a.children[name],b.children?.[name]))));
 function walk(node,path=''){
  if(!node)return [];
  return [[path||'/',node],...(node.type==='dir'?Object.entries(node.children||{}).flatMap(([name,child])=>walk(child,path+'/'+name)):[])];
@@ -30,6 +31,7 @@ export function linuxPracticeChecks(ctx){
  const s=ctx.state,get=ctx.getNode;
  const file=path=>get(path.split('/').filter(Boolean));
  const originalWeb=structuredClone(file('/var/www/html'));
+ const originalLogs=structuredClone(file('/var/log'));
  const active=unit=>Boolean(s.services[unit]?.active);
  const pass=(ok,msg)=>result(ok,msg);
  return [
@@ -55,7 +57,7 @@ export function linuxPracticeChecks(ctx){
   ()=>{
    const node=file('/root/varlog-backup.tar.bz2');let archive;
    try{if(node?.type==='file'&&node.content.startsWith('TARJSON:bzip2:'))archive=JSON.parse(node.content.slice('TARJSON:bzip2:'.length));}catch{}
-   return pass(Array.isArray(archive)&&archive.some(entry=>entry.path.replace(/^\/+|^\.\//g,'').replace(/\/$/,'')==='var/log'&&entry.node?.type==='dir'),'Copia bzip2 de /var/log creada.');
+   return pass(Array.isArray(archive)&&archive.some(entry=>entry.path.replace(/^\/+|^\.\//g,'').replace(/\/$/,'')==='var/log'&&entry.node?.type==='dir'&&containsPaths(originalLogs,entry.node)),'Copia bzip2 de /var/log creada.');
   },
   ()=>{
    const node=file('/var/tmp/hosts'),acl=node?.acl||[];
@@ -86,14 +88,14 @@ export function linuxPracticeChecks(ctx){
   },
   ()=>{
    const disk=s.disks.find(item=>item.name==='sdb');
-   return pass(disk?.parts.some(part=>part.fstype==='swap'&&part.mount==='[SWAP]'&&Math.abs(sizeMiB(part.size)-512)<0.01&&lines(file('/etc/fstab')?.content).some(line=>{const fields=line.split(/\s+/);return deviceMatches(fields[0],'/dev/'+part.name,[part.uuid&&'UUID='+part.uuid])&&fields[2]==='swap'&&!fields[3]?.split(',').includes('noauto');})),'Swap de 512 MiB activa y persistente.');
+   return pass(disk?.parts.some(part=>part.fstype==='swap'&&part.mount==='[SWAP]'&&Math.abs(sizeMiB(part.size)-512)<0.01&&lines(file('/etc/fstab')?.content).some(line=>{const fields=line.split(/\s+/);return fields.length>=4&&deviceMatches(fields[0],'/dev/'+part.name,[part.uuid&&'UUID='+part.uuid])&&fields[2]==='swap'&&!fields[3].split(',').includes('noauto');})),'Swap de 512 MiB activa y persistente.');
   },
   ()=>pass(s.lvm.lvs.some(lv=>lv.size*1024>=230&&lv.size*1024<=260&&lv.reduced),'Volumen redimensionado en el rango pedido.'),
   ()=>pass(s.tunedProfile===(ctx.helpers?.tunedRecommendedProfile?.()||'virtual-host'),'Perfil tuned recomendado aplicado.'),
   ()=>{
    const node=file('/usr/local/bin/saludo');
    const prints=lines(node?.content).some(line=>/^(?:\/usr\/bin\/|\/bin\/)?(?:echo\s+(?:-e\s+)?["']?Hola equipo olimpo["']?|printf\s+(?:["']Hola equipo olimpo(?:\\n)?["']|["']%s(?:\\n)?["']\s+["']Hola equipo olimpo["']))\s*;?$/.test(line));
-   return pass(node?.type==='file'&&[2,5,8].every(index=>node.mode?.[index]==='x')&&prints,'Script saludo ejecutable por todos.');
+   return pass(node?.type==='file'&&[2,5,8].every(index=>node.mode?.[index]==='x'&&node.mode[index-2]==='r')&&prints,'Script saludo ejecutable por todos.');
   },
   ()=>{
    const root=file('/sitio/web'),page=file('/sitio/web/index.html'),conf=file('/etc/httpd/conf/httpd.conf');
