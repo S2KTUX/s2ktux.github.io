@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="./terminal-page.css?v=20260826-phase3">
 <link rel="stylesheet" href="./site-shell.css?v=5ba23c5af75b">
 <title>Terminales Linux, Docker y Kubernetes · S2KTUX</title>
-<meta name="description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas, rápidas e independientes dentro del navegador.">
+<meta name="description" content="Practica Linux, Docker y Kubernetes en laboratorios independientes dentro del navegador, con versiones simuladas como alternativa.">
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
@@ -22,11 +22,11 @@
 <meta property="og:site_name" content="S2KTUX">
 <meta property="og:locale" content="es_ES">
 <meta name="twitter:title" content="Terminales Linux, Docker y Kubernetes · S2KTUX">
-<meta name="twitter:description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas e independientes.">
+<meta name="twitter:description" content="Practica Linux, Docker y Kubernetes en laboratorios independientes dentro del navegador.">
 <meta name="author" content="S2KTUX">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Terminales Linux, Docker y Kubernetes · S2KTUX">
-<meta property="og:description" content="Practica RHCSA 9, Docker y Kubernetes para CKA en tres terminales simuladas e independientes.">
+<meta property="og:description" content="Practica Linux, Docker y Kubernetes en laboratorios independientes dentro del navegador.">
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -73,6 +73,7 @@
   window.addEventListener('pageshow',function(e){ var restored=getMode(new URLSearchParams(location.search)); if(e.persisted&&restored){ clearAllTerminalSessions(); location.replace(selectionUrl()); } });
   document.addEventListener('click', function(e){
     var b = e.target && e.target.closest && e.target.closest('[data-pick-mode], [data-legacy-mode]');
+    if(b && b.getAttribute('data-pick-mode')==='linux'){ location.href='/laboratorios/linux-real/'; return; }
     if(b && b.getAttribute('data-pick-mode')==='docker'){ location.href='/laboratorios/docker-real/'; return; }
     if(b){ var selected=b.getAttribute('data-pick-mode')||b.getAttribute('data-legacy-mode'); clearModeSession(selected); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
     var cm = e.target && e.target.closest && e.target.closest('[data-change-mode]');
@@ -81,10 +82,10 @@
   function initSelectorKeyboard(){
     var slots=[].slice.call(document.querySelectorAll('.terminal-slot')),selected=0;
     var command=document.getElementById('selector-current-command'),status=document.getElementById('selector-current-status');
-    var info={linux:['linux-rhcsa9','Rocky Linux 9.4 · preparado'],docker:['docker-lab','Alpine · Docker Engine real'],kubernetes:['kubernetes-cka','Clúster CKA · preparado']};
+    var info={linux:['linux-rhcsa9','Debian · Linux real'],docker:['docker-lab','Alpine · Docker Engine real'],kubernetes:['kubernetes-cka','Clúster CKA · preparado']};
     function choose(i,focus){selected=(i+slots.length)%slots.length;slots.forEach(function(s,n){var on=n===selected;s.setAttribute('data-selected',on?'1':'0');s.setAttribute('aria-selected',on?'true':'false');});var mode=slots[selected]&&slots[selected].getAttribute('data-pick-mode'),data=info[mode];if(data&&command)command.textContent=data[0];if(data&&status){var led=status.querySelector('i');status.textContent=' '+data[1];if(led)status.insertBefore(led,status.firstChild);}if(focus&&slots[selected])slots[selected].focus();}
     slots.forEach(function(s,i){s.addEventListener('mouseenter',function(){choose(i,false);});s.addEventListener('focus',function(){choose(i,false);});});
-    document.addEventListener('keydown',function(e){var sel=document.getElementById('mode-select');if(!sel||sel.style.display==='none'||!slots.length)return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();choose(selected+1,true);}else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();choose(selected-1,true);}else if(e.key==='Enter'){e.preventDefault();slots[selected].click();}});
+    document.addEventListener('keydown',function(e){var sel=document.getElementById('mode-select');if(!sel||sel.style.display==='none'||!slots.length||e.target.closest?.('a,input,select,textarea'))return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();choose(selected+1,true);}else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();choose(selected-1,true);}else if(e.key==='Enter'){e.preventDefault();slots[selected].click();}});
     if(slots.length)choose(0,!getMode(new URLSearchParams(location.search)));
   }
   document.addEventListener('DOMContentLoaded', function(){applyModeUI();initSelectorKeyboard();});
@@ -92,7 +93,7 @@
   var __modeTries=0; var __modeIv=setInterval(function(){ __modeTries++; applyModeUI(); if(__modeTries>100) clearInterval(__modeIv); }, 50);
 })();
 </script>
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Terminal simulada S2KTUX","applicationCategory":"EducationalApplication","operatingSystem":"Web","url":"https://s2ktux.github.io/terminal.html","description":"Terminales simuladas de Linux RHCSA 9, Docker y Kubernetes CKA para practicar en el navegador.","inLanguage":"es","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"SoftwareApplication","name":"Laboratorios S2KTUX","applicationCategory":"EducationalApplication","operatingSystem":"Web","url":"https://s2ktux.github.io/terminal.html","description":"Laboratorios de Linux, Docker y Kubernetes para practicar en el navegador.","inLanguage":"es","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"EUR"}}</script>
 </head>
 <body>
   <div id="mode-select" class="mode-select" role="dialog" aria-modal="true" aria-labelledby="selector-title">
@@ -112,12 +113,12 @@
         <span class="selector-current-prompt">s2ktux@lab:~$</span>
         <span>launch</span>
         <span class="selector-command-wrap"><b id="selector-current-command">linux-rhcsa9</b><i class="selector-cursor" aria-hidden="true"></i></span>
-        <small id="selector-current-status"><i aria-hidden="true"></i> Rocky Linux 9.4 · preparado</small>
+        <small id="selector-current-status"><i aria-hidden="true"></i> Debian · Linux real</small>
       </div>
       <div class="selector-list" role="listbox" aria-label="Entornos disponibles">
           <button data-pick-mode="linux" class="terminal-slot" role="option" aria-selected="false">
             <span class="slot-index">01</span>
-            <span class="slot-copy"><span class="slot-title">LINUX · RHCSA 9</span><span class="slot-focus">Rocky 9.4 · GRUB · SELinux · systemd · red · LVM</span></span>
+            <span class="slot-copy"><span class="slot-title">LINUX · RHCSA 9</span><span class="slot-focus">Debian · GRUB · SELinux · systemd · red · LVM</span></span>
             <span class="slot-action">ENTRAR ↵</span>
           </button>
           <button data-pick-mode="docker" class="terminal-slot" role="option" aria-selected="false">
@@ -131,10 +132,9 @@
             <span class="slot-action">ENTRAR ↵</span>
           </button>
       </div>
-      <p><a href="/laboratorios/linux-real/">Probar Linux real (beta)</a> · Debian en tu navegador, con root y Reset.</p>
       <p><a href="/laboratorios/kubernetes-real/">Probar Kubernetes (versión preliminar)</a></p>
-      <p><a href="terminal.html?mode=docker&amp;enter=1" data-legacy-mode="docker">Docker simulado (versión anterior)</a></p>
-      <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> entrar</span><span>Docker real permite guardar y resetear su máquina.</span></div>
+      <p><small>Versiones simuladas: <a href="terminal.html?mode=linux&amp;enter=1" data-legacy-mode="linux">Linux</a> · <a href="terminal.html?mode=docker&amp;enter=1" data-legacy-mode="docker">Docker</a></small></p>
+      <div class="selector-footer"><span><strong>↑ ↓</strong> elegir · <strong>Enter</strong> entrar</span><span>Linux y Docker permiten guardar y resetear su máquina.</span></div>
     </div>
   </div>
 </div>
@@ -155,7 +155,6 @@
 </div>
 
 <main id="main-content">
-<p><a href="/laboratorios/linux-real/">Probar Linux real en el navegador (beta)</a> · Debian, con root, prácticas y botón Reset. La terminal simulada sigue disponible.</p>
 <section class="terminal-hero">
   <div id="term-eyebrow">SANDBOX · LINUX / RHCSA 9</div>
   <h1 id="term-heading">Terminal Linux · RHCSA 9</h1>

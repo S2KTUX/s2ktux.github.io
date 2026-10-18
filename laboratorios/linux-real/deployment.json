@@ -147,7 +147,7 @@
     "sha256": "a3d493ab84e278f8318a85b42c5bc588f778770206844f102db8470940eb1017"
   },
   "kind": "beta independiente",
-  "replacesCurrentTerminal": false,
+  "replacesCurrentTerminal": true,
   "knownLimits": [
     "Debian i386, no RHEL; no equivale al examen oficial",
     "DNF con RPM locales, no actualiza Debian",
