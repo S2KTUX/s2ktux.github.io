@@ -27,7 +27,8 @@ test('Entrada principal · Enter abre Linux real',async({page})=>{
 
 test('Entrada preliminar · Enter respeta el enlace de Kubernetes',async({page})=>{
  await page.goto('/terminal.html');await page.locator('#mode-select a[href="/laboratorios/kubernetes-real/"]').focus();await page.keyboard.press('Enter');
- await expect(page).toHaveURL(/\/laboratorios\/kubernetes-real\/$/);
+ await expect(page).toHaveURL(/\/laboratorios\/kubernetes-real\/debian\/multinodo\.html\?/);
+ expect(new URL(page.url()).searchParams.get('view')).toBe('presentacion');
 });
 
 test('Menú inicial · no ofrece alternativas simuladas de Linux ni Docker',async({page})=>{
