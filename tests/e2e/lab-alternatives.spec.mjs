@@ -71,3 +71,21 @@ test('Alternativa ligera · notas sin desbordamiento @mobile',async({page})=>{
   await page.goto(path);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
  }
 });
+
+test('Linux simulado · Podman rootless resuelto con comandos desde cero',async({page})=>{
+ test.setTimeout(120000);const errors=[];page.on('pageerror',error=>errors.push(error.message));await ready(page,'linux');
+ const raw=command=>page.locator('#term-input').evaluate((input,value)=>{input.focus();input.value=value;input.dispatchEvent(new KeyboardEvent('keydown',{key:'Enter',code:'Enter',bubbles:true,cancelable:true}));},command);
+ await page.locator('#term-reboot').click();await expect(page.locator('#term-body')).toContainText('GNU GRUB');await page.locator('.xterm-helper-textarea').focus();await page.keyboard.press('e');for(let i=0;i<8;i++)await page.keyboard.press('ArrowDown');await page.keyboard.type(' rd.break');await page.keyboard.press('Control+x');
+ await expect(page.locator('#term-prompt')).toContainText('switch_root:/#');await submit(page,'mount -o remount,rw /sysroot');await submit(page,'chroot /sysroot');
+ await raw('passwd');await expect(page.locator('#term-prompt')).toContainText('Nueva contraseña');await raw('titanio7');await expect(page.locator('#term-prompt')).toContainText('Vuelve a escribirla');await raw('titanio7');await submit(page,'touch /.autorelabel');await submit(page,'exit');await raw('exit');
+ await expect(page.locator('#term-prompt')).toContainText('login:');await raw('root');await expect(page.locator('#term-prompt')).toContainText('Password:');await raw('titanio7');await expect(page.locator('#term-prompt')).toContainText('root@');
+ await page.selectOption('#chal-select','20');await page.locator('#chal-check').click();await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
+ for(const command of ['useradd -m hermes','mkdir -p /opt/entrada /opt/salida','chmod 777 /opt/entrada /opt/salida','loginctl enable-linger hermes','systemctl enable --now sshd'])await submit(page,command);
+ await raw('passwd hermes');await expect(page.locator('#term-prompt')).toContainText('Nueva contraseña');await raw('Hermes9!');await expect(page.locator('#term-prompt')).toContainText('Vuelva a escribir');await raw('Hermes9!');await expect(page.locator('#term-prompt')).toContainText('root@');
+ await raw('ssh hermes@localhost');await expect(page.locator('#term-prompt')).toContainText('yes/no');await raw('yes');await expect(page.locator('#term-prompt')).toContainText("password:");await raw('Hermes9!');await expect(page.locator('#term-prompt')).toContainText('hermes@');
+ for(const command of ['podman pull httpd','podman run -d --name webapp -v /opt/entrada:/data/in:Z -v /opt/salida:/data/out:Z httpd','mkdir -p ~/.config/systemd/user','cd ~/.config/systemd/user','podman generate systemd --name webapp --files','systemctl --user daemon-reload','systemctl --user enable container-webapp.service'])await submit(page,command);
+ await page.locator('#chal-check').click();await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
+ await submit(page,'systemctl --user enable --now container-webapp.service');await page.locator('#chal-check').click();await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
+ expect(await submit(page,'cat container-webapp.service')).toContain('ExecStart=/usr/bin/podman start "webapp"');
+ await submit(page,'exit');await expect(page.locator('#term-prompt')).toContainText('root@');await page.locator('#chal-check').click();await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');expect(errors).toEqual([]);
+});

@@ -8,6 +8,7 @@ import {courseExercises} from '../laboratorios/linux-real/v86-course-exercises.m
 import {extraExercises} from '../laboratorios/linux-real/v86-extra-exercises.mjs';
 import {examQuestions} from '../laboratorios/linux-real/v86-exam-data.mjs';
 import {executeDockerCommand} from '../terminal-docker-command.js';
+import {executeLinuxCommand} from '../terminal-linux-command.js';
 
 function fixture(){
  const root=createDirectory();
@@ -86,4 +87,13 @@ assert.notEqual(rejected.status,0);assert.equal(rejected.state.containers.length
 actual=await executeDockerCommand(actual.state,{name:'docker',args:['compose','-p','tienda','down']});
 actual=await executeDockerCommand(actual.state,{name:'docker',args:['compose','-p','tienda','up','-d']});
 assert.equal(actual.state.volumes.find(item=>item.name==='tienda_datos_db').data.dato,'CONSERVAR');
-console.log(`Simuladas: ${positives} positivos, ${negatives} negativos y ${variants} variantes equivalentes; bancos diferentes: Linux 21/44+22, Docker 15/30.`);
+const rootless=fixture();rootless.s.fs=rootless.root;rootless.s.currentUser='hermes';rootless.s.cwd=['home','hermes'];rootless.s.users.hermes={groups:['hermes']};rootless.dir('/home/hermes',{owner:'hermes',group:'hermes'});
+rootless.container('privado-root',{owner:'root',engine:'podman'});
+let podman=await executeLinuxCommand(rootless.s,{name:'podman',args:['run','-d','--name','webapp','-v','/opt/entrada:/data/in:Z','-v','/opt/salida:/data/out:Z','httpd']});
+assert.equal(podman.status,0);const webapp=podman.state.containers.find(item=>item.name==='webapp');assert.equal(webapp.owner,'hermes');assert.equal(webapp.engine,'podman');assert.equal(webapp.mounts.length,2);
+podman=await executeLinuxCommand(podman.state,{name:'podman',args:['generate','systemd','--name','webapp','--files']});
+assert.equal(podman.status,0);const unit=resolveVirtualNode(podman.state.fs,['home','hermes','container-webapp.service']);assert.equal(unit.owner,'hermes');assert.match(unit.content,/ExecStart=\/usr\/bin\/podman start "webapp"/);
+podman=await executeLinuxCommand(podman.state,{name:'podman',args:['generate','systemd','--name','webapp']});assert.match(podman.outputs.map(item=>item.text).join('\n'),/WantedBy=default.target/);
+for(const args of [['stop','privado-root'],['generate','systemd','--name','privado-root'],['stop','inexistente']]){const invalid=await executeLinuxCommand(podman.state,{name:'podman',args});assert.notEqual(invalid.status,0);assert.equal(invalid.state.containers.find(item=>item.name==='privado-root').running,true);}
+podman.state.currentUser='root';const otherUser=await executeLinuxCommand(podman.state,{name:'podman',args:['stop','webapp']});assert.notEqual(otherUser.status,0);assert.equal(otherUser.state.containers.find(item=>item.name==='webapp').running,true);
+console.log(`Simuladas: ${positives} positivos, ${negatives} negativos y ${variants} variantes equivalentes; bancos diferentes: Linux 21/44+22, Docker 15/30. Podman: propietario, aislamiento, generación y errores comprobados.`);
