@@ -37,6 +37,7 @@ import {
   utf8Bytes,
 } from "./terminal-resource-limits.js?v=20260826-phase5";
 import { createTerminalFidelity } from "./terminal-fidelity.js?v=20260826-block1";
+import {dockerHttpRoot,dockerHttpDocument} from './terminal-docker-http.js';
 import {
   dnfVersionLines,
   evaluateVirtualWrite,
@@ -1577,6 +1578,15 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     return out(text, "#ef8a7a");
   };
   const ok = (t) => out(t, "#8fa876");
+  const creationGroup = (parent) => /[sS]/.test(parent?.mode?.[5] || "")
+    ? parent.group
+    : users[currentUser]?.primary || users[currentUser]?.groups?.[0] || currentUser;
+  const creationDirectoryMode = (parent) => {
+    const mode = maskedMode("777");
+    return /[sS]/.test(parent?.mode?.[5] || "")
+      ? mode.slice(0,5) + (mode[5] === "x" ? "s" : "S") + mode.slice(6)
+      : mode;
+  };
   const virtualWrite = (node, nextContent, label = "") => {
     const available = Math.max(
         0,
@@ -4898,7 +4908,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     if (!parent.children[fn])
       parent.children[fn] = file("", {
         owner: currentUser,
-        group: currentUser,
+        group: creationGroup(parent),
+        mode: maskedMode("666"),
       });
     parent.children[fn].content = nextContent;
     s.parent = parent;
@@ -8034,6 +8045,26 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         ]);
       return;
     }
+    if (c.kind === "docker" && ["wget","curl"].includes(name)) {
+      const raw=args.find(value=>/^https?:\/\//.test(value));
+      let url;try{url=new URL(raw);}catch{err(name+": invalid URL",2);return;}
+      if(url.protocol!=="http:"){err(name+": this simulation supports internal HTTP only",2);return;}
+      if(name==="wget"&&!args.includes("-qO-")&&!args.includes("-O-")&&!(args.includes("-O")&&args[args.indexOf("-O")+1]==="-")&&!args.includes("--output-document=-")){
+        err("wget: use -O- for the simulated HTTP response",2);return;
+      }
+      if(name==="curl"&&args.some(value=>['-o','-O','--output','-d','--data','-X','--request'].includes(value))){err("curl: this simulation supports HTTP GET to stdout only",2);return;}
+      const mine=c.owner?.networks||{},local=['localhost','127.0.0.1'].includes(url.hostname);
+      const peer=local?c.owner:containers.find(item=>Object.entries(item.networks||{}).some(([network,link])=>mine[network]&&(link.ip===url.hostname||(network!=='bridge'&&item.name===url.hostname))));
+      if(!peer){err(name+": could not resolve or reach "+url.hostname,6);return;}
+      if(!peer.running||peer.paused||Number(url.port||80)!==80||!dockerHttpRoot(peer)){
+        err(name+": connection refused by "+url.hostname,7);return;
+      }
+      const body=dockerHttpDocument(peer,url.pathname,path=>{
+        const node=getNode(norm(path));return node?.type==='file'?node.content:undefined;
+      },(volume,path)=>dockerVolumeByName(volume)?.data?.[path]);
+      if(body===undefined){err(name+": HTTP 404 Not Found",22);return;}
+      out(String(body));return;
+    }
     if (name === "id") {
       out("uid=0(root) gid=0(root) groups=0(root)");
       return;
@@ -9116,6 +9147,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       .catch(() => {});
   }
   const applyDockerWorkerResult = async (result) => {
+    let effectStatus = 0;
     acceptDockerState(result.state);
     for (const item of result.outputs || []) {
       if (item.fd === 2) err(item.text, result.status || 1);
@@ -9143,11 +9175,14 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             fs: containerFsView(container),
           };
           try {
+            lastStatus = 0;
+            lastFail = false;
             containerDispatch(
               (effect.args || []).join(" "),
               (effect.args || [])[0],
               (effect.args || []).slice(1),
             );
+            effectStatus = lastStatus || effectStatus;
           } finally {
             containerShell = old;
             setPrompt();
@@ -9165,7 +9200,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             ["GET / 200", "healthcheck ok", "worker heartbeat"][index % 3],
         );
     }
-    lastStatus = Number.isInteger(result.status) ? result.status : 0;
+    lastStatus = effectStatus || (Number.isInteger(result.status) ? result.status : 0);
     lastFail = lastStatus !== 0;
     save();
   };
@@ -9176,6 +9211,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         name,
         args,
         cmd,
+        containers,
+        volumes: dockerVolumes,
         fs,
         cwd,
         currentUser,
@@ -10260,21 +10297,21 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             );
             return;
           }
-          if (targets.length > 1 && node.type === "dir") {
+          if (targets.length > 1 && node.type === "dir" && !flags.includes("d")) {
             if (targetIndex) out("");
             out(target + ":");
           }
-          if (node.type !== "dir") {
+          if (node.type !== "dir" || flags.includes("d")) {
             const symlink = node.type === "symlink",
               size = symlink
                 ? String(node.target || "").length
-                : node.content
+                : node.type === "dir" ? 4096 : node.content
                   ? node.content.length
                   : 0,
               context = selinuxContextFor(segs, node);
             if (flags.includes("l"))
               out(
-                (symlink ? "l" : "-") +
+                (node.type === "dir" ? "d" : symlink ? "l" : "-") +
                   (node.mode || "rw-r--r--") +
                   "  1 " +
                   (node.owner || "root").padEnd(7) +
@@ -10549,10 +10586,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
                   {},
                   {
                     owner: currentUser,
-                    group: users[currentUser]?.primary || currentUser,
+                    group: creationGroup(cur),
                   },
                 );
-                cur.children[s].mode = maskedMode("777");
+                cur.children[s].mode = creationDirectoryMode(cur);
               }
               cur = cur.children[s];
             }
@@ -10588,10 +10625,10 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             {},
             {
               owner: currentUser,
-              group: users[currentUser]?.primary || currentUser,
+              group: creationGroup(p),
             },
           );
-          p.children[nm].mode = maskedMode("777");
+          p.children[nm].mode = creationDirectoryMode(p);
         };
         const targets = args.filter((a) => !a.startsWith("-"));
         if (!targets.length) {
@@ -10653,7 +10690,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
           if (!ex)
             p.children[nm] = file("", {
               owner: currentUser,
-              group: users[currentUser]?.primary || currentUser,
+              group: creationGroup(p),
               mode: maskedMode("666"),
             });
           else ex.mtime = Date.now();
@@ -17693,8 +17730,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         existing ||
         file("", {
           owner: currentUser,
-          group:
-            (users[currentUser]?.groups || [currentUser])[0] || currentUser,
+          group: creationGroup(parent),
+          mode: maskedMode("666"),
         });
       if (!existing) parent.children[name] = node;
       if (!item.append) node.content = "";
@@ -17793,8 +17830,9 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
             err("-bash: " + target + ": No existe el fichero o el directorio");
           else if (virtualWrite(existing, content, target))
             parent.children[fn] = file(content, {
-              owner: currentUser,
-              group: currentUser,
+              owner: existing?.owner || currentUser,
+              group: existing?.group || creationGroup(parent),
+              mode: existing?.mode || maskedMode("666"),
             });
         } else lines.forEach((l) => out(l));
         save();
@@ -19453,9 +19491,9 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         '<div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:9px;color:#d97757;margin-bottom:12px">' +
         c.badge +
         (chalDone[i] ? "  ✔ completado" : "") +
-        '</div><div style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">' +
+        '</div><div data-practice-title style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:13px;color:var(--head);line-height:1.5;margin-bottom:14px">' +
         c.title +
-        '</div><div style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">' +
+        '</div><div data-practice-goal style="font-size:19px;color:var(--text);line-height:1.45;margin-bottom:12px">' +
         c.goal +
         "</div>";
       if (solutionBtn && solutionBody) {

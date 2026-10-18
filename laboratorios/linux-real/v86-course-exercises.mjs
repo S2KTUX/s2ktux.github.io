@@ -1,4 +1,5 @@
 // Adaptación del simulacro publicado: recursos locales, nunca repos ficticios.
+import {commonPractice} from '../../practice-common.mjs';
 // Las diferencias Debian/RHEL se explican; no se sustituyen comandos por alias.
 // Autenticación real mediante el auxiliar de PAM: comprobar la contraseña,
 // no leer/comparar hashes de shadow (tampoco con el nuevo root normal).
@@ -10,8 +11,7 @@ const dependency = 'Las prácticas son acumulativas. Haz antes usuarios/grupos p
 
 export const courseExercises = [
   {
-    id:'sim-01', title:'Simulacro 01 · Recuperar root', classes:[4,11],
-    goal:'Recupera root desde GRUB con rd.break o init=/bin/bash y cambia su contraseña a titanio7. Al volver al sistema, SELinux debe seguir Enforcing.',
+    id:'sim-01', classes:[4,11],
     note:'Abre «Practicar recuperación de la contraseña de root»: usa una máquina aparte sin inicio automático de root ni contraseña inicial conocida. La comprobación verifica contraseña y estado final, no demuestra por sí sola qué método has utilizado. La recuperación y el reetiquetado pueden tardar varios minutos.',
     explanation:'Edita la entrada de GRUB con e y arranca con Ctrl+X. Usa uno de los dos métodos, no ambos: rd.break entra en dracut antes de cambiar a /sysroot; init=/bin/bash abre Bash en la raíz real y no necesita chroot. La distribución sigue siendo Debian.',
     solution:'# Abre la máquina de recuperación y pulsa Iniciar laboratorio.\n# Si ya pasó GRUB, pulsa Reiniciar máquina (GRUB).\n\n# MÉTODO 1: en GRUB, e, añade rd.break al final de linux y Ctrl+X.\nmount -o remount,rw /sysroot\nchroot /sysroot\npasswd root\n# Escribe titanio7 dos veces.\ntouch /.autorelabel\nsync\nexit\nexit\n\n# ALTERNATIVA (no hagas ambos métodos):\n# En GRUB, e, añade init=/bin/bash al final de linux y Ctrl+X.\nmount -o remount,rw /\npasswd root\n# Escribe titanio7 dos veces.\ntouch /.autorelabel\nsync\nexec /sbin/init\n\n# Tras cualquiera de los dos métodos, espera el reetiquetado.\n# Cuando vuelva a arrancar, entra como root con titanio7:\ngetenforce',
@@ -35,23 +35,20 @@ export const courseExercises = [
     checks:[['Repositorio y firma configurados',`python3 -c 'import configparser; c=configparser.ConfigParser(); c.read("/etc/yum.repos.d/curso.repo"); r=c["curso-base"]; assert r["baseurl"]=="file:///srv/repos/lab-base" and r.getboolean("enabled") and r.getboolean("gpgcheck") and r["gpgkey"]=="file:///srv/repos/RPM-GPG-KEY-lab"'`],['Paquetes y clave disponibles','test -s /srv/repos/lab-base/repodata/repomd.xml && test -s /srv/repos/RPM-GPG-KEY-lab && rpm -q gpg-pubkey >/dev/null']],
   },
   {
-    id:'sim-04', title:'Simulacro 04 · Puerto Apache y SELinux', classes:[10],
-    goal:'Haz que Apache escuche en 8090, permita ese puerto en SELinux y responda con curl. Conserva SELinux Enforcing.',
+    id:'sim-04', classes:[10],
     note:'En esta candidata el servicio se llama apache2 y la configuración está en /etc/apache2. En RHEL son httpd y /etc/httpd; no se crean alias que oculten esa diferencia.',
     explanation:'El puerto debe estar declarado tanto en Apache como en la política SELinux. Configurar una etiqueta de puerto no abre automáticamente el firewall.',
     solution:"printf 'Listen 8090\\n' > /etc/apache2/conf-available/curso-puerto.conf\na2enconf curso-puerto\nsemanage port -a -t http_port_t -p tcp 8090\nsystemctl enable apache2\nsystemctl restart apache2\n\nss -ltn\ncurl http://127.0.0.1:8090/",
     checks:[['Apache activo y habilitado',active('apache2')],['Puerto 8090 en escucha','ss -ltn | grep -Eq ":8090[[:space:]]" && curl --max-time 5 -fsS http://127.0.0.1:8090/ >/dev/null'],['SELinux y puerto permitido','test "$(getenforce)" = Enforcing && semanage port -l -C | grep "^http_port_t" | grep -Eq "(^|[ ,])8090([ ,]|$)"',60]],
   },
   {
-    id:'sim-05',title:'Simulacro 05 · Usuarios y grupos',classes:[9],
-    goal:'Crea olimpo. zeus y hera deben ser miembros secundarios; ares tendrá shell nologin y no pertenecerá a olimpo. Contraseña de los tres: cambiame1.',
+    id:'sim-05',classes:[9],
     explanation:'La comprobación distingue el grupo principal de los grupos adicionales y verifica las contraseñas reales sin mostrarlas.',
     solution:"groupadd olimpo\nuseradd -m -G olimpo zeus\nuseradd -m -G olimpo hera\nuseradd -m -s /usr/sbin/nologin ares\nprintf 'zeus:cambiame1\\nhera:cambiame1\\nares:cambiame1\\n' | chpasswd\n\nid zeus\nid hera\ngetent passwd ares",
     checks:[['Grupos adicionales','for u in zeus hera; do id -nG "$u" | tr " " "\\n" | grep -Fxq olimpo || exit 1; test "$(id -gn "$u")" != olimpo || exit 1; done'],['ares sin shell ni olimpo','getent passwd ares | grep -Eq ":(/usr)?/sbin/nologin$" && ! id -nG ares | tr " " "\\n" | grep -Fxq olimpo'],['Contraseñas',[passwordCheck('zeus','cambiame1'),passwordCheck('hera','cambiame1'),passwordCheck('ares','cambiame1')].join(' && ')]],
   },
   {
-    id:'sim-06',title:'Simulacro 06 · Directorio colaborativo',classes:[6,9,10],
-    goal:'Crea /datos/olimpo con propietario root:olimpo y permisos 2770. Los nuevos archivos deben heredar el grupo olimpo.',note:dependency,
+    id:'sim-06',classes:[6,9,10],
     explanation:'SGID conserva el grupo del directorio. No hace falta activar permisos para todos.',
     solution:'mkdir -p /datos/olimpo\nchown root:olimpo /datos/olimpo\nchmod 2770 /datos/olimpo\n\nstat -c "%U:%G %a" /datos/olimpo',
     checks:[['Directorio y propietario','test -d /datos/olimpo && test "$(stat -c %U:%G /datos/olimpo)" = root:olimpo'],['Permisos y SGID','test "$(stat -c %a /datos/olimpo)" = 2770']],
@@ -64,15 +61,13 @@ export const courseExercises = [
     checks:[['Tarea cada minuto',`crontab -u hera -l | python3 -c 'import sys,shlex; p=[shlex.split(x) for x in sys.stdin if x.strip() and not x.lstrip().startswith("#")]; assert any(len(x)==7 and x[:5]==["*"]*5 and x[5] in ["logger","/usr/bin/logger"] and x[6]=="Backup diario" for x in p)'`],['Servicio cron',active('cron')],['Mensaje real reciente','journalctl --no-pager --since "-3 minutes" -t hera -o cat | grep -Fxq "Backup diario"']],
   },
   {
-    id:'sim-08',title:'Simulacro 08 · Tar y bzip2',classes:[1],
-    goal:'Guarda /var/log en /root/varlog-backup.tar.bz2 con tar y compresión bzip2.',
+    id:'sim-08',classes:[1],
     explanation:'La comprobación valida la compresión y que se hayan archivado archivos de var/log, sin extraerlos sobre el sistema.',
     solution:'tar -cjf /root/varlog-backup.tar.bz2 -C / var/log\n\nbzip2 -t /root/varlog-backup.tar.bz2\ntar -tjf /root/varlog-backup.tar.bz2',
     checks:[['Bzip2 válido','test -f /root/varlog-backup.tar.bz2 && bzip2 -t /root/varlog-backup.tar.bz2'],['Contenido de var/log','tar -tjf /root/varlog-backup.tar.bz2 | grep -Eq "^(\\./)?var/log/.+"']],
   },
   {
-    id:'sim-09',title:'Simulacro 09 · Permisos con ACL',classes:[6,10],
-    goal:'Copia /etc/hosts a /var/tmp/hosts, root:root y sin ejecución. zeus podrá leer/escribir, ares no podrá leer/escribir y el resto podrá leer.',note:dependency,
+    id:'sim-09',classes:[6,10],
     explanation:'ACL permite dar permisos a usuarios concretos sin conceder escritura a todos.',
     solution:'cp /etc/hosts /var/tmp/hosts\nchown root:root /var/tmp/hosts\nchmod 644 /var/tmp/hosts\nsetfacl -m u:zeus:rw-,u:ares:--- /var/tmp/hosts\n\ngetfacl /var/tmp/hosts',
     checks:[['Copia y propietario','cmp -s /etc/hosts /var/tmp/hosts && test "$(stat -c %U:%G /var/tmp/hosts)" = root:root'],['Sin ejecución y lectura para el resto','test $((0$(stat -c %a /var/tmp/hosts) & 0111)) = 0 && getfacl -cp /var/tmp/hosts | grep -Fxq "other::r--"'],['Permisos efectivos de zeus y ares','runuser -u zeus -- test -r /var/tmp/hosts && runuser -u zeus -- test -w /var/tmp/hosts && ! runuser -u ares -- test -r /var/tmp/hosts && ! runuser -u ares -- test -w /var/tmp/hosts']],
@@ -100,22 +95,19 @@ for root,dirs,files in os.walk("/",followlinks=False):
 assert n>0'`]],
   },
   {
-    id:'sim-12',title:'Simulacro 12 · Filtrar con grep',classes:[1,11],
-    goal:'Guarda en /root/coincidencias todas las líneas de /usr/share/dict/words que contengan rich, respetando el orden y las mayúsculas.',
+    id:'sim-12',classes:[1,11],
     explanation:'El diccionario de esta candidata es real. La comparación detecta líneas añadidas, omitidas o reordenadas.',
     solution:'grep rich /usr/share/dict/words > /root/coincidencias\n\nwc -l /root/coincidencias\ncat /root/coincidencias',
     checks:[['Todas las coincidencias',`python3 -c 'a=open("/usr/share/dict/words").readlines(); assert open("/root/coincidencias").read()=="".join(x for x in a if "rich" in x)'`]],
   },
   {
-    id:'sim-13',title:'Simulacro 13 · UID concreto',classes:[9],
-    goal:'Crea apolo con UID 4120 y contraseña orquidea3.',
+    id:'sim-13',classes:[9],
     explanation:'El UID debe estar libre. No se aprueba solo por existir una cuenta con ese nombre.',
     solution:"useradd -m -u 4120 apolo\nprintf 'apolo:orquidea3\\n' | chpasswd\n\nid apolo",
     checks:[['UID 4120','test "$(id -u apolo)" = 4120'],['Contraseña',passwordCheck('apolo','orquidea3')]],
   },
   {
-    id:'sim-14',title:'Simulacro 14 · Sudo sin contraseña',classes:[9],
-    goal:'Permite a zeus administrar con sudo sin contraseña. La configuración debe tener sintaxis válida.',note:dependency,
+    id:'sim-14',classes:[9],
     explanation:'El fichero de sudoers se verifica antes de usarlo. La comprobación consulta los permisos y ejecuta únicamente id, sin cambiar el sistema.',
     solution:"printf 'zeus ALL=(ALL:ALL) NOPASSWD: ALL\\n' > /etc/sudoers.d/zeus\nchmod 440 /etc/sudoers.d/zeus\nvisudo -cf /etc/sudoers\n\nrunuser -u zeus -- sudo -n id -u",
     checks:[['Sintaxis válida','visudo -cf /etc/sudoers'],['Permiso de administración completo','sudo -l -U zeus | grep -Eq "\\(ALL[ :A-Z]*\\)[[:space:]]+NOPASSWD:[[:space:]]+ALL"'],['Acceso sin contraseña','test "$(runuser -u zeus -- sudo -n id -u)" = 0']],
@@ -154,8 +146,7 @@ assert n>0'`]],
     checks:[['Perfil y servicio','systemctl is-active --quiet tuned && test "$(cat /etc/tuned/active_profile)" = virtual-guest'],['Ajustes aplicados','tuned-adm verify && test "$(sysctl -n vm.swappiness)" = 30']],
   },
   {
-    id:'sim-19',title:'Simulacro 19 · Script de saludo',classes:[3],
-    goal:'Crea /usr/local/bin/saludo, ejecutable por todos, que imprima Hola equipo olimpo. Debe ser un script Bash simple y válido.',
+    id:'sim-19',classes:[3],
     explanation:'La comprobación lee el script y valida sintaxis y permisos, sin ejecutar código escrito por el alumno como root. Prueba tú su salida desde la terminal.',
     solution:"printf '#!/bin/bash\\necho \"Hola equipo olimpo\"\\n' > /usr/local/bin/saludo\nchmod 755 /usr/local/bin/saludo\n\n/usr/local/bin/saludo",
     checks:[['Script válido y ejecutable','test -f /usr/local/bin/saludo && bash -n /usr/local/bin/saludo && test $((0$(stat -c %a /usr/local/bin/saludo) & 0111)) = 73'],['Saludo simple',`python3 -c 'p=open("/usr/local/bin/saludo").read().splitlines(); p=[x.strip() for x in p if x.strip() and not x.lstrip().startswith("#")]; assert p in [["echo \\\"Hola equipo olimpo\\\""],["printf \\\"Hola equipo olimpo\\\\n\\\""]]'`]],
@@ -176,4 +167,4 @@ assert n>0'`]],
     interactive:true,checkUser:'hermes',
     checks:[['Cuenta y linger','test "$(loginctl show-user hermes -p Linger --value)" = yes'],['Servicio del usuario','test -f "$HOME/.config/systemd/user/container-webapp.service" && systemctl --user is-active --quiet container-webapp.service && systemctl --user is-enabled --quiet container-webapp.service'],['Contenedor y volúmenes','test -d "$HOME/.local/share/containers/storage/libpod" && podman inspect webapp | python3 -c \'import json,sys; c=json.load(sys.stdin)[0]; assert c["State"]["Running"]; m={(x["Source"],x["Destination"]) for x in c["Mounts"]}; assert {("/opt/entrada","/data/in"),("/opt/salida","/data/out")} <= m\'']],
   },
-];
+].map(exercise=>commonPractice('linux',exercise));

@@ -134,7 +134,7 @@ function validateKubectl(args) {
   return success(args);
 }
 export function validateCommandInvocation(command, args, { mode = '' } = {}) {
-  if (command === 'ls') return validateSimpleFlags('ls', args.map(value => value === '--all' ? '-a' : value), { short:'alZ' });
+  if (command === 'ls') return validateSimpleFlags('ls', args.map(value => value === '--all' ? '-a' : value === '--directory' ? '-d' : value), { short:'adlZ' });
   if (command === 'id') return validateSimpleFlags('id', args, { short:'ugGnr', long:new Set(['--user','--group','--groups','--name','--real']) });
   if (command === 'hostname') return validateSimpleFlags('hostname', args, { short:'fisdy', long:new Set(['--fqdn','--ip-address','--short','--domain','--yp']) });
   if (command === 'date') return validateSimpleFlags('date', args, { short:'Ru', long:new Set(['--rfc-email','--utc','--universal']) });

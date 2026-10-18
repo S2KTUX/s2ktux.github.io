@@ -3,13 +3,13 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715831472,
+  "verifiedPackageBytes": 715829901,
   "modifications": [
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "ce5e4946346e92617db931f39ef7a0cedf0c94fc5529991b01404eabe64bf0e2",
-      "bytes": 4916
+      "sha256": "9a40fe03033adf784700b4fb8c1ae0500a0c3328e7510a2263479501bbb90a0e",
+      "bytes": 4969
     },
     {
       "path": "v86-test.mjs",
@@ -38,8 +38,8 @@
     {
       "path": "v86-course-exercises.mjs",
       "before": "6f026061b53c2b8712734e285ba760f465a49398f5def615a6113d886de7f03e",
-      "sha256": "7c05edfff18cf7998a5ae7d27008ad69c4172cc8830cabe6e8c2443d97dac0e8",
-      "bytes": 25369
+      "sha256": "649d0a62f3a7c497535cf43d41ee67228082a7acf652bd2b4c5a5a785f9188de",
+      "bytes": 23745
     },
     {
       "path": "v86-extra-exercises.mjs",
@@ -147,7 +147,7 @@
     "sha256": "a3d493ab84e278f8318a85b42c5bc588f778770206844f102db8470940eb1017"
   },
   "kind": "beta independiente",
-  "replacesCurrentTerminal": false,
+  "replacesCurrentTerminal": true,
   "knownLimits": [
     "Debian i386, no RHEL; no equivale al examen oficial",
     "DNF con RPM locales, no actualiza Debian",

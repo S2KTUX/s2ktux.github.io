@@ -38,6 +38,7 @@ export function createTerminalFidelity(deps){
     const line=String(raw).replace(/\s+#.*$/,'').trim();
     if(!line||line.startsWith('#')||line.startsWith('@')||/^Defaults(?:\s|$)/.test(line))return null;
     const match=line.match(/^(\S+)\s+(\S+)\s*=\s*(?:\(([^)]*)\)\s*)?(?:(NOPASSWD|PASSWD)\s*:\s*)?(.+)$/);
+    if(match&&!match[3]&&match[5].startsWith('('))return{invalid:true};
     return match?{subject:match[1],host:match[2],runas:match[3]||'root',nopasswd:match[4]==='NOPASSWD',commands:match[5].split(',').map(value=>value.trim())}:{invalid:true};
   };
   const sudoersRuleFor=(user,command='ALL')=>{
