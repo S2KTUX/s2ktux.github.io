@@ -50,7 +50,7 @@ for(const path of ['/laboratorios/docker-real/','/laboratorios/docker-real/infor
 }
 test('Docker real · notas breves sin bloque de explicación técnica',async({page})=>{
  await page.goto('/laboratorios/docker-real/');
- await expect(page.locator('.lab-information p')).toHaveCount(2);
+ await expect(page.locator('.lab-information p')).toHaveCount(4);
  await expect(page.locator('main a[href="informacion.html"]')).toHaveCount(0);
  await expect(page.locator('.lab-information')).not.toContainText('Alpine');
  await expect(page.locator('.lab-information')).not.toContainText('puente público');

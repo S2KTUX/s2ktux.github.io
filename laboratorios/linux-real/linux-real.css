@@ -35,7 +35,7 @@
 .exam-embed .linux-real-page { padding: 0; width: 100%; }
 .exam-embed .console { margin-top: 0; }
 .exam-embed .terminal-controls { margin-left: 8px; }
-.exam-running .site-footer, .exam-running #exam-information, .exam-running .lab-modes { display: none; }
+.exam-running .site-footer, .exam-running #exam-information, .exam-running #exam-alternative, .exam-running .lab-modes { display: none; }
 .exam-machines iframe { width: 100%; height: 615px; border: 0; display: block; }
 .exam-machines iframe[hidden] { display: block !important; position: absolute; left: -20000px; width: 1000px; visibility: hidden; }
 .exam-machines { position: relative; }
