@@ -135,7 +135,38 @@ function executeCompose(ctx,args){
   const candidates=fileName?[fileName]:['compose.yaml','compose.yml','docker-compose.yaml','docker-compose.yml'];let node=null,path='';for(const candidate of candidates){const found=getNode(norm(candidate));if(found&&found.type==='file'){node=found;path=candidate;break;}}if(!node){err('no configuration file provided: not found');return;}
   const spec=parseCompose(node.content),entries=Object.entries(spec.services);if(!entries.length){err('validating '+path+': services must be a mapping');return;}const project=state.composeProjects[projectName]||(state.composeProjects[projectName]={running:false,services:[],volumes:[]}),containers=()=>state.containers.filter(item=>item.composeProject===projectName);
   if(operation==='config'){out(node.content);return;}
-  if(operation==='up'){let network=findNetwork(projectName+'_default');if(!network){network={id:randomId(),name:projectName+'_default',driver:'bridge',scope:'local',subnet:'172.31.0.0/16',gateway:'172.31.0.1',nextIp:2};state.networks.push(network);out(' ✔ Network '+network.name+'  Created');}containers().forEach(item=>state.containers.splice(state.containers.indexOf(item),1));for(const [service,specification] of entries){const name=projectName+'-'+service+'-1',container={id:randomId(),image:specification.image||service+':latest',cmd:specification.command||'/bin/sh',running:true,status:'running',exitCode:0,name,ports:specification.ports[0]||'',networks:{},mounts:[],fs:{'/etc/hostname':name},composeProject:projectName,composeService:service,createdAt:Date.now(),startedAt:Date.now()};attach(container,network);state.containers.push(container);out(' ✔ Container '+name+'  Started');}project.running=true;project.services=Object.keys(spec.services);out('[+] Running '+(entries.length+1)+'/'+(entries.length+1));return;}
+  if(operation==='up'){
+    const scales={};
+    for(let i=0;i<rest.length;i++){
+      const raw=rest[i]==='--scale'?rest[++i]:rest[i].startsWith('--scale=')?rest[i].slice(8):null;
+      if(raw!==null){
+        const match=String(raw||'').match(/^([\w.-]+)=(\d+)$/);
+        if(!match||!spec.services[match[1]]){err('invalid scale specification: '+raw);return;}
+        scales[match[1]]=Number(match[2]);
+      }
+    }
+    let network=findNetwork(projectName+'_default');
+    if(!network){network={id:randomId(),name:projectName+'_default',driver:'bridge',scope:'local',subnet:'172.31.0.0/16',gateway:'172.31.0.1',nextIp:2};state.networks.push(network);out(' ✔ Network '+network.name+'  Created');}
+    for(const volume of spec.volumes){
+      const full=projectName+'_'+volume;
+      if(!state.volumes.some(item=>item.name===full))state.volumes.push({name:full,driver:'local',data:{},createdAt:Date.now(),composeProject:projectName});
+    }
+    containers().forEach(item=>state.containers.splice(state.containers.indexOf(item),1));
+    let created=1;
+    for(const [service,specification] of entries){
+      const mounts=specification.volumes.map(value=>{
+        const [source,target,options]=value.split(':'),named=!source.startsWith('.')&&!source.startsWith('/');
+        return {type:named?'volume':'bind',source:named?projectName+'_'+source:'/'+norm(source).join('/'),target,readOnly:options==='ro'};
+      });
+      for(let replica=1;replica<=(scales[service]??1);replica++){
+        const name=specification.container_name&&(scales[service]??1)===1?specification.container_name:projectName+'-'+service+'-'+replica;
+        const container={id:randomId(),image:specification.image||service+':latest',cmd:specification.command||'/bin/sh',running:true,status:'running',exitCode:0,name,ports:specification.ports[0]||'',networks:{},mounts:copy(mounts),fs:{'/etc/hostname':name},composeProject:projectName,composeService:service,createdAt:Date.now(),startedAt:Date.now()};
+        attach(container,network);state.containers.push(container);out(' ✔ Container '+name+'  Started');created++;
+      }
+    }
+    project.running=true;project.services=Object.keys(spec.services);project.volumes=spec.volumes.map(name=>projectName+'_'+name);
+    out('[+] Running '+created+'/'+created);return;
+  }
   if(operation==='down'){containers().forEach(item=>{state.containers.splice(state.containers.indexOf(item),1);out(' ✔ Container '+item.name+'  Removed');});const network=findNetwork(projectName+'_default');if(network){state.networks.splice(state.networks.indexOf(network),1);out(' ✔ Network '+network.name+'  Removed');}project.running=false;return;}
   if(operation==='ps'){out('NAME'.padEnd(24)+'IMAGE'.padEnd(22)+'SERVICE'.padEnd(14)+'STATUS'.padEnd(14)+'PORTS');containers().forEach(item=>out(item.name.padEnd(24)+item.image.padEnd(22)+item.composeService.padEnd(14)+(item.running?'Up':'Exited').padEnd(14)+(item.ports||'')));return;}
   if(operation==='logs'){containers().forEach(item=>out(item.name+'  | service ready'));return;}

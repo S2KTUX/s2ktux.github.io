@@ -12,8 +12,8 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
   await expect(page.locator('#clipboard-status')).toBeHidden();
   await expect(page.locator('.lab-modes')).toBeVisible();
   for(const selector of ['#lab-help','#more-options','#internet','a[href="CHULETA_LINUX_REAL.html"]','.lab-legal'])await expect(page.locator(selector)).toHaveCount(0);
-  await expect(page.locator('.lab-information small')).toHaveCount(3);
-  expect(await page.locator('.lab-information').evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeLessThan(14);
+  await expect(page.locator('.lab-information small')).toHaveCount(4);
+  expect(await page.locator('.lab-information').first().evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeLessThan(14);
   await expect(page.locator('#network-note')).not.toContainText('no ping externo');
   await expect(page.locator('[data-exercise-card]')).toBeHidden();
   await expect(page.locator('#result')).toBeHidden();
@@ -44,6 +44,7 @@ test('Linux real · examen separado, sin ayudas y con errores de preparación vi
   await page.locator('#exam-start').click();
   await expect(page.locator('.site-header')).toBeVisible();
   await expect(page.locator('#exam-intro')).toBeHidden();
+  await expect(page.locator('#exam-alternative')).toBeHidden();
   await expect(page.locator('#exam-status')).toContainText('Máquina 1:');
   await expect(page.locator('#exam-finish')).toBeEnabled();
   await expect(page.locator('#exam-questions article')).toHaveCount(1);
@@ -62,6 +63,7 @@ test('Linux real · examen separado, sin ayudas y con errores de preparación vi
   page.on('dialog',dialog=>dialog.accept());
   await page.locator('#exam-finish').click();
   await expect(page.locator('#exam-score')).toHaveText('0/300 puntos');
+  await expect(page.locator('#exam-alternative')).toBeVisible();
   await expect(page.locator('#exam-verdict')).toContainText('No aprobado');
   await expect(page.locator('#exam-report details')).toHaveCount(22);
   await expect(page.locator('#exam-report [data-result="unanswered"]')).toHaveCount(22);

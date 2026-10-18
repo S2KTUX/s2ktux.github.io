@@ -8648,6 +8648,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     }),
     helpers: Object.freeze({
       dockerConfigError,
+      tunedRecommendedProfile: () => linuxWorkerEnabled ? 'virtual-host' : 'virtual-guest',
       sudoersRuleFor,
       sudoersSyntaxError,
       kubernetes: Object.freeze({
@@ -15761,6 +15762,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
           const c = {
             id,
             image: img,
+            owner: currentUser,
+            engine,
             cmd: containerCmd.join(" ") || defaultImageCommand(repo),
             running: true,
             paused: false,
@@ -18820,14 +18823,14 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         group: "hera",
       });
     // tar bzip2
-    setF(["root", "varlog-backup.tar.bz2"], "TARLIST:bzip2:/var/log");
+    setF(["root", "varlog-backup.tar.bz2"], "TARJSON:bzip2:" + JSON.stringify([{path:"var/log",node:getNode(["var","log"])}]));
     // permisos /var/tmp/hosts
     mkdirp("/var/tmp");
     const hostsC = (getNode(["etc", "hosts"]) || { content: "" }).content;
     const vt = getNode(["var", "tmp"]);
     if (vt) {
       vt.children["hosts"] = file(hostsC, { owner: "root", group: "root" });
-      vt.children["hosts"].mode = "rw-r-----";
+      vt.children["hosts"].mode = "rw-rw-r--";
       vt.children["hosts"].acl = [
         { type: "user", name: "zeus", perms: "rw-" },
         { type: "user", name: "ares", perms: "---" },
@@ -18839,8 +18842,19 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     services.chronyd = { enabled: true, active: true };
     // find hera
     mkdirp("/root/herafiles");
+    const ownedByHera=[];
+    const collectHera=(node,path=[])=>{
+      if(!node||path.join('/').startsWith('root/herafiles'))return;
+      if(node.owner==='hera')ownedByHera.push([path,node]);
+      if(node.type==='dir')for(const [name,child] of Object.entries(node.children))collectHera(child,path.concat(name));
+    };
+    collectHera(getNode([]));
+    for(const [path,node] of ownedByHera){
+      const destination=['root','herafiles',...path];mkdirp('/'+destination.slice(0,-1).join('/'));
+      getNode(destination.slice(0,-1)).children[destination.at(-1)]=JSON.parse(JSON.stringify(node));
+    }
     // grep coincidencias
-    setF(["root", "coincidencias"], "rich\nostrich\nenrich\nrichard");
+    setF(["root", "coincidencias"], (getNode(['usr','share','dict','words'])?.content||'').split('\n').filter(line=>line.includes('rich')).join('\n'));
     // sudoers zeus
     const sdd = getNode(["etc", "sudoers.d"]);
     if (sdd)
@@ -18902,7 +18916,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       fs.content +=
         "\n/dev/mapper/datavg-appvol  /mnt/appvol  ext4  defaults  0 0\n/dev/sdb2  none  swap  defaults  0 0";
     // tuned
-    tunedProfile = "throughput-performance";
+    tunedProfile = linuxWorkerEnabled ? "virtual-host" : "virtual-guest";
     // script saludo
     mkdirp("/usr/local/bin");
     const ulb = getNode(["usr", "local", "bin"]);
@@ -18915,6 +18929,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     // httpd /sitio/web + puerto 8090
     mkdirp("/sitio/web");
     setF(["sitio", "web", "index.html"], "<h1>Sitio del laboratorio</h1>");
+    getNode(['sitio','web']).context='httpd_sys_content_t';
+    getNode(['sitio','web','index.html']).context='httpd_sys_content_t';
     const conf = getNode(["etc", "httpd", "conf", "httpd.conf"]);
     if (conf)
       conf.content = conf.content.replace(
@@ -18927,6 +18943,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     fw.services.add("http");
     services.httpd = { enabled: true, active: true, port: 8090 };
     // podman rootless hermes
+    if(!images.some(image=>image.repo==='httpd'&&image.tag==='latest'))images.push({repo:'httpd',tag:'latest',id:'solved-httpd',size:'148MB'});
+    containers.push({id:'solved-webapp',name:'webapp',image:'httpd:latest',owner:'hermes',engine:'podman',running:true,mounts:[{type:'bind',source:'/opt/entrada',target:'/data/in'},{type:'bind',source:'/opt/salida',target:'/data/out'}],ports:'',networks:{}});
     linger["hermes"] = true;
     userUnits["hermes"] = {
       "container-webapp": { enabled: true, active: true },
