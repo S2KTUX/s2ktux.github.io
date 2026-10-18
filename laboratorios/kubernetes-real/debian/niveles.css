@@ -15,25 +15,20 @@
 .learning-modes{display:flex;gap:28px;border-bottom:2px solid var(--line);margin-bottom:36px}
 .learning-modes button{border:0;border-bottom:3px solid transparent;background:transparent;color:var(--text);padding:14px 0;font:inherit;font-size:15px;cursor:pointer}
 .learning-modes button[aria-pressed=true]{border-bottom-color:var(--head);color:var(--head)}
-#exam-configuration{max-width:860px;font-size:14px}#exam-configuration h3{font:16px/1.6 'Space Mono',monospace}
-.exam-sheet{padding:4px 0 0}
-.exam-heading-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px 24px;margin:0 0 32px}
-.exam-heading-row h3{margin:0;color:var(--head)}
-.exam-languages{display:flex;align-items:center;font-size:12px;border:1px solid var(--line);background:var(--surface)}
-.exam-languages span{display:none}.exam-languages button{font:inherit;border:0;background:transparent;color:var(--text);padding:9px 12px;cursor:pointer}
+#exam-configuration{max-width:860px;font-size:14px}
+.exam-sheet{padding:4px 0 0;max-width:72ch}
+.exam-heading-row{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:24px}
+#exam-configuration h3{font:16px/1.6 'Space Mono',monospace;color:var(--head);margin:0}
+#exam-description{margin:0;line-height:1.95;font-size:14px;max-width:66ch}
+#exam-pending{margin:24px 0;font-size:11px;line-height:1.8;opacity:.7}
+.exam-actions{display:flex;align-items:center;flex-wrap:wrap;gap:18px 28px}
+.exam-languages{display:flex;align-items:center;flex-shrink:0;font-size:12px;border:1px solid var(--line);background:var(--surface)}
+.exam-languages span{display:none}.exam-languages button{font:inherit;border:0;background:none;color:var(--text);padding:9px 12px;cursor:pointer}
 .exam-languages button+span+button{border-left:1px solid var(--line)}
 .exam-languages button:hover{background:var(--surface2)}
-.exam-languages button[aria-pressed=true]{background:var(--line);color:var(--surface);font-weight:bold}
-.exam-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin:0 0 32px}
-.exam-fact{display:flex;flex-direction:column;gap:18px;min-width:0;padding:26px 22px 22px;border:2px solid var(--line);background:var(--surface);box-shadow:3px 3px 0 var(--surface2)}
-.exam-fact dt{font-size:12px;line-height:1.8;opacity:.8}.exam-fact dd{margin:0;font-size:20px;line-height:1.6;color:var(--head)}
-.exam-fact .exam-fact-note{font-size:10px;line-height:1.6;opacity:.7;color:var(--text)}
-#exam-description{margin:0 0 28px;line-height:1.9;font-size:13px}
-.exam-actions{display:flex;flex-direction:column;align-items:flex-start;gap:20px}
-#exam-pending{margin:0;font-size:12px;line-height:1.8;opacity:.75}
+.exam-languages button[aria-pressed=true]{color:var(--surface);background:var(--line);font-weight:bold}
 #exam-configuration #start-exam{margin:0;font-size:12px;line-height:1.6;box-shadow:2px 2px 0 var(--surface2);cursor:not-allowed}
-#exam-configuration .lab-footnote{margin-top:32px}
-@media(max-width:680px){.exam-facts{grid-template-columns:1fr;gap:18px}.exam-fact{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px 16px;align-items:center;padding:20px}.exam-fact dd{font-size:18px}.exam-fact .exam-fact-note{grid-column:2}}
+#exam-configuration .lab-footnote{margin:28px 0 0}
 .lab-footnote{font-size:11px;line-height:1.6;opacity:.75;margin:24px 0 0;max-width:80ch}
 .course-index button:disabled{opacity:.5;cursor:wait}
 .entry-enter:disabled{cursor:default}

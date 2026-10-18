@@ -84,7 +84,7 @@
     {
       "path": "debian/entrada-laboratorio.mjs",
       "bytes": 611,
-      "sha256": "cac13cefb7d158bb99e73d69b7a6efcced78cbdddb3b33bfe643dbf1f0028004"
+      "sha256": "596cbf06e39a7fdc9e9b794170f94285ced3d2c2a2f35a60709f3af58eb4a117"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -118,8 +118,8 @@
     },
     {
       "path": "debian/interfaz-niveles.mjs",
-      "bytes": 14172,
-      "sha256": "57314bae424a5f5ffa373beea3e047febf88bd16109e7f082cfaaec0e3120740"
+      "bytes": 14140,
+      "sha256": "7812e150edb9ff573382e7f665e3a24191fa099ce4cf6c18ab45a5321a6c1154"
     },
     {
       "path": "debian/kernel-perfil.mjs",
@@ -143,18 +143,18 @@
     },
     {
       "path": "debian/multinodo.html",
-      "bytes": 7076,
-      "sha256": "f2c049269622384fd698ed1d8986be3854413782ef96965240743681549c2d04"
+      "bytes": 6840,
+      "sha256": "6d450e42473fe0131f9c3f71a66645d84d2b60643ddda612ced71d65b7cf4446"
     },
     {
       "path": "debian/multinodo.mjs",
       "bytes": 19949,
-      "sha256": "37ef50663b0882eb3ca148c823038c46e32224244f057bd7cb7e3ee15c7edb7e"
+      "sha256": "9a2f96ed8e425ef4008b101daa31177f5db92f82cca1b2c82c30c459376ba3a3"
     },
     {
       "path": "debian/niveles.css",
-      "bytes": 9206,
-      "sha256": "d8abd79f92f97f06a08624e5a7279572e6f5effb5700c147f6b429604cd1a69f"
+      "bytes": 8438,
+      "sha256": "da987294841581d22fd687c91fcf45a44ebdb8ab059b3b98987a8ed6f69dfd53"
     },
     {
       "path": "debian/niveles.mjs",
