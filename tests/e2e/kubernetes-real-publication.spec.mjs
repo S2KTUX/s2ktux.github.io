@@ -70,6 +70,9 @@ test('Kubernetes · examen separado, español e inglés y sin un intento fictici
  await expect(page.locator('#exam-configuration')).toHaveAttribute('lang','en');await page.locator('[data-exam-language=es]').click();await expect(page.locator('#exam-heading')).toHaveText('Simulacro CKA');
  const gaps=await page.evaluate(()=>({heading:document.querySelector('#exam-description').getBoundingClientRect().top-document.querySelector('.exam-heading-row').getBoundingClientRect().bottom,note:document.querySelector('#exam-language-note').getBoundingClientRect().top-document.querySelector('#start-exam').getBoundingClientRect().bottom}));
  expect(gaps.heading).toBeGreaterThanOrEqual(28);expect(gaps.note).toBeGreaterThanOrEqual(28);
+ const examStyle=await page.locator('.exam-sheet').evaluate(node=>({shadow:getComputedStyle(node).boxShadow,padding:parseFloat(getComputedStyle(node.querySelector('.exam-body')).paddingTop)}));
+ expect(examStyle.shadow).not.toBe('none');expect(examStyle.padding).toBeGreaterThanOrEqual(28);
+ const languageColors=await page.locator('[data-exam-language]').evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).backgroundColor));expect(languageColors[0]).not.toBe(languageColors[1]);
  await page.evaluate(async()=>{await document.querySelector('#start-cluster').onclick();await document.querySelector('#enter-lab').onclick();});await expect(page.locator('#nodes iframe')).toHaveCount(0);
  await page.goto(root+'debian/multinodo.html?mode=course&level=inicial&view=exam&enter=1');
  await expect(page.locator('#exam-configuration')).toBeVisible();await expect(page.locator('#lab-workspace')).toBeHidden();await expect(page.locator('#nodes iframe')).toHaveCount(0);
