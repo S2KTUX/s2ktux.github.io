@@ -355,3 +355,10 @@ html.dark .site-theme-toggle [data-theme-icon]::after {
     right: 10px;
   }
 }
+
+@media (max-width: 640px) {
+  .mode-select .selector-current { display: flex; flex-wrap: wrap; }
+  .mode-select .selector-current-prompt,
+  .mode-select .selector-command-wrap { max-width: 100%; }
+  .mode-select .selector-current small { flex-basis: 100%; white-space: normal; }
+}

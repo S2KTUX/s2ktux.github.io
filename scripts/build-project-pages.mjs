@@ -22,7 +22,7 @@ console.log('Sobre actualizado: v'+data.version+' · '+data.pendientes.length+' 
 // Mantener referencias coherentes al editar estilos compartidos. No añade
 // estilos inline ni toca los binarios y manifiestos de las máquinas.
 const fingerprints={};
-for(const name of ['visual-system.css','site-shell.css'])fingerprints[name]=createHash('sha256').update((await readFile(resolve(root,name),'utf8')).replaceAll('\r\n','\n')).digest('hex').slice(0,12);
+for(const name of ['visual-system.css','site-shell.css','learning-pages.css'])fingerprints[name]=createHash('sha256').update((await readFile(resolve(root,name),'utf8')).replaceAll('\r\n','\n')).digest('hex').slice(0,12);
 async function syncStyles(dir){for(const entry of await readdir(dir,{withFileTypes:true})){
  if(['.git','node_modules','_site','playwright-report','test-results'].includes(entry.name))continue;
  const path=resolve(dir,entry.name);

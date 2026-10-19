@@ -16,7 +16,7 @@
     {"id": "diagnosticos-restantes", "tema": "Laboratorios", "texto": "Ampliar las pistas de Comprobar a los requisitos que todavía dan un resultado genérico. Ya se indican recursos o archivos que faltan en varias prácticas; falta desglosar más condiciones sin revelar soluciones."}
   ],
   "versiones": [
-    {"version": "1.1", "fecha": "2026-10-19", "cambios": ["Sobre reúne las mejoras pendientes, el historial y las licencias, sin llenar el resto de páginas de avisos.", "Revisamos erratas, simplificamos soluciones y corregimos la presentación móvil y la preparación de prácticas.", "Limpiamos archivos de pruebas y documentación antigua sin retirar recursos necesarios de las máquinas."]},
+    {"version": "1.1", "fecha": "2026-10-19", "cambios": ["Sobre reúne las mejoras pendientes, el historial y las licencias, sin llenar el resto de páginas de avisos.", "Revisamos erratas, simplificamos soluciones y corregimos la preparación de prácticas.", "Ajustamos tarjetas, textos y rejillas para que los cursos y las demás páginas se lean bien desde el móvil.", "Limpiamos archivos de pruebas y documentación antigua sin retirar recursos necesarios de las máquinas."]},
     {"version": "1.0", "fecha": "2026-10-19", "cambios": ["Empezamos a registrar las versiones desde la publicación de las prácticas por clase y objetivos I/II, con una estructura común para los laboratorios reales y simulados."]}
   ]
 }
