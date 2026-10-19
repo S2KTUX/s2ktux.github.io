@@ -18,4 +18,7 @@ assert.doesNotMatch(read('terminal.html'), /Probar Linux real/);
 assert.match(read('sw.js'), /pathname\.startsWith\('\/laboratorios\/linux-real\/'\)\) return/);
 assert.match(read('laboratorios/linux-real/licencias/LEEME.html'), /releases\/download\/linux-real-beta-2026-10-08/);
 assert.doesNotMatch(read('laboratorios/linux-real/licencias/LEEME.html'), /Ese paso de publicación no se ha realizado/);
+const licencePage=read('laboratorios/linux-real/licencias/LEEME.html').replaceAll('\r\n','\n');
+assert.doesNotMatch(licencePage, /<style\b|rel=["']stylesheet|<script\b/i, 'Las licencias se muestran como un documento sencillo, sin el estilo del prototipo');
+assert.equal(createHash('sha256').update(licencePage.match(/<body>([\s\S]*?)<\/body>/)[1]).digest('hex'),'762d4a4225fffd8a8d44991fd3dc70b774b8ee6f83c247ce93fa901d412775e6','El contenido y los enlaces de procedencia y licencias se conservan íntegros');
 console.log('✓ Linux real: entrada principal, alternativa simulada conservada, paquete validado y sin caché del shell general.');

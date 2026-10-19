@@ -1,4 +1,14 @@
 import {test,expect} from '@playwright/test';
+
+test('Licencias Linux · documento sencillo sin el diseño del prototipo',async({page})=>{
+ await page.goto('/sobre.html');await page.locator('#licencias summary').click();
+ await page.locator('a[href="laboratorios/linux-real/licencias/LEEME.html"]').click();
+ await expect(page.locator('h1')).toHaveText('Procedencia del laboratorio');
+ await expect(page.locator('link[rel=stylesheet],style,script')).toHaveCount(0);
+ await expect(page.locator('body')).toHaveCSS('color','rgb(0, 0, 0)');
+ await expect(page.locator('body')).toContainText('/usr/share/common-licenses');
+ await expect(page.getByRole('link',{name:'Versión Markdown'})).toHaveAttribute('href','LEEME.md');
+});
 test('Sobre · pendientes y versiones discretos, licencias y descarga',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));await page.goto('/sobre.html');
  await expect(page.locator('h1')).toHaveText('Sobre S2KTUX');await expect(page.locator('#pendientes')).not.toHaveAttribute('open','');
