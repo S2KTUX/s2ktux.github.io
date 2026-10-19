@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 101</span>
+        <span class="badge">LPIC-1 · Tema 101</span>
         <h1>Arquitectura del Sistema</h1>
         <p>Determinar y configurar hardware, arranque del sistema y gestión de niveles de ejecución.</p>
         

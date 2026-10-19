@@ -1,5 +1,7 @@
 import {examQuestions,EXAM_SECONDS,EXAM_TOTAL,EXAM_PASS,scoreQuestion} from './v86-exam-data.mjs?v=20261010-exam';
 import {examNode2Information} from './v86-exam-fixtures.mjs?v=20261010-exam';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261019-revision';
+import {solutionsFor} from '../solution-options.mjs?v=20261019-revision';
 const $=s=>document.querySelector(s),make=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e;};
 const attempt=Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>b.toString(16).padStart(2,'0')).join('');
 const machines=new Map(),pending=new Map(),indices=new Map([['1',0],['2',0]]);
@@ -109,7 +111,8 @@ async function finish(expired=false){
    for(const c of r.criteria)item.append(make('p',`${c.ok?'Cumplido':'No cumplido'} · ${c.label}`));
    for(const o of r.observations)item.append(make('h4',o.label),make('pre',o.text||'(sin salida)'));
   }
-  item.append(make('h3','Una solución válida'),make('pre',q.solution));root.append(item);
+  const solution=document.createElement('div');solution.className='lab-solutions';renderSolutions(solution,solutionsFor('linux',q));
+  item.append(make('h3','Una solución válida'),solution);root.append(item);
  }
  globalThis.examReport={startedAt,finishedAt:Date.now(),score,total:EXAM_TOTAL,incomplete,reports};
  for(const m of machines.values())clearTimeout(m.timer);

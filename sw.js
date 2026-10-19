@@ -1,4 +1,4 @@
-const VERSION = 'v32';
+const VERSION = 'v34';
 const CACHE_PREFIX = 's2ktux-';
 const STATIC_CACHE = `${CACHE_PREFIX}static-${VERSION}`;
 const PAGE_CACHE = `${CACHE_PREFIX}pages-${VERSION}`;
@@ -10,11 +10,11 @@ const CURRENT_CACHES = new Set([STATIC_CACHE, PAGE_CACHE, MEDIA_CACHE]);
 const PRECACHE = [
   './',
   'index.html',
-  'site-shell.css?v=5ba23c5af75b',
-  'visual-system.css?v=35555b4494e9',
+  'site-shell.css?v=ac5aee15ea13',
+  'visual-system.css?v=dc5253bb5de9',
   'site-shell.js?v=20260826-phase3',
   'fonts.css?v=20260822-local',
-  'learning-pages.css?v=20260822-static2',
+  'learning-pages.css?v=7baf76ac0a7d',
   'learning-pages.js?v=20260822-static2',
   'manifest.webmanifest',
   'assets/icon-192.png',

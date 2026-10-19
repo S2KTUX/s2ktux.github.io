@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="./site-shell.css?v=5ba23c5af75b">
+<link rel="stylesheet" href="./site-shell.css?v=ac5aee15ea13">
 <link rel="stylesheet" href="./fonts.css?v=20260822-local">
-<link rel="stylesheet" href="./visual-system.css?v=35555b4494e9">
+<link rel="stylesheet" href="./visual-system.css?v=dc5253bb5de9">
 <title>S2KTUX · Aprende Linux, RHCSA 9, Docker y Kubernetes</title>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"S2KTUX","url":"https://s2ktux.github.io/","description":"Aprende administración de sistemas Linux, RHCSA 9, LPIC-1, Docker y Kubernetes con terminales simuladas y cursos en español.","inLanguage":"es","publisher":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/","logo":"https://s2ktux.github.io/assets/icon-512.png","description":"Formación gratuita de administración de sistemas Linux: RHCSA 9, LPIC-1, Docker y Kubernetes.","sameAs":["https://www.youtube.com/@S2KTUX","https://www.linkedin.com/in/alai-molina-delgado-563b70184"]}</script>
@@ -64,23 +64,9 @@
   .navcard:hover{transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--surface2)}
 
   /* --- responsive (móvil) --- */
-  @media(max-width:860px){
-    [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: 1fr 1.15fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: repeat(2, 1fr)"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: repeat(3, 1fr)"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: repeat(4, 1fr)"]{grid-template-columns:1fr 1fr !important}
-    [style*="grid-template-columns: 230px 1fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: 2fr 1fr"]{grid-template-columns:1fr !important}
-    [style*="grid-template-columns: 1fr 2fr"]{grid-template-columns:1fr !important}
-  }
   @media(max-width:640px){
     h1{font-size:20px !important;line-height:1.55 !important}
     .navlink{font-size:16px !important}
-    [style*="gap: 30px"]{gap:12px !important;flex-wrap:wrap !important}
-    [style*="font-size: 26px"]{font-size:21px !important}
-    [style*="padding: 64px 32px"]{padding:40px 20px !important}
-    [style*="padding: 44px 32px"]{padding:30px 20px !important}
   }
 </style>
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
@@ -111,10 +97,10 @@
 <section class="u-inline-add26d2f07">
   <div class="hero-badge u-inline-0cfdd25d0e">
     <span class="u-inline-60c071aaff"></span>
-    <span class="u-inline-775bad5748">administración de sistemas linux · RHEL y SUSE</span>
+    <span class="u-inline-775bad5748">Administración de sistemas Linux · RHEL y Debian</span>
   </div>
-  <h1 class="u-inline-c7667fc4ef">Domina Linux.<br>Sin límites.<span class="hero-caret">&nbsp;</span></h1>
-  <p class="u-inline-8c20fcb51c">tu escritorio favorito para aprender administración de sistemas — con calma, práctica real y sin prisa~</p>
+  <h1 class="u-inline-c7667fc4ef">Aprende Linux.<br>Practicando.<span class="hero-caret">&nbsp;</span></h1>
+  <p class="u-inline-8c20fcb51c">Apuntes, vídeos y laboratorios para aprender administración de sistemas paso a paso. Comparto lo que voy aprendiendo, sin atajos.</p>
   <div class="u-inline-212dd2bd06">
     <a href="cursos.html" class="pxbtn u-inline-23b850a952">EMPEZAR GRATIS →</a>
     <a href="terminal.html" class="pxbtn u-inline-f85e20bbfb">PROBAR TERMINAL</a>
@@ -139,7 +125,7 @@
     <div class="u-inline-d839c7367d">No vendo nada ni prometo atajos. Comparto lo que voy entendiendo, a veces mientras todavía lo estoy peleando, con el orden que me habría gustado encontrar cuando empecé.</div>
   </div>
 
-  <div class="u-inline-8eeb147b81">
+  <div class="home-whoami-grid u-inline-8eeb147b81">
     <div class="u-inline-ec05845f53">
       <div class="u-inline-638b6df9eb">ROL</div>
       <div class="u-inline-5c5e2cc8b0">Administrador de sistemas Linux · RHEL y SUSE</div>
@@ -157,12 +143,12 @@
 
 <!-- ============ TERMINAL DESTACADA (contenido nuevo) ============ -->
 <section class="u-inline-a079e679a6">
-  <div class="u-inline-b318f370c5">
+  <div class="home-terminal-grid u-inline-b318f370c5">
     <div>
       <div class="u-inline-d0788ec665">LA TERMINAL</div>
       <div class="u-inline-32062b49c3">Practica sin instalar<br>ni romper nada</div>
-      <div class="u-inline-a8744ffb2a">Un servidor Linux simulado en tu navegador: sistema de archivos real, usuarios y permisos, servicios, particiones, contenedores... Los mismos comandos que usarías en un examen o en producción.</div>
-      <div class="u-inline-02872a16ce">Tu sesión se guarda mientras navegas y se reinicia cuando quieras.</div>
+      <div class="u-inline-a8744ffb2a">Laboratorios de Linux, Docker y Kubernetes dentro del navegador. Puedes trabajar con archivos, usuarios, servicios y contenedores, y usar una versión simulada más ligera cuando la necesites.</div>
+      <div class="u-inline-02872a16ce">En las máquinas reales puedes guardar tu sesión. Reset permite volver a empezar con la base limpia.</div>
       <a href="terminal.html" class="pxbtn u-inline-d68ed5be0f">ABRIR LA TERMINAL →</a>
     </div>
     <div class="u-inline-a626bafea0">
@@ -199,7 +185,7 @@
 <!-- ============ FOOTER ============ -->
 <footer class="site-footer">
   <div class="site-footer-brand">S2KTUX</div>
-  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-tagline">Aprender, practicar y compartir.</div>
   <div class="site-footer-links">
     <a href="sobre.html">Sobre</a>
     <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a>

@@ -1,10 +1,10 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=20261019-objetivos';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=20261019-revision';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs';
 import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs';
-import {renderSolutions} from '../../lab-solutions.mjs?v=20261019-objetivos';
-import {solutionsFor} from '../../solution-options.mjs?v=20261019-objetivos';
+import {renderSolutions} from '../../lab-solutions.mjs?v=20261019-revision';
+import {solutionsFor} from '../../solution-options.mjs?v=20261019-revision';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];

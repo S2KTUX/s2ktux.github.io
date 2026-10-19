@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 103</span>
+        <span class="badge">LPIC-1 · Tema 103</span>
         <h1>Comandos GNU y Unix</h1>
         <p>Domina la línea de comandos, procesamiento de texto, gestión de archivos y procesos en Linux.</p>
         

@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 108</span>
+        <span class="badge">LPIC-1 · Tema 108</span>
         <h1>Servicios esenciales del sistema</h1>
         <p>Domina la gestión de la hora del sistema, los registros, el correo electrónico y la impresión en Linux.</p>
     </header>

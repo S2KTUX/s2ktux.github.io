@@ -1,3 +1,4 @@
+import {studentSolution} from './student-solutions.mjs';
 // Variantes para los mismos enunciados y recursos. No son ejercicios nuevos.
 const option=(title,code,explanation)=>({title,code,explanation});
 // Solo GET locales: el contenedor puede estar creado antes de escuchar por HTTP.
@@ -70,13 +71,15 @@ function kubernetes(e){
  }
  return [];
 }
-export function solutionsFor(mode,exercise){
+function originalSolutions(mode,exercise){
  if(exercise.sourceId&&exercise.sourceId!==exercise.id)return solutionsFor(mode,{...exercise,id:exercise.sourceId,sourceId:undefined});
- if(mode==='linux'&&exercise.id==='sim-01'){
+ if(mode==='linux'&&['sim-01','exam-root'].includes(exercise.id)){
   const [first,rest]=exercise.solution.split('# ALTERNATIVA (no hagas ambos métodos):');
   if(rest){const marker='# Tras cualquiera de los dos métodos',index=rest.indexOf(marker),tail=index<0?'':rest.slice(index);return [option('rd.break',first.trim()+'\n\n'+tail),option('init=/bin/bash',(index<0?rest:rest.slice(0,index)).trim()+'\n\n'+tail)];}
  }
  const first=option('',exercise.solutionDisplay||exercise.solution,exercise.explanation);
+ if(mode==='linux'&&['sim-03','repos-ii','dnf','inicio-paquetes','rpm-i','rpm-ii'].includes(exercise.id))return [first];
  const extras=mode==='kubernetes'?kubernetes(exercise):((mode==='linux'?linux:docker)[exercise.id]?[ (mode==='linux'?linux:docker)[exercise.id](exercise) ]:[]);
  return [first,...extras];
 }
+export function solutionsFor(mode,exercise){return originalSolutions(mode,exercise).map(solution=>mode==='linux'?studentSolution(solution):solution);}

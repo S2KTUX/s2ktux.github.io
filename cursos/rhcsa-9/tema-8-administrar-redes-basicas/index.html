@@ -9,7 +9,7 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Administrar redes básicas · RHCSA 9 · S2KTUX"><meta name="twitter:description" content="Configuración de IP, hostname y firewall. Aprende Configurar direcciones IPv4 e IPv6 (nmcli), Resolución del nombre de host, Servicios de red al inicio con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=35555b4494e9">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=ac5aee15ea13"><link rel="stylesheet" href="/learning-pages.css?v=7baf76ac0a7d"><link rel="stylesheet" href="/visual-system.css?v=dc5253bb5de9">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Administrar redes básicas","description":"Configuración de IP, hostname y firewall.","url":"https://s2ktux.github.io/cursos/rhcsa-9/tema-8-administrar-redes-basicas/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"RHCSA 9","teaches":["Configurar direcciones IPv4 e IPv6 (nmcli)","Resolución del nombre de host","Servicios de red al inicio","Restringir acceso con firewalld"],"isPartOf":{"@type":"Course","name":"RHCSA 9 · EX200","url":"https://s2ktux.github.io/cursos/rhcsa-9/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"RHCSA 9 · EX200","item":"https://s2ktux.github.io/cursos/rhcsa-9/"},{"@type":"ListItem","position":4,"name":"Administrar redes básicas","item":"https://s2ktux.github.io/cursos/rhcsa-9/tema-8-administrar-redes-basicas/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
@@ -85,7 +85,7 @@
             <section id="obj3" class="lesson-section">
                 <h2>3. Servicios de red al inicio del sistema</h2>
                 <p>Para asegurar que nuestra configuración de red sea efectiva desde el arranque, el servicio <strong>NetworkManager</strong> debe estar habilitado y activo : <code>systemctl enable --now NetworkManager</code>.</p>
-                <p>Si utilizamos el nmcli, no olvideis usar <code>connection.autoconnect yes</code> para que se inicie automaticamente.</p>
+                <p>Si utilizamos el nmcli, no olvidéis usar <code>connection.autoconnect yes</code> para que se inicie automáticamente.</p>
                  <p>Podemos comprobar la conectividad con comandos como <code>ip a</code>, <code>nmcli device status</code> o <code>systemctl status NetworkManager</code>.</p>
                 <img class="u-inline-525b23bb9f" src="/images/check-net.png" alt="check net ejemplo" width="830" height="581">
                 <p>Si creamos servicios dependientes de red, debemos usar <code>After=network-online.target</code> y <code>Wants=network-online.target</code> en la sección [Unit].</p>
@@ -116,7 +116,7 @@
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><a class="lesson-nav-card" href="/cursos/rhcsa-9/tema-7-implementar-configurar-y-mantener-sistemas/"><small>← ANTERIOR</small><strong>Implementar, configurar y mantener sistemas</strong></a><a class="lesson-nav-card next" href="/cursos/rhcsa-9/tema-9-administrar-usuarios-y-grupos/"><small>SIGUIENTE →</small><strong>Administrar usuarios y grupos</strong></a></nav></div></main>
 <footer class="site-footer">
   <div class="site-footer-brand">S2KTUX</div>
-  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-tagline">Aprender, practicar y compartir.</div>
   <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
   <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

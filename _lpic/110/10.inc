@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 110</span>
+        <span class="badge">LPIC-1 · Tema 110</span>
         <h1>Seguridad del Sistema</h1>
         <p>Domina la administración de seguridad, configuración del host, gestión de accesos y cifrado de datos.</p>
     </header>

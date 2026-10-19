@@ -73,8 +73,11 @@ for(const [id,goal,solution,check] of storage){
   if(id==='fs-i'){task.goal='En aprendizaje crea el LV ficheros de 64 MiB. '+task.goal;task.solution='lvcreate -L 64M -n ficheros aprendizaje\n'+task.solution;}
  }
  if(id.startsWith('fstab-')){
-  task.prepare='set -eu; test -b /dev/aprendizaje/documentos; type=$(blkid -s TYPE -o value /dev/aprendizaje/documentos || true); if test -z "$type"; then mkfs.ext4 /dev/aprendizaje/documentos; else test "$type" = ext4; fi; mkdir -p /mnt/documentos; mountpoint -q /mnt/documentos || mount /dev/aprendizaje/documentos /mnt/documentos';
-  task.note=diskNote+' Después de crear documentos, pulsa Preparar ejercicio: el laboratorio proporciona su ext4 para practicar el montaje.';
+  task.note=diskNote+' Usa el LV documentos creado en Volúmenes lógicos · I. No necesita preparación automática.';
+  if(id==='fstab-i'){
+   task.goal='Sobre el LV documentos creado en el ejercicio de volúmenes lógicos, crea ext4 y configura su montaje en /mnt/documentos mediante UUID en /etc/fstab. Debe quedar montado.';
+   task.solution='mkfs.ext4 /dev/aprendizaje/documentos\nmkdir -p /mnt/documentos\n'+task.solution;
+  }
  }
  newTasks.push(task);
 }
@@ -156,20 +159,18 @@ for(const [id,schedule] of [['timer-i','OnActiveSec=10s'],['timer-ii','OnCalenda
   "cat > /etc/systemd/system/practica-"+stem+".service <<'EOF'\n[Unit]\nDescription=Practica de timer\n[Service]\nType=oneshot\nExecStart=/usr/bin/touch /var/tmp/timer-"+stem+"\nEOF\ncat > /etc/systemd/system/practica-"+stem+".timer <<'EOF'\n[Unit]\nDescription=Timer de practica\n[Timer]\n"+schedule+"\nAccuracySec=1s\n[Install]\nWantedBy=timers.target\nEOF\nsystemctl daemon-reload\nsystemctl enable --now practica-"+stem+".timer\nsystemctl list-timers --all",
   'systemctl is-enabled --quiet practica-'+stem+'.timer && systemd-analyze verify /etc/systemd/system/practica-'+stem+'.service /etc/systemd/system/practica-'+stem+'.timer && grep -Fxq '+q(schedule)+' /etc/systemd/system/practica-'+stem+'.timer && '+(second?'systemctl is-active --quiet practica-diario.timer':'test -f /var/tmp/timer-marca')));
 }
-// Cuentas y servicios proporcionados por el laboratorio: no se pide aprender
-// useradd antes del tema de usuarios, ni configurar un servidor SSH/NFS.
-const account=name=>'id '+name+' >/dev/null 2>&1 || useradd -m -s /bin/bash '+name;
+// Las cuentas iniciales se suministran al entrar en práctica, no al pulsar
+// Preparar. Solo el servidor de apoyo NFS necesita ese botón.
 for(const task of newTasks){
  if(['ssh-i','ssh-ii','scp-i','scp-ii'].includes(task.id)){
-  task.prepare=account('ssh-estudio')+'; printf "ssh-estudio:practica\\n" | chpasswd; systemctl start ssh';
-  task.note='Pulsa Preparar ejercicio. Se proporciona la cuenta ssh-estudio (contraseña practica) y el servidor SSH local.';
+  task.note='La máquina de prácticas proporciona ssh-estudio (contraseña practica) y el servidor SSH local.';
  }
  if(['su-i','su-ii'].includes(task.id)){
-  const user=task.id==='su-i'?'practica-su':'sesion';task.prepare=account(user);task.note='Pulsa Preparar ejercicio para disponer de la cuenta '+user+'. No tienes que crearla tú.';
+  const user=task.id==='su-i'?'practica-su':'sesion';task.note='La cuenta '+user+' ya está disponible en la máquina de prácticas.';
   task.goal=task.goal.replace('Crea practica-su con directorio personal.','Con la cuenta practica-su preparada,').replace('Crea sesion con Bash y directorio personal.','Con la cuenta sesion preparada,');task.solution=task.solution.split('\n').slice(1).join('\n');
  }
  if(['acl-i','acl-ii'].includes(task.id)){
-  task.prepare=account('lector')+'; '+account('sin-acceso');task.note='Pulsa Preparar ejercicio para disponer de lector y sin-acceso.';
+  task.note='Las cuentas lector y sin-acceso ya están disponibles en la máquina de prácticas.';
   task.goal=task.goal.replace('Crea lector y ','Crea ').replace('Crea sin-acceso y ','Para sin-acceso, ');
   task.solution=task.solution.split('\n').filter(line=>!line.startsWith('useradd ')).join('\n');
  }
@@ -184,7 +185,12 @@ export function buildRhcsaBank(base){
   if(first===second&&level==='II')continue;
   const occurrence=result.filter(task=>task.sourceId===id).length;
   const task={...source,id:occurrence||id.startsWith('sim-')?'rhcsa-'+number+'-'+id+'-'+level:id,sourceId:id,classes:[number],topic,stage:level,title:topic+' · '+level,group:'Prácticas',order:order++};
-  if(id==='sgid'){task.prepare='groupadd -f equipo';task.note='Pulsa Preparar ejercicio para disponer del grupo equipo.';task.solution=task.solution.split('\n').slice(1).join('\n');}
+  if(id==='sgid'){
+   task.goal=task.goal.replaceAll('root:equipo','root:equipo-sgid').replace('hereden el grupo equipo','hereden el grupo equipo-sgid');
+   task.solution=task.solution.split('\n').slice(1).join('\n').replaceAll('root:equipo','root:equipo-sgid');
+   task.checks=task.checks.map(([label,command,...rest])=>[label,command.replace('= equipo','= equipo-sgid'),...rest]);
+   task.note='El grupo equipo-sgid ya está disponible en la máquina de prácticas.';
+  }
   result.push(task);
  }
  result.push(...linuxExamPractice);

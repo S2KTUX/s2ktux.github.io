@@ -45,7 +45,7 @@ html.dark .lesson-header .badge{color:#1e1811}
 .lesson-wrapper ul,.lesson-wrapper ol{margin:0 0 16px 26px}
 .lesson-wrapper li{margin-bottom:9px;color:var(--text);font:15.5px/1.75 "Space Mono",monospace}
 .lesson-wrapper p,.lesson-wrapper li,.lesson-wrapper td,.lesson-wrapper th,.lesson-wrapper a{overflow-wrap:anywhere}
-.lesson-wrapper code{padding:1px 6px;background:var(--surface2);border:1px solid var(--line);color:var(--head);font:16px/1.5 "Share Tech Mono",monospace;white-space:pre-wrap;overflow-wrap:break-word;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.lesson-wrapper code{padding:1px 4px;background:var(--surface2);border:1px solid var(--line);color:var(--head);font:16px/1.5 "Share Tech Mono",monospace;white-space:normal;overflow-wrap:anywhere;-webkit-box-decoration-break:slice;box-decoration-break:slice}
 .codewrap{position:relative}
 .lesson-wrapper pre{max-width:100%;margin:14px 0;padding:18px;overflow:auto;background:#12100b;border:3px solid var(--line);box-shadow:4px 4px 0 var(--surface2);-webkit-overflow-scrolling:touch}
 .lesson-wrapper pre code{display:block;padding:0;background:none;border:0;color:#ddd0b4;line-height:1.6;white-space:pre}

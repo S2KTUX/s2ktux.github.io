@@ -204,6 +204,9 @@ html body {
   }
 }
 
+/* Rejillas públicas: usar clases, no buscar antiguos atributos style. */
+.home-terminal-grid>*,.home-whoami-grid>*,.home-course-grid>*{min-width:0;overflow-wrap:anywhere}
+@media(max-width:860px){.site-page-shell .home-terminal-grid,.site-page-shell .home-whoami-grid,.site-page-shell .home-course-grid{grid-template-columns:minmax(0,1fr);gap:24px}}
 /* S2KTUX_EXTRACTED_INLINE_STYLES_BEGIN */
 .u-inline-014ec4b5cd{background:var(--surface);border:3px solid var(--line);box-shadow:5px 5px 0 var(--surface2);padding:30px;}
 .u-inline-02872a16ce{font-size:21px;color:var(--text);line-height:1.4;margin-bottom:26px;}
@@ -347,7 +350,7 @@ html body {
 .u-inline-add26d2f07{max-width:1180px;margin:0 auto;padding:70px 32px 50px;text-align:center;}
 .u-inline-afac75fd0d{font-size:24px;max-width:580px;margin:0 auto;color:var(--text);line-height:1.35;}
 .u-inline-b0ac848a25{color:#d97757;font-family:'Press Start 2P',monospace;font-size:11px;}
-.u-inline-b318f370c5{display:grid;grid-template-columns:1fr 1.15fr;gap:44px;align-items:center;}
+.u-inline-b318f370c5{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:44px;align-items:center;}
 .u-inline-b4ca1adadb{font-family:'Press Start 2P',monospace;font-size:9px;background:#8fa876;color:#2e3d24;padding:6px 10px;}
 .u-inline-b53345fb3e{background:var(--surface2);border:3px solid var(--line);box-shadow:5px 5px 0 var(--soft2);padding:34px;margin-top:24px;text-align:center;}
 .u-inline-b773d0d6d5{margin-top:16px;background:var(--surface2);border-left:5px solid #e05a2b;padding:12px 16px;font-size:18px;color:var(--text);line-height:1.45;}
@@ -407,3 +410,21 @@ html body {
 .u-inline-fd0924caab{font-family:'Press Start 2P',monospace;font-size:12px;color:var(--head);line-height:1.4;}
 .u-inline-ff9d57befa{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:34px;}
 /* S2KTUX_EXTRACTED_INLINE_STYLES_END */
+
+/* El contenido puede encoger dentro de tarjetas y rejillas, no quedar recortado. */
+.site-page-shell{overflow-wrap:anywhere}
+.site-page-shell :is(.coursecard,.pxcard,.modcard,.module-copy,.course-hero,.video-text)>*{min-width:0;max-width:100%}
+.site-page-shell :is(.pxbtn,.pixel-button){max-width:100%;white-space:normal;overflow-wrap:anywhere;line-height:1.6;text-align:center}
+.site-page-shell .hero-caret{overflow:hidden}
+@media(max-width:860px){
+  .site-page-shell :is(.u-inline-7ee702c379,.u-inline-8eeb147b81,.u-inline-ff9d57befa,.u-inline-98e76c2af1){grid-template-columns:minmax(0,1fr)}
+  .site-page-shell :is(.u-inline-7ee702c379,.u-inline-8eeb147b81,.u-inline-ff9d57befa,.u-inline-98e76c2af1)>*{min-width:0}
+}
+@media(max-width:640px){
+  .site-page-shell :is(.u-inline-add26d2f07,.u-inline-aa1cb082b9,.u-inline-a079e679a6,.u-inline-a9ffeac4ef,.u-inline-f6b9b94b9a,.u-inline-37d652a718,.u-inline-312d2ce9a8,.u-inline-8283b75b6a,.u-inline-d434eead87,.u-inline-a71439ac05,.u-inline-f8ce13d425){padding-inline:16px}
+  .site-page-shell .hero-badge{max-width:100%;font-size:9px;text-align:left;line-height:1.7}
+  .site-page-shell .hero-badge>span:first-child{flex-shrink:0}
+  .site-page-shell .coursecard .u-inline-fb9609fa3f{flex-wrap:wrap;gap:10px}
+  .site-page-shell .coursecard .u-inline-5cfe57f2f2{font-size:14px;line-height:1.6}
+  .site-page-shell :is(.u-inline-014ec4b5cd,.u-inline-77f063c358,.u-inline-b53345fb3e){padding:22px}
+}

@@ -8,6 +8,7 @@ import {ejerciciosClase} from '../laboratorios/kubernetes-real/debian/ejercicios
 import {exercises as linux} from '../laboratorios/linux-real/v86-exercises.mjs';
 import {exercises as docker} from '../laboratorios/docker-real/docker-exercises.mjs';
 import {solutionsFor} from '../laboratorios/solution-options.mjs';
+import {examQuestions} from '../laboratorios/linux-real/v86-exam-data.mjs';
 import {practiceClasses,courseGroups} from '../laboratorios/lab-groups.mjs';
 assert.equal(nativeLearningLinux.length,11);assert.equal(simulatedLearningLinux({}).length,11);
 for(let n=1;n<=11;n++)assert.ok(nativeLearningLinux.some(task=>task.classes.includes(n)),'Falta introducción al tema '+n);
@@ -28,7 +29,7 @@ const page=readFileSync(new URL('../terminal.html',import.meta.url),'utf8');asse
 const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';
 {
  let checked=0;const scripts=[];
- for(const [mode,tasks]of [['linux',linux],['docker',docker],['kubernetes',Array.from({length:12},(_,n)=>ejerciciosClase(n)).flat()]])for(const task of tasks)for(const solution of solutionsFor(mode,task)){
+ for(const [mode,tasks]of [['linux',[...linux,...examQuestions]],['docker',docker],['kubernetes',Array.from({length:12},(_,n)=>ejerciciosClase(n)).flat()]])for(const task of tasks)for(const solution of solutionsFor(mode,task)){
   scripts.push('# '+task.id+'\n__qa_'+checked+'() {\n'+solution.code+'\n}\n');checked++;
  }
  for(const task of [...linux,...docker])for(const [label,script]of task.checks)scripts.push('# '+task.id+' / '+label+'\n__qa_check_'+scripts.length+'() {\n'+script+'\n}\n');

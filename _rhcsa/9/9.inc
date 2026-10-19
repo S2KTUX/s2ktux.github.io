@@ -31,7 +31,7 @@
             <section id="obj1" class="lesson-section">
                 <h2>1. Crear, eliminar y modificar cuentas de usuario locales</h2>
               <p>La administración de usuarios en RHEL se basa principalmente en los archivos <code>/etc/passwd</code> y <code>/etc/shadow</code>, donde se almacenan los datos de cuenta y contraseñas cifradas.</p>
-                <p>Los parametros mas importantes al .crear un usuario son : </p>
+                <p>Los parámetros más importantes al crear un usuario son:</p>
                 <ul>
                     <li><code>-u UID</code> → Define un identificador de usuario específico.</li>
                     <li><code>-g GRUPO</code> → Asigna el grupo primario existente.</li>
@@ -43,7 +43,7 @@
                 </ul>
                 <p>Tras crear la cuenta usamos <code>passwd</code> para asignar o modificar la contraseña.</p>
                 <img class="u-inline-525b23bb9f" src="/images/user-admin.png" alt="Ejemplo de gestión de usuarios" width="678" height="267">
-                <p>Por otro lado, tenemos otros parametros para modificar cuentas de usuario : </p>
+                <p>Por otro lado, tenemos otros parámetros para modificar cuentas de usuario : </p>
                 <ul>
                     <li><code>-aG GRUPO</code> → Añade grupos secundarios sin eliminar los existentes. ¡¡MUY IMPORTANTE!!</li>
                     <li><code>-L</code> → Bloquea la cuenta.</li>
@@ -81,7 +81,7 @@
                 <img class="u-inline-525b23bb9f" src="/images/group-admin.png" alt="Gestión de grupos y membresías" width="538" height="303">
                 <p>Podemos verificar membresías con <code>id</code>, <code>groups</code>, <code>getent group</code> o revisando <code>/etc/group</code>.</p>
                 <img class="u-inline-525b23bb9f" src="/images/group-check.png" alt="Check de grupos" width="903" height="409">
-                <p> Por ultimo, podemos asignarle una contraseña a un grupo con el comando <code>gpasswd GRUPO</code>, y con este comando añadir usuarios a ese grupo <code>gpasswd -a USER grupo</code>, borrarlo con <code>-d</code>, eliminar la contraseña con <code>-r</code>...</p>
+                <p> Por último, podemos asignarle una contraseña a un grupo con el comando <code>gpasswd GRUPO</code>, y con este comando añadir usuarios a ese grupo <code>gpasswd -a USER grupo</code>, borrarlo con <code>-d</code>, eliminar la contraseña con <code>-r</code>...</p>
                 <img class="u-inline-525b23bb9f" src="/images/gpasswd.png" alt="Gestión de la pertenencia a grupos con gpasswd" width="564" height="394">
             </section>
 

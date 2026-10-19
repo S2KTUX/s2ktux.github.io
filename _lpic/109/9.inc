@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 109</span>
+        <span class="badge">LPIC-1 · Tema 109</span>
         <h1>Fundamentos de redes</h1>
         <p>Domina los conceptos básicos de redes, configuración, DNS y resolución de problemas en Linux.</p>
     </header>

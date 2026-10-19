@@ -1,4 +1,6 @@
-# Hoja de ruta técnica de S2KTUX
+# Historial técnico de las primeras fases
+
+Registro histórico, no lista de pendientes actual. La lista vigente está en Sobre y se genera desde `contenido/proyecto.json`.
 
 Este documento fija las cinco fases acordadas. No se inicia una fase hasta que los criterios de salida de la anterior estén comprobados.
 
@@ -18,7 +20,7 @@ Este documento fija las cinco fases acordadas. No se inicia una fase hasta que l
 
 ## Fase 2 · Arquitectura y aislamiento del motor
 
-**Estado: completada y validada.** El mapa de módulos y sus límites se documenta en [ARCHITECTURE.md](ARCHITECTURE.md).
+**Estado: completada y validada.** El mapa de módulos y sus límites se documenta en [arquitectura.md](arquitectura.md).
 
 - Extraer sistema de archivos, procesos, shell, red y motores Linux/Docker/Kubernetes de `terminal-core.js`.
 - Definir un protocolo de mensajes estable entre la interfaz y la simulación.

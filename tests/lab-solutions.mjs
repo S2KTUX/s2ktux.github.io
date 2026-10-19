@@ -3,11 +3,12 @@ import {exercises as linux} from '../laboratorios/linux-real/v86-exercises.mjs';
 import {exercises as docker} from '../laboratorios/docker-real/docker-exercises.mjs';
 import {ejerciciosClase} from '../laboratorios/kubernetes-real/debian/ejercicios-niveles.mjs';
 import {solutionsFor,withHTTPWait} from '../laboratorios/solution-options.mjs';
+import {studentSolution} from '../laboratorios/student-solutions.mjs';
 const kubernetes=Array.from({length:12},(_,n)=>ejerciciosClase(n)).flat();
 const totals=[];
 for(const [mode,exercises,expected]of [['linux',linux,18],['docker',docker,18],['kubernetes',kubernetes,17]]){
  let alternatives=0;
- for(const e of exercises){const before=JSON.stringify(e),options=solutionsFor(mode,e);assert.equal(JSON.stringify(e),before);assert.ok(options.every(s=>s.code.trim()));assert.equal(new Set(options.map(s=>s.code)).size,options.length);if(options.length>1)alternatives++;if(e.id!=='sim-01'&&e.sourceId!=='sim-01')assert.equal(options[0].code,e.solutionDisplay||e.solution);}
+ for(const e of exercises){const before=JSON.stringify(e),options=solutionsFor(mode,e);assert.equal(JSON.stringify(e),before);assert.ok(options.every(s=>s.code.trim()));assert.equal(new Set(options.map(s=>s.code)).size,options.length);if(options.length>1)alternatives++;if(e.id!=='sim-01'&&e.sourceId!=='sim-01')assert.equal(options[0].code,mode==='linux'?studentSolution({code:e.solutionDisplay||e.solution}).code:e.solutionDisplay||e.solution);}
  assert.ok(alternatives>0);totals.push(mode+': '+alternatives);
 }
 const named=solutionsFor('kubernetes',kubernetes.find(e=>e.id==='c09-a'))[1].code;assert.match(named,/containerPort/);

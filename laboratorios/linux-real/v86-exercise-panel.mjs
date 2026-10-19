@@ -1,7 +1,7 @@
-import { exercises } from './v86-exercises.mjs?v=20261019-objetivos';
-import {renderSolutions} from '../lab-solutions.mjs?v=20261019-objetivos';
-import {solutionsFor} from '../solution-options.mjs?v=20261019-objetivos';
-import {mountGroups} from '../lab-groups.mjs?v=20261019-objetivos';
+import { exercises } from './v86-exercises.mjs?v=20261019-revision';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261019-revision';
+import {solutionsFor} from '../solution-options.mjs?v=20261019-revision';
+import {mountGroups} from '../lab-groups.mjs?v=20261019-revision';
 
 export function mountExercisePanel(root, runCheck) {
   const select = root.querySelector('select');
@@ -52,10 +52,10 @@ export function mountExercisePanel(root, runCheck) {
   select.addEventListener('change', render);
   prepare.addEventListener('click',async()=>{
     const exercise=selected();if(!enabled||checking||!exercise?.prepare)return;
-    checking=true;sync();feedback.textContent='Preparando los datos del ejercicio…';
-    try{const result=await runCheck({id:exercise.id+'-preparar',checks:[['Preparación del ejercicio','set -eu; '+exercise.prepare,60]]});feedback.textContent=result.ok?'Ejercicio preparado. Ya puedes resolverlo.':'No se pudo completar la preparación.';}
+    checking=true;sync();prepare.textContent='Preparando…';feedback.textContent='Preparando el servidor de apoyo; espera a que Linux termine.';
+    try{const result=await runCheck({id:exercise.id+'-preparar',checks:[['Servidor de apoyo disponible','set -eu; '+exercise.prepare,60]]});feedback.textContent=result.ok?'Servidor de apoyo preparado. Ya puedes resolver el ejercicio.':'No se pudo preparar el servidor de apoyo. Comprueba que estás como root y que Linux ha vuelto al prompt.';}
     catch(error){feedback.textContent='No se pudo preparar: '+error.message;}
-    finally{checking=false;sync();}
+    finally{checking=false;prepare.textContent='Preparar ejercicio';sync();}
   });
   toggle.addEventListener('click', () => {
     if (checking) return;

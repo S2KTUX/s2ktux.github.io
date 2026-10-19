@@ -54,12 +54,12 @@
                 <h2>2. Administrar permisos predeterminados (umask)</h2>
                 <p><code>umask</code> define los permisos que se eliminan al crear archivos o directorios.</p>
                 <p>El valor máximo es 666 para archivos y 777 para directorios (ya que x no se aplica por seguridad).Es decir, la regla o la suma es  Permisos totales - UMASK = Permisos reales. Si el umask es 022, el archivo se crea con 644 (666-022) y el directorio con 755 (777-022).</p>
-                <p>Puede aplicarse temporalmente con <code>umask</code> o permanentemente en <code>/etc/profile</code> para global o <code>~/.bashrc</code> para un usuario en especifico.</p>
+                <p>Puede aplicarse temporalmente con <code>umask</code> o permanentemente en <code>/etc/profile</code> para global o <code>~/.bashrc</code> para un usuario en específico.</p>
             </section>
             <section id="obj3" class="lesson-section">
                 <h2>3. Autenticación SSH mediante claves</h2>
                 <p>Permite acceso seguro sin contraseña usando criptografía pública/privada. La clave pública se copia al servidor y la privada nunca se comparte.</p>
-                <p>Lo que tenemos que tener más claro es que la clave publica es la que compartiremos con el servidor pero la privada NUNCA la compartiremos. Practicad el hecho de que <code>ssh-copy-id</code> podría fallar, el examen está hecho para ponernos trampas en todo momento</p>
+                <p>Lo que tenemos que tener más claro es que la clave pública es la que compartiremos con el servidor pero la privada NUNCA la compartiremos. Practicad el hecho de que <code>ssh-copy-id</code> podría fallar, el examen está hecho para ponernos trampas en todo momento</p>
                 <img class="u-inline-525b23bb9f" src="/images/ssh-key.png" alt="Autenticación SSH" width="957" height="578">
                 <p>Debemos verificar en <code>/etc/ssh/sshd_config</code> que estén activadas las opciones:</p>
                 <ul>
@@ -117,7 +117,7 @@
              <section id="obj8" class="lesson-section">
                 <h2>8. Booleanos SELinux</h2>
                 <p>Los booleanos son interruptores (on/off) que permiten cambiar reglas de SELinux en tiempo real sin modificar la política completa. Tenemos que tener en cuenta que si un servicio funciona pero SELinux lo bloquea lo primero que revisaremos será los booleanos</p>
-                <p> Con el comando <code>getsebool -a</code> podemos listar todos los booleanos disponibles y podemos filtrar con grep servicio. Tambien podemos filtrar con <code>semanage boolean -l | grep X</code>. </p>
+                <p> Con el comando <code>getsebool -a</code> podemos listar todos los booleanos disponibles y podemos filtrar con grep servicio. También podemos filtrar con <code>semanage boolean -l | grep X</code>. </p>
                 <img class="u-inline-525b23bb9f" src="/images/selinux-booleans.png" alt="Booleanos SELinux" width="876" height="533">
                 <p>Se listan con <code>getsebool -a</code> y se modifican con <code>setsebool</code>. Para hacerlo persistente usamos <code>-P</code>.</p>
                 <img class="u-inline-525b23bb9f" src="/images/selinux-booleans2.png" alt="Booleanos SELinux" width="859" height="607">

@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="./site-shell.css?v=5ba23c5af75b">
+<link rel="stylesheet" href="./site-shell.css?v=ac5aee15ea13">
 <link rel="stylesheet" href="./fonts.css?v=20260822-local">
-<link rel="stylesheet" href="./visual-system.css?v=35555b4494e9">
-<title>Sobre S2KTUX · Contacto y aviso legal</title>
-<meta name="description" content="Quiénes somos, cómo contactar y el aviso legal de S2KTUX, formación gratuita de Linux.">
+<link rel="stylesheet" href="./visual-system.css?v=dc5253bb5de9">
+<title>Sobre S2KTUX · El proyecto, mejoras y licencias</title>
+<meta name="description" content="Soy el autor de S2KTUX. Aquí cuento cómo funciona el proyecto, qué quiero mejorar, las novedades y las licencias.">
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
@@ -20,12 +20,12 @@
 <meta property="og:url" content="https://s2ktux.github.io/sobre.html">
 <meta property="og:site_name" content="S2KTUX">
 <meta property="og:locale" content="es_ES">
-<meta name="twitter:title" content="Sobre S2KTUX · Contacto">
-<meta name="twitter:description" content="Quiénes somos, cómo contactar y el aviso legal de S2KTUX, formación gratuita de Linux.">
+<meta name="twitter:title" content="Sobre S2KTUX">
+<meta name="twitter:description" content="El proyecto, las mejoras pendientes, las novedades y las licencias de S2KTUX.">
 <meta name="author" content="S2KTUX">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Sobre S2KTUX · Contacto">
-<meta property="og:description" content="Quiénes somos, cómo contactar y el aviso legal de S2KTUX, formación gratuita de Linux.">
+<meta property="og:title" content="Sobre S2KTUX">
+<meta property="og:description" content="El proyecto, las mejoras pendientes, las novedades y las licencias de S2KTUX.">
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -48,17 +48,8 @@
   .navlink{color:var(--text);font-size:20px;transition:color .15s}
   .navlink:hover{color:var(--head)}
 
-  /* --- responsive (móvil) --- */
-  @media(max-width:860px){
-    [style*="grid-template-columns: 1fr 1fr"]{grid-template-columns:1fr !important}
-  }
-  @media(max-width:640px){
-    h1{font-size:20px !important;line-height:1.55 !important}
-    .navlink{font-size:16px !important}
-    [style*="padding: 64px 32px"]{padding:40px 20px !important}
-    [style*="padding: 44px 32px"]{padding:30px 20px !important}
-  }
 </style>
+<link rel="stylesheet" href="./sobre.css?v=20261019-proyecto">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script defer src="./site-shell.js?v=20260826-phase3"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"AboutPage","name":"Sobre S2KTUX","url":"https://s2ktux.github.io/sobre.html","inLanguage":"es","mainEntity":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/","sameAs":["https://www.youtube.com/@S2KTUX/featured","https://www.linkedin.com/in/alai-molina-delgado-563b70184"]}}</script>
@@ -81,47 +72,78 @@
 </div>
 
 <main id="main-content">
-<section class="u-inline-312d2ce9a8">
-  <a href="index.html" class="navlink u-inline-df8b7aadaf">&larr; Volver al inicio</a>
-</section>
+<section class="about-page">
+  <a href="index.html">← Volver al inicio</a>
+  <h1>Sobre S2KTUX</h1>
+  <p>Soy administrador de sistemas Linux y este es mi cuaderno público. Comparto apuntes, vídeos y laboratorios con el orden que me habría gustado encontrar cuando empecé.</p>
+  <p>Aquí puedes estudiar RHCSA, LPIC-1, Docker y Kubernetes, y practicar lo que vas aprendiendo. Es un proyecto personal, gratuito, en español y sin registro. No vendo atajos ni prometo que un curso, por sí solo, te haga aprobar un examen.</p>
 
-<section class="u-inline-a71439ac05">
-  <span class="u-inline-3e5ba75008">SOBRE</span>
-  <h1 class="u-inline-431c7c3450">Sobre S2KTUX</h1>
-  <p class="u-inline-89626a2684">S2KTUX es un cuaderno público de administración de sistemas Linux: apuntes, laboratorios y terminales simuladas para practicar RHCSA 9, LPIC-1, Docker y Kubernetes/CKA. Todo gratis, en español y sin registro.</p>
+  <h2>Cómo usar la página</h2>
+  <p>Empieza por un curso y acompáñalo con sus prácticas. Los laboratorios reales ejecutan Linux dentro del navegador; las versiones simuladas son una alternativa más ligera, pero no reproducen todas sus funciones. Lo que todavía no está preparado queda cerrado.</p>
 
-  <div class="u-inline-ff9d57befa">
-    <div class="u-inline-ec05845f53">
-      <div class="u-inline-638b6df9eb">QUÉ ENCONTRARÁS</div>
-      <div class="u-inline-e1fe0ed4d8">Cursos estructurados, una terminal Linux realista con prácticas tipo examen y proyectos de homelab e infraestructura.</div>
-    </div>
-    <div class="u-inline-ec05845f53">
-      <div class="u-inline-638b6df9eb">FILOSOFÍA</div>
-      <div class="u-inline-e1fe0ed4d8">Aprender haciendo, con calma y práctica real. No se vende nada ni se prometen atajos.</div>
-    </div>
+  <h2>Errores, dudas y contacto</h2>
+  <p>Si encuentras algo que falla o una explicación confusa, puedes abrir una incidencia en GitHub. También puedes dejar un comentario en YouTube o contactar conmigo por LinkedIn.</p>
+  <div class="about-links">
+    <a href="https://github.com/S2KTUX/s2ktux.github.io/issues" target="_blank" rel="noopener">Avisar de un error →</a>
+    <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube →</a>
+    <a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn →</a>
   </div>
 
-  <h2 class="u-inline-3aa1cf6938">Contacto</h2>
-  <p class="u-inline-89626a2684">¿Dudas, sugerencias o has encontrado un error? Te leo aquí:</p>
-  <div class="u-inline-1ca0401ace">
-    <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener" class="pxbtn u-inline-f820a95008">YouTube →</a>
-    <a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener" class="pxbtn u-inline-34d0ff6aa0">LinkedIn →</a>
-  </div>
-
-  <h2 class="u-inline-3aa1cf6938">Aviso legal</h2>
-  <div class="u-inline-e1382654f5">
-    <p class="u-inline-4636770b49"><b>Contenido educativo.</b> Este sitio es material formativo con fines didácticos. Se ofrece "tal cual", sin garantías; aplica siempre lo aprendido en entornos de prueba antes que en producción.</p>
-    <p class="u-inline-4636770b49"><b>Marcas.</b> RHCSA, RHCE y Red Hat son marcas de Red Hat, Inc.; LPIC del Linux Professional Institute; Docker, Kubernetes, SUSE y demás pertenecen a sus respectivos dueños. S2KTUX no está afiliado ni patrocinado por ellos.</p>
-    <p class="u-inline-4636770b49"><b>Privacidad.</b> No se piden datos personales ni se usan cookies de seguimiento. S2KTUX utiliza <a href="https://plausible.io/data-policy" target="_blank" rel="noopener">Plausible Analytics</a> para medir tendencias de uso de forma agregada, sin cookies ni identificadores persistentes. Tu progreso en cursos y terminal se guarda solo en tu navegador.</p>
-    <p class="u-inline-4636770b49"><b>Licencias.</b> El código del simulador y las demás fuentes se publica bajo la licencia MIT. Los cursos, textos y materiales educativos originales se ofrecen bajo <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener">CC BY-NC-SA 4.0</a>. El alcance detallado y las excepciones para contenido de terceros figuran en <a href="./LICENSE">LICENSE</a>.</p>
-    <p><b>Contenido de terceros.</b> Los vídeos enlazados se alojan en YouTube y se rigen por sus términos.</p>
+  <div class="about-secondary">
+    <details id="pendientes">
+      <summary>Lo que quiero mejorar</summary>
+      <div>
+        <p class="about-small">Esta es la lista de trabajo, no una promesa de fechas. Cuando una mejora está terminada y comprobada, sale de aquí y pasa al historial.</p>
+        <ul><!-- proyecto:pendientes --><li><span>Kubernetes.</span> Completar y comprobar las clases 12–34 en el laboratorio real antes de abrirlas.</li>
+<li><span>Kubernetes.</span> Terminar el simulacro CKA real: dos horas, corrección por resultados y nota por dominio. Incluir el alias k, la variable $do y tareas de Helm y Gateway API; todavía no se consideran cubiertos.</li>
+<li><span>Kubernetes.</span> Revisar hasta tres ejercicios por clase: uno para empezar, otro para aplicar lo aprendido y otro orientado al examen. Sin ejercicios para la clase 00.</li>
+<li><span>Cursos.</span> Crear preguntas originales para LPIC-1, con explicaciones y respuestas escritas, y simulacros 101 y 102 ajustados a sus objetivos.</li>
+<li><span>Laboratorios.</span> Comprobar la persistencia tras reiniciar antes de puntuar el simulacro, con respaldo y tratamiento de máquinas que no consiguen arrancar.</li>
+<li><span>Laboratorios.</span> Guardar de forma conjunta las máquinas, el intento y el cronómetro para poder continuar un examen tras recargar.</li>
+<li><span>Laboratorios.</span> Ampliar los ejercicios de diagnóstico con fallos controlados de fstab, SELinux, servicios y red; en Kubernetes, Pods, nodos, selectores y PVC.</li>
+<li><span>Más adelante.</span> Variar nombres, usuarios y tamaños entre intentos, adaptando también la preparación, las soluciones y los correctores.</li>
+<li><span>Rendimiento.</span> Medir y mejorar la reutilización de snapshots y bloques en el navegador. Evitar descargar máquinas completas desde páginas que no las necesitan.</li>
+<li><span>Rendimiento.</span> Estudiar qué se puede quitar de las imágenes sin perder herramientas, páginas de man, licencias ni ejercicios del curso.</li>
+<li><span>Más adelante.</span> Revisar si la validación con OpenAPI mejora el simulador de Kubernetes, aprovechando sus objetos y controladores actuales sin reconstruirlo innecesariamente.</li>
+<li><span>Más adelante.</span> Cuando exista un curso de AWS, plantear un banco de preguntas con explicaciones como el previsto para LPIC-1.</li>
+<li><span>Laboratorios.</span> Ampliar las pistas de Comprobar a los requisitos que todavía dan un resultado genérico. Ya se indican recursos o archivos que faltan en varias prácticas; falta desglosar más condiciones sin revelar soluciones.</li><!-- /proyecto:pendientes --></ul>
+        <p class="about-small"><a href="contenido/pendientes.md" download="S2KTUX-mejoras-pendientes.md">Descargar la lista de mejoras</a></p>
+      </div>
+    </details>
+    <details id="versiones">
+      <summary>Qué ha cambiado · v<!-- proyecto:version -->1.1<!-- /proyecto:version --></summary>
+      <div><!-- proyecto:versiones --><article class="about-version"><h3>v1.1 <time datetime="2026-10-19">19/10/2026</time></h3><p>Sobre reúne las mejoras pendientes, el historial y las licencias, sin llenar el resto de páginas de avisos.</p><p>Revisamos erratas, simplificamos soluciones y corregimos la preparación de prácticas.</p><p>Ajustamos tarjetas, textos y rejillas para que los cursos y las demás páginas se lean bien desde el móvil.</p><p>Limpiamos archivos de pruebas y documentación antigua sin retirar recursos necesarios de las máquinas.</p></article>
+<article class="about-version"><h3>v1.0 <time datetime="2026-10-19">19/10/2026</time></h3><p>Empezamos a registrar las versiones desde la publicación de las prácticas por clase y objetivos I/II, con una estructura común para los laboratorios reales y simulados.</p></article><!-- /proyecto:versiones --></div>
+    </details>
+    <details id="licencias">
+      <summary>Licencias y recursos que utiliza la página</summary>
+      <div class="about-licences">
+        <p>El código original se comparte con licencia MIT y el material educativo original con CC BY-NC-SA 4.0. Puedes consultar el alcance y las excepciones en la <a href="LICENSE">licencia del proyecto</a>.</p>
+        <p>Las herramientas de terceros mantienen sus propias licencias. Sus avisos se conservan junto a los archivos distribuidos; no quedan sustituidos por la licencia de S2KTUX.</p>
+        <ul>
+          <li>Fuentes: <a href="assets/fonts/LICENSE-press-start-2p.txt">Press Start 2P</a>, <a href="assets/fonts/LICENSE-space-mono.txt">Space Mono</a>, <a href="assets/fonts/LICENSE-share-tech-mono.txt">Share Tech Mono</a> y <a href="assets/fonts/LICENSE-vt323.txt">VT323</a>.</li>
+          <li>Terminal: <a href="vendor/xterm/LICENSE-xterm.txt">xterm.js</a> y <a href="vendor/xterm/LICENSE-addon-fit.txt">su complemento de ajuste</a>.</li>
+          <li>Máquina Linux: <a href="laboratorios/linux-real/licencias/LEEME.html">componentes, avisos y fuentes</a>.</li>
+          <li>Máquina Docker: <a href="laboratorios/docker-real/motor/LICENSE-v86">v86</a>, <a href="laboratorios/docker-real/licencias/LICENSE-kernel.txt">kernel</a>, <a href="laboratorios/docker-real/licencias/LICENSE-seabios.txt">SeaBIOS</a>, <a href="laboratorios/docker-real/licencias/LICENSE-qemu-floppy.txt">componente de disquetera de QEMU</a> y <a href="laboratorios/docker-real/licencias/LICENSE-zstd.txt">Zstandard</a>. También están disponibles sus <a href="laboratorios/docker-real/informacion.html">fuentes y recetas</a>.</li>
+          <li>Máquinas Kubernetes: <a href="laboratorios/kubernetes-real/FUENTES_Y_LICENCIAS.md">procedencia, licencias y fuentes</a>.</li>
+        </ul>
+      </div>
+    </details>
+    <details id="privacidad">
+      <summary>Privacidad y uso del material</summary>
+      <div class="about-licences">
+        <p>La página no pide registro. Usa <a href="https://plausible.io/data-policy" target="_blank" rel="noopener">Plausible</a> para estadísticas agregadas sin cookies de seguimiento. Las preferencias y los guardados del laboratorio se almacenan en tu navegador, no en una cuenta de S2KTUX.</p>
+        <p>Los vídeos se alojan en YouTube. Las conexiones a Internet de las máquinas pasan por servicios externos: utiliza solo datos de prácticas, no contraseñas ni información privada.</p>
+        <p>Esto es material educativo: prueba los comandos en un laboratorio antes de usarlos en un sistema importante. S2KTUX no está afiliado a Red Hat, LPI, Docker, la Linux Foundation ni a las demás marcas mencionadas.</p>
+      </div>
+    </details>
   </div>
 </section>
 </main>
 
 <footer class="site-footer">
   <div class="site-footer-brand">S2KTUX</div>
-  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-tagline">Aprender, practicar y compartir.</div>
   <div class="site-footer-links">
     <a href="sobre.html">Sobre</a>
     <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a>

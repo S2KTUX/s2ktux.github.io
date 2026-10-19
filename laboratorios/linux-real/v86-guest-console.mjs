@@ -1,4 +1,15 @@
 const quote = text => "'" + text.replaceAll("'", "'\\''") + "'";
+// Datos de partida para aprender SSH, su y ACL antes del tema de usuarios.
+// Una sola vez por máquina de práctica: no toca exámenes ni cuentas editadas
+// por el alumno después de esta inicialización.
+export function practiceAccountsCommand(){
+ const script=['set -eu','test "$(id -u)" = 0','if test ! -f /var/lib/s2ktux-practice-v1; then'];
+ for(const user of ['ssh-estudio','practica-su','sesion','lector','sin-acceso']){
+  script.push('if ! id '+user+' >/dev/null 2>&1; then useradd -m -s /bin/bash '+user+'; '+(user==='ssh-estudio'?"echo 'ssh-estudio:practica' | chpasswd; ":'')+'fi');
+ }
+ script.push('getent group equipo-sgid >/dev/null || groupadd equipo-sgid','systemctl start ssh','touch /var/lib/s2ktux-practice-v1','fi');
+ return '/bin/sh -c '+quote(script.join('\n'));
+}
 // Configuración ejecutada por Linux. No se dibuja ni se sustituye el prompt.
 export function consoleSetupCommand(recovery, password, epochSeconds, initializeNetwork=false, labHostname) {
   if (recovery && !/^[a-f0-9]{48}$/.test(password)) throw Error('Contraseña de preparación inválida');

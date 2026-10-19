@@ -1,0 +1,19 @@
+.about-page{max-width:920px;margin:auto;padding:40px 32px 64px;font:17px/1.8 'Space Mono',monospace;color:var(--text)}
+.about-page h1{font:24px/1.6 'Press Start 2P',monospace;color:var(--head);margin:24px 0}
+.about-page h2{font:18px/1.6 'Space Mono',monospace;color:var(--head);margin:36px 0 14px}
+.about-page p{margin:0 0 16px;max-width:76ch}
+.about-page .about-links{display:flex;flex-wrap:wrap;gap:12px 26px;margin:20px 0}
+.about-page .about-secondary{margin-top:38px;border-top:2px solid var(--line)}
+.about-page details{padding:18px 0;border-bottom:1px solid var(--surface2)}
+.about-page summary{cursor:pointer;color:var(--head);font-size:16px;list-style-position:outside;margin-left:20px}
+.about-page details>div{padding:20px 0 0}
+.about-page ul{padding-left:23px}
+.about-page li{margin-bottom:12px;overflow-wrap:anywhere}
+.about-page li span{color:var(--head)}
+.about-page .about-small{font-size:13px;color:var(--muted)}
+.about-page .about-version{margin-bottom:24px}
+.about-page .about-version h3{font-size:16px;color:var(--head);margin:0 0 12px}
+.about-page time{font-size:12px;font-weight:normal;color:var(--muted);margin-left:14px}
+.about-page .about-version p{font-size:14px;margin-bottom:8px}
+.about-page .about-licences{font-size:14px}
+@media(max-width:640px){.about-page{padding:28px 20px 44px;font-size:15px}.about-page h1{font-size:19px}.about-page h2{font-size:17px}}

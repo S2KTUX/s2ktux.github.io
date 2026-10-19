@@ -8,6 +8,7 @@ export function simulatedDockerObjectives(ctx,legacy){
  const conditions={
   'imagen-etiqueta':()=>{const a=image('alpine','3.23'),b=image('practica/alpine','1');return a&&b&&a.id===b.id;},
   'tag-i':()=>{const a=image('alpine','3.23'),b=image('alumno/alpine','1');return a&&b&&a.id===b.id;},
+  'image-details-i':()=>{try{const data=JSON.parse(node('/root/imagen-alpine.json')?.content||'[]'),original=image('alpine','3.23');return original&&data.length===1&&data[0].Id==='sha256:'+original.id&&data[0].RepoTags?.includes('alpine:3.23');}catch{return false;}},
   'dos-contenedores':()=>running('primero')&&running('segundo')&&container('primero').image===container('segundo').image,
   'ciclo-limpieza':()=>/^[a-f0-9]{12,64}$/.test(value(node('/root/temporal-id.txt')?.content))&&!container('temporal')&&s.history.some(line=>/^(?:sudo\s+)?docker\s+(?:container\s+)?(?:run|create)\b.*--name[=\s]+["']?temporal["']?(?:\s|$)/.test(line)),
   'inspect-i':()=>{const c=container('web'),text=node('/root/web-contenedores.txt')?.content||'';return c?.running&&text.includes('CONTAINER ID')&&text.split('\n').some(line=>line.startsWith(c.id.slice(0,12))&&/\sweb\s*$/.test(line));},

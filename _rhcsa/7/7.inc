@@ -63,7 +63,7 @@
 
              <section id="obj3" class="lesson-section">
                 <h2>3. Configurar el sistema para iniciar en un objetivo específico</h2>
-                <p>Systemd utiliza <strong>targets</strong> para definir cómo arranca el sistema. Recordabamos los más importantes a tener en cuenta : </p>
+                <p>Systemd utiliza <strong>targets</strong> para definir cómo arranca el sistema. Recordábamos los más importantes a tener en cuenta : </p>
                 <ul>
                     <li><strong>graphical.target</strong> → Modo gráfico</li>
                     <li><strong>multi-user.target</strong> → Modo texto con red</li>
@@ -91,7 +91,7 @@
             <section id="obj5" class="lesson-section">
                 <h2>Instalar y actualizar paquetes de software</h2>
                <p>Red Hat utiliza <code>dnf</code> como gestor de paquetes. Los repositorios se configuran en <code>/etc/yum.repos.d/</code>.</p>
-                <p>Lo que nos piden en este objetivo es basicamente conocer dnf, saber crear un repositorio ( Recordad los repositorios están ubicados en <code>/etc/yum.repos.d/</code>) que pedirán probablemente con URL o con un ISO y CDN que es el metodo oficial de REDHAT. </p>
+                <p>Lo que nos piden en este objetivo es básicamente conocer dnf, saber crear un repositorio ( Recordad los repositorios están ubicados en <code>/etc/yum.repos.d/</code>) que pedirán probablemente con URL o con un ISO y CDN que es el metodo oficial de REDHAT. </p>
                 <p>Si trabajamos con un ISO debemos montarlo usando <code>-o loop</code> y crear el archivo .repo correspondiente:</p>
                 <img class="u-inline-525b23bb9f" src="/images/repo-iso.png" alt="iso repo ejemplo" width="857" height="289">
                 <p>Tras modificar repositorios ejecutamos <code>dnf clean all</code>, <code>dnf makecache</code> y comprobamos con <code>dnf repolist</code>.</p>
