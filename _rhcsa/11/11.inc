@@ -66,7 +66,7 @@ systemctl --user enable --now NOMBRE.service</code></pre>
 
             <section id="obj2" class="lesson-section">
                 <h2>2. Comando find</h2>
-                <p>El comando <code>find</code> es esencial para buscar archivos. Los parametros más esenciales : </p>
+                <p>El comando <code>find</code> es esencial para buscar archivos. Los parámetros más esenciales : </p>
                 <ul>
                     <li><code>-type [f/d/l]</code> → tipo de archivo.</li>
                     <li><code>-name / -iname</code> → búsqueda por nombre.</li>

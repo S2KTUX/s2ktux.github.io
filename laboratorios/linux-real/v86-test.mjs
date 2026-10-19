@@ -1,19 +1,21 @@
 import {Terminal} from './vendor/xterm.mjs';
 import {ChunkDisk} from './v86-disk.mjs';
 import {LocalSessions,hashBytes} from './v86-sessions.mjs';
-import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261019-objetivos';
-import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261019-objetivos';
-import {examSetupCommand} from './v86-exam-setup.mjs?v=20261019-objetivos';
-import {examQuestions} from './v86-exam-data.mjs?v=20261019-objetivos';
-import {createEthernetInternet} from './v86-ethernet-internet.mjs?v=20261019-objetivos';
-import {restartMachine} from './v86-restart.mjs?v=20261019-objetivos';
-import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261019-objetivos';
-import {consoleSetupCommand} from './v86-guest-console.mjs?v=20261019-objetivos';
+import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261019-revision';
+import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261019-revision';
+import {examSetupCommand} from './v86-exam-setup.mjs?v=20261019-revision';
+import {examQuestions} from './v86-exam-data.mjs?v=20261019-revision';
+import {createEthernetInternet} from './v86-ethernet-internet.mjs?v=20261019-revision';
+import {restartMachine} from './v86-restart.mjs?v=20261019-revision';
+import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261019-revision';
+import {consoleSetupCommand,practiceAccountsCommand} from './v86-guest-console.mjs?v=20261019-revision';
 import {createSerialOutput,appendTranscript} from './v86-serial.mjs';
-import {createExamConsole,examConsoleSetupCommand,createExamBootDetector} from './v86-exam-console.mjs?v=20261019-objetivos';
+import {createExamConsole,examConsoleSetupCommand,createExamBootDetector} from './v86-exam-console.mjs?v=20261019-revision';
+import {mountLabNotices} from '../lab-notices.mjs';
 const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono", monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
 terminal.open(document.querySelector('#terminal'));
 const status=document.querySelector('#status');globalThis.vmTranscript='';globalThis.vmTerminal=terminal;
+if(!new URL(location.href).searchParams.has('embed'))mountLabNotices(document.querySelector('main'),status);
 let emulator,identity,busy=false,savedRecord,activeSave,resetting=false,inputPending=false,serialOutput,displayTranscript='';
 window.addEventListener('pagehide',()=>globalThis.labInternet?.destroy());
 const sessions=new LocalSessions();
@@ -72,7 +74,7 @@ async function prepareConsole(){
  const password=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');
  try{
    const initialClock=!savedRecord?Math.floor(Date.now()/1000):undefined;
-   const setup=rootShell?(examMode?examSetupCommand(examAttempt,nodeName)+' && '+examConsoleSetupCommand()+' && ':'')+consoleSetupCommand(recoveryScenario,password,initialClock,!savedRecord&&!examMode,examMode?undefined:nodeName==='2'?'s2ktux-lab-2':'s2ktux-lab'):"export PS1='[\\u@\\h \\W]\\$ '";
+   const setup=rootShell?(examMode?examSetupCommand(examAttempt,nodeName)+' && '+examConsoleSetupCommand()+' && ':!recoveryScenario?practiceAccountsCommand()+' && ':'')+consoleSetupCommand(recoveryScenario,password,initialClock,!savedRecord&&!examMode,examMode?undefined:nodeName==='2'?'s2ktux-lab-2':'s2ktux-lab'):"export PS1='[\\u@\\h \\W]\\$ '";
    const promise=exerciseRunner.run({checks:[]},setup);
    busy=true;document.querySelector('#save').disabled=true;updateExerciseAvailability();
    const result=await promise;
@@ -108,7 +110,7 @@ document.querySelector('#reboot').onclick=async()=>{
  if(examLocked||!emulator||busy||resetting)return;
  if(!confirm('¿Reiniciar la máquina para entrar en GRUB? Es un reinicio forzado, como pulsar el botón de reinicio de un ordenador. No borra los discos, pero puede perder escrituras pendientes. Si tienes una shell abierta, es preferible usar reboot.'))return;
  document.documentElement.dataset.vmState='running';inputPending=true;busy=true;updateExerciseAvailability();
- status.textContent='Reiniciando la máquina desde el hardware virtual…';
+ status.textContent='Reiniciando Linux… El arranque y el reetiquetado pueden tardar 5–10 minutos, o más según tu equipo.';
  document.querySelector('#result').hidden=true;
  try{await restartMachine(emulator,[vmDisk,vmPracticeDisk]);terminal.focus();}
  catch(error){document.documentElement.dataset.vmState='failed';status.textContent='No se pudo reiniciar: '+error.message;document.querySelector('#result').textContent=status.textContent;document.querySelector('#result').hidden=false;}
@@ -133,7 +135,7 @@ globalThis.vmSaveSession=async()=>{
 };
 document.querySelector('#save').onclick=()=>globalThis.vmSaveSession().catch(console.error);
 document.querySelector('#start').onclick=async()=>{
-  document.querySelector('#start').disabled=true;status.textContent='Cargando Linux real…';
+  document.querySelector('#start').disabled=true;status.textContent='Cargando Linux real…';terminal.writeln('[Laboratorio] Cargando la máquina…');
   const internetEnabled=!examMode;
   const base=new URL('./assets/v86-test/',import.meta.url);
   const fail=error=>{document.documentElement.dataset.vmState='failed';status.textContent='Laboratorio detenido: '+error.message;document.querySelector('#result').hidden=false;document.querySelector('#result').textContent='Puedes usar Reset para empezar con la base limpia; perderás el guardado de esta máquina.';console.error(error);emulator?.stop();if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);};
@@ -223,7 +225,7 @@ document.querySelector('#start').onclick=async()=>{
       // Mantener la detección de los límites de cada comprobación, incluso
       // cuando un bloque contiene su prompt y después mensajes del kernel.
       for(const character of text)if(!exerciseRunner.receive(character))visible.push(character);
-      if(visible.length&&!(prepared&&!savedRecord&&!consolePrepared)){const output=visible.join('');terminal.write(output);displayTranscript=appendTranscript(displayTranscript,output,100000);}
+      if(visible.length){const output=visible.join('');terminal.write(output);displayTranscript=appendTranscript(displayTranscript,output,100000);}
       if(recoveryBootPending&&/GNU GRUB|login:\s*$/.test(cleanSerial(globalThis.vmTranscript.slice(-3000))))recoveryBootPending=false;
       if(atShellPrompt(globalThis.vmTranscript))inputPending=false;
       if(atShellPrompt(globalThis.vmTranscript)&&consolePrepared&&!consolePreparing){document.documentElement.dataset.vmState='shell';status.textContent='Laboratorio disponible.';}
@@ -233,7 +235,7 @@ document.querySelector('#start').onclick=async()=>{
       if(examMode&&examPrepared&&!examReadySent&&!recoveryBootPending){examReadySent=true;parent.postMessage({kind:'s2ktux-exam-ready',attempt:examAttempt},location.origin);}
     });
     emulator.add_listener('serial0-output-byte',byte=>serialOutput.push(byte));
-    emulator.add_listener('emulator-ready',()=>{status.textContent=prepared?'Reanudando Linux…':'Arrancando el kernel y systemd…';});
+    emulator.add_listener('emulator-ready',()=>{status.textContent=prepared?'Reanudando Linux…':'Arrancando el kernel y systemd…';terminal.writeln('[Laboratorio] '+status.textContent);});
     // Arrancar después de restaurar RAM/UART, no durante emulator-ready.
     emulator.add_listener('emulator-loaded',()=>{
       // Ya está restaurado: las opciones del motor no deben retener otra copia

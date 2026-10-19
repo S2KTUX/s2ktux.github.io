@@ -52,7 +52,7 @@
             <section id="obj3" class="lesson-section">
                 <h2>3. Servicios de red al inicio del sistema</h2>
                 <p>Para asegurar que nuestra configuración de red sea efectiva desde el arranque, el servicio <strong>NetworkManager</strong> debe estar habilitado y activo : <code>systemctl enable --now NetworkManager</code>.</p>
-                <p>Si utilizamos el nmcli, no olvideis usar <code>connection.autoconnect yes</code> para que se inicie automaticamente.</p>
+                <p>Si utilizamos el nmcli, no olvidéis usar <code>connection.autoconnect yes</code> para que se inicie automáticamente.</p>
                  <p>Podemos comprobar la conectividad con comandos como <code>ip a</code>, <code>nmcli device status</code> o <code>systemctl status NetworkManager</code>.</p>
                 <img class="u-inline-525b23bb9f" src="/images/check-net.png" alt="check net ejemplo" width="830" height="581">
                 <p>Si creamos servicios dependientes de red, debemos usar <code>After=network-online.target</code> y <code>Wants=network-online.target</code> en la sección [Unit].</p>

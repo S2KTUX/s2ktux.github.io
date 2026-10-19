@@ -70,7 +70,7 @@
                     <li><strong>rpm -e nombre_paquete</strong> → Eliminar un paquete instalado.</li>
                     <li><strong>rpm -V nombre_paquete</strong> → Verificar la integridad de los archivos.</li>
                     <li><strong>rpm -qa</strong> → Listar todos los paquetes instalados.</li>
-                    <li><strong>rpm -qf</strong> → Consulta a qué paquete pertenece un archivo del sistema..</li>
+                    <li><strong>rpm -qf</strong> → Consulta a qué paquete pertenece un archivo del sistema.</li>
                     <li><strong>rpm -qi nombre_paquete</strong> → Mostrar información detallada de un paquete instalado.</li>
                     <li><strong>rpm -ql paquete</strong> → Lista los archivos que existen en un paquete.</li>
                 </ul>
@@ -117,7 +117,7 @@
                     <li><strong>flatpak info app</strong> → Información de una aplicación</li>
                     <li><strong>flatpak list</strong> → Listar aplicaciones instaladas</li>
                     <li><strong>flatpak run app</strong> →  Lanzar una aplicación</li>
-                    <li><strong>flatpak ps app</strong> → Ver las aplicaciones que están corriendo</li>
+                    <li><strong>flatpak ps</strong> → Ver las aplicaciones que están corriendo</li>
                     <li><strong>flatpak uninstall app</strong> → Eliminar una aplicación</li>
                     <li><strong>flatpak search app</strong> → Buscar una aplicación</li>
                 </ul>

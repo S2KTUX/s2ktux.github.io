@@ -9,7 +9,7 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Administrar usuarios y grupos · RHCSA 9 · S2KTUX"><meta name="twitter:description" content="Cuentas locales, políticas de contraseña y sudo. Aprende Crear, eliminar y modificar cuentas, Contraseñas y envejecimiento (chage), Crear, eliminar y modificar grupos con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=35555b4494e9">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=4463e505f207">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Administrar usuarios y grupos","description":"Cuentas locales, políticas de contraseña y sudo.","url":"https://s2ktux.github.io/cursos/rhcsa-9/tema-9-administrar-usuarios-y-grupos/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"RHCSA 9","teaches":["Crear, eliminar y modificar cuentas","Contraseñas y envejecimiento (chage)","Crear, eliminar y modificar grupos","Configurar el acceso privilegiado (sudo)"],"isPartOf":{"@type":"Course","name":"RHCSA 9 · EX200","url":"https://s2ktux.github.io/cursos/rhcsa-9/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"RHCSA 9 · EX200","item":"https://s2ktux.github.io/cursos/rhcsa-9/"},{"@type":"ListItem","position":4,"name":"Administrar usuarios y grupos","item":"https://s2ktux.github.io/cursos/rhcsa-9/tema-9-administrar-usuarios-y-grupos/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
@@ -64,7 +64,7 @@
             <section id="obj1" class="lesson-section">
                 <h2>1. Crear, eliminar y modificar cuentas de usuario locales</h2>
               <p>La administración de usuarios en RHEL se basa principalmente en los archivos <code>/etc/passwd</code> y <code>/etc/shadow</code>, donde se almacenan los datos de cuenta y contraseñas cifradas.</p>
-                <p>Los parametros mas importantes al .crear un usuario son : </p>
+                <p>Los parámetros más importantes al crear un usuario son:</p>
                 <ul>
                     <li><code>-u UID</code> → Define un identificador de usuario específico.</li>
                     <li><code>-g GRUPO</code> → Asigna el grupo primario existente.</li>
@@ -76,7 +76,7 @@
                 </ul>
                 <p>Tras crear la cuenta usamos <code>passwd</code> para asignar o modificar la contraseña.</p>
                 <img class="u-inline-525b23bb9f" src="/images/user-admin.png" alt="Ejemplo de gestión de usuarios" width="678" height="267">
-                <p>Por otro lado, tenemos otros parametros para modificar cuentas de usuario : </p>
+                <p>Por otro lado, tenemos otros parámetros para modificar cuentas de usuario : </p>
                 <ul>
                     <li><code>-aG GRUPO</code> → Añade grupos secundarios sin eliminar los existentes. ¡¡MUY IMPORTANTE!!</li>
                     <li><code>-L</code> → Bloquea la cuenta.</li>
@@ -114,7 +114,7 @@
                 <img class="u-inline-525b23bb9f" src="/images/group-admin.png" alt="Gestión de grupos y membresías" width="538" height="303">
                 <p>Podemos verificar membresías con <code>id</code>, <code>groups</code>, <code>getent group</code> o revisando <code>/etc/group</code>.</p>
                 <img class="u-inline-525b23bb9f" src="/images/group-check.png" alt="Check de grupos" width="903" height="409">
-                <p> Por ultimo, podemos asignarle una contraseña a un grupo con el comando <code>gpasswd GRUPO</code>, y con este comando añadir usuarios a ese grupo <code>gpasswd -a USER grupo</code>, borrarlo con <code>-d</code>, eliminar la contraseña con <code>-r</code>...</p>
+                <p> Por último, podemos asignarle una contraseña a un grupo con el comando <code>gpasswd GRUPO</code>, y con este comando añadir usuarios a ese grupo <code>gpasswd -a USER grupo</code>, borrarlo con <code>-d</code>, eliminar la contraseña con <code>-r</code>...</p>
                 <img class="u-inline-525b23bb9f" src="/images/gpasswd.png" alt="Gestión de la pertenencia a grupos con gpasswd" width="564" height="394">
             </section>
 
@@ -137,7 +137,7 @@
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><a class="lesson-nav-card" href="/cursos/rhcsa-9/tema-8-administrar-redes-basicas/"><small>← ANTERIOR</small><strong>Administrar redes básicas</strong></a><a class="lesson-nav-card next" href="/cursos/rhcsa-9/tema-10-administrar-la-seguridad/"><small>SIGUIENTE →</small><strong>Administrar la seguridad</strong></a></nav></div></main>
 <footer class="site-footer">
   <div class="site-footer-brand">S2KTUX</div>
-  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-tagline">Aprender, practicar y compartir.</div>
   <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
   <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

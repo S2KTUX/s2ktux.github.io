@@ -9,7 +9,7 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Administrar la seguridad · RHCSA 9 · S2KTUX"><meta name="twitter:description" content="Firewall, permisos, SSH y hardening con SELinux. Aprende Configurar el firewall (firewalld / rich rules / NAT), Permisos predeterminados (umask), Autenticación SSH mediante claves con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=35555b4494e9">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=4463e505f207">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Administrar la seguridad","description":"Firewall, permisos, SSH y hardening con SELinux.","url":"https://s2ktux.github.io/cursos/rhcsa-9/tema-10-administrar-la-seguridad/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"RHCSA 9","teaches":["Configurar el firewall (firewalld / rich rules / NAT)","Permisos predeterminados (umask)","Autenticación SSH mediante claves","Modos de SELinux","Contextos SELinux","Restaurar contextos predeterminados","Etiquetas de puerto SELinux","Booleanos SELinux"],"isPartOf":{"@type":"Course","name":"RHCSA 9 · EX200","url":"https://s2ktux.github.io/cursos/rhcsa-9/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"RHCSA 9 · EX200","item":"https://s2ktux.github.io/cursos/rhcsa-9/"},{"@type":"ListItem","position":4,"name":"Administrar la seguridad","item":"https://s2ktux.github.io/cursos/rhcsa-9/tema-10-administrar-la-seguridad/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
@@ -87,12 +87,12 @@
                 <h2>2. Administrar permisos predeterminados (umask)</h2>
                 <p><code>umask</code> define los permisos que se eliminan al crear archivos o directorios.</p>
                 <p>El valor máximo es 666 para archivos y 777 para directorios (ya que x no se aplica por seguridad).Es decir, la regla o la suma es  Permisos totales - UMASK = Permisos reales. Si el umask es 022, el archivo se crea con 644 (666-022) y el directorio con 755 (777-022).</p>
-                <p>Puede aplicarse temporalmente con <code>umask</code> o permanentemente en <code>/etc/profile</code> para global o <code>~/.bashrc</code> para un usuario en especifico.</p>
+                <p>Puede aplicarse temporalmente con <code>umask</code> o permanentemente en <code>/etc/profile</code> para global o <code>~/.bashrc</code> para un usuario en específico.</p>
             </section>
             <section id="obj3" class="lesson-section">
                 <h2>3. Autenticación SSH mediante claves</h2>
                 <p>Permite acceso seguro sin contraseña usando criptografía pública/privada. La clave pública se copia al servidor y la privada nunca se comparte.</p>
-                <p>Lo que tenemos que tener más claro es que la clave publica es la que compartiremos con el servidor pero la privada NUNCA la compartiremos. Practicad el hecho de que <code>ssh-copy-id</code> podría fallar, el examen está hecho para ponernos trampas en todo momento</p>
+                <p>Lo que tenemos que tener más claro es que la clave pública es la que compartiremos con el servidor pero la privada NUNCA la compartiremos. Practicad el hecho de que <code>ssh-copy-id</code> podría fallar, el examen está hecho para ponernos trampas en todo momento</p>
                 <img class="u-inline-525b23bb9f" src="/images/ssh-key.png" alt="Autenticación SSH" width="957" height="578">
                 <p>Debemos verificar en <code>/etc/ssh/sshd_config</code> que estén activadas las opciones:</p>
                 <ul>
@@ -150,7 +150,7 @@
              <section id="obj8" class="lesson-section">
                 <h2>8. Booleanos SELinux</h2>
                 <p>Los booleanos son interruptores (on/off) que permiten cambiar reglas de SELinux en tiempo real sin modificar la política completa. Tenemos que tener en cuenta que si un servicio funciona pero SELinux lo bloquea lo primero que revisaremos será los booleanos</p>
-                <p> Con el comando <code>getsebool -a</code> podemos listar todos los booleanos disponibles y podemos filtrar con grep servicio. Tambien podemos filtrar con <code>semanage boolean -l | grep X</code>. </p>
+                <p> Con el comando <code>getsebool -a</code> podemos listar todos los booleanos disponibles y podemos filtrar con grep servicio. También podemos filtrar con <code>semanage boolean -l | grep X</code>. </p>
                 <img class="u-inline-525b23bb9f" src="/images/selinux-booleans.png" alt="Booleanos SELinux" width="876" height="533">
                 <p>Se listan con <code>getsebool -a</code> y se modifican con <code>setsebool</code>. Para hacerlo persistente usamos <code>-P</code>.</p>
                 <img class="u-inline-525b23bb9f" src="/images/selinux-booleans2.png" alt="Booleanos SELinux" width="859" height="607">
@@ -172,7 +172,7 @@
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><a class="lesson-nav-card" href="/cursos/rhcsa-9/tema-9-administrar-usuarios-y-grupos/"><small>← ANTERIOR</small><strong>Administrar usuarios y grupos</strong></a><a class="lesson-nav-card next" href="/cursos/rhcsa-9/tema-11-clase-extra/"><small>SIGUIENTE →</small><strong>Clase Extra</strong></a></nav></div></main>
 <footer class="site-footer">
   <div class="site-footer-brand">S2KTUX</div>
-  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-tagline">Aprender, practicar y compartir.</div>
   <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
   <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

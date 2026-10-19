@@ -1,8 +1,18 @@
 # S2KTUX
 
-Sitio web de S2KTUX — apuntes y laboratorios para aprender administración de sistemas Linux: **RHCSA (EX200)**, **LPIC-1** y Docker, con una terminal Linux simulada en el navegador.
+Apuntes, vídeos y laboratorios para aprender Linux, RHCSA, LPIC-1, Docker y Kubernetes. Web estática, gratuita y sin registro: https://s2ktux.github.io/.
 
-🌐 En vivo: https://s2ktux.github.io/
+## Dónde está cada cosa
+
+- `index.html`, `cursos.html`, `terminal.html` y `sobre.html`: páginas principales.
+- `_rhcsa/`, `_lpic/`, `_docker/`, `_kubernetes/`: fuentes editables de las clases. `cursos/` contiene sus páginas generadas; no son copias sobrantes.
+- `laboratorios/`: interfaz, máquinas y discos fragmentados de Linux, Docker y Kubernetes. Sus recursos y licencias son necesarios aunque muchos se carguen mediante rutas dinámicas.
+- `contenido/proyecto.json`: única lista de mejoras pendientes e historial de versiones. `npm run sync:project` actualiza Sobre y la descarga Markdown. Quitar una mejora de pendientes solo cuando esté implementada y comprobada.
+- `images/`, `assets/`, `vendor/`: imágenes, fuentes y dependencias distribuidas, con sus licencias.
+- `scripts/`, `tests/`, `docs/`: construcción, pruebas y mantenimiento. No se publican como páginas del sitio.
+- Las carpetas `rhcsa/`, `lpic/`, `docker/` y `kubernetes/` conservan enlaces antiguos hacia las rutas actuales. No borrarlas sin mantener esas redirecciones.
+
+Las licencias y fuentes de terceros están enlazadas en [Sobre](https://s2ktux.github.io/sobre.html#licencias). El [mapa técnico](docs/arquitectura.md) explica los motores. `node scripts/audit-repository.mjs` permite buscar imágenes sin referencias literales, sin borrarlas automáticamente.
 
 ## Build y publicación
 

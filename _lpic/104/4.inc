@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 104</span>
+        <span class="badge">LPIC-1 · Tema 104</span>
         <h1>Dispositivos, Sistemas de Archivos y FHS</h1>
         <p>Domina la gestión de discos, particiones, permisos, enlaces y la jerarquía de directorios en Linux.</p>
     </header>

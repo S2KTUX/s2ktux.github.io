@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 105</span>
+        <span class="badge">LPIC-1 · Tema 105</span>
         <h1>Shells y Scripts</h1>
         <p>Domina el entorno de shell, personaliza tu experiencia y aprende a escribir scripts para automatizar tareas en Linux.</p>
     </header>

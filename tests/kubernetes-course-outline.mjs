@@ -11,9 +11,9 @@ vm.runInNewContext(read('courses-data.js'), context);
 const modules = context.window.S2KTUX_COURSES.kubernetes.modules;
 const titles = [
   'Fundamentos de Kubernetes', 'Preparación del laboratorio', 'Pods', 'ReplicaSet',
-  'Deployment', 'Services', 'NameSpaces', 'Requests y limits', 'LimitRange y ResourceQuota',
+  'Deployment', 'Services', 'Namespaces', 'Requests y limits', 'LimitRange y ResourceQuota',
   'Probes y Health Checks (Sondas)', 'Environment variables y ConfigMap', 'Secrets',
-  'Volumenes', 'RBAC : Usuarios y grupos', 'ServiceAccount', 'Ingress', 'DaemonSets',
+  'Volúmenes', 'RBAC : Usuarios y grupos', 'ServiceAccount', 'Ingress', 'DaemonSets',
   'StatefulSets', 'Jobs y CronJobs', 'Scheduling I: nodeSelector y Node Affinity',
   'Scheduling II: Taints y Tolerations', 'NetworkPolicies', 'CoreDNS y descubrimiento de servicios',
   'Gateway API', 'Static Pods, control plane y HA esencial', 'kubeadm init y CNI',

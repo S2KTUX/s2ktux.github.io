@@ -1,6 +1,7 @@
 const groups=[
  ['Archivos y texto',[
   ['pwd · ls · cd RUTA','Ver dónde estás, listar y cambiar de directorio.'],
+  ['man COMANDO','Consultar el manual. Usa /TEXTO para buscar y q para salir.'],
   ['mkdir DIR · touch ARCHIVO','Crear un directorio o un archivo vacío.'],
   ['cp ORIGEN DESTINO · mv ORIGEN DESTINO','Copiar o mover.'],
   ['cat ARCHIVO · less ARCHIVO','Leer un archivo. En less, q sale.'],
@@ -42,7 +43,7 @@ const groups=[
  ]],
 ];
 export function mountCommandReference(root){
- const details=document.createElement('details');details.className='lab-reference';
+ const details=document.createElement('details');details.className='lab-reference';details.id='referencia';if(location.hash==='#referencia')details.open=true;
  const title=document.createElement('summary');title.textContent='Referencia breve de comandos';details.append(title);
  for(const [name,entries]of groups){const heading=document.createElement('h3');heading.textContent=name;details.append(heading);const list=document.createElement('dl');for(const [command,description]of entries){const dt=document.createElement('dt'),code=document.createElement('code'),dd=document.createElement('dd');code.textContent=command;dt.append(code);dd.textContent=description;list.append(dt,dd);}details.append(list);}
  root.append(details);

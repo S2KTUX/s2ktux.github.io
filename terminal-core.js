@@ -5,6 +5,7 @@ import {
 } from "./terminal-shell-parser.js";
 import { validateCommandInvocation } from "./terminal-command-schema.js?v=20260825-phase1-main";
 import { retainPodFiles } from "./terminal-kubernetes-state.js";
+import {practiceFeedback} from './laboratorios/practice-feedback.mjs';
 import {
   canTraverseVirtualPath,
   createDirectory,
@@ -19068,16 +19069,9 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       o.textContent = (chalDone[i] ? "✔ " : "") + (i + 1) + ". " + c.title;
       selEl.appendChild(o);
     });
-    const publicResult = (r) =>
-      r.ok
-        ? r
-        : {
-            ok: false,
-            msg:
-              MODE === "linux"
-                ? r.msg
-                : "El estado actual todavía no cumple todos los requisitos del enunciado.",
-          };
+    const publicResult = (r) => r.ok||examActive?r:{ok:false,msg:
+      practiceFeedback(MODE,CH[Number(selEl.value)],runtimeState,getNode)||
+      (MODE==='linux'?r.msg:'El estado actual todavía no cumple todos los requisitos del enunciado.')};
     const showResult = (r) => {
       r = publicResult(r);
       resEl.dataset.result=r.ok?'passed':'failed';
@@ -19098,7 +19092,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         solutionBtn.hidden = !hasSolution;
         solutionBtn.textContent = "Ver solución";
         solutionBody.hidden = true;
-        renderSolutions(solutionBody,hasSolution&&c.solution?[{code:c.solution},...(c.solutions||[])]:[]);
+        renderSolutions(solutionBody,hasSolution&&c.solution?[{code:c.solution,blocks:c.solutionBlocks},...(c.solutions||[])]:[]);
       }
       if (examActive) {
         resEl.innerHTML =
@@ -19113,9 +19107,15 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     if (solutionBtn && solutionBody)
       solutionBtn.addEventListener("click", async () => {
         const current=CH[Number(selEl.value)];if(!current||selEl.value===''||examActive)return;
-        if(!current.solution&&current.loadSolution){
+        if((!current.solution&&current.loadSolution)||(MODE==='linux'&&!current.studentSolutionReady)){
           const selected=selEl.value;solutionBtn.disabled=true;
-          try{const loaded=await current.loadSolution();if(selEl.value!==selected)return;const options=Array.isArray(loaded)?loaded:[{code:loaded}];current.solution=options[0].code;current.solutions=options.slice(1);renderSolutions(solutionBody,options);}
+          try{
+            const loaded=current.solution?[{code:current.solution},...(current.solutions||[])]:await current.loadSolution();
+            let options=Array.isArray(loaded)?loaded:[{code:loaded}];
+            if(MODE==='linux'){const {studentSolution}=await import('./laboratorios/student-solutions.mjs');options=options.map(studentSolution);}
+            if(selEl.value!==selected)return;
+            current.solution=options[0].code;current.solutionBlocks=options[0].blocks;current.solutions=options.slice(1);current.studentSolutionReady=true;renderSolutions(solutionBody,options);
+          }
           catch{solutionBody.textContent='No se pudo cargar la solución. Vuelve a intentarlo.';solutionBody.hidden=false;return;}
           finally{solutionBtn.disabled=false;}
         }

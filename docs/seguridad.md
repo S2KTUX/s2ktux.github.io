@@ -1,6 +1,6 @@
 # CSP preparada (todavía no activa)
 
-La política candidata está en `content-security-policy.txt`. No está enlazada desde HTML ni configurada como cabecera, por lo que este cambio no activa CSP.
+La política candidata está en `../security/content-security-policy.txt`. No está enlazada desde HTML ni configurada como cabecera, por lo que este cambio no activa CSP.
 
 ## Antes de activarla
 

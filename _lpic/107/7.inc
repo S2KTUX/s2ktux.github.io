@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 107</span>
+        <span class="badge">LPIC-1 · Tema 107</span>
         <h1>Tareas administrativas</h1>
         <p>Domina la gestión de usuarios, la automatización de tareas con cron/systemd y la configuración de localización en Linux.</p>
     </header>

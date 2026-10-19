@@ -43,6 +43,7 @@ export function simulatedRhcsaObjectives(ctx,legacy){
   const task={...source,...(compatible?{goal:compatible.goal,solution:compatible.solution,loadSolution:compatible.loadSolution}:{}),check:compatible?.check||(()=>({ok:Boolean(condition()),msg:'Comprueba el resultado indicado en el enunciado.'}))};
   // El simulador representa RHEL: usa sus nombres, no aliases de Debian.
   if(['servicio-i','servicio-ii'].includes(source.sourceId)){task.goal=source.sourceId==='servicio-i'?'Deja crond activo.':'Deja crond activo y habilitado; httpd debe quedar detenido.';task.solution=task.solution.replace(/\bcron\b/g,'crond').replaceAll('apache2','httpd');}
+  if(source.sourceId==='sgid'){task.goal='Crea el grupo equipo. '+task.goal.replaceAll('equipo-sgid','equipo');task.solution='groupadd equipo\n'+task.solution.replaceAll('equipo-sgid','equipo');}
   delete task.checks;delete task.prepare;result.push(task);
  }
  // El intérprete antiguo conserva sus ejercicios de Bash simples; no finge

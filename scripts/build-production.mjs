@@ -10,8 +10,8 @@ const out = join(root, '_site');
 const terminalAssets = join(out, 'assets', 'terminal');
 const generatedEntries = join(out, '.terminal-build-entries');
 const modes = ['linux', 'docker', 'kubernetes'];
-const excludedRoots = new Set(['.git', '.github', 'node_modules', 'tests', 'scripts', '_site', 'playwright-report', 'test-results']);
-const excludedFiles = new Set(['.gitignore', 'package.json', 'package-lock.json', 'playwright.config.mjs']);
+const excludedRoots = new Set(['.git', '.github', 'node_modules', 'tests', 'scripts', 'docs', 'fixtures', '_rhcsa', '_lpic', '_docker', '_kubernetes', '_site', 'playwright-report', 'test-results']);
+const excludedFiles = new Set(['.gitignore', '.gitattributes', 'AGENTS.md', 'README.md', 'package.json', 'package-lock.json', 'playwright.config.mjs']);
 const posix = value => value.split(sep).join('/');
 
 const isExcluded = source => {

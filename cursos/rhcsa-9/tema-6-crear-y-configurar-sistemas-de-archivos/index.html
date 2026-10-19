@@ -9,7 +9,7 @@
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Crear y configurar sistemas de archivos · RHCSA 9 · S2KTUX"><meta name="twitter:description" content="Formateo, montaje, NFS, autofs y permisos. Aprende Crear, montar y desmontar FS locales, Montar FS de red con NFS, Configurar autofs con ejemplos en español."><meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/assets/icon-192.png"><link rel="apple-touch-icon" href="/assets/icon-192.png"><link rel="manifest" href="/manifest.webmanifest">
-<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=35555b4494e9">
+<link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=5ba23c5af75b"><link rel="stylesheet" href="/learning-pages.css?v=20260826-phase3"><link rel="stylesheet" href="/visual-system.css?v=4463e505f207">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"LearningResource","name":"Crear y configurar sistemas de archivos","description":"Formateo, montaje, NFS, autofs y permisos.","url":"https://s2ktux.github.io/cursos/rhcsa-9/tema-6-crear-y-configurar-sistemas-de-archivos/","inLanguage":"es","isAccessibleForFree":true,"learningResourceType":"lesson","educationalLevel":"RHCSA 9","teaches":["Crear, montar y desmontar FS locales","Montar FS de red con NFS","Configurar autofs","Ampliar volúmenes lógicos existentes","Diagnosticar permisos (SUID/SGID/Sticky/ACL)"],"isPartOf":{"@type":"Course","name":"RHCSA 9 · EX200","url":"https://s2ktux.github.io/cursos/rhcsa-9/"},"provider":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/"}},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Inicio","item":"https://s2ktux.github.io/"},{"@type":"ListItem","position":2,"name":"Cursos","item":"https://s2ktux.github.io/cursos.html"},{"@type":"ListItem","position":3,"name":"RHCSA 9 · EX200","item":"https://s2ktux.github.io/cursos/rhcsa-9/"},{"@type":"ListItem","position":4,"name":"Crear y configurar sistemas de archivos","item":"https://s2ktux.github.io/cursos/rhcsa-9/tema-6-crear-y-configurar-sistemas-de-archivos/"}]}]}</script>
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
@@ -70,9 +70,12 @@
                     <li><strong>vfat</strong> → Compatible con otros sistemas operativos, común en USB.</li>
                 </ul>
                  <p>Para crear un sistema de archivos utilizamos <code>mkfs</code> según el tipo. En el ejemplo creamos dos particiones nuevas, una en ext4 y otra en xfs, y posteriormente las montamos.</p>
+                <p>Para XFS usamos <code>mkfs.xfs</code>. Este ejemplo formatea una partición de prácticas vacía; no lo ejecutes sobre un dispositivo con datos que quieras conservar.</p>
+                <pre><code>mkfs.xfs /dev/sdb2</code></pre>
                 <img class="u-inline-525b23bb9f" src="/images/mkfs.png" alt="mkfs ejemplos" width="811" height="653">
                 <img class="u-inline-525b23bb9f" src="/images/comproba-mkfs.png" alt="mkfs ejemplo comprobación" width="553" height="304">
                 <p>Una vez formateado y montado, podemos hacerlo permanente añadiéndolo a <code>/etc/fstab</code> y para desmontar usamos <code>umount</code>.</p>
+                <p>Para cambiar su etiqueta sin formatearlo, desmontamos XFS y usamos <code>xfs_admin -L DATOS /dev/sdb2</code>. <strong>XFS no se puede reducir.</strong> Puedes consultar los detalles en <a href="https://manpages.debian.org/bookworm/xfsprogs/xfs_admin.8.en.html" target="_blank" rel="noopener">el manual de xfs_admin</a>.</p>
             </section>
 
             <section id="obj2" class="lesson-section">
@@ -152,7 +155,7 @@
       <nav class="lesson-navigation" aria-label="Navegación entre lecciones"><a class="lesson-nav-card" href="/cursos/rhcsa-9/tema-5-configuracion-del-almacenamiento-local/"><small>← ANTERIOR</small><strong>Configuración del almacenamiento local</strong></a><a class="lesson-nav-card next" href="/cursos/rhcsa-9/tema-7-implementar-configurar-y-mantener-sistemas/"><small>SIGUIENTE →</small><strong>Implementar, configurar y mantener sistemas</strong></a></nav></div></main>
 <footer class="site-footer">
   <div class="site-footer-brand">S2KTUX</div>
-  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-tagline">Aprender, practicar y compartir.</div>
   <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
   <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer></div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>

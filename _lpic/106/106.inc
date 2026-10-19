@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 106</span>
+        <span class="badge">LPIC-1 · Tema 106</span>
         <h1>Interfaces gráficas y accesibilidad</h1>
         <p>Domina la instalación y configuración de X11, la gestión de escritorios gráficos y las herramientas de accesibilidad en Linux.</p>
     </header>

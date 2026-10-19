@@ -73,9 +73,9 @@
 
             <section id="obj3" class="lesson-section">
                 <h2>3. Interrumpir el arranque para obtener acceso</h2>
-                <p>Durante el arranque, es posible interrumpir GRUB para acceder y modificar parametros Esto lo podemos hacer ya sea para encender el sistema con un target especifico, recuperar la contraseña o entrar como modo emergencia para revisar posibles errores </p>
-                <p>Uno de los puntos mas importantes del examen es resetear la contraseña de root para poder realizar el examen. Para ello lo primero que haremos será entrar en GRUB y editar la entrada presionando <strong>e</strong>.</p>
-                <p>Una vez dentro, modificamos la linea de linux, añadiendo al final <strong>rd.break</strong> (si no funciona podriamos poner como alternativa init=/bin/bash) y arrancaremos con Ctrl + X.</p>
+                <p>Durante el arranque podemos interrumpir GRUB y modificar sus parámetros. Esto permite iniciar con un target específico, recuperar la contraseña o entrar en modo de emergencia para revisar errores.</p>
+                <p>Uno de los puntos más importantes del examen es resetear la contraseña de root para poder realizar el examen. Para ello lo primero que haremos será entrar en GRUB y editar la entrada presionando <strong>e</strong>.</p>
+                <p>Una vez dentro, modificamos la linea de linux, añadiendo al final <strong>rd.break</strong> (si no funciona podríamos poner como alternativa init=/bin/bash) y arrancaremos con Ctrl + X.</p>
                 <img class="u-inline-525b23bb9f" src="/images/root-rec1.png" alt="Edición de la entrada de GRUB para recuperar la contraseña de root" loading="lazy" width="761" height="243">
                 
                 <p> Una vez arrancado, tendremos que seguir los siguientes pasos :</p>
@@ -111,7 +111,7 @@
                     <li><strong>renice -5 PID</strong> → Cambia la prioridad de un proceso en ejecución</li>
                 </ul>
                 <img class="u-inline-525b23bb9f" src="/images/nice-re.png" alt="nice example" loading="lazy" width="523" height="113">
-                <p> Por otro lado tenemos los procesos real time, que son procesos que tienen prioridad ante todos y va con valores de 0 a 99, siendo 99 el mas alto. Podemos ver su información, cambiar su prioridad o lanzar un proceso con un rt especifico :  </p>
+                <p> Por otro lado tenemos los procesos real time, que son procesos que tienen prioridad ante todos y va con valores de 0 a 99, siendo 99 el mas alto. Podemos ver su información, cambiar su prioridad o lanzar un proceso con un rt específico :  </p>
                 <ul>
                     <li><strong>chrt -p PID</strong> → Muestra la política y prioridad real time de un proceso</li>
                     <li><strong>chrt -r -p PRIORIDAD PID</strong> → Cambia la prioridad real time de un proceso existente</li>
@@ -164,7 +164,7 @@ chmod 2755 /var/log/journal</code></pre>
 
             <section id="obj9" class="lesson-section">
                 <h2>9. Iniciar, detener y comprobar servicios de red</h2>
-                <p>Los servicios se pueden gestionar a traves de varios comandos : <code>systemctl</code>, <code>ip</code> o <code>nmcli</code>.</p>
+                <p>Los servicios se pueden gestionar a través de varios comandos : <code>systemctl</code>, <code>ip</code> o <code>nmcli</code>.</p>
                 <p> Cuando usemos systemctl, el servicio se llama NetworkManager. Usaremos los comandos : </p>
                 <ul>
                     <li><strong>systemctl start NetworkManager</strong> → Levantar</li>
@@ -173,14 +173,14 @@ chmod 2755 /var/log/journal</code></pre>
                     <li><strong>systemctl status NetworkManager</strong> → Comprobar el estado</li>
                 </ul>
                 <img class="u-inline-525b23bb9f" src="/images/networkmanager.png" alt="nm ejemplo" width="1142" height="563">
-                <p> Tambien podemos usar nmcli para gestionar los servicios de red :</p>
+                <p> También podemos usar nmcli para gestionar los servicios de red :</p>
                 <ul>
                     <li><strong>nmcli connection up "interfaz" </strong> → Levantar</li>
                     <li><strong>nmcli connection down "interfaz"</strong> → Parar</li>
                     <li><strong>nmcli connection show</strong> → Comprobar</li>
                 </ul>
                 <img class="u-inline-525b23bb9f" src="/images/nmcli-basic.png" alt="nmcli basic ejemplo" loading="lazy" width="961" height="290">
-                <p> Por ultimo, podemos usar ip ( aunque este no es recomendable ya que solo hace cambios temporales ) : </p>
+                <p> Por último, podemos usar ip ( aunque este no es recomendable ya que solo hace cambios temporales ) : </p>
                 <ul>
                     <li><strong>ip link set "interfaz" up</strong> → Levantar</li>
                     <li><strong>ip link set "interfaz" down</strong> → Parar</li>
@@ -206,7 +206,7 @@ chmod 2755 /var/log/journal</code></pre>
                 <img class="u-inline-525b23bb9f" src="/images/scp.png" alt="scp ejemplo" loading="lazy" width="1246" height="190">
                 <img class="u-inline-525b23bb9f" src="/images/scp-remoto.png" alt="scp-remoto ejemplo" loading="lazy" width="514" height="140">
                 <p> Por otro lado, tenemos <code>sftp</code> que tiene un menú interactivo donde podemos lanzar comandos. Para conectarnos usaremos <code>sftp user@IP</code>.</p>
-                <p> Si queremos lanzar comandos en local lanzariamos los comandos con una l delante, por ejemplo lcd, lpwd...</p>
+                <p> Si queremos lanzar comandos en local lanzaríamos los comandos con una l delante, por ejemplo lcd, lpwd...</p>
                 <p> Los más a tener en cuenta serían : <code>put</code>( Subir un archivo) y <code>get</code>( Descargarlo)</p>
                 
             </section>

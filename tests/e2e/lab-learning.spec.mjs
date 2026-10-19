@@ -14,6 +14,7 @@ for(const mode of ['linux','docker','kubernetes'])test(mode+' simulado · clase,
   await expect(page.locator('[data-practice-title]')).toHaveText('Redirecciones · I');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
   await command(page,'echo Hola > /root/salida.txt');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
   await command(page,'echo Distinto > /root/salida.txt');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
+  const filter=page.locator('#chal-select option[data-source-id="grep-i"]');await page.selectOption('#chal-select',await filter.getAttribute('value'));await page.click('#chal-solution');await expect(page.locator('#chal-solution-body')).not.toContainText('printf');await expect(page.locator('#chal-solution-body')).toContainText('# Solución 1\n\n');
   await page.selectOption('#chal-select-class','exam');await expect(page.locator('#chal-select option').first()).toHaveAttribute('data-source-id','repaso-usuarios');
   await expect(page.locator('#chal-body')).toContainText('Cuentas de un equipo');
  }

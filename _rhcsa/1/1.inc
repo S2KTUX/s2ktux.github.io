@@ -103,7 +103,7 @@
                 </ul>
                 <pre><code>tar -cvzf archivo.tar.gz /carpeta  # Comprimir
 tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
-                <p> Tambien podemos comprimir / descomprimir directamente con gzip o bzip2 : </p>
+                <p> También podemos comprimir / descomprimir directamente con gzip o bzip2 : </p>
                 <img class="u-inline-525b23bb9f" src="/images/tar-gz-bz2.png" alt="Ejemplo de tar / gzip / bzip2" width="649" height="583">
             </section>
 
@@ -118,7 +118,7 @@ tar -xvzf archivo.tar.gz           # Descomprimir</code></pre>
                     <li><code>/texto</code> : Buscar dentro del archivo.</li>
                     <li><code>u</code> : Deshacer</li>
                 </ul>
-                <p> Podemos mencionar tambien el comando sed que se utilizar para transformar texto en un fichero.</p>
+                <p> Podemos mencionar también el comando sed que se utiliza para transformar texto en un fichero.</p>
                 <img class="u-inline-525b23bb9f" src="/images/sed.png" alt="Uso de sed para transformaciones" width="482" height="185">
             </section>
 

@@ -67,7 +67,7 @@ const header = (active = 'Cursos') => `
 const footer = `
 <footer class="site-footer">
   <div class="site-footer-brand">S2KTUX</div>
-  <div class="site-footer-tagline">Domina Linux. Sin límites.</div>
+  <div class="site-footer-tagline">Aprender, practicar y compartir.</div>
   <div class="site-footer-links"><a href="/sobre.html">Sobre</a><a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a><a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a></div>
   <div class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
 </footer>`;

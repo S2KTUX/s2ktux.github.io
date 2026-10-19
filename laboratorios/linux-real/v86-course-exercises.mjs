@@ -29,7 +29,7 @@ export const courseExercises = [
   {
     id:'sim-03', title:'Simulacro 03 · Repositorios RPM', classes:[2],
     goal:'Crea curso-base en /etc/yum.repos.d/curso.repo, usando file:///srv/repos/lab-base. Déjalo habilitado con comprobación de firmas y la clave local del laboratorio.',
-    note:'No son BaseOS/AppStream de RHEL: DNF administra RPM reales de prácticas, no el sistema Debian. No se usan mirror.lab.local ni direcciones que no existan.',
+    note:'',
     explanation:'El repositorio y su clave ya están en el disco. Se practica la configuración real del repositorio y las firmas, sin necesitar Internet.',
     solution:"printf '[curso-base]\\nname=Curso RPM local\\nbaseurl=file:///srv/repos/lab-base\\nenabled=1\\ngpgcheck=1\\ngpgkey=file:///srv/repos/RPM-GPG-KEY-lab\\n' > /etc/yum.repos.d/curso.repo\nrpm --import /srv/repos/RPM-GPG-KEY-lab\ndnf --disablerepo='*' --enablerepo=curso-base repolist",
     checks:[['Repositorio y firma configurados',`python3 -c 'import configparser; c=configparser.ConfigParser(); c.read("/etc/yum.repos.d/curso.repo"); r=c["curso-base"]; assert r["baseurl"]=="file:///srv/repos/lab-base" and r.getboolean("enabled") and r.getboolean("gpgcheck") and r["gpgkey"]=="file:///srv/repos/RPM-GPG-KEY-lab"'`],['Paquetes y clave disponibles','test -s /srv/repos/lab-base/repodata/repomd.xml && test -s /srv/repos/RPM-GPG-KEY-lab && rpm -q gpg-pubkey >/dev/null']],

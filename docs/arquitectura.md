@@ -1,5 +1,7 @@
 # Arquitectura de S2KTUX
 
+Documento de mantenimiento. Las mejoras pendientes y el historial público se mantienen en `contenido/proyecto.json` y se muestran en Sobre.
+
 ## Terminal simulada
 
 La terminal se divide en dos límites de ejecución:

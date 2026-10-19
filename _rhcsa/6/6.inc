@@ -37,9 +37,12 @@
                     <li><strong>vfat</strong> → Compatible con otros sistemas operativos, común en USB.</li>
                 </ul>
                  <p>Para crear un sistema de archivos utilizamos <code>mkfs</code> según el tipo. En el ejemplo creamos dos particiones nuevas, una en ext4 y otra en xfs, y posteriormente las montamos.</p>
+                <p>Para XFS usamos <code>mkfs.xfs</code>. Este ejemplo formatea una partición de prácticas vacía; no lo ejecutes sobre un dispositivo con datos que quieras conservar.</p>
+                <pre><code>mkfs.xfs /dev/sdb2</code></pre>
                 <img class="u-inline-525b23bb9f" src="/images/mkfs.png" alt="mkfs ejemplos" width="811" height="653">
                 <img class="u-inline-525b23bb9f" src="/images/comproba-mkfs.png" alt="mkfs ejemplo comprobación" width="553" height="304">
                 <p>Una vez formateado y montado, podemos hacerlo permanente añadiéndolo a <code>/etc/fstab</code> y para desmontar usamos <code>umount</code>.</p>
+                <p>Para cambiar su etiqueta sin formatearlo, desmontamos XFS y usamos <code>xfs_admin -L DATOS /dev/sdb2</code>. <strong>XFS no se puede reducir.</strong> Puedes consultar los detalles en <a href="https://manpages.debian.org/bookworm/xfsprogs/xfs_admin.8.en.html" target="_blank" rel="noopener">el manual de xfs_admin</a>.</p>
             </section>
 
             <section id="obj2" class="lesson-section">

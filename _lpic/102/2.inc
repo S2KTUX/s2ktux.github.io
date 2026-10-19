@@ -1,6 +1,6 @@
 <div class="lesson-wrapper">
     <header class="lesson-header">
-        <span class="badge">LPIC-1 Examen 102</span>
+        <span class="badge">LPIC-1 · Tema 102</span>
         <h1>Instalación de Linux y gestión de paquetes</h1>
         <p>Domina el diseño de particiones, gestores de arranque, librerías compartidas y gestión de paquetes.</p>
         

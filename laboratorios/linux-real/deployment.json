@@ -3,25 +3,31 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715831168,
+  "verifiedPackageBytes": 715710917,
   "modifications": [
+    {
+      "path": "index.html",
+      "before": "4bfc8891ba06a56294a617a077e2f23efcc577b03a8e1c69189a19b26789aa2f",
+      "sha256": "7ac562cb61ab3ae0ab65c796fbb7da90ee9669c15009a5c05c720340085b4925",
+      "bytes": 5333
+    },
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "0a225bfddec5bb28d898d1eb448970f21b584691e8b6791a2766e98315a59908",
-      "bytes": 5228
+      "sha256": "c75cc0ff07a22e156bc281b26a19f061f64a7431aa270248cc3e1922ffb33293",
+      "bytes": 5226
     },
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "06b16de9072d6b59f0bb286ce35c73ec9a68ac6bfb5b96b36309669def4aaac7",
-      "bytes": 24411
+      "sha256": "816da26f2b05bfaeb4e756bd64d62fb4918cfa659bb5489705d4b2995dd7b809",
+      "bytes": 24758
     },
     {
       "path": "v86-exercise-panel.mjs",
       "before": "c55728a98f164a821d7d0791b96cdb16065202b2cd2f33f1ab60ab9b88858505",
-      "sha256": "49ce59827a06770b0e9340a3005da504350735f1d59405596afb7ed0fecebe02",
-      "bytes": 5178
+      "sha256": "52319809cd07369f9e863548327d46cabfe7d3c2dc71fa3c1db5ed4d95fcfef4",
+      "bytes": 5363
     },
     {
       "path": "v86-check-runner.mjs",
@@ -38,8 +44,8 @@
     {
       "path": "v86-course-exercises.mjs",
       "before": "6f026061b53c2b8712734e285ba760f465a49398f5def615a6113d886de7f03e",
-      "sha256": "649d0a62f3a7c497535cf43d41ee67228082a7acf652bd2b4c5a5a785f9188de",
-      "bytes": 23745
+      "sha256": "1887079a88ee0fbfc85e0aa426c593c8f6212f55790e53d3e10c3cb5d72d2699",
+      "bytes": 23591
     },
     {
       "path": "v86-extra-exercises.mjs",
@@ -48,22 +54,22 @@
       "bytes": 18076
     },
     {
-      "path": "GUIA_CURSO_LABORATORIO.md",
-      "before": "4eabd8bd48db0231c399434c0d2867138f29ba5bb4122432753fb65fed828277",
-      "sha256": "1fd0a97dbb50f98345666676a2e69c3217de4241396822e8f431923fd6340654",
-      "bytes": 9128
-    },
-    {
       "path": "GUIA_CURSO_LABORATORIO.html",
       "before": "103540cac5639e0fd9c0bceacf56b9fa17184089ac43a203c69d54e079cdc701",
-      "sha256": "34564900916f32eca5c7fe21adeb8670d72aaedd54ca1bf2b5dd2c53a2f27330",
-      "bytes": 10716
+      "sha256": "1e3d922e6fdce5de792ae7596aa9c68b1b926eac7f7a89905f75a8064b6e4417",
+      "bytes": 474
+    },
+    {
+      "path": "CHULETA_LINUX_REAL.html",
+      "before": "e420c213305adb38625b40741b32a416147c13ebdc5fd80928359906a3c24485",
+      "sha256": "dea1be3f793ac6effab5945e1b6a0d9e58e37da9ea9faf4047c206d769389996",
+      "bytes": 532
     },
     {
       "path": "PRACTICAS_V86.html",
       "before": "4b95b1ae772ebdada11e03a9f384846910ba5a92cfcb8ca6859205d767ffef48",
-      "sha256": "8521f2dda6b37918462d459364503da69772e034f7ae1e734a042dda8a91e0f3",
-      "bytes": 9184
+      "sha256": "5e9d9ef162b398b6f4b2674e55dec47d6bcc410d46332f2f968635c8a19b86db",
+      "bytes": 512
     },
     {
       "path": "licencias/LEEME.html",
@@ -91,18 +97,18 @@
     },
     {
       "path": "v86-guest-console.mjs",
-      "sha256": "cb0619e59d7f0f82dac78ca76ddfa219f83d6221d15ac2d1b42cfd5abd15b805",
-      "bytes": 3150
+      "sha256": "598a80cf89e0b3c41042276ef84fae72f1ef74d3f94999a797188e62d581d50a",
+      "bytes": 3940
     },
     {
       "path": "examen.html",
-      "sha256": "a513d2f79f2d8172e3b4826f731536984c28516820e2055c13d0ce4f7792f5cf",
+      "sha256": "f6923a5ab50811829197355c81cd5dd13b4044dd5fc4f185b51763b9be49ccad",
       "bytes": 4009
     },
     {
       "path": "v86-exam.mjs",
-      "sha256": "9da71798285e6648eb9bba4b77882a8cfe10e936ab7372ee1851e271caa2cc07",
-      "bytes": 10006
+      "sha256": "b174250d8e98e8a1034689cb2cfb0b25b4ee6411020a3a064057b3220db01422",
+      "bytes": 10273
     },
     {
       "path": "v86-exam-data.mjs",
@@ -138,6 +144,64 @@
       "path": "v86-restart.mjs",
       "sha256": "3ab323a9ff92507590c25e3ac67a77deb153e7b5027258c5bc8bc3f8bdf68397",
       "bytes": 345
+    }
+  ],
+  "removedDocumentation": [
+    {
+      "path": "PRACTICAS_V86.md",
+      "before": "81ad3fcc6acfa1a4a871c0731393e020166315da230f8a1b1c5d194a0c132b62",
+      "reason": "Documento de prototipo obsoleto; prácticas, referencia y licencias accesibles desde las páginas actuales."
+    },
+    {
+      "path": "CHULETA_LINUX_REAL.md",
+      "before": "3ca9fea07d1231f1917fb8fac9d1afb17839e8c2d408487c822163addadb806a",
+      "reason": "Documento de prototipo obsoleto; prácticas, referencia y licencias accesibles desde las páginas actuales."
+    },
+    {
+      "path": "GUIA_CURSO_LABORATORIO.md",
+      "before": "4eabd8bd48db0231c399434c0d2867138f29ba5bb4122432753fb65fed828277",
+      "reason": "Documento de prototipo obsoleto; prácticas, referencia y licencias accesibles desde las páginas actuales."
+    },
+    {
+      "path": "ENTREGA_LINUX_REAL.md",
+      "before": "ec0ff2fec89607a31b6e62586e4e628dc6b226303d3e0e602e5dfb8e7d98e228",
+      "reason": "Documento de prototipo obsoleto; prácticas, referencia y licencias accesibles desde las páginas actuales."
+    },
+    {
+      "path": "ESTADO_VALIDACION.md",
+      "before": "1046da3c70edfaf57a293aa3f06f15ac6f247f2ebeec282bd8922e2431504e6c",
+      "reason": "Documento de prototipo obsoleto; prácticas, referencia y licencias accesibles desde las páginas actuales."
+    },
+    {
+      "path": "COMO_SE_PUBLICA.md",
+      "before": "76d02ba9a69c54bbf57b40757bcd37ca4168da67ebf161d0e8d300ab9422bc03",
+      "reason": "Documento de prototipo obsoleto; prácticas, referencia y licencias accesibles desde las páginas actuales."
+    }
+  ],
+  "inheritedAdjustments": [
+    {
+      "path": "licencias/softfloat-con-avisos.c",
+      "before": "c03900abf111b5900303162bf06717c6bb5e4154f42b4980954674b273257367",
+      "sha256": "2d7fed55bea49ff38635f93770e99345ef7f86721b9fa5b9eeec2d829fe5d12b",
+      "bytes": 1294114
+    },
+    {
+      "path": "vendor/xterm.mjs",
+      "before": "9ca8219c3d2ab00520bd742d43bc98e8bf0c9ee4d5c6838022d81e967e34473c",
+      "sha256": "b336ec65a086c056d4804b3d4c2347da5663d3f23c3f25be866467bd8857ad59",
+      "bytes": 344970
+    },
+    {
+      "path": "vendor/xterm.css",
+      "before": "df5c6a47028d56c50f5eb8e3c099a04afd76ad0a20554bac93f8eec55b61ca10",
+      "sha256": "854a7c0fb70e8b1a083c16797ab827299fb18744f5ad34f227b48337e33293c6",
+      "bytes": 7112
+    },
+    {
+      "path": "vendor/LICENSE-xterm.txt",
+      "before": "883674266227c392ea9abeaa8f69148fa7516d106caf1e34bfc2bcd5cb1e803b",
+      "sha256": "b569f629d00f2626a8100df2a1798210535621e42164dfd426a6fe5aac7b0ccd",
+      "bytes": 1261
     }
   ],
   "note": "Los informes históricos describen la validación anterior. 44 prácticas y examen independiente: dos VM nuevas, inicio explícito de la segunda, 22 tareas, 3 horas y rúbrica educativa de 300 puntos (aprobado desde 210). Una pregunta cada vez, sin pistas ni puntuación durante el intento. Puede finalizarse vacío o parcial; una segunda TTY consulta resultados reales sin interrumpir el editor del alumno. Avisos discretos con asterisco. Práctica nueva sin IP inicial: Internet IPv4 mediante relay.widgetry.org autorizado, con NAT y filtrado de respuestas a tráfico TCP/UDP/ICMP iniciado por la VM; DNS y ping reales. Sin selector externo ni respuestas de ping/NTP fabricadas. Examen en red privada, sin puente externo. Los guardados conservan su configuración. La fábrica y el motor no cambian.",
