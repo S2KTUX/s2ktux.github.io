@@ -1,23 +1,20 @@
 import {test,expect} from '@playwright/test';
-import {commonPractices} from '../../practice-common.mjs';
-
-for(const mode of ['linux','docker']){
- test('Enunciados comunes · '+mode+' muestra el mismo texto en ambos laboratorios',async({page,context})=>{
-  const errors=[];page.on('pageerror',error=>errors.push(error.message));
-  const simulated=await context.newPage();simulated.on('pageerror',error=>errors.push(error.message));
-  await simulated.goto('/terminal.html?mode='+mode+'&enter=1');
-  await simulated.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
-  await simulated.locator('#practice-panel>summary').click();
-  await page.goto(mode==='linux'?'/laboratorios/linux-real/v86-test.html':'/laboratorios/docker-real/');
-  for(const item of commonPractices[mode]){
-   await simulated.selectOption('#chal-select',String(item.index));
-   await page.selectOption(mode==='linux'?'#exercise-select':'#exercise',item.id);
-   await expect(simulated.locator('[data-practice-title]')).toHaveText(item.title);
-   await expect(simulated.locator('[data-practice-goal]')).toHaveText(item.goal);
-   await expect(page.locator(mode==='linux'?'[data-exercise-title]':'#exercise-title')).toHaveText(item.title);
-   await expect(page.locator(mode==='linux'?'[data-exercise-goal]':'#exercise-goal')).toHaveText(item.goal);
-  }
-  expect(await page.evaluate(()=>typeof globalThis.vm)).toBe('undefined');
-  expect(errors).toEqual([]);await simulated.close();
- });
-}
+import {exercises as linux} from '../../laboratorios/linux-real/v86-exercises.mjs';
+import {exercises as docker} from '../../laboratorios/docker-real/docker-exercises.mjs';
+import {practiceClasses} from '../../laboratorios/lab-groups.mjs';
+for(const [mode,bank,ids]of [
+ ['linux',linux,['inicio-archivos','inicio-permisos','inicio-hostname','inicio-usuario','inicio-umask']],
+ ['docker',docker,['primer','web','volumen','bind','limites']],
+])test('Prácticas actuales compartidas · '+mode,async({page,context})=>{
+ const errors=[];page.on('pageerror',e=>errors.push(e.message));const simulated=await context.newPage();simulated.on('pageerror',e=>errors.push(e.message));
+ await simulated.goto('/terminal.html?mode='+mode+'&enter=1');await simulated.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
+ await page.goto('/laboratorios/'+mode+'-real/');const nativeSelect=mode==='linux'?'#exercise-select':'#exercise';
+ for(const id of ids){
+  const task=bank.find(task=>task.id===id&&!task.legacyOnly),number=String(practiceClasses(mode,task)[0]);
+  await page.selectOption(nativeSelect+'-class',number);await page.selectOption(nativeSelect,id);
+  await simulated.selectOption('#chal-select-class',number);const option=simulated.locator('#chal-select option[data-source-id="'+id+'"]').first();await expect(option).toHaveCount(1);
+  await simulated.selectOption('#chal-select',await option.getAttribute('value'));await expect(simulated.locator('[data-practice-title]')).toHaveText(task.title);
+  await expect(simulated.locator('[data-practice-goal]')).toHaveText(task.goal);await expect(page.locator(mode==='linux'?'[data-exercise-goal]':'#exercise-goal')).toHaveText(task.goal);
+ }
+ expect(await page.evaluate(()=>!!globalThis.vm||!!globalThis.dockerVM)).toBe(false);expect(errors).toEqual([]);await simulated.close();
+});

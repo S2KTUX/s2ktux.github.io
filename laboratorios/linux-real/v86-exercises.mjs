@@ -3,6 +3,7 @@
 import { courseExercises } from './v86-course-exercises.mjs?v=20261018-aprender';
 import { extraExercises } from './v86-extra-exercises.mjs?v=20261018-aprender';
 import {nativeLearningLinux} from '../learning-linux.mjs';
+import {buildRhcsaBank} from '../rhcsa-objectives.mjs';
 export const introExercises = [
   {
     id: 'archivo', title: 'Archivo y permisos',
@@ -99,12 +100,12 @@ export const introExercises = [
   },
 ];
 
-export const exercises = [
+export const exercises = buildRhcsaBank([
   ...nativeLearningLinux,
   ...introExercises.map(e => ({...e, group:'Prácticas iniciales'})),
   ...courseExercises.map(e => ({...e, title:e.title.replace('Simulacro','Práctica'), group:'Prácticas RHCSA'})),
   ...extraExercises.map(e => ({...e, group:'Prácticas del curso'})),
-];
+]);
 
 export const shellQuote = value => "'" + String(value).replaceAll("'", "'\\''") + "'";
 

@@ -1,7 +1,7 @@
-import { exercises } from './v86-exercises.mjs?v=20261018-aprender';
-import {renderSolutions} from '../lab-solutions.mjs?v=20261018-aprender';
-import {solutionsFor} from '../solution-options.mjs?v=20261018';
-import {mountGroups} from '../lab-groups.mjs';
+import { exercises } from './v86-exercises.mjs?v=20261019-objetivos';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261019-objetivos';
+import {solutionsFor} from '../solution-options.mjs?v=20261019-objetivos';
+import {mountGroups} from '../lab-groups.mjs?v=20261019-objetivos';
 
 export function mountExercisePanel(root, runCheck) {
   const select = root.querySelector('select');
@@ -13,6 +13,7 @@ export function mountExercisePanel(root, runCheck) {
   const solution = root.querySelector('[data-exercise-solution-body]');
   const feedback = root.querySelector('[data-exercise-feedback]');
   const card = root.querySelector('[data-exercise-card]');
+  const prepare=document.createElement('button'),setup=document.createElement('div');prepare.type='button';prepare.textContent='Preparar ejercicio';setup.className='controls';setup.hidden=true;setup.append(prepare);check.parentElement.before(setup);
   let enabled = false, checking = false, generation = 0;
   const available = () => exercises;
   const populate = () => {
@@ -34,6 +35,7 @@ export function mountExercisePanel(root, runCheck) {
     select.disabled = checking;
     const classSelect=document.getElementById(select.id+'-class');if(classSelect)classSelect.disabled=checking;
     toggle.disabled = checking;
+    setup.hidden=!selected()?.prepare;prepare.disabled=!enabled||checking;
     card.hidden = !selected();
   };
   const render = () => {
@@ -48,6 +50,13 @@ export function mountExercisePanel(root, runCheck) {
     feedback.dataset.result = 'pending'; sync();
   };
   select.addEventListener('change', render);
+  prepare.addEventListener('click',async()=>{
+    const exercise=selected();if(!enabled||checking||!exercise?.prepare)return;
+    checking=true;sync();feedback.textContent='Preparando los datos del ejercicio…';
+    try{const result=await runCheck({id:exercise.id+'-preparar',checks:[['Preparación del ejercicio','set -eu; '+exercise.prepare,60]]});feedback.textContent=result.ok?'Ejercicio preparado. Ya puedes resolverlo.':'No se pudo completar la preparación.';}
+    catch(error){feedback.textContent='No se pudo preparar: '+error.message;}
+    finally{checking=false;sync();}
+  });
   toggle.addEventListener('click', () => {
     if (checking) return;
     solution.hidden = !solution.hidden;

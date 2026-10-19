@@ -14,14 +14,14 @@ for(const [mode,runtime,real] of [['linux',linux,realLinux],['docker',docker,rea
   assert.ok(!indexes.has(definition.index));indexes.add(definition.index);
   const native=real.find(item=>item.id===definition.id),virtual=simulated[definition.index];
   assert.ok(native&&virtual);
-  assert.equal(native.title,virtual.title);
+  assert.ok(native.title&&virtual.title); // Los títulos identifican ahora el objetivo y la pareja I/II.
   assert.equal(native.goal,virtual.goal);
   assert.equal(native.commonId,virtual.commonId);
   assert.equal(typeof virtual.check,'function');
   assert.ok(Array.isArray(native.checks));
  }
  assert.equal(simulated.length,mode==='linux'?21:15);
- assert.equal(real.length,mode==='linux'?55:32);
+ assert.equal(real.length,mode==='linux'?155:56);
 }
 assert.equal(commonPractices.linux.length,10);
 assert.equal(commonPractices.docker.length,11);
@@ -34,4 +34,4 @@ const copy=commonPractice('linux',original);
 assert.equal(original.title,'Anterior');assert.equal(copy.check,checker);assert.equal(copy.checks,checks);assert.equal(copy.solution,'original');assert.equal(copy.note,'original');
 for(const id of ['sim-02','sim-03','sim-07','sim-10','sim-11','sim-15','sim-16','sim-17','sim-18','sim-20','sim-21'])assert.equal(realLinux.find(item=>item.id===id).commonId,undefined,'Conservar variante específica '+id);
 for(const id of ['alpine','build','compose','multistage','entorno','salud'])assert.equal(realDocker.find(item=>item.id===id).commonId,undefined,'Conservar variante específica '+id);
-console.log('Enunciados comunes: 10 Linux y 11 Docker; catálogos reales de 55/32 prácticas, introducciones por clase y examen RHCSA de 22 tareas separado.');
+console.log('Enunciados comunes conservados; preguntas por objetivo y simulacro RHCSA de 22 tareas separado.');

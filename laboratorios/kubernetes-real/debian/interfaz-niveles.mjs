@@ -1,16 +1,16 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase} from './ejercicios-niveles.mjs?v=20261018-aprender';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=20261019-objetivos';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs';
 import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs';
-import {renderSolutions} from '../../lab-solutions.mjs?v=20261018-aprender';
-import {solutionsFor} from '../../solution-options.mjs?v=20261018';
+import {renderSolutions} from '../../lab-solutions.mjs?v=20261019-objetivos';
+import {solutionsFor} from '../../solution-options.mjs?v=20261019-objetivos';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
  const currentURL=new URL(location.href),prepared=new Set();
  let activeClass=claseDesdeURL(currentURL.searchParams,level),preview=level,previewClass=activeClass;
- let switching=false,checking=false,entered=false,wasInitialized=false,learningMode=null,freeMode=false;
+ let switching=false,checking=false,entered=false,wasInitialized=false,learningMode=null,freeMode=false,examPractice=false;
  globalThis.kubeDebianLearningMode=null;
  const remembered=new Map([[level,activeClass]]);
  document.title='Kubernetes · '+config.title+' | S2KTUX';
@@ -23,8 +23,9 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number);option.textContent=lesson.id+' — '+lesson.title+(option.disabled?' · Próximamente':'');return option;
  }));
  const free=document.createElement('option');free.value='free';free.textContent='Práctica libre';$('exercise-class-select').prepend(free);
+ const examPracticeOption=document.createElement('option');examPracticeOption.value='exam';examPracticeOption.textContent='EXAMEN';$('exercise-class-select').append(examPracticeOption);
  $('exercises').hidden=false;
- function tasks(){return claseDisponible(activeClass)?ejerciciosClase(activeClass):[];}
+ function tasks(){return examPractice?ejerciciosExamen(level):claseDisponible(activeClass)?ejerciciosClase(activeClass):[];}
  function task(){return freeMode?null:tasks()[Number($('exercise-select').value)];}
  function buildIndex(){
   const summaries={inicial:'Pods, réplicas y servicios.',intermedio:'Configuración, almacenamiento y redes.',avanzado:'Instalación, mantenimiento y diagnóstico.'};
@@ -57,7 +58,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  }
  function populateTasks(){
   freeMode=false;
-  $('exercise-class-select').value=String(activeClass);
+  $('exercise-class-select').value=examPractice?'exam':String(activeClass);
   $('exercise-select').replaceChildren(...tasks().map((item,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent=item.title;return option;}));
   render();
  }
@@ -67,6 +68,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   $('class-empty').textContent=freeMode?'Práctica libre: utiliza la terminal sin un ejercicio seleccionado.':'Próximamente. Esta clase todavía no está disponible en el laboratorio.';
   $('exercise-title').hidden=$('exercise-prompt').hidden=$('exercise-solution-toggle').hidden=!current;
   $('exercise-select').hidden=$('exercise-count').hidden=!current;
+  $('exercise-select').closest('.exercise-field').hidden=!current;
   $('exercise-title').textContent=current?.title||'';$('exercise-prompt').textContent=current?.prompt||'';
   renderSolutions($('exercise-solution'),current?solutionsFor('kubernetes',current):[]);
   $('exercise-count').textContent=current?'Práctica '+(Number($('exercise-select').value)+1)+' / '+items.length:'';
@@ -117,9 +119,10 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  $('change-lab').onclick=()=>{showEntry();$('stage-'+level).focus();};
  $('return-lab').onclick=()=>{showWorkspace();$('change-lab').focus();};
  $('exercise-class-select').onchange=event=>{
-  if(event.target.value==='free'){freeMode=true;render();return;}
+  if(event.target.value==='free'){freeMode=true;examPractice=false;render();return;}
+  if(event.target.value==='exam'){examPractice=true;populateTasks();return;}
   const value=Number(event.target.value);if(!claseDisponible(value)||switching||checking||!clasesNivel(level).some(lesson=>lesson.number===value))return;
-  freeMode=false;
+  freeMode=false;examPractice=false;
   activeClass=value;remembered.set(level,value);const href=new URL(location.href);href.searchParams.set('clase',String(value));history.replaceState(history.state,'',href.href);populateTasks();
  };
  $('exercise-select').onchange=render;

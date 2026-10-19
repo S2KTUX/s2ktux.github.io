@@ -4,6 +4,7 @@ import {
   parseRedirections,
 } from "./terminal-shell-parser.js";
 import { validateCommandInvocation } from "./terminal-command-schema.js?v=20260825-phase1-main";
+import { retainPodFiles } from "./terminal-kubernetes-state.js";
 import {
   canTraverseVirtualPath,
   createDirectory,
@@ -1035,7 +1036,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
               "apiVersion: storage.k8s.io/v1\nkind: StorageClass\nmetadata:\n  name: cka-local\nprovisioner: kubernetes.io/no-provisioner\n---\napiVersion: v1\nkind: PersistentVolumeClaim\nmetadata:\n  name: datos-app\nspec:\n  storageClassName: cka-local\n  accessModes: [ReadWriteOnce]\n  resources:\n    requests:\n      storage: 1Gi",
             ),
             "network.yaml": file(
-              "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: app-ingress\nspec:\n  rules:\n  - host: app.lab.local\n---\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: solo-lab\nspec:\n  podSelector: {}\n  policyTypes: [Ingress]",
+              "apiVersion: networking.k8s.io/v1\nkind: Ingress\nmetadata:\n  name: app-ingress\nspec:\n  rules:\n  - host: app.lab.local\n    http:\n      paths:\n      - path: /\n        pathType: Prefix\n        backend:\n          service:\n            name: frontend\n            port:\n              number: 80\n---\napiVersion: networking.k8s.io/v1\nkind: NetworkPolicy\nmetadata:\n  name: solo-lab\nspec:\n  podSelector: {}\n  policyTypes: [Ingress]",
             ),
           },
           { owner: "root", group: "root" },
@@ -7907,6 +7908,11 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     setPrompt();
   };
   const containerDispatch = (cmd, name, args) => {
+    if (["sh", "bash", "/bin/sh", "/bin/bash"].includes(name) && args[0] === "-c") {
+      const source = args[1] || "", words = tokenize(source);
+      if (!words.length) return;
+      return containerDispatch(source, words[0], words.slice(1));
+    }
     const c = containerShell;
     const abs = (p) => {
       p = String(p || "");
@@ -8622,6 +8628,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
   exposeRuntimeState("linger", () => linger);
   exposeRuntimeState("userUnits", () => userUnits);
   exposeRuntimeState("tunedProfile", () => tunedProfile);
+  exposeRuntimeState("systemSettings", () => systemSettings);
   const kubernetesContainerExec = (pod, inside) => {
     if (!pod.fs) pod.fs = containerBaseFs(pod.name);
     const old = containerShell;
@@ -8899,7 +8906,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     );
   const acceptKubernetesState = (state, reason) => {
     if (!state) return;
-    k8s = state;
+    k8s = retainPodFiles(k8s, state);
     save();
     publishKubernetesState(reason);
   };
@@ -8968,7 +8975,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       })
       .catch(() => {});
   const applyKubernetesWorkerResult = async (result, reason = "command") => {
-    if (result.state) k8s = result.state;
+    if (result.state) k8s = retainPodFiles(k8s, result.state);
     if (result.fs) fs = result.fs;
     for (const item of result.outputs || []) {
       if (item.fd === 2) err(item.text, result.status || 1);
@@ -8983,7 +8990,11 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         enterContainerShell(effect.name, effect.image, effect.kind);
       else if (effect.type === "container-command") {
         const pod = k8s.pods.find((item) => item.name === effect.pod);
-        if (pod) kubernetesContainerExec(pod, effect.args || []);
+        if (pod) {
+          lastStatus = 0;
+          kubernetesContainerExec(pod, effect.args || []);
+          if (lastStatus) result.status = lastStatus;
+        }
       } else if (effect.type === "dispatch") await dispatch(effect.command);
     }
     lastStatus = Number.isInteger(result.status) ? result.status : 0;
@@ -8998,6 +9009,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         name,
         args,
         cmd,
+        podFiles: k8s.pods.filter(pod => pod.fs).map(({name,namespace,createdAt,fs,dirs}) => ({name,namespace,createdAt,fs,dirs})),
         fs,
         cwd,
         currentUser,
@@ -18743,321 +18755,14 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
     }
   });
   body.addEventListener("click", () => input.focus());
-  const applySolved = () => {
+  const applySolved = async () => {
+    if(!globalThis.__S2KTUX_TEST_FIXTURES__)return;
     resetState();
-    const e0 = net.eth0;
-    e0.up = true;
-    e0.method = "manual";
-    e0.ip = "192.168.1.20";
-    e0.prefix = 24;
-    e0.gw = "192.168.1.1";
-    e0.dns = "192.168.1.254";
-    const setF = (segs, content, opts) => {
-      const par = getNode(segs.slice(0, -1));
-      if (par && par.type === "dir")
-        par.children[segs[segs.length - 1]] = file(
-          content,
-          opts || { owner: "root", group: "root" },
-        );
-    };
-    const hn = getNode(["etc", "hostname"]);
-    if (hn) hn.content = "nodo1.lab.local";
-    // repos
-    const rd = getNode(["etc", "yum.repos.d"]);
-    if (rd)
-      rd.children["lab.repo"] = file(
-        "[baseos]\nname=Rocky 9 BaseOS\nbaseurl=http://mirror.lab.local/rocky9/x86_64/BaseOS\nenabled=1\ngpgcheck=0\n\n[appstream]\nname=Rocky 9 AppStream\nbaseurl=http://mirror.lab.local/rocky9/x86_64/AppStream\nenabled=1\ngpgcheck=0",
-        { owner: "root" },
-      );
-    // usuarios y grupos
-    groupsDb.add("olimpo");
-    groupsDb.add("datavg");
-    users.zeus = {
-      uid: 1101,
-      gid: 1101,
-      home: "/home/zeus",
-      groups: ["zeus", "olimpo"],
-      shell: "/bin/bash",
-      password: "cambiame1",
-    };
-    users.hera = {
-      uid: 1102,
-      gid: 1102,
-      home: "/home/hera",
-      groups: ["hera", "olimpo"],
-      shell: "/bin/bash",
-      password: "cambiame1",
-    };
-    users.ares = {
-      uid: 1103,
-      gid: 1103,
-      home: "/home/ares",
-      groups: ["ares"],
-      shell: "/sbin/nologin",
-      password: "cambiame1",
-    };
-    users.apolo = {
-      uid: 4120,
-      gid: 4120,
-      home: "/home/apolo",
-      groups: ["apolo"],
-      shell: "/bin/bash",
-      password: "orquidea3",
-    };
-    users.hermes = {
-      uid: 1104,
-      gid: 1104,
-      home: "/home/hermes",
-      groups: ["hermes"],
-      shell: "/bin/bash",
-      password: "cambiame1",
-    };
-    ["zeus", "hera", "apolo", "hermes"].forEach((u) => {
-      mkdirp("/home/" + u);
-      const h = getNode(["home", u]);
-      if (h) {
-        h.owner = u;
-        h.group = u;
-      }
-    });
-    rebuildPasswd && rebuildPasswd();
-    // directorio colaborativo SGID
-    mkdirp("/datos/olimpo");
-    const di = getNode(["datos", "olimpo"]);
-    if (di) {
-      di.group = "olimpo";
-      di.mode = "rwxrws---";
-    }
-    // cron hera
-    mkdirp("/var/spool/cron");
-    const cr = getNode(["var", "spool", "cron"]);
-    if (cr)
-      cr.children["hera"] = file('* * * * * logger "Backup diario"', {
-        owner: "hera",
-        group: "hera",
-      });
-    // tar bzip2
-    setF(["root", "varlog-backup.tar.bz2"], "TARJSON:bzip2:" + JSON.stringify([{path:"var/log",node:getNode(["var","log"])}]));
-    // permisos /var/tmp/hosts
-    mkdirp("/var/tmp");
-    const hostsC = (getNode(["etc", "hosts"]) || { content: "" }).content;
-    const vt = getNode(["var", "tmp"]);
-    if (vt) {
-      vt.children["hosts"] = file(hostsC, { owner: "root", group: "root" });
-      vt.children["hosts"].mode = "rw-rw-r--";
-      vt.children["hosts"].acl = [
-        { type: "user", name: "zeus", perms: "rw-" },
-        { type: "user", name: "ares", perms: "---" },
-      ];
-    }
-    // chrony
-    const ch = getNode(["etc", "chrony.conf"]);
-    if (ch) ch.content += "\nserver ntp.lab.local iburst";
-    services.chronyd = { enabled: true, active: true };
-    // find hera
-    mkdirp("/root/herafiles");
-    const ownedByHera=[];
-    const collectHera=(node,path=[])=>{
-      if(!node||path.join('/').startsWith('root/herafiles'))return;
-      if(node.owner==='hera')ownedByHera.push([path,node]);
-      if(node.type==='dir')for(const [name,child] of Object.entries(node.children))collectHera(child,path.concat(name));
-    };
-    collectHera(getNode([]));
-    for(const [path,node] of ownedByHera){
-      const destination=['root','herafiles',...path];mkdirp('/'+destination.slice(0,-1).join('/'));
-      getNode(destination.slice(0,-1)).children[destination.at(-1)]=JSON.parse(JSON.stringify(node));
-    }
-    // grep coincidencias
-    setF(["root", "coincidencias"], (getNode(['usr','share','dict','words'])?.content||'').split('\n').filter(line=>line.includes('rich')).join('\n'));
-    // sudoers zeus
-    const sdd = getNode(["etc", "sudoers.d"]);
-    if (sdd)
-      sdd.children["zeus"] = file("zeus ALL=(ALL) NOPASSWD: ALL", {
-        owner: "root",
-      });
-    // LVM appvol
-    lvm.vgs.push({
-      name: "datavg",
-      pvs: ["/dev/sdb1"],
-      vsize: 9.5,
-      vfree: 9.0,
-    });
-    lvm.pvs.push({ name: "/dev/sdb1", vg: "datavg", psize: 9.5 });
-    const sdb = disks.find((d) => d.name === "sdb");
-    if (sdb && !sdb.parts.length) {
-      sdb.parts.push({
-        name: "sdb1",
-        size: "9G",
-        fstype: "LVM2_member",
-        uuid: "lvm0-sdb1",
-        mount: "",
-      });
-      sdb.labeled = true;
-    }
-    lvm.lvs.push({
-      name: "appvol",
-      vg: "datavg",
-      size: 60 * (4 / 1024),
-      extents: 60,
-      extentSizeM: 4,
-      fstype: "ext4",
-      mount: "/mnt/appvol",
-      uuid: "app0-vol",
-    });
-    mkdirp("/mnt/appvol");
-    // LV reducido ~250MB
-    lvm.lvs.push({
-      name: "redu",
-      vg: "datavg",
-      size: 0.244,
-      fstype: "ext4",
-      mount: "/mnt/redu",
-      reduced: true,
-      uuid: "red0-vol",
-    });
-    mkdirp("/mnt/redu");
-    // swap 512M en sdb + fstab
-    if (sdb)
-      sdb.parts.push({
-        name: "sdb2",
-        size: "512M",
-        fstype: "swap",
-        uuid: "swap-0512",
-        mount: "[SWAP]",
-      });
-    const fs = getNode(["etc", "fstab"]);
-    if (fs)
-      fs.content +=
-        "\n/dev/mapper/datavg-appvol  /mnt/appvol  ext4  defaults  0 0\n/dev/sdb2  none  swap  defaults  0 0";
-    // tuned
-    tunedProfile = linuxWorkerEnabled ? "virtual-host" : "virtual-guest";
-    // script saludo
-    mkdirp("/usr/local/bin");
-    const ulb = getNode(["usr", "local", "bin"]);
-    if (ulb) {
-      ulb.children["saludo"] = file('#!/bin/bash\necho "Hola equipo olimpo"', {
-        owner: "root",
-      });
-      ulb.children["saludo"].mode = "rwxr-xr-x";
-    }
-    // httpd /sitio/web + puerto 8090
-    mkdirp("/sitio/web");
-    setF(["sitio", "web", "index.html"], "<h1>Sitio del laboratorio</h1>");
-    getNode(['sitio','web']).context='httpd_sys_content_t';
-    getNode(['sitio','web','index.html']).context='httpd_sys_content_t';
-    const conf = getNode(["etc", "httpd", "conf", "httpd.conf"]);
-    if (conf)
-      conf.content = conf.content.replace(
-        /DocumentRoot\s+"[^"]*"/,
-        'DocumentRoot "/sitio/web"',
-      );
-    const cdp = getNode(["etc", "httpd", "conf.d"]);
-    if (cdp) cdp.children["port.conf"] = file("Listen 8090", { owner: "root" });
-    selinux.httpPorts = (selinux.httpPorts || [80, 443, 8080]).concat(8090);
-    fw.services.add("http");
-    services.httpd = { enabled: true, active: true, port: 8090 };
-    // podman rootless hermes
-    if(!images.some(image=>image.repo==='httpd'&&image.tag==='latest'))images.push({repo:'httpd',tag:'latest',id:'solved-httpd',size:'148MB'});
-    containers.push({id:'solved-webapp',name:'webapp',image:'httpd:latest',owner:'hermes',engine:'podman',running:true,mounts:[{type:'bind',source:'/opt/entrada',target:'/data/in'},{type:'bind',source:'/opt/salida',target:'/data/out'}],ports:'',networks:{}});
-    linger["hermes"] = true;
-    userUnits["hermes"] = {
-      "container-webapp": { enabled: true, active: true },
-    };
-    mkdirp("/home/hermes/.config/systemd/user");
-    const usd = getNode(["home", "hermes", ".config", "systemd", "user"]);
-    if (usd)
-      usd.children["container-webapp.service"] = file(
-        "[Unit]\nDescription=Podman container-webapp\n[Service]\nExecStart=/usr/bin/podman start webapp\n[Install]\nWantedBy=default.target",
-        { owner: "hermes", group: "hermes" },
-      );
-    // P1
-    rootRecovered = true;
-    users.root.password = "titanio7";
-    // historial de comandos (para investigar cómo se resolvió)
-    history = [
-      "nmcli con mod eth0 ipv4.method manual ipv4.addresses 192.168.1.20/24 ipv4.gateway 192.168.1.1 ipv4.dns 192.168.1.254",
-      "nmcli con up eth0",
-      "hostnamectl set-hostname nodo1.lab.local",
-      "groupadd olimpo",
-      "useradd -G olimpo zeus",
-      "useradd -G olimpo hera",
-      "useradd -s /sbin/nologin ares",
-      "useradd -u 4120 apolo",
-      "mkdir -p /datos/olimpo",
-      "chgrp olimpo /datos/olimpo",
-      "chmod 2770 /datos/olimpo",
-      "crontab -e -u hera",
-      "tar -cjf /root/varlog-backup.tar.bz2 /var/log",
-      "cp /etc/hosts /var/tmp/hosts",
-      "chmod 640 /var/tmp/hosts",
-      "setfacl -m u:zeus:rw /var/tmp/hosts",
-      "setfacl -m u:ares:0 /var/tmp/hosts",
-      "systemctl enable --now chronyd",
-      "find / -user hera -exec cp -r {} /root/herafiles \\;",
-      "grep rich /usr/share/dict/words > /root/coincidencias",
-      'echo "zeus ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/zeus',
-      "vgcreate datavg /dev/sdb1",
-      "lvcreate -n appvol -l 60 datavg",
-      "mkfs.ext4 /dev/datavg/appvol",
-      "mount /dev/datavg/appvol /mnt/appvol",
-      "mkswap /dev/sdb2",
-      "swapon /dev/sdb2",
-      "tuned-adm profile throughput-performance",
-      "vi /usr/local/bin/saludo",
-      "chmod 755 /usr/local/bin/saludo",
-      "semanage port -a -t http_port_t -p tcp 8090",
-      "firewall-cmd --add-service=http --permanent",
-      "systemctl enable --now httpd",
-      "loginctl enable-linger hermes",
-    ];
-    hIdx = history.length;
-    currentUser = "root";
-    cwd = ["root"];
-    loggedIn = true;
-    recovery = null;
-    try {
-      const done = {};
-      for (let i = 0; i < 21; i++) done[i] = true;
-      localStorage.setItem("s2ktux-chal-done-v12-linux", JSON.stringify(done));
-    } catch (e) {}
-    const selE = document.querySelector("#chal-select");
-    if (selE) {
-      [...selE.options].forEach((o) => {
-        if (!o.textContent.startsWith("✔"))
-          o.textContent = "✔ " + o.textContent;
-      });
-    }
-    {
-      const pr = document.querySelector("#chal-progress");
-      if (pr) pr.textContent = '21 / 21 (100%)';
-      const cg = document.querySelector("#chal-congrats");
-      if (cg) {
-        cg.style.display = "none";
-        cg.innerHTML = "";
-      }
-    }
-    clearBody();
-    out(
-      OS_NAME + " · " + (CERTIFICATION || "Linux") + " — MÁQUINA RESUELTA",
-      "#8fa876",
-    );
-    out(
-      "# Todas las prácticas están hechas. Investiga cómo: revisa  history , los usuarios (cat /etc/passwd, id zeus), los ficheros creados, /etc/fstab, systemctl status, etc.",
-      "#6f6250",
-    );
-    out(
-      "# La contraseña de root es  titanio7 . Compara tu solución con este sistema ya resuelto.",
-      "#6f6250",
-    );
-    out(
-      "Last login: " + new Date().toString().slice(0, 24) + " on tty1",
-      "#a2957d",
-    );
-    out("");
-    setPrompt();
-    save();
-    scroll();
-    input.focus();
+    const {applySolvedFixture}=await import('./laboratorios/fixtures/linux-solved.mjs');
+    const sample=applySolvedFixture({net,getNode,file,groupsDb,users,mkdirp,rebuildPasswd,lvm,disks,linuxWorkerEnabled,selinux,fw,services,images,containers,linger,userUnits});
+    tunedProfile=sample.tunedProfile;rootRecovered=true;history=sample.history;
+    hIdx=history.length;currentUser='root';cwd=['root'];loggedIn=true;recovery=null;
+    clearBody();out('Fixture de comprobación preparada.');setPrompt();save();scroll();input.focus();
   };
   {
     const rb = document.querySelector("#term-reboot");
@@ -19080,58 +18785,9 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       });
   }
   {
-    const sv = document.querySelector("#term-solved");
-    if (sv)
-      sv.addEventListener("click", () => {
-        if (booting || grubState) return;
-        booting = true;
-        recovery = null;
-        grubState = null;
-        interactive = null;
-        clearBody();
-        promptEl.textContent = "";
-        input.value = "";
-        const pasos = [
-          "Restaurando estado de la máquina...",
-          "Aplicando configuración de red...",
-          "Creando usuarios y grupos...",
-          "Desplegando servicios y almacenamiento...",
-          "Cargando historial de comandos...",
-          "Máquina lista.",
-        ];
-        const bar = document.createElement("div");
-        bar.className = "term-out";
-        bar.style.color = "#8fa876";
-        body.insertBefore(bar, line);
-        const lbl = document.createElement("div");
-        lbl.className = "term-out";
-        lbl.style.color = "#a2957d";
-        body.insertBefore(lbl, line);
-        let pct = 0;
-        const iv = setInterval(() => {
-          pct += Math.floor(6 + Math.random() * 11);
-          if (pct > 100) pct = 100;
-          const f = Math.round(pct / 5);
-          bar.textContent =
-            "[" +
-            "#".repeat(f) +
-            ".".repeat(20 - f) +
-            "] " +
-            String(pct).padStart(3) +
-            "%";
-          lbl.textContent =
-            pasos[
-              Math.min(pasos.length - 1, Math.floor(pct / (100 / pasos.length)))
-            ];
-          scroll();
-          if (pct >= 100) {
-            clearInterval(iv);
-            booting = false;
-            applySolved();
-          }
-        }, 150);
-        input.focus();
-      });
+    // Solo las pruebas automatizadas pueden cargar la fixture. No hay botón
+    // ni una opción de «máquina resuelta» en la interfaz del alumno.
+    if(globalThis.__S2KTUX_TEST_FIXTURES__)globalThis.__s2ktuxTestSolve=()=>{if(!booting&&!grubState)return applySolved();};
   }
   {
     const rs = document.querySelector("#term-reset");
@@ -19405,17 +19061,6 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
       chalDone =
         JSON.parse(localStorage.getItem(CHKEY) || legacy || "{}") || {};
     } catch (e) {}
-    const updateProgress = () => {
-      const pr = document.querySelector("#chal-progress");
-      if (!pr) return;
-      const total = CH.length;
-      let done = 0;
-      for (let i = 0; i < total; i++) {
-        if (chalDone[i]) done++;
-      }
-      const pct = Math.round((done / total) * 100);
-      pr.textContent = done + ' / ' + total + ' (' + pct + '%)';
-    };
     selEl.replaceChildren();
     CH.forEach((c, i) => {
       const o = document.createElement("option");
@@ -19435,14 +19080,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
           };
     const showResult = (r) => {
       r = publicResult(r);
-      resEl.innerHTML =
-        '<span style="font-family:&quot;Press Start 2P&quot;,monospace;font-size:11px;color:' +
-        (r.ok ? "#5a8a3c" : "#c0392b") +
-        '">' +
-        (r.ok ? "✔ CONSEGUIDO" : "✗ TODAVÍA NO") +
-        '</span> &nbsp;<span style="color:var(--text)">' +
-        r.msg +
-        "</span>";
+      resEl.dataset.result=r.ok?'passed':'failed';
+      resEl.textContent=(r.ok?'✔ CONSEGUIDO':'✗ TODAVÍA NO')+' · '+r.msg;
     };
     const renderChal = () => {
       const i = selEl.value;
@@ -19476,7 +19115,7 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         const current=CH[Number(selEl.value)];if(!current||selEl.value===''||examActive)return;
         if(!current.solution&&current.loadSolution){
           const selected=selEl.value;solutionBtn.disabled=true;
-          try{const code=await current.loadSolution();if(selEl.value!==selected)return;current.solution=code;renderSolutions(solutionBody,[{code}]);}
+          try{const loaded=await current.loadSolution();if(selEl.value!==selected)return;const options=Array.isArray(loaded)?loaded:[{code:loaded}];current.solution=options[0].code;current.solutions=options.slice(1);renderSolutions(solutionBody,options);}
           catch{solutionBody.textContent='No se pudo cargar la solución. Vuelve a intentarlo.';solutionBody.hidden=false;return;}
           finally{solutionBtn.disabled=false;}
         }
@@ -19485,9 +19124,8 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         solutionBtn.textContent = isHidden ? "Ocultar solución" : "Ver solución";
       });
     const free=document.createElement('option');free.value='';free.textContent='Práctica libre';selEl.prepend(free);selEl.value='';
-    if(!IS_EXAM)mountGroups({select:selEl,mode:MODE,tasks:CH,indexed:true,onChange:renderChal,loadTasks:runtime.loadLearningChallenges?()=>runtime.loadLearningChallenges(runtimeContext):undefined,groups:runtime.practiceGroups,firstClass:runtime.firstPracticeClass,learningClasses:runtime.learningClasses});
+    if(!IS_EXAM)mountGroups({select:selEl,mode:MODE,tasks:CH,indexed:true,onChange:renderChal,loadTasks:runtime.loadLearningChallenges?()=>runtime.loadLearningChallenges(runtimeContext,CH):undefined,groups:runtime.practiceGroups,firstClass:runtime.firstPracticeClass,learningClasses:runtime.learningClasses});
     renderChal();
-    updateProgress();
     btnEl.addEventListener("click", () => {
       if (examActive) return;
       const i = selEl.value;
@@ -19517,7 +19155,6 @@ export function startTerminal(engine, runtime = {}, adapters = {}) {
         } catch (e) {}
         const completedOption=[...selEl.options].find(option=>option.value===i);
         if(completedOption)completedOption.textContent = "✔ " + c.title;
-        updateProgress();
       }
       showResult(visible);
     });

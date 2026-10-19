@@ -8,17 +8,18 @@ import {comprobarPractica,prepararPractica} from '../laboratorios/kubernetes-rea
 import {exigirJSON} from '../laboratorios/kubernetes-real/debian/comprobaciones-json.mjs';
 import {comprobarSaludInicial} from '../laboratorios/kubernetes-real/debian/salud-inicial.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos,parametrosPublicos} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
-assert.equal(CLASES.length,35);assert.deepEqual(['inicial','intermedio','avanzado'].map(value=>clasesNivel(value).length),[7,17,11]);
+assert.equal(CLASES.length,35);assert.deepEqual(['inicial','intermedio','avanzado'].map(value=>clasesNivel(value).length),[6,17,11]);
 assert.equal(nivelClase(23),'intermedio');assert.equal(nivelClase(24),'avanzado');assert.throws(()=>nivelClase(35));
 assert.equal(claseDesdeURL(new URLSearchParams('clase=19'),'intermedio'),19);assert.throws(()=>claseDesdeURL(new URLSearchParams('clase=19'),'inicial'));
 assert.equal(EJERCICIOS_INICIALES.length,14);
 assert.equal(EJERCICIOS_INTERMEDIOS.length,10);
-for(let number=0;number<=11;number++)assert.equal(ejerciciosClase(number).length,[4,6,7,8,9,10,11].includes(number)?3:2);
+assert.deepEqual(ejerciciosClase(0),[]);assert.equal(claseDesdeURL(new URLSearchParams('clase=0'),'inicial'),1);
+for(let number=1;number<=11;number++)assert.equal(ejerciciosClase(number).length,number<=3||number===5?2:number===6||number===7?3:4);
 for(let number=12;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
 assert.equal(nivelDisponible('avanzado'),false);assert.equal(limiteNodos('intermedio'),2);
 const safeParams=parametrosPublicos('mode=other&factory=v8&fast=1&use-scheduling-api=1&clase=28&level=avanzado&enter=1');
 assert.equal(safeParams.get('mode'),'course');assert.equal(safeParams.get('factory'),'v6');assert.equal(safeParams.has('fast'),false);assert.equal(safeParams.has('use-scheduling-api'),false);assert.equal(safeParams.get('clase'),'28');
-for(const task of [...EJERCICIOS_INICIALES,...EJERCICIOS_INTERMEDIOS]){
+for(const task of [...EJERCICIOS_INICIALES,...EJERCICIOS_INTERMEDIOS].filter(task=>task.classNumber!==0)){
  assert.ok(task.id&&task.prepare.length&&task.solution&&task.check&&task.negative);
  const visible=ejerciciosClase(task.classNumber).find(value=>value.id===task.id);
  assert.equal(visible.check,task.check);assert.equal(visible.solution,task.solution);assert.equal(visible.preflight,task.preflight);
@@ -43,4 +44,4 @@ assert.match(startup,/level==='avanzado'\|\|claseDisponible\(15\)/);
 assert.match(startup,/level!=='inicial'&&claseDisponible\(21\)/);
 for(let number=7;number<=11;number++)for(const task of ejerciciosClase(number))assert.doesNotMatch(task.solution+task.check,/\/opt\/curso/,'Las primeras prácticas intermedias no necesitan los materiales de clases posteriores');
 assert.match(page,/id="course-index"/);assert.doesNotMatch(page,/id="environment-select"/);assert.match(page,/id="exercise-class-select"/);
-console.log('Kubernetes: índice de 35 clases, 31 prácticas disponibles de la 00 a la 11 y resultados correcto/incompleto/no verificado protegidos; este test no acredita ejecución nativa.');
+console.log('Kubernetes: índice de 35 clases, 34 prácticas disponibles de la 01 a la 11 y resultados correcto/incompleto/no verificado protegidos; este test no acredita ejecución nativa.');

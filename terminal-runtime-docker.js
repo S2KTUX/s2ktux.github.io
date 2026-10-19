@@ -66,7 +66,8 @@ export default {
       {check:checks[13]},
       {title:'Construye una imagen multi-stage',goal:'Crea <b>/root/produccion/Dockerfile</b> con una etapa de construcción nombrada mediante <b>AS</b> y una segunda etapa final. Construye el resultado como <b>miapp:prod</b>.',check:checks[14]}
     ];
-    return challenges.map((challenge,index)=>commonPractice('docker',{...challenge,solution:solutions[index]},index));
+    const ids=['alpine','primer','ciclo','web','diagnostico','build','build-run','exportar','volumen','bind','red','limites','compose','compose-scale','multistage'];
+    return challenges.map((challenge,index)=>({...commonPractice('docker',{...challenge,id:ids[index],solution:solutions[index]},index),legacyOnly:true}));
   },
-  loadLearningChallenges:async ctx=>(await import('./laboratorios/learning-docker.mjs')).simulatedLearningDocker(ctx),
+  loadLearningChallenges:async (ctx,legacy)=>(await import('./laboratorios/docker-simulated-objectives.mjs')).simulatedDockerObjectives(ctx,legacy),
 };

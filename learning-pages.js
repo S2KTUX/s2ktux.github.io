@@ -46,17 +46,6 @@ function wireImages() {
   document.addEventListener('keydown', (event) => { if (event.key === 'Escape' && lightbox.classList.contains('open')) close(); });
 }
 
-function wireReadState() {
-  const button = document.querySelector('[data-lesson-read]');
-  if (!button) return;
-  const key = button.dataset.lessonRead;
-  const store = 's2ktux-read';
-  const readMap = () => { try { return JSON.parse(localStorage.getItem(store) || '{}') || {}; } catch (_) { return {}; } };
-  const paint = () => { const read = Boolean(readMap()[key]); button.dataset.read = String(read); button.textContent = read ? '✓ Leída' : 'Marcar como leída'; };
-  button.addEventListener('click', () => { const map = readMap(); if (map[key]) delete map[key]; else map[key] = true; try { localStorage.setItem(store, JSON.stringify(map)); } catch (_) {} paint(); });
-  paint();
-}
-
 function makeMobileToc() {
   const toc = document.querySelector('.lesson-toc');
   if (!toc || !matchMedia('(max-width: 820px)').matches) return;
@@ -126,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
   makeMobileToc();
   wireCodeCopy();
   wireImages();
-  wireReadState();
   wireSectionProgress();
   wireBackTop();
   wireYouTubeFacades();

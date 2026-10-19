@@ -10,5 +10,5 @@ const titles=[
 ];
 export function nivelClase(number){if(!Number.isInteger(number)||number<0||number>34)throw Error('Clase fuera del curso');return number<=6?'inicial':number<=23?'intermedio':'avanzado';}
 export const CLASES=Object.freeze(titles.map((title,number)=>Object.freeze({number,id:String(number).padStart(2,'0'),title,level:nivelClase(number)})));
-export function clasesNivel(level){if(!['inicial','intermedio','avanzado'].includes(level))throw Error('Etapa desconocida');return CLASES.filter(item=>item.level===level);}
-export function claseDesdeURL(params,level){const value=params.get('clase');const number=value===null?clasesNivel(level)[0].number:Number(value);if(value!==null&&!/^\d{1,2}$/.test(value)||nivelClase(number)!==level)throw Error('La clase no pertenece a esta etapa');return number;}
+export function clasesNivel(level){if(!['inicial','intermedio','avanzado'].includes(level))throw Error('Etapa desconocida');return CLASES.filter(item=>item.level===level&&item.number!==0);}
+export function claseDesdeURL(params,level){const value=params.get('clase');const number=value===null||value==='0'||value==='00'?clasesNivel(level)[0].number:Number(value);if(value!==null&&!/^\d{1,2}$/.test(value)||nivelClase(number)!==level)throw Error('La clase no pertenece a esta etapa');return number;}

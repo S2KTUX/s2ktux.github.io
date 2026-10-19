@@ -175,7 +175,7 @@ for (const [key, cfg] of Object.entries(config)) {
       <main id="main-content" class="learning-main"><nav class="learning-crumbs" aria-label="Migas de pan"><a href="/">Inicio</a><span>›</span><a href="/cursos.html">Cursos</a><span>›</span><a href="${courseRoute}">${escapeHtml(data.title)}</a><span>›</span><span aria-current="page">${escapeHtml(cfg.unit)} ${lessonNumber}</span></nav>
       <div class="learning-shell"><div class="lesson-topline"><span class="lesson-counter">${escapeHtml(cfg.unit)} ${lessonNumber} / ${key === 'kubernetes' ? data.modules.at(-1).n : data.modules.length}</span><span class="lesson-progress" aria-label="Progreso del curso: ${Math.round((index + 1) / data.modules.length * 100)}%"><span class="${progressClass}"></span></span></div>
       ${fragment}
-      <nav class="lesson-navigation" aria-label="Navegación entre lecciones">${prev}<button class="lesson-read" type="button" data-lesson-read="${key}:${index}">Marcar como leída</button>${next}</nav></div></main>${footer}</div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>`;
+      <nav class="lesson-navigation" aria-label="Navegación entre lecciones">${prev}${next}</nav></div></main>${footer}</div><button type="button" id="backtop" aria-label="Volver arriba">↑</button></body></html>`;
     await fs.writeFile(path.join(lessonDir, 'index.html'), lessonHtml.replace(/[ \t]+$/gm, ''), 'utf8');
   }
 }

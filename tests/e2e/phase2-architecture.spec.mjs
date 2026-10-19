@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import {adaptLegacyPracticeSelection} from './legacy-practice-selection.mjs';
+test.beforeEach(async({page})=>{await adaptLegacyPracticeSelection(page);});
 
 const workerDisabled=process.env.S2KTUX_DISABLE_WORKER==='1';
 const expectedEngineThread=workerDisabled?'fallback':'worker';

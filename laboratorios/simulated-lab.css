@@ -14,7 +14,7 @@
 .simulated-lab-page #chal-body [data-practice-title]{font:14px/1.7 'Press Start 2P',monospace!important;margin:24px 0 18px!important}
 .simulated-lab-page #chal-body [data-practice-goal]{font:17px/1.8 'Space Mono',monospace!important}
 .simulated-lab-page .terminal-window{border:3px solid var(--line);box-shadow:var(--pixel-shadow-md);margin:16px 0 12px;border-radius:0;background:#161009}
-.simulated-lab-page .terminal-screen{height:530px;min-height:0}
+.simulated-lab-page .terminal-screen{height:480px;min-height:0}
 .simulated-lab-page .terminal-chrome{padding:10px 14px;border-bottom:2px solid var(--line);background:#2c2218;color:#e0a458;font:14px/1.5 'Share Tech Mono',monospace}
 .simulated-lab-page .terminal-light,.simulated-lab-page #term-title{display:none}
 .simulated-lab-page #term-os-label{margin-left:auto;font:12px/1.5 'Share Tech Mono',monospace;color:#b5a58a}

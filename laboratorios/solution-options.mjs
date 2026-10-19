@@ -58,7 +58,7 @@ function kubernetes(e){
   'c03-a':()=>option('Crear una réplica y escalar',replace(code,'replicas: 2','replicas: 1').replace("kubectl -n default wait",'kubectl -n default scale rs replicas --replicas=2\nkubectl -n default wait')),
   'c03-b':()=>option('Modificar el número con patch',replace(code,'kubectl -n default scale rs taller --replicas=3',`kubectl -n default patch rs taller --type=merge -p '{"spec":{"replicas":3}}'`)),
   'c05-a':()=>option('Con un manifiesto',service('web-servicio')+'\nkubectl -n default exec deployment/web-servicio -- wget -T 5 -qO- http://web-servicio.default.svc.cluster.local/'),
-  'c05-b':()=>option('NodePort en el manifiesto',service('externa',30081)+`\nnodeip=$(kubectl get node cka-cp1 -o jsonpath='{.status.addresses[?(@.type=="InternalIP")].address}')\ncurl --max-time 10 "http://$nodeip:30081/"`),
+  'c05-b':()=>option('Crear y editar el Service','kubectl -n default expose deployment externa --type=NodePort --port=80 --target-port=8080\nkubectl -n default edit service externa\n# Cambia nodePort a 30081, guarda y sal.\ncurl --max-time 10 http://10.77.0.10:30081/'),
  };
  if(basic[e.id])return [basic[e.id]()];
  if(e.id==='c07-a')return [option('Cantidades equivalentes',code.replaceAll('"50m"','"0.05"').replaceAll('"16Mi"','"16777216"').replaceAll('"200m"','"0.2"').replaceAll('"64Mi"','"67108864"'))];
@@ -71,6 +71,7 @@ function kubernetes(e){
  return [];
 }
 export function solutionsFor(mode,exercise){
+ if(exercise.sourceId&&exercise.sourceId!==exercise.id)return solutionsFor(mode,{...exercise,id:exercise.sourceId,sourceId:undefined});
  if(mode==='linux'&&exercise.id==='sim-01'){
   const [first,rest]=exercise.solution.split('# ALTERNATIVA (no hagas ambos métodos):');
   if(rest){const marker='# Tras cualquiera de los dos métodos',index=rest.indexOf(marker),tail=index<0?'':rest.slice(index);return [option('rd.break',first.trim()+'\n\n'+tail),option('init=/bin/bash',(index<0?rest:rest.slice(0,index)).trim()+'\n\n'+tail)];}
