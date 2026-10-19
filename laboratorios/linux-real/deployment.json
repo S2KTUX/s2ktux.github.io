@@ -3,7 +3,7 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715710917,
+  "verifiedPackageBytes": 715710608,
   "modifications": [
     {
       "path": "index.html",
@@ -74,8 +74,8 @@
     {
       "path": "licencias/LEEME.html",
       "before": "dfc1c60ce9a0c6c2770576eb7f72fa36f57b772190affe68ac1f933eec5d020a",
-      "sha256": "41036a9036d8b7e9812d56cf31bba4e430f588b35c61a0b87feb76665369d0ca",
-      "bytes": 4149
+      "sha256": "2195fecb04a9ce6edcfabac04d175408000dae6266bf4c0d1c73ec6bfa1f1126",
+      "bytes": 3840
     },
     {
       "path": "licencias/LEEME.md",
