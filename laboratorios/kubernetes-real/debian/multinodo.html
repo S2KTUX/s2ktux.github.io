@@ -3,12 +3,16 @@
 <script src="/theme-bootstrap.js"></script><link rel="stylesheet" href="/fonts.css"><link rel="stylesheet" href="/visual-system.css"><link rel="stylesheet" href="/site-shell.css"><link rel="stylesheet" href="/laboratorios/docker-real/docker.css"><link rel="stylesheet" href="niveles.css?v=da987294841581d2"><link rel="stylesheet" href="/laboratorios/lab-ui.css?v=20261018-aprender"><script defer src="/site-shell.js"></script></head>
 <body><div class="site-page-shell site-app-shell"><header class="site-header"><div class="site-header-inner"><a class="site-logo" href="/">S2KTUX</a><nav class="site-nav" aria-label="Navegación principal"><a class="navlink" href="/">Inicio</a><a class="navlink" href="/cursos.html">Cursos</a><a class="navlink" href="/terminal.html" aria-current="page">Terminal</a><a class="navlink" href="/proyectos.html">Proyectos</a><button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Activar tema oscuro"><span data-theme-icon aria-hidden="true">☾</span></button></nav></div></header>
 <main class="docker-page lab-levels lab-page" data-level="inicial"><h1>Laboratorio Kubernetes</h1>
-<p id="lab-loading" role="status">Cargando el laboratorio…</p><button id="lab-retry" type="button" hidden>Volver a cargar</button>
+<p id="lab-loading" role="status" hidden></p><button id="lab-retry" type="button" hidden>Volver a cargar</button>
 <noscript><p>Activa JavaScript para abrir el laboratorio.</p></noscript>
-<section id="lab-entry" class="lab-entry" aria-label="Elegir laboratorio" hidden>
+<section id="lab-entry" class="lab-entry" aria-label="Elegir laboratorio">
 <div class="learning-modes" role="group" aria-label="Modo de aprendizaje"><button id="mode-practice" type="button" aria-pressed="false">Modo práctica</button><button id="mode-exam" type="button" aria-pressed="false">Modo examen</button></div>
-<div id="practice-configuration" hidden>
-<div class="level-picker"><div id="course-index" class="course-index" role="group" aria-label="Nivel del laboratorio"></div></div>
+<div id="practice-configuration">
+<div class="level-picker"><div id="course-index" class="course-index" role="group" aria-label="Nivel del laboratorio">
+<button type="button" id="stage-inicial" class="stage-toggle" data-choose-stage="inicial" data-step="01" aria-label="Inicial" aria-pressed="true"><span class="level-name">Inicial</span><span class="level-summary">Pods, réplicas y servicios.</span><small class="level-range">Clases 01–06</small></button>
+<button type="button" id="stage-intermedio" class="stage-toggle" data-choose-stage="intermedio" data-step="02" aria-label="Intermedio" aria-pressed="false"><span class="level-name">Intermedio</span><span class="level-summary">Configuración, almacenamiento y redes.</span><small class="level-range">Clases 07–23</small></button>
+<button type="button" id="stage-avanzado" class="stage-toggle" data-choose-stage="avanzado" data-step="03" aria-label="Avanzado" aria-pressed="false"><span class="level-name">Avanzado</span><span class="level-summary">Instalación, mantenimiento y diagnóstico.</span><small class="level-range">Clases 24–34</small></button>
+</div></div>
 <p id="entry-intro" class="entry-copy mode-note" aria-live="polite" aria-atomic="true"></p>
 <button id="enter-lab" class="entry-enter" type="button">Abrir laboratorio</button>
 <button id="return-lab" class="lab-link" type="button" hidden>Volver al laboratorio abierto</button>
@@ -51,4 +55,4 @@
 <p class="lab-information"><small>* Tienes el <a href="/cursos/kubernetes-cka/">curso de Kubernetes</a> disponible; las clases se publican progresivamente.</small></p>
 </main><footer class="site-footer"><div class="site-footer-inner"><a class="site-footer-brand" href="/">S2KTUX</a><p>Aprender practicando</p></div></footer></div>
 <dialog id="switch-level-dialog" class="mode-dialog" aria-labelledby="switch-level-title"><h2 id="switch-level-title">Cambiar de modo</h2><p id="switch-level-description"></p><p id="switch-level-error" role="alert"></p><div class="controls"><button type="button" data-switch-action="save">Guardar y cambiar</button><button type="button" data-switch-action="discard">Cambiar sin guardar</button><button type="button" data-switch-action="cancel">Cancelar</button></div></dialog>
-<script type="module" src="entrada-laboratorio.mjs?v=48d24713d19b213a"></script></body></html>
+<script type="module" src="entrada-laboratorio.mjs?v=02b38db18f332314"></script></body></html>

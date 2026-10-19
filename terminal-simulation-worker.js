@@ -36,10 +36,11 @@ const postKubernetesState=(generation,reason='reconcile')=>{
   if(!kubernetesSession||generation!==kubernetesGeneration)return;
   self.postMessage(createWorkerEvent('kubernetes.state',{reason,state:clone(kubernetesSession.k8s)}));
 };
-const containerBaseFs=host=>virtualFs.createDirectory({etc:virtualFs.createDirectory({hostname:virtualFs.createFile(host)}),tmp:virtualFs.createDirectory({}, {mode:'rwxrwxrwt'}),root:virtualFs.createDirectory({}),var:virtualFs.createDirectory({log:virtualFs.createDirectory({})})});
+const containerBaseFs=host=>({'/etc/hostname':host});
 
 const createKubernetesContext=(payload={})=>{
   if(!kubernetesSession)throw new Error('Kubernetes no está inicializado en el Worker');
+  for(const files of payload.podFiles||[]){const pod=kubernetesSession.k8s.pods.find(pod=>pod.name===files.name&&pod.namespace===files.namespace&&pod.createdAt===files.createdAt);if(pod){pod.fs=clone(files.fs);if(files.dirs)pod.dirs=clone(files.dirs);}}
   if(payload.fs)kubernetesSession.fs=payload.fs;
   if(Array.isArray(payload.cwd))kubernetesSession.cwd=payload.cwd;
   if(payload.currentUser)kubernetesSession.currentUser=payload.currentUser;

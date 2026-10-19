@@ -20,7 +20,7 @@ export default {
   },
   manuals: {
     pvcreate:{name:'pvcreate - inicializa un volumen físico (LVM)',sec:'8',s:'pvcreate DISPOSITIVO',d:'Prepara una partición o disco para usarse con LVM. Compruébalo con pvs.',o:[]},
-    vgcreate:{name:'vgcreate - crea un grupo de volúmenes (LVM)',sec:'8',s:'vgcreate VG DISPOSITIVO...',d:'Agrupa uno o más volúmenes físicos en un grupo de volúmenes. Amplíalo con vgextend.',o:[]},
+    vgcreate:{name:'vgcreate - crea un grupo de volúmenes (LVM)',sec:'8',s:'vgcreate VG DISPOSITIVO...',d:'Agrupa volúmenes físicos; vgextend añade más.',o:[]},
     vgextend:{name:'vgextend - amplía un grupo de volúmenes',sec:'8',s:'vgextend VG DISPOSITIVO...',d:'Añade volúmenes físicos a un VG existente para ganar espacio.',o:[]},
     lvcreate:{name:'lvcreate - crea un volumen lógico (LVM)',sec:'8',s:'lvcreate -n NOMBRE -L TAMAÑO VG',d:'Crea un volumen lógico dentro de un grupo. Luego formatéalo y móntalo.',o:[['-n NOMBRE','nombre del volumen'],['-L 5G','tamaño fijo'],['-l 60','número exacto de extents'],['-l 100%FREE','usa todo el espacio libre']]},
     lvextend:{name:'lvextend - amplía un volumen lógico',sec:'8',s:'lvextend -r -L +2G /dev/VG/LV',d:'Aumenta el tamaño de un LV. Con -r amplía también el sistema de archivos.',o:[['-L +2G','añade tamaño'],['-r','redimensiona también el FS']]},
@@ -29,10 +29,10 @@ export default {
     swapon:{name:'swapon - activa el intercambio',sec:'8',s:'swapon [DISPOSITIVO] | --show',d:'Activa un área de swap o muestra las activas con --show.',o:[['--show','lista las áreas de swap activas']]},
     chronyc:{name:'chronyc - cliente de chrony (NTP)',sec:'1',s:'chronyc [sources|tracking]',d:'Consulta el estado del servicio de tiempo chronyd.',o:[['sources','muestra las fuentes de tiempo'],['tracking','estado de sincronización']]},
     'tuned-adm':{name:'tuned-adm - gestiona perfiles de rendimiento',sec:'8',s:'tuned-adm [active|list|profile NOMBRE]',d:'Consulta y activa perfiles de tuned.',o:[['active','perfil activo'],['list','perfiles disponibles'],['profile NOMBRE','activa un perfil']]},
-    autofs:{name:'autofs - montaje automático de sistemas de archivos',sec:'8',s:'systemctl enable --now autofs',d:'Servicio que monta y desmonta sistemas de archivos bajo demanda según /etc/auto.master.',o:[]},
+    autofs:{name:'autofs - montaje automático de sistemas de archivos',sec:'8',s:'systemctl enable --now autofs',d:'Montaje bajo demanda según /etc/auto.master.',o:[]},
     at:{name:'at - programa una tarea puntual',sec:'1',s:'at CUÁNDO',d:'Ejecuta comandos una sola vez en el momento indicado. Consulta la cola con atq y elimina con atrm.',o:[]},
-    reboot:{name:'reboot - reinicia el sistema',sec:'8',s:'reboot',d:'Reinicia la máquina. En este entorno abre el menú de GRUB, útil para practicar la recuperación de root.',o:[]},
-    loginctl:{name:'loginctl - controla sesiones de usuario',sec:'1',s:'loginctl enable-linger USUARIO',d:'Con enable-linger permite que los servicios de un usuario sigan activos tras cerrar la sesión.',o:[['enable-linger USUARIO','mantiene servicios del usuario']]}
+    reboot:{name:'reboot - reinicia el sistema',sec:'8',s:'reboot',d:'Reinicia y abre GRUB en este simulador.',o:[]},
+    loginctl:{name:'loginctl - controla sesiones de usuario',sec:'1',s:'loginctl enable-linger USUARIO',d:'Con linger mantiene los servicios del usuario sin sesión.',o:[['enable-linger USUARIO','mantiene servicios del usuario']]}
   },
   manualBriefs: {
     podman:['gestiona contenedores sin demonio','podman run|ps|build ...','Motor de contenedores rootless de Red Hat.']
@@ -71,8 +71,8 @@ export default {
       {title:'Aplica el perfil de tuned recomendado',goal:'Aplica el perfil de <code>tuned</code> <b>recomendado</b> para este sistema.',check:checks[17]},
       {check:checks[18]},
       {title:'Publica una web en un DocumentRoot propio',goal:'Haz que Apache sirva desde <code>/sitio/web</code> (esa ruta no existe: créala). Ajusta el <b>DocumentRoot</b> en la configuración, los permisos, el contexto de <b>SELinux</b> y el <b>firewall</b>, y consíguela con <code>curl localhost</code>.',check:checks[19]},
-      {title:'Contenedor como servicio de un usuario',goal:'Como el usuario <b>hermes</b> (créalo y accede por SSH): descarga <code>httpd</code>, crea el contenedor <b>webapp</b> mapeando <code>/opt/entrada</code>→<code>/data/in</code> y <code>/opt/salida</code>→<code>/data/out</code>, genera su servicio systemd de usuario, habilita <b>linger</b> y déjalo activo con <code>systemctl --user enable --now</code> para que arranque solo tras reiniciar.',check:checks[20]}
-    ].map((exercise,index)=>commonPractice('linux',{...exercise,loadSolution:()=>import('./laboratorios/simulated-linux-solutions.mjs').then(module=>module.simulatedLinuxSolutions[index])},index));
+      {title:'Contenedor como servicio de usuario',goal:'Crea hermes y accede a su sesión. Deja webapp activo con httpd, montando /opt/entrada en /data/in y /opt/salida en /data/out. Debe funcionar como servicio systemd de hermes y arrancar sin iniciar sesión tras reiniciar.',check:checks[20]}
+    ].map((exercise,index)=>{const task=commonPractice('linux',{...exercise,id:'sim-'+String(index+1).padStart(2,'0'),loadSolution:()=>import('./laboratorios/simulated-linux-solutions.mjs').then(module=>index===0?module.rootSolutionOptions:module.simulatedLinuxSolutions[index])},index);return {...task,title:task.title+' · II'};});
   },
-  loadLearningChallenges:async ctx=>(await import('./laboratorios/learning-linux.mjs')).simulatedLearningLinux(ctx),
+  loadLearningChallenges:async (ctx,legacy)=>(await import('./laboratorios/rhcsa-simulated-objectives.mjs')).simulatedRhcsaObjectives(ctx,legacy),
 };

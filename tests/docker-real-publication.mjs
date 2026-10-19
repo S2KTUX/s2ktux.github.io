@@ -5,7 +5,7 @@ import {gunzipSync} from 'node:zlib';
 import {exercises} from '../laboratorios/docker-real/docker-exercises.mjs';
 const lab=new URL('../laboratorios/docker-real/',import.meta.url),read=p=>readFile(new URL(p,lab),'utf8'),hash=b=>createHash('sha256').update(b).digest('hex');
 const app=await read('docker.mjs'),html=await read('index.html'),hub=await readFile(new URL('../terminal.html',import.meta.url),'utf8');
-assert.equal(exercises.length,32);assert.equal(new Set(exercises.map(e=>e.id)).size,32);assert.deepEqual([...new Set(exercises.map(e=>e.class))].sort(),[1,2,3]);
+assert.equal(exercises.length,56);assert.equal(new Set(exercises.map(e=>e.id)).size,56);assert.deepEqual([...new Set(exercises.map(e=>e.class))].sort(),[1,2,3]);
 for(const e of exercises){assert.ok(e.goal.length>30);assert.ok(e.solution.trim());assert.ok(e.checks.every(([label,command])=>label&&command));}
 assert.match(app,/new V86\(/);assert.match(app,/createEthernetInternet\(vm.bus\)/);assert.match(app,/date -u -s @/);assert.match(app,/await sessions.delete\(sessionKey\)/);assert.doesNotMatch(app,/sessions\.delete\(['"]s2ktux-(?:linux|kubernetes)/);
 assert.match(html,/id="solution"[^>]* hidden/);assert.match(html,/Guardar sesión/);assert.match(hub,/data-pick-mode'\)==='docker'[^\n]+laboratorios\/docker-real/);assert.doesNotMatch(hub,/data-legacy-mode=/);assert.match(html,/href="\/terminal.html\?mode=docker&amp;enter=1"/);
@@ -18,4 +18,4 @@ for(const [i,p] of manifest.parts.entries()){
 }
 assert.equal(whole.digest('hex'),manifest.sha256);
 assert.equal(hash(await readFile(new URL('artefactos/vmlinuz-docker-v3',lab))),'65632160583cddbf3f1fbd3749468b3af526d5db75a99c7109e8b4672e23b762');
-console.log('✓ Docker real: 32 prácticas, máquina y kernel íntegros, red integrada y guardado separado.');
+console.log('✓ Docker real: 56 prácticas por objetivos I/II, máquina y kernel íntegros, red integrada y guardado separado.');

@@ -1,9 +1,10 @@
-import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs';
-import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261018-aprender';
+import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs?v=20261019-objetivos';
+import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261019-objetivos';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
 import {claseDisponible} from './disponibilidad-curso.mjs';
 import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
+import {EJERCICIOS_PROGRESIVOS,CKA_EXAM_PRACTICE} from './ejercicios-progresivos.mjs';
 const image='busybox:1.37.0-musl';
 const http="sh -c 'mkdir -p /www; echo WEB_LISTA >/www/index.html; httpd -f -p 8080 -h /www'";
 export const EJERCICIOS=Object.freeze({
@@ -22,4 +23,6 @@ export function ejerciciosNivel(level){
  if(!Object.hasOwn(EJERCICIOS,level))throw Error('Prácticas de nivel desconocido');
  return level==='inicial'?EJERCICIOS_INICIALES:EJERCICIOS[level].map(task=>({...task,preflight:task.preflight||API,check:exigirJSON(task.check),classNumber:task.classNumber??classForLegacy[task.id]}));
 }
-export function ejerciciosClase(number){return claseDisponible(number)?[...EJERCICIOS_APRENDER,...['inicial','intermedio','avanzado'].flatMap(ejerciciosNivel)].filter(task=>task.classNumber===number):[];}
+const topicById={'c01-a':'Laboratorio · I','c01-b':'Laboratorio · II','c02-a':'Pods · I','c02-b':'Pods · II','c03-a':'ReplicaSet · I','c03-b':'ReplicaSet · II','c04-inicio':'Deployment · I','c04-a':'Deployment · II','c04-b':'Actualizar un Deployment · II','c05-a':'Services · I','c05-b':'Services · II','c06-inicio':'Namespaces · I','c06-a':'Namespaces · II','c06-b':'Aislamiento por namespace · II','c07-inicio':'Requests y limits · I','c07-a':'Requests y limits · II','c07-b':'Corregir recursos · II','c08-inicio':'ResourceQuota · I','c08-a':'LimitRange · II','c08-b':'ResourceQuota · II','c09-inicio':'Readiness · I','c09-a':'Readiness · II','c09-b':'Liveness · II','c10-inicio':'ConfigMap · I','c10-a':'ConfigMap · II','c10-b':'ConfigMap como archivo · II','c11-inicio':'Secret · I','c11-a':'Secret · II','c11-b':'Secret como archivo · II'};
+export function ejerciciosClase(number){return number!==0&&claseDisponible(number)?[...EJERCICIOS_APRENDER,...EJERCICIOS_PROGRESIVOS,...['inicial','intermedio','avanzado'].flatMap(ejerciciosNivel)].filter(task=>task.classNumber===number).map(task=>({...task,title:topicById[task.id]||task.title})):[];}
+export function ejerciciosExamen(level){return CKA_EXAM_PRACTICE.filter(task=>task.level===level).map(task=>({...task,practiceExam:true,check:exigirJSON(task.check)}));}

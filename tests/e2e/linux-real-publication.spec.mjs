@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import {adaptLegacyPracticeSelection} from './legacy-practice-selection.mjs';
+test.beforeEach(async({page})=>{await adaptLegacyPracticeSelection(page);});
 
 test('Linux real · acceso independiente, guía y soluciones sin ejecutar', async ({ page }) => {
   await page.goto('/terminal.html');
@@ -21,12 +23,12 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
   await expect(page.locator('#reboot')).toBeVisible();
   await page.locator('[data-theme-toggle]').click();
   await expect(page.locator('html')).toHaveClass(/dark/);
-  await page.locator('#exercise-select').selectOption('archivo');
+  await page.selectOption('#exercise-select','archivo');
   await expect(page.locator('[data-exercise-check]')).toBeDisabled();
   await page.locator('[data-exercise-solution]').click();
   await expect(page.locator('#exercise-solution')).toBeVisible();
   await expect(page.locator('a[href="examen.html"]')).toHaveText('Modo examen');
-  await expect(page.locator('#exercise-select option')).toHaveCount(56);
+  await expect(page.locator('#exercise-select option')).toHaveCount(18);
   await expect(page.locator('#reboot')).toBeVisible();
   await expect(page.locator('#recovery-link')).toBeVisible();
   expect(await page.evaluate(() => typeof globalThis.vm)).toBe('undefined');

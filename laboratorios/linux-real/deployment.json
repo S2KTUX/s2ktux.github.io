@@ -3,25 +3,25 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715830131,
+  "verifiedPackageBytes": 715831168,
   "modifications": [
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "552cd2ae3f4d7e368b03132aad7592f3a34a5d16dc74f0b2facca5693f963b8a",
-      "bytes": 5226
+      "sha256": "0a225bfddec5bb28d898d1eb448970f21b584691e8b6791a2766e98315a59908",
+      "bytes": 5228
     },
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "ee013d06536c09128c0a213d85364ea3de0fe6823da75122e945406da8fbeed4",
-      "bytes": 24395
+      "sha256": "06b16de9072d6b59f0bb286ce35c73ec9a68ac6bfb5b96b36309669def4aaac7",
+      "bytes": 24411
     },
     {
       "path": "v86-exercise-panel.mjs",
       "before": "c55728a98f164a821d7d0791b96cdb16065202b2cd2f33f1ab60ab9b88858505",
-      "sha256": "e3c23b988aaf4d444b16a3d539e839835de223d98cd35399395c27a9e2caf421",
-      "bytes": 4231
+      "sha256": "49ce59827a06770b0e9340a3005da504350735f1d59405596afb7ed0fecebe02",
+      "bytes": 5178
     },
     {
       "path": "v86-check-runner.mjs",
@@ -32,8 +32,8 @@
     {
       "path": "v86-exercises.mjs",
       "before": "172951a817f4989725d6c56308a126f890e6b650f1056f827ba6a7d00075ef04",
-      "sha256": "d7f7fc38a365bee0d271400548cdb37ed8d3c380b87a5ccefd607bf788628f90",
-      "bytes": 12106
+      "sha256": "9b195bda809a3858ba49290174b9a66849ab03f48fcffa761779f7a242dc61c8",
+      "bytes": 12178
     },
     {
       "path": "v86-course-exercises.mjs",

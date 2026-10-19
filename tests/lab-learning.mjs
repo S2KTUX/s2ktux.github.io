@@ -17,7 +17,7 @@ assert.equal(learningDocker.length,2);assert.equal(simulatedLearningDocker({}).l
 assert.equal(EJERCICIOS_APRENDER.length,7);
 for(const number of [4,6,7,8,9,10,11])assert.match(ejerciciosClase(number)[0].id,/inicio$/);
 for(const number of [0,1])for(const task of ejerciciosClase(number)){assert.doesNotMatch(task.solution,/jsonpath|\bjq\b|runuser/);}
-const caducidad=linux.find(task=>task.id==='curso-caducidad');assert.doesNotMatch(caducidad.solution,/umask|runuser/);assert.equal(caducidad.checks.length,1);
+const caducidad=linux.find(task=>task.id==='caducidad-ii');assert.doesNotMatch(caducidad.solution,/umask|runuser/);assert.equal(caducidad.checks.length,1);
 const fileNodes=new Map(),ctx={getNode:path=>fileNodes.get('/'+path.join('/')),state:{services:{},users:{},installed:new Set(['tar'])}};
 const intro=simulatedLearningLinux(ctx).find(task=>task.id==='inicio-archivos');assert.equal(intro.check().ok,false);fileNodes.set('/root/inicio/saludo.txt',{type:'file',content:'Hola Linux\n'});assert.equal(intro.check().ok,true);fileNodes.get('/root/inicio/saludo.txt').content='Distinto';assert.equal(intro.check().ok,false);
 const script=simulatedLearningLinux(ctx).find(task=>task.id==='inicio-script');
@@ -27,11 +27,12 @@ const index=readFileSync(new URL('../laboratorios/linux-real/index.html',import.
 const page=readFileSync(new URL('../terminal.html',import.meta.url),'utf8');assert.doesNotMatch(page,/CHEATSHEET|Versión preliminar|Probar Kubernetes/);
 const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';
 {
- let checked=0;
+ let checked=0;const scripts=[];
  for(const [mode,tasks]of [['linux',linux],['docker',docker],['kubernetes',Array.from({length:12},(_,n)=>ejerciciosClase(n)).flat()]])for(const task of tasks)for(const solution of solutionsFor(mode,task)){
-  const result=spawnSync(bash,['--noprofile','--norc','-n'],{input:solution.code,encoding:'utf8'});assert.equal(result.status,0,task.id+': '+result.stderr);checked++;
+  scripts.push('# '+task.id+'\n__qa_'+checked+'() {\n'+solution.code+'\n}\n');checked++;
  }
- for(const task of [...linux,...docker])for(const [label,script]of task.checks){const result=spawnSync(bash,['--noprofile','--norc','-n'],{input:script,encoding:'utf8'});assert.equal(result.status,0,task.id+' / '+label+': '+result.stderr);}
+ for(const task of [...linux,...docker])for(const [label,script]of task.checks)scripts.push('# '+task.id+' / '+label+'\n__qa_check_'+scripts.length+'() {\n'+script+'\n}\n');
+ const result=spawnSync(bash,['--noprofile','--norc','-n'],{input:scripts.join('\n'),encoding:'utf8'});assert.equal(result.status,0,result.stderr);
  console.log('Sintaxis Bash comprobada: '+checked+' soluciones. No acredita ejecución nativa.');
 }
 console.log('Aprendizaje: introducciones por tema, orden, correctores de resultado y ausencia de redirección en Linux.');

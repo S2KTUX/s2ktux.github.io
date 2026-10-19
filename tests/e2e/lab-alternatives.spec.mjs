@@ -1,4 +1,6 @@
 import {test,expect} from '@playwright/test';
+import {adaptLegacyPracticeSelection} from './legacy-practice-selection.mjs';
+test.beforeEach(async({page})=>{await adaptLegacyPracticeSelection(page);});
 import docker from '../../terminal-runtime-docker.js';
 
 async function submit(page,command){
@@ -10,7 +12,7 @@ async function submit(page,command){
 async function ready(page,mode){
  await page.goto('/terminal.html?mode='+mode+'&enter=1');
  await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
- await page.locator('#practice-panel>summary').click();
+ await expect(page.locator('#practice-panel')).toBeVisible();
 }
 function solutionCommands(text){
  const source=text.split('\n'),commands=[];
@@ -35,7 +37,7 @@ for(const [path,mode,count] of [['/laboratorios/docker-real/','docker',15],['/la
   await expect(page.locator('main')).not.toContainText('Los ejercicios comunes comparten enunciado');
   await link.click();const alternative=page;
   await alternative.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
-  await expect(alternative.locator('#chal-select option')).toHaveCount(count+1);await expect(alternative.locator('#terminal-shell')).toBeVisible();
+  await expect(alternative.locator('#chal-select option')).toHaveCount(1);await expect(alternative.locator('#chal-select-class')).toHaveValue('free');await expect(alternative.locator('#terminal-shell')).toBeVisible();
   if(mode==='docker')expect(await submit(alternative,'echo ALTERNATIVA_OK')).toContain('ALTERNATIVA_OK');
   else await expect(alternative.locator('#term-prompt')).toContainText('root@');
   await expect(page).toHaveURL(new RegExp('terminal.html\\?mode='+mode+'$'));expect(page.context().pages()).toHaveLength(pages);
@@ -61,7 +63,7 @@ test('Docker simulado · las quince soluciones llegan a sus correctores',async({
 
 test('Linux simulado · veintiún correctores y fixture resuelta coherentes',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));await ready(page,'linux');
- await page.locator('#term-solved').evaluate(button=>button.click());await page.waitForFunction(()=>/root@/.test(document.querySelector('#term-prompt')?.textContent||''));
+ await page.evaluate(()=>globalThis.__s2ktuxTestSolve());await page.waitForFunction(()=>/root@/.test(document.querySelector('#term-prompt')?.textContent||''));
  for(let index=0;index<21;index++){await page.selectOption('#chal-select',String(index));await page.locator('#chal-check').click();await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');}
  await submit(page,"printf '# * * * * * logger \\\"Backup diario\\\"\\n' > /var/spool/cron/hera");
  await page.selectOption('#chal-select','6');await page.locator('#chal-check').click();await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
@@ -77,7 +79,7 @@ test('Alternativa ligera · notas sin desbordamiento @mobile',async({page})=>{
 });
 
 test('Linux simulado · SGID hereda grupo en archivos y subdirectorios',async({page})=>{
- await ready(page,'linux');await page.locator('#term-solved').evaluate(button=>button.click());await expect(page.locator('#term-prompt')).toContainText('root@');
+ await ready(page,'linux');await page.evaluate(()=>globalThis.__s2ktuxTestSolve());await expect(page.locator('#term-prompt')).toContainText('root@');
  for(const command of ['groupadd cooperacion','mkdir /tmp/sgid-nuevo','chown root:cooperacion /tmp/sgid-nuevo','chmod 2770 /tmp/sgid-nuevo','touch /tmp/sgid-nuevo/tocado',"printf 'dato' > /tmp/sgid-nuevo/redirigido",'mkdir /tmp/sgid-nuevo/sub','mkdir -p /tmp/sgid-nuevo/otra/anidada','touch /tmp/sgid-nuevo/otra/anidada/dato'])await submit(page,command);
  for(const path of ['tocado','redirigido','otra/anidada/dato'])expect(await submit(page,'ls -l /tmp/sgid-nuevo/'+path)).toMatch(/root\s+cooperacion/);
  for(const path of ['sub','otra','otra/anidada'])expect(await submit(page,'ls -ld /tmp/sgid-nuevo/'+path)).toMatch(/drwxr-sr-x.*root\s+cooperacion/);

@@ -1,4 +1,6 @@
 import {test,expect} from '@playwright/test';
+import {adaptLegacyPracticeSelection} from './legacy-practice-selection.mjs';
+test.beforeEach(async({page})=>{await adaptLegacyPracticeSelection(page);});
 const cases=[['Linux','/laboratorios/linux-real/v86-test.html','#exercise-select','archivo','[data-exercise-solution]','#exercise-solution'],['Docker','/laboratorios/docker-real/','#exercise','web','#solution-toggle','#solution'],['Kubernetes','/laboratorios/kubernetes-real/','#exercise-select','0','#exercise-solution-toggle','#exercise-solution']];
 async function enter(page,name,path){await page.goto(path);if(name==='Kubernetes'){await page.locator('#mode-practice').click();await page.locator('#enter-lab').click();await expect(page.locator('#nodes iframe')).toHaveCount(0);}}
 for(const [name,path,select,value,toggle,solution]of cases){

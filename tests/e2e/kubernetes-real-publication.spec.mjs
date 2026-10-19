@@ -20,7 +20,7 @@ test('Kubernetes · primero modo y después exactamente tres laboratorios',async
  await expect(page.getByText('¿Cómo quieres practicar?',{exact:true})).toHaveCount(0);
  await expect(page.locator('#entry-class-outline')).toHaveCount(0);
  await expect(page.locator('[data-level-name]')).toHaveText(['Inicial','Intermedio','Avanzado']);await expect(page.locator('#entry-intro')).toBeHidden();
- await expect(page.locator('.level-range')).toHaveText(['Clases 00–06','Clases 07–23','Clases 24–34']);
+ await expect(page.locator('.level-range')).toHaveText(['Clases 01–06','Clases 07–23','Clases 24–34']);
  const levelStyle=await page.locator('[data-choose-stage]').evaluateAll(nodes=>nodes.map(node=>({background:getComputedStyle(node).backgroundColor,shadow:getComputedStyle(node).boxShadow})));
  expect(levelStyle[0].background).not.toBe(levelStyle[1].background);expect(levelStyle.every(item=>item.shadow!=='none')).toBe(true);
  await expect(page.locator('#lab-entry')).not.toContainText('14 preguntas disponibles');
@@ -33,23 +33,23 @@ test('Kubernetes · primero modo y después exactamente tres laboratorios',async
 });
 test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arrancarlo',async({page})=>{
  await mockBoot(page);await page.goto(root);await page.locator('#mode-practice').click();await page.locator('#enter-lab').click();
- await expect(page.locator('#exercise-class-select')).toHaveValue('0');await expect(page.locator('#exercise-class-select option')).toHaveCount(8);
+ await expect(page.locator('#exercise-class-select')).toHaveValue('1');await expect(page.locator('#exercise-class-select option')).toHaveCount(8);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Inicial');
  await expect(page.locator('.exercise-field label')).toHaveText(['Clase','Pregunta']);
  const practiceGaps=await page.evaluate(()=>({prompt:document.querySelector('#exercise-prompt').getBoundingClientRect().top-document.querySelector('#exercise-title').getBoundingClientRect().bottom,padding:parseFloat(getComputedStyle(document.querySelector('#exercises')).paddingTop)}));
  expect(practiceGaps.prompt).toBeGreaterThanOrEqual(16);expect(practiceGaps.padding).toBe(0);
- await expect(page.locator('#lab-course-note')).toHaveText('* Clases 00–06 · Un nodo · 16 preguntas disponibles.');
+ await expect(page.locator('#lab-course-note')).toHaveText('* Clases 01–06 · Un nodo · 15 preguntas disponibles.');
  expect(await page.locator('#lab-course-note').evaluate(node=>parseFloat(getComputedStyle(node).fontSize))).toBeLessThan(13);
  for(const number of ['1','2','3','4','5','6']){
-  await page.selectOption('#exercise-class-select',number);const count=['4','6'].includes(number)?3:2;await expect(page.locator('#exercise-select option')).toHaveCount(count);
+  await page.selectOption('#exercise-class-select',number);const count=number==='4'?4:number==='6'?3:2;await expect(page.locator('#exercise-select option')).toHaveCount(count);
   await page.selectOption('#exercise-select','1');await expect(page.locator('#exercise-count')).toHaveText('Práctica 2 / '+count);expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);
  }
  await page.locator('#change-lab').click();await expect(page.locator('#enter-lab')).toContainText('laboratorio inicial');
  await page.locator('[data-choose-stage=intermedio]').click();await page.locator('#enter-lab').click();
- await expect(page.locator('#exercise-class-select')).toHaveValue('7');await expect(page.locator('#exercise-class-select option')).toHaveCount(18);
+ await expect(page.locator('#exercise-class-select')).toHaveValue('7');await expect(page.locator('#exercise-class-select option')).toHaveCount(19);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Intermedio');
- await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 15 preguntas disponibles.');
- for(const number of ['8','9','10','11']){await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(3);}
+ await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 19 preguntas disponibles.');
+ for(const number of ['8','9','10','11']){await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(4);}
  expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);await expect(page.locator('#exercise-class-select option[value="12"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
 });
 test('Kubernetes · pendientes bloqueados incluso por enlaces y acciones directas',async({page})=>{
@@ -57,8 +57,8 @@ test('Kubernetes · pendientes bloqueados incluso por enlaces y acciones directa
   await page.goto(root+'debian/multinodo.html?mode=course&level='+level+'&clase='+number+'&enter=1&factory=v8&fast=1');
   await expect(page.locator('#lab-entry')).toBeVisible();await expect(page.locator('#entry-intro')).toContainText('Próximamente');
   await expect(page.locator('#enter-lab')).toBeDisabled();await expect(page.locator('#start-cluster')).toBeDisabled();
-  await page.evaluate(async()=>{await document.querySelector('#enter-lab').onclick();await document.querySelector('#start-cluster').onclick();});
-  await expect(page.locator('#nodes iframe')).toHaveCount(0);await expect(page.locator('#exercise-help')).toBeHidden();expect(await page.evaluate(()=>kubeDebianClusterProfile.factoryVersion)).toBe('v6');
+  await page.evaluate(async()=>{await document.querySelector('#enter-lab').onclick();document.querySelector('#start-cluster').click();});
+  await expect(page.locator('#nodes iframe')).toHaveCount(0);await expect(page.locator('#exercise-help')).toBeHidden();expect(await page.evaluate(()=>globalThis.kubeDebianClusterProfile)).toBeUndefined();
  }
 });
 test('Kubernetes · examen separado, español e inglés y sin un intento ficticio',async({page})=>{
@@ -77,7 +77,7 @@ test('Kubernetes · examen separado, español e inglés y sin un intento fictici
  await expect(page.locator('[data-exam-language]')).toHaveText(['ES','EN']);
  const languageStyles=await page.locator('[data-exam-language]').evaluateAll(nodes=>nodes.map(node=>getComputedStyle(node).backgroundColor));expect(languageStyles[0]).not.toBe(languageStyles[1]);
  const languagePosition=await page.evaluate(()=>({bottom:document.querySelector('.exam-languages').getBoundingClientRect().bottom,description:document.querySelector('#exam-description').getBoundingClientRect().top}));expect(languagePosition.bottom).toBeLessThan(languagePosition.description);
- await page.evaluate(async()=>{await document.querySelector('#start-cluster').onclick();await document.querySelector('#enter-lab').onclick();});await expect(page.locator('#nodes iframe')).toHaveCount(0);
+ await page.evaluate(async()=>{document.querySelector('#start-cluster').click();await document.querySelector('#enter-lab').onclick();});await expect(page.locator('#nodes iframe')).toHaveCount(0);
  await page.goto(root+'debian/multinodo.html?mode=course&level=inicial&view=exam&enter=1');
  await expect(page.locator('#exam-configuration')).toBeVisible();await expect(page.locator('#lab-workspace')).toBeHidden();await expect(page.locator('#nodes iframe')).toHaveCount(0);
 });

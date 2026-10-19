@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import {adaptLegacyPracticeSelection} from './legacy-practice-selection.mjs';
+test.beforeEach(async({page})=>{await adaptLegacyPracticeSelection(page);});
 import { SAFE_COMMANDS, RUNTIME_COMMANDS, invocationFor } from './command-matrix.mjs';
 
 const MODES = ['linux','docker','kubernetes'];
@@ -17,7 +19,7 @@ async function openMode(page,mode,{solved=mode==='linux'}={}){
   await expect(page.locator('#term-input')).toBeAttached();
   await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
   if(solved){
-    await page.locator('#term-solved').evaluate(button=>button.click());
+    await page.evaluate(()=>globalThis.__s2ktuxTestSolve());
     await page.waitForFunction(()=>/[@#$] ?$/.test(document.querySelector('#term-prompt')?.textContent||'') && !document.querySelector('#term-input')?.readOnly,null,{timeout:8000});
   }
 }
@@ -396,7 +398,7 @@ for(const mode of MODES){
     await expect(page.locator('#mode-select')).toBeVisible();
     await page.goto('/terminal.html?mode='+mode+'&enter=1');
     await page.waitForFunction(()=>document.documentElement.dataset.terminalReady==='true');
-    if(mode==='linux') await page.locator('#term-solved').evaluate(button=>button.click());
+    if(mode==='linux') await page.evaluate(()=>globalThis.__s2ktuxTestSolve());
     await waitForShell(page);
     expect(await run(page,'test -e /tmp/no-debe-sobrevivir; echo $?')).toMatch(/1/);
   });
@@ -479,14 +481,14 @@ test('Docker · la práctica 15 usa multi-stage y ofrece una solución sin alter
   await openMode(page,'docker');
   await page.locator('#practice-panel').evaluate((panel)=>{panel.open=true;});
   for(let index=0;index<15;index+=1){
-    await page.locator('#chal-select').selectOption(String(index));
+    await page.selectOption('#chal-select',String(index));
     await expect(page.locator('#chal-solution')).toBeVisible();
     await page.locator('#chal-solution').click();
     await expect(page.locator('#chal-solution-body')).not.toBeEmpty();
     await page.locator('#chal-solution').click();
   }
-  await page.locator('#chal-select').selectOption('14');
-  await expect(page.locator('#chal-body')).toContainText('Construye una imagen multi-stage');
+  await page.selectOption('#chal-select','14');
+  await expect(page.locator('[data-practice-title]')).toHaveText('Multi-stage · II');
   await expect(page.locator('#chal-body')).not.toContainText('Publica una release');
 
   const solution=page.locator('#chal-solution-body');

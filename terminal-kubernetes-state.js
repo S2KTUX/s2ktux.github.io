@@ -1,3 +1,13 @@
+// Las órdenes dentro del contenedor se ejecutan en el hilo principal. Conservar
+// sus archivos al recibir una reconciliación evita perder escrituras recientes.
+export function retainPodFiles(current,next){
+ for(const pod of next.pods||[]){
+  const before=(current.pods||[]).find(item=>item.name===pod.name&&item.namespace===pod.namespace&&item.createdAt===pod.createdAt);
+  if(before?.fs)pod.fs=before.fs;
+  if(before?.dirs)pod.dirs=before.dirs;
+ }
+ return next;
+}
 export const createDefaultKubernetesState = (version) => ({
   namespace: 'default',
   nextIp: 10,

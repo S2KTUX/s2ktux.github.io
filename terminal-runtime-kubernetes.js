@@ -13,7 +13,7 @@ export default {
   mode: 'kubernetes',
   practiceGroups:CLASES.map(lesson=>lesson.title),
   firstPracticeClass:0,
-  learningClasses:[0,2,4,6],
+  learningClasses:[1,2,4,6,10,11],
   loadLearningChallenges:async ctx=>(await import('./laboratorios/learning-kubernetes-sim.mjs')).simulatedLearningKubernetes(ctx),
   profile: {
     initialUser: 'root',
@@ -116,6 +116,6 @@ export default {
       {title:'Respalda el estado del clúster',goal:'Verifica la salud de etcd, guarda una copia válida en <b>/root/etcd-cka.db</b> y comprueba después la integridad del snapshot.',check:()=>s.k8s.etcdSnapshot&&s.history.some(h=>/^etcdctl endpoint health/.test(h))&&s.history.some(h=>/^etcdctl snapshot status/.test(h))?{ok:true,msg:'etcd comprobado y respaldado.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
       {title:'Planifica y aplica un upgrade',goal:'Revisa las versiones de actualización admitidas, aplica la propuesta al clúster y confirma al finalizar la versión informada por todos los nodos.',check:()=>s.k8s.upgraded&&s.k8s.actions.includes('upgrade-plan')&&s.k8s.actions.includes('get-nodes')?{ok:true,msg:'Upgrade planificado, aplicado y comprobado.'}:{ok:false,msg:'El objetivo todavía no está completo.'}},
       {title:'Audita el clúster completo',goal:'Realiza una auditoría final de cargas, servicios, eventos y consumo de nodos y Pods. No puede quedar averiado ni <b>api-broken</b> ni <b>worker-2</b>.',check:()=>{const p=s.k8s.pods.find(x=>x.name==='api-broken'),n=s.k8s.nodes.find(x=>x.name==='worker-2');return p&&p.status==='Running'&&n&&n.status==='Ready'&&s.k8s.actions.includes('get-pods')&&s.k8s.actions.includes('events')&&s.history.some(h=>/^kubectl get all/.test(h))&&s.history.some(h=>/^kubectl top nodes/.test(h))&&s.history.some(h=>/^kubectl top pods/.test(h))?{ok:true,msg:'Auditoría final superada.'}:{ok:false,msg:'El objetivo todavía no está completo.'};}}
-    ];
+    ].map((task,index)=>({...task,loadSolution:()=>import('./laboratorios/simulated-kubernetes-solutions.mjs').then(module=>module.solutions[index].replace('VERSION_PROPUESTA',ctx.system.K8S_UPGRADE))}));
   }
 };

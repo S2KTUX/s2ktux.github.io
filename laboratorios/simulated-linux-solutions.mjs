@@ -1,4 +1,8 @@
 // Procedimientos de la máquina simulada Rocky; no se usan en el examen real.
+export const rootSolutionOptions=[
+ {title:'rd.break',code:'# En GRUB pulsa e, añade rd.break a la línea linux y arranca con Ctrl+X.\nmount -o remount,rw /sysroot\nchroot /sysroot\npasswd root\n# Escribe titanio7 dos veces.\ntouch /.autorelabel\nexit\nexit'},
+ {title:'init=/bin/bash',code:'# En GRUB pulsa e, añade init=/bin/bash a la línea linux y arranca con Ctrl+X.\nmount -o remount,rw /\npasswd root\n# Escribe titanio7 dos veces.\ntouch /.autorelabel\nexec /sbin/init'},
+];
 export const simulatedLinuxSolutions=[
  '# Reinicia para entrar en GRUB. Edita la entrada con e.\n# Añade rd.break al final de la línea linux y arranca con Ctrl+X.\nmount -o remount,rw /sysroot\nchroot /sysroot\npasswd root\n# Escribe titanio7 dos veces.\ntouch /.autorelabel\nexit\nexit',
  'nmtui\n# En Editar conexión, configura eth0 con los datos del enunciado.\n# Activa la conexión antes de salir.\nhostnamectl set-hostname nodo1.lab.local\nip a\nip route',

@@ -74,7 +74,7 @@ check('docker',14,f=>{f.put('/root/produccion/Dockerfile','FROM node AS build\nF
 
 assert.equal(linux.createChallenges(fixture().ctx).length,21);
 assert.equal(docker.createChallenges(fixture().ctx).length,15);
-assert.equal(realDocker.length,32);
+assert.equal(realDocker.length,56);
 assert.equal(introExercises.length+courseExercises.length+extraExercises.length,44);
 assert.equal(examQuestions.length,22);
 const http={image:'nginx',fs:dockerImageFiles('nginx'),mounts:[]};
