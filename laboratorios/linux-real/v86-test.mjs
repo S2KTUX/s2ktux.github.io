@@ -12,7 +12,7 @@ import {consoleSetupCommand,practiceAccountsCommand} from './v86-guest-console.m
 import {createSerialOutput,appendTranscript} from './v86-serial.mjs';
 import {createExamConsole,examConsoleSetupCommand,createExamBootDetector} from './v86-exam-console.mjs?v=20261020-aprendizaje';
 import {mountLabNotices} from '../lab-notices.mjs';
-import {bootProgress} from '../boot-progress.mjs';
+import {createGuestBootLog} from './v86-boot-log.mjs';
 import {verifiedDownload} from '../verified-download.mjs';
 const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono", monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
 terminal.open(document.querySelector('#terminal'));
@@ -30,7 +30,8 @@ if(examMode)document.documentElement.classList.add('exam-embed');
 const recoveryScenario=params.get('scenario')==='recovery';
 let recoveryBootPending=recoveryScenario;
 let consolePrepared=false,consolePreparing=false,consolePreparationFailed=false;
-const bootFeed=bootProgress(status,terminal,{ready:()=>consolePrepared});
+let guestBootLog;
+const readyMessage=()=>guestBootLog?.finished?'Laboratorio disponible · registros del arranque guardado.':'Laboratorio disponible.';
 const defaultFinal=!['boot','disk','estado','motor','extras'].some(name=>params.has(name));
 const bootGrub=defaultFinal||params.get('boot')==='grub';
 const requestedDisk=params.get('disk')||(defaultFinal?'final':null);
@@ -78,7 +79,14 @@ async function prepareConsole(){
  try{
    const initialClock=!savedRecord?Math.floor(Date.now()/1000):undefined;
    const setup=rootShell?(examMode?examSetupCommand(examAttempt,nodeName)+' && '+examConsoleSetupCommand()+' && ':!recoveryScenario?practiceAccountsCommand()+' && ':'')+consoleSetupCommand(recoveryScenario,password,initialClock,!savedRecord&&!examMode,examMode?undefined:nodeName==='2'?'s2ktux-lab-2':'s2ktux-lab'):"export PS1='[\\u@\\h \\W]\\$ '";
-   const promise=exerciseRunner.run({checks:[]},setup);
+   let command=setup;
+   if(rootShell&&!savedRecord&&!examMode&&!recoveryScenario){
+     const nonce=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>b.toString(16).padStart(2,'0')).join('');
+     guestBootLog=createGuestBootLog(nonce,text=>{terminal.write(text);displayTranscript=appendTranscript(displayTranscript,text,100000);});
+     status.textContent='Registros reales del arranque guardado y servicios activos de Linux…';
+     command+=' && '+guestBootLog.command;
+   }
+   const promise=exerciseRunner.run({checks:[]},command);
    busy=true;document.querySelector('#save').disabled=true;updateExerciseAvailability();
    const result=await promise;
    if(examMode)await examConsole.wait();
@@ -96,7 +104,7 @@ async function prepareConsole(){
    }else{
      recoveryBootPending=false;
      terminal.write(actualPrompt);displayTranscript=appendTranscript(displayTranscript,actualPrompt,100000);
-     document.documentElement.dataset.vmState='shell';status.textContent='Laboratorio disponible.';
+     document.documentElement.dataset.vmState='shell';status.textContent=readyMessage();
      if(examMode&&!examReadySent){examReadySent=true;parent.postMessage({kind:'s2ktux-exam-ready',attempt:examAttempt},location.origin);}
    }
  }catch(error){if(examMode)consolePreparationFailed=true;status.textContent=error.message;document.documentElement.dataset.vmState='failed';if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);}
@@ -138,7 +146,7 @@ globalThis.vmSaveSession=async()=>{
 };
 document.querySelector('#save').onclick=()=>globalThis.vmSaveSession().catch(console.error);
 document.querySelector('#start').onclick=async()=>{
-  document.querySelector('#start').disabled=true;status.textContent='Cargando Linux real…';bootFeed.start();
+  document.querySelector('#start').disabled=true;status.textContent='Cargando Linux real…';
   const internetEnabled=!examMode;
   const base=new URL('./assets/v86-test/',import.meta.url);
   const fail=error=>{document.documentElement.dataset.vmState='failed';status.textContent='Laboratorio detenido: '+error.message;document.querySelector('#result').hidden=false;document.querySelector('#result').textContent='Puedes usar Reset para empezar con la base limpia; perderás el guardado de esta máquina.';console.error(error);emulator?.stop();if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);};
@@ -216,6 +224,7 @@ document.querySelector('#start').onclick=async()=>{
     labWire.onmessage=event=>{if(event.data instanceof Uint8Array){labFrames.received++;emulator.bus.send('net0-receive',event.data);}};
     emulator.add_listener('net0-send',frame=>{labFrames.sent++;labWire.postMessage(frame);});
     serialOutput=createSerialOutput(text=>{
+      guestBootLog?.receive(text);
       examBootDetector?.(text);
       globalThis.vmTranscript=appendTranscript(globalThis.vmTranscript,text);
       // Solo el reinicio inicial preparado: Linux ya desmontó y sincronizó
@@ -231,14 +240,14 @@ document.querySelector('#start').onclick=async()=>{
       if(visible.length){const output=visible.join('');terminal.write(output);displayTranscript=appendTranscript(displayTranscript,output,100000);}
       if(recoveryBootPending&&/GNU GRUB|login:\s*$/.test(cleanSerial(globalThis.vmTranscript.slice(-3000))))recoveryBootPending=false;
       if(atShellPrompt(globalThis.vmTranscript))inputPending=false;
-      if(atShellPrompt(globalThis.vmTranscript)&&consolePrepared&&!consolePreparing){document.documentElement.dataset.vmState='shell';status.textContent='Laboratorio disponible.';}
+      if(atShellPrompt(globalThis.vmTranscript)&&consolePrepared&&!consolePreparing){document.documentElement.dataset.vmState='shell';status.textContent=readyMessage();}
       if(!consolePrepared&&!consolePreparing)queueMicrotask(prepareConsole);
       if(recoveryScenario&&/login:\s*$/.test(cleanSerial(globalThis.vmTranscript.slice(-300))))status.textContent='Recupera root desde GRUB: la contraseña inicial no se proporciona.';
       updateExerciseAvailability();
       if(examMode&&examPrepared&&!examReadySent&&!recoveryBootPending){examReadySent=true;parent.postMessage({kind:'s2ktux-exam-ready',attempt:examAttempt},location.origin);}
     });
     emulator.add_listener('serial0-output-byte',byte=>serialOutput.push(byte));
-    emulator.add_listener('emulator-ready',()=>{status.textContent=prepared?'Reanudando Linux…':'Arrancando el kernel y systemd…';terminal.writeln('[Laboratorio] '+status.textContent);});
+    emulator.add_listener('emulator-ready',()=>{status.textContent=prepared?'Reanudando Linux…':'Arrancando el kernel y systemd…';});
     // Arrancar después de restaurar RAM/UART, no durante emulator-ready.
     emulator.add_listener('emulator-loaded',()=>{
       // Ya está restaurado: las opciones del motor no deben retener otra copia

@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createGuestBootLog} from '../laboratorios/linux-real/v86-boot-log.mjs';
+const nonce='abcd'.repeat(6),out=[],reader=createGuestBootLog(nonce,text=>out.push(text));
+assert.throws(()=>createGuestBootLog('bad',()=>{}));
+const input='echo printf __BOOTLOG_'+nonce+'_BEGIN\r\n__BOOTLOG_'+nonce+'_BEGIN\r\n[ 0.000000] Linux version real\r\n  ssh.service loaded active running\r\n__BOOTLOG_'+nonce+'_END\r\n[root@nodo ~]# ';
+for(const byte of input)reader.receive(byte);assert.equal(reader.finished,true);
+assert.equal(out.join(''),'[ 0.000000] Linux version real\r\n  ssh.service loaded active running\r\n');
+assert.match(reader.command,/journalctl -b -k/);assert.match(reader.command,/systemctl list-units/);
+const page=readFileSync(new URL('../laboratorios/linux-real/v86-test.mjs',import.meta.url),'utf8');
+assert.doesNotMatch(page,/bootFeed|terminal\.writeln\('\[Laboratorio\]/);assert.match(page,/guestBootLog\?\.receive\(text\)/);
+console.log('Linux: salida de registros reales separada del protocolo y sin mensajes propios de arranque.');

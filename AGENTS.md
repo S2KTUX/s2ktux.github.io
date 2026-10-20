@@ -10,6 +10,7 @@
 - Las soluciones de prácticas usan comandos enseñados en el curso. Mostrar archivos largos con su contenido legible y no añadir alternativas rebuscadas.
 - Probar los resultados de los correctores: casos correctos, incompletos y soluciones equivalentes. No afirmar equivalencia perfecta con Linux o cobertura total de CKA.
 - Antes de publicar: construir, ejecutar pruebas, comprobar móvil y enlaces, y revisar los cambios. Conservar los datos guardados de las máquinas.
-- LPIC-1 usa preguntas originales y la distribución publicada por LPI, no copias de bancos de terceros. Sus 60 preguntas y 90 minutos no implican reproducir la fórmula no publicada de puntuación: el aprobado propio del 70 % debe quedar identificado como tal.
+- LPIC-1 usa los bancos de Deza92 en Daypo con permiso de reutilización confirmado por el responsable del sitio. Conservar la atribución, los identificadores de origen y el registro de correcciones; no volver a presentarlos como preguntas originales de S2KTUX ni como preguntas oficiales de LPI. Los simulacros de 60 preguntas y 90 minutos mantienen el aprobado propio del 70 %, no una conversión de la nota oficial.
 - Las marcas de prácticas son un historial de comprobaciones, no una comprobación automática del estado actual de la máquina. Borrar progreso no debe borrar las máquinas ni sus guardados.
+- Una marca manual de «Realizada» no equivale a «Comprobada». Mantener el seguimiento discreto y separado del resultado del corrector.
 - El progreso de arranque debe reflejar descargas y operaciones reales. No inventar líneas del kernel, porcentajes de CPU o tiempos garantizados. La caché solo puede reutilizar recursos después de verificar sus sumas.

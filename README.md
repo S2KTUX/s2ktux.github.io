@@ -15,6 +15,8 @@ Apuntes, vídeos y laboratorios para aprender Linux, RHCSA, LPIC-1, Docker y Kub
 
 Las licencias y fuentes de terceros están enlazadas en [Sobre](https://s2ktux.github.io/sobre.html#licencias). El [mapa técnico](docs/arquitectura.md) explica los motores. `node scripts/audit-repository.mjs` permite buscar imágenes sin referencias literales, sin borrarlas automáticamente.
 
+LPIC-1 utiliza los dos bancos de 120 preguntas de Deza92 en Daypo, con permiso confirmado por el responsable del sitio. La [procedencia y las correcciones](contenido/lpic-1-correcciones.md) se conservan con los identificadores de origen; no son preguntas oficiales ni preguntas originales de S2KTUX.
+
 ## Build y publicación
 
 Los archivos editables siguen siendo los módulos fuente: terminal-core.js, terminal-runtime-*.js y terminal-*-command.js. El comando npm run build usa esbuild, sin plugins, para generar en _site/ paquetes ESM minificados y compartidos por Linux, Docker y Kubernetes. _site/ es temporal, está ignorado por Git y no se revisa ni se commitea.
