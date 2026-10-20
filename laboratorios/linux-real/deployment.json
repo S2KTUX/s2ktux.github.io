@@ -20,8 +20,8 @@
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "b6fab0dd0509ac90448c6450621795468074b7570cabb27db1573008a39fc710",
-      "bytes": 25022
+      "sha256": "a030fd5b07bc5b1a51433b36a3b5ea28ee581e5dcf0c69f304656ced29bbaf88",
+      "bytes": 25535
     },
     {
       "path": "v86-exercise-panel.mjs",
@@ -85,6 +85,11 @@
     }
   ],
   "addedFiles": [
+    {
+      "path": "v86-boot-log.mjs",
+      "sha256": "f53ea790b7663ac3de90c48a88fbb4511491667136f8c9f7ed42f88c3bde71d2",
+      "bytes": 1006
+    },
     {
       "path": "linux-real.css",
       "sha256": "fc9e4cc6e5fd4b38a5d596fdcc2d5951431c30925b7215378a40fbc1866b53f5",
