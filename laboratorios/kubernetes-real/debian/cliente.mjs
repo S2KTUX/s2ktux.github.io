@@ -5,7 +5,7 @@ import {createEthernetInternet} from '/laboratorios/docker-real/ethernet-interne
 import {attachTerminalClipboard} from '/laboratorios/docker-real/v86-clipboard.mjs';
 import {createKubeChecks} from '../serial-checks.mjs';
 import {EstadoConsola} from './estado-consola.mjs';
-import {cargarFabricaDebian,perfilFabricaDebian} from './fabrica.mjs';
+import {cargarFabricaDebian,perfilFabricaDebian} from './fabrica.mjs?v=20261020';
 import {liberarEstadoInicial} from '../liberar-arranque.mjs';
 import {KubeSessions} from '../kube-sessions.mjs';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
@@ -22,6 +22,7 @@ import {comandosEntornoPreparado} from './comprobar-entorno-preparado.mjs';
 import {panicDeArranque} from './panic-arranque.mjs';
 import {kernelSha256} from './kernel-perfil.mjs';
 import {recursoPesado} from '../recursos-publicados.mjs';
+import {bootProgress} from '../../boot-progress.mjs';
 const status=document.querySelector('#status'),start=document.querySelector('#start'),save=document.querySelector('#save'),reset=document.querySelector('#reset');
 const base=new URL(location.href).searchParams.get('base')||'v3';
 const baseHashes={v1:'66d2cbe7fc76c5d1f618c2cad655ef4979d0e145885637e8ac8d61003cc47302',v2:'175e42905bb8f50cd0bffd3df47071740f098f875b11145fe31c7cf9c3fccff1',v3:'289150401015a0cac0bbb6ce60a602f0c519758527d2d14fc79c4a2984bb70fb',v4:'fcbd48d751b9ace0693783390a1491c8fb6c4e9ee6049660c657f36426a8a800',v5:'fd01e13c792d7ced1953f5d72184bb0fb6611b22fda859ef0e98fdf61b0d9dd1',v6:'b28ae1db29f350845de04ec03188d6d89fa7b86250e5788e45497478fd284716'};
@@ -74,6 +75,8 @@ if(!Object.hasOwn(componentHashes,components))throw Error('Componentes no admiti
 const terminal=new Terminal({cols:100,rows:28,fontSize:15,fontFamily:'"Share Tech Mono",monospace',scrollback:5000,theme:{background:'#161009',foreground:'#e9ddc7'}});
 terminal.open(document.querySelector('#terminal'));
 const presentation=new PresentacionConsola(terminal);
+const bootFeed=bootProgress(status,terminal,{ready:()=>globalThis.kubeDebianReady});
+globalThis.kubeDebianBootNotice=text=>terminal.writeln('\r\n[Laboratorio] '+String(text));
 globalThis.kubeDebianOpenTerminal=options=>{if(!options?.diagnostic&&(busy||!consoleState.idle))throw Error('El shell todavía está ocupado');presentation.open(kubeDebianTranscript,options);};
 globalThis.kubeDebianVisibleTerminal=()=>presentation.text;
 let vm,internet,busy=false,preparing=false,timer,bytes=[],record,identity,sessionRead=false;
@@ -182,14 +185,14 @@ function flush(){
  // Una línea asíncrona del kernel no significa que el usuario haya empezado
  // una orden. Solo el envío de entrada deja de estar en un prompt vacío.
  consoleState.receive(kubeDebianTranscript);
- if(!checks.receive(text))presentation.write(text);
+ if(!checks.receive(text)){if(!presentation.opened)terminal.write(text);else presentation.write(text);}
  if(panicDeArranque(kubeDebianTranscript,kubeDebianReady))fail(Error('El kernel no ha podido arrancar.'));
  if(prompt()&&!kubeDebianReady)prepare();
 }
 terminal.onData(text=>{if(vm&&!busy&&presentation.opened){consoleState.input(text);vm.serial0_send(Array.from(encoder.encode(text),byte=>String.fromCharCode(byte)).join(''));}});
 attachTerminalClipboard(terminal,document.querySelector('#terminal'),{canPaste:()=>!!vm&&!busy&&presentation.opened,notify:text=>status.textContent=text});
 start.onclick=async()=>{
- start.disabled=true;status.textContent='Arrancando la copia privada de Debian…';
+ start.disabled=true;status.textContent='Cargando el nodo Debian…';bootFeed.start();
  try{
   const manifest=await fetch(`disco-${base}/disco-fragmentado.json`).then(r=>{if(!r.ok)throw Error('Base Debian no disponible');return r.json();});
   if(manifest.sha256!==baseHashes[base])throw Error('No coincide la base Debian comprobada');

@@ -33,4 +33,5 @@ export function mountSimulatedLayout(mode){
   reference.addEventListener('toggle',async()=>{if(!reference.open||reference.dataset.loaded)return;reference.dataset.loaded='loading';try{const {mountCommandReference}=await import('./command-reference.mjs');const holder=document.createElement('div');mountCommandReference(holder);reference.append(...[...holder.firstElementChild.children].slice(1));reference.dataset.loaded='true';}catch{delete reference.dataset.loaded;const error=document.createElement('p');error.textContent='No se pudo cargar la referencia. Ciérrala y vuelve a abrirla.';reference.append(error);}});
  }
  if(new URLSearchParams(location.search).get('exam')==='1'){main.classList.add('simulated-exam');nav.querySelector('[aria-current]').removeAttribute('aria-current');nav.lastElementChild.setAttribute('aria-current','page');}
+ else import('./practice-progress.mjs').then(({practiceProgress})=>practiceProgress({mode:mode+'-simulado',select,feedback:result}));
 }

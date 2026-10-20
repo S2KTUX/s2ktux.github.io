@@ -1,4 +1,18 @@
 /* Estructura común; cada laboratorio conserva sus controles específicos. */
+.exam-score-detail{display:block;font:13px/1.8 'Space Mono',monospace;color:var(--muted);margin-top:10px}
+.lab-page :is(#verdict,#exam-verdict)[data-result]{padding:14px 16px;border:2px solid;border-left-width:6px}
+.exam-domains{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:16px;margin:24px 0}
+.exam-domain{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:16px;border-bottom:2px solid var(--line);background:var(--surface)}
+.exam-domain h3{font:14px/1.6 'Space Mono',monospace;margin:0!important}.exam-domain progress{grid-column:1/-1;width:100%;height:10px;appearance:none;border:1px solid var(--line);border-radius:0;background:var(--surface2);accent-color:var(--head)}
+.exam-domain progress::-webkit-progress-bar{background:var(--surface2)}.exam-domain progress::-webkit-progress-value{background:var(--head)}.exam-domain progress::-moz-progress-bar{background:var(--head)}
+.exam-domain strong{font:16px/1.6 'Share Tech Mono',monospace;color:var(--head)}
+.practice-progress{display:flex;flex-wrap:wrap;align-items:center;gap:10px 18px;margin:14px 0 22px;padding:12px 14px;border:2px solid var(--line);border-left-width:6px;font:13px/1.7 'Space Mono',monospace;background:var(--surface)}
+.practice-progress p{flex:1 1 260px;margin:0!important;font-size:12px}.practice-progress button{font:13px 'Share Tech Mono',monospace;color:var(--head);background:transparent;border:0;text-decoration:underline;cursor:pointer}
+.practice-progress[data-result=passed],.lab-page [data-result=passed],.lab-page [data-result=correct]{border-color:#4b713d;background:#e4eddc;color:#24451e}
+.practice-progress[data-result=failed],.lab-page [data-result=failed],.lab-page [data-result=incorrect],.lab-page [data-result=incomplete]{border-color:#a34530;background:#f5e1d9;color:#7b281a}
+.lab-page :is([data-exercise-feedback],#feedback,#exercise-result,#chal-result)[data-result]:not([data-result=pending]):not(:empty){border:2px solid;border-left-width:6px;padding:14px 16px;margin:18px 0}
+html.dark .practice-progress[data-result=passed],html.dark .lab-page [data-result=passed],html.dark .lab-page [data-result=correct]{background:#253823;color:#c9e6b9;border-color:#8eb878}
+html.dark .practice-progress[data-result=failed],html.dark .lab-page [data-result=failed],html.dark .lab-page [data-result=incorrect],html.dark .lab-page [data-result=incomplete]{background:#43271f;color:#ffd8c9;border-color:#df927b}
 .lab-page{width:min(1160px,94vw);margin:0 auto;padding:34px 0 42px;font:17px/1.7 'Space Mono',monospace}
 .lab-page h1{font:22px/1.6 'Press Start 2P',monospace;color:var(--head);margin:0 0 30px}
 .lab-page [hidden]{display:none!important}

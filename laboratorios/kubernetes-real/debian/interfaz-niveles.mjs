@@ -1,10 +1,11 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=20261019-revision';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=20261020-aprendizaje';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs';
 import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs';
-import {renderSolutions} from '../../lab-solutions.mjs?v=20261019-revision';
-import {solutionsFor} from '../../solution-options.mjs?v=20261019-revision';
+import {renderSolutions} from '../../lab-solutions.mjs?v=20261020-aprendizaje';
+import {solutionsFor} from '../../solution-options.mjs?v=20261020-aprendizaje';
+import {practiceProgress} from '../../practice-progress.mjs';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
@@ -136,6 +137,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   finally{checking=false;setBusy(false);update();}
  }
  $('exercise-check').onclick=()=>exercise(false);$('exercise-prepare').onclick=()=>exercise(true);
+ practiceProgress({mode:'kubernetes-real',select:$('exercise-select'),feedback:$('exercise-result'),getId:()=>task()?.id});
  $('exercise-solution-toggle').onclick=()=>{const body=$('exercise-help');body.hidden=!body.hidden;$('exercise-solution-toggle').textContent=body.hidden?'Ver solución':'Ocultar solución';$('exercise-solution-toggle').setAttribute('aria-expanded',String(!body.hidden));};
  const dialog=$('switch-level-dialog');for(const button of dialog.querySelectorAll('[data-switch-action]'))button.onclick=()=>dialog.close(button.dataset.switchAction);
  async function choose(destination){

@@ -1,7 +1,7 @@
 import {test,expect} from '@playwright/test';
 import {readdir} from 'node:fs/promises';
 
-const paths=['/','/cursos.html','/sobre.html','/proyectos.html','/proyecto-kubernetes.html','/proyecto-proxmox.html','/terminal.html','/404.html','/laboratorios/linux-real/','/laboratorios/linux-real/examen.html','/laboratorios/docker-real/','/laboratorios/kubernetes-real/'];
+const paths=['/','/cursos.html','/sobre.html','/proyectos.html','/proyecto-kubernetes.html','/proyecto-proxmox.html','/terminal.html','/404.html','/laboratorios/linux-real/','/laboratorios/linux-real/examen.html','/laboratorios/docker-real/','/laboratorios/kubernetes-real/','/laboratorios/lpic-1/'];
 for(const course of await readdir('cursos')){
  paths.push('/cursos/'+course+'/');
  for(const item of await readdir('cursos/'+course,{withFileTypes:true}))if(item.isDirectory())paths.push('/cursos/'+course+'/'+item.name+'/');

@@ -1,7 +1,8 @@
 import {examQuestions,EXAM_SECONDS,EXAM_TOTAL,EXAM_PASS,scoreQuestion} from './v86-exam-data.mjs?v=20261010-exam';
 import {examNode2Information} from './v86-exam-fixtures.mjs?v=20261010-exam';
-import {renderSolutions} from '../lab-solutions.mjs?v=20261019-revision';
-import {solutionsFor} from '../solution-options.mjs?v=20261019-revision';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261020-aprendizaje';
+import {solutionsFor} from '../solution-options.mjs?v=20261020-aprendizaje';
+import {domainResults,renderDomains,rhcsaDomain} from '../exam-report.mjs';
 const $=s=>document.querySelector(s),make=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e;};
 const attempt=Array.from(crypto.getRandomValues(new Uint8Array(16)),b=>b.toString(16).padStart(2,'0')).join('');
 const machines=new Map(),pending=new Map(),indices=new Map([['1',0],['2',0]]);
@@ -97,7 +98,13 @@ async function finish(expired=false){
  phase='finished';$('#exam-workspace').hidden=true;$('#exam-results').hidden=false;document.documentElement.classList.remove('exam-running');
  const incomplete=reports.some(r=>r.error),score=reports.reduce((n,r)=>n+(r.points||0),0);
  $('#exam-score').textContent=`${score}/${EXAM_TOTAL} puntos`;
+ const points=$('#exam-score').textContent;$('#exam-score').textContent=Math.round(score/EXAM_TOTAL*100)+' % global';
+ const detail=make('small',points);detail.className='exam-score-detail';$('#exam-score').append(detail);
+ const summary=document.createElement('section');summary.id='exam-domain-summary';summary.setAttribute('aria-label','Resultados por apartado');
+ const previous=$('#exam-domain-summary');if(previous)previous.remove();$('#exam-report').parentElement.before(summary);
+ renderDomains(summary,domainResults(examQuestions.map(q=>{const report=reports.find(r=>r.id===q.id);return{domain:rhcsaDomain(q),earned:report.points||0,total:q.points,unverified:!!report.error};})));
  $('#exam-verdict').textContent=incomplete?'Corrección incompleta: hay preguntas que no se han podido consultar. No se emite un aprobado con comprobaciones pendientes.':score>=EXAM_PASS?'Aprobado.':'No aprobado. Necesitas 210 puntos.';
+ $('#exam-verdict').dataset.result=incomplete?'unverified':score>=EXAM_PASS?'passed':'failed';
  $('#exam-status').textContent=expired?'Tiempo agotado. Intento finalizado.':'Intento finalizado.';
  const root=$('#exam-report');root.replaceChildren();
  for(const q of examQuestions){

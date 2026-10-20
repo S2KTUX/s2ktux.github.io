@@ -1,4 +1,5 @@
 import {recursoPesado} from '../recursos-publicados.mjs';
+import {verifiedDownload} from '../../verified-download.mjs';
 // Identidad exclusiva de Debian: no aceptar capturas Alpine ni guardados del alumno.
 export const PERFIL_DEBIAN={
  rootSha256:'fcbd48d751b9ace0693783390a1491c8fb6c4e9ee6049660c657f36426a8a800',
@@ -74,16 +75,16 @@ export function validarFragmentosDebian(factory,expected=PERFIL_DEBIAN){
 export async function cargarFabricaDebian(base,expected=PERFIL_DEBIAN,{notify=()=>{}}={}){
  const response=await fetch(new URL('estado-fragmentado.json',base));if(!response.ok)throw Error('Base preparada no disponible');
  const factory=validarFragmentosDebian(await response.json(),expected);
- const packed=new Uint8Array(factory.packedBytes);let index=0,received=0;
+ const packed=new Uint8Array(factory.packedBytes),progress=new Map();let index=0,received=0;
  await Promise.all(Array.from({length:Math.min(3,factory.parts.length)},async()=>{
   for(;;){
    const part=factory.parts[index++];if(!part)return;
-   const response=await fetch(recursoPesado(new URL('fragmentos/'+part.file,base)));if(!response.ok)throw Error('Descarga incompleta');
-   const bytes=await response.arrayBuffer();if(bytes.byteLength!==part.bytes||await sha(bytes)!==part.sha256)throw Error('Fragmento alterado');
+   const bytes=await verifiedDownload(recursoPesado(new URL('fragmentos/'+part.file,base)),{hash:part.sha256,bytes:part.bytes,notify:count=>{progress.set(part.file,count);notify(`Recuperando base Debian… ${Math.floor([...progress.values()].reduce((a,b)=>a+b,0)/factory.packedBytes*100)} %`);}});
    packed.set(new Uint8Array(bytes),part.offset);received+=part.bytes;notify(`Recuperando base Debian… ${Math.floor(received/factory.packedBytes*100)} %`);
   }
  }));
  if(await sha(packed)!==factory.sha256)throw Error('La base Debian está alterada');
+ notify('Descomprimiendo la memoria del nodo…');
  const state=new Uint8Array(factory.bytes),reader=new Blob([packed]).stream().pipeThrough(new DecompressionStream('gzip')).getReader();let offset=0;
  try{
   for(;;){const {value,done}=await reader.read();if(done)break;if(value.length>state.length-offset)throw Error('La captura excede el tamaño declarado');state.set(value,offset);offset+=value.length;}

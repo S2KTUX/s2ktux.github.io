@@ -12,8 +12,8 @@ for(const mode of ['linux','docker','kubernetes'])test(mode+' simulado · clase,
  if(mode==='linux'){
   await page.evaluate(()=>globalThis.__s2ktuxTestSolve());await page.selectOption('#chal-select-class','1');
   await expect(page.locator('[data-practice-title]')).toHaveText('Redirecciones · I');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
-  await command(page,'echo Hola > /root/salida.txt');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
-  await command(page,'echo Distinto > /root/salida.txt');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');
+  await command(page,'echo Hola > /root/salida.txt');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');await expect(page.locator('.practice-progress strong')).toHaveText('Correcto');
+  await command(page,'echo Distinto > /root/salida.txt');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('TODAVÍA NO');await expect(page.locator('.practice-progress strong')).toHaveText('Por corregir');
   const filter=page.locator('#chal-select option[data-source-id="grep-i"]');await page.selectOption('#chal-select',await filter.getAttribute('value'));await page.click('#chal-solution');await expect(page.locator('#chal-solution-body')).not.toContainText('printf');await expect(page.locator('#chal-solution-body')).toContainText('# Solución 1\n\n');
   await page.selectOption('#chal-select-class','exam');await expect(page.locator('#chal-select option').first()).toHaveAttribute('data-source-id','repaso-usuarios');
   await expect(page.locator('#chal-body')).toContainText('Cuentas de un equipo');
@@ -22,13 +22,13 @@ for(const mode of ['linux','docker','kubernetes'])test(mode+' simulado · clase,
   await expect(page.locator('#chal-select-class option[value="1"]')).toHaveText('01 — Fundamentos de Docker');
   await page.selectOption('#chal-select-class','2');const option=page.locator('#chal-select option[data-source-id="inicio-volumen"]').first();
   await expect(option).toHaveCount(1);await page.selectOption('#chal-select',await option.getAttribute('value'));
-  await expect(page.locator('[data-practice-title]')).toHaveText('Volúmenes · I');await command(page,'docker volume create primer-dato');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
+  await expect(page.locator('[data-practice-title]')).toHaveText('Volúmenes · I');await command(page,'docker volume create primer-dato');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');await expect(page.locator('.practice-progress strong')).toHaveText('Correcto');
   await expect(page.locator('#chal-select-class option[value="exam"]')).toHaveCount(0);
  }
  if(mode==='kubernetes'){
   await expect(page.locator('#chal-select-class option[value="0"]')).toHaveCount(0);
   await page.selectOption('#chal-select-class','4');await expect(page.locator('[data-practice-title]')).toHaveText('Deployment · I');
-  await command(page,'kubectl create deployment inicio-web --image=nginx');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');
+  await command(page,'kubectl create deployment inicio-web --image=nginx');await page.click('#chal-check');await expect(page.locator('#chal-result')).toContainText('CONSEGUIDO');await expect(page.locator('.practice-progress strong')).toHaveText('Correcto');
   await page.selectOption('#chal-select-class','exam');await expect(page.locator('#chal-body')).toContainText('Una utilidad disponible');
   await page.selectOption('#chal-select-class','2');
   const podOption=page.locator('#chal-select option').filter({hasText:'Pods · II'});await page.selectOption('#chal-select',await podOption.getAttribute('value'));

@@ -1,17 +1,19 @@
 import {Terminal} from './vendor/xterm.mjs';
 import {ChunkDisk} from './v86-disk.mjs';
 import {LocalSessions,hashBytes} from './v86-sessions.mjs';
-import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261019-revision';
-import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261019-revision';
-import {examSetupCommand} from './v86-exam-setup.mjs?v=20261019-revision';
-import {examQuestions} from './v86-exam-data.mjs?v=20261019-revision';
-import {createEthernetInternet} from './v86-ethernet-internet.mjs?v=20261019-revision';
-import {restartMachine} from './v86-restart.mjs?v=20261019-revision';
-import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261019-revision';
-import {consoleSetupCommand,practiceAccountsCommand} from './v86-guest-console.mjs?v=20261019-revision';
+import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261020-aprendizaje';
+import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261020-aprendizaje';
+import {examSetupCommand} from './v86-exam-setup.mjs?v=20261020-aprendizaje';
+import {examQuestions} from './v86-exam-data.mjs?v=20261020-aprendizaje';
+import {createEthernetInternet} from './v86-ethernet-internet.mjs?v=20261020-aprendizaje';
+import {restartMachine} from './v86-restart.mjs?v=20261020-aprendizaje';
+import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261020-aprendizaje';
+import {consoleSetupCommand,practiceAccountsCommand} from './v86-guest-console.mjs?v=20261020-aprendizaje';
 import {createSerialOutput,appendTranscript} from './v86-serial.mjs';
-import {createExamConsole,examConsoleSetupCommand,createExamBootDetector} from './v86-exam-console.mjs?v=20261019-revision';
+import {createExamConsole,examConsoleSetupCommand,createExamBootDetector} from './v86-exam-console.mjs?v=20261020-aprendizaje';
 import {mountLabNotices} from '../lab-notices.mjs';
+import {bootProgress} from '../boot-progress.mjs';
+import {verifiedDownload} from '../verified-download.mjs';
 const terminal=new Terminal({cols:100,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono", monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
 terminal.open(document.querySelector('#terminal'));
 const status=document.querySelector('#status');globalThis.vmTranscript='';globalThis.vmTerminal=terminal;
@@ -28,6 +30,7 @@ if(examMode)document.documentElement.classList.add('exam-embed');
 const recoveryScenario=params.get('scenario')==='recovery';
 let recoveryBootPending=recoveryScenario;
 let consolePrepared=false,consolePreparing=false,consolePreparationFailed=false;
+const bootFeed=bootProgress(status,terminal,{ready:()=>consolePrepared});
 const defaultFinal=!['boot','disk','estado','motor','extras'].some(name=>params.has(name));
 const bootGrub=defaultFinal||params.get('boot')==='grub';
 const requestedDisk=params.get('disk')||(defaultFinal?'final':null);
@@ -135,7 +138,7 @@ globalThis.vmSaveSession=async()=>{
 };
 document.querySelector('#save').onclick=()=>globalThis.vmSaveSession().catch(console.error);
 document.querySelector('#start').onclick=async()=>{
-  document.querySelector('#start').disabled=true;status.textContent='Cargando Linux real…';terminal.writeln('[Laboratorio] Cargando la máquina…');
+  document.querySelector('#start').disabled=true;status.textContent='Cargando Linux real…';bootFeed.start();
   const internetEnabled=!examMode;
   const base=new URL('./assets/v86-test/',import.meta.url);
   const fail=error=>{document.documentElement.dataset.vmState='failed';status.textContent='Laboratorio detenido: '+error.message;document.querySelector('#result').hidden=false;document.querySelector('#result').textContent='Puedes usar Reset para empezar con la base limpia; perderás el guardado de esta máquina.';console.error(error);emulator?.stop();if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);};
@@ -186,16 +189,16 @@ document.querySelector('#start').onclick=async()=>{
       const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
       const parts=metadata.parts||[{file:metadata.file,bytes:metadata.packedBytes,sha256:metadata.sha256}];
       if(!parts.length||parts.reduce((n,p)=>n+p.bytes,0)!==metadata.packedBytes)throw Error('Lista de estado incompleta');
-      const blocks=new Array(parts.length);let next=0,downloaded=0;
+      const blocks=new Array(parts.length),receivedParts=parts.map(()=>0);let next=0,downloaded=0;
       await Promise.all(Array.from({length:Math.min(4,parts.length)},async()=>{
         while(next<parts.length){const index=next++,part=parts[index];
-          const response=await fetch(new URL(part.file,base));if(!response.ok)throw Error('No se pudo descargar el estado');
-          const data=await response.arrayBuffer();if(data.byteLength!==part.bytes||await digest(data)!==part.sha256)throw Error('Fragmento del estado alterado');
+          const data=await verifiedDownload(new URL(part.file,base),{hash:part.sha256,bytes:part.bytes,notify:received=>{receivedParts[index]=received;status.textContent='Recuperando Linux: '+Math.floor(receivedParts.reduce((a,b)=>a+b,0)/metadata.packedBytes*100)+' %';}});
           blocks[index]=data;downloaded+=data.byteLength;status.textContent='Recuperando Linux: '+Math.floor(downloaded/metadata.packedBytes*100)+' %';
         }
       }));
       const packedBlob=new Blob(blocks);
       if(await digest(await packedBlob.arrayBuffer())!==metadata.sha256)throw Error('Estado preparado alterado');
+      status.textContent='Descomprimiendo la memoria guardada de Linux…';
       const buffer=await new Response(packedBlob.stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
       if(buffer.byteLength!==metadata.bytes)throw Error('Estado preparado incompleto');
       initialState={buffer};

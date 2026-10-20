@@ -1,4 +1,4 @@
-import {linuxExamPractice} from './linux-exam-practice.mjs';
+import {linuxExamPractice} from './linux-exam-practice.mjs?v=20261020';
 // Solo contenido del curso RHCSA 9. Las comprobaciones consultan el resultado.
 // Las tareas de examen se conservan aparte; no son las 22 del modo examen.
 const q=s=>"'"+s.replaceAll("'","'\\''")+"'";

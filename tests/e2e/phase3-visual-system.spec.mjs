@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test('Fase 3 · la portada conserva su composición visual completa', async ({ page }) => {
   await page.goto('/');
   const hero = page.locator('main section').first();
-  await expect(page.getByRole('heading', { level: 1, name: /Aprende Linux/i })).toBeVisible();
+  await expect(page.getByRole('heading', { level: 1, name: /Domina Linux/i })).toBeVisible();
   await expect(hero).toHaveCSS('max-width', '1180px');
   await expect(hero).toHaveCSS('padding-top', '70px');
   await expect(hero).toHaveCSS('text-align', 'center');
