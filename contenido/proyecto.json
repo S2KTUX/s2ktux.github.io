@@ -1,6 +1,16 @@
 {
-  "version": "2.0",
+  "version": "2.1",
   "pendientes": [
+    {
+      "id": "lpic-curso-alineacion",
+      "tema": "LPIC-1",
+      "texto": "Corregir las erratas detectadas y completar las explicaciones que necesitan las preguntas de Daypo. La revisión pregunta a pregunta está en contenido/lpic-1-revision.md; el curso todavía no explica todo el banco."
+    },
+    {
+      "id": "lpic-banco-cobertura",
+      "tema": "LPIC-1",
+      "texto": "Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen."
+    },
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
@@ -63,6 +73,18 @@
     }
   ],
   "versiones": [
+    {
+      "version": "2.1",
+      "fecha": "2026-10-20",
+      "cambios": [
+        "LPIC-1 usa los bancos autorizados de Deza92 en Daypo: 120 preguntas para el 101 y otras 120 para el 102. Añadimos explicaciones y un registro de erratas corregidas.",
+        "Añadimos una lista lateral con marcas discretas de acierto y error. El orden cambia al entrar en práctica, sin perder el avance guardado por examen.",
+        "Cada simulacro elige 60 preguntas del banco correspondiente, manteniendo el peso de los objetivos.",
+        "LPIC-1 aparece primero en Terminal. Las otras prácticas guardan marcas discretas y permiten señalar lo ya realizado, sin el recuadro de seguimiento.",
+        "Linux conserva la entrada rápida y muestra registros reales del arranque guardado y servicios activos, en lugar de mensajes propios dentro de la consola.",
+        "Revisamos las 240 preguntas frente al curso. Publicamos el inventario de lagunas y dejamos anotadas las correcciones y ampliaciones necesarias."
+      ]
+    },
     {
       "version": "2.0",
       "fecha": "2026-10-20",
