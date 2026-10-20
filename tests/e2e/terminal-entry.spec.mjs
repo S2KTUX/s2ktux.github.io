@@ -33,7 +33,7 @@ test('Entrada preliminar · Enter respeta el enlace de Kubernetes',async({page})
 
 test('Menú inicial · no ofrece alternativas simuladas de Linux ni Docker',async({page})=>{
  await page.goto('/terminal.html');const selector=page.locator('#mode-select');
- await expect(selector.locator('[data-pick-mode]')).toHaveCount(3);
+ await expect(selector.locator('[data-pick-mode]')).toHaveCount(4);
  await expect(selector).not.toContainText('Versiones simuladas');
  await expect(selector.locator('a[href*="mode=linux"],a[href*="mode=docker"],[data-legacy-mode]')).toHaveCount(0);
 });

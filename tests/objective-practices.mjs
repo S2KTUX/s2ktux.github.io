@@ -16,7 +16,7 @@ for(const [mode,tasks]of [['linux',linux],['docker',docker]]){
  assert.equal(new Set(tasks.map(task=>task.id)).size,tasks.length);
  for(const task of visible){assert.match(task.title,/ · (I|II)$/);assert.doesNotMatch(task.title,/^Curso/);assert.ok(task.checks.length||task.id==='diagnostico');assert.ok(task.solution);}
 }
-assert.equal(linux.filter(task=>task.practiceExam).length,8);
+assert.equal(linux.filter(task=>task.practiceExam).length,22);
 assert.equal(docker.filter(task=>task.practiceExam).length,0);
 assert.equal(ejerciciosClase(0).length,0);
 assert.equal(Array.from({length:11},(_,i)=>ejerciciosClase(i+1)).flat().length,34);

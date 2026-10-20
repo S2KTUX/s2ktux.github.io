@@ -7,6 +7,7 @@ Apuntes, vídeos y laboratorios para aprender Linux, RHCSA, LPIC-1, Docker y Kub
 - `index.html`, `cursos.html`, `terminal.html` y `sobre.html`: páginas principales.
 - `_rhcsa/`, `_lpic/`, `_docker/`, `_kubernetes/`: fuentes editables de las clases. `cursos/` contiene sus páginas generadas; no son copias sobrantes.
 - `laboratorios/`: interfaz, máquinas y discos fragmentados de Linux, Docker y Kubernetes. Sus recursos y licencias son necesarios aunque muchos se carguen mediante rutas dinámicas.
+- `laboratorios/lpic-1/`: preguntas originales y simulacros 101/102, sin una máquina virtual. Los pesos oficiales están en `questions.mjs`; el aprobado propio del simulacro está en `engine.mjs` y no equivale a la escala oficial de LPI.
 - `contenido/proyecto.json`: única lista de mejoras pendientes e historial de versiones. `npm run sync:project` actualiza Sobre y la descarga Markdown. Quitar una mejora de pendientes solo cuando esté implementada y comprobada.
 - `images/`, `assets/`, `vendor/`: imágenes, fuentes y dependencias distribuidas, con sus licencias.
 - `scripts/`, `tests/`, `docs/`: construcción, pruebas y mantenimiento. No se publican como páginas del sitio.

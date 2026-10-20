@@ -10,3 +10,6 @@
 - Las soluciones de prácticas usan comandos enseñados en el curso. Mostrar archivos largos con su contenido legible y no añadir alternativas rebuscadas.
 - Probar los resultados de los correctores: casos correctos, incompletos y soluciones equivalentes. No afirmar equivalencia perfecta con Linux o cobertura total de CKA.
 - Antes de publicar: construir, ejecutar pruebas, comprobar móvil y enlaces, y revisar los cambios. Conservar los datos guardados de las máquinas.
+- LPIC-1 usa preguntas originales y la distribución publicada por LPI, no copias de bancos de terceros. Sus 60 preguntas y 90 minutos no implican reproducir la fórmula no publicada de puntuación: el aprobado propio del 70 % debe quedar identificado como tal.
+- Las marcas de prácticas son un historial de comprobaciones, no una comprobación automática del estado actual de la máquina. Borrar progreso no debe borrar las máquinas ni sus guardados.
+- El progreso de arranque debe reflejar descargas y operaciones reales. No inventar líneas del kernel, porcentajes de CPU o tiempos garantizados. La caché solo puede reutilizar recursos después de verificar sus sumas.

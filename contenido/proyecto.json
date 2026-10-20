@@ -1,23 +1,101 @@
 {
-  "version": "1.2",
+  "version": "2.0",
   "pendientes": [
-    {"id": "kubernetes-curso", "tema": "Kubernetes", "texto": "Completar y comprobar las clases 12–34 en el laboratorio real antes de abrirlas."},
-    {"id": "kubernetes-examen", "tema": "Kubernetes", "texto": "Terminar el simulacro CKA real: dos horas, corrección por resultados y nota por dominio. Incluir el alias k, la variable $do y tareas de Helm y Gateway API; todavía no se consideran cubiertos."},
-    {"id": "kubernetes-tres-practicas", "tema": "Kubernetes", "texto": "Revisar hasta tres ejercicios por clase: uno para empezar, otro para aplicar lo aprendido y otro orientado al examen. Sin ejercicios para la clase 00."},
-    {"id": "lpic-banco", "tema": "Cursos", "texto": "Crear preguntas originales para LPIC-1, con explicaciones y respuestas escritas, y simulacros 101 y 102 ajustados a sus objetivos."},
-    {"id": "examen-reinicio", "tema": "Laboratorios", "texto": "Comprobar la persistencia tras reiniciar antes de puntuar el simulacro, con respaldo y tratamiento de máquinas que no consiguen arrancar."},
-    {"id": "examen-reanudar", "tema": "Laboratorios", "texto": "Guardar de forma conjunta las máquinas, el intento y el cronómetro para poder continuar un examen tras recargar."},
-    {"id": "escenarios-rotos", "tema": "Laboratorios", "texto": "Ampliar los ejercicios de diagnóstico con fallos controlados de fstab, SELinux, servicios y red; en Kubernetes, Pods, nodos, selectores y PVC."},
-    {"id": "preguntas-parametrizadas", "tema": "Más adelante", "texto": "Variar nombres, usuarios y tamaños entre intentos, adaptando también la preparación, las soluciones y los correctores."},
-    {"id": "arranque-cache", "tema": "Rendimiento", "texto": "Medir y mejorar la reutilización de snapshots y bloques en el navegador. Evitar descargar máquinas completas desde páginas que no las necesitan."},
-    {"id": "imagen-ligera", "tema": "Rendimiento", "texto": "Estudiar qué se puede quitar de las imágenes sin perder herramientas, páginas de man, licencias ni ejercicios del curso."},
-    {"id": "kubernetes-openapi", "tema": "Más adelante", "texto": "Revisar si la validación con OpenAPI mejora el simulador de Kubernetes, aprovechando sus objetos y controladores actuales sin reconstruirlo innecesariamente."},
-    {"id": "aws-preguntas", "tema": "Más adelante", "texto": "Cuando exista un curso de AWS, plantear un banco de preguntas con explicaciones como el previsto para LPIC-1."},
-    {"id": "diagnosticos-restantes", "tema": "Laboratorios", "texto": "Ampliar las pistas de Comprobar a los requisitos que todavía dan un resultado genérico. Ya se indican recursos o archivos que faltan en varias prácticas; falta desglosar más condiciones sin revelar soluciones."}
+    {
+      "id": "kubernetes-curso",
+      "tema": "Kubernetes",
+      "texto": "Completar y comprobar las clases 12–34 en el laboratorio real antes de abrirlas."
+    },
+    {
+      "id": "kubernetes-examen",
+      "tema": "Kubernetes",
+      "texto": "Terminar el simulacro CKA real: dos horas, corrección por resultados y nota por dominio. Incluir el alias k, la variable $do y tareas de Helm y Gateway API; todavía no se consideran cubiertos."
+    },
+    {
+      "id": "kubernetes-tres-practicas",
+      "tema": "Kubernetes",
+      "texto": "Revisar hasta tres ejercicios por clase: uno para empezar, otro para aplicar lo aprendido y otro orientado al examen. Sin ejercicios para la clase 00."
+    },
+    {
+      "id": "examen-reinicio",
+      "tema": "Laboratorios",
+      "texto": "Comprobar la persistencia tras reiniciar antes de puntuar el simulacro, con respaldo y tratamiento de máquinas que no consiguen arrancar."
+    },
+    {
+      "id": "examen-reanudar",
+      "tema": "Laboratorios",
+      "texto": "Guardar de forma conjunta las máquinas, el intento y el cronómetro para poder continuar un examen tras recargar."
+    },
+    {
+      "id": "escenarios-rotos",
+      "tema": "Laboratorios",
+      "texto": "Ampliar los ejercicios de diagnóstico con fallos controlados de fstab, SELinux, servicios y red; en Kubernetes, Pods, nodos, selectores y PVC."
+    },
+    {
+      "id": "preguntas-parametrizadas",
+      "tema": "Más adelante",
+      "texto": "Variar nombres, usuarios y tamaños entre intentos, adaptando también la preparación, las soluciones y los correctores."
+    },
+    {
+      "id": "arranque-cache",
+      "tema": "Rendimiento",
+      "texto": "Seguir reduciendo el primer arranque de Kubernetes y medir la reutilización de bloques. Los fragmentos del estado de arranque ya se guardan con verificación; no se descargan máquinas desde otras páginas."
+    },
+    {
+      "id": "imagen-ligera",
+      "tema": "Rendimiento",
+      "texto": "Estudiar qué se puede quitar de las imágenes sin perder herramientas, páginas de man, licencias ni ejercicios del curso."
+    },
+    {
+      "id": "kubernetes-openapi",
+      "tema": "Más adelante",
+      "texto": "Revisar si la validación con OpenAPI mejora el simulador de Kubernetes, aprovechando sus objetos y controladores actuales sin reconstruirlo innecesariamente."
+    },
+    {
+      "id": "aws-preguntas",
+      "tema": "Más adelante",
+      "texto": "Cuando exista un curso de AWS, plantear un banco de preguntas con explicaciones como el de LPIC-1."
+    },
+    {
+      "id": "diagnosticos-restantes",
+      "tema": "Laboratorios",
+      "texto": "Ampliar las pistas de Comprobar a los requisitos que todavía dan un resultado genérico. Ya se indican recursos o archivos que faltan en varias prácticas; falta desglosar más condiciones sin revelar soluciones."
+    }
   ],
   "versiones": [
-    {"version": "1.2", "fecha": "2026-10-19", "cambios": ["Las licencias del laboratorio Linux se abren en una página sencilla, sin el antiguo diseño oscuro. El texto y los enlaces no cambian."]},
-    {"version": "1.1", "fecha": "2026-10-19", "cambios": ["Sobre reúne las mejoras pendientes, el historial y las licencias, sin llenar el resto de páginas de avisos.", "Revisamos erratas, simplificamos soluciones y corregimos la preparación de prácticas.", "Ajustamos tarjetas, textos y rejillas para que los cursos y las demás páginas se lean bien desde el móvil.", "Limpiamos archivos de pruebas y documentación antigua sin retirar recursos necesarios de las máquinas."]},
-    {"version": "1.0", "fecha": "2026-10-19", "cambios": ["Empezamos a registrar las versiones desde la publicación de las prácticas por clase y objetivos I/II, con una estructura común para los laboratorios reales y simulados."]}
+    {
+      "version": "2.0",
+      "fecha": "2026-10-20",
+      "cambios": [
+        "Añadimos 120 preguntas originales para practicar LPIC-1 y hacer los simulacros 101 y 102, con explicaciones y resultados por tema.",
+        "Las prácticas muestran marcas de acierto y error que se conservan en el navegador.",
+        "El repaso Linux pasa de 8 a 22 ejercicios. Mostramos el avance real del arranque y reutilizamos sus descargas verificadas.",
+        "Vuelve «Domina Linux. Sin límites.», sustituimos SUSE por Debian y ajustamos la terminal de Kubernetes para evitar el scroll interior sobrante."
+      ]
+    },
+    {
+      "version": "1.2",
+      "fecha": "2026-10-19",
+      "cambios": [
+        "Las licencias del laboratorio Linux se abren en una página sencilla, sin el antiguo diseño oscuro. El texto y los enlaces no cambian."
+      ]
+    },
+    {
+      "version": "1.1",
+      "fecha": "2026-10-19",
+      "cambios": [
+        "Sobre reúne las mejoras pendientes, el historial y las licencias, sin llenar el resto de páginas de avisos.",
+        "Revisamos erratas, simplificamos soluciones y corregimos la preparación de prácticas.",
+        "Ajustamos tarjetas, textos y rejillas para que los cursos y las demás páginas se lean bien desde el móvil.",
+        "Limpiamos archivos de pruebas y documentación antigua sin retirar recursos necesarios de las máquinas."
+      ]
+    },
+    {
+      "version": "1.0",
+      "fecha": "2026-10-19",
+      "cambios": [
+        "Empezamos a registrar las versiones desde la publicación de las prácticas por clase y objetivos I/II, con una estructura común para los laboratorios reales y simulados."
+      ]
+    }
   ]
 }

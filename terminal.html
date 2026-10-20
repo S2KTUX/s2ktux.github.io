@@ -8,8 +8,8 @@
 <link rel="stylesheet" href="./visual-system.css?v=dc5253bb5de9">
 <link rel="stylesheet" href="./terminal-page.css?v=20260826-phase3">
 <link rel="stylesheet" href="./site-shell.css?v=ac5aee15ea13">
-<link rel="stylesheet" href="/laboratorios/lab-ui.css?v=20261019-revision">
-<link rel="stylesheet" href="/laboratorios/simulated-lab.css?v=20261019-revision">
+<link rel="stylesheet" href="/laboratorios/lab-ui.css?v=20261020-aprendizaje">
+<link rel="stylesheet" href="/laboratorios/simulated-lab.css?v=20261020-aprendizaje">
 <title>Terminales Linux, Docker y Kubernetes · S2KTUX</title>
 <meta name="description" content="Practica Linux, Docker y Kubernetes en laboratorios independientes dentro del navegador, con versiones simuladas como alternativa.">
 <meta name="robots" content="index,follow">
@@ -78,6 +78,7 @@
     if(b && b.getAttribute('data-pick-mode')==='linux'){ location.href='/laboratorios/linux-real/'; return; }
     if(b && b.getAttribute('data-pick-mode')==='docker'){ location.href='/laboratorios/docker-real/'; return; }
     if(b && b.getAttribute('data-pick-mode')==='kubernetes'){ location.href='/laboratorios/kubernetes-real/'; return; }
+    if(b && b.getAttribute('data-pick-mode')==='lpic'){ location.href='/laboratorios/lpic-1/'; return; }
     if(b){ var selected=b.getAttribute('data-pick-mode'); clearModeSession(selected); location.href='terminal.html?mode='+encodeURIComponent(selected)+'&enter=1'; return; }
     var cm = e.target && e.target.closest && e.target.closest('[data-change-mode]');
     if(cm){ location.href=selectionUrl(); }
@@ -85,7 +86,7 @@
   function initSelectorKeyboard(){
     var slots=[].slice.call(document.querySelectorAll('.terminal-slot')),selected=0;
     var command=document.getElementById('selector-current-command'),status=document.getElementById('selector-current-status');
-    var info={linux:['linux-rhcsa9','Debian · Linux real'],docker:['docker-lab','Alpine · Docker Engine real'],kubernetes:['kubernetes-cka','Clúster CKA · preparado']};
+    var info={linux:['linux-rhcsa9','Debian · Linux real'],docker:['docker-lab','Alpine · Docker Engine real'],kubernetes:['kubernetes-cka','Clúster CKA · preparado'],lpic:['lpic-1','101-500 y 102-500 · preguntas y simulacros']};
     function choose(i,focus){selected=(i+slots.length)%slots.length;slots.forEach(function(s,n){var on=n===selected;s.setAttribute('data-selected',on?'1':'0');s.setAttribute('aria-selected',on?'true':'false');});var mode=slots[selected]&&slots[selected].getAttribute('data-pick-mode'),data=info[mode];if(data&&command)command.textContent=data[0];if(data&&status){var led=status.querySelector('i');status.textContent=' '+data[1];if(led)status.insertBefore(led,status.firstChild);}if(focus&&slots[selected])slots[selected].focus();}
     slots.forEach(function(s,i){s.addEventListener('mouseenter',function(){choose(i,false);});s.addEventListener('focus',function(){choose(i,false);});});
     document.addEventListener('keydown',function(e){var sel=document.getElementById('mode-select');if(!sel||sel.style.display==='none'||!slots.length||e.target.closest?.('a,input,select,textarea'))return;if(e.key==='ArrowDown'||e.key==='ArrowRight'){e.preventDefault();choose(selected+1,true);}else if(e.key==='ArrowUp'||e.key==='ArrowLeft'){e.preventDefault();choose(selected-1,true);}else if(e.key==='Enter'){e.preventDefault();slots[selected].click();}});
@@ -132,6 +133,11 @@
           <button data-pick-mode="kubernetes" class="terminal-slot" role="option" aria-selected="false">
             <span class="slot-index">03</span>
             <span class="slot-copy"><span class="slot-title">KUBERNETES · CKA</span><span class="slot-focus">workloads · scheduling · storage · red · RBAC</span></span>
+            <span class="slot-action">ENTRAR ↵</span>
+          </button>
+          <button data-pick-mode="lpic" class="terminal-slot" role="option" aria-selected="false">
+            <span class="slot-index">04</span>
+            <span class="slot-copy"><span class="slot-title">LPIC-1</span><span class="slot-focus">101-500 · 102-500 · preguntas y simulacros</span></span>
             <span class="slot-action">ENTRAR ↵</span>
           </button>
       </div>

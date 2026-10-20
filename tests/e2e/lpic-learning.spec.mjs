@@ -1,0 +1,25 @@
+import {test,expect} from '@playwright/test';
+test('LPIC-1 · acceso sin máquinas y explicación con marcas guardadas',async({page})=>{
+ const heavy=[];page.on('request',r=>{if(/\.wasm|\.part|\.gzpart|disco-fragmentado/.test(r.url()))heavy.push(r.url());});
+ await page.goto('/terminal.html');await page.locator('[data-pick-mode=lpic]').click();await expect(page).toHaveURL(/laboratorios\/lpic-1\/$/);
+ await expect(page.locator('body')).toHaveCSS('background-color','rgb(246, 236, 217)');
+ await page.selectOption('#question','101.1-1');await page.getByLabel('lsusb',{exact:true}).check();await page.locator('#check').click();await expect(page.locator('#feedback')).toContainText('Incorrecto');await expect(page.locator('#feedback')).toContainText('lspci');await expect(page.locator('.practice-progress strong')).toHaveText('Por corregir');
+ await page.getByLabel('lspci',{exact:true}).check();await page.locator('#check').click();await expect(page.locator('#feedback')).toContainText('Correcto');await page.reload();await expect(page.locator('.practice-progress strong')).toHaveText('Correcto');
+ page.on('dialog',d=>d.accept());await page.getByRole('button',{name:'Borrar progreso'}).click();await expect(page.locator('.practice-progress strong')).toHaveText('Sin intentar');expect(heavy).toEqual([]);
+});
+test('LPIC-1 · varias respuestas y respuesta escrita',async({page})=>{
+ await page.goto('/laboratorios/lpic-1/');await page.selectOption('#topic','103');await page.selectOption('#question','103.4-2');await page.getByLabel('tarea > salida.log 2>&1',{exact:true}).check();await page.locator('#check').click();await expect(page.locator('#feedback')).toContainText('Incorrecto');await page.getByLabel('tarea &> salida.log',{exact:true}).check();await page.locator('#check').click();await expect(page.locator('#feedback')).toContainText('Correcto');
+ await page.selectOption('#question','103.1-1');await page.getByRole('textbox').fill('pwd');await page.locator('#check').click();await expect(page.locator('#feedback')).toContainText('Correcto');
+});
+test('LPIC-1 · examen sin pistas, reanudación y resultado por temas',async({page})=>{
+ await page.goto('/laboratorios/lpic-1/');await page.locator('#mode-exam').click();await page.locator('#start-exam').click();await expect(page.locator('#exam-question option')).toHaveCount(60);await expect(page.locator('#check')).toBeHidden();await expect(page.locator('#solution')).toBeHidden();await expect(page.locator('#feedback')).toBeHidden();await expect(page.locator('#time')).toHaveText(/01:2[89]:\d\d|01:30:00/);
+ const selected=page.locator('#exam-question-body input').first();if(await selected.getAttribute('type')==='text')await selected.fill('respuesta');else await selected.check();await expect(page.locator('#answered-count')).toContainText('1 de 60');await page.reload();await expect(page.locator('#answered-count')).toContainText('1 de 60');
+ page.on('dialog',d=>d.accept());await page.locator('#finish-exam').click();await expect(page.locator('#domains .exam-domain')).toHaveCount(4);await expect(page.locator('#verdict')).toContainText('No aprobado');await expect(page.locator('#review')).not.toHaveAttribute('open','');await expect(page.locator('#question-report details')).toHaveCount(60);await expect(page.locator('#time')).toBeHidden();
+});
+test('LPIC-1 · móvil legible en práctica y resultado @mobile',async({page})=>{
+ await page.setViewportSize({width:320,height:800});await page.goto('/laboratorios/lpic-1/');await page.locator('#solution').click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ await page.locator('#mode-exam').click();await page.selectOption('#exam-code','102');await page.locator('#start-exam').click();page.on('dialog',d=>d.accept());await page.locator('#finish-exam').click();await expect(page.locator('#domains .exam-domain')).toHaveCount(6);expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+});
+test('Recursos de arranque · caché comprobada sin sustituir un archivo alterado',async({page})=>{
+ await page.goto('/sobre.html');const result=await page.evaluate(async()=>{const {verifiedDownload}=await import('/laboratorios/verified-download.mjs');const data=new TextEncoder().encode('recurso de prueba'),hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',data)),b=>b.toString(16).padStart(2,'0')).join('');let requests=0;const original=fetch;globalThis.fetch=async()=>{requests++;return new Response(data);};try{const url=new URL('/qa-verificado-'+crypto.randomUUID(),location.href).href;await verifiedDownload(url,{hash,bytes:data.length});await verifiedDownload(url,{hash,bytes:data.length});const first=requests;const cache=await caches.open('lab-verified-downloads-v1');await cache.put(url,new Response('alterado'));await verifiedDownload(url,{hash,bytes:data.length});await cache.delete(url);return {first,total:requests};}finally{globalThis.fetch=original;}});expect(result).toEqual({first:1,total:2});
+});

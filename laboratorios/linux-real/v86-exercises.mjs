@@ -3,7 +3,7 @@
 import { courseExercises } from './v86-course-exercises.mjs?v=20261018-aprender';
 import { extraExercises } from './v86-extra-exercises.mjs?v=20261018-aprender';
 import {nativeLearningLinux} from '../learning-linux.mjs';
-import {buildRhcsaBank} from '../rhcsa-objectives.mjs';
+import {buildRhcsaBank} from '../rhcsa-objectives.mjs?v=20261020';
 export const introExercises = [
   {
     id: 'archivo', title: 'Archivo y permisos',

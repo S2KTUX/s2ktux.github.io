@@ -64,11 +64,13 @@ test('Linux real · examen separado, sin ayudas y con errores de preparación vi
   await expect(page.locator('.exam-machine-info')).toContainText('hermes');
   page.on('dialog',dialog=>dialog.accept());
   await page.locator('#exam-finish').click();
-  await expect(page.locator('#exam-score')).toHaveText('0/300 puntos');
+  await expect(page.locator('#exam-score')).toContainText('0/300 puntos');
   await expect(page.locator('#exam-alternative')).toBeVisible();
   await expect(page.locator('#exam-verdict')).toContainText('No aprobado');
   await expect(page.locator('#exam-report details')).toHaveCount(22);
   await expect(page.locator('#exam-report [data-result="unanswered"]')).toHaveCount(22);
+  await expect(page.locator('#exam-domain-summary .exam-domain')).not.toHaveCount(0);
+  await page.locator('#exam-review > summary').click();
   await page.locator('#exam-report details').first().locator('summary').click();
   await expect(page.locator('#exam-report details').first()).toContainText('Una solución válida');
   await expect(page.locator('#exam-report')).not.toContainText('Se comprueba el resultado');
@@ -83,7 +85,7 @@ test('Linux real · finalizar sin esperar al arranque',async({page})=>{
   await page.locator('[data-exam-node="2"]').click();
   await expect(page.locator('#exam-machine-start')).toHaveText('Espera a la máquina 1…');
   await page.locator('#exam-finish').click();
-  await expect(page.locator('#exam-score')).toHaveText('0/300 puntos');
+  await expect(page.locator('#exam-score')).toContainText('0/300 puntos');
   await expect(page.locator('#exam-report details')).toHaveCount(22);
   await expect(page.locator('iframe')).toHaveCount(0);
 });

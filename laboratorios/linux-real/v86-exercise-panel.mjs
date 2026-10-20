@@ -1,7 +1,8 @@
-import { exercises } from './v86-exercises.mjs?v=20261019-revision';
-import {renderSolutions} from '../lab-solutions.mjs?v=20261019-revision';
-import {solutionsFor} from '../solution-options.mjs?v=20261019-revision';
-import {mountGroups} from '../lab-groups.mjs?v=20261019-revision';
+import { exercises } from './v86-exercises.mjs?v=20261020-aprendizaje';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261020-aprendizaje';
+import {solutionsFor} from '../solution-options.mjs?v=20261020-aprendizaje';
+import {mountGroups} from '../lab-groups.mjs?v=20261020-aprendizaje';
+import {practiceProgress} from '../practice-progress.mjs';
 
 export function mountExercisePanel(root, runCheck) {
   const select = root.querySelector('select');
@@ -88,5 +89,6 @@ export function mountExercisePanel(root, runCheck) {
   });
   populate(); render();
   const classSelect=mountGroups({select,mode:'linux',tasks:exercises,onChange:render});
+  practiceProgress({mode:'linux-real',select,feedback});
   return { setEnabled(value) { enabled = !!value; classSelect.disabled=checking; sync(); } };
 }

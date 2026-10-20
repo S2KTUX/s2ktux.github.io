@@ -30,7 +30,7 @@ test('Linux · preparar dos ejercicios seguidos libera el panel',async({page})=>
  await page.selectOption('#qa','autofs-i');await page.getByRole('button',{name:'Preparar ejercicio',exact:true}).click();await expect.poll(()=>page.evaluate(()=>preparations)).toBe(2);await expect(page.locator('#qa')).toBeEnabled();
 });
 test('Home y cursos · rejillas de una columna y Sobre legible @mobile',async({page})=>{
- await page.goto('/');await expect(page.locator('h1')).toContainText('Aprende Linux.');await expect(page.locator('.hero-badge')).toContainText('RHEL y Debian');
+ await page.goto('/');await expect(page.locator('h1')).toContainText('Domina Linux.');await expect(page.locator('.hero-badge')).toContainText('RHEL y Debian');
  for(const selector of ['.home-terminal-grid','.home-whoami-grid'])expect(await page.locator(selector).evaluate(node=>getComputedStyle(node).gridTemplateColumns.trim().split(/\s+/).length)).toBe(1);
  await page.goto('/cursos.html');expect(await page.locator('.home-course-grid').evaluate(node=>getComputedStyle(node).gridTemplateColumns.trim().split(/\s+/).length)).toBe(1);
  await page.goto('/sobre.html');await page.locator('#pendientes summary').click();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
