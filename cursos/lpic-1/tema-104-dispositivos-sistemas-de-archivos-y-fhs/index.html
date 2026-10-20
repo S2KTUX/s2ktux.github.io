@@ -70,7 +70,7 @@
 
                 <h3>Herramientas de particionado</h3>
                 <ul>
-                    <li><strong>fdisk (para MBR):</strong> <code>fdisk /dev/sda</code>.<br>
+                    <li><strong>fdisk (MBR y GPT en versiones actuales):</strong> <code>fdisk /dev/sda</code>.<br>
                         Opciones: <code>p</code> (muestra tabla), <code>n</code> (nueva), <code>F</code> (espacio libre), <code>d</code> (eliminar), <code>t</code> (cambiar tipo).</li>
                     <li><strong>gdisk (para GPT):</strong> <code>gdisk /dev/sda</code>.<br>
                         Opciones adicionales: <code>s</code> (reorganizar número), <code>r</code> (menú recuperación/convertir).</li>
@@ -85,9 +85,10 @@
                     <li><strong>ext (ext2, ext3, ext4):</strong> <code>mkfs.ext4 /dev/sda1</code> o <code>mke2fs -t ext4 /dev/sda1</code>.<br>
                         Opciones: <code>-t</code> (tipo), <code>-c</code> (verifica), <code>-L etiqueta</code>, <code>-v</code> (detallado), <code>-n</code> (simula).<br>
                         - Por defecto, ext4 reserva el 5% del espacio para root (evita llenado total). Se cambia con <code>tune2fs -m 2 /dev/sda1</code>.<br>
-                        - <code>tune2fs -i 200 /dev/sda1</code>: Intervalo de 200 días entre verificaciones forzadas.</li>
+                        - <code>tune2fs -i 200 /dev/sda1</code>: Intervalo de 200 días entre verificaciones forzadas.<br>
+                        - Al formatear ext2/ext3 se reserva una cantidad fija de inodos; si se agotan, no podrás crear archivos aunque quede espacio de datos.</li>
                     <li><strong>xfs:</strong> <code>mkfs.xfs /dev/sda1</code>. Opciones: <code>-N</code> (simula), <code>-l logdev=/dev/sda2</code>.<br>
-                        - Para corregir inconsistencias: <code>xfs_repair /dev/sda3</code> (debe estar desmontado).</li>
+                        - Para corregir inconsistencias: <code>xfs_repair /dev/sda3</code> (debe estar desmontado). <code>xfs_admin -L datos /dev/sda1</code> cambia su etiqueta, también desmontado. Se amplía montado con <code>xfs_growfs /mnt/datos</code>; <code>resize2fs</code> no sirve para reducir XFS como si fuese ext4.</li>
                     <li><strong>FAT/vFAT:</strong> <code>mkfs.vfat -F 32 /dev/sda1</code>.</li>
                     <li><strong>btrfs:</strong> <code>mkfs.btrfs /dev/sda1</code>.<br>
                         - Múltiples discos: <code>mkfs.btrfs -d single -m single /dev/sda /dev/sdb</code>.<br>
@@ -152,8 +153,7 @@ S.ficheros     Tipo     Tamaño Usados  Disp Uso% Montado en
                 <h3>Mantenimiento de XFS</h3>
                 <ul>
                     <li><strong><code>xfs_repair</code>:</strong> Repara XFS.<br>
-                        - <code>-n</code>: Simula.<br>
-                        - <code>-d</code>: Repara montado (peligroso).</li>
+                        - <code>-n</code>: Comprueba sin modificar. Para reparar, desmontar primero.</li>
                     <li><strong><code>xfs_db</code>:</strong> Depura/analiza.</li>
                     <li><strong><code>xfs_fsr</code>:</strong> Desfragmenta.</li>
                 </ul>
@@ -165,7 +165,8 @@ S.ficheros     Tipo     Tamaño Usados  Disp Uso% Montado en
                 <h3>Montar y desmontar</h3>
                 <ul>
                     <li><strong><code>mount</code>:</strong> <code>mount -t tipo dispositivo punto</code>.<br>
-                        Opciones: <code>-a</code> (todo fstab), <code>-o ro/rw</code>, <code>-o remount</code>.</li>
+                        Opciones: <code>-a</code> (entradas automáticas de fstab), <code>-o ro/rw</code>, <code>-o remount</code>. <code>mount --bind /origen /destino</code> hace visible el mismo contenido en otra ruta, sin copiarlo.<br>
+                        Sin argumentos lista los montajes; también puedes consultarlos con <code>cat /proc/self/mounts</code>. <code>/proc/mounts</code> suele enlazar a ese archivo.</li>
                     <li><strong><code>umount</code>:</strong> <code>umount punto</code> o dispositivo.<br>
                         Opciones: <code>-a</code>, <code>-f</code> (forzar), <code>-r</code> (solo lectura si falla).<br>
                         Usar <code>lsof /dev/sda1</code> para ver qué lo bloquea.</li>
@@ -194,7 +195,7 @@ S.ficheros     Tipo     Tamaño Usados  Disp Uso% Montado en
                 </ul>
 
                 <h3>Montaje con systemd</h3>
-                <p>Unidades <code>.mount</code> y <code>.automount</code> en <code>/etc/systemd/system</code>. El archivo debe llamarse según la ruta (ej. <code>mnt-disco.mount</code>).</p>
+                <p>Unidades <code>.mount</code> y <code>.automount</code> en <code>/etc/systemd/system</code>. El archivo debe llamarse según la ruta (ej. <code>mnt-disco.mount</code>). Systemd también reconoce los montajes manuales como unidades, aunque no aparezcan en <code>fstab</code>; no los convierte por eso en permanentes.</p>
                 <pre>
 [Unit]
 Description=Montaje de prueba
@@ -231,9 +232,10 @@ WantedBy=multi-user.target
                     <li><strong>Tipos:</strong> <code>r</code>(4 lectura), <code>w</code>(2 escritura), <code>x</code>(1 ejecución/entrar).</li>
                     <li><strong><code>chmod</code> (recursivo <code>-R</code>):</strong><br>
                         - Numérico: <code>chmod 644 archivo</code> (rw-r--r--).<br>
-                        - Simbólico: <code>chmod u+x script.sh</code> (u=user, g=group, o=other; +, -, =).</li>
+                        - Simbólico: <code>chmod u+x script.sh</code> (u=user, g=group, o=other; +, -, =). Solo el propietario o un usuario con permisos suficientes puede cambiarlos; pertenecer al grupo no basta.<br>
+                        - Sobre un enlace simbólico indicado como argumento, <code>chmod</code> actúa sobre el destino: el modo del enlace que muestra <code>ls -l</code> no cambia.</li>
                 </ul>
-                <p>El valor <code>umask 0027</code> asegura que nuevos directorios sean rwxr-x--- y archivos rw-r-----.</p>
+                <p>Con los permisos iniciales habituales, <code>umask 0027</code> deja directorios rwxr-x--- y archivos rw-r-----; una aplicación puede solicitar permisos más restrictivos.</p>
 
                 <h3>Propietarios y grupos</h3>
                 <ul>
@@ -243,7 +245,7 @@ WantedBy=multi-user.target
                 </ul>
 
                 <h3>Permisos predeterminados (<code>umask</code>)</h3>
-                <p>Resta valores de 666 (archivos) o 777 (directorios).</p>
+                <p>Quita los bits indicados por la máscara a los permisos solicitados, normalmente 666 para archivos y 777 para directorios. No es una resta aritmética: si un permiso ya falta, no se añade ni cambia otro.</p>
                 <ul>
                     <li>Ver valor: <code>umask</code>.</li>
                     <li>Simbólico: <code>umask -S</code> (ej. <code>u=rwx,g=rx,o=rx</code>).</li>

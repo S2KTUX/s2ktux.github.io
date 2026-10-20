@@ -1,11 +1,6 @@
 {
-  "version": "2.1",
+  "version": "2.2",
   "pendientes": [
-    {
-      "id": "lpic-curso-alineacion",
-      "tema": "LPIC-1",
-      "texto": "Corregir las erratas detectadas y completar las explicaciones que necesitan las preguntas de Daypo. La revisión pregunta a pregunta está en contenido/lpic-1-revision.md; el curso todavía no explica todo el banco."
-    },
     {
       "id": "lpic-banco-cobertura",
       "tema": "LPIC-1",
@@ -73,6 +68,16 @@
     }
   ],
   "versiones": [
+    {
+      "version": "2.2",
+      "fecha": "2026-10-21",
+      "cambios": [
+        "Completamos los detalles de LPIC-1 que faltaban para entender las preguntas revisadas, dentro de las explicaciones y ejemplos de siempre. No cambiamos el orden ni el diseño de las clases.",
+        "Corregimos las erratas detectadas en arranque, paquetería, comandos, permisos y redes. El informe conserva lo que faltaba y enlaza dónde se explica ahora.",
+        "Arreglamos el índice de las clases con apartados numéricos, sin cambiar su aspecto.",
+        "El banco de preguntas no cambia. Su ampliación para practicar más variantes sigue pendiente."
+      ]
+    },
     {
       "version": "2.1",
       "fecha": "2026-10-20",

@@ -69,8 +69,8 @@
                         <br>Opciones útiles: <code>lsusb -v -d 0424:2514</code>, <code>lsusb -t</code> (árbol). Requiere root.
                     </li>
                     <li><strong><code>lsmod</code></strong>: Muestra módulos cargados (Module, Size, Used by).
-                        <br>Gestión: <code>modprobe -r modulo</code> (descargar), <code>modprobe -p modulo</code> (info).
-                        <br>Configuración: Parámetros en <code>/etc/modprobe.d/</code>. Bloqueo en <code>/etc/modprobe.d/blacklist.conf</code>.
+                        <br>Gestión: <code>modprobe modulo</code> carga el módulo y sus dependencias; <code>modprobe -r modulo</code> lo retira. <code>modinfo -p modulo</code> consulta sus parámetros.
+                        <br>Configuración: Parámetros en <code>/etc/modprobe.d/</code>. Una línea <code>blacklist modulo</code> evita su autocarga por alias, pero no impide toda carga manual.
                     </li>
                 </ul>
 
@@ -133,13 +133,13 @@
                         </tr>
                     </tbody>
                 </table>
-                <p><strong>Detalles UEFI:</strong> No se basa en MBR. Usa partición ESP (EFI System Partition), admite Secure Boot y sistemas de archivos FAT12/16/32. Almacenado en GPT.</p>
+                <p><strong>Detalles UEFI:</strong> Carga ejecutables <code>.efi</code> desde la partición ESP (EFI System Partition), normalmente en un disco GPT. Puede leer sistemas de archivos FAT y admite Secure Boot.</p>
 
                 <h3>El Cargador de Arranque (GRUB 2)</h3>
                 <p>Presiona <strong>Shift</strong> (BIOS) o <strong>Esc</strong> (UEFI) para invocar el menú. Parámetros del kernel comunes:</p>
                 <ul>
                     <li><code>init:</code> Establece un iniciador alternativo (ej. init=/bin/bash)</li>
-                    <li><code>system.unit:</code> Indica la unidad a usar por systemd</li>
+                    <li><code>systemd.unit=:</code> Indica el objetivo de arranque de systemd, por ejemplo <code>systemd.unit=rescue.target</code></li>
                     <li><code>maxcpus:</code> Cantidad de CPUs a usar</li>
                     <li><code>root:</code> Establece en qué partición está raíz (root=/dev/sda2)</li>
                     <li><code>rootflags:</code> Parámetros para el filesystem raíz</li>
@@ -150,8 +150,8 @@
                 <p>Archivos clave: <code>/boot/grub/grub.cfg</code> (configuración principal), <code>/boot/grub/i386-pc/lvm.mod</code>. Instalar en MBR: <code>grub-install /dev/sdX</code>.</p>
 
                 <h3>Inicialización del sistema</h3>
-                <p>El kernel abre <strong>initramfs</strong> (sistema de archivos raíz temporal comprimido), monta <code>/etc/fstab</code> y ejecuta el primer programa (init), que gestiona scripts y demonios.</p>
-                <p>Una vez cargado init, initramfs se elimina de la RAM. Init puede ser SysVinit, Systemd o Upstart (obsoleto).</p>
+                <p>El kernel prepara <strong>initramfs</strong>, una raíz temporal con las herramientas para encontrar y montar la raíz real. Su proceso de inicio da paso después al init del sistema, que gestiona scripts y demonios.</p>
+                <p>Tras ese cambio se libera la raíz temporal. Init puede ser SysVinit, Systemd o Upstart (obsoleto). Los montajes de <code>/etc/fstab</code> los organiza el sistema de inicio, no el kernel por sí solo.</p>
                 <p>En <strong>SysVinit</strong>, el primer programa es <code>/sbin/init</code> (PID 1). El nivel de ejecución se configura en <code>/etc/inittab</code>. Los scripts de arranque en <code>/etc/rcX.d/</code> usan prefijos <code>S</code> (Start) y <code>K</code> (Kill).</p>
 
                 <h3>Inspección de inicialización</h3>
@@ -159,7 +159,7 @@
                 <ul>
                     <li><code>dmesg</code>: Muestra mensajes actuales.</li>
                     <li><code>journalctl --list-boots</code>: Listará el número de arranques.</li>
-                    <li><code>journalctl -b 0</code>: Mensajes del inicio actual (<code>-b 1</code> el anterior).</li>
+                    <li><code>journalctl -b 0</code>: Mensajes del inicio actual (<code>-b -1</code> el anterior, si se conservan sus registros).</li>
                     <li><code>journalctl -D RUTA</code>: Mensajes en <code>/var/log/journal</code>.</li>
                 </ul>
             </section>
@@ -192,7 +192,7 @@ is-enabled unit.service</code></pre>
                 <p>Control de Targets (equivalente a runlevels):</p>
                 <pre><code>systemctl isolate graphical.target  # Cambiar modo
 systemctl set-default graphical.target # Establecer por defecto</code></pre>
-                <p>Nota: Systemd <strong>no</strong> utiliza <code>/etc/fstab</code>. Archivos de configuración en <code>/lib/systemd/system</code>. Listar: <code>systemctl list-unit-files --type=tipo</code>.</p>
+                <p>Systemd convierte las entradas de <code>/etc/fstab</code> en unidades de montaje. Las unidades del sistema suelen estar en <code>/usr/lib/systemd/system</code> o <code>/lib/systemd/system</code>; los ajustes propios, en <code>/etc/systemd/system</code>. Listar: <code>systemctl list-unit-files --type=tipo</code>.</p>
 
                 <h3>Upstart (Obsoleto)</h3>
                 <p>Scripts en <code>/etc/init/</code>. Comandos: <code>initctl list</code>, <code>start</code>, <code>status</code>, <code>stop</code>.</p>

@@ -2,7 +2,6 @@
 
 Esta lista cambia con el proyecto. Las mejoras comprobadas salen de aquí y pasan al historial de Sobre.
 
-- **LPIC-1:** Corregir las erratas detectadas y completar las explicaciones que necesitan las preguntas de Daypo. La revisión pregunta a pregunta está en contenido/lpic-1-revision.md; el curso todavía no explica todo el banco.
 - **LPIC-1:** Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen.
 - **Kubernetes:** Completar y comprobar las clases 12–34 en el laboratorio real antes de abrirlas.
 - **Kubernetes:** Terminar el simulacro CKA real: dos horas, corrección por resultados y nota por dominio. Incluir el alias k, la variable $do y tareas de Helm y Gateway API; todavía no se consideran cubiertos.

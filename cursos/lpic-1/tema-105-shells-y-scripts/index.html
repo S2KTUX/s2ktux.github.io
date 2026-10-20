@@ -82,7 +82,7 @@
                 </ul>
 
                 <h3>Variables</h3>
-                <p>Las variables son nombres que contienen valores. Pueden incluir letras, números y guiones, pero no empezar por números ni contener espacios.</p>
+                <p>Las variables son nombres que contienen valores. Pueden incluir letras, números y guiones bajos (<code>_</code>), pero no empezar por números ni contener espacios o guiones medios (<code>-</code>).</p>
                 <ul>
                     <li><strong>Definir y mostrar:</strong>
                         <ul>
@@ -94,13 +94,13 @@
                     </li>
                     <li><strong>Tipos de variables:</strong>
                         <ul>
-                            <li><strong>Locales:</strong> Solo en el shell actual, en minúsculas.</li>
-                            <li><strong>Globales (entorno):</strong> Persisten en la sesión, en mayúsculas.</li>
+                            <li><strong>Locales:</strong> Permanecen en la shell actual si no se exportan.</li>
+                            <li><strong>De entorno:</strong> Se exportan para que las reciban los procesos hijos. Usar mayúsculas es una convención, no lo que las convierte en variables de entorno.</li>
                         </ul>
                     </li>
                     <li><strong>Comandos relacionados:</strong>
                         <ul>
-                            <li><strong><code>set</code>:</strong> Muestra todas las variables y funciones asignadas (locales y de entorno).</li>
+                            <li><strong><code>set</code>:</strong> Sin argumentos muestra variables y funciones de Bash. También cambia opciones y parámetros: <code>set -- rojo azul</code> deja <code>rojo</code> en <code>$1</code> y <code>azul</code> en <code>$2</code>.</li>
                             <li><strong><code>unset</code>:</strong> Elimina una variable. Ejemplo: <code>unset distro</code>.</li>
                             <li><strong><code>export</code>:</strong> Convierte una variable local en global, haciéndola visible en subshells. Ejemplo: <code>export VARIABLE</code>.</li>
                             <li><strong><code>env</code> y <code>printenv</code>:</strong> Listan exclusivamente las variables de entorno. <code>env</code> también puede modificar el entorno al ejecutar un programa.</li>
@@ -157,7 +157,7 @@ miFuncion() {
                 <p>Un script es una lista de comandos que un programa, como el intérprete de comandos bash, ejecuta en un orden específico. Personalizarlos te permite automatizar tareas de manera eficiente en Linux.</p>
 
                 <h3>Estructura y ejecución del script</h3>
-                <p>La primera línea, conocida como shebang (ej. <code>#!/bin/bash</code>), indica qué intérprete debe usarse. El archivo debe ser ejecutable con <code>chmod +x nombre_script.sh</code>.</p>
+                <p>La primera línea, conocida como shebang (ej. <code>#!/bin/bash</code>), indica al kernel qué intérprete usar al ejecutar el archivo directamente. Para Bash esa línea es un comentario. El archivo debe ser ejecutable con <code>chmod +x nombre_script.sh</code>.</p>
 
                 <ul>
                     <li><strong>Uso de <code>echo</code>:</strong> Muestra texto. Por defecto añade salto de línea, con <code>-n</code> lo evita.<br>
@@ -165,7 +165,8 @@ miFuncion() {
                     <li><strong>Múltiples comandos en una línea:</strong> Separador <code>;</code>.<br>
                         - Ejemplo: <code>echo "La hora es: "; date +%H:%M</code>.</li>
                     <li><strong>Comando <code>read</code>:</strong> Recoge datos ingresados por el usuario en una variable.<br>
-                        - Ejemplo: <code>read nombre; echo "Hola $nombre"</code>.</li>
+                        - Ejemplo: <code>read nombre; echo "Hola $nombre"</code>.<br>
+                        - Con varias variables se reparten las palabras: al leer <code>uno dos tres cuatro</code> con <code>read a b resto</code>, quedan <code>uno</code>, <code>dos</code> y <code>tres cuatro</code>. La última recoge lo que queda.</li>
                     <li><strong>Comando <code>seq</code>:</strong> Genera secuencias numéricas.<br>
                         - Básico: <code>seq 10</code> → 1 al 10.<br>
                         - Con incremento: <code>seq 1 5 20</code> → 1, 6, 11, 16.</li>

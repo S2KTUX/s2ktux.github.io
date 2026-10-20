@@ -69,7 +69,7 @@
                 </ul>
 
                 <h3>Gestión de contraseñas y cuentas</h3>
-                <p>El archivo <code>/etc/shadow</code> contiene 8 campos separados por dos puntos: <code>nombre:hash:último_cambio:min:máx:aviso:inactividad:expira</code>.</p>
+                <p>El archivo <code>/etc/shadow</code> contiene 9 campos separados por dos puntos: <code>nombre:hash:último_cambio:min:máx:aviso:inactividad:expira:reservado</code>. Guarda un hash para comprobar la contraseña, no una copia que se pueda descifrar.</p>
                 <ul>
                     <li><strong>chage:</strong> Herramienta principal para la caducidad de contraseñas.<br>
                         - <code>chage -l usuario</code>: Lista la información de envejecimiento.<br>
@@ -78,9 +78,9 @@
                         - <code>chage -E 2025-12-31 usuario</code>: Establece una fecha de expiración fija para la cuenta.</li>
                     <li><strong>Bloqueo de cuentas:</strong><br>
                         - <code>passwd -l usuario</code>: Bloquea añadiendo un <code>!</code> al hash.<br>
-                        - <code>usermod -L usuario</code>: Bloquea la cuenta.<br>
+                        - <code>usermod -L usuario</code>: Bloquea la contraseña; no desactiva otros métodos como las claves SSH.<br>
                         - <code>usermod -s /sbin/nologin usuario</code>: Cambia el shell para impedir login interactivo.</li>
-                    <li><strong>/etc/nologin:</strong> Si este archivo existe en la raíz, impide el inicio de sesión de todos los usuarios excepto root, mostrando su contenido como mensaje de error.</li>
+                    <li><strong>/etc/nologin:</strong> Si existe, los accesos que lo comprueban (por ejemplo, mediante PAM) rechazan las sesiones de usuarios no root y muestran su contenido.</li>
                 </ul>
 
                 <h3>Límites de recursos (ulimit)</h3>
@@ -89,7 +89,8 @@
                     <li><strong>Comandos:</strong><br>
                         - <code>ulimit -a</code>: Muestra todos los límites actuales.<br>
                         - <code>ulimit -n 4096</code>: Limita el número de archivos abiertos.<br>
-                        - <code>ulimit -u 100</code>: Limita el número de procesos del usuario.</li>
+                        - <code>ulimit -u 100</code>: Limita el número de procesos del usuario.<br>
+                        - <code>ulimit -c 0</code>: Impide crear volcados de memoria (core dumps) en esa sesión y sus procesos hijos.</li>
                     <li><strong>Configuración persistente:</strong> Se edita en <code>/etc/security/limits.conf</code>.<br>
                         Formato: <code>&lt;dominio&gt; &lt;tipo&gt; &lt;item&gt; &lt;valor&gt;</code>.<br>
                         Ejemplo: <code>* hard nproc 50</code> (limita procesos a 50 para todos los usuarios).</li>
@@ -101,7 +102,7 @@
                     <li><strong>Configuración Sudo (<code>/etc/sudoers</code>):</strong><br>
                         - Editar siempre con <code>visudo</code>.<br>
                         - Sintaxis: <code>usuario HOST=(USUARIO:GRUPO) COMANDOS</code>.<br>
-                        - Opciones: <code>NOPASSWD</code> (no pide clave), <code>NOEXEC</code> (evita comandos anidados).<br>
+                        - Opciones: <code>NOPASSWD:</code> no pide contraseña y <code>PASSWD:</code> vuelve a pedirla, normalmente la del usuario que ejecuta sudo. La etiqueta se mantiene para los siguientes comandos de esa lista hasta que otra la cambia. <code>NOEXEC</code> limita la ejecución de otros programas donde esté soportado, no es una barrera universal.<br>
                         - Alias: <code>User_Alias ADMINS = user1, user2</code>, <code>Cmnd_Alias WEB = /usr/sbin/apachectl</code>.</li>
                 </ul>
             </section>
@@ -127,11 +128,12 @@
                 <ul>
                     <li><strong>Systemd:</strong> <code>systemctl list-units --type=service --state=running</code> para ver activos. <code>systemctl mask servicio</code> impide que se inicie manual o automáticamente.</li>
                     <li><strong>Netstat/SS:</strong> Para identificar qué servicio está escuchando en un puerto.<br>
-                        - <code>ss -tulpn</code>: Muestra sockets TCP/UDP que escuchan, procesos y números de puerto.</li>
+                        - <code>ss -tulpn</code>: Muestra sockets TCP/UDP que escuchan, procesos y números de puerto.<br>
+                        - <code>lsof -i TCP</code>: Relaciona conexiones TCP con los procesos y archivos abiertos; la columna PID identifica al proceso.</li>
                 </ul>
 
                 <h3>TCP Wrappers</h3>
-                <p>Capa de seguridad que controla el acceso a servicios basándose en la dirección IP del cliente. Los servicios deben estar compilados con soporte <code>libwrap</code>.</p>
+                <p>Capa de seguridad que controla el acceso a servicios basándose en la dirección IP del cliente. Los servicios deben estar compilados con soporte <code>libwrap</code>; muchos actuales ya no lo incluyen. Las reglas se consultan al recibir una conexión nueva, sin reiniciar el servicio, y no cierran conexiones existentes.</p>
                 <ul>
                     <li><strong>Verificar soporte:</strong> <code>ldd /usr/sbin/sshd | grep libwrap</code>.</li>
                     <li><strong>/etc/hosts.allow:</strong> Lista de permisos. Se procesa primero.<br>
@@ -151,19 +153,20 @@
                 <h3>OpenSSH Cliente y Llaves</h3>
                 <ul>
                     <li><strong>ssh-keygen:</strong> Genera claves.<br>
-                        - Tipos: <code>rsa</code> (defecto), <code>ecdsa</code>, <code>ed25519</code> (más seguro y rápido).<br>
+                        - Tipos: <code>rsa</code>, <code>ecdsa</code>, <code>ed25519</code>. El valor por defecto depende de la versión; usa <code>-t</code> para elegirlo.<br>
                         - Opciones: <code>-b 4096</code> (bits), <code>-t ecdsa</code> (tipo), <code>-f ~/.ssh/id_nueva</code> (fichero), <code>-C "comentario"</code>.</li>
                     <li><strong>ssh-agent:</strong> Guarda las claves privadas descifradas en memoria.<br>
                         - <code>ssh-agent bash</code> inicia el agente.<br>
-                        - <code>ssh-add ~/.ssh/id_rsa</code> añade la clave.</li>
-                    <li><strong>Archivos clave:</strong> <code>~/.ssh/known_hosts</code> (huellas servidores), <code>~/.ssh/authorized_keys</code> (claves públicas permitidas en servidor).</li>
+                        - <code>ssh-add ~/.ssh/id_rsa</code> añade la clave. <code>SSH_AUTH_SOCK</code> indica el socket con el que los programas contactan con el agente.</li>
+                    <li><strong>Archivos clave:</strong> <code>~/.ssh/known_hosts</code> guarda las claves públicas de los servidores conocidos; <code>~/.ssh/authorized_keys</code>, las claves públicas permitidas para entrar en esa cuenta. La clave pública se puede compartir; la privada se protege y no se copia al servidor para autenticarse.</li>
+                    <li><strong>Cliente:</strong> Configuración personal en <code>~/.ssh/config</code> y global en <code>/etc/ssh/ssh_config</code>. <code>ssh -i ~/.ssh/id_nueva usuario@servidor</code> selecciona una clave privada concreta.</li>
                 </ul>
 
                 <h3>OpenSSH Servidor</h3>
                 <ul>
                     <li><strong>Configuración:</strong> <code>/etc/ssh/sshd_config</code>.<br>
                         - Directivas: <code>PermitRootLogin no</code>, <code>PasswordAuthentication no</code> (solo claves), <code>Port 22</code>.</li>
-                    <li><strong>Claves host:</strong> Generadas al instalar. Ubicación: <code>/etc/ssh/ssh_host_*</code>.</li>
+                    <li><strong>Claves host:</strong> Identifican al servidor, no al usuario. Se generan al instalar o en el primer arranque y están en <code>/etc/ssh/ssh_host_*</code>. El cliente contrasta la pública con <code>known_hosts</code> para detectar cambios de identidad.</li>
                 </ul>
 
                 <h3>Túneles SSH (Port Forwarding)</h3>
@@ -173,7 +176,7 @@
                         Redirige tráfico del puerto local al remoto a través del servidor.</li>
                     <li><strong>Remoto (-R):</strong> <code>ssh -R [bind_address:]puerto_remoto:host_local:puerto_local usuario@servidor</code>.<br>
                         Permite que alguien en el servidor remoto acceda a un servicio en tu máquina local.</li>
-                    <li><strong>Forwarding X11:</strong> <code>ssh -X usuario@host</code>. Requiere <code>X11Forwarding yes</code> en servidor.</li>
+                    <li><strong>Forwarding X11:</strong> <code>ssh -X usuario@host</code>. Requiere <code>X11Forwarding yes</code> en servidor y un servidor X local. SSH configura <code>DISPLAY</code> en la sesión remota: no hay que asignarlo manualmente.</li>
                 </ul>
 
                 <h3>GnuPG (GPG)</h3>
