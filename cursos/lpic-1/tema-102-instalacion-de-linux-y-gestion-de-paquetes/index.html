@@ -90,7 +90,7 @@
                 <ul>
                     <li><strong>PV (Physical Volume):</strong> Partición o disco físico.</li>
                     <li><strong>VG (Volume Group):</strong> Agrupación de PVs.</li>
-                    <li><strong>LV (Logical Volume):</strong> Particiones lógicas dentro de un VG donde se crean los sistemas de archivos.</li>
+                    <li><strong>LV (Logical Volume):</strong> Volúmenes lógicos dentro de un VG donde se crean los sistemas de archivos. Se pueden crear, eliminar, cambiar de tamaño y conservar un estado puntual mediante snapshots. Al redimensionar hay que respetar también las posibilidades del sistema de archivos.</li>
                     <li><strong>Extents:</strong> Unidad mínima de almacenamiento en un VG.</li>
                 </ul>
             </section>
@@ -134,7 +134,7 @@
                 </ul>
 
                 <h3>Configuración de GRUB 2</h3>
-                <p>No editar <code>/boot/grub/grub.cfg</code> directamente. Editar <code>/etc/default/grub</code> y ejecutar <code>update-grub</code> o <code>grub-mkconfig</code>.</p>
+                <p>No editar <code>/boot/grub/grub.cfg</code> directamente. Editar <code>/etc/default/grub</code> y ejecutar <code>update-grub</code> o <code>grub-mkconfig</code>. En el archivo generado, <code>menuentry</code> delimita cada entrada del menú e <code>insmod</code> carga módulos de GRUB, no módulos del kernel.</p>
                 <ul>
                     <li><code>GRUB_DEFAULT</code>: Entrada por defecto.</li>
                     <li><code>GRUB_TIMEOUT</code>: Tiempo de espera.</li>
@@ -154,7 +154,7 @@
 
                 <h3>Nomenclatura y Rutas</h3>
                 <p>Formato: <code>libnombre.so.version</code>.</p>
-                <p>Ubicaciones estándar: <code>/lib</code>, <code>/lib64</code>, <code>/usr/lib</code>, <code>/usr/local/lib</code>.</p>
+                <p>Ubicaciones habituales: <code>/lib</code>, <code>/lib64</code>, <code>/usr/lib</code>, <code>/usr/lib64</code> y <code>/usr/local/lib</code>. Dependen de la distribución y la arquitectura.</p>
 
                 <h3>Configuración y Gestión</h3>
                 <ul>
@@ -182,11 +182,12 @@
                         <tr class="u-inline-196685694b"><td class="u-inline-c7aa49fe84">Eliminar</td><td class="u-inline-c7aa49fe84"><code>dpkg -r paquete</code> (config persiste)</td></tr>
                         <tr class="u-inline-196685694b"><td class="u-inline-c7aa49fe84">Purgar</td><td class="u-inline-c7aa49fe84"><code>dpkg --purge paquete</code></td></tr>
                         <tr><td class="u-inline-c7aa49fe84">Listar</td><td class="u-inline-c7aa49fe84"><code>dpkg -l</code></td></tr>
+                        <tr><td class="u-inline-c7aa49fe84">Consultar archivos</td><td class="u-inline-c7aa49fe84"><code>dpkg -L paquete</code> lista sus archivos; <code>dpkg -S /ruta/archivo</code> busca qué paquete instalado lo proporciona.</td></tr>
                     </tbody>
                 </table>
 
                 <h3>apt (Alto nivel)</h3>
-                <p>Gestiona repositorios y resuelve dependencias.</p>
+                <p>Gestiona repositorios y resuelve dependencias. <code>apt-cache show paquete</code> consulta información y <code>apt-cache search palabra</code> busca paquetes disponibles.</p>
                 <table class="u-inline-4809b687c3">
                     <thead>
                         <tr class="u-inline-08c0e9470f">
@@ -200,6 +201,8 @@
                         <tr class="u-inline-196685694b"><td class="u-inline-c7aa49fe84">Instalar</td><td class="u-inline-c7aa49fe84"><code>apt install paquete</code></td></tr>
                         <tr class="u-inline-196685694b"><td class="u-inline-c7aa49fe84">Eliminar</td><td class="u-inline-c7aa49fe84"><code>apt remove paquete</code></td></tr>
                         <tr><td class="u-inline-c7aa49fe84">Limpiar caché</td><td class="u-inline-c7aa49fe84"><code>apt autoclean</code></td></tr>
+                        <tr><td class="u-inline-c7aa49fe84">Resolver cambios de dependencias</td><td class="u-inline-c7aa49fe84"><code>apt full-upgrade</code> o <code>apt-get dist-upgrade</code>: pueden retirar paquetes si es necesario. Las versiones actuales de <code>apt-get</code> también admiten <code>full-upgrade</code>.</td></tr>
+                        <tr><td class="u-inline-c7aa49fe84">Reparar dependencias</td><td class="u-inline-c7aa49fe84"><code>apt-get install -f</code> intenta resolver una instalación incompleta; revisa los cambios propuestos.</td></tr>
                     </tbody>
                 </table>
                 <p>Repositorios en <code>/etc/apt/sources.list</code> y <code>/etc/apt/sources.list.d/</code>.</p>
@@ -221,12 +224,13 @@
                         <tr class="u-inline-196685694b"><td class="u-inline-c7aa49fe84">Instalar/Actualizar</td><td class="u-inline-c7aa49fe84"><code>rpm -Uvh paquete.rpm</code></td></tr>
                         <tr class="u-inline-196685694b"><td class="u-inline-c7aa49fe84">Eliminar</td><td class="u-inline-c7aa49fe84"><code>rpm -e paquete</code></td></tr>
                         <tr class="u-inline-196685694b"><td class="u-inline-c7aa49fe84">Listar instalados</td><td class="u-inline-c7aa49fe84"><code>rpm -qa</code></td></tr>
-                        <tr><td class="u-inline-c7aa49fe84">Info paquete</td><td class="u-inline-c7aa49fe84"><code>rpm -qi paquete</code></td></tr>
+                        <tr><td class="u-inline-c7aa49fe84">Info paquete</td><td class="u-inline-c7aa49fe84"><code>rpm -qi paquete</code>; <code>rpm -qf /ruta/archivo</code> busca su paquete propietario.</td></tr>
+                        <tr><td class="u-inline-c7aa49fe84">Consultar antes de instalar</td><td class="u-inline-c7aa49fe84"><code>rpm -qpR paquete.rpm</code> lista requisitos del archivo RPM: <code>-q</code> consulta, <code>-p</code> indica un archivo de paquete y <code>-R</code> sus dependencias.</td></tr>
                     </tbody>
                 </table>
 
                 <h3>YUM / DNF (Alto nivel)</h3>
-                <p><strong>YUM</strong> (Yellowdog Updater Modified) y su sucesor <strong>DNF</strong> manejan repositorios y dependencias.</p>
+                <p><strong>YUM</strong> (Yellowdog Updater Modified) y su sucesor <strong>DNF</strong> manejan repositorios y dependencias. Un grupo reúne paquetes para una misma función: <code>yum groupinstall "Development Tools"</code> instala ese conjunto.</p>
                 <table class="u-inline-4809b687c3">
                     <thead>
                         <tr class="u-inline-08c0e9470f">
@@ -244,7 +248,7 @@
 
                 <h3>Zypper (SUSE)</h3>
                 <p>Herramienta equivalente para openSUSE/SLES. Comandos: <code>zypper install</code>, <code>zypper update</code>, <code>zypper remove</code>.</p>
-                <p>Repositorios en <code>/etc/yum.repos.d/</code> (YUM/DNF) o gestionados con <code>zypper addrepo</code>.</p>
+                <p>Repositorios en <code>/etc/yum.repos.d/</code> (YUM/DNF) o gestionados con <code>zypper addrepo</code>. En los archivos <code>.repo</code>, <code>$basearch</code> y <code>$releasever</code> permiten adaptar las rutas a la arquitectura y versión del sistema.</p>
             </section>
 
             <section id="102.6" class="lesson-section">
@@ -253,20 +257,20 @@
                 <h3>Conceptos de Virtualización</h3>
                 <p>Permite ejecutar múltiples sistemas operativos (máquinas virtuales o "guests") sobre un único hardware físico ("host") mediante un hipervisor.</p>
                 <ul>
-                    <li><strong>Hipervisores Tipo 1 (Bare Metal):</strong> Corren directamente sobre el hardware (ej. Xen).</li>
-                    <li><strong>Hipervisores Tipo 2 (Hospedados):</strong> Corren como una aplicación sobre un SO anfitrión (ej. KVM - integrado en kernel Linux, VirtualBox).</li>
+                    <li><strong>Hipervisores Tipo 1 (Bare Metal):</strong> Gestionan la virtualización desde el nivel del sistema (ej. Xen, KVM integrado en el kernel Linux).</li>
+                    <li><strong>Hipervisores Tipo 2 (Hospedados):</strong> Corren como una aplicación sobre un SO anfitrión (ej. VirtualBox).</li>
                 </ul>
 
                 <h3>Tipos de Máquinas Virtuales</h3>
                 <ul>
-                    <li><strong>Totalmente virtualizadas:</strong> El sistema operativo invitado ignora que es virtual. Requiere soporte de hardware (Intel VT-x / AMD-V).</li>
+                    <li><strong>Totalmente virtualizadas:</strong> El invitado dispone de hardware virtual y puede usar un kernel propio. La aceleración Intel VT-x / AMD-V mejora su ejecución.</li>
                     <li><strong>Paravirtualizadas:</strong> El SO invitado sabe que es virtual y usa controladores específicos para mejor rendimiento.</li>
                     <li><strong>Híbridas:</strong> Combinación de ambos (hardware virtualizado con controladores paravirtualizados).</li>
                 </ul>
 
                 <h3>Plantillas y Nube</h3>
-                <p>Las <strong>plantillas</strong> son imágenes preconfiguradas para despliegues rápidos. Es crítico verificar el <strong>D-Bus Machine ID</strong> único tras clonar.</p>
-                <p>En entornos de <strong>Nube (IaaS)</strong> como AWS o Azure, gestionamos instancias, almacenamiento y redes. El acceso es vía SSH y la configuración inicial se automatiza a menudo con <strong>cloud-init</strong>.</p>
+                <p>Las <strong>plantillas</strong> son imágenes preconfiguradas para despliegues rápidos. Tras clonar deben ser únicos el <strong>D-Bus Machine ID</strong> y las claves de host SSH: son parte de la identidad de la nueva máquina.</p>
+                <p>En entornos de <strong>Nube (IaaS)</strong> como AWS o Azure, gestionamos instancias, almacenamiento y redes. El acceso es vía SSH y la configuración inicial se automatiza a menudo con <strong>cloud-init</strong>. Los contenedores, en cambio, comparten el kernel del host y aíslan procesos y recursos; no necesitan un kernel distinto por contenedor.</p>
             </section>
 
         </div>

@@ -61,7 +61,7 @@
 
                 <h3>Obteniendo información del sistema</h3>
                 <ul>
-                    <li><strong><code>pwd</code></strong>: Muestra el directorio actual.</li>
+                    <li><strong><code>pwd</code></strong>: Muestra el directorio actual, también disponible en la variable <code>PWD</code>: <code>echo "$PWD"</code>.</li>
                     <li><strong><code>touch</code></strong>: Crea un archivo vacío.</li>
                     <li><strong><code>ls</code></strong>: Lista archivos y carpetas.</li>
                     <li><strong><code>uname -a</code></strong>: Muestra información completa del sistema.</li>
@@ -69,18 +69,18 @@
 
                 <h3>Información de los comandos</h3>
                 <ul>
-                    <li><strong><code>man</code></strong>: Muestra el manual de un comando.</li>
+                    <li><strong><code>man</code></strong>: Muestra el manual. El número elige la sección: <code>man 1 passwd</code> explica el comando y <code>man 5 passwd</code>, el archivo. También admite <code>man -s 1 passwd</code>.</li>
                     <li><strong><code>apropos</code></strong>: Busca páginas de manual por palabra clave.</li>
                     <li><strong><code>type</code></strong>: Indica el tipo de comando (integrado, alias).</li>
                     <li><strong><code>which</code></strong>: Muestra la ruta absoluta de un comando.</li>
-                    <li><strong><code>history</code></strong>: Lista comandos ejecutados.</li>
+                    <li><strong><code>history</code></strong>: Lista comandos ejecutados. Bash suele guardar el historial en <code>~/.bash_history</code> al salir.</li>
                 </ul>
 
                 <h3>Variables de entorno</h3>
                 <ul>
                     <li><strong><code>env</code></strong>: Muestra todas las variables de entorno.</li>
                     <li><strong><code>echo $VAR</code></strong>: Muestra el valor de una variable.</li>
-                    <li><strong><code>export VAR</code></strong>: Crea o exporta una variable.</li>
+                    <li><strong><code>export VAR</code></strong>: Exporta la variable para que la reciban los procesos hijos.</li>
                     <li><strong><code>unset VAR</code></strong>: Elimina una variable.</li>
                 </ul>
 
@@ -101,12 +101,12 @@
                     <li><strong><code>></code></strong>: Redirige salida (sobrescribe).</li>
                     <li><strong><code>>></code></strong>: Añade salida.</li>
                     <li><strong><code>|</code></strong>: Envía salida de un comando a otro.</li>
-                    <li><strong><code>grep</code></strong>: Filtra texto (<code>-i</code> ignora mayúsculas).</li>
+                    <li><strong><code>grep</code></strong>: Filtra texto (<code>-i</code> ignora mayúsculas, <code>-v</code> muestra las líneas que no coinciden).</li>
                 </ul>
 
                 <h3>Archivos comprimidos</h3>
                 <ul>
-                    <li><strong><code>gzip</code> / <code>gunzip</code></strong>: Compresión estándar.</li>
+                    <li><strong><code>gzip</code> / <code>gunzip</code></strong>: Comprimen y descomprimen. <code>gunzip copia.tgz</code> deja <code>copia.tar</code>; todavía hay que extraer su contenido con <code>tar</code>.</li>
                     <li><strong><code>bzip2</code> / <code>bunzip2</code></strong>: Compresión alternativa.</li>
                     <li><strong><code>xz</code> / <code>unxz</code></strong>: Alta compresión.</li>
                     <li><strong><code>zcat</code>, <code>bzcat</code>, <code>xzcat</code></strong>: Leen contenido sin descomprimir.</li>
@@ -119,7 +119,8 @@
                     <li><strong><code>wc -l</code></strong>: Cuenta líneas.</li>
                     <li><strong><code>cut</code></strong>: Extrae campos (ej. <code>cut -d' ' -f1</code>).</li>
                     <li><strong><code>sort</code></strong>: Ordena líneas.</li>
-                    <li><strong><code>tr</code></strong>: Sustituye caracteres.</li>
+                    <li><strong><code>tr</code></strong>: Sustituye caracteres; <code>-d</code> los elimina. <code>tr -d '\r' &lt; entrada.txt &gt; salida.txt</code> retira los retornos de carro de un texto CR-LF.</li>
+                    <li><strong><code>split -l 100 archivo parte-</code></strong>: Divide el archivo en fragmentos de 100 líneas; <code>-b 1M</code> divide por tamaño.</li>
                 </ul>
 
                 <h3>Integridad de datos</h3>
@@ -172,18 +173,23 @@
                     <li><strong><code>&lt;</code></strong>: Entrada desde archivo.</li>
                     <li><strong><code>&gt;</code> / <code>&gt;&gt;</code></strong>: Salida estándar (sobrescribir / añadir).</li>
                     <li><strong><code>2&gt;</code> / <code>2&gt;&gt;</code></strong>: Salida de error.</li>
-                    <li><strong><code>&amp;&gt;</code></strong>: Redirige salida y error juntos.</li>
+                    <li><strong><code>&amp;&gt;</code></strong>: Redirige salida y error juntos. En Bash, <code>comando &gt;&amp; registro.log</code> también lo hace.</li>
+                    <li><strong>Descriptores:</strong> <code>0</code> es entrada, <code>1</code> salida y <code>2</code> error. <code>comando &gt; registro.log 2&gt;&amp;1</code> envía ambos al archivo; el orden importa. <code>comando 1&gt;&amp;2</code> (o <code>&gt;&amp;2</code>) envía la salida al destino del error.</li>
                 </ul>
 
                 <h3>Here Document y Here String</h3>
                 <ul>
-                    <li><strong>Here Document:</strong> <code>comando << EOF ... EOF</code> (varias líneas).</li>
-                    <li><strong>Here String:</strong> <code>comando <<< "texto"</code> (una línea).</li>
+                    <li><strong>Here Document:</strong> Entrega varias líneas a la entrada de un comando; el delimitador final va solo en su línea.
+                        <pre><code>cat &lt;&lt;EOF
+Primera línea
+Segunda línea
+EOF</code></pre></li>
+                    <li><strong>Here String:</strong> <code>cat &lt;&lt;&lt; "Hola"</code> entrega una cadena a la entrada de <code>cat</code>.</li>
                 </ul>
 
                 <h3>Tuberías (Pipes)</h3>
                 <p>Conectar salida de un comando con entrada de otro: <code>cmd1 | cmd2</code>.</p>
-                <p>Ejemplo: <code>ps aux | grep python | sort</code>.</p>
+                <p>Ejemplo: <code>ps aux | grep python | sort</code>. Para ver la salida y guardarla a la vez: <code>comando | tee registro.log</code>; con <code>tee -a</code> se añade al archivo sin sobrescribirlo.</p>
 
                 <h3>Sustitución de comando</h3>
                 <ul>
@@ -202,14 +208,15 @@
                     <li><strong><code>jobs</code></strong>: Lista trabajos en segundo plano.</li>
                     <li><strong><code>fg</code> / <code>bg</code></strong>: Trae a primer plano / envía a segundo plano.</li>
                     <li><strong><code>nohup</code></strong>: Ejecuta inmune a cierres de sesión.</li>
-                    <li><strong><code>kill</code></strong>: Envía señales a procesos (<code>-9</code> para forzar).</li>
+                    <li><strong><code>kill</code></strong>: Envía señales: <code>SIGTERM</code> pide terminar y <code>SIGKILL</code> fuerza el final. <code>Ctrl+C</code> envía <code>SIGINT</code> al grupo en primer plano; <code>Ctrl+Z</code> envía <code>SIGTSTP</code> para suspenderlo y poder continuarlo con <code>fg</code> o <code>bg</code>.</li>
                 </ul>
 
                 <h3>Monitoreo</h3>
                 <ul>
                     <li><strong><code>top</code></strong>: Vista en tiempo real (teclas: M por memoria, P por CPU).</li>
                     <li><strong><code>ps</code></strong>: Vista estática (<code>ps aux</code>, <code>ps -ef</code>).</li>
-                    <li><strong><code>pgrep</code> / <code>pkill</code></strong>: Busca y mata por nombre.</li>
+                    <li><strong><code>pgrep</code> / <code>pkill</code></strong>: Buscan procesos o les envían señales. <code>pgrep -u ana</code> filtra por usuario efectivo; <code>-U ana</code>, por usuario real. Normalmente coinciden, pero pueden diferir en un programa SUID.</li>
+                    <li><strong><code>uptime</code></strong>: Muestra cuánto lleva encendido el sistema y su carga; <code>top</code> también muestra estos datos.</li>
                 </ul>
 
                 <h3>Multiplexores (Screen / Tmux)</h3>
@@ -242,7 +249,7 @@
 
                 <h3>Gestión de Niceness</h3>
                 <ul>
-                    <li><strong><code>nice -n 10 comando</code></strong>: Inicia con prioridad 10.</li>
+                    <li><strong><code>nice -n 5 comando</code></strong>: Suma 5 al nice heredado: de 0 pasa a 5. Sin <code>-n</code>, el incremento es 10. Un usuario normal puede bajar la prioridad hasta nice 19; aumentarla suele requerir permisos.</li>
                     <li><strong><code>renice 15 PID</code></strong>: Cambia prioridad en ejecución.</li>
                     <li><strong><code>top</code></strong>: Muestra columna PRI/NI.</li>
                 </ul>
@@ -285,14 +292,15 @@
                 <ul>
                     <li><strong>Modos:</strong> Normal (navegar) e Inserción (escribir, tecla <code>i</code>).</li>
                     <li><strong>Navegación:</strong> <code>h,j,k,l</code>, <code>w</code> (palabra), <code>G</code> (fin).</li>
-                    <li><strong>Acciones:</strong> <code>x</code> (borrar), <code>yy</code> (copiar), <code>p</code> (pegar), <code>u</code> (deshacer).</li>
+                    <li><strong>Acciones:</strong> <code>x</code> borra un carácter, <code>dd</code> corta una línea al búfer, <code>yy</code> la copia, <code>p</code> pega debajo y <code>u</code> deshace. Un número repite la acción: <code>3dd</code> corta tres líneas y <code>4l</code> avanza cuatro caracteres.</li>
+                    <li><strong>Búsqueda:</strong> <code>/texto</code> busca hacia delante y <code>?texto</code> hacia atrás; <code>n</code> repite la búsqueda.</li>
                 </ul>
 
                 <h3>Comandos Colon (:)</h3>
                 <ul>
-                    <li><strong><code>:w</code></strong>: Guardar.</li>
+                    <li><strong><code>:w</code></strong>: Guardar; <code>:w copia.txt</code> guarda el contenido con otro nombre.</li>
                     <li><strong><code>:q</code></strong>: Salir.</li>
-                    <li><strong><code>:wq</code></strong>: Guardar y salir.</li>
+                    <li><strong><code>:wq</code></strong>: Guardar y salir. En modo normal, <code>ZZ</code> guarda si hay cambios y sale; pulsa antes <code>Esc</code> si estabas escribiendo.</li>
                     <li><strong><code>:s/old/new/g</code></strong>: Reemplazar en línea actual.</li>
                 </ul>
 

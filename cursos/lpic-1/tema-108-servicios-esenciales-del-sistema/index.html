@@ -56,7 +56,7 @@
                 <p>El comando <code>date</code> muestra la hora y fecha actual del sistema y permite ajustarla manualmente. <code>timedatectl</code> ofrece una alternativa para verificar y configurar la hora.</p>
 
                 <h3>Reloj de hardware</h3>
-                <p>El comando <code>hwclock</code> interactúa con el reloj en tiempo real (RTC) del hardware, manteniendo la hora incluso si el sistema está apagado.</p>
+                <p>El comando <code>hwclock</code> interactúa con el reloj en tiempo real (RTC) del hardware, que mantiene la hora incluso si el sistema está apagado. <code>hwclock --systohc</code> copia la hora del sistema al RTC; <code>hwclock --hctosys</code> hace lo contrario.</p>
                 <p><strong>Ejemplos <code>timedatectl</code>:</strong></p>
                 <ul>
                     <li>Listar zonas: <code>timedatectl list-timezones</code></li>
@@ -69,14 +69,14 @@
                 <p>Una zona correcta es clave para convertir marcas de tiempo Unix a hora local.</p>
 
                 <h3>Demonio NTP</h3>
-                <p>El protocolo NTP sincroniza la hora con servidores de red. <code>ntpd</code> se ejecuta en segundo plano. Su configuración es <code>/etc/ntp.conf</code>.</p>
+                <p>El protocolo NTP sincroniza la hora con servidores de red. <code>ntpd</code> se ejecuta en segundo plano. Su configuración es <code>/etc/ntp.conf</code>; una línea <code>server ntp.example.net iburst</code> añade una fuente de hora.</p>
                 <p><code>ntpd</code> sondea múltiples servidores y selecciona los más precisos para ajustar la hora.</p>
 
                 <h3>Chrony</h3>
                 <p>Alternativa moderna a <code>ntpd</code>, con mejor precisión y soporte para sincronización intermitente. Configuración en <code>/etc/chrony.conf</code>.</p>
                 <p>Fuentes remotas: <code>pool</code> y <code>server</code>.</p>
                 <pre><code>pool pool.ntp.org iburst</code></pre>
-                <p>La opción <code>iburst</code> acelera la sincronización inicial.</p>
+                <p>La opción <code>iburst</code> acelera la sincronización inicial. Comprueba las fuentes con <code>chronyc sources</code> en Chrony o <code>ntpq -p</code> en ntpd.</p>
             </section>
 
             <section id="108.2" class="lesson-section">
@@ -86,7 +86,7 @@
                 <h3>Gestión con rsyslog</h3>
                 <p>rsyslog usa modelo cliente-servidor. Configuración en <code>/etc/rsyslog.conf</code>. Registros en <code>/var/log/</code>.</p>
                 <ul>
-                    <li><strong><code>/etc/rsyslog.conf</code>:</strong> Define reglas (<code>&lt;facilidad&gt;.&lt;prioridad&gt; &lt;acción&gt;</code>).</li>
+                    <li><strong><code>/etc/rsyslog.conf</code>:</strong> Define reglas (<code>&lt;facilidad&gt;.&lt;prioridad&gt; &lt;acción&gt;</code>). <code>mail.*</code> selecciona todos los niveles del correo; <code>*.crit</code> selecciona critical y los más urgentes (alert y emerg). Como destino, <code>@logs.example.net</code> reenvía por UDP y <code>@@logs.example.net</code> por TCP.</li>
                     <li><strong>Directorios <code>/var/log/</code>:</strong>
                         <ul>
                             <li><code>syslog</code>: Mensajes generales.</li>
@@ -99,24 +99,24 @@
                 </ul>
 
                 <h3>Rotación con logrotate</h3>
-                <p>Evita que los registros ocupen demasiado espacio. <code>logrotate</code> se ejecuta vía <code>/etc/cron.daily/logrotate</code>.</p>
+                <p>Evita que los registros ocupen demasiado espacio. <code>logrotate</code> se ejecuta mediante cron (por ejemplo, <code>/etc/cron.daily/logrotate</code>) o un timer de systemd, según la distribución.</p>
                 <ul>
                     <li><strong>Configuración:</strong> <code>/etc/logrotate.conf</code> (global) y <code>/etc/logrotate.d/</code> (específica).</li>
                     <li>Opciones comunes: <code>weekly</code>, <code>rotate 4</code>, <code>compress</code>.</li>
                 </ul>
 
                 <h3>Gestión con systemd-journald</h3>
-                <p>Centraliza registros en formato binario. Almacenamiento en <code>/run/log/journal/</code> (volátil) o <code>/var/log/journal/</code> (persistente).</p>
+                <p>Centraliza registros en formato binario junto con datos como el UID, el PID y la unidad que los generó. Almacenamiento en <code>/run/log/journal/</code> (volátil) o <code>/var/log/journal/</code> (persistente).</p>
                 <ul>
-                    <li><strong><code>journalctl</code>:</strong> Consulta el journal (filtros: <code>--since</code>, <code>-u</code>, <code>-b</code>).</li>
+                    <li><strong><code>journalctl</code>:</strong> Consulta el journal (filtros: <code>--since</code>, <code>--until</code>, <code>-u</code>, <code>-b</code>). Ejemplo de intervalo: <code>journalctl --since "2026-10-01 09:00" --until "2026-10-01 10:00"</code>.</li>
                     <li><strong><code>systemd-cat</code>:</strong> Envía mensajes al journal (ej. <code>echo "Mensaje" | systemd-cat</code>).</li>
-                    <li><strong><code>/etc/systemd/journald.conf</code>:</strong> Configura ubicación (<code>Storage=</code>) y límites.</li>
+                    <li><strong><code>/etc/systemd/journald.conf</code>:</strong> Configura ubicación (<code>Storage=</code>) y límites. <code>ForwardToSyslog=yes</code> permite reenviar a un servicio syslog que esté escuchando; rsyslog también puede configurarse para leer el journal.</li>
                 </ul>
             </section>
 
             <section id="108.3" class="lesson-section">
                 <h2>108.3 Conceptos básicos del Agente de Transferencia de Correo</h2>
-                <p>Un MTA envía y recibe correos en Linux, guardándolos en bandejas privadas (ej. <code>/var/spool/mail/usuario</code>). Usa SMTP (puerto TCP 25).</p>
+                <p>Un MTA envía y recibe correos en Linux, entregándolos localmente (ej. <code>/var/spool/mail/usuario</code>) o a otro servidor. Usa SMTP (puerto TCP 25). Un <em>open relay</em> permite reenviar correo entre terceros sin autorización: debe evitarse.</p>
 
                 <h3>MTAs en Linux: sendmail, postfix, exim</h3>
                 <ul>
@@ -137,7 +137,7 @@
                 <h3>Personalización de la entrega</h3>
                 <ul>
                     <li><strong><code>~/.forward</code>:</strong> Archivo en el directorio personal para reenviar correos. No necesita <code>newaliases</code> y debe ser escribible solo por el propietario.</li>
-                    <li><strong><code>/etc/aliases</code>:</strong> Alias del sistema (ej. <code>postmaster: carol</code>). Requiere <code>newaliases</code>.</li>
+                    <li><strong><code>/etc/aliases</code>:</strong> Alias del sistema (ej. <code>postmaster: carol</code>). Requiere <code>newaliases</code>. Según el MTA y la distribución, puede estar en <code>/etc/mail/aliases</code>.</li>
                 </ul>
             </section>
 
@@ -161,7 +161,7 @@
                     <li><strong><code>lpr</code>:</strong> Envía a impresora por defecto.</li>
                     <li><strong><code>lprm</code>:</strong> Cancela trabajos (ej. <code>lprm 20</code>).</li>
                     <li><strong><code>lpq</code>:</strong> Muestra cola y estados (ej. <code>lpq -a</code> todas las colas).</li>
-                    <li><strong><code>lpstat</code>:</strong> Estado de impresoras (ej. <code>lpstat -p</code> disponibles).</li>
+                    <li><strong><code>lpstat</code>:</strong> Sin opciones muestra los trabajos del usuario. <code>lpstat -p</code> muestra las impresoras y <code>lpstat -o</code> los trabajos pendientes.</li>
                 </ul>
             </section>
 

@@ -58,7 +58,7 @@ function makeMobileToc() {
 function wireSectionProgress() {
   const meter = document.querySelector('.lesson-section-meter');
   const links = [...document.querySelectorAll('.lesson-toc a,.mobile-toc a')];
-  const sections = links.map((link) => document.querySelector(link.hash)).filter(Boolean);
+  const sections = links.map((link) => document.getElementById(decodeURIComponent(link.hash.slice(1)))).filter(Boolean);
   const update = () => {
     const max = document.documentElement.scrollHeight - innerHeight;
     if (meter) meter.style.width = `${max > 0 ? Math.min(100, scrollY / max * 100) : 100}%`;

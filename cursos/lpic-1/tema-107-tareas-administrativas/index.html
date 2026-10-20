@@ -60,6 +60,7 @@
                         <ul>
                             <li><code>-d</code>: Directorio de inicio.</li>
                             <li><code>-m</code>: Crea el directorio de inicio si no existe.</li>
+                            <li><code>-u</code>: Asigna un UID concreto (ej. <code>useradd -m -u 1500 ana</code>).</li>
                             <li><code>-G</code>: Añade a grupos secundarios.</li>
                             <li><code>-s</code>: Define el shell (ej. <code>/bin/bash</code>).</li>
                         </ul>
@@ -68,8 +69,9 @@
                         <ul>
                             <li><code>-d</code>: Cambia directorio de inicio.</li>
                             <li><code>-e</code>: Fecha de expiración.</li>
-                            <li><code>-L</code>: Bloquea la cuenta.</li>
-                            <li><code>-U</code>: Desbloquea la cuenta.</li>
+                            <li><code>-L</code>: Bloquea la contraseña, no otros accesos como una clave SSH.</li>
+                            <li><code>-U</code>: Desbloquea la contraseña.</li>
+                            <li><code>-s</code>: Cambia el shell. <code>chsh -s /bin/bash ana</code> también permite cambiarlo; <code>/usr/sbin/nologin</code> o <code>/bin/false</code> impiden abrir una sesión con ese shell.</li>
                         </ul>
                     </li>
                     <li><strong>userdel</strong>: Elimina un usuario. <code>-r</code> elimina también el directorio de inicio.</li>
@@ -99,14 +101,14 @@
                 <h3>Archivos passwd, group, shadow y gshadow</h3>
                 <p>Archivos en <code>/etc/</code>:</p>
                 <ul>
-                    <li><strong>/etc/passwd</strong>: Legible por todos. 7 campos <code>:</code> separados (nombre, passwd(x), UID, GID, descripción, home, shell). Ej: <code>sysriser:x:1001:1001:Usuario Sysriser:/home/sysriser:/bin/bash</code>.</li>
+                    <li><strong>/etc/passwd</strong>: Legible por todos. 7 campos separados por <code>:</code> (nombre, passwd(x), UID, GID principal, descripción, home, shell). Ej: <code>sysriser:x:1001:1001:Usuario Sysriser:/home/sysriser:/bin/bash</code>. UID identifica al usuario y GID al grupo; son numeraciones independientes y pueden coincidir.</li>
                     <li><strong>/etc/group</strong>: Legible por todos. 4 campos (nombre, passwd(x), GID, miembros). Ej: <code>developers:x:1001:sysriser,user2</code>.</li>
-                    <li><strong>/etc/shadow</strong>: Solo legible por root. 9 campos, incluye contraseña cifrada. Ej: <code>sysriser:$6$...:18659:0:99999:7:::</code>.</li>
-                    <li><strong>/etc/gshadow</strong>: Solo legible por root. 4 campos, incluye contraseña cifrada de grupos.</li>
+                    <li><strong>/etc/shadow</strong>: Lectura restringida a root y procesos autorizados. 9 campos: usuario, hash de la contraseña (o marca de bloqueo), último cambio, mínimo, máximo, aviso, inactividad, caducidad y uno reservado. Ej: <code>sysriser:$6$...:18659:0:99999:7:::</code>. El hash sirve para comprobar la contraseña, no para recuperarla.</li>
+                    <li><strong>/etc/gshadow</strong>: Acceso restringido. 4 campos: grupo, hash de contraseña, administradores y miembros.</li>
                 </ul>
 
                 <h3>Comando getent</h3>
-                <p>Consulta bases de datos del sistema (usuarios, grupos). Ejemplo: <code>getent passwd sysriser</code> muestra la línea de <code>/etc/passwd</code> para ese usuario.</p>
+                <p>Consulta bases de datos del sistema (usuarios, grupos), incluidas las fuentes configuradas en NSS. <code>getent passwd</code> lista las cuentas que se pueden enumerar; <code>getent passwd sysriser</code> consulta solo ese usuario.</p>
             </section>
 
             <section id="107.2" class="lesson-section">
@@ -127,11 +129,11 @@
                             <li>Ejemplo: <code>0 3 * * 1 root /usr/sbin/log-cleanup.sh</code> (Lunes 3AM como root).</li>
                         </ul>
                     </li>
-                    <li><strong>Restricciones</strong>: <code>/etc/cron.allow</code> (solo listados pueden usar cron) y <code>/etc/cron.deny</code> (listados prohibidos).</li>
+                    <li><strong>Restricciones</strong>: Si existe <code>/etc/cron.allow</code>, solo los usuarios listados pueden usar <code>crontab</code>. Si no, se consulta <code>/etc/cron.deny</code> para excluir usuarios. En Cronie, si no existe ninguno, solo root puede usarlo; el valor por defecto puede variar entre implementaciones.</li>
                 </ul>
 
                 <h3>Systemd timers</h3>
-                <p>Alternativa a cron, archivos <code>.timer</code>.</p>
+                <p>Alternativa a cron, archivos <code>.timer</code>. <code>backup.timer</code> activa por defecto <code>backup.service</code>, donde se define el comando; <code>Unit=</code> permite indicar otra unidad.</p>
                 <p>Ejemplo (<code>backup.timer</code> para primer lunes del mes a las 5:30 AM):</p>
                 <pre>
 [Unit]
@@ -146,6 +148,7 @@ WantedBy=timers.target
                     <li>Activar: <code>sudo systemctl enable backup.timer</code>, <code>sudo systemctl start backup.timer</code>.</li>
                     <li><code>OnCalendar</code>: <code>DíaSemana Año-Mes-Día Hora:Minuto:Segundo</code>.</li>
                     <li>Ejemplo diario a medianoche: <code>OnCalendar=*-*-* 00:00:00</code>.</li>
+                    <li>Consultar próximas ejecuciones: <code>systemctl list-timers</code>.</li>
                 </ul>
 
                 <h3>at</h3>
@@ -154,7 +157,7 @@ WantedBy=timers.target
                     <li>Opciones: <code>-c</code> (muestra comandos), <code>-l</code> (lista, aka <code>atq</code>), <code>-m</code> (envía correo al finalizar).</li>
                     <li>Ejemplo: <code>at now +5 minutes</code> → <code>date</code> → <code>Ctrl+D</code>.</li>
                     <li>Eliminar (ID 3): <code>atrm 3</code>.</li>
-                    <li><strong>Restricciones</strong>: <code>/etc/at.allow</code> y <code>/etc/at.deny</code>.</li>
+                    <li><strong>Restricciones</strong>: <code>/etc/at.allow</code> tiene prioridad: si existe, solo permite a sus usuarios. Si no existe, <code>/etc/at.deny</code> indica los excluidos.</li>
                 </ul>
 
                 <h3>systemd-run</h3>
@@ -173,7 +176,7 @@ WantedBy=timers.target
                 <ul>
                     <li><strong>Configuración:</strong>
                         <ul>
-                            <li><code>/etc/timezone</code>: Define la zona.</li>
+                            <li><code>/etc/timezone</code>: Guarda el nombre de la zona en algunas distribuciones.</li>
                             <li><code>/etc/localtime</code>: Enlace simbólico a <code>/usr/share/zoneinfo/</code>. Ej: <code>sudo ln -sf /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime</code>.</li>
                             <li><code>TZ</code>: Variable para sesión. Ej: <code>export TZ="Africa/Cairo"; date</code>.</li>
                         </ul>
@@ -187,15 +190,15 @@ WantedBy=timers.target
                     <li><strong>Variables clave:</strong>
                         <ul>
                             <li><code>LANG</code>: Idioma y codificación (ej. <code>es_ES.UTF-8</code>).</li>
-                            <li><code>LC_MESSAGES</code>: Idioma de mensajes.</li>
+                            <li><code>LC_MESSAGES</code>: Idioma de mensajes. <code>export LC_MESSAGES=en_US.UTF-8</code> los cambia para los programas de la sesión si esa localización está instalada.</li>
                             <li><code>LC_TIME</code>: Formato hora/fecha.</li>
                             <li><code>LC_ALL</code>: Anula todas las demás variables.</li>
                         </ul>
                     </li>
                     <li><strong>Configuración:</strong>
                         <ul>
-                            <li><code>/etc/locale.conf</code>: Localización del sistema.</li>
-                            <li><code>locale</code>: Muestra configuraciones actuales.</li>
+                            <li><code>/etc/locale.conf</code>: Localización del sistema: admite <code>LANG</code> y categorías como <code>LC_TIME</code>, pero no <code>LC_ALL</code>.</li>
+                            <li><code>locale</code>: Muestra configuraciones actuales; <code>locale -a</code> lista las disponibles.</li>
                             <li><code>localectl</code>: Configura locale (ej. <code>localectl set-locale LANG=es_US.UTF-8</code>).</li>
                         </ul>
                     </li>
