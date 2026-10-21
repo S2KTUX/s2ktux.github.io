@@ -1,5 +1,5 @@
 {
-  "version": "2.4",
+  "version": "2.5",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Completar y comprobar las clases 12 y 15–34 en el laboratorio real antes de abrirlas. Las clases 13 y 14 ya tienen prácticas verificadas de permisos, certificados y ServiceAccounts."
+      "texto": "Completar y comprobar las clases 15–34 en el laboratorio real antes de abrirlas. Las clases 01–14 ya tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
     },
     {
       "id": "kubernetes-examen",
@@ -44,7 +44,7 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir reduciendo la primera preparación de Kubernetes y medir los tres niveles. La entrada rápida reutiliza una base limpia, separada de los guardados del alumno, y bloques del disco verificados. Falta comprobar y optimizar los escenarios avanzados; no se descargan máquinas desde otras páginas."
+      "texto": "Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
     },
     {
       "id": "imagen-ligera",
@@ -68,6 +68,16 @@
     }
   ],
   "versiones": [
+    {
+      "version": "2.5",
+      "fecha": "2026-10-21",
+      "cambios": [
+        "Kubernetes intermedio recupera una base de dos nodos ya preparada, sin repetir el montaje del worker. Tus sesiones guardadas siguen teniendo prioridad.",
+        "Editar preguntas ya no invalida la entrada rápida. Las descargas de la nueva base tienen límite de espera, reintentos y verificación de integridad.",
+        "Abrimos tres prácticas de la clase 12: volúmenes temporales, persistencia con PV/PVC y aprovisionamiento dinámico con StorageClass.",
+        "Los correctores de RBAC aceptan reglas equivalentes aunque sus permisos se escriban por separado."
+      ]
+    },
     {
       "version": "2.4",
       "fecha": "2026-10-21",

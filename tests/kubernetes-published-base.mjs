@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
-import {cargarBasePublicada,validarBasePublicada} from '../laboratorios/kubernetes-real/debian/fabrica-cluster.mjs';
+import {cargarBasePublicada,validarBasePublicada,descargarFragmentoBase} from '../laboratorios/kubernetes-real/debian/fabrica-cluster.mjs';
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex'),data=new Uint8Array([1,2,3,4]);
 const node=id=>({id,format:'s2ktux-v86-session-v1',identity:'a'.repeat(64),bytes:1024,packedBytes:4,sha256:hash(data),parts:[{offset:0,bytes:4,sha256:hash(data),file:hash(data)+'.part'}]});
 const manifest={format:'s2ktux-kubernetes-clean-cluster-v1',sourceRevision:'b'.repeat(64),level:'intermedio',factoryVersion:'v6',workerComponents:'v8',sha256:'c'.repeat(64),nodes:[node('controlplane'),node('worker1')]};
@@ -15,4 +15,6 @@ await assert.rejects(()=>cargarBasePublicada({...config,revision:'f'.repeat(64)}
 await assert.rejects(()=>cargarBasePublicada({...config,url:'https://otro.example/cluster.json'},dependencies),/Origen/);
 await assert.rejects(()=>cargarBasePublicada(config,{...dependencies,fetcher:async()=>new Response('alterado')}),/alterado/);
 await assert.rejects(()=>cargarBasePublicada(config,{...dependencies,sessions:{validate:async()=> '0'.repeat(64)}}),/conjunto/);
+let attempts=0;assert.equal(await descargarFragmentoBase('fixture',{},async(url,options)=>{assert.equal(options.timeoutMs,30000);if(++attempts<3)throw new TypeError('Red interrumpida');return 'verificado';}),'verificado');assert.equal(attempts,3);
+attempts=0;await assert.rejects(()=>descargarFragmentoBase('fixture',{},async()=>{attempts++;throw Error('Checksum incorrecto');}));assert.equal(attempts,1,'No reintentar ni aceptar bytes alterados');
 console.log('Kubernetes: base publicada verificada por revisión, origen, perfiles y checksums; los estados incompletos o alterados no se restauran.');

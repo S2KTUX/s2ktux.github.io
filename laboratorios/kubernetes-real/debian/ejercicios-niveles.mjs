@@ -1,10 +1,10 @@
 import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs?v=20261020-aprendizaje';
 import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261020-aprendizaje';
 import {EJERCICIOS_ACCESO} from './ejercicios-acceso.mjs?v=d5f8b79c9654a632';
-import {EJERCICIOS_ALMACENAMIENTO} from './ejercicios-almacenamiento.mjs?v=b0f69e53f91027cc';
+import {EJERCICIOS_ALMACENAMIENTO} from './ejercicios-almacenamiento.mjs?v=9e73779cb79a1c9e';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
-import {claseDisponible} from './disponibilidad-curso.mjs?v=cc0ba61cf12a8c85';
+import {claseDisponible} from './disponibilidad-curso.mjs?v=a87c2fe1674ad434';
 import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
 import {EJERCICIOS_PROGRESIVOS,CKA_EXAM_PRACTICE} from './ejercicios-progresivos.mjs';
 const image='busybox:1.37.0-musl';

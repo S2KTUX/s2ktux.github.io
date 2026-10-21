@@ -1,4 +1,4 @@
-import {IMAGEN,aplicar,pod,contenedor,obtener,listo,crearPractica,esperarPod,q,yaml} from './herramientas-practicas.mjs';
+import {IMAGEN,aplicar,pod,contenedor,obtener,listo,crearPractica,esperarPod,q,yaml} from './herramientas-practicas.mjs?v=b995634347ea1c07';
 import {comandosArchivoSerie} from '../archivos-serie.mjs';
 import {equivalenciaJQ} from './criterios-equivalentes.mjs';
 const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));

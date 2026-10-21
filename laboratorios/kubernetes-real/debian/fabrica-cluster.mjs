@@ -1,6 +1,10 @@
-import {verifiedDownload} from '../../verified-download.mjs';
+import {verifiedDownload} from '../../verified-download.mjs?v=72d06c87f54cc41b';
 const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
 const sha=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
+export async function descargarFragmentoBase(url,options,download=verifiedDownload){
+ for(let attempt=0;;attempt++)try{return await download(url,{...options,timeoutMs:30000});}
+ catch(error){if(attempt>=2||!(error.retryable===true||error instanceof TypeError||['AbortError','TimeoutError'].includes(error.name)))throw error;}
+}
 export function validarBasePublicada(manifest,config){
  const count={inicial:1,intermedio:2,avanzado:3}[config.level];
  if(!count||manifest?.format!=='s2ktux-kubernetes-clean-cluster-v1'||manifest.level!==config.level||manifest.factoryVersion!=='v6'||manifest.workerComponents!=='v8'||!sha(manifest.sourceRevision)||!sha(manifest.sha256)||!Array.isArray(manifest.nodes)||manifest.nodes.length!==count)throw Error('Base multinodo incompatible');
@@ -16,7 +20,7 @@ export async function cargarBasePublicada(config,{revision,sessions,notify=()=>{
  if(!sha(config?.sha256)||config.revision!==revision||!sha(revision))throw Error('Revisión de base no autorizada');
  const url=new URL(config.url);
  if(url.origin!=='https://raw.githubusercontent.com'||!/^\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/clean-v1\/(inicial|intermedio|avanzado)\/cluster\.json$/.test(url.pathname)||url.search||url.hash)throw Error('Origen de base no autorizado');
- const response=await fetcher(url);if(!response.ok)throw Error('Base preparada no disponible');
+ const response=await fetcher(url,{signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('Base preparada no disponible');
  const bytes=await response.arrayBuffer();if(bytes.byteLength>1048576||await digest(bytes)!==config.sha256)throw Error('Manifiesto de base alterado');
  const manifest=validarBasePublicada(JSON.parse(new TextDecoder().decode(bytes)),config),nodes=[];
  const total=manifest.nodes.reduce((sum,node)=>sum+node.packedBytes,0);let done=0;
@@ -24,7 +28,7 @@ export async function cargarBasePublicada(config,{revision,sessions,notify=()=>{
   const parts=new Array(node.parts.length),progress=new Map();let next=0;
   await Promise.all(Array.from({length:Math.min(3,node.parts.length)},async()=>{
    for(;;){const index=next++,part=node.parts[index];if(!part)return;
-    parts[index]=await download(new URL('fragmentos/'+part.file,url),{hash:part.sha256,bytes:part.bytes,notify:count=>{progress.set(index,count);notify('Descargando base preparada… '+Math.floor((done+[...progress.values()].reduce((a,b)=>a+b,0))/total*100)+' %');}});
+    parts[index]=await descargarFragmentoBase(new URL('fragmentos/'+part.file,url),{hash:part.sha256,bytes:part.bytes,notify:count=>{progress.set(index,count);notify('Descargando base preparada… '+Math.floor((done+[...progress.values()].reduce((a,b)=>a+b,0))/total*100)+' %');}},download);
    }
   }));
   const {parts:_,...metadata}=node;nodes.push({...metadata,packed:new Blob(parts),terminalText:''});done+=node.packedBytes;
