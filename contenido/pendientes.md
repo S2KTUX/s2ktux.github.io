@@ -10,7 +10,7 @@ Esta lista cambia con el proyecto. Las mejoras comprobadas salen de aquí y pasa
 - **Laboratorios:** Guardar de forma conjunta las máquinas, el intento y el cronómetro para poder continuar un examen tras recargar.
 - **Laboratorios:** Ampliar los ejercicios de diagnóstico con fallos controlados de fstab, SELinux, servicios y red; en Kubernetes, Pods, nodos, selectores y PVC.
 - **Más adelante:** Variar nombres, usuarios y tamaños entre intentos, adaptando también la preparación, las soluciones y los correctores.
-- **Rendimiento:** Seguir reduciendo el primer arranque de Kubernetes y medir la reutilización de bloques. Los fragmentos del estado de arranque ya se guardan con verificación; no se descargan máquinas desde otras páginas.
+- **Rendimiento:** Seguir reduciendo el arranque de Kubernetes y medir los tres niveles. Se está probando una caché acotada de bloques del disco, salida nativa durante la preparación y lectura directa del entorno de API Server; todavía no se han publicado estos cambios. Los fragmentos del estado de arranque ya se guardan con verificación; no se descargan máquinas desde otras páginas.
 - **Rendimiento:** Estudiar qué se puede quitar de las imágenes sin perder herramientas, páginas de man, licencias ni ejercicios del curso.
 - **Más adelante:** Revisar si la validación con OpenAPI mejora el simulador de Kubernetes, aprovechando sus objetos y controladores actuales sin reconstruirlo innecesariamente.
 - **Más adelante:** Cuando exista un curso de AWS, plantear un banco de preguntas con explicaciones como el de LPIC-1.

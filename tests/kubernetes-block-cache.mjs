@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {bloqueVerificado} from '../laboratorios/kubernetes-real/cache-bloques.mjs';
+const entries=new Map(),storage={open:async()=>({match:async key=>entries.get(key)?.clone(),put:async(key,value)=>entries.set(key,value),delete:async key=>entries.delete(key),keys:async()=>[...entries.keys()]})};
+const data=new Uint8Array([1,2,3]),hash=createHash('sha256').update(data).digest('hex');let transfers=0,hits=0;
+const options={hash,bytes:3,storage,download:async()=>{transfers++;return data;},onCacheHit:()=>hits++};
+assert.deepEqual(await bloqueVerificado('https://assets.example/block.gz',options),data);
+assert.deepEqual(await bloqueVerificado('https://assets.example/block.gz',options),data);
+assert.equal(transfers,1);assert.equal(hits,1);
+entries.set('https://assets.example/block.gz',new Response(new Uint8Array([9,9,9])));
+assert.deepEqual(await bloqueVerificado('https://assets.example/block.gz',options),data);assert.equal(transfers,2,'Un bloque alterado se descarta y descarga de nuevo');
+await assert.rejects(bloqueVerificado('https://assets.example/bad.gz',{...options,download:async()=>new Uint8Array([0,0,0])}),/Hash o tamaño/);
+assert.equal(entries.has('https://assets.example/bad.gz'),false);
+assert.deepEqual(await bloqueVerificado('https://assets.example/no-storage.gz',{...options,storage:{open:async()=>{throw Error('Sin cuota');}}}),data);
+for(let index=0;index<132;index++)await bloqueVerificado('https://assets.example/'+index+'.gz',options);
+assert.equal(entries.size,128,'La caché tiene un límite; no crece sin control');
+await assert.rejects(bloqueVerificado('bad',{...options,bytes:3*1048576}),/Identidad/);
+console.log('Kubernetes: bloques base reutilizados con hash verificado, corrupción rechazada, límite de caché y alternativa sin almacenamiento.');

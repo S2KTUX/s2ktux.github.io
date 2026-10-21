@@ -43,8 +43,8 @@
     },
     {
       "path": "debian/cliente.mjs",
-      "bytes": 26513,
-      "sha256": "27aecf82a36a505688fa7cf0307424ec05dfc109e83e3ab0b749bdd5cd440fbd"
+      "bytes": 26598,
+      "sha256": "5fd50f3c2922c7110e5c78869d5b70c5515674ca49b2e2f7af40eb643aa83f18"
     },
     {
       "path": "debian/compartir-ejecutable-admin.mjs",
@@ -53,8 +53,8 @@
     },
     {
       "path": "debian/comprobar-entorno-preparado.mjs",
-      "bytes": 744,
-      "sha256": "b7e98a08a848af4de440bd3e33584b68246153035b8daa6833aafe3590af6f34"
+      "bytes": 833,
+      "sha256": "523c698a0ac250124e593be3f2a25d485fc9d9df51ff19f05358b367794aaa6b"
     },
     {
       "path": "debian/config/10-kubeadm.conf",
@@ -84,7 +84,7 @@
     {
       "path": "debian/entrada-laboratorio.mjs",
       "bytes": 4401,
-      "sha256": "fcaac41b4c326933420d058a8ed4d33ae892e5e085e0b1715e18575793497c0b"
+      "sha256": "25e6d54964087bad5efa2aff02fbc39d4b537430c38ac4293280e4bbb2521a98"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -113,8 +113,8 @@
     },
     {
       "path": "debian/index.html",
-      "bytes": 1700,
-      "sha256": "954a09c9813ff2ec302ef25fd6d96951a7a4f7b66ab15ed18f017b28af00df04"
+      "bytes": 1708,
+      "sha256": "0ebc5c3cc0fef5cc633c556fd8973026f1ba1af99b20e018140cf39be7ca4fa9"
     },
     {
       "path": "debian/interfaz-niveles.mjs",
@@ -144,12 +144,12 @@
     {
       "path": "debian/multinodo.html",
       "bytes": 8510,
-      "sha256": "bef75f47c3dd2882cbb8ffd2072e67f8a4c5817cee24baed1b454a4f782a7567"
+      "sha256": "74bd0ba54b8a2671a2c21f2a4cfcfb49e3c20afea4c05b6b8fc1b3ae517d3001"
     },
     {
       "path": "debian/multinodo.mjs",
-      "bytes": 20502,
-      "sha256": "0913ab8f0ab8dbcfcfa777d822df9cb234d8e078865ffc5976db983385945bc4"
+      "bytes": 21035,
+      "sha256": "c4dd28e0183b1740b630871856f1f1c6f326d2e5c06bb7b4241741a8febecc41"
     },
     {
       "path": "debian/niveles.css",
@@ -218,8 +218,8 @@
     },
     {
       "path": "disco-kubernetes.mjs",
-      "bytes": 3565,
-      "sha256": "527d48c6ebcecbc78697f27ef015a547518cf4081f605d340dc2eb797080e6e8"
+      "bytes": 3845,
+      "sha256": "24e556fdea9d7b1cbb7732a9b2fd870fcffba717be56ca427722e15a94406957"
     },
     {
       "path": "estadisticas-motor.mjs",
@@ -278,8 +278,8 @@
     },
     {
       "path": "serial-checks.mjs",
-      "bytes": 2800,
-      "sha256": "fa1f55b51f646a6438091c4541eec660b7e69f8b6ebd206607e622e03b63fd94"
+      "bytes": 3738,
+      "sha256": "d61c46081c6ddf6b1924e043c9e293bd690968d7a22adb44f89cb3f4d4f41cec"
     },
     {
       "path": "index.html",
@@ -345,6 +345,11 @@
       "path": "debian/ejercicios-progresivos.mjs",
       "bytes": 7293,
       "sha256": "ba19edab268d4ee31fc778f1380ffa9f1dd93f92a026f3701aa6810714b28503"
+    },
+    {
+      "path": "cache-bloques.mjs",
+      "bytes": 1719,
+      "sha256": "3baa58ede27a7990dd7f090bb1af03e4069f99cd5f3a4edc1d3f20e0f29eff9b"
     }
   ]
 }

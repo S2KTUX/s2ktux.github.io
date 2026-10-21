@@ -10,11 +10,17 @@ async function replaceRequired(path,pattern,replacement){
 }
 // El HTML y la interfaz cambian juntos. Versionar la cadena de entrada evita
 // reutilizar módulos de una revisión anterior en pestañas que ya estaban abiertas.
+await replaceRequired('disco-kubernetes.mjs',/from '\.\/cache-bloques\.mjs(?:\?v=[a-f0-9]+)?'/,"from './cache-bloques.mjs?v="+await revision('cache-bloques.mjs')+"'");
+await replaceRequired('debian/cliente.mjs',/from '\.\.\/disco-kubernetes\.mjs(?:\?v=[a-f0-9]+)?'/,"from '../disco-kubernetes.mjs?v="+await revision('disco-kubernetes.mjs')+"'");
+await replaceRequired('debian/cliente.mjs',/from '\.\.\/serial-checks\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../serial-checks.mjs?v="+await revision('serial-checks.mjs')+"'");
+await replaceRequired('debian/cliente.mjs',/from '\.\/comprobar-entorno-preparado\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './comprobar-entorno-preparado.mjs?v="+await revision('debian/comprobar-entorno-preparado.mjs')+"'");
+await replaceRequired('debian/index.html',/src="cliente\.mjs(?:\?v=[a-z0-9-]+)?"/,'src="cliente.mjs?v='+await revision('debian/cliente.mjs')+'"');
+await replaceRequired('debian/multinodo.mjs',/const nodeUIRevision='[a-f0-9]+'/,"const nodeUIRevision='"+await revision('debian/index.html')+"'");
 await replaceRequired('debian/multinodo.mjs',/from '\.\/interfaz-niveles\.mjs(?:\?v=[a-f0-9]+)?'/,"from './interfaz-niveles.mjs?v="+await revision('debian/interfaz-niveles.mjs')+"'");
 await replaceRequired('debian/entrada-laboratorio.mjs',/import\('\.\/multinodo\.mjs(?:\?v=[a-f0-9]+)?'\)/,"import('./multinodo.mjs?v="+await revision('debian/multinodo.mjs')+"')");
 await replaceRequired('debian/multinodo.html',/src="entrada-laboratorio\.mjs(?:\?v=[a-f0-9]+)?"/,'src="entrada-laboratorio.mjs?v='+await revision('debian/entrada-laboratorio.mjs')+'"');
 await replaceRequired('debian/multinodo.html',/href="niveles\.css(?:\?v=[a-f0-9]+)?"/,'href="niveles.css?v='+await revision('debian/niveles.css')+'"');
-for(const path of ['debian/disponibilidad-curso.mjs','debian/clases-curso.mjs','debian/ejercicios-iniciales.mjs','debian/ejercicios-aprender.mjs','debian/ejercicios-progresivos.mjs','debian/comprobaciones-json.mjs','debian/motor-practicas.mjs','debian/salud-inicial.mjs','debian/ejercicios-intermedios.mjs','debian/herramientas-practicas.mjs','debian/criterios-equivalentes.mjs']){
+for(const path of ['cache-bloques.mjs','debian/disponibilidad-curso.mjs','debian/clases-curso.mjs','debian/ejercicios-iniciales.mjs','debian/ejercicios-aprender.mjs','debian/ejercicios-progresivos.mjs','debian/comprobaciones-json.mjs','debian/motor-practicas.mjs','debian/salud-inicial.mjs','debian/ejercicios-intermedios.mjs','debian/herramientas-practicas.mjs','debian/criterios-equivalentes.mjs']){
  if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 }
 for(const record of manifest.files){

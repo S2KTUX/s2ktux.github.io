@@ -24,6 +24,7 @@ if(!['v1','v3','v4','v5','v6','v8'].includes(factoryVersion))throw Error('Fábri
 const schedulingAPI=new URLSearchParams(location.search).get('use-scheduling-api')==='1';
 if(factoryVersion==='v8'&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración privada requiere Scheduler API, sin políticas integradas y nivel avanzado');
 const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'||factoryVersion!=='v1';
+const nodeUIRevision='0ebc5c3cc0fef5cc';
 const workerComponents=factoryVersion==='v8'?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
 const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
@@ -45,16 +46,23 @@ async function value(id,command){
  if(!line)throw Error('No se recibió el valor nativo');return line.slice(key.length);
 }
 async function createNode(id,query,restore){
- const frame=document.createElement('iframe');frame.className='node-frame';frame.title='Terminal '+id;frame.hidden=id!=='controlplane';frame.src='index.html?base='+(factoryVersion==='v8'?'admin-v2':['v5','v6'].includes(factoryVersion)?'v6':factoryVersion==='v4'?'v5':'v4')+'&ui=20261020&kube=1&components='+(id==='controlplane'?'v7':workerComponents)+'&cluster=1&factory='+factoryVersion+'&'+query+(classicalTls?'&tls=classical':'')+(schedulingAPI?'&use-scheduling-api=1':'');
+ const frame=document.createElement('iframe');frame.className='node-frame';frame.title='Terminal '+id;frame.hidden=id!=='controlplane';frame.src='index.html?base='+(factoryVersion==='v8'?'admin-v2':['v5','v6'].includes(factoryVersion)?'v6':factoryVersion==='v4'?'v5':'v4')+'&ui='+nodeUIRevision+'&kube=1&components='+(id==='controlplane'?'v7':workerComponents)+'&cluster=1&factory='+factoryVersion+'&'+query+(classicalTls?'&tls=classical':'')+(schedulingAPI?'&use-scheduling-api=1':'');
  const loaded=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(Error('No se cargó '+id));});document.querySelector('#nodes').append(frame);levelUI?.update();await loaded;
  const child=frame.contentWindow;nodes.set(id,{id,frame,window:child});levelUI?.update();
+ const childStatus=child.document.querySelector('#status');
+ const mirrorStatus=()=>{if(busy&&!initialized&&childStatus?.textContent.trim())status.textContent=(id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name)+' · '+childStatus.textContent.trim();};
+ const statusObserver=new child.MutationObserver(mirrorStatus);if(childStatus)statusObserver.observe(childStatus,{childList:true,subtree:true,characterData:true});
+ let began;
+ try{
  const moduleDeadline=Date.now()+30000;while(!child.kubeDebianProfile){if(Date.now()>moduleDeadline)throw Error('No se inicializó '+id);await new Promise(r=>setTimeout(r,100));}
  const css=child.document.createElement('style');css.textContent='.site-header,.site-footer,main>h1,main>p,main>.controls{display:none}html,body,.site-app-shell{min-height:0;height:auto}.docker-page{margin:0;padding:0;flex:none}.console{margin:0}';child.document.head.append(css);
  const resize=()=>{const console=child.document.querySelector('.console');if(console)frame.style.height=Math.ceil(console.getBoundingClientRect().height+4)+'px';};
  frame.setAttribute('scrolling','no');new child.ResizeObserver(resize).observe(child.document.querySelector('.console'));resize();
  if(restore)child.kubeDebianRestoreNode={...restore,packed:new child.Blob([restore.packed])};
- child.document.querySelector('#start').click();const began=performance.now();
+ child.document.querySelector('#start').click();began=performance.now();
  while(!child.kubeDebianReady){if(child.kubeDebianErrors.length)throw Error(id+': '+child.kubeDebianErrors.join('; '));if(performance.now()-began>600000)throw Error('No arrancó '+id+' a tiempo');await new Promise(r=>setTimeout(r,500));}
+ }
+ finally{statusObserver.disconnect();}
  kubeDebianClusterStages.push({node:id,label:'Arranque',seconds:(performance.now()-began)/1000,ok:true});
  network.add(id,child.kubeDebianVM.bus,{copyFrame:bytes=>new child.Uint8Array(bytes)});document.querySelector(`button[data-node="${id}"]`).hidden=false;
 }
