@@ -2,6 +2,8 @@
 export function practiceFeedback(mode,task,state,getNode){
  const goal=task?.goal||'',code=task?.solution||'';
  if(mode==='linux'){
+  const expected=task?.fileExpectation;
+  if(expected){const node=getNode(expected.path.split('/').filter(Boolean));if(!node)return 'No existe el archivo '+expected.path+'.';if(node.type!=='file')return expected.path+' debe ser un archivo de texto.';if(String(node.content||'').replace(/\n+$/,'')!==expected.value)return 'El contenido de '+expected.path+' no coincide. Debe contener «'+expected.value+'».';}
   const paths=goal.match(/\/(?:root|home|var|srv|opt|datos)\/[a-zA-Z0-9_./-]+/g)||[];
   for(const raw of paths){const path=raw.replace(/[.,;:]+$/,'');if(!getNode(path.split('/').filter(Boolean)))return 'Falta '+path+'.';}
  }
@@ -25,4 +27,26 @@ export function practiceFeedback(mode,task,state,getNode){
   }
  }
  return '';
+}
+
+// Presentación del resultado; no ejecuta comandos ni cambia los criterios.
+export function renderPracticeResult(root,result,task={}){
+ if(typeof result?.ok!=='boolean')throw Error('La comprobación no ha devuelto un resultado válido.');
+ const doc=root.ownerDocument,title=doc.createElement('strong');
+ title.className='lab-check-title';title.textContent=result.ok?'Ejercicio resuelto.':'Ejercicio incompleto.';
+ root.replaceChildren(title);root.setAttribute('role','status');root.setAttribute('aria-live','polite');
+ if(!result.ok){
+  const list=doc.createElement('ul');list.className='lab-check-list';
+  for(const [index,condition]of (result.results||[]).entries()){
+   if(condition.ok)continue;
+   const detail=task.checkFeedback?.[index];
+   if(detail?.dependsOn!==undefined&&result.results[detail.dependsOn]?.ok===false)continue;
+   const item=doc.createElement('li'),label=condition.label?.trim();
+   item.textContent=detail?.failed||(!label||label==='Resultado solicitado'?task.goal:'Revisa: '+label);
+   if(item.textContent)list.append(item);
+  }
+  if(!list.children.length){const item=doc.createElement('li');item.textContent=result.msg||task.goal||'No se ha recibido el detalle de la comprobación.';list.append(item);}
+  root.append(list);
+ }
+ root.dataset.result=result.ok?'passed':'failed';
 }

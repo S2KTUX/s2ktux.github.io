@@ -3,8 +3,10 @@ import {linuxExamPractice} from './linux-exam-practice.mjs?v=20261020';
 // Las tareas de examen se conservan aparte; no son las 22 del modo examen.
 const q=s=>"'"+s.replaceAll("'","'\\''")+"'";
 const text=(path,value)=>'test -f '+path+' && test "$(cat '+path+')" = '+q(value);
-const item=(id,goal,solution,check)=>({id,goal,solution,checks:[['Resultado solicitado',check]]});
-const file=(id,path,value,goal,solution)=>item(id,goal,solution||'echo '+q(value)+' > '+path,text(path,value));
+const item=(id,goal,solution,check)=>({id,goal,solution,checks:[[goal,check]]});
+const file=(id,path,value,goal,solution)=>({...item(id,goal,solution||'echo '+q(value)+' > '+path,text(path,value)),fileExpectation:{path,value},
+ checks:[['Existe el archivo '+path,'test -f '+path],['Contenido de '+path,text(path,value)]],
+ checkFeedback:[{failed:'No existe el archivo '+path+'.'},{failed:'El archivo '+path+' debe contener '+(value.includes('\n')?'estas líneas, en este orden: '+value.split('\n').map(line=>'«'+line+'»').join(', '):'«'+value+'»')+'.',dependsOn:0}]});
 const newTasks=[
  file('salida-i','/root/salida.txt','Hola','Guarda Hola en /root/salida.txt y comprueba su contenido.'),
  file('salida-ii','/root/salida-dos.txt','Primera\nSegunda','Guarda Primera y Segunda en dos líneas de /root/salida-dos.txt, sin perder la primera al añadir la segunda.',"echo Primera > /root/salida-dos.txt\necho Segunda >> /root/salida-dos.txt\ncat /root/salida-dos.txt"),

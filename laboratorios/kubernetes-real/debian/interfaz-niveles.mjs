@@ -5,7 +5,7 @@ import {comprobarPractica,prepararPractica} from './motor-practicas.mjs';
 import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs';
 import {renderSolutions} from '../../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../../solution-options.mjs?v=20261020-aprendizaje';
-import {practiceProgress} from '../../practice-progress.mjs';
+import {practiceProgress} from '../../practice-progress.mjs?v=20261021-resueltas';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];

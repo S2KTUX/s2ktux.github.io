@@ -36,7 +36,7 @@ async function open(){
  const target=new URL(location.href);target.searchParams.set('level',preview);target.searchParams.set('enter','1');
  const number=previewClass();
  target.searchParams.set('clase',String(number));history.replaceState(history.state,'',target.href);
- try{await import('./multinodo.mjs?v=4765662d90c98d61');}
+ try{await import('./multinodo.mjs?v=0913ab8f0ab8dbcf');}
  catch(error){loading=false;paint();$('lab-loading').hidden=false;$('lab-loading').textContent='No se ha podido abrir el laboratorio. Vuelve a intentarlo.';$('lab-retry').hidden=false;console.error('Carga del laboratorio:',error);}
 }
 $('enter-lab').onclick=open;$('lab-retry').onclick=()=>location.reload();paint();
