@@ -53,7 +53,7 @@ add(13,'cert','Usuario con certificado · II',
  certSolution,
  obtener('p13cert','csr','ana-cert','.spec.signerName=="kubernetes.io/kube-apiserver-client" and (.status.certificate|length)>0 and any(.status.conditions[]; .type=="Approved" and .status=="True")')+' && '+
  'test -s /root/p13cert.kubeconfig && who=$(kubectl --kubeconfig=/root/p13cert.kubeconfig auth whoami -o json) && echo "$who" | jq -e '+q('.status.userInfo.username=="ana-cert"')+' && '+
- 'test "$(kubectl --kubeconfig=/root/p13cert.kubeconfig auth can-i list pods -n p13cert)" = yes && test "$(kubectl --kubeconfig=/root/p13cert.kubeconfig auth can-i delete pods -n p13cert)" = no && test "$(kubectl --kubeconfig=/root/p13cert.kubeconfig auth can-i list pods -n default)" = no',
+ 'test "$(kubectl --kubeconfig=/root/p13cert.kubeconfig auth can-i get pods -n p13cert)" = yes && test "$(kubectl --kubeconfig=/root/p13cert.kubeconfig auth can-i list pods -n p13cert)" = yes && test "$(kubectl --kubeconfig=/root/p13cert.kubeconfig auth can-i delete pods -n p13cert)" = no && test "$(kubectl --kubeconfig=/root/p13cert.kubeconfig auth can-i list pods -n default)" = no',
  {prepare:['test -z "$(kubectl get csr ana-cert --ignore-not-found -o name)" && test ! -e /root/p13cert.kubeconfig'],negative:'kubectl -n p13cert delete rolebinding ana-lector',cleanup:'kubectl delete csr ana-cert --ignore-not-found\nrm -f /root/p13cert.key /root/p13cert.csr /root/p13cert.crt /root/p13cert.kubeconfig'});
 
 add(14,'a','ServiceAccount · I',
@@ -62,7 +62,7 @@ add(14,'a','ServiceAccount · I',
  aplicar(pod('p14a','cliente',{serviceAccountName:'aplicacion'}))+'\n'+esperarPod('p14a','cliente')+'\n'+
  'kubectl -n p14a exec cliente -- ls /var/run/secrets/kubernetes.io/serviceaccount',
  obtener('p14a','serviceaccount','aplicacion','.metadata.name=="aplicacion"')+' && '+
- obtener('p14a','pod','cliente',listo+' and .spec.serviceAccountName=="aplicacion" and any(.spec.volumes[]?; any(.projected.sources[]?; .serviceAccountToken!=null))')+' && '+
+ obtener('p14a','pod','cliente',listo+' and .spec.serviceAccountName=="aplicacion" and any(.spec.containers[]; .image=="'+IMAGEN+'" and .command==["sleep","3600"]) and any(.spec.volumes[]?; any(.projected.sources[]?; .serviceAccountToken!=null))')+' && '+
  'kubectl -n p14a exec cliente -- test -s /var/run/secrets/kubernetes.io/serviceaccount/token',
  {negative:'kubectl -n p14a delete pod cliente'});
 
@@ -74,8 +74,9 @@ add(14,'b','ServiceAccount · II',
  'kubectl -n p14b create token lectora --duration=1h > /root/p14b-token.txt\n'+
  'curl --fail --cacert /etc/kubernetes/pki/ca.crt -H "Authorization: Bearer $(cat /root/p14b-token.txt)" https://10.77.0.10:6443/api/v1/namespaces/p14b/pods',
  obtener('p14b','serviceaccount','lectora','.metadata.name=="lectora"')+' && '+
+ obtener('p14b','role','lector-pods','(.rules|length)==1 and .rules[0].apiGroups==[""] and .rules[0].resources==["pods"] and (.rules[0].verbs|sort)==["get","list"]')+' && '+
  obtener('p14b','rolebinding','lectora-pods','.roleRef.kind=="Role" and .roleRef.name=="lector-pods" and any(.subjects[]; .kind=="ServiceAccount" and .name=="lectora" and .namespace=="p14b")')+' && '+
- can('system:serviceaccount:p14b:lectora','list','pods','p14b','yes')+' && '+can('system:serviceaccount:p14b:lectora','delete','pods','p14b','no')+' && '+can('system:serviceaccount:p14b:lectora','list','pods','default','no')+' && '+
+ can('system:serviceaccount:p14b:lectora','get','pods','p14b','yes')+' && '+can('system:serviceaccount:p14b:lectora','list','pods','p14b','yes')+' && '+can('system:serviceaccount:p14b:lectora','delete','pods','p14b','no')+' && '+can('system:serviceaccount:p14b:lectora','list','pods','default','no')+' && '+
  'test -s /root/p14b-token.txt && test "$(jq -Rr '+q('split(".")[1]|gsub("-";"+")|gsub("_";"/")|@base64d|fromjson|.sub')+' </root/p14b-token.txt)" = system:serviceaccount:p14b:lectora && '+
  'response=$(curl -fsS --cacert /etc/kubernetes/pki/ca.crt -H "Authorization: Bearer $(cat /root/p14b-token.txt)" https://10.77.0.10:6443/api/v1/namespaces/p14b/pods) && test -n "$response" && echo "$response" | jq -e '+q('.kind=="PodList"'),
  {negative:'kubectl -n p14b delete rolebinding lectora-pods',cleanup:'rm -f /root/p14b-token.txt'});

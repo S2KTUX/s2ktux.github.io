@@ -7,12 +7,12 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=bccb91d1de0c4df2';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=51002dc1e958a3e2';
 import {comprobarSaludInicial} from './salud-inicial.mjs';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=cc0ba61cf12a8c85';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5d2be910dd3a4db1';
-const cleanRevision='e3fab80c057e806955e5203277bbf068de32bd3e06a23a73b42fb35693679ea4';
+const cleanRevision='5ff986b89b1e313d3d4b460ca80e3232ad4c2bb3ac80b02c2a974d1ef100ae10';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;

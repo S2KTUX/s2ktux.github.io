@@ -1,6 +1,6 @@
 import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs?v=20261020-aprendizaje';
 import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261020-aprendizaje';
-import {EJERCICIOS_ACCESO} from './ejercicios-acceso.mjs?v=9b9d8f4019e4cd5e';
+import {EJERCICIOS_ACCESO} from './ejercicios-acceso.mjs?v=f2884ac0ad779b9a';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
 import {claseDisponible} from './disponibilidad-curso.mjs?v=cc0ba61cf12a8c85';
