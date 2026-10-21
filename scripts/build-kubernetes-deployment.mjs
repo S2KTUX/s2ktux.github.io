@@ -15,8 +15,8 @@ async function replaceRequired(path,pattern,replacement){
 // reutilizar módulos de una revisión anterior en pestañas que ya estaban abiertas.
 for(const path of ['debian/entrada-laboratorio.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs','debian/ejercicios-niveles.mjs'])await replaceRequired(path,/from '\.\/disponibilidad-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './disponibilidad-curso.mjs?v="+await revision('debian/disponibilidad-curso.mjs')+"'");
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-acceso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-acceso.mjs?v="+await revision('debian/ejercicios-acceso.mjs')+"'");
-await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-almacenamiento\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-almacenamiento.mjs?v="+await revision('debian/ejercicios-almacenamiento.mjs')+"'");
 await replaceRequired('debian/ejercicios-almacenamiento.mjs',/from '\.\/herramientas-practicas\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './herramientas-practicas.mjs?v="+await revision('debian/herramientas-practicas.mjs')+"'");
+await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-almacenamiento\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-almacenamiento.mjs?v="+await revision('debian/ejercicios-almacenamiento.mjs')+"'");
 await replaceRequired('debian/fabrica-cluster.mjs',/from '\.\.\/\.\.\/verified-download\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../../verified-download.mjs?v="+await revision('../verified-download.mjs')+"'");
 await replaceRequired('debian/almacenamiento-curso.mjs',/from '\.\/almacenamiento-paquete\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './almacenamiento-paquete.mjs?v="+await revision('debian/almacenamiento-paquete.mjs')+"'");
 await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/almacenamiento-curso\.mjs(?:\?v=[a-z0-9-]+)?'\)/,"import('./almacenamiento-curso.mjs?v="+await revision('debian/almacenamiento-curso.mjs')+"')");
