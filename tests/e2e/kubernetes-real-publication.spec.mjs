@@ -52,7 +52,8 @@ test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arr
  await page.selectOption('#exercise-class-select','13');await expect(page.locator('#exercise-select option')).toHaveCount(3);
  await page.selectOption('#exercise-class-select','14');await expect(page.locator('#exercise-select option')).toHaveCount(2);
  for(const number of ['8','9','10','11']){await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(4);}
- expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);await expect(page.locator('#exercise-class-select option[value="12"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
+ await page.selectOption('#exercise-class-select','12');await expect(page.locator('#exercise-select option')).toHaveCount(3);await expect(page.locator('#exercise-title')).toHaveText('Volumen temporal · I');
+ expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);await expect(page.locator('#exercise-class-select option[value="15"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
 });
 test('Kubernetes · pendientes bloqueados incluso por enlaces y acciones directas',async({page})=>{
  for(const [level,number] of [['intermedio',15],['intermedio',19],['avanzado',28],['avanzado',34]]){
