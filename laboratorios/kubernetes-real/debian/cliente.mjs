@@ -1,16 +1,16 @@
 import {loadEngine,engineHash} from '../perfil-motor.mjs';
 import {Terminal} from '/laboratorios/docker-real/vendor/xterm.mjs';
-import {ChunkDisk} from '../disco-kubernetes.mjs';
+import {ChunkDisk} from '../disco-kubernetes.mjs?v=24e556fdea9d7b1c';
 import {createEthernetInternet} from '/laboratorios/docker-real/ethernet-internet.mjs';
 import {attachTerminalClipboard} from '/laboratorios/docker-real/v86-clipboard.mjs';
-import {createKubeChecks} from '../serial-checks.mjs';
+import {createKubeChecks} from '../serial-checks.mjs?v=b4caa929394c3188';
 import {EstadoConsola} from './estado-consola.mjs';
 import {cargarFabricaDebian,perfilFabricaDebian} from './fabrica.mjs?v=20261020';
 import {liberarEstadoInicial} from '../liberar-arranque.mjs';
 import {KubeSessions} from '../kube-sessions.mjs';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
 import {prepararWorkerDebian,perfilWorker} from './preparar-worker.mjs';
-import {ThreadVM} from '../motor-hilo.mjs';
+import {ThreadVM} from '../motor-hilo.mjs?v=e53ba023097977b2';
 import {ordenPromptDinamico,promptConfirmado} from './prompt.mjs';
 import {identidadNodoDebian} from './sesiones-cluster.mjs';
 import {comandosTlsLaboratorio,comandosTlsApiServer,ordenEntornoTls,entornoTlsConfirmado} from './tls-laboratorio.mjs';
@@ -18,11 +18,10 @@ import {comandosMontajeComponentes} from './montaje-componentes.mjs';
 import {PresentacionConsola} from './presentacion-consola.mjs';
 import {prepararPerfilConsola,ordenCambiarConsola,consolaConfirmada,consolaCgroup} from './consola-scope.mjs';
 import {prepararAdministracion} from './preparar-administracion.mjs';
-import {comandosEntornoPreparado} from './comprobar-entorno-preparado.mjs';
+import {comandosEntornoPreparado} from './comprobar-entorno-preparado.mjs?v=523c698a0ac25012';
 import {panicDeArranque} from './panic-arranque.mjs';
 import {kernelSha256} from './kernel-perfil.mjs';
 import {recursoPesado} from '../recursos-publicados.mjs';
-import {bootProgress} from '../../boot-progress.mjs';
 const status=document.querySelector('#status'),start=document.querySelector('#start'),save=document.querySelector('#save'),reset=document.querySelector('#reset');
 const base=new URL(location.href).searchParams.get('base')||'v3';
 const baseHashes={v1:'66d2cbe7fc76c5d1f618c2cad655ef4979d0e145885637e8ac8d61003cc47302',v2:'175e42905bb8f50cd0bffd3df47071740f098f875b11145fe31c7cf9c3fccff1',v3:'289150401015a0cac0bbb6ce60a602f0c519758527d2d14fc79c4a2984bb70fb',v4:'fcbd48d751b9ace0693783390a1491c8fb6c4e9ee6049660c657f36426a8a800',v5:'fd01e13c792d7ced1953f5d72184bb0fb6611b22fda859ef0e98fdf61b0d9dd1',v6:'b28ae1db29f350845de04ec03188d6d89fa7b86250e5788e45497478fd284716'};
@@ -75,8 +74,7 @@ if(!Object.hasOwn(componentHashes,components))throw Error('Componentes no admiti
 const terminal=new Terminal({cols:100,rows:28,fontSize:15,fontFamily:'"Share Tech Mono",monospace',scrollback:5000,theme:{background:'#161009',foreground:'#e9ddc7'}});
 terminal.open(document.querySelector('#terminal'));
 const presentation=new PresentacionConsola(terminal);
-const bootFeed=bootProgress(status,terminal,{ready:()=>globalThis.kubeDebianReady});
-globalThis.kubeDebianBootNotice=text=>terminal.writeln('\r\n[Laboratorio] '+String(text));
+globalThis.kubeDebianBootNotice=text=>status.textContent=String(text);
 globalThis.kubeDebianOpenTerminal=options=>{if(!options?.diagnostic&&(busy||!consoleState.idle))throw Error('El shell todavía está ocupado');presentation.open(kubeDebianTranscript,options);};
 globalThis.kubeDebianVisibleTerminal=()=>presentation.text;
 let vm,internet,busy=false,preparing=false,timer,bytes=[],record,identity,sessionRead=false;
@@ -89,7 +87,10 @@ globalThis.kubeDebianProfile=Object.freeze({base,components,warm,worker,threaded
 const prompt=()=>/(?:^|\n)\[[^\n@\]]+@[^\n\]]+ [^\n\]]*\][#$] $/.test(kubeDebianTranscript.replace(/\r/g,'').replace(/\x1b\[[0-?]*[ -/]*[@-~]/g,''));
 function fail(error){kubeDebianReady=false;save.disabled=true;kubeDebianErrors.push(String(error.message||error));status.textContent='La prueba no pudo continuar: '+(error.message||error);checks.abort(error);}
 function diskFailure(error){fail(Error('Error de disco: '+(error.message||error)));vm?.stop().catch(()=>{});}
-const checks=createKubeChecks(command=>{consoleState.input(command);vm.serial0_send(command);},()=>!!vm&&consoleState.idle,text=>{consoleState.receive(text);presentation.finish(text);});
+const checks=createKubeChecks(command=>{consoleState.input(command);vm.serial0_send(command);},()=>!!vm&&consoleState.idle,text=>{consoleState.receive(text);presentation.finish(text);},{
+ onPhase:label=>{if(!globalThis.kubeDebianReady)status.textContent=label+'…';},
+ onOutput:text=>{if(!presentation.opened)terminal.write(text);},
+});
 async function separarConsola(){
  for(const command of prepararPerfilConsola()){
   const result=await checks.run({checks:[['Preparar sesión nativa de consola',command]]},60000);
@@ -149,7 +150,7 @@ async function prepare(){
     ['Comprobar identidad y servicios del clúster recuperado',`${tlsMode==='classical'?'export GODEBUG=tlsmlkem=0; ':''}test "$(hostname)" = cka-cp1 && ip -4 -o address show dev eth0 | grep -q '10.77.0.10/24' && systemctl is-active --quiet kubelet && kubectl wait --for=condition=Ready node/cka-cp1 --timeout=120s`],
    ]:[]),
   ]},180000);
-  if(!result.ok)throw Error('Debian no ha superado sus comprobaciones.');
+  if(!result.ok)throw Error('No se ha superado: '+result.results.filter(check=>!check.ok).map(check=>check.label).join('; '));
   if(administration&&!warm)await prepararAdministracion(async(label,command,timeout=180000)=>{const result=await checks.run({checks:[[label,command]]},timeout);if(!result.ok)throw Error(label+' falló');},{sharedCode});
   if(warm){for(const command of comandosMontajeComponentes()){const mounted=await checks.run({checks:[['Conservar componentes al reiniciar',command]]},180000);if(!mounted.ok)throw Error('El montaje persistente no ha pasado');}}
   if(worker){
@@ -192,7 +193,7 @@ function flush(){
 terminal.onData(text=>{if(vm&&!busy&&presentation.opened){consoleState.input(text);vm.serial0_send(Array.from(encoder.encode(text),byte=>String.fromCharCode(byte)).join(''));}});
 attachTerminalClipboard(terminal,document.querySelector('#terminal'),{canPaste:()=>!!vm&&!busy&&presentation.opened,notify:text=>status.textContent=text});
 start.onclick=async()=>{
- start.disabled=true;status.textContent='Cargando el nodo Debian…';bootFeed.start();
+ start.disabled=true;status.textContent='Cargando el nodo Debian…';
  try{
   const manifest=await fetch(`disco-${base}/disco-fragmentado.json`).then(r=>{if(!r.ok)throw Error('Base Debian no disponible');return r.json();});
   if(manifest.sha256!==baseHashes[base])throw Error('No coincide la base Debian comprobada');

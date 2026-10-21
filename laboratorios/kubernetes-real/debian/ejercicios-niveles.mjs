@@ -1,8 +1,9 @@
 import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs?v=20261020-aprendizaje';
 import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261020-aprendizaje';
+import {EJERCICIOS_ACCESO} from './ejercicios-acceso.mjs?v=f2884ac0ad779b9a';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
-import {claseDisponible} from './disponibilidad-curso.mjs';
+import {claseDisponible} from './disponibilidad-curso.mjs?v=cc0ba61cf12a8c85';
 import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
 import {EJERCICIOS_PROGRESIVOS,CKA_EXAM_PRACTICE} from './ejercicios-progresivos.mjs';
 const image='busybox:1.37.0-musl';
@@ -11,6 +12,7 @@ export const EJERCICIOS=Object.freeze({
  inicial:EJERCICIOS_INICIALES,
  intermedio:[
   ...EJERCICIOS_INTERMEDIOS,
+  ...EJERCICIOS_ACCESO,
   {id:'seleccion',title:'Elegir el nodo de una aplicación',prompt:`Etiqueta cka-w1 con zona=curso. Crea un Pod llamado seleccionado, con ${image} y sleep 3600, que seleccione los nodos con esa etiqueta. Debe quedar listo en cka-w1.`,solution:`kubectl label node cka-w1 zona=curso --overwrite\nkubectl run seleccionado --image=${image} --image-pull-policy=Never --overrides='{"spec":{"nodeSelector":{"zona":"curso"}}}' --command -- sleep 3600`,check:`test "$(kubectl get node cka-w1 -o jsonpath='{.metadata.labels.zona}')" = curso && kubectl get pod seleccionado -o json | jq -e '.spec.nodeSelector.zona=="curso" and .spec.nodeName=="cka-w1" and any(.status.conditions[]; .type=="Ready" and .status=="True")'`}
  ],
  avanzado:[

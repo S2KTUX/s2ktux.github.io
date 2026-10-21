@@ -1,0 +1,26 @@
+import {test,expect} from '@playwright/test';
+test('Base limpia · caché separada, revisión nueva y guardado del alumno intacto',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {BasesLimpias}=await import('/laboratorios/kubernetes-real/debian/bases-limpias.mjs');
+  const {SesionesClusterDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  const options={workerComponents:'v7',factoryVersion:'v6',progressive:true,level:'inicial'},user=new SesionesClusterDebian(options),a=new BasesLimpias('a'.repeat(64),options),b=new BasesLimpias('b'.repeat(64),options);
+  const node=await a.packNode('controlplane',new Uint8Array(4096).buffer,'BASE_LIMPIA');
+  const student=await user.packNode('controlplane',new Uint8Array([1,2,3,4]).buffer,'TRABAJO_ALUMNO');
+  await user.saveNodes([student]);await a.write([node]);const old=await a.read(),before=await b.read();await b.write([node]);
+  return {old:old.nodes[0].terminalText,before:!!before,removed:!!await a.getRawCluster(),current:(await b.read()).nodes[0].terminalText,user:(await user.getCluster()).nodes[0].terminalText};
+ });
+ expect(result).toEqual({old:'BASE_LIMPIA',before:false,removed:false,current:'BASE_LIMPIA',user:'TRABAJO_ALUMNO'});
+});
+test('Captura limpia · un fallo siempre libera consola y red',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {capturarCluster}=await import('/laboratorios/kubernetes-real/debian/bases-limpias.mjs');const events=[];
+  const node={window:{kubeDebianSnapshot:{lock:()=>{events.push('lock');return{terminalText:''};},freeze:async()=>events.push('freeze'),state:async()=>new ArrayBuffer(4),release:async()=>events.push('release')}}};
+  let message;try{await capturarCluster({ordered:[['controlplane',node]],network:{pause:()=>events.push('pause'),resume:()=>events.push('resume')},pack:async()=>({}),write:async()=>{throw Error('Sin cuota');}});}catch(error){message=error.message;}
+  node.window.kubeDebianSnapshot.release=async()=>{throw Error('Motor parado');};let fatal=false;
+  try{await capturarCluster({ordered:[['controlplane',node]],network:{pause:()=>{},resume:()=>{}},pack:async()=>({}),write:async()=>{}});}catch(error){fatal=error.resumeFailed===true;}
+  return {message,events,fatal};
+ });
+ expect(result.message).toBe('Sin cuota');expect(result.events).toEqual(['lock','pause','freeze','resume','release','lock','freeze']);expect(result.fatal).toBe(true);
+});

@@ -1,5 +1,5 @@
 {
-  "version": "2.3",
+  "version": "2.4",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Completar y comprobar las clases 12–34 en el laboratorio real antes de abrirlas."
+      "texto": "Completar y comprobar las clases 12 y 15–34 en el laboratorio real antes de abrirlas. Las clases 13 y 14 ya tienen prácticas verificadas de permisos, certificados y ServiceAccounts."
     },
     {
       "id": "kubernetes-examen",
@@ -44,7 +44,7 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir reduciendo el primer arranque de Kubernetes y medir la reutilización de bloques. Los fragmentos del estado de arranque ya se guardan con verificación; no se descargan máquinas desde otras páginas."
+      "texto": "Seguir reduciendo la primera preparación de Kubernetes y medir los tres niveles. La entrada rápida reutiliza una base limpia, separada de los guardados del alumno, y bloques del disco verificados. Falta comprobar y optimizar los escenarios avanzados; no se descargan máquinas desde otras páginas."
     },
     {
       "id": "imagen-ligera",
@@ -68,6 +68,15 @@
     }
   ],
   "versiones": [
+    {
+      "version": "2.4",
+      "fecha": "2026-10-21",
+      "cambios": [
+        "Kubernetes conserva una base limpia al preparar el laboratorio por primera vez para acelerar las siguientes entradas. No es un guardado de tus ejercicios ni sustituye Guardar sesión.",
+        "Reutilizamos bloques del disco verificados y mostramos la fase real de preparación, también al arrancar el worker. La consola muestra salida de Linux, sin líneas de arranque inventadas.",
+        "Abrimos las clases 13 y 14 del laboratorio intermedio: cinco prácticas de RBAC, certificados de usuario y ServiceAccounts, comprobadas con casos correctos e incompletos. Las demás clases pendientes siguen cerradas."
+      ]
+    },
     {
       "version": "2.3",
       "fecha": "2026-10-21",

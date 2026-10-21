@@ -14,3 +14,4 @@
 - Las marcas de prácticas son un historial de comprobaciones, no una comprobación automática del estado actual de la máquina. Borrar progreso no debe borrar las máquinas ni sus guardados.
 - En modo práctica, «Resuelta» es una marca de actividad, no un aprobado: se muestra en verde al realizarla o marcarla manualmente, sin marcas de error en la lista. Conservar internamente el origen y el resultado real del corrector; no usar estas marcas para puntuar exámenes.
 - El progreso de arranque debe reflejar descargas y operaciones reales. No inventar líneas del kernel, porcentajes de CPU o tiempos garantizados. La caché solo puede reutilizar recursos después de verificar sus sumas.
+- La base de entrada rápida de Kubernetes se captura solo al terminar una preparación nueva y antes de abrir la consola. Usar una base de datos distinta de las sesiones del alumno; no capturar ejercicios ni sustituir sus guardados. Cambiar su revisión al cambiar la preparación.

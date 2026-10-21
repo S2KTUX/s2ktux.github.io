@@ -1,5 +1,6 @@
 import {ChunkDisk as BaseDisk} from '/laboratorios/docker-real/v86-disk.mjs';
 import {recursoPesado} from './recursos-publicados.mjs';
+import {bloqueVerificado} from './cache-bloques.mjs?v=3baa58ede27a7990';
 const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),byte=>byte.toString(16).padStart(2,'0')).join('');
 // Solo Kubernetes: los discos publicados de Linux/Docker no cambian.
 // Reintentar transporte, nunca hashes incorrectos, rutas inexistentes ni
@@ -26,7 +27,7 @@ async function unpack(packed,expected){
  finally{await reader.cancel().catch(()=>{});}
 }
 export class ChunkDisk extends BaseDisk{
- constructor(...args){super(...args);this.stats.retries=0;}
+ constructor(...args){super(...args);this.stats.retries=0;this.stats.cacheHits=0;}
  async chunk(index){
   if(this.dirty.has(index))return this.dirty.get(index);
   if(this.clean.has(index)){const data=this.clean.get(index);this.clean.delete(index);this.clean.set(index,data);return data;}
@@ -37,8 +38,10 @@ export class ChunkDisk extends BaseDisk{
    if(part.zero)data=new Uint8Array(part.bytes);
    else{
     if(!/^[a-f0-9]{64}$/.test(part.packedSha256)||part.file!==part.packedSha256+'.gz')throw Error('Ruta de bloque inválida');
-    const packed=await descargarBloque(recursoPesado(new URL('fragmentos/'+part.file,this.base)),{onRetry:()=>this.stats.retries++});
-    this.stats.requests++;this.stats.downloadedBytes+=packed.length;
+    const url=recursoPesado(new URL('fragmentos/'+part.file,this.base));
+    const packed=await bloqueVerificado(url,{hash:part.packedSha256,bytes:part.packedBytes,onCacheHit:()=>this.stats.cacheHits++,download:async()=>{
+     const bytes=await descargarBloque(url,{onRetry:()=>this.stats.retries++});this.stats.requests++;this.stats.downloadedBytes+=bytes.length;return bytes;
+    }});
     if(packed.length!==part.packedBytes||await digest(packed)!==part.packedSha256)throw Error('Hash o tamaño del fragmento comprimido incorrecto');
     data=await unpack(packed,part.bytes);
    }
