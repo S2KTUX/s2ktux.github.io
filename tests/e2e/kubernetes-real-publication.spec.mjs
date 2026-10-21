@@ -92,6 +92,14 @@ test('Kubernetes · consultar clases y modos conserva la sesión existente',asyn
  await page.locator('#mode-exam').click();await page.locator('#mode-practice').click();await page.locator('#enter-lab').click();
  await expect(page.locator('#exercise-class-select')).toHaveValue('5');expect(await page.evaluate(()=>({boots,stops}))).toEqual({boots:0,stops:0});
 });
+
+test('Kubernetes · EXAMEN vuelve a mostrar preguntas después de práctica libre',async({page})=>{
+ await mockBoot(page);await page.goto(root);await page.locator('#enter-lab').click();
+ await page.selectOption('#exercise-class-select','free');await expect(page.locator('#exercise-title')).toBeHidden();
+ await page.selectOption('#exercise-class-select','exam');await expect(page.locator('#exercise-title')).toBeVisible();
+ await expect(page.locator('#exercise-select option')).toHaveCount(2);await expect(page.locator('#exercise-title')).toContainText('Una utilidad disponible');
+ await expect(page.locator('#nodes iframe')).toHaveCount(0);
+});
 test('Kubernetes · móvil conserva cabecera, modos y dificultades @mobile',async({page})=>{
  await page.goto(root);await page.locator('#lab-entry').waitFor();await page.locator('#mode-practice').click();await page.locator('[data-choose-stage=intermedio]').click();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);

@@ -48,7 +48,7 @@ async function value(id,command){
 async function createNode(id,query,restore){
  const frame=document.createElement('iframe');frame.className='node-frame';frame.title='Terminal '+id;frame.hidden=id!=='controlplane';frame.src='index.html?base='+(factoryVersion==='v8'?'admin-v2':['v5','v6'].includes(factoryVersion)?'v6':factoryVersion==='v4'?'v5':'v4')+'&ui='+nodeUIRevision+'&kube=1&components='+(id==='controlplane'?'v7':workerComponents)+'&cluster=1&factory='+factoryVersion+'&'+query+(classicalTls?'&tls=classical':'')+(schedulingAPI?'&use-scheduling-api=1':'');
  const loaded=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(Error('No se cargó '+id));});document.querySelector('#nodes').append(frame);levelUI?.update();await loaded;
- const child=frame.contentWindow;nodes.set(id,{id,frame,window:child});levelUI?.update();
+ const child=frame.contentWindow;nodes.set(id,{id,frame,window:child});document.querySelector(`button[data-node="${id}"]`).hidden=false;levelUI?.update();
  const childStatus=child.document.querySelector('#status');
  const mirrorStatus=()=>{if(busy&&!initialized&&childStatus?.textContent.trim())status.textContent=(id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name)+' · '+childStatus.textContent.trim();};
  const statusObserver=new child.MutationObserver(mirrorStatus);if(childStatus)statusObserver.observe(childStatus,{childList:true,subtree:true,characterData:true});
