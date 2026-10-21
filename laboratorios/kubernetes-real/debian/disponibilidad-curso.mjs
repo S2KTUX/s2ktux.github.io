@@ -1,5 +1,5 @@
 // La publicación solo abre escenarios con comprobación nativa completa.
-export const claseDisponible=number=>Number.isInteger(number)&&number>=0&&number<=11;
+export const claseDisponible=number=>Number.isInteger(number)&&((number>=0&&number<=11)||number===13||number===14);
 export const nivelDisponible=level=>level==='inicial'||level==='intermedio';
 export const limiteNodos=level=>level==='inicial'?1:level==='intermedio'?2:0;
 export function parametrosPublicos(input){

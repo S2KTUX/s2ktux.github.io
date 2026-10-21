@@ -48,7 +48,9 @@ test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arr
  await page.locator('[data-choose-stage=intermedio]').click();await page.locator('#enter-lab').click();
  await expect(page.locator('#exercise-class-select')).toHaveValue('7');await expect(page.locator('#exercise-class-select option')).toHaveCount(19);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Intermedio');
- await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 19 preguntas disponibles.');
+ await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 24 preguntas disponibles.');
+ await page.selectOption('#exercise-class-select','13');await expect(page.locator('#exercise-select option')).toHaveCount(3);
+ await page.selectOption('#exercise-class-select','14');await expect(page.locator('#exercise-select option')).toHaveCount(2);
  for(const number of ['8','9','10','11']){await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(4);}
  expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);await expect(page.locator('#exercise-class-select option[value="12"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
 });

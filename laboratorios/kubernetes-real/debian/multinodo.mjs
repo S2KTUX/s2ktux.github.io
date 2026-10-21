@@ -7,10 +7,12 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=370c7747d23a0ad2';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=bccb91d1de0c4df2';
 import {comprobarSaludInicial} from './salud-inicial.mjs';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
-import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs';
+import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=cc0ba61cf12a8c85';
+import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5d2be910dd3a4db1';
+const cleanRevision='e3fab80c057e806955e5203277bbf068de32bd3e06a23a73b42fb35693679ea4';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -24,10 +26,11 @@ if(!['v1','v3','v4','v5','v6','v8'].includes(factoryVersion))throw Error('Fábri
 const schedulingAPI=new URLSearchParams(location.search).get('use-scheduling-api')==='1';
 if(factoryVersion==='v8'&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración privada requiere Scheduler API, sin políticas integradas y nivel avanzado');
 const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'||factoryVersion!=='v1';
-const nodeUIRevision='0ebc5c3cc0fef5cc';
+const nodeUIRevision='4e16887a039ae2a1';
 const workerComponents=factoryVersion==='v8'?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
 const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
+const cleanBases=new BasesLimpias(cleanRevision,{workerComponents,factoryVersion,progressive,level});
 function updateControls(){save.disabled=busy||!initialized;reset.disabled=busy||!readSaved;add.disabled=true;add.hidden=true;start.disabled=busy||nodes.size>0||!releaseAvailable();levelUI?.update();}
 if(progressive){document.querySelector('h1').textContent='Laboratorio Kubernetes';start.textContent='Iniciar laboratorio';add.textContent='Añadir primer worker';}
 globalThis.kubeDebianClusterNodes=nodes;globalThis.kubeDebianClusterErrors=[];globalThis.kubeDebianClusterReady=false;globalThis.kubeDebianClusterStages=[];
@@ -104,20 +107,26 @@ start.onclick=async()=>{
  if(busy||nodes.size||!releaseAvailable())return;busy=true;start.disabled=true;status.textContent='Recuperando cka-cp1…';updateControls();
  try{
   saved=await sessions.getRawCluster();readSaved=true;
-  if(saved){
-   saved=await sessions.getCluster();
-   if(saved.nodes.length>limiteNodos(level))throw Error('Este guardado corresponde a una configuración todavía no publicada. Se conserva sin modificarlo.');
-   for(const record of saved.nodes)await createNode(record.id,record.id==='controlplane'?'warm=1':'worker='+record.id.slice(-1)+'&threaded=1',record);
+  const cleanBase=saved?null:await cleanBases.read();
+  if(saved||cleanBase){
+   if(saved)saved=await sessions.getCluster();
+   const restore=saved||cleanBase;
+   if(restore.nodes.length>limiteNodos(level))throw Error('Este guardado corresponde a una configuración todavía no publicada. Se conserva sin modificarlo.');
+   for(const record of restore.nodes)await createNode(record.id,record.id==='controlplane'?'warm=1':'worker='+record.id.slice(-1)+'&threaded=1',record);
    // Recuperar los datos y averías, sin reescribir CNI, rutas ni unidades.
-   initialized=true;globalThis.kubeDebianClusterRecovered=true;status.textContent='Clúster guardado recuperado. Tus cambios se conservan.';
+   initialized=true;globalThis.kubeDebianClusterRecovered=!!saved;globalThis.kubeDebianCleanBaseUsed=!!cleanBase;status.textContent=saved?'Clúster guardado recuperado. Tus cambios se conservan.':'Base limpia recuperada. Comprobando sus nodos…';
    try{
     await phase('controlplane','Consultar la API recuperada sin esperar ni reparar nodos','kubectl get --raw=/readyz --request-timeout=15s',45000);
     const ready=await value('controlplane',`kubectl get nodes -o json --request-timeout=15s | jq -r '(.items|length)>0 and all(.items[]; any(.status.conditions[]; .type=="Ready" and .status=="True"))'`);
     if(!['true','false'].includes(ready))throw Error('No se recibió el estado real de los nodos');
+    if(cleanBase&&ready!=='true')throw Error('Los nodos de la base limpia no están disponibles');
     kubeDebianClusterReady=true;
-    status.textContent=ready==='true'?'Clúster guardado recuperado. Tus cambios se conservan.':'Sesión recuperada con nodos no disponibles. Puedes revisarlos desde las terminales; no se han reparado tus cambios.';
+    status.textContent=ready==='true'?(saved?'Clúster guardado recuperado. Tus cambios se conservan.':'Laboratorio listo desde su base limpia.'):'Sesión recuperada con nodos no disponibles. Puedes revisarlos desde las terminales; no se han reparado tus cambios.';
    }
-   catch{status.textContent='Sesión recuperada. Revisa el clúster desde sus terminales; no se han reparado tus cambios.';}
+   catch{
+    if(cleanBase){initialized=false;kubeDebianClusterReady=false;try{await cleanBases.resetCluster(cleanBase.sha256);}catch(error){console.warn('No se ha retirado la base inválida:',error.message);}status.textContent='La entrada rápida no ha superado la comprobación. Pulsa Reset para preparar una base nueva; tus sesiones guardadas no se han modificado.';}
+    else status.textContent='Sesión recuperada. Revisa el clúster desde sus terminales; no se han reparado tus cambios.';
+   }
    return;
   }
   // La prueba v4 rechaza arrancar ambas CPUs a la vez: etcd pierde readiness.
@@ -133,6 +142,12 @@ start.onclick=async()=>{
    if(integratedPolicies)await instalarPoliticasDebian(phase);
    await phase('controlplane','Comprobar la API y los nodos antes de abrir el laboratorio',comprobarSaludInicial,240000);
    initialized=true;kubeDebianClusterReady=true;status.textContent=`Modo ${NIVELES[level].name.toLowerCase()} listo · ${nodes.size} ${nodes.size===1?'nodo':'nodos'}.`;
+   // La consola todavía no está abierta: no puede contener prácticas del alumno.
+   status.textContent='Preparando la entrada rápida para próximas visitas…';
+   try{
+    await capturarCluster({ordered:ordenarNodosDebian(nodes,{progressive}),network,pack:(...args)=>cleanBases.packNode(...args),write:captures=>cleanBases.write(captures)});
+   }catch(error){if(error.resumeFailed)throw error;console.warn('La entrada rápida no se ha guardado:',error.message);}
+   status.textContent=`Modo ${NIVELES[level].name.toLowerCase()} listo · ${nodes.size} ${nodes.size===1?'nodo':'nodos'}.`;
    return;
   }
   if(!experimentalFast)await phase('controlplane','Retirar temporalmente CoreDNS para cambiar su red','kubectl -n kube-system scale deployment coredns --replicas=0 && kubectl -n kube-system wait --for=delete pod -l k8s-app=kube-dns --timeout=120s',180000);

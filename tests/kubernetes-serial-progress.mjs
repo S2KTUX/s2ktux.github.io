@@ -6,7 +6,7 @@ const checks=createKubeChecks(text=>{input=text;idle=false;},()=>idle,text=>{fin
 const pending=checks.run({checks:[['systemd responde','systemctl --version'],['API responde','kubectl get --raw=/readyz']]},2000);
 const prefix=/__KUBE_CHECK_[a-f0-9]+_/.exec(input)[0];
 checks.receive(input.replaceAll('\n','\r\n'));assert.equal(output.length,0,'El eco no se presenta como salida de Linux');
-const stream='\r\n'+prefix+'0_START\r\nsystemd 252\r\n'+prefix+'0=0\r\n'+prefix+'1_START\r\nNo responde la API\r\n'+prefix+'1=1\r\n[root@cka-cp1 ~]# ';
+const stream='\r\n'+prefix+'0_START\r\nsystemd 252\r\n__DEBIAN_CLUSTER_0123456789abcdef__true\r\n'+prefix+'0=0\r\n'+prefix+'1_START\r\nNo responde la API\r\n'+prefix+'1=1\r\n[root@cka-cp1 ~]# ';
 // Fragmentar también los marcadores: UART no garantiza líneas completas.
 for(let at=0;at<stream.length;at+=7)checks.receive(stream.slice(at,at+7));
 const result=await pending;

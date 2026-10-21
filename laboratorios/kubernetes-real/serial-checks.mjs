@@ -34,7 +34,7 @@ export function createKubeChecks(send,idle,onFinish,{onPhase=()=>{},onOutput=()=
     const line=clean(raw).trimEnd(),start=new RegExp('^'+pending.prefix+'([0-9]+)_START$').exec(line);
     if(start){const label=pending.exercise.checks[Number(start[1])]?.[0];if(label){pending.label=label;pending.streaming=true;onPhase(label);}continue;}
     if(line.startsWith(pending.prefix)){pending.streaming=false;continue;}
-    if(pending.streaming)onOutput(raw);
+    if(pending.streaming&&!/^__(?:DEBIAN_CLUSTER_|DEBIAN_TLS_|S2KTUX_CONSOLE_)/.test(line))onOutput(raw);
    }
    const output=clean(pending.output),lines=output.split('\n'),positions=[];
    const results=pending.exercise.checks.map(([label],i)=>{const key=pending.prefix+i+'=';const at=lines.findIndex(l=>l.startsWith(key)&&/^[0-9]+$/.test(l.slice(key.length)));positions.push(at);return {label,ok:lines[at]===key+'0',found:at!==-1};});
