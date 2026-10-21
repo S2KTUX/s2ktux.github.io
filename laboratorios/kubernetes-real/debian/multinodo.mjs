@@ -7,14 +7,14 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=a95291d6251f9dc0';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=8eee89a563a7eb53';
 import {comprobarSaludInicial} from './salud-inicial.mjs';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=cc0ba61cf12a8c85';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5d2be910dd3a4db1';
-import {basesPublicadas} from './bases-publicadas.mjs?v=bc3e4d09a326353a';
+import {basesPublicadas} from './bases-publicadas.mjs?v=5b9078afefcc31ec';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=8b0288040c7938f2';
-const cleanRevision='8f52dcd31ec6ac50e580bc9506c48613bc50d3e0501f6c08646eab8eb4a581f2';
+const cleanRevision='420890200b01392969cda398fd86e4c859c68716f153919f7c18219f56af8833';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -33,6 +33,8 @@ const workerComponents=factoryVersion==='v8'?'v7':new URLSearchParams(location.s
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
 const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
 const cleanBases=new BasesLimpias(cleanRevision,{workerComponents,factoryVersion,progressive,level});
+const failedPublishedKey='s2ktux-kubernetes-base-failed:'+level+':'+cleanRevision;
+function basePublicadaBloqueada(){try{return sessionStorage.getItem(failedPublishedKey)==='1';}catch{return false;}}
 function updateControls(){save.disabled=busy||!initialized;reset.disabled=busy||!readSaved;add.disabled=true;add.hidden=true;start.disabled=busy||nodes.size>0||!releaseAvailable();levelUI?.update();}
 if(progressive){document.querySelector('h1').textContent='Laboratorio Kubernetes';start.textContent='Iniciar laboratorio';add.textContent='Añadir primer worker';}
 globalThis.kubeDebianClusterNodes=nodes;globalThis.kubeDebianClusterErrors=[];globalThis.kubeDebianClusterReady=false;globalThis.kubeDebianClusterStages=[];
@@ -111,7 +113,7 @@ start.onclick=async()=>{
   saved=await sessions.getRawCluster();readSaved=true;
   let cleanBase=saved?null:await cleanBases.read();
   if(!saved&&!cleanBase){
-   const published=basesPublicadas.find(base=>base.level===level&&base.revision===cleanRevision);
+   const published=basePublicadaBloqueada()?null:basesPublicadas.find(base=>base.level===level&&base.revision===cleanRevision);
    if(published)try{
     cleanBase=await cargarBasePublicada(published,{revision:cleanRevision,sessions:cleanBases,notify:text=>status.textContent=text});
     try{await cleanBases.write(cleanBase.nodes);}catch(error){console.warn('La base preparada no se ha almacenado localmente:',error.message);}
@@ -140,7 +142,7 @@ start.onclick=async()=>{
     }
    }
    catch{
-    if(cleanBase){initialized=false;kubeDebianClusterReady=false;try{await cleanBases.resetCluster(cleanBase.sha256);}catch(error){console.warn('No se ha retirado la base inválida:',error.message);}status.textContent='La entrada rápida no ha superado la comprobación. Pulsa Reset para preparar una base nueva; tus sesiones guardadas no se han modificado.';}
+    if(cleanBase){initialized=false;kubeDebianClusterReady=false;try{sessionStorage.setItem(failedPublishedKey,'1');}catch{}try{await cleanBases.resetCluster(cleanBase.sha256);}catch(error){console.warn('No se ha retirado la base inválida:',error.message);}status.textContent='La entrada rápida no ha superado la comprobación. Pulsa Reset para preparar una base nueva; tus sesiones guardadas no se han modificado.';}
     else status.textContent='Sesión recuperada. Revisa el clúster desde sus terminales; no se han reparado tus cambios.';
    }
    return;
