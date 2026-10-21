@@ -1,6 +1,7 @@
 #!/bin/sh
 set -eu
 echo "S2KTUX: prueba nativa de permisos y ServiceAccounts"
+case "${1:-all}" in all|c13-a|c13-b|c13-cert|c14-a|c14-b) ;; *) echo "Caso desconocido"; exit 2 ;; esac
 if test "${1:-all}" = all || test "${1:-all}" = c13-a; then
 echo "INICIO c13-a"
 kubectl get --raw=/readyz --request-timeout=20s
@@ -31,14 +32,14 @@ kubectl -n p13b wait --for=create serviceaccount/default --timeout=90s
 test -z "$(kubectl get clusterrole lector-logs-p13b --ignore-not-found -o name)"
 kubectl create clusterrole lector-logs-p13b --verb=get --resource=pods/log
 kubectl -n p13b create rolebinding lectores-logs --clusterrole=lector-logs-p13b --group=lectores
-kubectl auth can-i get pods/log -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated
+kubectl auth can-i get pods --subresource=log -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated
 kubectl -n p13b get rolebinding lectores-logs
 echo "VALIDAR c13-b"
-object=$(kubectl -n p13b get clusterrole lector-logs-p13b -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '(.rules|length)==1 and .rules[0].apiGroups==[""] and .rules[0].resources==["pods/log"] and .rules[0].verbs==["get"]' && object=$(kubectl -n p13b get rolebinding lectores-logs -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '.roleRef.kind=="ClusterRole" and .roleRef.name=="lector-logs-p13b" and any(.subjects[]; .kind=="Group" and .name=="lectores")' && test "$(kubectl auth can-i get pods/log -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = yes && test "$(kubectl auth can-i get pods/log -n default --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = no && test "$(kubectl auth can-i delete pods -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = no
+object=$(kubectl -n p13b get clusterrole lector-logs-p13b -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '(.rules|length)==1 and .rules[0].apiGroups==[""] and .rules[0].resources==["pods/log"] and .rules[0].verbs==["get"]' && object=$(kubectl -n p13b get rolebinding lectores-logs -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '.roleRef.kind=="ClusterRole" and .roleRef.name=="lector-logs-p13b" and any(.subjects[]; .kind=="Group" and .name=="lectores")' && test "$(kubectl auth can-i get pods --subresource=log -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = yes && test "$(kubectl auth can-i get pods --subresource=log -n default --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = no && test "$(kubectl auth can-i delete pods -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = no
 echo "POSITIVO c13-b"
 kubectl -n p13b delete rolebinding lectores-logs
 kubectl get --raw=/readyz --request-timeout=20s
-if (set -eu; object=$(kubectl -n p13b get clusterrole lector-logs-p13b -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '(.rules|length)==1 and .rules[0].apiGroups==[""] and .rules[0].resources==["pods/log"] and .rules[0].verbs==["get"]' && object=$(kubectl -n p13b get rolebinding lectores-logs -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '.roleRef.kind=="ClusterRole" and .roleRef.name=="lector-logs-p13b" and any(.subjects[]; .kind=="Group" and .name=="lectores")' && test "$(kubectl auth can-i get pods/log -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = yes && test "$(kubectl auth can-i get pods/log -n default --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = no && test "$(kubectl auth can-i delete pods -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = no); then echo "ERROR: aceptó el caso incompleto c13-b"; exit 1; fi
+if (set -eu; object=$(kubectl -n p13b get clusterrole lector-logs-p13b -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '(.rules|length)==1 and .rules[0].apiGroups==[""] and .rules[0].resources==["pods/log"] and .rules[0].verbs==["get"]' && object=$(kubectl -n p13b get rolebinding lectores-logs -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '.roleRef.kind=="ClusterRole" and .roleRef.name=="lector-logs-p13b" and any(.subjects[]; .kind=="Group" and .name=="lectores")' && test "$(kubectl auth can-i get pods --subresource=log -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = yes && test "$(kubectl auth can-i get pods --subresource=log -n default --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = no && test "$(kubectl auth can-i delete pods -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated)" = no); then echo "ERROR: aceptó el caso incompleto c13-b"; exit 1; fi
 echo "NEGATIVO c13-b"
 kubectl delete namespace p13b --ignore-not-found --wait=true --timeout=120s
 kubectl delete clusterrole lector-logs-p13b --ignore-not-found

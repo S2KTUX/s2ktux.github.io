@@ -1,6 +1,6 @@
 import {IMAGEN,aplicar,pod,obtener,listo,crearPractica,esperarPod,q} from './herramientas-practicas.mjs';
 const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));
-const can=(identity,verb,resource,ns,expected,group='')=>`test "$(kubectl auth can-i ${verb} ${resource} -n ${ns} --as=${identity}${group?' --as-group='+group+' --as-group=system:authenticated':''})" = ${expected}`;
+const can=(identity,verb,resource,ns,expected,group='')=>`test "$(kubectl auth can-i ${verb} ${resource.replace('/',' --subresource=')} -n ${ns} --as=${identity}${group?' --as-group='+group+' --as-group=system:authenticated':''})" = ${expected}`;
 
 add(13,'a','RBAC · I',
  'En p13a crea el Role lector-pods con permisos get, list y watch sobre pods. Mediante el RoleBinding ana-lector, asígnalo a la usuaria ana. No le concedas permisos para borrar Pods ni para leerlos en default.',
@@ -17,7 +17,7 @@ add(13,'b','RBAC · II',
  'Crea el ClusterRole lector-logs-p13b con permiso get sobre pods/log. Concédelo al grupo lectores únicamente en p13b mediante el RoleBinding lectores-logs. Una usuaria del grupo debe poder consultar logs allí, pero no en default ni borrar Pods.',
  'kubectl create clusterrole lector-logs-p13b --verb=get --resource=pods/log\n'+
  'kubectl -n p13b create rolebinding lectores-logs --clusterrole=lector-logs-p13b --group=lectores\n'+
- 'kubectl auth can-i get pods/log -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated\n'+
+ 'kubectl auth can-i get pods --subresource=log -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated\n'+
  'kubectl -n p13b get rolebinding lectores-logs',
  obtener('p13b','clusterrole','lector-logs-p13b','(.rules|length)==1 and .rules[0].apiGroups==[""] and .rules[0].resources==["pods/log"] and .rules[0].verbs==["get"]')+' && '+
  obtener('p13b','rolebinding','lectores-logs','.roleRef.kind=="ClusterRole" and .roleRef.name=="lector-logs-p13b" and any(.subjects[]; .kind=="Group" and .name=="lectores")')+' && '+
