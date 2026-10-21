@@ -1,6 +1,8 @@
 import {IMAGEN,aplicar,pod,obtener,listo,crearPractica,esperarPod,q} from './herramientas-practicas.mjs';
 const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));
 const can=(identity,verb,resource,ns,expected,group='')=>`test "$(kubectl auth can-i ${verb} ${resource.replace('/',' --subresource=')} -n ${ns} --as=${identity}${group?' --as-group='+group+' --as-group=system:authenticated':''})" = ${expected}`;
+// Comparar permisos efectivos del Role, no el orden ni cómo se agrupan sus reglas.
+const reglas=(verbs,resource)=>'all(.rules[]; ((.resourceNames//[])|length)==0 and ((.nonResourceURLs//[])|length)==0) and ([.rules[]|.apiGroups[] as $g|.resources[] as $r|.verbs[]|[$g,$r,.]]|unique|sort)=='+JSON.stringify(verbs.map(verb=>['',resource,verb]).sort());
 
 add(13,'a','RBAC · I',
  'En p13a crea el Role lector-pods con permisos get, list y watch sobre pods. Mediante el RoleBinding ana-lector, asígnalo a la usuaria ana. No le concedas permisos para borrar Pods ni para leerlos en default.',
@@ -8,7 +10,7 @@ add(13,'a','RBAC · I',
  'kubectl -n p13a create rolebinding ana-lector --role=lector-pods --user=ana\n'+
  'kubectl auth can-i list pods -n p13a --as=ana\n'+
  'kubectl -n p13a get role,rolebinding',
- obtener('p13a','role','lector-pods','(.rules|length)==1 and .rules[0].apiGroups==[""] and .rules[0].resources==["pods"] and (.rules[0].verbs|sort)==["get","list","watch"]')+' && '+
+ obtener('p13a','role','lector-pods',reglas(['get','list','watch'],'pods'))+' && '+
  obtener('p13a','rolebinding','ana-lector','.roleRef.kind=="Role" and .roleRef.name=="lector-pods" and any(.subjects[]; .kind=="User" and .name=="ana")')+' && '+
  can('ana','list','pods','p13a','yes')+' && '+can('ana','delete','pods','p13a','no')+' && '+can('ana','list','pods','default','no'),
  {negative:'kubectl -n p13a delete rolebinding ana-lector'});
@@ -19,7 +21,7 @@ add(13,'b','RBAC · II',
  'kubectl -n p13b create rolebinding lectores-logs --clusterrole=lector-logs-p13b --group=lectores\n'+
  'kubectl auth can-i get pods --subresource=log -n p13b --as=ana-grupo --as-group=lectores --as-group=system:authenticated\n'+
  'kubectl -n p13b get rolebinding lectores-logs',
- obtener('p13b','clusterrole','lector-logs-p13b','(.rules|length)==1 and .rules[0].apiGroups==[""] and .rules[0].resources==["pods/log"] and .rules[0].verbs==["get"]')+' && '+
+ obtener('p13b','clusterrole','lector-logs-p13b',reglas(['get'],'pods/log'))+' && '+
  obtener('p13b','rolebinding','lectores-logs','.roleRef.kind=="ClusterRole" and .roleRef.name=="lector-logs-p13b" and any(.subjects[]; .kind=="Group" and .name=="lectores")')+' && '+
  can('ana-grupo','get','pods/log','p13b','yes','lectores')+' && '+can('ana-grupo','get','pods/log','default','no','lectores')+' && '+can('ana-grupo','delete','pods','p13b','no','lectores'),
  {prepare:['test -z "$(kubectl get clusterrole lector-logs-p13b --ignore-not-found -o name)"'],negative:'kubectl -n p13b delete rolebinding lectores-logs',cleanup:'kubectl delete clusterrole lector-logs-p13b --ignore-not-found'});
@@ -74,7 +76,7 @@ add(14,'b','ServiceAccount · II',
  'kubectl -n p14b create token lectora --duration=1h > /root/p14b-token.txt\n'+
  'curl --fail --cacert /etc/kubernetes/pki/ca.crt -H "Authorization: Bearer $(cat /root/p14b-token.txt)" https://10.77.0.10:6443/api/v1/namespaces/p14b/pods',
  obtener('p14b','serviceaccount','lectora','.metadata.name=="lectora"')+' && '+
- obtener('p14b','role','lector-pods','(.rules|length)==1 and .rules[0].apiGroups==[""] and .rules[0].resources==["pods"] and (.rules[0].verbs|sort)==["get","list"]')+' && '+
+ obtener('p14b','role','lector-pods',reglas(['get','list'],'pods'))+' && '+
  obtener('p14b','rolebinding','lectora-pods','.roleRef.kind=="Role" and .roleRef.name=="lector-pods" and any(.subjects[]; .kind=="ServiceAccount" and .name=="lectora" and .namespace=="p14b")')+' && '+
  can('system:serviceaccount:p14b:lectora','get','pods','p14b','yes')+' && '+can('system:serviceaccount:p14b:lectora','list','pods','p14b','yes')+' && '+can('system:serviceaccount:p14b:lectora','delete','pods','p14b','no')+' && '+can('system:serviceaccount:p14b:lectora','list','pods','default','no')+' && '+
  'test -s /root/p14b-token.txt && test "$(jq -Rr '+q('split(".")[1]|gsub("-";"+")|gsub("_";"/")|@base64d|fromjson|.sub')+' </root/p14b-token.txt)" = system:serviceaccount:p14b:lectora && '+

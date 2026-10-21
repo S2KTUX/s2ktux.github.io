@@ -48,14 +48,15 @@ test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arr
  await page.locator('[data-choose-stage=intermedio]').click();await page.locator('#enter-lab').click();
  await expect(page.locator('#exercise-class-select')).toHaveValue('7');await expect(page.locator('#exercise-class-select option')).toHaveCount(19);
  await expect(page.locator('#mode-stamp')).toContainText('Modo práctica · Intermedio');
- await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 24 preguntas disponibles.');
+ await expect(page.locator('#lab-course-note')).toHaveText('* Clases 07–23 · Control plane y un worker · 27 preguntas disponibles.');
  await page.selectOption('#exercise-class-select','13');await expect(page.locator('#exercise-select option')).toHaveCount(3);
  await page.selectOption('#exercise-class-select','14');await expect(page.locator('#exercise-select option')).toHaveCount(2);
  for(const number of ['8','9','10','11']){await page.selectOption('#exercise-class-select',number);await expect(page.locator('#exercise-select option')).toHaveCount(4);}
- expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);await expect(page.locator('#exercise-class-select option[value="12"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
+ await page.selectOption('#exercise-class-select','12');await expect(page.locator('#exercise-select option')).toHaveCount(3);await expect(page.locator('#exercise-title')).toHaveText('Volumen temporal · I');
+ expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);await expect(page.locator('#exercise-class-select option[value="15"]')).toBeDisabled();await expect(page.locator('#add-worker')).toBeHidden();
 });
 test('Kubernetes · pendientes bloqueados incluso por enlaces y acciones directas',async({page})=>{
- for(const [level,number] of [['intermedio',12],['intermedio',19],['avanzado',28],['avanzado',34]]){
+ for(const [level,number] of [['intermedio',15],['intermedio',19],['avanzado',28],['avanzado',34]]){
   await page.goto(root+'debian/multinodo.html?mode=course&level='+level+'&clase='+number+'&enter=1&factory=v8&fast=1');
   await expect(page.locator('#lab-entry')).toBeVisible();await expect(page.locator('#entry-intro')).toContainText('Próximamente');
   await expect(page.locator('#enter-lab')).toBeDisabled();await expect(page.locator('#start-cluster')).toBeDisabled();
