@@ -12,7 +12,7 @@ import {comprobarSaludInicial} from './salud-inicial.mjs';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=cc0ba61cf12a8c85';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5d2be910dd3a4db1';
-const cleanRevision='5ff986b89b1e313d3d4b460ca80e3232ad4c2bb3ac80b02c2a974d1ef100ae10';
+const cleanRevision='be1651d1023eb2573d7d5029d731995724ce135223e356f6e8f9ffcc74ddb4d9';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -116,12 +116,19 @@ start.onclick=async()=>{
    // Recuperar los datos y averías, sin reescribir CNI, rutas ni unidades.
    initialized=true;globalThis.kubeDebianClusterRecovered=!!saved;globalThis.kubeDebianCleanBaseUsed=!!cleanBase;status.textContent=saved?'Clúster guardado recuperado. Tus cambios se conservan.':'Base limpia recuperada. Comprobando sus nodos…';
    try{
+    if(cleanBase){
+     // El primer handshake puede agotar su plazo mientras vuelve a calentarse
+     // el código del API. Esperar su salud real; no reiniciar ni reparar nada.
+     await phase('controlplane','Esperar a que la API y los nodos recuperados estén disponibles',comprobarSaludInicial,240000);
+     kubeDebianClusterReady=true;status.textContent='Laboratorio listo desde su base limpia.';
+    }else{
     await phase('controlplane','Consultar la API recuperada sin esperar ni reparar nodos','kubectl get --raw=/readyz --request-timeout=15s',45000);
     const ready=await value('controlplane',`kubectl get nodes -o json --request-timeout=15s | jq -r '(.items|length)>0 and all(.items[]; any(.status.conditions[]; .type=="Ready" and .status=="True"))'`);
     if(!['true','false'].includes(ready))throw Error('No se recibió el estado real de los nodos');
     if(cleanBase&&ready!=='true')throw Error('Los nodos de la base limpia no están disponibles');
     kubeDebianClusterReady=true;
     status.textContent=ready==='true'?(saved?'Clúster guardado recuperado. Tus cambios se conservan.':'Laboratorio listo desde su base limpia.'):'Sesión recuperada con nodos no disponibles. Puedes revisarlos desde las terminales; no se han reparado tus cambios.';
+    }
    }
    catch{
     if(cleanBase){initialized=false;kubeDebianClusterReady=false;try{await cleanBases.resetCluster(cleanBase.sha256);}catch(error){console.warn('No se ha retirado la base inválida:',error.message);}status.textContent='La entrada rápida no ha superado la comprobación. Pulsa Reset para preparar una base nueva; tus sesiones guardadas no se han modificado.';}
