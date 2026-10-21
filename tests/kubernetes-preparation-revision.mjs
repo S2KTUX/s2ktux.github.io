@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+import {revisionPreparacion} from '../scripts/kubernetes-preparation-revision.mjs';
+const profile={policies:false,materials:false};
+const files=[{path:'debian/multinodo.mjs',source:"const cleanRevision='aaa'; const nodeUIRevision='bbb'; import {ui} from './interfaz-niveles.mjs?v=123'; const boot='real';"},{path:'debian/preparar-worker.mjs',source:'native worker'},{path:'debian/ejercicios-acceso.mjs',source:'pregunta original'},{path:'debian/interfaz-niveles.mjs',source:'interfaz original'}];
+const hash=revisionPreparacion(files,profile);
+const changed=files.map(file=>({...file,source:file.source.replace('original','corregida').replace("'aaa'","'ccc'").replace("'bbb'","'ddd'").replace('?v=123','?v=456')}));
+assert.equal(revisionPreparacion(changed,profile),hash,'Editar preguntas o referencias visuales no obliga a repetir join');
+assert.equal(revisionPreparacion([...files].reverse(),profile),hash);
+assert.notEqual(revisionPreparacion(files.map(file=>({...file,source:file.source.replace('native worker','worker corregido')})),profile),hash,'Cambiar la preparación sí invalida la base');
+assert.notEqual(revisionPreparacion([...files,{path:'debian/nuevo-componente.mjs',source:'nativo'}],profile),hash,'Un módulo nuevo se incluye por defecto');
+assert.notEqual(revisionPreparacion(files,{...profile,materials:true}),hash,'Activar materiales modifica la preparación');
+assert.notEqual(revisionPreparacion(files,{...profile,policies:true}),hash);
+assert.throws(()=>revisionPreparacion(files,{}));
+console.log('Kubernetes: la base se invalida por cambios nativos, no por editar preguntas o presentación.');

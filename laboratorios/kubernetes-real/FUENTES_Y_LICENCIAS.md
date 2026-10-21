@@ -19,6 +19,7 @@ Fuentes y materiales de construcción:
 - Linux: https://www.kernel.org/ y configuración `debian/kernel/v1/kernel.config`.
 - BusyBox: https://busybox.net/downloads/busybox-1.37.0.tar.bz2
 - Motor v86: https://github.com/copy/v86 (fuentes y ajustes incluidos en la rama de recursos).
+- Aprovisionador local Rancher v0.0.34 (Apache-2.0): https://github.com/rancher/local-path-provisioner/tree/v0.0.34. Se conserva su manifiesto original en `recursos/almacenamiento-v1/`; la adaptación solo fija la imagen linux/386, el nodo del controlador y las tolerancias del laboratorio. No es un driver CSI.
 
 La rama de recursos incluye los scripts, overlays y configuración empleados
 para construir los componentes propios. Los informes internos de pruebas y

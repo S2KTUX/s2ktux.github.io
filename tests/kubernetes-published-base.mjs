@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {cargarBasePublicada,validarBasePublicada} from '../laboratorios/kubernetes-real/debian/fabrica-cluster.mjs';
+const hash=bytes=>createHash('sha256').update(bytes).digest('hex'),data=new Uint8Array([1,2,3,4]);
+const node=id=>({id,format:'s2ktux-v86-session-v1',identity:'a'.repeat(64),bytes:1024,packedBytes:4,sha256:hash(data),parts:[{offset:0,bytes:4,sha256:hash(data),file:hash(data)+'.part'}]});
+const manifest={format:'s2ktux-kubernetes-clean-cluster-v1',sourceRevision:'b'.repeat(64),level:'intermedio',factoryVersion:'v6',workerComponents:'v8',sha256:'c'.repeat(64),nodes:[node('controlplane'),node('worker1')]};
+const bytes=new TextEncoder().encode(JSON.stringify(manifest));
+const config={level:'intermedio',revision:'d'.repeat(64),sha256:hash(bytes),url:'https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/'+'e'.repeat(40)+'/kubernetes/clean-v1/intermedio/cluster.json'};
+assert.equal(validarBasePublicada(manifest,config),manifest);
+for(const bad of [{...manifest,level:'inicial'},{...manifest,nodes:[manifest.nodes[0]]},{...manifest,nodes:[manifest.nodes[1],manifest.nodes[0]]},{...manifest,nodes:[{...manifest.nodes[0],parts:[{...manifest.nodes[0].parts[0],file:'../otro'}]},manifest.nodes[1]]}])assert.throws(()=>validarBasePublicada(bad,config));
+let validated=false;
+const dependencies={revision:config.revision,fetcher:async()=>new Response(bytes),download:async(url,options)=>{assert.equal(options.hash,hash(data));return data.buffer;},sessions:{validate:async nodes=>{for(const node of nodes)assert.equal(hash(Buffer.from(await node.packed.arrayBuffer())),node.sha256);validated=true;return manifest.sha256;}}};
+const result=await cargarBasePublicada(config,dependencies);assert.equal(result.nodes.length,2);assert.ok(validated);
+await assert.rejects(()=>cargarBasePublicada({...config,revision:'f'.repeat(64)},dependencies),/Revisión/);
+await assert.rejects(()=>cargarBasePublicada({...config,url:'https://otro.example/cluster.json'},dependencies),/Origen/);
+await assert.rejects(()=>cargarBasePublicada(config,{...dependencies,fetcher:async()=>new Response('alterado')}),/alterado/);
+await assert.rejects(()=>cargarBasePublicada(config,{...dependencies,sessions:{validate:async()=> '0'.repeat(64)}}),/conjunto/);
+console.log('Kubernetes: base publicada verificada por revisión, origen, perfiles y checksums; los estados incompletos o alterados no se restauran.');

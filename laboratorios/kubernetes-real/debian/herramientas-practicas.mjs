@@ -3,7 +3,7 @@ export const IMAGEN='busybox:1.37.0-musl';
 export const API='kubectl get --raw=/readyz --request-timeout=20s';
 export const q=value=>"'"+value.replaceAll("'","'\\''")+"'";
 const readable=new Map();
-function yaml(value,indent=0){
+export function yaml(value,indent=0){
  const pad=' '.repeat(indent);
  if(Array.isArray(value))return value.map(item=>{
   if(item&&typeof item==='object'){if(!Object.keys(item).length)return pad+'- '+(Array.isArray(item)?'[]':'{}');const lines=yaml(item,indent+2).split('\n');lines[0]=pad+'- '+lines[0].trimStart();return lines.join('\n');}

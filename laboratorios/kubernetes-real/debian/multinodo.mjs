@@ -7,12 +7,14 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=51002dc1e958a3e2';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=a95291d6251f9dc0';
 import {comprobarSaludInicial} from './salud-inicial.mjs';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=cc0ba61cf12a8c85';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5d2be910dd3a4db1';
-const cleanRevision='be1651d1023eb2573d7d5029d731995724ce135223e356f6e8f9ffcc74ddb4d9';
+import {basesPublicadas} from './bases-publicadas.mjs?v=bc3e4d09a326353a';
+import {cargarBasePublicada} from './fabrica-cluster.mjs?v=8b0288040c7938f2';
+const cleanRevision='8f52dcd31ec6ac50e580bc9506c48613bc50d3e0501f6c08646eab8eb4a581f2';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -107,7 +109,14 @@ start.onclick=async()=>{
  if(busy||nodes.size||!releaseAvailable())return;busy=true;start.disabled=true;status.textContent='Recuperando cka-cp1…';updateControls();
  try{
   saved=await sessions.getRawCluster();readSaved=true;
-  const cleanBase=saved?null:await cleanBases.read();
+  let cleanBase=saved?null:await cleanBases.read();
+  if(!saved&&!cleanBase){
+   const published=basesPublicadas.find(base=>base.level===level&&base.revision===cleanRevision);
+   if(published)try{
+    cleanBase=await cargarBasePublicada(published,{revision:cleanRevision,sessions:cleanBases,notify:text=>status.textContent=text});
+    try{await cleanBases.write(cleanBase.nodes);}catch(error){console.warn('La base preparada no se ha almacenado localmente:',error.message);}
+   }catch(error){console.warn('No se reutiliza la base publicada; se prepara el clúster normalmente:',error.message);cleanBase=null;}
+  }
   if(saved||cleanBase){
    if(saved)saved=await sessions.getCluster();
    const restore=saved||cleanBase;

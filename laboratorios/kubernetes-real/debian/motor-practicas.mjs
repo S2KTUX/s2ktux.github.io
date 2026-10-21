@@ -19,6 +19,10 @@ export async function comprobarPractica(task,run){
  }catch(error){return {id:task.id,state:'unverified',passed:null,message:'No se ha podido comprobar el ejercicio: '+String(error.message||error)};}
 }
 export async function prepararPractica(task,run){
+ for(const requirement of task.requirements||[]){
+  if(requirement!=='local-path')throw Error('Componente de práctica desconocido');
+  const {prepararAlmacenamiento}=await import('./almacenamiento-curso.mjs?v=883477bb20feaf98');await prepararAlmacenamiento(run);
+ }
  for(const command of task.prepare||[]){
   const result=await run('controlplane','Preparar '+task.title,'set -eu; '+command,240000);
   if(result?.ok!==true)throw Error('No se ha completado la preparación. No se considera preparado el ejercicio.');
