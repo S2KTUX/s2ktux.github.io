@@ -1,8 +1,9 @@
-import { exercises } from './v86-exercises.mjs?v=20261020-aprendizaje';
+import { exercises } from './v86-exercises.mjs?v=20261021-resueltas';
 import {renderSolutions} from '../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../solution-options.mjs?v=20261020-aprendizaje';
 import {mountGroups} from '../lab-groups.mjs?v=20261020-aprendizaje';
-import {practiceProgress} from '../practice-progress.mjs';
+import {practiceProgress} from '../practice-progress.mjs?v=20261021-resueltas';
+import {renderPracticeResult} from '../practice-feedback.mjs?v=20261021-resueltas';
 
 export function mountExercisePanel(root, runCheck) {
   const select = root.querySelector('select');
@@ -72,17 +73,7 @@ export function mountExercisePanel(root, runCheck) {
     try {
       const result = await runCheck(exercise);
       if (generation !== current) return;
-      feedback.replaceChildren();
-      const message = document.createElement('p');
-      message.textContent = result.ok ? 'Ejercicio comprobado: todas las condiciones se cumplen.' : 'Todavía falta corregir lo indicado abajo.';
-      feedback.append(message);
-      const list = document.createElement('ul');
-      for (const condition of result.results) {
-        const item = document.createElement('li');
-        item.textContent = (condition.ok ? 'Correcto: ' : 'Pendiente: ') + condition.label;
-        list.append(item);
-      }
-      feedback.append(list); feedback.dataset.result = result.ok ? 'passed' : 'failed';
+      renderPracticeResult(feedback,result,exercise);
     } catch (error) {
       if (generation === current) { feedback.textContent = error.message; feedback.dataset.result = 'error'; }
     } finally { checking = false; sync(); }

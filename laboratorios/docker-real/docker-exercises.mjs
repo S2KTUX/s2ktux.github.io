@@ -1,8 +1,8 @@
 import {extraExercises} from './docker-exercises-extra.mjs';
 import {commonPractice} from '../../practice-common.mjs';
 import {withHTTPWait} from '../solution-options.mjs?v=20261018';
-import {learningDocker} from '../learning-docker.mjs';
-import {buildDockerBank} from '../docker-objectives.mjs';
+import {learningDocker} from '../learning-docker.mjs?v=20261021-resueltas';
+import {buildDockerBank} from '../docker-objectives.mjs?v=20261021-resueltas';
 const running=name=>`test "$(docker inspect -f '{{.State.Running}}' ${name})" = true`;
 const published=(name,port)=>`docker inspect -f '{{range (index .HostConfig.PortBindings "80/tcp")}}{{.HostPort}}{{end}}' ${name} | grep -qx ${port}`;
 const mounted=(name,type,source,target)=>`docker inspect -f '{{range .Mounts}}{{.Type}} {{if .Name}}{{.Name}}{{else}}{{.Source}}{{end}} {{.Destination}}{{println}}{{end}}' ${name} | grep -Fxq '${type} ${source} ${target}'`;

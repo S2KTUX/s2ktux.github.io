@@ -8,8 +8,12 @@
 .exam-domain strong{font:16px/1.6 'Share Tech Mono',monospace;color:var(--head)}
 .practice-progress{display:flex;flex-wrap:wrap;align-items:center;gap:8px 20px;margin:16px 0 0;padding:8px 0;border:0;font:12px/1.7 'Share Tech Mono',monospace;color:var(--muted);background:transparent}
 .practice-progress strong{font:inherit}.practice-progress button{font:12px/1.7 'Share Tech Mono',monospace;color:var(--muted);background:transparent;border:0;box-shadow:none;text-decoration:underline;text-underline-offset:4px;padding:0;cursor:pointer}
-.practice-progress [data-progress=passed],.lab-practices option[data-progress=passed]{color:#356141}.practice-progress [data-progress=failed],.lab-practices option[data-progress=failed]{color:#903d31}.practice-progress [data-progress=reviewed],.lab-practices option[data-progress=reviewed]{color:var(--head)}
-html.dark .practice-progress [data-progress=passed],html.dark .lab-practices option[data-progress=passed]{color:#b2d5ac}html.dark .practice-progress [data-progress=failed],html.dark .lab-practices option[data-progress=failed]{color:#edb0a2}
+.lab-page .lab-practices :is(select,option)[data-progress=completed]{color:#24451e;background:#e4eddc;border-color:#4b713d}
+.lab-page .lab-practices option[data-progress=pending]{color:var(--head);background:var(--surface2)}
+html.dark .lab-page .lab-practices :is(select,option)[data-progress=completed]{color:#c9e6b9;background:#253823;border-color:#8eb878}
+.lab-page .lab-check-title{display:block;font:700 15px/1.6 'Space Mono',monospace}
+.lab-page .lab-check-list{margin:10px 0 0;padding-left:22px;font-size:14px;line-height:1.8}
+.lab-page .lab-check-list li+li{margin-top:7px}
 .practice-progress[data-result=passed],.lab-page [data-result=passed],.lab-page [data-result=correct]{border-color:#4b713d;background:#e4eddc;color:#24451e}
 .practice-progress[data-result=failed],.lab-page [data-result=failed],.lab-page [data-result=incorrect],.lab-page [data-result=incomplete]{border-color:#a34530;background:#f5e1d9;color:#7b281a}
 .lab-page :is([data-exercise-feedback],#feedback,#exercise-result,#chal-result)[data-result]:not([data-result=pending]):not(:empty){border:2px solid;border-left-width:6px;padding:14px 16px;margin:18px 0}

@@ -1,5 +1,5 @@
 {
-  "version": "2.2",
+  "version": "2.3",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -68,6 +68,15 @@
     }
   ],
   "versiones": [
+    {
+      "version": "2.3",
+      "fecha": "2026-10-21",
+      "cambios": [
+        "Las prácticas realizadas se marcan en verde como «Resuelta», sin guardar una marca de error en la lista. Quitamos el estado repetido encima del ejercicio; las marcas se siguen guardando en el navegador.",
+        "Al comprobar una práctica mostramos los requisitos que faltan, sin la etiqueta «Resultado solicitado». En los ejercicios de archivos distinguimos si falta el fichero o si su contenido no coincide.",
+        "Conservamos los enunciados, las soluciones, los modos examen y los guardados de las máquinas."
+      ]
+    },
     {
       "version": "2.2",
       "fecha": "2026-10-21",
