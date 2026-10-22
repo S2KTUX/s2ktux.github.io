@@ -17,4 +17,7 @@ await assert.rejects(()=>cargarBasePublicada(config,{...dependencies,fetcher:asy
 await assert.rejects(()=>cargarBasePublicada(config,{...dependencies,sessions:{validate:async()=> '0'.repeat(64)}}),/conjunto/);
 let attempts=0;assert.equal(await descargarFragmentoBase('fixture',{},async(url,options)=>{assert.equal(options.timeoutMs,30000);if(++attempts<3)throw new TypeError('Red interrumpida');return 'verificado';}),'verificado');assert.equal(attempts,3);
 attempts=0;await assert.rejects(()=>descargarFragmentoBase('fixture',{},async()=>{attempts++;throw Error('Checksum incorrecto');}));assert.equal(attempts,1,'No reintentar ni aceptar bytes alterados');
+let active=0,maximum=0;const touched=new Set();
+await cargarBasePublicada(config,{...dependencies,download:async(url,options)=>{assert.equal(options.cacheGroup,'kubernetes-base');active++;maximum=Math.max(maximum,active);touched.add(url.href);await new Promise(resolve=>setTimeout(resolve,5));active--;options.notify(options.bytes);return data.buffer;}});
+assert.equal(maximum,2,'Ambos nodos comparten la cola de descarga sin esperar al nodo anterior');assert.equal(touched.size,1,'Los fragmentos idénticos mantienen una URL inmutable');
 console.log('Kubernetes: base publicada verificada por revisión, origen, perfiles y checksums; los estados incompletos o alterados no se restauran.');

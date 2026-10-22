@@ -19,6 +19,7 @@ assert.ok(page.includes('src="entrada-laboratorio.mjs?v='+await uiRevision('debi
 assert.ok(page.includes('href="niveles.css?v='+await uiRevision('debian/niveles.css')+'"'));
 assert.ok((await read('debian/entrada-laboratorio.mjs')).includes("import('./multinodo.mjs?v="+await uiRevision('debian/multinodo.mjs')+"')"));
 assert.ok((await read('debian/multinodo.mjs')).includes("from './interfaz-niveles.mjs?v="+await uiRevision('debian/interfaz-niveles.mjs')+"'"));
+assert.ok((await read('debian/multinodo.mjs')).includes("from './salud-inicial.mjs?v="+await uiRevision('debian/salud-inicial.mjs')+"'"));
 assert.ok((await read('debian/multinodo.mjs')).includes("const nodeUIRevision='"+await uiRevision('debian/index.html')+"'"));
 assert.ok((await read('debian/index.html')).includes('src="cliente.mjs?v='+await uiRevision('debian/cliente.mjs')+'"'));
 for(const [parent,child,relative]of [['debian/cliente.mjs','disco-kubernetes.mjs','../disco-kubernetes.mjs'],['debian/cliente.mjs','serial-checks.mjs','../serial-checks.mjs'],['disco-kubernetes.mjs','cache-bloques.mjs','./cache-bloques.mjs'],['debian/ejercicios-almacenamiento.mjs','debian/herramientas-practicas.mjs','./herramientas-practicas.mjs'],['debian/ejercicios-niveles.mjs','debian/ejercicios-almacenamiento.mjs','./ejercicios-almacenamiento.mjs'],['debian/fabrica-cluster.mjs','../verified-download.mjs','../../verified-download.mjs']])assert.ok((await read(parent)).includes("from '"+relative+'?v='+await uiRevision(child)+"'"));

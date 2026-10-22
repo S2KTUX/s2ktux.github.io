@@ -4,7 +4,7 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
-for(const path of ['debian/ejercicios-almacenamiento.mjs','debian/almacenamiento-curso.mjs','debian/almacenamiento-paquete.mjs','recursos/almacenamiento-v1/local-path.yaml.gz','recursos/almacenamiento-v1/local-path-original.yaml'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
+for(const path of ['debian/ejercicios-almacenamiento.mjs','debian/almacenamiento-curso.mjs','debian/almacenamiento-paquete.mjs','recursos/almacenamiento-v1/local-path.yaml.gz','recursos/almacenamiento-v1/local-path-original.yaml','debian/ejercicios-controladores.mjs','debian/ejercicios-ingress.mjs','debian/ingress-curso.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 const readText=async path=>(await readFile(new URL(path,base),'utf8')).replaceAll('\r\n','\n');
 const revision=async path=>createHash('sha256').update(await readText(path)).digest('hex').slice(0,16);
 async function replaceRequired(path,pattern,replacement){
@@ -17,6 +17,12 @@ for(const path of ['debian/entrada-laboratorio.mjs','debian/multinodo.mjs','debi
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-acceso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-acceso.mjs?v="+await revision('debian/ejercicios-acceso.mjs')+"'");
 await replaceRequired('debian/ejercicios-almacenamiento.mjs',/from '\.\/herramientas-practicas\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './herramientas-practicas.mjs?v="+await revision('debian/herramientas-practicas.mjs')+"'");
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-almacenamiento\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-almacenamiento.mjs?v="+await revision('debian/ejercicios-almacenamiento.mjs')+"'");
+for(const child of ['ejercicios-controladores','ejercicios-ingress']){
+ await replaceRequired('debian/'+child+'.mjs',/from '\.\/herramientas-practicas\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './herramientas-practicas.mjs?v="+await revision('debian/herramientas-practicas.mjs')+"'");
+ await replaceRequired('debian/ejercicios-niveles.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-z0-9-]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
+}
+await replaceRequired('debian/ingress-curso.mjs',/from '\.\/materiales-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './materiales-curso.mjs?v="+await revision('debian/materiales-curso.mjs')+"'");
+await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/ingress-curso\.mjs(?:\?v=[a-z0-9-]+)?'\)/,"import('./ingress-curso.mjs?v="+await revision('debian/ingress-curso.mjs')+"')");
 await replaceRequired('debian/fabrica-cluster.mjs',/from '\.\.\/\.\.\/verified-download\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../../verified-download.mjs?v="+await revision('../verified-download.mjs')+"'");
 await replaceRequired('debian/almacenamiento-curso.mjs',/from '\.\/almacenamiento-paquete\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './almacenamiento-paquete.mjs?v="+await revision('debian/almacenamiento-paquete.mjs')+"'");
 await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/almacenamiento-curso\.mjs(?:\?v=[a-z0-9-]+)?'\)/,"import('./almacenamiento-curso.mjs?v="+await revision('debian/almacenamiento-curso.mjs')+"')");
@@ -33,6 +39,7 @@ await replaceRequired('debian/index.html',/src="cliente\.mjs(?:\?v=[a-z0-9-]+)?"
 await replaceRequired('debian/multinodo.mjs',/const nodeUIRevision='[a-f0-9]+'/,"const nodeUIRevision='"+await revision('debian/index.html')+"'");
 await replaceRequired('debian/multinodo.mjs',/from '\.\/interfaz-niveles\.mjs(?:\?v=[a-f0-9]+)?'/,"from './interfaz-niveles.mjs?v="+await revision('debian/interfaz-niveles.mjs')+"'");
 await replaceRequired('debian/multinodo.mjs',/from '\.\/bases-limpias\.mjs(?:\?v=[a-f0-9]+)?'/,"from './bases-limpias.mjs?v="+await revision('debian/bases-limpias.mjs')+"'");
+await replaceRequired('debian/multinodo.mjs',/from '\.\/salud-inicial\.mjs(?:\?v=[a-f0-9]+)?'/,"from './salud-inicial.mjs?v="+await revision('debian/salud-inicial.mjs')+"'");
 for(const path of ['debian/bases-publicadas.mjs','debian/fabrica-cluster.mjs']){
  if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
  await replaceRequired('debian/multinodo.mjs',new RegExp("from '\\./"+path.split('/').at(-1).replaceAll('.','\\.')+"(?:\\?v=[a-f0-9]+)?'"),"from './"+path.split('/').at(-1)+'?v='+await revision(path)+"'");
@@ -40,7 +47,7 @@ for(const path of ['debian/bases-publicadas.mjs','debian/fabrica-cluster.mjs']){
 const nativeFiles=[...new Set([...manifest.files.map(record=>record.path),'debian/bases-limpias.mjs','debian/ejercicios-acceso.mjs'])].filter(path=>path.endsWith('.mjs')&&path!=='debian/entrada-laboratorio.mjs').sort();
 const preparation=[];
 for(const path of nativeFiles)preparation.push({path,source:await readText(path)});
-await replaceRequired('debian/multinodo.mjs',/const cleanRevision='[a-f0-9]+'/,"const cleanRevision='"+revisionPreparacion(preparation,{policies:claseDisponible(21),materials:claseDisponible(15)})+"'");
+await replaceRequired('debian/multinodo.mjs',/const cleanRevision='[a-f0-9]+'/,"const cleanRevision='"+revisionPreparacion(preparation,{policies:claseDisponible(21),materials:false})+"'");
 await replaceRequired('debian/entrada-laboratorio.mjs',/import\('\.\/multinodo\.mjs(?:\?v=[a-f0-9]+)?'\)/,"import('./multinodo.mjs?v="+await revision('debian/multinodo.mjs')+"')");
 await replaceRequired('debian/multinodo.html',/src="entrada-laboratorio\.mjs(?:\?v=[a-f0-9]+)?"/,'src="entrada-laboratorio.mjs?v='+await revision('debian/entrada-laboratorio.mjs')+'"');
 await replaceRequired('debian/multinodo.html',/href="niveles\.css(?:\?v=[a-f0-9]+)?"/,'href="niveles.css?v='+await revision('debian/niveles.css')+'"');
