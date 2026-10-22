@@ -1,11 +1,15 @@
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
-import {basesPublicadas} from '../laboratorios/kubernetes-real/debian/bases-publicadas.mjs';
+import {basesPublicadas,revisionesCompatibles} from '../laboratorios/kubernetes-real/debian/bases-publicadas.mjs';
 import {cargarBasePublicada,validarBasePublicada,descargarFragmentoBase} from '../laboratorios/kubernetes-real/debian/fabrica-cluster.mjs';
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex'),data=new Uint8Array([1,2,3,4]);
 const mainSource=readFileSync(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8');
 assert.equal(basesPublicadas.find(base=>base.level==='intermedio').revision,/const cleanRevision='([a-f0-9]+)'/.exec(mainSource)[1],'Una revisión sin base compatible no debe provocar una preparación fría involuntaria');
+const current=/const cleanRevision='([a-f0-9]+)'/.exec(mainSource)[1];
+assert.deepEqual(revisionesCompatibles[current],['b9b13ff8628d342553bddc87f32cdb6314accb53d7da8ed84582b6f1175716db','d66a99f2ca13236a8e3e61cec1afdee442d6ed3a6126998ade42c5a437e9e8be'],'Conservar explícitamente las bases anteriores sin reutilizarlas para preparaciones futuras');
+assert.equal(revisionesCompatibles['0'.repeat(64)],undefined);
+assert.match(mainSource,/compatibleRevisions:revisionesCompatibles\[cleanRevision\]\|\|\[\]/);
 const node=id=>({id,format:'s2ktux-v86-session-v1',identity:'a'.repeat(64),bytes:1024,packedBytes:4,sha256:hash(data),parts:[{offset:0,bytes:4,sha256:hash(data),file:hash(data)+'.part'}]});
 const manifest={format:'s2ktux-kubernetes-clean-cluster-v1',sourceRevision:'b'.repeat(64),level:'intermedio',factoryVersion:'v6',workerComponents:'v8',sha256:'c'.repeat(64),nodes:[node('controlplane'),node('worker1')]};
 const bytes=new TextEncoder().encode(JSON.stringify(manifest));

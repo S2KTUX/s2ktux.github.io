@@ -3,7 +3,10 @@ import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c117bcac5582af74';
 // antes de habilitar su consola y nunca después de recuperar una sesión.
 export class BasesLimpias extends SesionesClusterDebian{
  constructor(revision,options){
-  super(options);if(!/^[a-f0-9]{64}$/.test(revision))throw Error('Revisión de base limpia inválida');
+  const {compatibleRevisions=[],...profile}=options||{};
+  super(profile);if(!/^[a-f0-9]{64}$/.test(revision))throw Error('Revisión de base limpia inválida');
+  if(!Array.isArray(compatibleRevisions)||compatibleRevisions.length>4||compatibleRevisions.some(value=>!/^[a-f0-9]{64}$/.test(value)||value===revision)||new Set(compatibleRevisions).size!==compatibleRevisions.length)throw Error('Compatibilidad de base limpia inválida');
+  this.compatibleRevisions=[...compatibleRevisions];this.compatibleProfile=profile;
   this.prefix='base:'+this.level+':';this.key=this.prefix+revision;
  }
  open(){return new Promise((resolve,reject)=>{
@@ -12,7 +15,17 @@ export class BasesLimpias extends SesionesClusterDebian{
   request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);
   request.onblocked=()=>reject(Error('La caché de entrada rápida está ocupada'));
  });}
- async read(){try{const record=await this.getCluster();if(record&&record.nodes.length!==({inicial:1,intermedio:2,avanzado:3})[this.level])throw Error('Base limpia incompleta');return record;}catch(error){console.warn('Base limpia no reutilizada:',error.message);return null;}}
+ async read(){try{
+  const record=await this.getCluster();
+  if(record){if(record.nodes.length!==({inicial:1,intermedio:2,avanzado:3})[this.level])throw Error('Base limpia incompleta');return record;}
+  // Solo revisiones declaradas equivalentes. Cada registro conserva su
+  // validación completa de perfil, identidad, tamaño y sumas antes de migrar.
+  for(const revision of this.compatibleRevisions){
+   const previous=await new BasesLimpias(revision,this.compatibleProfile).read();
+   if(previous)return await this.write(previous.nodes);
+  }
+  return null;
+ }catch(error){console.warn('Base limpia no reutilizada:',error.message);return null;}}
  async write(nodes){
   if(nodes.length!==({inicial:1,intermedio:2,avanzado:3})[this.level])throw Error('No se guarda una base limpia parcial');
   const current=await this.getRawCluster(),record=await this.saveNodes(nodes,current?.sha256||null);
