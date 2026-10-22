@@ -24,4 +24,4 @@ assert.ok(!calls.some(c=>/ports.web.port=80|NET_BIND_SERVICE/.test(c.command)));
 const existing=[];await prepararGateway(async(id,label,command)=>{existing.push(command);return {ok:label!=='Consultar los CRDs del complemento'};});
 assert.ok(!existing.some(c=>/helm upgrade|kubectl create/.test(c)),'Una instalación existente se comprueba sin repararla');
 assert.match(ordenComprobarCRDsGateway,/test -n "\$crds"/);assert.match(ordenComprobarCRDsGateway,/length==5/);
-console.log('Gateway: tres ejercicios y correctores con condiciones actuales y tráfico HTTP/TLS; instalación bajo demanda. Falta su ejecución nativa para abrirlos.');
+console.log('Gateway: tres ejercicios y correctores con condiciones actuales y tráfico HTTP/TLS; instalación bajo demanda. Este test no sustituye la ejecución nativa.');

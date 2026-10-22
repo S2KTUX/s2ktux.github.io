@@ -19,7 +19,8 @@ assert.equal(ejerciciosClase(13).length,3);assert.equal(ejerciciosClase(14).leng
 assert.equal(ejerciciosClase(12).length,3);
 for(let number=15;number<=18;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===15?4:2);}
 for(let number=19;number<=22;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===19||number===21?3:2);}
-for(let number=23;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
+assert.equal(claseDisponible(23),true);assert.equal(ejerciciosClase(23).length,3);
+for(let number=24;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
 assert.equal(nivelDisponible('avanzado'),false);assert.equal(limiteNodos('intermedio'),2);
 const safeParams=parametrosPublicos('mode=other&factory=v8&fast=1&use-scheduling-api=1&clase=28&level=avanzado&enter=1');
 assert.equal(safeParams.get('mode'),'course');assert.equal(safeParams.get('factory'),'v6');assert.equal(safeParams.has('fast'),false);assert.equal(safeParams.has('use-scheduling-api'),false);assert.equal(safeParams.get('clase'),'28');
@@ -48,4 +49,5 @@ assert.doesNotMatch(startup,/await prepararMaterialesCurso/,'Los materiales de I
 assert.match(startup,/const integratedPolicies=new URLSearchParams\(location.search\).get\('policies'\)==='1'/);
 for(let number=7;number<=11;number++)for(const task of ejerciciosClase(number))assert.doesNotMatch(task.solution+task.check,/\/opt\/curso/,'Las primeras prácticas intermedias no necesitan los materiales de clases posteriores');
 assert.match(page,/id="course-index"/);assert.doesNotMatch(page,/id="environment-select"/);assert.match(page,/id="exercise-class-select"/);
-console.log('Kubernetes: 61 prácticas en clases 01–22; resultados correcto/incompleto/no verificado protegidos. Este test no acredita ejecución nativa.');
+assert.equal(Array.from({length:23},(_,i)=>ejerciciosClase(i+1).length).reduce((a,b)=>a+b,0),65);
+console.log('Kubernetes: 65 prácticas en clases 01–23; resultados correcto/incompleto/no verificado protegidos. Este test no acredita ejecución nativa.');

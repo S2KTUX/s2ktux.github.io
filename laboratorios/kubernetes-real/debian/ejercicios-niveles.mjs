@@ -10,7 +10,7 @@ import {EJERCICIOS_DNS} from './ejercicios-dns.mjs?v=e00ad26fa5ec3558';
 import {EJERCICIOS_GATEWAY} from './ejercicios-gateway.mjs?v=4e99d1e1a1628e7c';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
-import {claseDisponible} from './disponibilidad-curso.mjs?v=f08c6af336f4f759';
+import {claseDisponible} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
 import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
 import {EJERCICIOS_PROGRESIVOS,CKA_EXAM_PRACTICE} from './ejercicios-progresivos.mjs';
 const image='busybox:1.37.0-musl';

@@ -7,10 +7,10 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=713efdbc9c07cad4';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=4fb68b45819600db';
 import {ordenSaludInicial} from './salud-inicial.mjs?v=5a56c78de0a26968';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
-import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=f08c6af336f4f759';
+import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5d2be910dd3a4db1';
 import {basesPublicadas} from './bases-publicadas.mjs?v=ed2601461f0518ee';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=979785ed16349130';
