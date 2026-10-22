@@ -1,5 +1,5 @@
 {
-  "version": "2.8",
+  "version": "2.9",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Completar y comprobar las clases 24–34 en el laboratorio real antes de abrirlas. Las clases 01–23 tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
+      "texto": "Completar y comprobar las clases 24–34 en el laboratorio real antes de abrirlas. Ya están preparados los candidatos de creación y reparación de Static Pods de la clase 24; HA sigue requiriendo su escenario independiente. Las clases 01–23 tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
     },
     {
       "id": "kubernetes-examen",
@@ -68,6 +68,17 @@
     }
   ],
   "versiones": [
+    {
+      "version": "2.9",
+      "fecha": "2026-10-22",
+      "resumen": "Recuperar las máquinas evita lecturas repetidas, sin perder las comprobaciones de los guardados.",
+      "cambios": [
+        "Linux y Docker reutilizan la comprobación de un mismo archivo de sesión mientras sigue en memoria. Un archivo nuevo o cambiado se verifica de nuevo; no se modifica el formato de los guardados.",
+        "Kubernetes deja de leer dos veces el mismo guardado al entrar y evita repetir la lectura de los archivos que ya acaba de comprobar. Se mantienen las protecciones frente a datos alterados y cambios desde otra pestaña.",
+        "La comprobación de arranque ya no puede dar por preparado el clúster si la consulta de nodos falla o devuelve una respuesta vacía.",
+        "Se conserva la misma base limpia de dos nodos y las prácticas publicadas hasta la clase 23. El nivel avanzado y el simulacro siguen pendientes."
+      ]
+    },
     {
       "version": "2.8",
       "fecha": "2026-10-22",

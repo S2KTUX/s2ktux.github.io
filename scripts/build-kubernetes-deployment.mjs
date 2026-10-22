@@ -4,7 +4,7 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
-for(const path of ['debian/ejercicios-gateway.mjs','debian/gateway-curso.mjs','debian/rewrite-curso.mjs','debian/crds-curso.mjs','recursos/curso-debian-v1/materiales.tar.gz'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
+for(const path of ['debian/ejercicios-administracion.mjs','debian/ejercicios-gateway.mjs','debian/gateway-curso.mjs','debian/rewrite-curso.mjs','debian/crds-curso.mjs','recursos/curso-debian-v1/materiales.tar.gz'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 for(const path of ['debian/ejercicios-almacenamiento.mjs','debian/almacenamiento-curso.mjs','debian/almacenamiento-paquete.mjs','recursos/almacenamiento-v1/local-path.yaml.gz','recursos/almacenamiento-v1/local-path-original.yaml','debian/ejercicios-controladores.mjs','debian/ejercicios-ingress.mjs','debian/ingress-curso.mjs','debian/ejercicios-scheduling.mjs','debian/ejercicios-red.mjs','debian/ejercicios-dns.mjs','debian/red-politicas-curso.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 const readText=async path=>(await readFile(new URL(path,base),'utf8')).replaceAll('\r\n','\n');
 const revision=async path=>createHash('sha256').update(await readText(path)).digest('hex').slice(0,16);
@@ -14,6 +14,9 @@ async function replaceRequired(path,pattern,replacement){
 }
 // El HTML y la interfaz cambian juntos. Versionar la cadena de entrada evita
 // reutilizar módulos de una revisión anterior en pestañas que ya estaban abiertas.
+for(const parent of ['kube-sessions.mjs','debian/sesiones-cluster.mjs'])await replaceRequired(parent,/from '\/laboratorios\/docker-real\/v86-sessions\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '/laboratorios/docker-real/v86-sessions.mjs?v="+await revision('../docker-real/v86-sessions.mjs')+"'");
+for(const parent of ['debian/sesiones-cluster.mjs','debian/cliente.mjs'])await replaceRequired(parent,/from '\.\.\/kube-sessions\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../kube-sessions.mjs?v="+await revision('kube-sessions.mjs')+"'");
+for(const parent of ['debian/bases-limpias.mjs','debian/multinodo.mjs','debian/cliente.mjs'])await replaceRequired(parent,/from '\.\/sesiones-cluster\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-cluster.mjs?v="+await revision('debian/sesiones-cluster.mjs')+"'");
 for(const path of ['debian/entrada-laboratorio.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs','debian/ejercicios-niveles.mjs'])await replaceRequired(path,/from '\.\/disponibilidad-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './disponibilidad-curso.mjs?v="+await revision('debian/disponibilidad-curso.mjs')+"'");
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-acceso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-acceso.mjs?v="+await revision('debian/ejercicios-acceso.mjs')+"'");
 await replaceRequired('debian/ejercicios-almacenamiento.mjs',/from '\.\/herramientas-practicas\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './herramientas-practicas.mjs?v="+await revision('debian/herramientas-practicas.mjs')+"'");

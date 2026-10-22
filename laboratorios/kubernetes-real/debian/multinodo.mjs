@@ -1,20 +1,20 @@
 import {createLocalSwitch} from '../red-local.mjs';
 import {comandosArchivoSerie} from '../archivos-serie.mjs';
 import {perfilWorker} from './preparar-worker.mjs';
-import {SesionesClusterDebian} from './sesiones-cluster.mjs';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c117bcac5582af74';
 import {ordenarNodosDebian,comandoNatDebian} from './red-cluster.mjs';
 import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cluster.mjs';
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
 import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=39cdbf880aefc6cc';
-import {ordenSaludInicial} from './salud-inicial.mjs?v=5a56c78de0a26968';
+import {ordenSaludInicial} from './salud-inicial.mjs?v=84a2e4609f06f611';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
-import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5d2be910dd3a4db1';
-import {basesPublicadas} from './bases-publicadas.mjs?v=ed2601461f0518ee';
+import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=a4a26e02a3c60b5c';
+import {basesPublicadas} from './bases-publicadas.mjs?v=adef7594d1c5624c';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=979785ed16349130';
-const cleanRevision='b9b13ff8628d342553bddc87f32cdb6314accb53d7da8ed84582b6f1175716db';
+const cleanRevision='d66a99f2ca13236a8e3e61cec1afdee442d6ed3a6126998ade42c5a437e9e8be';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -28,7 +28,7 @@ if(!['v1','v3','v4','v5','v6','v8'].includes(factoryVersion))throw Error('Fábri
 const schedulingAPI=new URLSearchParams(location.search).get('use-scheduling-api')==='1';
 if(factoryVersion==='v8'&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración privada requiere Scheduler API, sin políticas integradas y nivel avanzado');
 const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'||factoryVersion!=='v1';
-const nodeUIRevision='4e16887a039ae2a1';
+const nodeUIRevision='a5c81a4642478106';
 const workerComponents=factoryVersion==='v8'?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
 const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
@@ -120,7 +120,7 @@ start.onclick=async()=>{
    }catch(error){console.warn('No se reutiliza la base publicada; se prepara el clúster normalmente:',error.message);cleanBase=null;}
   }
   if(saved||cleanBase){
-   if(saved)saved=await sessions.getCluster();
+   if(saved)saved=await sessions.validateCluster(saved);
    const restore=saved||cleanBase;
    if(restore.nodes.length>limiteNodos(level))throw Error('Este guardado corresponde a una configuración todavía no publicada. Se conserva sin modificarlo.');
    for(const record of restore.nodes)await createNode(record.id,record.id==='controlplane'?'warm=1':'worker='+record.id.slice(-1)+'&threaded=1',record);
