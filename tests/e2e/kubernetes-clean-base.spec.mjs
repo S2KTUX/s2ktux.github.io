@@ -41,3 +41,39 @@ test('Recuperación · valida una sola lectura sin fiarse de metadatos alterados
  });
  expect(result).toEqual({readsBeforeSecondRead:1,same:true,rejected:true,changed:true,preserved:true});
 });
+
+test('Entrada rápida · conserva una revisión compatible sin leer guardados del alumno',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {BasesLimpias}=await import('/laboratorios/kubernetes-real/debian/bases-limpias.mjs');
+  const {SesionesClusterDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  const options={workerComponents:'v7',factoryVersion:'v6',progressive:true,level:'inicial'};
+  const old=new BasesLimpias('c'.repeat(64),options),user=new SesionesClusterDebian(options);
+  const current=new BasesLimpias('d'.repeat(64),{...options,compatibleRevisions:['c'.repeat(64)]});
+  const clean=await old.packNode('controlplane',new Uint8Array([3,4,5]).buffer,'SOLO_BASE_LIMPIA');
+  const student=await user.packNode('controlplane',new Uint8Array([7,8,9]).buffer,'DATOS_ALUMNO');
+  await old.write([clean]);await user.saveNodes([student]);const migrated=await current.read();
+  const incompatible=new BasesLimpias('e'.repeat(64),options);
+  const otherLevel=new BasesLimpias('d'.repeat(64),{...options,level:'intermedio',compatibleRevisions:['c'.repeat(64)]});
+  const wrongProfile=new BasesLimpias('d'.repeat(64),{...options,factoryVersion:'v5'});
+  const noUnknown=await incompatible.read(),noOtherLevel=await otherLevel.read(),noOtherProfile=await wrongProfile.read();
+  let invalidList=false;try{new BasesLimpias('f'.repeat(64),{...options,compatibleRevisions:['f'.repeat(64)]});}catch{invalidList=true;}
+  return {migrated:migrated?.nodes[0].terminalText,newKey:migrated?.key===current.key,oldRemoved:!await old.getRawCluster(),student:(await user.getCluster()).nodes[0].terminalText,noUnknown:!noUnknown,noOtherLevel:!noOtherLevel,noOtherProfile:!noOtherProfile,invalidList};
+ });
+ expect(result).toEqual({migrated:'SOLO_BASE_LIMPIA',newKey:true,oldRemoved:true,student:'DATOS_ALUMNO',noUnknown:true,noOtherLevel:true,noOtherProfile:true,invalidList:true});
+});
+
+test('Entrada rápida · una base compatible alterada no se migra ni se borra',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {BasesLimpias}=await import('/laboratorios/kubernetes-real/debian/bases-limpias.mjs');
+  const options={workerComponents:'v7',factoryVersion:'v6',progressive:true,level:'inicial'};
+  const old=new BasesLimpias('a'.repeat(64),options),current=new BasesLimpias('b'.repeat(64),{...options,compatibleRevisions:['a'.repeat(64)]});
+  const node=await old.packNode('controlplane',new Uint8Array(4096).buffer);await old.write([node]);
+  const raw=await old.getRawCluster(),bytes=new Uint8Array(await raw.nodes[0].packed.arrayBuffer());bytes[bytes.length-1]^=1;
+  const corrupt={...raw,nodes:[{...raw.nodes[0],packed:new Blob([bytes])}]};
+  await old.access('readwrite',store=>store.put(corrupt));
+  return {rejected:!await current.read(),noNew:!await current.getRawCluster(),preserved:!!await old.getRawCluster()};
+ });
+ expect(result).toEqual({rejected:true,noNew:true,preserved:true});
+});

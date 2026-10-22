@@ -78,7 +78,7 @@
 <p>Recuperar las máquinas evita lecturas repetidas, sin perder las comprobaciones de los guardados.</p>
 <h2>Qué ha cambiado</h2>
 <p>Linux y Docker reutilizan la comprobación de un mismo archivo de sesión mientras sigue en memoria. Un archivo nuevo o cambiado se verifica de nuevo; no se modifica el formato de los guardados.</p>
-<p>Kubernetes deja de leer dos veces el mismo guardado al entrar y evita repetir la lectura de los archivos que ya acaba de comprobar. Se mantienen las protecciones frente a datos alterados y cambios desde otra pestaña.</p>
+<p>Kubernetes deja de leer dos veces el mismo guardado al entrar y evita repetir la lectura de los archivos que ya acaba de comprobar. Conservamos las entradas rápidas anteriores que sean compatibles, sin obligar a preparar otra vez el nivel inicial. Se mantienen las protecciones frente a datos alterados y cambios desde otra pestaña.</p>
 <p>La comprobación de arranque ya no puede dar por preparado el clúster si la consulta de nodos falla o devuelve una respuesta vacía.</p>
 <p>Se conserva la misma base limpia de dos nodos y las prácticas publicadas hasta la clase 23. El nivel avanzado y el simulacro siguen pendientes.</p>
 </section></main>
