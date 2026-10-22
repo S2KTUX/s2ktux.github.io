@@ -23,7 +23,7 @@ export async function prepararPractica(task,run){
   if(requirement==='local-path'){
    const {prepararAlmacenamiento}=await import('./almacenamiento-curso.mjs?v=883477bb20feaf98');await prepararAlmacenamiento(run);
   }else if(requirement==='traefik'){
-   const {prepararIngress}=await import('./ingress-curso.mjs?v=8a230a1e661a359b');await prepararIngress(run);
+   const {prepararIngress}=await import('./ingress-curso.mjs?v=e55094b69c8123a2');await prepararIngress(run);
   }else throw Error('Componente de práctica desconocido');
  }
  for(const command of task.prepare||[]){

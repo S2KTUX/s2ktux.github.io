@@ -13,8 +13,9 @@ test('Base preparada · conserva sus 69 partes sin expulsar los recursos de Linu
    for(let n=0;n<69;n++)await verifiedDownload(prefix+'-'+n,{bytes:data.length,hash,cacheGroup:'kubernetes-base'});
    const linux=await(await common.match(untouched)).text();
    const key=new URL(prefix+'-0',location.href).href;await base.put(key,new Response('alterado'));await verifiedDownload(key,{bytes:data.length,hash,cacheGroup:'kubernetes-base'});
-   return {first,total:requests,linux};
+   let rejected=false;try{await verifiedDownload(prefix+'-otro',{bytes:data.length,hash,cacheGroup:'otro'});}catch{rejected=true;}
+   return {first,total:requests,linux,rejected};
   }finally{globalThis.fetch=original;for(const key of await base.keys())if(key.url.includes(prefix))await base.delete(key);await common.delete(untouched);}
  });
- expect(result).toEqual({first:69,total:70,linux:'linux'});
+ expect(result).toEqual({first:69,total:70,linux:'linux',rejected:true});
 });

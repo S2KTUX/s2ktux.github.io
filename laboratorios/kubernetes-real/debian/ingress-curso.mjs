@@ -1,4 +1,4 @@
-import {prepararMaterialesCurso} from './materiales-curso.mjs?v=aebfc4d8b60e3245';
+import {prepararMaterialesCurso} from './materiales-curso.mjs?v=3c2ad606a61a59e5';
 // Solo al preparar una práctica de Ingress. No se instala al arrancar ni se
 // repara un controlador que el alumno haya modificado.
 export async function prepararIngress(run){
