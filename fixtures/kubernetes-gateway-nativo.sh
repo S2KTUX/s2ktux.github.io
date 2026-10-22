@@ -66,7 +66,7 @@ printf '%s\n' '{"apiVersion":"v1","kind":"Pod","metadata":{"name":"web","namespa
 printf '%s\n' '{"apiVersion":"v1","kind":"Service","metadata":{"name":"web","namespace":"p23c"},"spec":{"selector":{"app":"web"},"ports":[{"port":80,"targetPort":8080}]}}' | kubectl apply -f -
 kubectl -n p23c wait --for=condition=Ready pod/web --timeout=180s
 test ! -e /root/p23c.crt && test ! -e /root/p23c.key
-openssl req -x509 -nodes -days 30 -newkey rsa:2048 -keyout /root/p23c.key -out /root/p23c.crt -subj /CN=seguro.gateway.test -addext subjectAltName=DNS:seguro.gateway.test
+openssl req -x509 -nodes -days 30 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -keyout /root/p23c.key -out /root/p23c.crt -subj /CN=seguro.gateway.test -addext subjectAltName=DNS:seguro.gateway.test
 kubectl -n p23c create secret tls web-tls --cert=/root/p23c.crt --key=/root/p23c.key
 printf '%s\n' '{"apiVersion":"gateway.networking.k8s.io/v1","kind":"Gateway","metadata":{"name":"entrada","namespace":"p23c"},"spec":{"gatewayClassName":"traefik","listeners":[{"name":"https","protocol":"HTTPS","port":8443,"tls":{"mode":"Terminate","certificateRefs":[{"name":"web-tls"}]}}]}}' | kubectl apply -f -
 printf '%s\n' '{"apiVersion":"gateway.networking.k8s.io/v1","kind":"HTTPRoute","metadata":{"name":"web","namespace":"p23c"},"spec":{"parentRefs":[{"name":"entrada"}],"hostnames":["seguro.gateway.test"],"rules":[{"matches":[{"path":{"type":"PathPrefix","value":"/"}}],"backendRefs":[{"name":"web","port":80}]}]}}' | kubectl apply -f -

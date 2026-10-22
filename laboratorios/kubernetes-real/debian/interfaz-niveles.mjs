@@ -1,6 +1,6 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=62c4e64547397d1f';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=a42933480732b0a7';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=ff2bac0de630b585';
 import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=f08c6af336f4f759';
 import {renderSolutions} from '../../lab-solutions.mjs?v=20261020-aprendizaje';

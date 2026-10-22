@@ -3,11 +3,11 @@ import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261020-ap
 import {EJERCICIOS_ACCESO} from './ejercicios-acceso.mjs?v=d5f8b79c9654a632';
 import {EJERCICIOS_ALMACENAMIENTO} from './ejercicios-almacenamiento.mjs?v=9e73779cb79a1c9e';
 import {EJERCICIOS_CONTROLADORES} from './ejercicios-controladores.mjs?v=7516c665c03377ac';
-import {EJERCICIOS_INGRESS} from './ejercicios-ingress.mjs?v=c4e5afde8e57c7fa';
+import {EJERCICIOS_INGRESS} from './ejercicios-ingress.mjs?v=38001560854c6c9c';
 import {EJERCICIOS_SCHEDULING} from './ejercicios-scheduling.mjs?v=56508fb26c7d2b9e';
 import {EJERCICIOS_RED} from './ejercicios-red.mjs?v=cbe7a2f928f48439';
 import {EJERCICIOS_DNS} from './ejercicios-dns.mjs?v=e00ad26fa5ec3558';
-import {EJERCICIOS_GATEWAY} from './ejercicios-gateway.mjs?v=772a46498e9306d6';
+import {EJERCICIOS_GATEWAY} from './ejercicios-gateway.mjs?v=4e99d1e1a1628e7c';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
 import {claseDisponible} from './disponibilidad-curso.mjs?v=f08c6af336f4f759';

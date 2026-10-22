@@ -58,7 +58,7 @@ printf '%s\n' '{"apiVersion":"v1","kind":"Pod","metadata":{"name":"web","namespa
 printf '%s\n' '{"apiVersion":"v1","kind":"Service","metadata":{"namespace":"p15c","name":"web"},"spec":{"selector":{"app":"web"},"ports":[{"port":80,"targetPort":8080}]}}' | kubectl apply -f -
 kubectl -n p15c wait --for=condition=Ready pod/web --timeout=180s
 test ! -e /root/p15c.crt && test ! -e /root/p15c.key
-openssl req -x509 -nodes -days 30 -newkey rsa:2048 -keyout /root/p15c.key -out /root/p15c.crt -subj /CN=seguro.curso.test -addext subjectAltName=DNS:seguro.curso.test
+openssl req -x509 -nodes -days 30 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -keyout /root/p15c.key -out /root/p15c.crt -subj /CN=seguro.curso.test -addext subjectAltName=DNS:seguro.curso.test
 kubectl -n p15c create secret tls web-tls --cert=/root/p15c.crt --key=/root/p15c.key
 printf '%s\n' '{"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"namespace":"p15c","name":"entrada"},"spec":{"ingressClassName":"traefik","rules":[{"host":"seguro.curso.test","http":{"paths":[{"path":"/","pathType":"Prefix","backend":{"service":{"name":"web","port":{"number":80}}}}]}}],"tls":[{"hosts":["seguro.curso.test"],"secretName":"web-tls"}]}}' | kubectl apply -f -
 # Espera unos segundos a que Traefik cargue el certificado.

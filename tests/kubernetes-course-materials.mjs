@@ -19,7 +19,7 @@ assert.match(ordenDescargarMateriales,/--max-time 45/);assert.match(ordenInstala
 const quote=s=>"'"+s.replaceAll("'","'\\''")+"'";
 for(const command of [ordenDescargarMateriales,ordenInstalarMateriales,ordenDescargarArchivo,ordenInstalarArchivo]){assert.ok(('/bin/sh -c '+quote('printf "\\n__KUBE_CHECK_000000000000000000000000_0_START\\n"; if /bin/sh -c '+quote('set -eu; '+command)+'; then rc=0; else rc=$?; fi; printf "\\n__KUBE_CHECK_000000000000000000000000_0=%s\\n" "$rc"')).length<3000);}
 let count=0;for await(const command of comandosMateriales(files)){assert.ok(command.length<3000);count++;}assert.ok(count>400,'Se conserva el transporte UART si no hay Internet');
-const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash',syntax=spawnSync(bash,['--noprofile','--norc','-n'],{input:ordenDescargarMateriales+'\n'+ordenInstalarMateriales,encoding:'utf8'});assert.equal(syntax.status,0,syntax.stderr);
+const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash',syntax=spawnSync(bash,['--noprofile','--norc','-n'],{input:[ordenDescargarMateriales,ordenInstalarMateriales,ordenDescargarArchivo,ordenInstalarArchivo].join('\n'),encoding:'utf8'});assert.equal(syntax.status,0,syntax.stderr);
 console.log('Materiales: descarga inmutable, doble verificación y alternativa UART conservada; no acredita todavía el transporte nativo.');
 const originalFetch=globalThis.fetch;globalThis.fetch=async()=>new Response(packed);
 try{

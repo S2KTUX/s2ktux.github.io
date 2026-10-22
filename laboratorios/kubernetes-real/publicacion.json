@@ -79,12 +79,12 @@
     {
       "path": "debian/ejercicios-niveles.mjs",
       "bytes": 5518,
-      "sha256": "62c4e64547397d1fb1f611e138ed82b6bcbf4c9982da51857449c351cc0c0826"
+      "sha256": "a42933480732b0a7e15a3ffd4b89deda2fc71d87ff597fdb6a53b1c79dcbd0d9"
     },
     {
       "path": "debian/entrada-laboratorio.mjs",
       "bytes": 4420,
-      "sha256": "6eed3a73b1907321797755c291f3bcc2ea86f49c7ca4c7f5bd9062408656d07d"
+      "sha256": "7bb41480717aba13b7b240b9f0427c5f3259075b2c859b5df103e8f0eea936ab"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -119,7 +119,7 @@
     {
       "path": "debian/interfaz-niveles.mjs",
       "bytes": 15538,
-      "sha256": "88213c49c5e7fb7ce25a087d767ff0aae1cfa0bc10a5cf972e424f7b4eac6752"
+      "sha256": "53d7e83021d547399740eb5f512e927065ef1b8b604a720f9e61502cd56752af"
     },
     {
       "path": "debian/kernel-perfil.mjs",
@@ -144,12 +144,12 @@
     {
       "path": "debian/multinodo.html",
       "bytes": 8510,
-      "sha256": "2a0fb44491c88e124ef4546e858dcd45c0e725643253fcac7c65b8ce9d3a89f9"
+      "sha256": "dad0c18258362247b518bc2ef60b16217c43cc88736b1087d7469f795e1f1499"
     },
     {
       "path": "debian/multinodo.mjs",
       "bytes": 23980,
-      "sha256": "d651548b7a9e3b268536d5b8ad856b51a7e250eba0e2896ed65a671ad100ee3e"
+      "sha256": "93ef57b05edefe79c788436af54e66e77cd7b9fd224cf255d9b0fc744df6d798"
     },
     {
       "path": "debian/niveles.css",
@@ -403,8 +403,8 @@
     },
     {
       "path": "debian/ejercicios-ingress.mjs",
-      "bytes": 4955,
-      "sha256": "c4e5afde8e57c7fa0f29e321aabad900d5da1561833a9fbcf9a03047eaa93a5c"
+      "bytes": 4987,
+      "sha256": "38001560854c6c9cc95028c642be7855c655ddd96673b916d25ffbcc2f1bad15"
     },
     {
       "path": "debian/ingress-curso.mjs",
@@ -433,8 +433,8 @@
     },
     {
       "path": "debian/ejercicios-gateway.mjs",
-      "bytes": 6466,
-      "sha256": "772a46498e9306d677d2ebd27fe49aac155fd2c1a29961f7ebd49b5a79bd1d84"
+      "bytes": 6498,
+      "sha256": "4e99d1e1a1628e7c5e17039918e5bd79160cd24b25b370344e50e64d1bcb8c3d"
     },
     {
       "path": "debian/gateway-curso.mjs",
