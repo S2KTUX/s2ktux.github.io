@@ -2,6 +2,7 @@
 set -eu
 echo PRUEBA_CONTROLADORES_REAL
 case "${1:-all}" in all|c15-a|c15-b|c15-c|c16-a|c16-b|c17-a|c17-b|c18-a|c18-b) ;; *) exit 2;; esac
+case "${1:-all}" in all|c15-*) image=$(kubectl -n traefik get deployment traefik -o jsonpath='{.spec.template.spec.containers[0].image}'); case "$image" in s2ktux/traefik-lab:3.5.2|docker.io/s2ktux/traefik-lab:3.5.2) ;; *) exit 1;; esac; kubectl -n traefik rollout status deployment/traefik --timeout=180s ;; esac
 if test "${1:-all}" = all || test "${1:-all}" = c15-a; then
 echo INICIO_c15-a
 kubectl get --raw=/readyz --request-timeout=20s

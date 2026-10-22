@@ -1,4 +1,5 @@
 import {prepararMaterialesCurso} from './materiales-curso.mjs?v=3c2ad606a61a59e5';
+export const ordenComprobarIngress='image=$(kubectl -n traefik get deployment traefik -o jsonpath=\'{.spec.template.spec.containers[0].image}\'); case "$image" in s2ktux/traefik-lab:3.5.2|docker.io/s2ktux/traefik-lab:3.5.2) ;; *) exit 1;; esac; kubectl -n traefik rollout status deployment/traefik --timeout=180s';
 // Solo al preparar una práctica de Ingress. No se instala al arrancar ni se
 // repara un controlador que el alumno haya modificado.
 export async function prepararIngress(run){
@@ -6,7 +7,7 @@ export async function prepararIngress(run){
  await execute('controlplane','Comprobar la API antes de preparar Ingress','kubectl get --raw=/readyz --request-timeout=20s');
  const existing=await run('controlplane','Consultar el controlador existente','test -n "$(kubectl get namespace traefik --ignore-not-found -o name)"',60000);
  if(existing?.ok===true){
-  await execute('controlplane','Comprobar Traefik sin modificarlo','test "$(kubectl -n traefik get deployment traefik -o jsonpath=\'{.spec.template.spec.containers[0].image}\')" = s2ktux/traefik-lab:3.5.2 && kubectl -n traefik rollout status deployment/traefik --timeout=180s');return;
+  await execute('controlplane','Comprobar Traefik sin modificarlo',ordenComprobarIngress);return;
  }
  if(existing?.ok!==false)throw Error('No se pudo consultar Traefik');
  const materials=await run('controlplane','Consultar los materiales locales','test -d /opt/curso',60000);

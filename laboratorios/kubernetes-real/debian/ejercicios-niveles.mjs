@@ -2,7 +2,7 @@ import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs?v=20261020-aprend
 import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261020-aprendizaje';
 import {EJERCICIOS_ACCESO} from './ejercicios-acceso.mjs?v=d5f8b79c9654a632';
 import {EJERCICIOS_ALMACENAMIENTO} from './ejercicios-almacenamiento.mjs?v=9e73779cb79a1c9e';
-import {EJERCICIOS_CONTROLADORES} from './ejercicios-controladores.mjs?v=41f75ef3e550165b';
+import {EJERCICIOS_CONTROLADORES} from './ejercicios-controladores.mjs?v=7516c665c03377ac';
 import {EJERCICIOS_INGRESS} from './ejercicios-ingress.mjs?v=ac2cac334c055d10';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';

@@ -84,7 +84,7 @@
     {
       "path": "debian/entrada-laboratorio.mjs",
       "bytes": 4420,
-      "sha256": "d85cb02370a9e4ed82f44ccd400cd31b154003950d88968f1491d008e9411445"
+      "sha256": "2a52530ff548dee4d21279a45931c23cd8d39b26a94f909f4ceccf74308283f0"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -119,7 +119,7 @@
     {
       "path": "debian/interfaz-niveles.mjs",
       "bytes": 15538,
-      "sha256": "0aff2646d7ac536944a2c8bb2b6d0d5cb970ce3c7aa74ce1374f65f8a93a70a5"
+      "sha256": "fbcb548592010198f5883c66cf2fbfcdc35b707469d405985a41645cd9064e84"
     },
     {
       "path": "debian/kernel-perfil.mjs",
@@ -144,12 +144,12 @@
     {
       "path": "debian/multinodo.html",
       "bytes": 8510,
-      "sha256": "0b926efd959da9cdae115989c7cc0539925bdb996f0e662b47e9d72ab3805707"
+      "sha256": "4e795fb4c6c78d6ace0c795b8032a37f91d0dcd02c2a13e6c3b653c98cd62809"
     },
     {
       "path": "debian/multinodo.mjs",
       "bytes": 24085,
-      "sha256": "3c03873189359da1b820f880942438684d339b5a0844d79957e1cb7e1a09892f"
+      "sha256": "75452c774abfa2c6b17794dfa1d65bdfb90be82079f9c78b4c3007e4dd605943"
     },
     {
       "path": "debian/niveles.css",
@@ -288,8 +288,8 @@
     },
     {
       "path": "FUENTES_Y_LICENCIAS.md",
-      "bytes": 1798,
-      "sha256": "3e8aa4d50c34f321719beb261d9186b15126312ba92a2f2084f8c98b5f80cf27"
+      "bytes": 2225,
+      "sha256": "17fd607ded49af75ce7b959fdde7967113354d029ee26126f412465effaea4a9"
     },
     {
       "path": "debian/clases-curso.mjs",
@@ -309,7 +309,7 @@
     {
       "path": "debian/motor-practicas.mjs",
       "bytes": 2173,
-      "sha256": "77ee0919e0ab23c89c8b403ada934e0854c1cdb9ad134904b7db0617a135ba21"
+      "sha256": "bb2a8b2f94fa24acc45ec6aa47dd1b1fc9274100ee06743519bdae694555f664"
     },
     {
       "path": "debian/salud-inicial.mjs",
@@ -364,7 +364,7 @@
     {
       "path": "debian/bases-publicadas.mjs",
       "bytes": 551,
-      "sha256": "801e4965d9f0a8d1afbe425dd0d2cfd51c254672575761dfbf1514bb26ac908a"
+      "sha256": "52b38ad4ec3baa3797a07797092951df00fc40fc7bbfdf1ffa41cdb5b9145f7e"
     },
     {
       "path": "debian/fabrica-cluster.mjs",
@@ -408,8 +408,8 @@
     },
     {
       "path": "debian/ingress-curso.mjs",
-      "bytes": 2668,
-      "sha256": "e55094b69c8123a2a6cab7519f60d4d5a83d2d5d28171b902909d271915b0b35"
+      "bytes": 2795,
+      "sha256": "43674ff2cdeb5bc1c2b35cecf5e19aeb3a4d551dcf7a753badde75d20d6bd94d"
     }
   ]
 }
