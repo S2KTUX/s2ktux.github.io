@@ -6,7 +6,7 @@ import {EJERCICIOS_INGRESS} from '../laboratorios/kubernetes-real/debian/ejercic
 import {ordenComprobarIngress} from '../laboratorios/kubernetes-real/debian/ingress-curso.mjs';
 const tasks=[...EJERCICIOS_INGRESS,...EJERCICIOS_CONTROLADORES],fixture=readFileSync(new URL('../fixtures/kubernetes-controladores-nativo.sh',import.meta.url),'utf8');
 const q=s=>"'"+s.replaceAll("'","'\\''")+"'";
-assert.deepEqual(tasks.map(t=>t.id),['c15-a','c15-b','c15-c','c16-a','c16-b','c17-a','c17-b','c18-a','c18-b']);
+assert.deepEqual(tasks.map(t=>t.id),['c15-a','c15-b','c15-c','c15-d','c16-a','c16-b','c17-a','c17-b','c18-a','c18-b']);
 for(const task of tasks){
  assert.ok(task.prepare.length&&task.negative&&task.cleanup);assert.ok(fixture.includes(task.check));for(const line of(task.nativeSolution||task.solution).split('\n'))assert.ok(fixture.includes(line));
  assert.doesNotMatch(task.solutionDisplay,/printf|runuser/);
@@ -21,4 +21,4 @@ for(const [image,accepted]of [['s2ktux/traefik-lab:3.5.2',true],['docker.io/s2kt
  const stub='kubectl(){ case "$*" in *"get deployment"*) echo "$S2KTUX_QA_IMAGE";; *"rollout status"*) return 0;; *) return 99;; esac; }; set -eu; '+ordenComprobarIngress;
  const checked=spawnSync(bash,['--noprofile','--norc','-c',stub],{env:{...process.env,S2KTUX_QA_IMAGE:image},encoding:'utf8'});assert.equal(checked.status===0,accepted,image+' '+checked.stderr);
 }
-console.log('Nueve prácticas de controladores coherentes con AFFiNE y suite nativa con casos incompletos. La sintaxis no sustituye su ejecución real.');
+console.log('Diez prácticas de controladores coherentes con AFFiNE y suite nativa con casos incompletos. La sintaxis no sustituye su ejecución real.');

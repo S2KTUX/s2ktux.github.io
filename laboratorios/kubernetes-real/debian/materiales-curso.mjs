@@ -1,5 +1,10 @@
 export const materialesHash='880c795f3cbddbc6c4bd8539a5eeb7b8a435fc998a7dbd196d1179bcc8badb26';
 export const materialesURL='https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/239a46e5f457236bb18b52993e654879e14bda39/laboratorios/kubernetes-real/recursos/curso-debian-v1/materiales.json.gz';
+export const archivoHash='730b85928e80f6438a50dbfc2b9a3b9b7a5c518111256d52cb2267e4904f1b66';
+export const archivoURL='https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/d5a0d57c94fef96e0c385985d7b08714be85a015/laboratorios/kubernetes-real/recursos/curso-debian-v1/materiales.tar.gz';
+const archive='/tmp/s2ktux-materiales-'+archivoHash.slice(0,16)+'.tar.gz';
+export const ordenDescargarArchivo='if test -e '+archive+'; then test -f '+archive+'; else curl --fail --location --connect-timeout 10 --max-time 45 '+archivoURL+' -o '+archive+'; fi && test "$(sha256sum '+archive+' | cut -d " " -f 1)" = '+archivoHash;
+export const ordenInstalarArchivo='test ! -e /opt/curso && test ! -e /opt/.s2ktux-curso-preparando; test "$(sha256sum '+archive+' | cut -d " " -f 1)" = '+archivoHash+'; mkdir /opt/.s2ktux-curso-preparando; tar -xzf '+archive+' --no-same-owner --no-same-permissions -C /opt/.s2ktux-curso-preparando; (cd /opt/.s2ktux-curso-preparando && sha256sum -c SHA256SUMS); test ! -e /opt/curso && mv -T -n /opt/.s2ktux-curso-preparando /opt/curso && test ! -e /opt/.s2ktux-curso-preparando';
 const cached='/tmp/s2ktux-materiales-'+materialesHash.slice(0,16)+'.json.gz';
 export const ordenDescargarMateriales='if test -e '+cached+'; then test -f '+cached+'; else curl --fail --location --connect-timeout 10 --max-time 45 '+materialesURL+' -o '+cached+'; fi && test "$(sha256sum '+cached+' | cut -d " " -f 1)" = '+materialesHash;
 export const ordenInstalarMateriales='set -eu; test ! -e /opt/curso && test ! -e /opt/.s2ktux-curso-preparando; test "$(sha256sum '+cached+' | cut -d " " -f 1)" = '+materialesHash+'; gzip -dc '+cached+' | jq -r \'.files[] | [.path,.sha256,.base64] | @tsv\' > /tmp/s2ktux-materiales.tsv; mkdir /opt/.s2ktux-curso-preparando; while IFS="$(printf "\\t")" read -r name checksum content; do printf "%s" "$content" | base64 -d > /tmp/s2ktux-material; test "$(sha256sum /tmp/s2ktux-material | cut -d " " -f 1)" = "$checksum"; install -D -m 644 /tmp/s2ktux-material "/opt/.s2ktux-curso-preparando/$name"; done < /tmp/s2ktux-materiales.tsv; (cd /opt/.s2ktux-curso-preparando && sha256sum -c SHA256SUMS); test ! -e /opt/curso && mv -T -n /opt/.s2ktux-curso-preparando /opt/curso && test ! -e /opt/.s2ktux-curso-preparando';
@@ -31,6 +36,14 @@ export async function prepararMaterialesCurso(run){
  const packed=await response.arrayBuffer();if(packed.byteLength>1048576||await digest(packed)!==materialesHash)throw Error('Paquete de curso alterado');
  const raw=await new Response(new Blob([packed]).stream().pipeThrough(new DecompressionStream('gzip'))).text();if(raw.length>8*1048576)throw Error('Paquete demasiado grande');
  const files=await validarMateriales(JSON.parse(raw));
+ // Un solo tar evita ejecutar base64/install/sha256sum una vez por archivo
+ // en la CPU emulada. Los bytes finales y su SHA256SUMS siguen siendo iguales.
+ const archived=await run('controlplane','Descargar el archivo de materiales verificado',ordenDescargarArchivo,90000);
+ if(archived?.ok===true){
+  const installed=await run('controlplane','Extraer y verificar los materiales','set -eu; '+ordenInstalarArchivo,120000);
+  if(installed?.ok!==true)throw Error('No se han podido extraer los materiales; se conserva la preparación parcial');return;
+ }
+ if(archived?.ok!==false)throw Error('No se pudo comprobar el archivo de materiales');
  // La máquina puede descargar el mismo paquete inmutable y verificado. Evita
  // cientos de envíos UART; sin Internet se conserva el transporte del navegador.
  const direct=await run('controlplane','Descargar los materiales desde Linux',ordenDescargarMateriales,90000);

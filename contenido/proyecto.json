@@ -1,5 +1,5 @@
 {
-  "version": "2.7",
+  "version": "2.8",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -9,12 +9,12 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Completar y comprobar las clases 23–34 en el laboratorio real antes de abrirlas. Las clases 01–22 tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
+      "texto": "Completar y comprobar las clases 24–34 en el laboratorio real antes de abrirlas. Las clases 01–23 tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
     },
     {
       "id": "kubernetes-examen",
       "tema": "Kubernetes",
-      "texto": "Terminar el simulacro CKA real: dos horas, corrección por resultados y nota por dominio. Incluir el alias k, la variable $do y tareas de Helm y Gateway API; todavía no se consideran cubiertos."
+      "texto": "Terminar el simulacro CKA real: dos horas, corrección por resultados y nota por dominio. Incluir el alias k, la variable $do y tareas de Helm y Gateway API; esas tareas todavía no están disponibles en el simulacro."
     },
     {
       "id": "kubernetes-tres-practicas",
@@ -44,7 +44,7 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado, y la preparación de complementos. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
+      "texto": "Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado, y la preparación de complementos. Comprobar también las sesiones tras largos periodos en segundo plano. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
     },
     {
       "id": "imagen-ligera",
@@ -68,6 +68,18 @@
     }
   ],
   "versiones": [
+    {
+      "version": "2.8",
+      "fecha": "2026-10-22",
+      "resumen": "Ya puedes practicar Gateway API y preparar los ejercicios de redes con menos esperas.",
+      "cambios": [
+        "Abrimos la clase 23 con tres prácticas: una entrada HTTP sencilla, pasar de Ingress a Gateway y publicar con HTTPS. Los correctores comprueban las condiciones de los recursos y que las peticiones lleguen de verdad a la aplicación.",
+        "La clase 15 incluye también su práctica de quitar un prefijo con Traefik. Las extensiones de rewrite y Gateway se preparan cuando hacen falta; un Ingress normal ya no instala todos sus CRDs.",
+        "Los materiales llegan en un solo archivo verificado, con el mismo contenido y sus comprobaciones de integridad. Evitamos reconstruirlos archivo por archivo dentro de la máquina emulada.",
+        "Los certificados que prepara el laboratorio para HTTPS usan ECDSA, que evita la espera de generar una clave RSA en el navegador. Se mantiene la comprobación del certificado en las soluciones y los correctores.",
+        "La entrada rápida conserva la misma base limpia de dos nodos. Cambiar prácticas o sus complementos bajo demanda no obliga a prepararla otra vez ni sustituye los guardados del alumno. El nivel avanzado y el simulacro siguen pendientes."
+      ]
+    },
     {
       "version": "2.7",
       "fecha": "2026-10-22",

@@ -3,7 +3,7 @@ import {EJERCICIOS_CONTROLADORES} from '../laboratorios/kubernetes-real/debian/e
 import {EJERCICIOS_INGRESS} from '../laboratorios/kubernetes-real/debian/ejercicios-ingress.mjs';
 import {ordenComprobarIngress} from '../laboratorios/kubernetes-real/debian/ingress-curso.mjs';
 const tasks=[...EJERCICIOS_INGRESS,...EJERCICIOS_CONTROLADORES];
-const lines=['#!/bin/sh','set -eu','echo PRUEBA_CONTROLADORES_REAL','case "${1:-all}" in all|c15-a|c15-b|c15-c|c16-a|c16-b|c17-a|c17-b|c18-a|c18-b) ;; *) exit 2;; esac'];
+const lines=['#!/bin/sh','set -eu','echo PRUEBA_CONTROLADORES_REAL','case "${1:-all}" in all|c15-a|c15-b|c15-c|c15-d|c16-a|c16-b|c17-a|c17-b|c18-a|c18-b) ;; *) exit 2;; esac'];
 lines.push('case "${1:-all}" in all|c15-*) '+ordenComprobarIngress+' ;; esac');
 for(const task of tasks){
  const solution=(task.nativeSolution||task.solution).split('\n');

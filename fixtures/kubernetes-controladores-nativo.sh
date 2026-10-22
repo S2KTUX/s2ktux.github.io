@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 echo PRUEBA_CONTROLADORES_REAL
-case "${1:-all}" in all|c15-a|c15-b|c15-c|c16-a|c16-b|c17-a|c17-b|c18-a|c18-b) ;; *) exit 2;; esac
+case "${1:-all}" in all|c15-a|c15-b|c15-c|c15-d|c16-a|c16-b|c17-a|c17-b|c18-a|c18-b) ;; *) exit 2;; esac
 case "${1:-all}" in all|c15-*) image=$(kubectl -n traefik get deployment traefik -o jsonpath='{.spec.template.spec.containers[0].image}'); case "$image" in s2ktux/traefik-lab:3.5.2|docker.io/s2ktux/traefik-lab:3.5.2) ;; *) exit 1;; esac; kubectl -n traefik rollout status deployment/traefik --timeout=180s ;; esac
 if test "${1:-all}" = all || test "${1:-all}" = c15-a; then
 echo INICIO_c15-a
@@ -58,7 +58,7 @@ printf '%s\n' '{"apiVersion":"v1","kind":"Pod","metadata":{"name":"web","namespa
 printf '%s\n' '{"apiVersion":"v1","kind":"Service","metadata":{"namespace":"p15c","name":"web"},"spec":{"selector":{"app":"web"},"ports":[{"port":80,"targetPort":8080}]}}' | kubectl apply -f -
 kubectl -n p15c wait --for=condition=Ready pod/web --timeout=180s
 test ! -e /root/p15c.crt && test ! -e /root/p15c.key
-openssl req -x509 -nodes -days 30 -newkey rsa:2048 -keyout /root/p15c.key -out /root/p15c.crt -subj /CN=seguro.curso.test -addext subjectAltName=DNS:seguro.curso.test
+openssl req -x509 -nodes -days 30 -newkey ec -pkeyopt ec_paramgen_curve:prime256v1 -keyout /root/p15c.key -out /root/p15c.crt -subj /CN=seguro.curso.test -addext subjectAltName=DNS:seguro.curso.test
 kubectl -n p15c create secret tls web-tls --cert=/root/p15c.crt --key=/root/p15c.key
 printf '%s\n' '{"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"namespace":"p15c","name":"entrada"},"spec":{"ingressClassName":"traefik","rules":[{"host":"seguro.curso.test","http":{"paths":[{"path":"/","pathType":"Prefix","backend":{"service":{"name":"web","port":{"number":80}}}}]}}],"tls":[{"hosts":["seguro.curso.test"],"secretName":"web-tls"}]}}' | kubectl apply -f -
 # Espera unos segundos a que Traefik cargue el certificado.
@@ -72,6 +72,29 @@ if (set -eu; object=$(kubectl -n p15c get ingress entrada -o json) && test -n "$
 echo NEGATIVO_c15-c
 kubectl delete namespace p15c --ignore-not-found --wait=true --timeout=120s
 rm -f /root/p15c.crt /root/p15c.key
+fi
+if test "${1:-all}" = all || test "${1:-all}" = c15-d; then
+echo INICIO_c15-d
+kubectl get --raw=/readyz --request-timeout=20s
+kubectl wait --for=condition=Ready node/cka-w1 --timeout=120s
+test -z "$(kubectl get namespace p15d --ignore-not-found -o name)"
+kubectl create namespace p15d
+kubectl -n p15d wait --for=create serviceaccount/default --timeout=90s
+printf '%s\n' '{"apiVersion":"v1","kind":"Pod","metadata":{"name":"web","namespace":"p15d","labels":{"app":"web"}},"spec":{"terminationGracePeriodSeconds":1,"containers":[{"name":"app","image":"busybox:1.37.0-musl","imagePullPolicy":"Never","command":["sh","-c","mkdir -p /www; printf '\''%s\\n'\'' '\''REWRITE_OK'\'' >/www/index.html; exec httpd -f -p 8080 -h /www"]}]}}' | kubectl apply -f -
+printf '%s\n' '{"apiVersion":"v1","kind":"Service","metadata":{"namespace":"p15d","name":"web"},"spec":{"selector":{"app":"web"},"ports":[{"port":80,"targetPort":8080}]}}' | kubectl apply -f -
+kubectl -n p15d wait --for=condition=Ready pod/web --timeout=180s
+printf '%s\n' '{"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"namespace":"p15d","name":"entrada","annotations":{"traefik.ingress.kubernetes.io/router.entrypoints":"web"}},"spec":{"ingressClassName":"traefik","rules":[{"host":"rewrite.curso.test","http":{"paths":[{"path":"/rewrite","pathType":"Prefix","backend":{"service":{"name":"web","port":{"number":80}}}}]}}]}}' | kubectl apply -f -
+printf '%s\n' '{"apiVersion":"traefik.io/v1alpha1","kind":"Middleware","metadata":{"name":"quitar-prefijo","namespace":"p15d"},"spec":{"stripPrefix":{"prefixes":["/rewrite"]}}}' | kubectl apply -f -
+kubectl -n p15d annotate ingress entrada traefik.ingress.kubernetes.io/router.middlewares=p15d-quitar-prefijo@kubernetescrd --overwrite
+deadline=$(($(date +%s)+90)); until (kubectl -n p15d get middleware quitar-prefijo -o json | jq -e '(.spec.stripPrefix.prefixes|index("/rewrite"))!=null' && kubectl -n p15d get ingress entrada -o json | jq -e '.metadata.annotations["traefik.ingress.kubernetes.io/router.middlewares"]=="p15d-quitar-prefijo@kubernetescrd"' && test "$(curl --fail --silent --show-error --max-time 15 -H 'Host: rewrite.curso.test' http://10.77.0.11:30080/rewrite/)" = REWRITE_OK); do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 2; done
+curl -H 'Host: rewrite.curso.test' http://10.77.0.11:30080/rewrite/
+object=$(kubectl -n p15d get middleware quitar-prefijo -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '(.spec.stripPrefix.prefixes|index("/rewrite"))!=null' && object=$(kubectl -n p15d get ingress entrada -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '.metadata.annotations["traefik.ingress.kubernetes.io/router.middlewares"]=="p15d-quitar-prefijo@kubernetescrd"' && test "$(curl --fail --silent --show-error --max-time 15 -H 'Host: rewrite.curso.test' http://10.77.0.11:30080/rewrite/)" = REWRITE_OK
+echo POSITIVO_c15-d
+kubectl -n p15d delete middleware quitar-prefijo
+kubectl get --raw=/readyz --request-timeout=20s
+if (set -eu; object=$(kubectl -n p15d get middleware quitar-prefijo -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '(.spec.stripPrefix.prefixes|index("/rewrite"))!=null' && object=$(kubectl -n p15d get ingress entrada -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '.metadata.annotations["traefik.ingress.kubernetes.io/router.middlewares"]=="p15d-quitar-prefijo@kubernetescrd"' && test "$(curl --fail --silent --show-error --max-time 15 -H 'Host: rewrite.curso.test' http://10.77.0.11:30080/rewrite/)" = REWRITE_OK); then echo ERROR_ACEPTO_INCOMPLETO; exit 1; fi
+echo NEGATIVO_c15-d
+kubectl delete namespace p15d --ignore-not-found --wait=true --timeout=120s
 fi
 if test "${1:-all}" = all || test "${1:-all}" = c16-a; then
 echo INICIO_c16-a

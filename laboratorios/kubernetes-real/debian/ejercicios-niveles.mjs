@@ -3,13 +3,14 @@ import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261020-ap
 import {EJERCICIOS_ACCESO} from './ejercicios-acceso.mjs?v=d5f8b79c9654a632';
 import {EJERCICIOS_ALMACENAMIENTO} from './ejercicios-almacenamiento.mjs?v=9e73779cb79a1c9e';
 import {EJERCICIOS_CONTROLADORES} from './ejercicios-controladores.mjs?v=7516c665c03377ac';
-import {EJERCICIOS_INGRESS} from './ejercicios-ingress.mjs?v=c4e5afde8e57c7fa';
+import {EJERCICIOS_INGRESS} from './ejercicios-ingress.mjs?v=e3807e98acd2ccd5';
 import {EJERCICIOS_SCHEDULING} from './ejercicios-scheduling.mjs?v=56508fb26c7d2b9e';
 import {EJERCICIOS_RED} from './ejercicios-red.mjs?v=cbe7a2f928f48439';
 import {EJERCICIOS_DNS} from './ejercicios-dns.mjs?v=e00ad26fa5ec3558';
+import {EJERCICIOS_GATEWAY} from './ejercicios-gateway.mjs?v=9afe5326ae19449e';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
-import {claseDisponible} from './disponibilidad-curso.mjs?v=f08c6af336f4f759';
+import {claseDisponible} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
 import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
 import {EJERCICIOS_PROGRESIVOS,CKA_EXAM_PRACTICE} from './ejercicios-progresivos.mjs';
 const image='busybox:1.37.0-musl';
@@ -24,7 +25,8 @@ export const EJERCICIOS=Object.freeze({
   ...EJERCICIOS_INGRESS,
   ...EJERCICIOS_SCHEDULING,
   ...EJERCICIOS_RED,
-  ...EJERCICIOS_DNS
+  ...EJERCICIOS_DNS,
+  ...EJERCICIOS_GATEWAY
  ],
  avanzado:[
   {id:'servicio-roto',title:'Una aplicación que no responde',prompt:'Prepara este ejercicio. En el namespace diagnostico-red, la aplicación servidor escucha en el puerto 8080, pero su Service no permite acceder a ella. Corrige el Service sin modificar ni borrar el Pod. Al consultar http://servidor.diagnostico-red.svc.cluster.local/ debe devolver WEB_LISTA.',prepare:[`if kubectl get namespace diagnostico-red >/dev/null 2>&1; then echo 'El namespace ya existe; no se sobrescriben sus recursos.'; exit 1; fi; kubectl create namespace diagnostico-red; kubectl -n diagnostico-red wait --for=create serviceaccount/default --timeout=90s`,`kubectl -n diagnostico-red run servidor --image=${image} --image-pull-policy=Never --labels=app=servidor --command -- ${http}`,`kubectl -n diagnostico-red expose pod servidor --port=80 --target-port=8081`],solution:`kubectl -n diagnostico-red get service servidor -o yaml\nkubectl -n diagnostico-red describe pod servidor\nkubectl -n diagnostico-red patch service servidor --type=merge -p '{"spec":{"ports":[{"port":80,"targetPort":8080}]}}'\nkubectl -n diagnostico-red exec servidor -- wget -qO- http://servidor.diagnostico-red.svc.cluster.local/`,check:`test "$(kubectl -n diagnostico-red exec servidor -- wget -T 5 -qO- http://servidor.diagnostico-red.svc.cluster.local/)" = WEB_LISTA && kubectl -n diagnostico-red get service servidor -o json | jq -e 'any(.spec.ports[]; .port==80 and .targetPort==8080)'`},
