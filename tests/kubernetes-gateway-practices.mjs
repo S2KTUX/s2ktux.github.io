@@ -14,6 +14,8 @@ for(const t of EJERCICIOS_GATEWAY){
 }
 assert.match(EJERCICIOS_GATEWAY[2].check,/--cacert/);assert.doesNotMatch(fixture,/--insecure|curl -k/);
 assert.match(fixture,/EQUIVALENCIA_PARENTREF_EXPLICITA_OK/);
+assert.match(fixture,/SERVICE_DISTINTO_RECHAZADO_OK/);
+for(const t of EJERCICIOS_GATEWAY)assert.match(t.check,/\.backendRefs/);
 assert.equal(spawnSync(bash,['--noprofile','--norc','-n'],{input:fixture,encoding:'utf8'}).status,0);
 const ingress=readFileSync(new URL('../laboratorios/kubernetes-real/debian/ingress-curso.mjs',import.meta.url),'utf8');
 assert.match(ingress,/providers.kubernetesCRD.enabled=false/);assert.doesNotMatch(ingress,/kubectl create.*crds\//);

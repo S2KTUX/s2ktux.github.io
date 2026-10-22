@@ -7,7 +7,7 @@ import {EJERCICIOS_INGRESS} from './ejercicios-ingress.mjs?v=e3807e98acd2ccd5';
 import {EJERCICIOS_SCHEDULING} from './ejercicios-scheduling.mjs?v=56508fb26c7d2b9e';
 import {EJERCICIOS_RED} from './ejercicios-red.mjs?v=cbe7a2f928f48439';
 import {EJERCICIOS_DNS} from './ejercicios-dns.mjs?v=e00ad26fa5ec3558';
-import {EJERCICIOS_GATEWAY} from './ejercicios-gateway.mjs?v=4e99d1e1a1628e7c';
+import {EJERCICIOS_GATEWAY} from './ejercicios-gateway.mjs?v=76f54f9ce7312da6';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
 import {claseDisponible} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
