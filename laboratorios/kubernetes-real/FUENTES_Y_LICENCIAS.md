@@ -21,6 +21,7 @@ Fuentes y materiales de construcción:
 - Motor v86: https://github.com/copy/v86 (fuentes y ajustes incluidos en la rama de recursos).
 - Aprovisionador local Rancher v0.0.34 (Apache-2.0): https://github.com/rancher/local-path-provisioner/tree/v0.0.34. Se conserva su manifiesto original en `recursos/almacenamiento-v1/`; la adaptación fija la imagen linux/386, el worker del controlador, sus recursos y las tolerancias del laboratorio. No es un driver CSI.
 - Traefik v3.5.2 (MIT): https://github.com/traefik/traefik/tree/v3.5.2. El chart 37.1.1 procede de https://github.com/traefik/traefik-helm-chart/tree/v37.1.1. Los materiales conservan el paquete original y la variante lab1, con las mismas plantillas y valores y los CRDs gestionados aparte. La imagen `s2ktux/traefik-lab:3.5.2` es una compilación propia para linux/386, no una imagen oficial de Traefik para esa arquitectura.
+- NetworkPolicies (Apache-2.0): implementación de referencia https://github.com/kubernetes-sigs/kube-network-policies/tree/v1.1.2, revisión a145b01caf668ce509766b0a48ff4e153a5e50f8. El kit conserva una compilación propia linux/386. Aplica filtrado real mediante NRI y netfilter junto al CNI bridge del navegador; no es una instalación de Calico ni una simulación de las conexiones.
 
 La rama de recursos incluye los scripts, overlays y configuración empleados
 para construir los componentes propios. Los informes internos de pruebas y

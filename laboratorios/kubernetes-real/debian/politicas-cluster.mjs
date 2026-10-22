@@ -1,4 +1,4 @@
-import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
+import {hashBytes} from '../../docker-real/v86-sessions.mjs';
 import {comandosArchivoGzipWeb} from './archivos-gzip-web.mjs';
 const manifestHash='878c04da0d1080c0156dcb3e5c59e69a60c434e623ccd4e3b6e4eb8f7b5a4c50';
 export async function prepararRedPoliticasDebian(id,run){
