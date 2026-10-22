@@ -14,4 +14,8 @@ await assert.rejects(()=>prepararCRDsCurso(async()=>({ok:true}),['middlewares.tr
 assert.throws(()=>ordenConsultarCRDs(['bad; rm'],'length==0'));
 assert.match(ordenConsultarCRDs(['middlewares.traefik.io'],'length==0'),/printf '%s\\n' "\$crds"/,'No usar echo: dash interpreta los escapes de las descripciones OpenAPI y rompe el JSON');
 const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';assert.equal(spawnSync(bash,['--noprofile','--norc','-n'],{input:fixture,encoding:'utf8'}).status,0);
+const source={items:[{metadata:{name:'middlewares.traefik.io'},description:'Primera línea\nOtra línea y una barra \\ literal'}]},encoded=JSON.stringify(source);
+const transfer=ordenConsultarCRDs(['middlewares.traefik.io'],'length==0').split(' | jq -e ')[0];
+const roundtrip=spawnSync(bash,['--noprofile','--norc','-c',`kubectl(){ printf '%s\\n' "$S2KTUX_QA_CRDS"; }; echo(){ printf '%b\\n' "$1"; }; ${transfer}`],{encoding:'utf8',env:{...process.env,S2KTUX_QA_CRDS:encoded}});
+assert.equal(roundtrip.status,0,roundtrip.stderr);assert.deepEqual(JSON.parse(roundtrip.stdout),source,'Conservar escapes como hace printf, aunque echo se comporte como en dash');
 console.log('Rewrite conserva el mini-laboratorio de AFFiNE bajo demanda, sin reinstalar proveedores existentes ni desactivar Gateway.');
