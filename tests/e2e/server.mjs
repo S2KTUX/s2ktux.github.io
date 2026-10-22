@@ -3,6 +3,8 @@ import { readFile, stat } from 'node:fs/promises';
 import { extname, join, normalize } from 'node:path';
 
 const root = normalize(join(process.cwd(), process.argv[2] || '.'));
+const port=Number(process.env.S2KTUX_QA_PORT||4173);
+if(!Number.isInteger(port)||port<1024||port>65535)throw Error('Puerto de pruebas inválido');
 const types = { '.html':'text/html; charset=utf-8', '.js':'text/javascript; charset=utf-8', '.mjs':'text/javascript; charset=utf-8', '.css':'text/css; charset=utf-8', '.json':'application/json', '.png':'image/png', '.svg':'image/svg+xml', '.woff2':'font/woff2', '.webmanifest':'application/manifest+json' };
 http.createServer(async (req,res)=>{
   try{
@@ -19,4 +21,4 @@ http.createServer(async (req,res)=>{
     res.writeHead(200,headers);
     res.end(body);
   }catch(error){res.writeHead(404);res.end('Not found');}
-}).listen(4173,'127.0.0.1',()=>console.log('S2KTUX test server on 4173'));
+}).listen(port,'127.0.0.1',()=>console.log('S2KTUX test server on '+port));

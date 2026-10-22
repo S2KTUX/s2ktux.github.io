@@ -1,5 +1,5 @@
-import {KubeSessions} from '../kube-sessions.mjs';
-import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
+import {KubeSessions} from '../kube-sessions.mjs?v=8c170f9003793741';
+import {hashBytes,hashBlob} from '/laboratorios/docker-real/v86-sessions.mjs?v=3852a1206e14ad3b';
 import {PERFIL_DEBIAN,perfilFabricaDebian} from './fabrica.mjs';
 import {comprobarNivel} from './niveles.mjs';
 const ids=['controlplane','worker1','worker2'],digest=/^[a-f0-9]{64}$/;
@@ -28,7 +28,7 @@ export class SesionesClusterDebian extends KubeSessions{
   const options={workerComponents:this.workerComponents,factoryVersion:this.factoryVersion},profile=perfilNodoDebian(id,options),identity=await identidadNodoDebian(id,options);
   if(!state?.byteLength||state.byteLength>1536*1048576)throw Error('Estado de nodo inválido');
   const packed=await new Response(new Blob([state]).stream().pipeThrough(new CompressionStream('gzip'))).blob();
-  return {id,profile,identity,format:'s2ktux-v86-session-v1',bytes:state.byteLength,packedBytes:packed.size,sha256:await hashBytes(await packed.arrayBuffer()),packed,terminalText:terminalText.slice(-100000)};
+  return {id,profile,identity,format:'s2ktux-v86-session-v1',bytes:state.byteLength,packedBytes:packed.size,sha256:await hashBlob(packed),packed,terminalText:terminalText.slice(-100000)};
  }
  async validate(nodes){
   if(!Array.isArray(nodes)||nodes.length<(this.progressive?1:2)||nodes.length>3||nodes.some((node,index)=>node?.id!==ids[index]))throw Error('El clúster debe contener CP y sus workers en orden');
@@ -36,7 +36,7 @@ export class SesionesClusterDebian extends KubeSessions{
    const options={workerComponents:this.workerComponents,factoryVersion:this.factoryVersion};
    if(JSON.stringify(node.profile)!==JSON.stringify(perfilNodoDebian(node.id,options))||node.identity!==await identidadNodoDebian(node.id,options))throw Error('Perfil de nodo Debian incorrecto');
    if(node.format!=='s2ktux-v86-session-v1'||!digest.test(node.sha256)||!Number.isSafeInteger(node.bytes)||node.bytes<1||node.bytes>1536*1048576||!Number.isSafeInteger(node.packedBytes)||node.packedBytes<1||node.packedBytes>1537*1048576||!(node.packed instanceof Blob)||node.packed.size!==node.packedBytes||typeof node.terminalText!=='string'||node.terminalText.length>100000)throw Error('Nodo guardado incompleto');
-   if(await hashBytes(await node.packed.arrayBuffer())!==node.sha256)throw Error('Nodo guardado alterado');
+   if(await hashBlob(node.packed)!==node.sha256)throw Error('Nodo guardado alterado');
   }
   return hashBytes(new TextEncoder().encode(JSON.stringify(nodes.map(({id,profile,identity,bytes,packedBytes,sha256})=>({id,profile,identity,bytes,packedBytes,sha256})))));
  }
@@ -53,6 +53,9 @@ export class SesionesClusterDebian extends KubeSessions{
  getRawCluster(){return this.get(this.key);}
  async getCluster(){
   const record=await this.getRawCluster();if(!record)return;
+  return this.validateCluster(record);
+ }
+ async validateCluster(record){
   if(record.key!==this.key||record.format!==this.format||record.sha256!==await this.validate(record.nodes))throw Error('Clúster Debian incompleto o de otra versión; no se ha borrado');
   return record;
  }

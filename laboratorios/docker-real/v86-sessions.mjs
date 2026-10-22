@@ -2,6 +2,19 @@
 const DATABASE='s2ktux-v86-sessions-v1';
 const STORE='sessions';
 export const hashBytes=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+// Blob es inmutable. Reutilizar su suma evita leer de nuevo el mismo archivo
+// durante una operación, sin confiar en metadatos ni en sumas de otra sesión.
+// WeakMap no retiene discos en memoria cuando dejan de utilizarse.
+const blobHashes=new WeakMap();
+export function hashBlob(blob){
+  if(!(blob instanceof Blob))throw TypeError('Se requiere un archivo Blob');
+  let pending=blobHashes.get(blob);
+  if(!pending){
+    pending=(async()=>hashBytes(await blob.arrayBuffer()))();blobHashes.set(blob,pending);
+    pending.catch(()=>{if(blobHashes.get(blob)===pending)blobHashes.delete(blob);});
+  }
+  return pending;
+}
 export class LocalSessions {
   async open(){
     return await new Promise((resolve,reject)=>{
@@ -28,7 +41,7 @@ export class LocalSessions {
     signal?.throwIfAborted();
     const packed=await new Response(new Blob([state]).stream().pipeThrough(new CompressionStream('gzip'))).blob();
     const record={key,format:'s2ktux-v86-session-v1',identity,savedAt:new Date().toISOString(),
-      bytes:state.byteLength,packedBytes:packed.size,sha256:await hashBytes(await packed.arrayBuffer()),packed,terminalText:terminalText.slice(-100000)};
+      bytes:state.byteLength,packedBytes:packed.size,sha256:await hashBlob(packed),packed,terminalText:terminalText.slice(-100000)};
     // Una transacción fallida (por ejemplo sin espacio) conserva la sesión anterior.
     const db=await this.open();
     try{await new Promise((resolve,reject)=>{
@@ -52,7 +65,7 @@ export class LocalSessions {
   }
   async unpack(record,identity){
     if(record.format!=='s2ktux-v86-session-v1'||record.identity!==identity)throw Error('La sesión corresponde a otra versión del laboratorio. No se ha borrado.');
-    if(!(record.packed instanceof Blob)||record.packed.size!==record.packedBytes||await hashBytes(await record.packed.arrayBuffer())!==record.sha256)throw Error('La sesión guardada está incompleta o alterada. No se ha borrado.');
+    if(!(record.packed instanceof Blob)||record.packed.size!==record.packedBytes||await hashBlob(record.packed)!==record.sha256)throw Error('La sesión guardada está incompleta o alterada. No se ha borrado.');
     const state=await new Response(record.packed.stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
     if(state.byteLength!==record.bytes)throw Error('La sesión recuperada está incompleta.');
     return state;

@@ -24,3 +24,20 @@ test('Captura limpia · un fallo siempre libera consola y red',async({page})=>{
  });
  expect(result.message).toBe('Sin cuota');expect(result.events).toEqual(['lock','pause','freeze','resume','release','lock','freeze']);expect(result.fatal).toBe(true);
 });
+
+test('Recuperación · valida una sola lectura sin fiarse de metadatos alterados',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {SesionesClusterDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  const options={workerComponents:'v7',factoryVersion:'v6',progressive:true,level:'inicial'},session=new SesionesClusterDebian(options);
+  const node=await session.packNode('controlplane',new Uint8Array(4096).buffer);
+  const saved=await session.saveNodes([node]);let reads=0;
+  const actual=session.getRawCluster.bind(session);session.getRawCluster=async()=>{reads++;return actual();};
+  const raw=await session.getRawCluster(),checked=await session.validateCluster(raw);
+  let rejected=false;try{await session.validateCluster({...raw,nodes:[{...raw.nodes[0],sha256:'0'.repeat(64)}]});}catch{rejected=true;}
+  let changed=false;try{await session.saveNodes([node],'f'.repeat(64));}catch{changed=true;}
+  const preserved=await session.getCluster();
+  return {readsBeforeSecondRead:reads-1,same:checked===raw,rejected,changed,preserved:preserved.sha256===saved.sha256};
+ });
+ expect(result).toEqual({readsBeforeSecondRead:1,same:true,rejected:true,changed:true,preserved:true});
+});
