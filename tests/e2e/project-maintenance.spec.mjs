@@ -17,6 +17,31 @@ test('Sobre · pendientes y versiones discretos, licencias y descarga',async({pa
  await page.locator('#versiones summary').click();await expect(page.locator('#versiones')).toContainText('v1.1');await expect(page.locator('#versiones')).toContainText('v1.0');
  await page.locator('#licencias summary').click();await expect(page.locator('#licencias')).toContainText('MIT');await expect(page.locator('#licencias')).toContainText('CC BY-NC-SA');expect(errors).toEqual([]);
 });
+
+test('Versiones · una frase y enlace a las notas con el mismo diseño',async({page},testInfo)=>{
+ await page.goto('/sobre.html');await page.locator('#versiones summary').click();
+ const version=page.locator('.about-version').first();
+ await expect(version.locator('p')).toHaveCount(1);
+ const versionNumber=(await version.locator('h3').innerText()).match(/v(\d+\.\d+)/)[1];
+ await version.scrollIntoViewIfNeeded();
+ await page.screenshot({path:testInfo.outputPath('historial-resumido.png')});
+ await version.getByRole('link',{name:'Notas completas de la nueva versión de la página'}).click();
+ await expect(page).toHaveURL(new RegExp(`/versiones/${versionNumber.replace('.','\\.')}.html$`));
+ await expect(page.locator('h1')).toHaveText('Versión '+versionNumber);
+ await expect(page.locator('.site-nav').getByRole('link',{name:'Proyectos',exact:true})).toHaveAttribute('href','../proyectos.html');
+ await expect(page.locator('.about-release p')).not.toHaveCount(1);
+ await expect(page.locator('body')).toHaveCSS('background-color','rgb(246, 236, 217)');
+ await page.screenshot({path:testInfo.outputPath('notas-completas.png')});
+ await page.getByRole('link',{name:'← Volver al historial'}).click();
+ await expect(page).toHaveURL(new RegExp(`/sobre.html#version-${versionNumber.replace('.','\\.')}$`));
+});
+
+test('Versiones · notas completas legibles en móvil @mobile',async({page})=>{
+ await page.goto('/sobre.html');await page.locator('#versiones summary').click();
+ await page.locator('.about-version').first().getByRole('link').click();
+ expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+1)).toBe(true);
+ await expect(page.locator('h1')).toBeVisible();
+});
 test('Linux · archivo de repositorio legible y separación en las soluciones',async({page})=>{
  await page.goto('/laboratorios/linux-real/');await expect(page.locator('#start')).toBeEnabled();await page.selectOption('#exercise-select-class','2');await page.locator('[data-exercise-solution]').click();
  const solution=page.locator('#exercise-solution');await expect(solution).toContainText('# Solución 1\n\n');await expect(solution.locator('pre')).toHaveCount(1);await expect(solution).not.toContainText('# Solución 2');await expect(solution).not.toContainText('printf');

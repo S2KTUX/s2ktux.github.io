@@ -2,9 +2,11 @@ import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs?v=20261020-aprend
 import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261020-aprendizaje';
 import {EJERCICIOS_ACCESO} from './ejercicios-acceso.mjs?v=d5f8b79c9654a632';
 import {EJERCICIOS_ALMACENAMIENTO} from './ejercicios-almacenamiento.mjs?v=9e73779cb79a1c9e';
+import {EJERCICIOS_CONTROLADORES} from './ejercicios-controladores.mjs?v=7516c665c03377ac';
+import {EJERCICIOS_INGRESS} from './ejercicios-ingress.mjs?v=c4e5afde8e57c7fa';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
-import {claseDisponible} from './disponibilidad-curso.mjs?v=a87c2fe1674ad434';
+import {claseDisponible} from './disponibilidad-curso.mjs?v=2c7f71ab8039f113';
 import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
 import {EJERCICIOS_PROGRESIVOS,CKA_EXAM_PRACTICE} from './ejercicios-progresivos.mjs';
 const image='busybox:1.37.0-musl';
@@ -15,6 +17,8 @@ export const EJERCICIOS=Object.freeze({
   ...EJERCICIOS_INTERMEDIOS,
   ...EJERCICIOS_ACCESO,
   ...EJERCICIOS_ALMACENAMIENTO,
+  ...EJERCICIOS_CONTROLADORES,
+  ...EJERCICIOS_INGRESS,
   {id:'seleccion',title:'Elegir el nodo de una aplicación',prompt:`Etiqueta cka-w1 con zona=curso. Crea un Pod llamado seleccionado, con ${image} y sleep 3600, que seleccione los nodos con esa etiqueta. Debe quedar listo en cka-w1.`,solution:`kubectl label node cka-w1 zona=curso --overwrite\nkubectl run seleccionado --image=${image} --image-pull-policy=Never --overrides='{"spec":{"nodeSelector":{"zona":"curso"}}}' --command -- sleep 3600`,check:`test "$(kubectl get node cka-w1 -o jsonpath='{.metadata.labels.zona}')" = curso && kubectl get pod seleccionado -o json | jq -e '.spec.nodeSelector.zona=="curso" and .spec.nodeName=="cka-w1" and any(.status.conditions[]; .type=="Ready" and .status=="True")'`}
  ],
  avanzado:[

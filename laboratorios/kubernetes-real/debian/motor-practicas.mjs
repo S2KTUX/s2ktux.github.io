@@ -20,8 +20,11 @@ export async function comprobarPractica(task,run){
 }
 export async function prepararPractica(task,run){
  for(const requirement of task.requirements||[]){
-  if(requirement!=='local-path')throw Error('Componente de práctica desconocido');
-  const {prepararAlmacenamiento}=await import('./almacenamiento-curso.mjs?v=883477bb20feaf98');await prepararAlmacenamiento(run);
+  if(requirement==='local-path'){
+   const {prepararAlmacenamiento}=await import('./almacenamiento-curso.mjs?v=0bb85c4d4cb510a9');await prepararAlmacenamiento(run);
+  }else if(requirement==='traefik'){
+   const {prepararIngress}=await import('./ingress-curso.mjs?v=43674ff2cdeb5bc1');await prepararIngress(run);
+  }else throw Error('Componente de práctica desconocido');
  }
  for(const command of task.prepare||[]){
   const result=await run('controlplane','Preparar '+task.title,'set -eu; '+command,240000);

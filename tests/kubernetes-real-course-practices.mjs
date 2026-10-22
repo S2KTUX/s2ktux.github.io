@@ -6,7 +6,7 @@ import {EJERCICIOS_INTERMEDIOS} from '../laboratorios/kubernetes-real/debian/eje
 import {ejerciciosClase} from '../laboratorios/kubernetes-real/debian/ejercicios-niveles.mjs';
 import {comprobarPractica,prepararPractica} from '../laboratorios/kubernetes-real/debian/motor-practicas.mjs';
 import {exigirJSON} from '../laboratorios/kubernetes-real/debian/comprobaciones-json.mjs';
-import {comprobarSaludInicial} from '../laboratorios/kubernetes-real/debian/salud-inicial.mjs';
+import {comprobarSaludInicial,ordenSaludInicial} from '../laboratorios/kubernetes-real/debian/salud-inicial.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos,parametrosPublicos} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 assert.equal(CLASES.length,35);assert.deepEqual(['inicial','intermedio','avanzado'].map(value=>clasesNivel(value).length),[6,17,11]);
 assert.equal(nivelClase(23),'intermedio');assert.equal(nivelClase(24),'avanzado');assert.throws(()=>nivelClase(35));
@@ -17,7 +17,8 @@ assert.deepEqual(ejerciciosClase(0),[]);assert.equal(claseDesdeURL(new URLSearch
 for(let number=1;number<=11;number++)assert.equal(ejerciciosClase(number).length,number<=3||number===5?2:number===6||number===7?3:4);
 assert.equal(ejerciciosClase(13).length,3);assert.equal(ejerciciosClase(14).length,2);
 assert.equal(ejerciciosClase(12).length,3);
-for(let number=15;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
+for(let number=15;number<=18;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===15?3:2);}
+for(let number=19;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
 assert.equal(nivelDisponible('avanzado'),false);assert.equal(limiteNodos('intermedio'),2);
 const safeParams=parametrosPublicos('mode=other&factory=v8&fast=1&use-scheduling-api=1&clase=28&level=avanzado&enter=1');
 assert.equal(safeParams.get('mode'),'course');assert.equal(safeParams.get('factory'),'v6');assert.equal(safeParams.has('fast'),false);assert.equal(safeParams.has('use-scheduling-api'),false);assert.equal(safeParams.get('clase'),'28');
@@ -39,11 +40,11 @@ await assert.rejects(()=>prepararPractica(fixture,async()=>({ok:false})));
 assert.equal(await prepararPractica(fixture,async()=>({ok:true})),'fixture');
 assert.match(exigirJSON('kubectl get rs replicas -o json | jq -e true'),/object=\$\(kubectl/);
 assert.match(exigirJSON('test "$(kubectl get --raw=/readyz)" = ok && kubectl get nodes -o json | jq -e true'),/test "\$\(kubectl get --raw=\/readyz\)" = ok/);
-assert.match(comprobarSaludInicial,/consecutive/);assert.doesNotMatch(comprobarSaludInicial,/restart|reset|patch|delete|apply/);
+assert.match(comprobarSaludInicial,/readyz/);assert.match(ordenSaludInicial(2),/\(\.items\|length\)==2/);assert.throws(()=>ordenSaludInicial(0));assert.throws(()=>ordenSaludInicial(4));assert.doesNotMatch(comprobarSaludInicial,/restart|reset|patch|delete|apply/);
 const page=await readFile(new URL('../laboratorios/kubernetes-real/debian/multinodo.html',import.meta.url),'utf8');
 const startup=await readFile(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8');
-assert.match(startup,/level==='avanzado'\|\|claseDisponible\(15\)/);
+assert.doesNotMatch(startup,/await prepararMaterialesCurso/,'Los materiales de Ingress se instalan bajo demanda, no en cada arranque');
 assert.match(startup,/level!=='inicial'&&claseDisponible\(21\)/);
 for(let number=7;number<=11;number++)for(const task of ejerciciosClase(number))assert.doesNotMatch(task.solution+task.check,/\/opt\/curso/,'Las primeras prácticas intermedias no necesitan los materiales de clases posteriores');
 assert.match(page,/id="course-index"/);assert.doesNotMatch(page,/id="environment-select"/);assert.match(page,/id="exercise-class-select"/);
-console.log('Kubernetes: 42 prácticas en clases 01–14; resultados correcto/incompleto/no verificado protegidos. Este test no acredita ejecución nativa.');
+console.log('Kubernetes: 51 prácticas en clases 01–18; resultados correcto/incompleto/no verificado protegidos. Este test no acredita ejecución nativa.');

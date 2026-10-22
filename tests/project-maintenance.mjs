@@ -10,6 +10,16 @@ const read=path=>readFileSync(new URL('../'+path,import.meta.url),'utf8');
 const project=JSON.parse(read('contenido/proyecto.json')),about=read('sobre.html');
 assert.match(project.version,/^\d+\.\d+$/);assert.equal(project.versiones[0].version,project.version);
 assert.equal(new Set(project.pendientes.map(item=>item.id)).size,project.pendientes.length);
+for(const item of project.versiones){
+ assert.ok(item.resumen?.trim());
+ const notes=read(`versiones/${item.version}.html`);
+ assert.ok(about.includes(`href="versiones/${item.version}.html"`));
+ assert.ok(notes.includes(`href="../sobre.html#version-${item.version}"`));
+ assert.ok(notes.includes(`https://s2ktux.github.io/versiones/${item.version}.html`));
+ assert.ok(notes.includes('href="#main-content"'));
+ assert.ok(notes.includes('href="../proyectos.html"'));
+ for(const change of item.cambios)assert.ok(notes.includes(change.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')));
+}
 for(const item of project.pendientes){assert.ok(about.includes(item.texto.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;')));assert.ok(read('contenido/pendientes.md').includes(item.texto));}
 for(const anchor of ['pendientes','versiones','licencias','privacidad'])assert.ok(about.includes('id="'+anchor+'"'));
 assert.doesNotMatch(about,/Quiénes somos|Te leo aquí|Tu progreso en cursos/);

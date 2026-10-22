@@ -1,13 +1,8 @@
-import {readFile,writeFile} from 'node:fs/promises';
-import {gunzipSync} from 'node:zlib';
+import {writeFile} from 'node:fs/promises';
 import {EJERCICIOS_ALMACENAMIENTO} from '../laboratorios/kubernetes-real/debian/ejercicios-almacenamiento.mjs';
-import {comandosAlmacenamiento} from '../laboratorios/kubernetes-real/debian/almacenamiento-curso.mjs';
 const suite=['#!/bin/sh','set -eu','echo PRUEBA_ALMACENAMIENTO_REAL'];
-const yaml=gunzipSync(await readFile(new URL('../laboratorios/kubernetes-real/recursos/almacenamiento-v1/local-path.yaml.gz',import.meta.url))).toString();
 suite.push('case "${1:-all}" in all|c12-a|c12-b|c12-c) ;; *) exit 2;; esac');
-suite.push('if test "${1:-all}" = all || test "${1:-all}" = c12-c; then','if test -z "$(kubectl get ns local-path-storage --ignore-not-found -o name)"; then');
-for(const [label,command]of await comandosAlmacenamiento(yaml))suite.push('echo '+JSON.stringify(label),command);
-suite.push('fi','fi');
+suite.push('# Preparar el componente desde la interfaz: importa la imagen en cka-w1, no en el control plane.','if test "${1:-all}" = all || test "${1:-all}" = c12-c; then','kubectl -n local-path-storage rollout status deployment/local-path-provisioner --timeout=180s','fi');
 for(const task of EJERCICIOS_ALMACENAMIENTO)suite.push('if test "${1:-all}" = all || test "${1:-all}" = '+task.id+'; then','echo INICIO_'+task.id,...task.prepare,task.solution,task.check,'echo POSITIVO_'+task.id,task.negative,'kubectl get --raw=/readyz --request-timeout=20s','if (set -eu; '+task.check+'); then echo ERROR_ACEPTO_INCOMPLETO; exit 1; fi','echo NEGATIVO_'+task.id,task.cleanup,'fi');
 suite.push('echo SUITE_ALMACENAMIENTO_OK','');await writeFile(new URL('../fixtures/kubernetes-almacenamiento-nativo.sh',import.meta.url),suite.join('\n'));
-console.log('Suite nativa de almacenamiento generada desde los ejercicios y el instalador reales.');
+console.log('Suite nativa de almacenamiento generada; preparar el complemento desde la interfaz antes de ejecutarla.');

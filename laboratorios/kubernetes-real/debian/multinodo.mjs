@@ -7,14 +7,14 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=1430d3eebecfca75';
-import {comprobarSaludInicial} from './salud-inicial.mjs';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=c85fb389ed732eaa';
+import {ordenSaludInicial} from './salud-inicial.mjs?v=5a56c78de0a26968';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
-import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=a87c2fe1674ad434';
+import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=2c7f71ab8039f113';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5d2be910dd3a4db1';
-import {basesPublicadas} from './bases-publicadas.mjs?v=d39d63aaf88b96de';
-import {cargarBasePublicada} from './fabrica-cluster.mjs?v=761ce96da8b7c8f2';
-const cleanRevision='6515bd8fc99260058bf9c6e90df6631b8d49cbd371d1fb04a7f9211cb7ad7582';
+import {basesPublicadas} from './bases-publicadas.mjs?v=fb5f6bc936badd48';
+import {cargarBasePublicada} from './fabrica-cluster.mjs?v=979785ed16349130';
+const cleanRevision='762ddfbcaba33b5b775ef89b6a8d7f20f852e798e9e08d6df88eeaae01f34e5f';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -130,7 +130,7 @@ start.onclick=async()=>{
     if(cleanBase){
      // El primer handshake puede agotar su plazo mientras vuelve a calentarse
      // el código del API. Esperar su salud real; no reiniciar ni reparar nada.
-     await phase('controlplane','Esperar a que la API y los nodos recuperados estén disponibles',comprobarSaludInicial,240000);
+     await phase('controlplane','Esperar a que la API y los nodos recuperados estén disponibles',ordenSaludInicial(nodes.size),240000);
      kubeDebianClusterReady=true;status.textContent='Laboratorio listo desde su base limpia.';
     }else{
     await phase('controlplane','Consultar la API recuperada sin esperar ni reparar nodos','kubectl get --raw=/readyz --request-timeout=15s',45000);
@@ -153,12 +153,12 @@ start.onclick=async()=>{
   await phase('controlplane','Repartir CPU nativa del sistema y del control plane','systemctl set-property --runtime system.slice CPUWeight=10 && test "$(cat /sys/fs/cgroup/system.slice/cpu.weight)" = 10');
   if(progressive){
    await phase('controlplane',level==='inicial'?'Preparar un único nodo para las primeras prácticas':'Preparar el control plane del modo '+level,permitirAplicacionesIniciales);
-   if(level!=='inicial'&&(level==='avanzado'||claseDisponible(15))){const {prepararMaterialesCurso}=await import('./materiales-curso.mjs');await prepararMaterialesCurso(phase);}
+   // Los complementos se preparan al abrir su ejercicio, no en cada arranque.
    await remember('controlplane','cka-cp1','10.77.0.10');
    if(NIVELES[level].nodes>=2){await addWorker('1');await phase('controlplane','Separar coordinación y aplicaciones',separarControlPlane);}
    if(NIVELES[level].nodes>=3)await addWorker('2');
    if(integratedPolicies)await instalarPoliticasDebian(phase);
-   await phase('controlplane','Comprobar la API y los nodos antes de abrir el laboratorio',comprobarSaludInicial,240000);
+   await phase('controlplane','Comprobar la API y los nodos antes de abrir el laboratorio',ordenSaludInicial(nodes.size),240000);
    initialized=true;kubeDebianClusterReady=true;status.textContent=`Modo ${NIVELES[level].name.toLowerCase()} listo · ${nodes.size} ${nodes.size===1?'nodo':'nodos'}.`;
    // La consola todavía no está abierta: no puede contener prácticas del alumno.
    status.textContent='Preparando la entrada rápida para próximas visitas…';

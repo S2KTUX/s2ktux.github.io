@@ -15,5 +15,6 @@
 .about-page .about-version h3{font-size:16px;color:var(--head);margin:0 0 12px}
 .about-page time{font-size:12px;font-weight:normal;color:var(--muted);margin-left:14px}
 .about-page .about-version p{font-size:14px;margin-bottom:8px}
+.about-page .about-version-link{font-size:13px;text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
 .about-page .about-licences{font-size:14px}
 @media(max-width:640px){.about-page{padding:28px 20px 44px;font-size:15px}.about-page h1{font-size:19px}.about-page h2{font-size:17px}}
