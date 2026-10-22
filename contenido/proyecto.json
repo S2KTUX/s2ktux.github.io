@@ -1,5 +1,5 @@
 {
-  "version": "2.5",
+  "version": "2.6",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Completar y comprobar las clases 15–34 en el laboratorio real antes de abrirlas. Las clases 01–14 ya tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
+      "texto": "Completar y comprobar las clases 19–34 en el laboratorio real antes de abrirlas. Las clases 01–18 ya tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
     },
     {
       "id": "kubernetes-examen",
@@ -44,12 +44,12 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
+      "texto": "Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado, y la preparación de complementos. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
     },
     {
       "id": "imagen-ligera",
       "tema": "Rendimiento",
-      "texto": "Estudiar qué se puede quitar de las imágenes sin perder herramientas, páginas de man, licencias ni ejercicios del curso."
+      "texto": "Estudiar qué se puede quitar de las imágenes sin perder herramientas, páginas de man, licencias ni ejercicios del curso. Importar solo las imágenes necesarias al preparar un complemento, sin cargar el paquete completo si se puede evitar."
     },
     {
       "id": "kubernetes-openapi",
@@ -68,6 +68,16 @@
     }
   ],
   "versiones": [
+    {
+      "version": "2.6",
+      "fecha": "2026-10-22",
+      "cambios": [
+        "Aceleramos la entrada de Kubernetes intermedio: descargamos la base en paralelo y evitamos repetir comprobaciones ya superadas, sin saltarnos la salud de la API ni de los nodos.",
+        "La caché de la base tiene espacio para sus 69 fragmentos y ya no compite con los recursos de Linux y Docker. Los guardados del alumno se conservan.",
+        "Abrimos nueve prácticas de Ingress, DaemonSets, StatefulSets y Jobs/CronJobs, basadas en las clases actuales de AFFiNE y con comprobación del resultado real.",
+        "Traefik se prepara al necesitarlo, no al arrancar cada laboratorio. Los materiales se descargan y verifican dentro de Linux; si no hay conexión, se conserva la alternativa desde el navegador."
+      ]
+    },
     {
       "version": "2.5",
       "fecha": "2026-10-21",

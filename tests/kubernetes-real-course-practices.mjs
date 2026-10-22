@@ -17,7 +17,8 @@ assert.deepEqual(ejerciciosClase(0),[]);assert.equal(claseDesdeURL(new URLSearch
 for(let number=1;number<=11;number++)assert.equal(ejerciciosClase(number).length,number<=3||number===5?2:number===6||number===7?3:4);
 assert.equal(ejerciciosClase(13).length,3);assert.equal(ejerciciosClase(14).length,2);
 assert.equal(ejerciciosClase(12).length,3);
-for(let number=15;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
+for(let number=15;number<=18;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===15?3:2);}
+for(let number=19;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
 assert.equal(nivelDisponible('avanzado'),false);assert.equal(limiteNodos('intermedio'),2);
 const safeParams=parametrosPublicos('mode=other&factory=v8&fast=1&use-scheduling-api=1&clase=28&level=avanzado&enter=1');
 assert.equal(safeParams.get('mode'),'course');assert.equal(safeParams.get('factory'),'v6');assert.equal(safeParams.has('fast'),false);assert.equal(safeParams.has('use-scheduling-api'),false);assert.equal(safeParams.get('clase'),'28');
@@ -46,4 +47,4 @@ assert.doesNotMatch(startup,/await prepararMaterialesCurso/,'Los materiales de I
 assert.match(startup,/level!=='inicial'&&claseDisponible\(21\)/);
 for(let number=7;number<=11;number++)for(const task of ejerciciosClase(number))assert.doesNotMatch(task.solution+task.check,/\/opt\/curso/,'Las primeras prácticas intermedias no necesitan los materiales de clases posteriores');
 assert.match(page,/id="course-index"/);assert.doesNotMatch(page,/id="environment-select"/);assert.match(page,/id="exercise-class-select"/);
-console.log('Kubernetes: 42 prácticas en clases 01–14; resultados correcto/incompleto/no verificado protegidos. Este test no acredita ejecución nativa.');
+console.log('Kubernetes: 51 prácticas en clases 01–18; resultados correcto/incompleto/no verificado protegidos. Este test no acredita ejecución nativa.');

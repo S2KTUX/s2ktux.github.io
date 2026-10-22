@@ -14,8 +14,8 @@ printf '%s\n' '{"apiVersion":"v1","kind":"Pod","metadata":{"name":"web","namespa
 printf '%s\n' '{"apiVersion":"v1","kind":"Service","metadata":{"namespace":"p15a","name":"web"},"spec":{"selector":{"app":"web"},"ports":[{"port":80,"targetPort":8080}]}}' | kubectl apply -f -
 kubectl -n p15a wait --for=condition=Ready pod/web --timeout=180s
 kubectl -n p15a create ingress entrada --class=traefik --rule='web.curso.test/*=web:80'
-curl -H 'Host: web.curso.test' http://10.77.0.11:30080/
 deadline=$(($(date +%s)+90)); until test "$(curl --fail --silent --show-error --max-time 20 -H 'Host: web.curso.test' http://10.77.0.11:30080/)" = INGRESS_OK; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 2; done
+curl -H 'Host: web.curso.test' http://10.77.0.11:30080/
 object=$(kubectl -n p15a get ingress entrada -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '.spec.ingressClassName=="traefik" and any(.spec.rules[]; .host=="web.curso.test" and any(.http.paths[]; .path=="/" and .pathType=="Prefix" and .backend.service.name=="web" and (.backend.service.port.number==80 or .backend.service.port.name=="http")))' && test "$(curl --fail --silent --show-error --max-time 20 -H 'Host: web.curso.test' http://10.77.0.11:30080/)" = INGRESS_OK
 echo POSITIVO_c15-a
 kubectl -n p15a delete ingress entrada
@@ -61,8 +61,9 @@ test ! -e /root/p15c.crt && test ! -e /root/p15c.key
 openssl req -x509 -nodes -days 30 -newkey rsa:2048 -keyout /root/p15c.key -out /root/p15c.crt -subj /CN=seguro.curso.test -addext subjectAltName=DNS:seguro.curso.test
 kubectl -n p15c create secret tls web-tls --cert=/root/p15c.crt --key=/root/p15c.key
 printf '%s\n' '{"apiVersion":"networking.k8s.io/v1","kind":"Ingress","metadata":{"namespace":"p15c","name":"entrada"},"spec":{"ingressClassName":"traefik","rules":[{"host":"seguro.curso.test","http":{"paths":[{"path":"/","pathType":"Prefix","backend":{"service":{"name":"web","port":{"number":80}}}}]}}],"tls":[{"hosts":["seguro.curso.test"],"secretName":"web-tls"}]}}' | kubectl apply -f -
-curl --cacert /root/p15c.crt --resolve seguro.curso.test:30443:10.77.0.11 https://seguro.curso.test:30443/
+# Espera unos segundos a que Traefik cargue el certificado.
 deadline=$(($(date +%s)+90)); until test "$(curl --fail --silent --show-error --max-time 20 --cacert /root/p15c.crt --resolve seguro.curso.test:30443:10.77.0.11 https://seguro.curso.test:30443/)" = TLS_OK; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 2; done
+curl --cacert /root/p15c.crt --resolve seguro.curso.test:30443:10.77.0.11 https://seguro.curso.test:30443/
 object=$(kubectl -n p15c get ingress entrada -o json) && test -n "$object" && printf '%s\n' "$object" | jq -e '.spec.ingressClassName=="traefik" and any(.spec.rules[]; .host=="seguro.curso.test" and any(.http.paths[]; .path=="/" and .pathType=="Prefix" and .backend.service.name=="web" and (.backend.service.port.number==80 or .backend.service.port.name=="http"))) and any(.spec.tls[]; .secretName=="web-tls" and (.hosts|index("seguro.curso.test"))!=null)' && test "$(curl --fail --silent --show-error --max-time 20 --cacert /root/p15c.crt --resolve seguro.curso.test:30443:10.77.0.11 https://seguro.curso.test:30443/)" = TLS_OK
 echo POSITIVO_c15-c
 kubectl -n p15c delete secret web-tls
