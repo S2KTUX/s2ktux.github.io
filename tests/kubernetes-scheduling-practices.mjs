@@ -18,6 +18,7 @@ const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash'
 assert.equal(spawnSync(bash,['--noprofile','--norc','-n'],{input:fixture,encoding:'utf8'}).status,0);
 assert.equal(spawnSync(bash,['--noprofile','--norc','-s','--','desconocida'],{input:fixture,encoding:'utf8'}).status,2);
 assert.match(fixture,/EQUIVALENCIAS_AFINIDAD_OK/);
+assert.match(fixture,/TCP_DNS_REQUERIDO_OK/);assert.match(EJERCICIOS_RED[2].check,/nc -w 3/);
 for(const t of EJERCICIOS_RED)assert.ok(fixture.includes('GUARDA_ESCENARIO_'+t.id));
 for(const t of EJERCICIOS_RED){assert.ok(t.prepare.some(c=>c.includes('wget -T 3')),'Probar los servidores antes de filtrar');assert.match(t.check,/if kubectl/);assert.doesNotMatch(t.check,/fi if/);}
 assert.doesNotMatch(read('laboratorios/kubernetes-real/debian/multinodo.mjs'),/level!=='inicial'&&claseDisponible\(21\)/,'Abrir la clase 21 no instala componentes durante el arranque');

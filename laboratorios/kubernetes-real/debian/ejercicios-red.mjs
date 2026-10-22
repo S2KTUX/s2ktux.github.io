@@ -25,11 +25,12 @@ add(21,'b','Namespace y etiqueta juntos · II',
  {requirements:['network-policy'],prepare:[`test -z "$(kubectl get namespace ${remote} --ignore-not-found -o name)"`,`kubectl create namespace ${remote}`,`kubectl -n ${remote} wait --for=create serviceaccount/default --timeout=90s`,aplicar(server('p21b')),aplicar(service('p21b')),aplicar(client('p21b','fuera','frontend')),aplicar(client(remote,'frontend','frontend')),aplicar(client(remote,'intruso','intruso')),ready('p21b'),ready(remote),allowed(remote,'frontend',url('p21b')),allowed(remote,'intruso',url('p21b')),allowed('p21b','fuera',url('p21b')),allowed(remote,'frontend',url('p21b',80))],nativeWait:'sleep 3',negative:'kubectl -n p21b delete networkpolicy entrada-api',cleanup:`kubectl delete namespace ${remote} --ignore-not-found --wait=true --timeout=120s`});
 const dnsPeer={namespaceSelector:{matchLabels:{'kubernetes.io/metadata.name':'kube-system'}},podSelector:{matchLabels:{'k8s-app':'kube-dns'}}};
 const egress={apiVersion:'networking.k8s.io/v1',kind:'NetworkPolicy',metadata:{namespace:'p21c',name:'salida-cliente'},spec:{podSelector:{matchLabels:{app:'cliente'}},policyTypes:['Egress'],egress:[{to:[dnsPeer],ports:[{protocol:'UDP',port:53},{protocol:'TCP',port:53}]},{to:[{podSelector:{matchLabels:{app:'api'}}}],ports:[{protocol:'TCP',port:8080}]}]}};
+const tcpDNS='kubectl -n p21c exec cliente -- sh -c '+q('nc -w 3 kube-dns.kube-system.svc.cluster.local 53 </dev/null');
 const outsider={...server('p21c'),metadata:{namespace:'p21c',name:'ajeno',labels:{app:'ajeno'}}};
 add(21,'c','Salida restringida con DNS · II',
  'En p21c, cliente tiene la salida bloqueada. Permite DNS hacia los Pods k8s-app=kube-dns de kube-system, por UDP y TCP 53, y HTTP hacia app=api de p21c por TCP 8080. La conexión a ajeno y el puerto 80 de api deben seguir bloqueados. Conserva la política de bloqueo existente.',
  aplicar(egress)+'\nkubectl -n p21c exec cliente -- nslookup api.p21c.svc.cluster.local\n'+request('p21c','cliente',url('p21c')),
- obtener('p21c','networkpolicy','bloqueo','.spec.podSelector.matchLabels.app=="cliente" and (.spec.egress // []|length)==0 and (.spec.policyTypes|index("Egress"))!=null')+' && kubectl -n p21c exec cliente -- nslookup api.p21c.svc.cluster.local >/dev/null && '+allowed('p21c','cliente',url('p21c'))+' && '+denied('p21c','cliente','http://$(kubectl -n p21c get pod ajeno -o jsonpath=\'{.status.podIP}\'):8080/')+' && '+denied('p21c','cliente',url('p21c',80)),
+ obtener('p21c','networkpolicy','bloqueo','.spec.podSelector.matchLabels.app=="cliente" and (.spec.egress // []|length)==0 and (.spec.policyTypes|index("Egress"))!=null')+' && kubectl -n p21c exec cliente -- nslookup api.p21c.svc.cluster.local >/dev/null && '+tcpDNS+' && '+allowed('p21c','cliente',url('p21c'))+' && '+denied('p21c','cliente','http://$(kubectl -n p21c get pod ajeno -o jsonpath=\'{.status.podIP}\'):8080/')+' && '+denied('p21c','cliente',url('p21c',80)),
  {requirements:['network-policy'],prepare:[aplicar(server('p21c')),aplicar(outsider),aplicar(service('p21c')),aplicar(client('p21c','cliente','cliente')),ready('p21c'),allowed('p21c','cliente',url('p21c')),allowed('p21c','cliente','http://$(kubectl -n p21c get pod ajeno -o jsonpath=\'{.status.podIP}\'):8080/'),aplicar({apiVersion:'networking.k8s.io/v1',kind:'NetworkPolicy',metadata:{namespace:'p21c',name:'bloqueo'},spec:{podSelector:{matchLabels:{app:'cliente'}},policyTypes:['Egress'],egress:[]}})],nativeWait:'sleep 3',negative:'kubectl -n p21c delete networkpolicy salida-cliente'});
 const diagnostics={
  'c21-a':[
@@ -45,6 +46,7 @@ const diagnostics={
  ],
  'c21-c':[
   {check:'kubectl -n p21c exec cliente -- nslookup api.p21c.svc.cluster.local >/dev/null',message:'cliente no puede resolver el nombre del Service mediante DNS.'},
+  {check:tcpDNS,message:'cliente no puede conectar con el DNS por TCP 53.'},
   {check:allowed('p21c','cliente',url('p21c')),message:'cliente no puede acceder a api por TCP 8080.'},
   {check:denied('p21c','cliente','http://$(kubectl -n p21c get pod ajeno -o jsonpath=\'{.status.podIP}\'):8080/'),message:'cliente todavía puede acceder al Pod ajeno.'},
   {check:denied('p21c','cliente',url('p21c',80)),message:'cliente todavía puede acceder al puerto 80 de api.'}

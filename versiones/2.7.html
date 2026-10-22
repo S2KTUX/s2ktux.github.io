@@ -78,7 +78,7 @@
 <p>Kubernetes suma prácticas para elegir nodos, limitar conexiones y descubrir servicios por su nombre.</p>
 <h2>Qué ha cambiado</h2>
 <p>Añadimos diez prácticas de las clases 19–22: nodeSelector, afinidad, asignación manual, tolerations, NetworkPolicies y CoreDNS. Empiezan con ejemplos sencillos y pasan después a combinar lo aprendido.</p>
-<p>El filtrado de red se prepara cuando un ejercicio lo necesita, no al arrancar el laboratorio. Las pruebas comprueban tráfico real: quién puede entrar, quién queda fuera, los puertos y el acceso a DNS cuando la salida está limitada.</p>
+<p>El filtrado de red se prepara cuando un ejercicio lo necesita, no al arrancar el laboratorio. Las pruebas comprueban tráfico real: quién puede entrar, quién queda fuera, los puertos y el acceso a DNS por UDP y TCP cuando la salida está limitada.</p>
 <p>Los correctores de red comprueban que siguen presentes los clientes de prueba y que el servidor continúa escuchando. Borrar un cliente o quitar un puerto del Service no cuenta como haber bloqueado el tráfico con una política.</p>
 <p>Al comprobar estas prácticas indicamos qué conexión o requisito falla. Una caída de la API no se presenta como una respuesta incorrecta, y no añadimos consultas de diagnóstico cuando el ejercicio ya está bien.</p>
 <p>Se aceptan formas equivalentes de escribir los selectores y la afinidad. Los guardados del alumno no se reescriben; las clases 23–34 y el simulacro siguen cerrados hasta comprobarlos.</p>
