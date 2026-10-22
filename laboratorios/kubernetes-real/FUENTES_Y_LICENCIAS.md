@@ -19,7 +19,7 @@ Fuentes y materiales de construcción:
 - Linux: https://www.kernel.org/ y configuración `debian/kernel/v1/kernel.config`.
 - BusyBox: https://busybox.net/downloads/busybox-1.37.0.tar.bz2
 - Motor v86: https://github.com/copy/v86 (fuentes y ajustes incluidos en la rama de recursos).
-- Aprovisionador local Rancher v0.0.34 (Apache-2.0): https://github.com/rancher/local-path-provisioner/tree/v0.0.34. Se conserva su manifiesto original en `recursos/almacenamiento-v1/`; la adaptación solo fija la imagen linux/386, el nodo del controlador y las tolerancias del laboratorio. No es un driver CSI.
+- Aprovisionador local Rancher v0.0.34 (Apache-2.0): https://github.com/rancher/local-path-provisioner/tree/v0.0.34. Se conserva su manifiesto original en `recursos/almacenamiento-v1/`; la adaptación fija la imagen linux/386, el worker del controlador, sus recursos y las tolerancias del laboratorio. No es un driver CSI.
 - Traefik v3.5.2 (MIT): https://github.com/traefik/traefik/tree/v3.5.2. El chart 37.1.1 procede de https://github.com/traefik/traefik-helm-chart/tree/v37.1.1. Los materiales conservan el paquete original y la variante lab1, con las mismas plantillas y valores y los CRDs gestionados aparte. La imagen `s2ktux/traefik-lab:3.5.2` es una compilación propia para linux/386, no una imagen oficial de Traefik para esa arquitectura.
 
 La rama de recursos incluye los scripts, overlays y configuración empleados

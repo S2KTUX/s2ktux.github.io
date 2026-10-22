@@ -2,21 +2,9 @@
 set -eu
 echo PRUEBA_ALMACENAMIENTO_REAL
 case "${1:-all}" in all|c12-a|c12-b|c12-c) ;; *) exit 2;; esac
+# Preparar el componente desde la interfaz: importa la imagen en cka-w1, no en el control plane.
 if test "${1:-all}" = all || test "${1:-all}" = c12-c; then
-if test -z "$(kubectl get ns local-path-storage --ignore-not-found -o name)"; then
-echo "Importar la imagen real del aprovisionador"
-if ! ctr -n k8s.io images ls -q | grep -qx docker.io/s2ktux/local-path-lab:0.0.34; then gzip -dc /mnt/kube-client/images/curso.tar.gz | ctr -n k8s.io images import --no-unpack --platform=linux/386 -; fi
-echo "Enviar el manifiesto verificado de almacenamiento"
-: > /tmp/curso-local-path.yaml.upload.gz
-echo "Enviar el manifiesto verificado de almacenamiento"
-printf '%s' 'H4sIAAAAAAAACtVX32/bNhB+11/BaXss5WQdkIFvaWx3AeIfiNPuIQgMijrbrCmSICk3btf/faAoO5Ki2k7QApteJB/vjt/dfbyjqeYfwViuJEGb82jNZUbQmOZgNWUQ5eBoRh0lEUKS5kCQUIwKrKlbYeuUoUuIIoxxRLsczcBsOINLxlQh3WFv2qgN9/ZgsA12mFaGQb2EdBoCk1KW0MKtlOFfqONKJus/bcJVb4/tVokj8dURGa99DIYpBFjvCiOq+XujCm0Juo/jhwghhAxYVRgGpUyrzFbyDZi0lC3BxW9QLLgt35+pYyv/wQxQB/5L70SFzipRBgIcxA+vSsKVKKwD84pcvCRWqTKwJXwPzTqQbqNEkQMTlOflClNywZc51UHPJ6d694RanpSohxMT38Lwg6twEgbYgHTPNm5v0OGsYlpVxy7XlQYT1NoTY3sddTxn3nGZcbk8nTopl9nxY6QE3MLCO9sFfwBRhFDtQJ9CXVukn4C5ir2dncon7YUd6mf0qNrxfF2qX5nKelv4H2WUam2fktcHLdQ2hxcMnqPUtBqYd2JAC86oJeg8QsiCAOaUISXo3B+qG5qCsEHgc68PbOkg14I6qMxrWP0jGp6O+UJoB7H8btRg/NL0I+Q796wRnX/WRQpGgoOSrStlXUgqW1PM9Hml55QAU9Krhh6jNWxJ6bekTtL0xZR0RgmsBZWwN0JIae9KGYIGj9w6W1uCxQKYI2isZmwFWSF2dt4X5RJMY/sj5d89PKdLIMj+vnbFY6+mLmhKzpKz5O0fbe1pIcRUCc62BF0vxspNDVjYpzJAynMqM1ITeUxH0XgljDNIi2VLah017plmmKYtcQ8c64WV6pV8skrWtMJAHPn62zbGqsKlHQ6KDQ2Ecm83pW5FGlvVSyU33W6nk/58fDkazKaXV4OW2w0VBQyNyklrAaEFB5FV7a1zLaDZnahkf7Y7QVxNxsPr9/PR5MP4bj69vPurC0hnbNVF4jnNvpeuIB9R3UT+jJtVHZ81uuY14KnlzYL8yg//g00vqvGMIEMlW4HxrmoqAXU1d0YqA4L+ptwNlRlyY92VkrbIwUQmXON21O+XN6GAuZomu2jbfxIOtuU9hw935J19jdEE/YPLvH5tZLe8hnpGjKiOyX1j7WsHgyqLmMT9wfDyw00gxXw4uZ2PJ+P5zfXsbtCfjyf9' | base64 -d >> /tmp/curso-local-path.yaml.upload.gz
-echo "Enviar el manifiesto verificado de almacenamiento"
-printf '%s' 'wSx+023vkdqY3Mc9pV2v+5hXV7Td863xK6x9K2eM87O7iuzXX3oplz27Ci0fHMJQhPGxzrhBOEdnFxcXCGsU//ZxcjPvX9/G5aihJlOf5QmOTI6wWTTNVyA0mKnKki3Nxd5Jq6xeFCo/VVnnTAvFDt6wrpTqg0sbrgx325LJYW7ZrXWQ43JyMMMdZ1T8RyZNY7PWPhm3a6wNWFuYHz/RcHcq0dMESwu7TdUjOU/eXiRnOC+saKp8d2z9CyiZv3sbEAAA' | base64 -d >> /tmp/curso-local-path.yaml.upload.gz
-echo "Enviar el manifiesto verificado de almacenamiento"
-gzip -dc /tmp/curso-local-path.yaml.upload.gz > /tmp/curso-local-path.yaml && rm -f /tmp/curso-local-path.yaml.upload.gz
-echo "Activar el aprovisionador local"
-ns=$(kubectl get namespace local-path-storage --ignore-not-found -o name); test -z "$ns"; for target in clusterrole/local-path-provisioner-role clusterrolebinding/local-path-provisioner-bind storageclass/local-path; do existing=$(kubectl get "$target" --ignore-not-found -o name); test -z "$existing"; done; kubectl apply --validate=strict --request-timeout=120s -f /tmp/curso-local-path.yaml && kubectl -n local-path-storage rollout status deployment/local-path-provisioner --timeout=240s
-fi
+kubectl -n local-path-storage rollout status deployment/local-path-provisioner --timeout=180s
 fi
 if test "${1:-all}" = all || test "${1:-all}" = c12-a; then
 echo INICIO_c12-a

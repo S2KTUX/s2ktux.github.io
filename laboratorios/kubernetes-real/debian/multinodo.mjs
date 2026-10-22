@@ -7,14 +7,14 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=82e7de2e6518de4d';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=c85fb389ed732eaa';
 import {ordenSaludInicial} from './salud-inicial.mjs?v=5a56c78de0a26968';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=2c7f71ab8039f113';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5d2be910dd3a4db1';
-import {basesPublicadas} from './bases-publicadas.mjs?v=52b38ad4ec3baa37';
+import {basesPublicadas} from './bases-publicadas.mjs?v=fb5f6bc936badd48';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=979785ed16349130';
-const cleanRevision='979588477d41703b1d8c54b0db1218a1a984c7fb2f333cd5e58137ee688517e3';
+const cleanRevision='762ddfbcaba33b5b775ef89b6a8d7f20f852e798e9e08d6df88eeaae01f34e5f';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;

@@ -75,7 +75,8 @@
         "Aceleramos la entrada de Kubernetes intermedio: descargamos la base en paralelo y evitamos repetir comprobaciones ya superadas, sin saltarnos la salud de la API ni de los nodos.",
         "La caché de la base tiene espacio para sus 69 fragmentos y ya no compite con los recursos de Linux y Docker. Los guardados del alumno se conservan.",
         "Abrimos nueve prácticas de Ingress, DaemonSets, StatefulSets y Jobs/CronJobs, basadas en las clases actuales de AFFiNE y con comprobación del resultado real.",
-        "Traefik se prepara al necesitarlo, no al arrancar cada laboratorio. Los materiales se descargan y verifican dentro de Linux; si no hay conexión, se conserva la alternativa desde el navegador."
+        "Traefik se prepara al necesitarlo, no al arrancar cada laboratorio. Los materiales se descargan y verifican dentro de Linux; si no hay conexión, se conserva la alternativa desde el navegador.",
+        "El aprovisionador de almacenamiento se prepara en el worker y tiene recursos definidos. Evitamos cargar todas sus imágenes en el control plane; los guardados anteriores no se reescriben."
       ]
     },
     {
