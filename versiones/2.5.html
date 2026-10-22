@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../site-shell.css?v=ac5aee15ea13">
+<link rel="stylesheet" href="../fonts.css?v=20260822-local">
+<link rel="stylesheet" href="../visual-system.css?v=dc5253bb5de9">
+<title>Novedades de la versión 2.5 · S2KTUX</title>
+<meta name="description" content="El laboratorio intermedio de Kubernetes entra con dos nodos preparados y estrena las prácticas de almacenamiento.">
+<meta name="robots" content="index,follow">
+<meta http-equiv="content-language" content="es">
+<meta name="theme-color" content="#f6ecd9">
+<link rel="icon" type="image/png" sizes="192x192" href="../assets/icon-192.png">
+<link rel="apple-touch-icon" href="../assets/icon-192.png">
+<link rel="manifest" href="../manifest.webmanifest">
+<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
+<script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../sw.js').catch(function(){});});}</script>
+<link rel="canonical" href="https://s2ktux.github.io/versiones/2.5.html">
+<meta property="og:url" content="https://s2ktux.github.io/versiones/2.5.html">
+<meta property="og:site_name" content="S2KTUX">
+<meta property="og:locale" content="es_ES">
+<meta name="twitter:title" content="Novedades de la versión 2.5 · S2KTUX">
+<meta name="twitter:description" content="El laboratorio intermedio de Kubernetes entra con dos nodos preparados y estrena las prácticas de almacenamiento.">
+<meta name="author" content="S2KTUX">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Novedades de la versión 2.5 · S2KTUX">
+<meta property="og:description" content="El laboratorio intermedio de Kubernetes entra con dos nodos preparados y estrena las prácticas de almacenamiento.">
+<meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:image" content="https://s2ktux.github.io/assets/og.png">
+<meta name="twitter:card" content="summary_large_image">
+  <style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);font-family:'Space Mono',monospace;color:var(--text)}
+  :root{--bg:#f6ecd9;--surface:#fbf3e2;--surface2:#e7d3ae;--line:#4a3627;--text:#6b543f;--head:#7a4a2b;--muted:#8a7259;--soft2:#d0b58a}
+  html.dark{--bg:#1e1811;--surface:#2a2219;--surface2:#382d20;--line:#7a6449;--text:#e6d5b8;--head:#f8cf90;--muted:#c4ab89;--soft2:#0f0b06}
+  html,body{transition:background-color .25s ease,color .25s ease}
+  a{color:#d97757;text-decoration:none}
+  a:hover{color:#c2650a}
+  html.dark a{color:#ef8a5f}
+  html.dark a:hover{color:#f2a071}
+  ::selection{background:#d97757;color:#fff}
+  a:focus-visible,button:focus-visible,summary:focus-visible,input:focus-visible,select:focus-visible,[tabindex]:focus-visible{outline:3px solid #d97757;outline-offset:2px}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+  .navlink{color:var(--text);font-size:20px;transition:color .15s}
+  .navlink:hover{color:var(--head)}
+
+</style>
+<link rel="stylesheet" href="../sobre.css?v=20261022-notas-version">
+<script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
+<script defer src="../site-shell.js?v=20260826-phase3"></script>
+
+</head>
+<body>
+
+<div class="site-page-shell site-app-shell">
+<a class="skip-link" href="#main-content">Saltar al contenido</a>
+<div class="site-header" role="banner">
+  <div class="site-header-inner">
+    <a class="site-logo" href="../index.html">S2KTUX</a>
+    <div class="site-nav" role="navigation" aria-label="Navegación principal">
+      <a class="navlink nav-home" href="../index.html">Inicio</a>
+      <a class="navlink" href="../cursos.html">Cursos</a>
+      <a class="navlink" href="../terminal.html">Terminal</a>
+      <a class="navlink" href="../proyectos.html">Proyectos</a>
+      <button type="button" class="site-theme-toggle" data-theme-toggle aria-label="Cambiar tema claro u oscuro"><span data-theme-icon>&#9790;</span></button>
+    </div>
+  </div>
+</div>
+
+<main id="main-content"><section class="about-page about-release">
+<a href="../sobre.html#version-2.5">← Volver al historial</a>
+<h1>Versión 2.5</h1>
+<p class="about-small"><time datetime="2026-10-21">21/10/2026</time></p>
+<p>El laboratorio intermedio de Kubernetes entra con dos nodos preparados y estrena las prácticas de almacenamiento.</p>
+<h2>Qué ha cambiado</h2>
+<p>Kubernetes intermedio recupera una base de dos nodos ya preparada, sin repetir el montaje del worker. Tus sesiones guardadas siguen teniendo prioridad.</p>
+<p>Editar preguntas ya no invalida la entrada rápida. Las descargas de la nueva base tienen límite de espera, reintentos y verificación de integridad.</p>
+<p>Abrimos tres prácticas de la clase 12: volúmenes temporales, persistencia con PV/PVC y aprovisionamiento dinámico con StorageClass.</p>
+<p>Los correctores de RBAC aceptan reglas equivalentes aunque sus permisos se escriban por separado.</p>
+</section></main>
+
+<footer class="site-footer">
+  <div class="site-footer-brand">S2KTUX</div>
+  <div class="site-footer-tagline">Aprender, practicar y compartir.</div>
+  <div class="site-footer-links">
+    <a href="../sobre.html">Sobre</a>
+    <a href="https://www.youtube.com/@S2KTUX/featured" target="_blank" rel="noopener">YouTube</a>
+    <a href="https://www.linkedin.com/in/alai-molina-delgado-563b70184" target="_blank" rel="noopener">LinkedIn</a>
+  </div>
+  <div data-copyright class="site-footer-copy">© 2026 S2KTUX · Aprende Linux, gratis · Comunidad abierta</div>
+</footer>
+</div>
+
+</body>
+</html>
