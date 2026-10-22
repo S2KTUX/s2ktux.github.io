@@ -10,7 +10,7 @@ Esta lista cambia con el proyecto. Las mejoras comprobadas salen de aquí y pasa
 - **Laboratorios:** Guardar de forma conjunta las máquinas, el intento y el cronómetro para poder continuar un examen tras recargar.
 - **Laboratorios:** Ampliar los ejercicios de diagnóstico con fallos controlados de fstab, SELinux, servicios y red; en Kubernetes, Pods, nodos, selectores y PVC.
 - **Más adelante:** Variar nombres, usuarios y tamaños entre intentos, adaptando también la preparación, las soluciones y los correctores.
-- **Rendimiento:** Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado, y la preparación de complementos. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas.
+- **Rendimiento:** Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado, y la preparación de complementos. Comprobar también las sesiones tras largos periodos en segundo plano. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas.
 - **Rendimiento:** Estudiar qué se puede quitar de las imágenes sin perder herramientas, páginas de man, licencias ni ejercicios del curso. Importar solo las imágenes necesarias al preparar un complemento, sin cargar el paquete completo si se puede evitar.
 - **Más adelante:** Revisar si la validación con OpenAPI mejora el simulador de Kubernetes, aprovechando sus objetos y controladores actuales sin reconstruirlo innecesariamente.
 - **Más adelante:** Cuando exista un curso de AWS, plantear un banco de preguntas con explicaciones como el de LPIC-1.

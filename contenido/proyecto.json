@@ -44,7 +44,7 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado, y la preparación de complementos. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
+      "texto": "Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado, y la preparación de complementos. Comprobar también las sesiones tras largos periodos en segundo plano. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
     },
     {
       "id": "imagen-ligera",

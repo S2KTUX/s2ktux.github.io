@@ -13,7 +13,7 @@ const baseCheck=(ns,host)=>acceptedGateway(ns)+' && '+acceptedRoute(ns,host)+' &
 const wait=check=>'deadline=$(($(date +%s)+120)); until ('+check+'); do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 2; done';
 const diagnostics=(ns,host)=>[
  {check:acceptedGateway(ns),message:'El Gateway entrada todavía no está aceptado y programado. Revisa su clase y su listener.'},
- {check:acceptedRoute(ns,host),message:'La ruta web no está aceptada o tiene referencias sin resolver. Revisa el Gateway y el Service de destino.'}
+ {check:acceptedRoute(ns,host),message:'La HTTPRoute web no tiene el host, las rutas o los destinos pedidos, o todavía no está aceptada con sus referencias resueltas.'}
 ];
 const checkA=baseCheck('p23a','web.gateway.test')+' && '+probe('web.gateway.test','GATEWAY_OK');
 add(23,'a','Gateway y HTTPRoute · I',
