@@ -5,7 +5,9 @@ import {EJERCICIOS_DNS} from '../laboratorios/kubernetes-real/debian/ejercicios-
 const tasks=[...EJERCICIOS_SCHEDULING,...EJERCICIOS_RED,...EJERCICIOS_DNS];
 const lines=['#!/bin/sh','set -eu','echo PRUEBA_SCHEDULING_RED_REAL','case "${1:-all}" in all|equivalencias|'+tasks.map(t=>t.id).join('|')+') ;; *) exit 2;; esac'];
 for(const task of tasks){
- lines.push('if test "${1:-all}" = all || test "${1:-all}" = '+task.id+'; then','echo INICIO_'+task.id,...task.prepare,...(task.nativeSolution||task.solution).split('\n'),task.nativeWait||'true',task.check,'echo POSITIVO_'+task.id,task.negative,'kubectl get --raw=/readyz --request-timeout=20s','if (set -eu; '+task.check+'); then echo ERROR_ACEPTO_INCOMPLETO; exit 1; fi','echo NEGATIVO_'+task.id);
+ lines.push('if test "${1:-all}" = all || test "${1:-all}" = '+task.id+'; then','echo INICIO_'+task.id,...task.prepare,...(task.nativeSolution||task.solution).split('\n'),task.nativeWait||'true',task.check,'echo POSITIVO_'+task.id);
+ if(task.id==='c21-a')lines.push(task.nativeSolution.replace('"podSelector":{"matchLabels":{"app":"api"}}','"podSelector":{"matchExpressions":[{"key":"app","operator":"In","values":["api"]}]}'),task.check,'echo EQUIVALENCIA_SELECTOR_RED_OK');
+ lines.push(task.negative,'kubectl get --raw=/readyz --request-timeout=20s','if (set -eu; '+task.check+'); then echo ERROR_ACEPTO_INCOMPLETO; exit 1; fi','echo NEGATIVO_'+task.id);
  if(guardasRed[task.id]){
   const breakScenario=task.id==='c21-a'?'kubectl -n p21a delete pod intruso':task.id==='c21-b'?`kubectl -n p21b patch service api --type=json -p '[{"op":"remove","path":"/spec/ports/1"}]'`:'kubectl -n p21c delete pod ajeno';
   lines.push(guardasRed[task.id],breakScenario,'if (set -eu; '+guardasRed[task.id]+'); then echo ERROR_ACEPTO_ESCENARIO_ROTO; exit 1; fi','echo GUARDA_ESCENARIO_'+task.id);

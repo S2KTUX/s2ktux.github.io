@@ -5,7 +5,7 @@ import {EJERCICIOS_ALMACENAMIENTO} from './ejercicios-almacenamiento.mjs?v=9e737
 import {EJERCICIOS_CONTROLADORES} from './ejercicios-controladores.mjs?v=7516c665c03377ac';
 import {EJERCICIOS_INGRESS} from './ejercicios-ingress.mjs?v=c4e5afde8e57c7fa';
 import {EJERCICIOS_SCHEDULING} from './ejercicios-scheduling.mjs?v=56508fb26c7d2b9e';
-import {EJERCICIOS_RED} from './ejercicios-red.mjs?v=0a71ea4fe1dd4e12';
+import {EJERCICIOS_RED} from './ejercicios-red.mjs?v=9bc69fddeb53d4b8';
 import {EJERCICIOS_DNS} from './ejercicios-dns.mjs?v=e00ad26fa5ec3558';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';

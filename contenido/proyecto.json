@@ -1,5 +1,5 @@
 {
-  "version": "2.6",
+  "version": "2.7",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Completar y comprobar las clases 19–34 en el laboratorio real antes de abrirlas. Las clases 01–18 ya tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
+      "texto": "Completar y comprobar las clases 23–34 en el laboratorio real antes de abrirlas. Las clases 01–22 tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
     },
     {
       "id": "kubernetes-examen",
@@ -19,7 +19,7 @@
     {
       "id": "kubernetes-tres-practicas",
       "tema": "Kubernetes",
-      "texto": "Revisar hasta tres ejercicios por clase: uno para empezar, otro para aplicar lo aprendido y otro orientado al examen. Sin ejercicios para la clase 00."
+      "texto": "Revisar hasta tres ejercicios por clase: uno para empezar, otro para aplicar lo aprendido y otro orientado al examen. Ampliar las variantes de afinidad y reparto, y practicar NoExecute en un worker aislado sin afectar al resto del laboratorio. Sin ejercicios para la clase 00."
     },
     {
       "id": "examen-reinicio",
@@ -68,6 +68,18 @@
     }
   ],
   "versiones": [
+    {
+      "version": "2.7",
+      "fecha": "2026-10-22",
+      "resumen": "Kubernetes suma prácticas para elegir nodos, limitar conexiones y descubrir servicios por su nombre.",
+      "cambios": [
+        "Añadimos diez prácticas de las clases 19–22: nodeSelector, afinidad, asignación manual, tolerations, NetworkPolicies y CoreDNS. Empiezan con ejemplos sencillos y pasan después a combinar lo aprendido.",
+        "El filtrado de red se prepara cuando un ejercicio lo necesita, no al arrancar el laboratorio. Las pruebas comprueban tráfico real: quién puede entrar, quién queda fuera, los puertos y el acceso a DNS cuando la salida está limitada.",
+        "Los correctores de red comprueban que siguen presentes los clientes de prueba y que el servidor continúa escuchando. Borrar un cliente o quitar un puerto del Service no cuenta como haber bloqueado el tráfico con una política.",
+        "Al comprobar estas prácticas indicamos qué conexión o requisito falla. Una caída de la API no se presenta como una respuesta incorrecta, y no añadimos consultas de diagnóstico cuando el ejercicio ya está bien.",
+        "Se aceptan formas equivalentes de escribir los selectores y la afinidad. Los guardados del alumno no se reescriben; las clases 23–34 y el simulacro siguen cerrados hasta comprobarlos."
+      ]
+    },
     {
       "version": "2.6",
       "fecha": "2026-10-22",

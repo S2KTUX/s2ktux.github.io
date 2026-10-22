@@ -10,7 +10,7 @@ const allowed=(ns,name,url)=>`test "$(${request(ns,name,url)})" = RED_OK`;
 const denied=(ns,name,url)=>`if ${request(ns,name,url)} >/dev/null 2>&1; then exit 1; fi`;
 const url=(ns,port=8080)=>`http://api.${ns}.svc.cluster.local:${port}/`;
 const ready=ns=>`kubectl -n ${ns} wait --for=condition=Ready pods --all --timeout=180s`;
-const hasPolicy=ns=>obtener(ns,'networkpolicies','','any(.items[]; .spec.podSelector.matchLabels.app=="api" and (.spec.policyTypes|index("Ingress"))!=null)');
+const hasPolicy=ns=>obtener(ns,'networkpolicies','','any(.items[]; (.spec.podSelector.matchLabels.app=="api" or any(.spec.podSelector.matchExpressions[]?; .key=="app" and .operator=="In" and (.values|unique)==["api"])) and (.spec.policyTypes|index("Ingress"))!=null)');
 const sameNamespaceFrom=[{podSelector:{matchLabels:{app:'frontend'}}}];
 add(21,'a','Permitir solo al frontend · I',
  'En p21a, api responde en TCP 8080 y 80. Permite que solo los Pods app=frontend de ese namespace entren a api por TCP 8080. El Pod intruso y el acceso al puerto 80 deben quedar bloqueados. No cambies los Pods ni el Service; crea una NetworkPolicy.',
