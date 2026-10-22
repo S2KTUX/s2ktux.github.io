@@ -1,4 +1,4 @@
-import {prepararMaterialesCurso} from './materiales-curso.mjs?v=3c2ad606a61a59e5';
+import {prepararMaterialesCurso} from './materiales-curso.mjs?v=6deece2f71879ea3';
 export const ordenComprobarIngress='image=$(kubectl -n traefik get deployment traefik -o jsonpath=\'{.spec.template.spec.containers[0].image}\'); case "$image" in s2ktux/traefik-lab:3.5.2|docker.io/s2ktux/traefik-lab:3.5.2) ;; *) exit 1;; esac; kubectl -n traefik rollout status deployment/traefik --timeout=180s';
 // Solo al preparar una práctica de Ingress. No se instala al arrancar ni se
 // repara un controlador que el alumno haya modificado.
@@ -15,7 +15,8 @@ export async function prepararIngress(run){
  else if(materials?.ok===false)await prepararMaterialesCurso(run);
  else throw Error('No se pudo consultar el material de Ingress');
  await execute('worker1','Importar Traefik real para la arquitectura del laboratorio','if ! ctr -n k8s.io images ls -q | grep -qx docker.io/s2ktux/traefik-lab:3.5.2; then gzip -dc /mnt/kube-client/images/curso.tar.gz | ctr -n k8s.io images import --no-unpack --platform=linux/386 -; fi',300000);
- await execute('controlplane','Evitar sobrescribir controladores o CRDs ajenos','for target in clusterrole/traefik clusterrolebinding/traefik ingressclass/traefik; do test -z "$(kubectl get "$target" --ignore-not-found -o name)"; done; test -z "$(kubectl get -f /opt/curso/15-23/crds/ --ignore-not-found -o name)"');
- await execute('controlplane','Preparar los recursos originales de Traefik','kubectl create --validate=strict --request-timeout=120s -f /opt/curso/15-23/crds/ && kubectl wait --for=condition=Established --timeout=180s -f /opt/curso/15-23/crds/',300000);
- await execute('controlplane','Instalar el controlador Ingress del curso','helm install traefik /opt/curso/15-23/traefik-37.1.1-lab1.tgz --namespace traefik --create-namespace --skip-crds -f /opt/curso/15-23/values.yaml && kubectl -n traefik rollout status deployment/traefik --timeout=240s',300000);
+ await execute('controlplane','Evitar sobrescribir controladores ajenos','for target in clusterrole/traefik clusterrolebinding/traefik ingressclass/traefik; do test -z "$(kubectl get "$target" --ignore-not-found -o name)"; done');
+ // Ingress es una API nativa. No necesita instalar quince CRDs ni activar
+ // IngressRoute/Middleware, que no se usan en estas prácticas del curso.
+ await execute('controlplane','Instalar el controlador Ingress del curso','helm install traefik /opt/curso/15-23/traefik-37.1.1-lab1.tgz --namespace traefik --create-namespace --skip-crds -f /opt/curso/15-23/values.yaml --set providers.kubernetesCRD.enabled=false && kubectl -n traefik rollout status deployment/traefik --timeout=240s',300000);
 }

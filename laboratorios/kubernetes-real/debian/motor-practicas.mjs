@@ -31,9 +31,11 @@ export async function prepararPractica(task,run){
   if(requirement==='local-path'){
    const {prepararAlmacenamiento}=await import('./almacenamiento-curso.mjs?v=0bb85c4d4cb510a9');await prepararAlmacenamiento(run);
   }else if(requirement==='traefik'){
-   const {prepararIngress}=await import('./ingress-curso.mjs?v=43674ff2cdeb5bc1');await prepararIngress(run);
+   const {prepararIngress}=await import('./ingress-curso.mjs?v=6ceb5bb8f0af85f7');await prepararIngress(run);
   }else if(requirement==='network-policy'){
    const {prepararPoliticasCurso}=await import('./red-politicas-curso.mjs?v=3c77baf60f84d25b');await prepararPoliticasCurso(run);
+  }else if(requirement==='gateway'){
+   const {prepararGateway}=await import('./gateway-curso.mjs?v=831d5392dd3028da');await prepararGateway(run);
   }else throw Error('Componente de práctica desconocido');
  }
  for(const command of task.prepare||[]){

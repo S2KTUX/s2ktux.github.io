@@ -1,0 +1,33 @@
+import {q,aplicar,pod,contenedor,http,obtener,crearPractica,esperarPod} from './herramientas-practicas.mjs?v=b995634347ea1c07';
+const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));
+const gateway=(ns,tls=false)=>({apiVersion:'gateway.networking.k8s.io/v1',kind:'Gateway',metadata:{name:'entrada',namespace:ns},spec:{gatewayClassName:'traefik',listeners:[tls?{name:'https',protocol:'HTTPS',port:8443,tls:{mode:'Terminate',certificateRefs:[{name:'web-tls'}]}}:{name:'http',protocol:'HTTP',port:8000}]}});
+const route=(ns,host,rules)=>({apiVersion:'gateway.networking.k8s.io/v1',kind:'HTTPRoute',metadata:{name:'web',namespace:ns},spec:{parentRefs:[{name:'entrada'}],hostnames:[host],rules}});
+const rule=(path,name='web')=>({matches:[{path:{type:'PathPrefix',value:path}}],backendRefs:[{name,port:80}]});
+const backend=(ns,name,text,api=false)=>[aplicar(pod(ns,name,{containers:[contenedor(api?['sh','-c',`mkdir -p /www/api; echo ${text} >/www/index.html; echo ${text} >/www/api/index.html; exec httpd -f -p 8080 -h /www`]:http(text))]})),aplicar({apiVersion:'v1',kind:'Service',metadata:{name,namespace:ns},spec:{selector:{app:name},ports:[{port:80,targetPort:8080}]}}),esperarPod(ns,name)];
+const condition=(type,where='.status.conditions')=>`any(${where}[]?; .type=="${type}" and .status=="True" and .observedGeneration==$generation)`;
+const acceptedGateway=ns=>obtener(ns,'gateway','entrada',`.metadata.generation as $generation | .spec.gatewayClassName=="traefik" and ${condition('Accepted')} and ${condition('Programmed')}`);
+const acceptedRoute=(ns,host)=>obtener(ns,'httproute','web',`.metadata.generation as $generation | (.spec.hostnames|index("${host}"))!=null and any(.status.parents[]?; .parentRef.name=="entrada" and (.parentRef.namespace==null or .parentRef.namespace=="${ns}") and .controllerName=="traefik.io/gateway-controller" and ${condition('Accepted','.conditions')} and ${condition('ResolvedRefs','.conditions')})`);
+const probe=(host,text,path='/',tls=false)=>`test "$(curl --fail --silent --show-error --max-time 15 ${tls?'--cacert /root/p23c.crt --resolve '+host+':30443:10.77.0.11 https://'+host+':30443'+path:'-H '+q('Host: '+host)+' http://10.77.0.11:30080'+path})" = ${text}`;
+const baseCheck=(ns,host)=>acceptedGateway(ns)+' && '+acceptedRoute(ns,host)+' && test -z "$(kubectl -n '+ns+' get ingress -o name)"';
+const wait=check=>'deadline=$(($(date +%s)+120)); until ('+check+'); do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 2; done';
+const diagnostics=(ns,host)=>[
+ {check:acceptedGateway(ns),message:'El Gateway entrada todavía no está aceptado y programado. Revisa su clase y su listener.'},
+ {check:acceptedRoute(ns,host),message:'La ruta web no está aceptada o tiene referencias sin resolver. Revisa el Gateway y el Service de destino.'}
+];
+const checkA=baseCheck('p23a','web.gateway.test')+' && '+probe('web.gateway.test','GATEWAY_OK');
+add(23,'a','Gateway y HTTPRoute · I',
+ 'En p23a, el Service web:80 ya sirve GATEWAY_OK. Crea un Gateway entrada con clase traefik y listener HTTP en 8000. Crea la HTTPRoute web para que web.gateway.test y la ruta / lleguen a ese Service. Comprueba la entrada en 10.77.0.11:30080.',
+ aplicar(gateway('p23a'))+'\n'+aplicar(route('p23a','web.gateway.test',[rule('/')]))+'\nkubectl -n p23a describe gateway entrada\nkubectl -n p23a describe httproute web\ncurl -H '+q('Host: web.gateway.test')+' http://10.77.0.11:30080/',checkA,
+ {requirements:['gateway'],prepare:backend('p23a','web','GATEWAY_OK'),negative:'kubectl -n p23a delete httproute web',nativeWait:wait(checkA),diagnostics:diagnostics('p23a','web.gateway.test')});
+const original={apiVersion:'networking.k8s.io/v1',kind:'Ingress',metadata:{name:'antigua',namespace:'p23b'},spec:{ingressClassName:'traefik',rules:[{host:'tienda.gateway.test',http:{paths:['/','/api'].map((path,i)=>({path,pathType:'Prefix',backend:{service:{name:i?'api':'web',port:{number:80}}}}))}}]}};
+const checkB=baseCheck('p23b','tienda.gateway.test')+' && '+probe('tienda.gateway.test','FRONTEND_OK')+' && '+probe('tienda.gateway.test','API_OK','/api/');
+add(23,'b','Pasar de Ingress a Gateway · II',
+ 'En p23b hay un Ingress antigua para tienda.gateway.test: / va a web:80 y /api a api:80. Sustitúyelo por el Gateway entrada (clase traefik, HTTP 8000) y la HTTPRoute web, conservando ese enrutado. Elimina solo el Ingress antigua. No cambies los Services ni los Pods. En 10.77.0.11:30080, / debe devolver FRONTEND_OK y /api/ debe devolver API_OK.',
+ 'kubectl -n p23b get ingress antigua -o yaml\n'+aplicar(gateway('p23b'))+'\n'+aplicar(route('p23b','tienda.gateway.test',[rule('/'),rule('/api','api')]))+'\nkubectl -n p23b delete ingress antigua\ncurl -H '+q('Host: tienda.gateway.test')+' http://10.77.0.11:30080/api/',checkB,
+ {requirements:['gateway'],prepare:[...backend('p23b','web','FRONTEND_OK'),...backend('p23b','api','API_OK',true),aplicar(original)],negative:`kubectl -n p23b patch httproute web --type=json -p '[{"op":"replace","path":"/spec/rules/1/backendRefs/0/port","value":8081}]'`,nativeWait:wait(checkB),diagnostics:diagnostics('p23b','tienda.gateway.test')});
+const checkC=baseCheck('p23c','seguro.gateway.test')+' && '+probe('seguro.gateway.test','GATEWAY_TLS_OK','/',true);
+add(23,'c','Gateway con HTTPS · II',
+ 'En p23c están preparados web:80 y el Secret TLS web-tls para seguro.gateway.test. Crea entrada con clase traefik, listener HTTPS en 8443 y ese certificado. Asocia la HTTPRoute web para publicar / hacia web:80. Debe devolver GATEWAY_TLS_OK por 10.77.0.11:30443. El certificado de prácticas está en /root/p23c.crt.',
+ aplicar(gateway('p23c',true))+'\n'+aplicar(route('p23c','seguro.gateway.test',[rule('/')]))+'\nkubectl -n p23c describe gateway entrada\ncurl --cacert /root/p23c.crt --resolve seguro.gateway.test:30443:10.77.0.11 https://seguro.gateway.test:30443/',checkC,
+ {requirements:['gateway'],prepare:[...backend('p23c','web','GATEWAY_TLS_OK'),'test ! -e /root/p23c.crt && test ! -e /root/p23c.key','openssl req -x509 -nodes -days 30 -newkey rsa:2048 -keyout /root/p23c.key -out /root/p23c.crt -subj /CN=seguro.gateway.test -addext subjectAltName=DNS:seguro.gateway.test','kubectl -n p23c create secret tls web-tls --cert=/root/p23c.crt --key=/root/p23c.key'],negative:'kubectl -n p23c delete secret web-tls',nativeWait:wait(checkC),cleanup:'rm -f /root/p23c.crt /root/p23c.key',diagnostics:diagnostics('p23c','seguro.gateway.test')});
+export const EJERCICIOS_GATEWAY=Object.freeze(tasks);
