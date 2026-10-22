@@ -17,7 +17,7 @@ assert.deepEqual(ejerciciosClase(0),[]);assert.equal(claseDesdeURL(new URLSearch
 for(let number=1;number<=11;number++)assert.equal(ejerciciosClase(number).length,number<=3||number===5?2:number===6||number===7?3:4);
 assert.equal(ejerciciosClase(13).length,3);assert.equal(ejerciciosClase(14).length,2);
 assert.equal(ejerciciosClase(12).length,3);
-for(let number=15;number<=18;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===15?3:2);}
+for(let number=15;number<=18;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===15?4:2);}
 for(let number=19;number<=22;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===19||number===21?3:2);}
 for(let number=23;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
 assert.equal(nivelDisponible('avanzado'),false);assert.equal(limiteNodos('intermedio'),2);

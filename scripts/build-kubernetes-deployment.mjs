@@ -4,7 +4,7 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
-for(const path of ['debian/ejercicios-gateway.mjs','debian/gateway-curso.mjs','recursos/curso-debian-v1/materiales.tar.gz'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
+for(const path of ['debian/ejercicios-gateway.mjs','debian/gateway-curso.mjs','debian/rewrite-curso.mjs','debian/crds-curso.mjs','recursos/curso-debian-v1/materiales.tar.gz'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 for(const path of ['debian/ejercicios-almacenamiento.mjs','debian/almacenamiento-curso.mjs','debian/almacenamiento-paquete.mjs','recursos/almacenamiento-v1/local-path.yaml.gz','recursos/almacenamiento-v1/local-path-original.yaml','debian/ejercicios-controladores.mjs','debian/ejercicios-ingress.mjs','debian/ingress-curso.mjs','debian/ejercicios-scheduling.mjs','debian/ejercicios-red.mjs','debian/ejercicios-dns.mjs','debian/red-politicas-curso.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 const readText=async path=>(await readFile(new URL(path,base),'utf8')).replaceAll('\r\n','\n');
 const revision=async path=>createHash('sha256').update(await readText(path)).digest('hex').slice(0,16);
@@ -24,6 +24,9 @@ for(const child of ['ejercicios-controladores','ejercicios-ingress','ejercicios-
 }
 await replaceRequired('debian/ingress-curso.mjs',/from '\.\/materiales-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './materiales-curso.mjs?v="+await revision('debian/materiales-curso.mjs')+"'");
 await replaceRequired('debian/gateway-curso.mjs',/from '\.\/ingress-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ingress-curso.mjs?v="+await revision('debian/ingress-curso.mjs')+"'");
+await replaceRequired('debian/rewrite-curso.mjs',/from '\.\/ingress-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ingress-curso.mjs?v="+await revision('debian/ingress-curso.mjs')+"'");
+for(const parent of ['gateway-curso','rewrite-curso'])await replaceRequired('debian/'+parent+'.mjs',/from '\.\/crds-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './crds-curso.mjs?v="+await revision('debian/crds-curso.mjs')+"'");
+await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/rewrite-curso\.mjs(?:\?v=[a-z0-9-]+)?'\)/,"import('./rewrite-curso.mjs?v="+await revision('debian/rewrite-curso.mjs')+"')");
 await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/gateway-curso\.mjs(?:\?v=[a-z0-9-]+)?'\)/,"import('./gateway-curso.mjs?v="+await revision('debian/gateway-curso.mjs')+"')");
 await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/red-politicas-curso\.mjs(?:\?v=[a-z0-9-]+)?'\)/,"import('./red-politicas-curso.mjs?v="+await revision('debian/red-politicas-curso.mjs')+"')");
 await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/ingress-curso\.mjs(?:\?v=[a-z0-9-]+)?'\)/,"import('./ingress-curso.mjs?v="+await revision('debian/ingress-curso.mjs')+"')");

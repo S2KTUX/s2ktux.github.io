@@ -10,5 +10,8 @@ assert.notEqual(revisionPreparacion(files.map(file=>({...file,source:file.source
 assert.notEqual(revisionPreparacion([...files,{path:'debian/nuevo-componente.mjs',source:'nativo'}],profile),hash,'Un módulo nuevo se incluye por defecto');
 assert.notEqual(revisionPreparacion(files,{...profile,materials:true}),hash,'Activar materiales modifica la preparación');
 assert.notEqual(revisionPreparacion(files,{...profile,policies:true}),hash);
+const optional=[...files,{path:'debian/gateway-curso.mjs',source:'addon1'},{path:'debian/materiales-curso.mjs',source:'archive1'}],editedOptional=optional.map(file=>({...file,source:file.source.replace('addon1','addon2').replace('archive1','archive2')}));
+assert.equal(revisionPreparacion(optional,profile),revisionPreparacion(editedOptional,profile),'Un complemento bajo demanda no invalida la base sin complementos');
+assert.notEqual(revisionPreparacion(optional,{...profile,materials:true}),revisionPreparacion(editedOptional,{...profile,materials:true}),'Sí invalida una captura que lo incluyera');
 assert.throws(()=>revisionPreparacion(files,{}));
 console.log('Kubernetes: la base se invalida por cambios nativos, no por editar preguntas o presentación.');

@@ -35,7 +35,9 @@ export async function prepararPractica(task,run){
   }else if(requirement==='network-policy'){
    const {prepararPoliticasCurso}=await import('./red-politicas-curso.mjs?v=3c77baf60f84d25b');await prepararPoliticasCurso(run);
   }else if(requirement==='gateway'){
-   const {prepararGateway}=await import('./gateway-curso.mjs?v=831d5392dd3028da');await prepararGateway(run);
+   const {prepararGateway}=await import('./gateway-curso.mjs?v=1149d7ba583d8b77');await prepararGateway(run);
+  }else if(requirement==='traefik-rewrite'){
+   const {prepararRewrite}=await import('./rewrite-curso.mjs?v=64272d462d55d2e7');await prepararRewrite(run);
   }else throw Error('Componente de práctica desconocido');
  }
  for(const command of task.prepare||[]){

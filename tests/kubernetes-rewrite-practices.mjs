@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {prepararRewrite} from '../laboratorios/kubernetes-real/debian/rewrite-curso.mjs';
+import {ordenConsultarCRDs,prepararCRDsCurso} from '../laboratorios/kubernetes-real/debian/crds-curso.mjs';
+import {EJERCICIOS_INGRESS} from '../laboratorios/kubernetes-real/debian/ejercicios-ingress.mjs';
+const t=EJERCICIOS_INGRESS.find(t=>t.id==='c15-d'),fixture=readFileSync(new URL('../fixtures/kubernetes-rewrite-nativo.sh',import.meta.url),'utf8');
+assert.ok(t.requirements.includes('traefik-rewrite'));assert.match(t.check,/stripPrefix/);assert.match(t.check,/REWRITE_OK/);assert.ok(fixture.includes(t.check));
+assert.doesNotMatch(t.solutionDisplay,/printf|runuser/);
+const fresh=[];await prepararRewrite(async(id,label,command)=>{fresh.push(command);return {ok:label!=='Consultar el proveedor CRD existente'};});
+assert.ok(fresh.some(c=>/kubectl create/.test(c)));assert.ok(fresh.some(c=>/--reuse-values.*providers.kubernetesCRD.enabled=true/.test(c)));assert.ok(!fresh.some(c=>/ports\.web\.port|kubernetesGateway.enabled=false/.test(c)));
+const existing=[];await prepararRewrite(async(id,label,command)=>{existing.push(command);return {ok:label!=='Consultar los CRDs del complemento'};});assert.ok(!existing.some(c=>/helm upgrade|kubectl create/.test(c)));
+await assert.rejects(()=>prepararCRDsCurso(async()=>({ok:true}),['middlewares.traefik.io'],['/opt/curso/15-23/crds/09.yaml'],{allowInstall:false}),/No se reparan/);
+assert.throws(()=>ordenConsultarCRDs(['bad; rm'],'length==0'));
+const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';assert.equal(spawnSync(bash,['--noprofile','--norc','-n'],{input:fixture,encoding:'utf8'}).status,0);
+console.log('Rewrite conserva el mini-laboratorio de AFFiNE bajo demanda, sin reinstalar proveedores existentes ni desactivar Gateway.');
