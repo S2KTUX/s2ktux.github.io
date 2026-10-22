@@ -1,5 +1,5 @@
 import {prepararIngress,ordenComprobarIngress} from './ingress-curso.mjs?v=6ceb5bb8f0af85f7';
-import {prepararCRDsCurso,ordenCRDsEstablecidos} from './crds-curso.mjs?v=80d7ce82caa93a3a';
+import {prepararCRDsCurso,ordenCRDsEstablecidos} from './crds-curso.mjs?v=60ae2c3890fe4db2';
 export const crdsGateway=['gatewayclasses','gateways','grpcroutes','httproutes','referencegrants'].map(name=>name+'.gateway.networking.k8s.io');
 export const ordenComprobarCRDsGateway=ordenCRDsEstablecidos(crdsGateway);
 export const ordenComprobarGateway=ordenComprobarIngress+'; kubectl -n traefik get deployment traefik -o json | jq -e '+"'any(.spec.template.spec.containers[0].args[]; .==\"--providers.kubernetesgateway\" or .==\"--providers.kubernetesgateway=true\")'";

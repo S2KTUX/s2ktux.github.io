@@ -1,6 +1,6 @@
 export function ordenConsultarCRDs(names,predicate){
  if(!names.length||names.some(name=>!/^[a-z][a-z0-9]*(?:\.[a-z][a-z0-9-]*)+$/.test(name)))throw Error('CRDs no válidos');
- return `crds=$(kubectl get crds -o json --request-timeout=20s) && test -n "$crds" && echo "$crds" | jq -e --argjson expected '${JSON.stringify(names)}' '[.items[] | select(.metadata.name as $name | $expected | index($name))] | ${predicate}'`;
+ return `crds=$(kubectl get crds -o json --request-timeout=20s) && test -n "$crds" && printf '%s\\n' "$crds" | jq -e --argjson expected '${JSON.stringify(names)}' '[.items[] | select(.metadata.name as $name | $expected | index($name))] | ${predicate}'`;
 }
 export const ordenCRDsEstablecidos=names=>ordenConsultarCRDs(names,'length=='+names.length+' and all(.[]; any(.status.conditions[]?; .type=="Established" and .status=="True"))');
 export async function prepararCRDsCurso(run,names,files,{allowInstall=true}={}){

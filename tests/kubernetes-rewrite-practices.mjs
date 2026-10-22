@@ -12,5 +12,6 @@ assert.ok(fresh.some(c=>/kubectl create/.test(c)));assert.ok(fresh.some(c=>/--re
 const existing=[];await prepararRewrite(async(id,label,command)=>{existing.push(command);return {ok:label!=='Consultar los CRDs del complemento'};});assert.ok(!existing.some(c=>/helm upgrade|kubectl create/.test(c)));
 await assert.rejects(()=>prepararCRDsCurso(async()=>({ok:true}),['middlewares.traefik.io'],['/opt/curso/15-23/crds/09.yaml'],{allowInstall:false}),/No se reparan/);
 assert.throws(()=>ordenConsultarCRDs(['bad; rm'],'length==0'));
+assert.match(ordenConsultarCRDs(['middlewares.traefik.io'],'length==0'),/printf '%s\\n' "\$crds"/,'No usar echo: dash interpreta los escapes de las descripciones OpenAPI y rompe el JSON');
 const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';assert.equal(spawnSync(bash,['--noprofile','--norc','-n'],{input:fixture,encoding:'utf8'}).status,0);
 console.log('Rewrite conserva el mini-laboratorio de AFFiNE bajo demanda, sin reinstalar proveedores existentes ni desactivar Gateway.');

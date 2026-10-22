@@ -1,5 +1,5 @@
 import {prepararIngress,ordenComprobarIngress} from './ingress-curso.mjs?v=6ceb5bb8f0af85f7';
-import {prepararCRDsCurso} from './crds-curso.mjs?v=80d7ce82caa93a3a';
+import {prepararCRDsCurso} from './crds-curso.mjs?v=60ae2c3890fe4db2';
 const names=['ingressroutes','ingressroutetcps','ingressrouteudps','middlewares','middlewaretcps','serverstransports','serverstransporttcps','tlsoptions','tlsstores','traefikservices'].map(name=>name+'.traefik.io');
 export async function prepararRewrite(run){
  await prepararIngress(run);
