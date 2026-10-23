@@ -6,10 +6,22 @@ const app=(ns,name='web',command=['sh','-c','mkdir -p /www; echo WEB_LISTA >/www
 const available=(ns,name='web',replicas=1)=>obtener(ns,'deployment',name,`.spec.replicas==${replicas} and .spec.template.spec.containers[0].image=="${IMAGEN}" and .status.observedGeneration==.metadata.generation and (.status.updatedReplicas//0)==${replicas} and (.status.availableReplicas//0)==${replicas}`);
 const service=ns=>({apiVersion:'v1',kind:'Service',metadata:{name:'web',namespace:ns},spec:{selector:{app:'web'},ports:[{port:80,targetPort:8080}]}});
 const traffic=ns=>`test "$(kubectl -n ${ns} exec deployment/web -- wget -T 5 -qO- http://web/)" = WEB_LISTA`;
+const apiManifest='/etc/kubernetes/manifests/kube-apiserver.yaml';
+const apiBackup='/root/p33c-kube-apiserver.yaml';
+const breakAPI=`test "$(grep -Fc -- '--client-ca-file=/etc/kubernetes/pki/ca.crt' ${apiManifest})" = 1; sed -i 's|--client-ca-file=/etc/kubernetes/pki/ca.crt|--client-ca-file=/etc/kubernetes/pki/ca-inexistente.crt|' ${apiManifest}; deadline=$(($(date +%s)+90)); while kubectl get --raw=/readyz --request-timeout=5s; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 3; done`;
+const recoverAPI=`cp ${apiBackup} ${apiManifest}; deadline=$(($(date +%s)+180)); until kubectl get --raw=/readyz --request-timeout=10s; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 3; done; kubectl wait --for=condition=Ready nodes --all --timeout=120s`;
+const apiSolution=`# En cka-cp1, sin depender de kubectl\nsystemctl status kubelet --no-pager\njournalctl -u kubelet -n 30 --no-pager\ncrictl ps -a --name kube-apiserver\n# Consulta el ID que acaba de mostrar crictl:\ncrictl logs ID_DEL_CONTENEDOR\nls /etc/kubernetes/pki/ca.crt\nvi ${apiManifest}\n\n# Corrige la ruta del certificado existente:\n# - --client-ca-file=/etc/kubernetes/pki/ca.crt\n\nkubectl get nodes\nkubectl get pods -n kube-system`;
 const simple=(n,l,title,prompt,solution,check,options={})=>crearPractica(n,l,title,prompt,solution,check,{...options,negative:options.negative||`kubectl -n p${n}${l} scale deployment/web --replicas=0`});
+const reparaciones={
+ a:'kubectl -n p32a logs deployment/web --previous\nkubectl -n p32a edit deployment web\n\n# En command del contenedor app:\n# ["sh", "-c", "mkdir -p /www; echo WEB_LISTA >/www/index.html; exec httpd -f -p 8080 -h /www"]',
+ c:`kubectl -n p32c set image deployment/web app=${IMAGEN}`,
+ d:'kubectl -n p32d edit deployment web\n\n# En spec.template.spec.nodeSelector:\n# kubernetes.io/hostname: cka-w1',
+ e:'kubectl -n p32e logs deployment/web -c inicio\nkubectl -n p32e edit deployment web\n\n# En command del initContainer inicio:\n# ["sh", "-c", "echo INIT_LISTO"]',
+ f:'kubectl -n p32f edit deployment web\n\n# En readinessProbe.httpGet, conserva path y corrige:\n# port: 8080'
+};
 const broken=(l,title,prompt,before,after,extra={})=>simple(32,l,title,prompt,
- `kubectl -n p32${l} get pods\nkubectl -n p32${l} describe pods\n`+aplicar(after)+'\n'+esperarDeployment('p32'+l),available('p32'+l),{
- prepare:[aplicar(before)],...extra,diagnostics:[{check:available('p32'+l),message:'El Deployment web aún no tiene su réplica actualizada y disponible. Revisa los Events y el template del Deployment.'}]
+ `kubectl -n p32${l} get pods\nkubectl -n p32${l} describe pods\n${reparaciones[l]}\n`+esperarDeployment('p32'+l),available('p32'+l),{
+ solutionNative:aplicar(after)+'\n'+esperarDeployment('p32'+l),prepare:[aplicar(before)],...extra,diagnostics:[{check:available('p32'+l),message:'El Deployment web aún no tiene su réplica actualizada y disponible. Revisa los Events y el template del Deployment.'}]
 });
 const crash=app('p32a','web',['sh','-c','echo FALLO_DE_ARRANQUE; exit 1']);
 const missing=app('p32b');missing.spec.template.spec.containers[0].env=[{name:'MODO',valueFrom:{configMapKeyRef:{name:'ajustes',key:'MODO'}}}];
@@ -85,6 +97,15 @@ export const EJERCICIOS_AVANZADOS=Object.freeze([
    solutionNative:`cluster=$(kubectl --kubeconfig=${configPath} config view --minify -o jsonpath='{.contexts[0].context.cluster}')\ntest -n "$cluster"\nkubectl --kubeconfig=${configPath} config set-cluster "$cluster" --server=https://10.77.0.10:6443\nkubectl --kubeconfig=${configPath} get nodes -o custom-columns=NOMBRE:.metadata.name --no-headers > /root/p33b-nodos.txt`,
    prepare:[`test ! -e ${configPath} && test ! -e /root/p33b-nodos.txt\ncp /etc/kubernetes/admin.conf ${configPath}\ncluster=$(kubectl --kubeconfig=${configPath} config view --minify -o jsonpath='{.contexts[0].context.cluster}')\ntest -n "$cluster"\nkubectl --kubeconfig=${configPath} config set-cluster "$cluster" --server=https://127.0.0.1:6444`,
    `if kubectl --kubeconfig=${configPath} get --raw=/readyz --request-timeout=5s; then exit 1; fi`],negative:'echo incompleto > /root/p33b-nodos.txt'}),
+ {id:'c33-c',classNumber:33,title:'API Server detenido · II',validation:'external-report',environment:'disposable-cluster',
+  prompt:'En esta copia desechable, kubectl no puede contactar con el API Server. Diagnostica el Static Pod desde cka-cp1 y corrige su manifiesto, sin regenerar certificados ni reinicializar el clúster. Los certificados válidos están en /etc/kubernetes/pki/. Al terminar, el API debe responder y los nodos recuperar Ready.',
+  preflight:`test -r ${apiManifest} && systemctl is-active --quiet kubelet`,
+  prepare:['kubectl get --raw=/readyz --request-timeout=20s',`test ! -e ${apiBackup}; cp ${apiManifest} ${apiBackup}`,breakAPI],
+  solution:apiSolution,solutionDisplay:apiSolution,
+  solutionNative:`test "$(grep -Fc -- '--client-ca-file=/etc/kubernetes/pki/ca-inexistente.crt' ${apiManifest})" = 1; sed -i 's|--client-ca-file=/etc/kubernetes/pki/ca-inexistente.crt|--client-ca-file=/etc/kubernetes/pki/ca.crt|' ${apiManifest}`,
+  check:`kubectl get --raw=/readyz --request-timeout=10s && data=$(kubectl get nodes -o json --request-timeout=10s) && test -n "$data" && echo "$data" | jq -e '(.items|length)>0 and all(.items[]; any(.status.conditions[]?; .type=="Ready" and .status=="True"))'`,
+  negative:breakAPI,cleanup:recoverAPI+`; rm -f ${apiBackup}`,
+  note:'El API queda realmente fuera de servicio. Esta avería se prepara solo en una copia independiente, nunca en la sesión de estudio.'},
  ...[['a','Selector del Service · I','su selector no coincide con las etiquetas de los Pods',netService,"kubectl -n p34a set selector service/web app=web"],['b','Puerto del Service · II','su puerto de destino no corresponde al de la aplicación',badPort,"kubectl -n p34b patch service web --type=merge -p '{\"spec\":{\"ports\":[{\"port\":80,\"targetPort\":8080}]}}'"]].map(([l,title,reason,svc,fix])=>simple(34,l,title,`En p34${l}, web no responde por su Service: ${reason}. Diagnostica los Pods y EndpointSlices; corrige solo el Service. La consulta HTTP al nombre web debe devolver WEB_LISTA.`,
   `kubectl -n p34${l} get pods --show-labels\nkubectl -n p34${l} get service web -o yaml\nkubectl -n p34${l} get endpointslices\n${fix}\n`+traffic('p34'+l),
   available('p34'+l)+' && '+traffic('p34'+l),{prepare:[aplicar(app('p34'+l)),aplicar(svc),esperarDeployment('p34'+l)],negative:aplicar(svc)})),

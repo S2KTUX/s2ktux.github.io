@@ -4,7 +4,22 @@ import {EJERCICIOS_AVANZADOS as tasks} from '../laboratorios/kubernetes-real/deb
 import {pasoPractica,prepararPractica,comprobarPractica} from '../laboratorios/kubernetes-real/debian/motor-practicas.mjs';
 assert.deepEqual([...new Set(tasks.map(task=>task.classNumber))],[29,30,31,32,33,34]);
 assert.equal(new Set(tasks.map(task=>task.id)).size,tasks.length);
-assert.ok(tasks.length>=17);
+assert.equal(tasks.length,18);
+const apiDown=tasks.find(task=>task.id==='c33-c');
+assert.equal(apiDown.environment,'disposable-cluster');
+assert.doesNotMatch(apiDown.preflight,/kubectl/,'Con el API caído, el diagnóstico empieza por consola');
+assert.match(apiDown.solutionDisplay,/crictl logs/);
+assert.doesNotMatch(apiDown.solutionDisplay,/kubeadm (?:init|reset)|renew/);
+let unsafeCalled=false;
+await assert.rejects(prepararPractica(apiDown,async()=>{unsafeCalled=true;return {ok:true};}),/entorno independiente/);
+assert.equal(unsafeCalled,false,'Una sesión de curso no puede preparar una caída del API');
+for(const id of ['c32-a','c32-c','c32-d','c32-e','c32-f']){
+ const task=tasks.find(task=>task.id===id);
+ assert.doesNotMatch(task.solutionDisplay,/apiVersion:/,'La solución visible repara el campo necesario, no sustituye todo el Deployment');
+ assert.ok(task.solutionNative,'Conservar un recorrido nativo ejecutable para contrastar el resultado');
+}
+assert.match(tasks.find(task=>task.id==='c32-c').solutionDisplay,/set image deployment\/web/);
+assert.match(tasks.find(task=>task.id==='c32-e').solutionDisplay,/logs deployment\/web -c inicio/);
 assert.ok(tasks.find(task=>task.id==='c30-a').cleanup.indexOf('helm uninstall')<tasks.find(task=>task.id==='c30-a').cleanup.indexOf('kubectl delete namespace'),'Desinstalar la release antes de borrar su namespace');
 for(const task of tasks){const own='kubectl delete namespace p'+task.classNumber+task.id.at(-1);assert.ok(task.cleanup.split(own).length<=2,task.id+' no debe borrar dos veces su namespace');}
 const shell=[];
@@ -39,4 +54,4 @@ for(const task of tasks){
  const partial=await comprobarPractica(task,async(node,label)=>({ok:!label.startsWith('Comprobar '+task.title)&&!label.startsWith('Revisar '+task.title)}));assert.equal(partial.state,'incomplete');
  const failure=await comprobarPractica(task,async()=>{throw Error('UART sin respuesta');});assert.equal(failure.state,'unverified');
 }
-console.log('Banco conjunto 29–34: 17 candidatos, sintaxis shell, límites UART, pasos por nodo y resultados de transporte. No sustituye la aceptación nativa.');
+console.log('Banco conjunto 29–34: 18 candidatos, API caída solo en copia desechable, sintaxis shell, límites UART y resultados de transporte. No sustituye la aceptación nativa.');

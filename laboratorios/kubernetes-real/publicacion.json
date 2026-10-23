@@ -463,8 +463,8 @@
     },
     {
       "path": "debian/ejercicios-avanzados.mjs",
-      "bytes": 20402,
-      "sha256": "5e62b1e8cf8275a761017959f00856f1078669d284cc2d10e842a121dfae99d8"
+      "bytes": 23806,
+      "sha256": "4861d4a2e170dc508cbaf1b38d12673ecb58aeadaf7e22ad7118de33acd58d5a"
     },
     {
       "path": "debian/complementos-avanzados.mjs",
@@ -473,8 +473,8 @@
     },
     {
       "path": "debian/ejercicios-ciclo-cluster.mjs",
-      "bytes": 6470,
-      "sha256": "8f8ef762fad2f06de59b8fd3e8c067d3c38144bf7956f854c525491952b24e58"
+      "bytes": 6682,
+      "sha256": "62884d43e9210e4b006ac3dd3a2952acb636c4d62eb65c667e18bd3ac2bdd1fe"
     }
   ]
 }

@@ -21,6 +21,8 @@ let called=false;
 await assert.rejects(()=>prepararPractica(restore,async()=>{called=true;return {ok:true};}),/entorno independiente/);
 assert.equal(called,false,'El rechazo tiene que ocurrir antes de ejecutar un solo comando');
 assert.match(restore.check,/runtimeSpec.mounts/);assert.match(restore.check,/valor.*ANTES/);
+assert.match(restore.check,/readyz/);assert.match(restore.check,/get nodes/);
+assert.match(restore.check,/\.type=="Ready" and \.status=="True"/);
 assert.doesNotMatch(restore.cleanup,/rm|rmdir|mv|etcd.yaml/,'Nunca borrar el directorio restaurado en uso');
 assert.ok(tasks.find(task=>task.id==='c27-b').check.includes('cka-w2'));
 console.log('Candidatos 27–28: cordon/drain, snapshot y restore real; el restore rechaza ejecutarse sobre la sesión de estudio.');

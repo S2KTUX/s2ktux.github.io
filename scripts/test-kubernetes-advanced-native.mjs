@@ -48,7 +48,14 @@ async function script(node,label,command){
  return run(node,label,'sh -e /tmp/s2ktux-qa-paso.sh',300000);
 }
 const diagnostic=()=>page.evaluate(()=>[...kubeDebianClusterNodes].map(([id,node])=>({id,errors:node.window.kubeDebianErrors,tail:node.window.kubeDebianTranscript.slice(-12000)})));
-async function idle(){return page.evaluate(()=>[...kubeDebianClusterNodes.values()].every(node=>/(?:^|\n)\[root@cka-(?:cp1|w[12]) [^\n\]]*\]# $/.test(node.window.kubeDebianTranscript?.replace(/\r/g,'').replace(/\x1b\[[0-?]*[ -/]*[@-~]/g,''))));}
+async function idle(){
+ const deadline=Date.now()+5000;
+ do{
+  if(await page.evaluate(()=>[...kubeDebianClusterNodes.values()].every(node=>typeof node.window.kubeDebianSnapshot?.idle==='boolean'?node.window.kubeDebianSnapshot.idle:/(?:^|\n)\[root@cka-(?:cp1|w[12]) [^\n\]]*\]# $/.test(node.window.kubeDebianTranscript?.replace(/\r/g,'').replace(/\x1b\[[0-?]*[ -/]*[@-~]/g,'')))))return true;
+  await page.waitForTimeout(100);
+ }while(Date.now()<deadline);
+ return false;
+}
 const timer=setInterval(async()=>{console.log(await page.evaluate(()=>({status:document.querySelector('#cluster-status').textContent})).catch(()=>({stopped:true})));},30000);
 try{
  await page.goto(new URL('/laboratorios/kubernetes-real/debian/multinodo.html?mode=course&level=intermedio&factory=v6&tls=classical&persistent-network=1',origin).href);
@@ -96,7 +103,7 @@ try{
    assert.ok((await script('controlplane',task.id+' resultado correcto',wait)).ok);
    if(task.equivalent){assert.ok((await script('controlplane',task.id+' equivalente',task.equivalent)).ok);assert.ok((await script('controlplane',task.id+' comprobar equivalente',wait)).ok);}
    for(const value of task.negativeSteps||[task.negative]){const s=step(value);assert.ok((await script(s.node,task.id+' estado incompleto',s.command)).ok);}
-   assert.equal((await run('controlplane',task.id+' rechazar incompleto',task.check)).ok,false);item.passed=true;
+   assert.equal((await run('controlplane',task.id+' rechazar incompleto',task.check)).ok,false);item.validationPassed=true;
   }catch(error){item.error=error.message;item.nodes=await diagnostic();await hardware();}
   finally{
    // Un timeout no autoriza a encadenar comandos sobre el proceso pendiente.
@@ -104,6 +111,7 @@ try{
    if(platformFault)throw Error('Prueba detenida por el fallo de plataforma registrado');
    if(!await idle())throw Error('La consola no ha vuelto al prompt; se detiene el bloque sin ejecutar más prácticas');
    for(const value of task.cleanupSteps||[task.cleanup]){const s=step(value);if(!s.command.trim())continue;const result=await script(s.node,task.id+' limpieza de la práctica',s.command);if(!result.ok){item.passed=false;item.cleanupError='No se ha completado la limpieza';item.cleanupNodes=await diagnostic();}}
+   item.completed=true;item.passed=item.validationPassed===true&&!item.cleanupError;
    await save();
   }
  }
