@@ -29,6 +29,6 @@ export function crearPractica(number,letter,title,prompt,solution,check,options=
  let solutionDisplay=solution;for(const [command,display]of readable)solutionDisplay=solutionDisplay.split(command).join(display);
  let alternativeDisplay=options.alternative;for(const [command,display]of readable)if(alternativeDisplay)alternativeDisplay=alternativeDisplay.split(command).join(display);
  return Object.freeze({id,classNumber:number,title,prompt,solution,solutionDisplay,alternativeDisplay,check:exigirJSON(check),preflight:API,validation:'external-report',...options,
-  prepare:Object.freeze([API,workerReady,'test -z "$(kubectl get namespace '+ns+' --ignore-not-found -o name)"','kubectl create namespace '+ns,'kubectl -n '+ns+' wait --for=create serviceaccount/default --timeout=90s',...options.prepare||[]]),
-  cleanup:'kubectl delete namespace '+ns+' --ignore-not-found --wait=true --timeout=120s'+(options.cleanup?'\n'+options.cleanup:'')});
+  prepare:Object.freeze([API,workerReady,...options.scope==='cluster'?[]:['test -z "$(kubectl get namespace '+ns+' --ignore-not-found -o name)"','kubectl create namespace '+ns,'kubectl -n '+ns+' wait --for=create serviceaccount/default --timeout=90s'],...options.prepare||[]]),
+  cleanup:[options.cleanupBefore,options.scope==='cluster'?'':'kubectl delete namespace '+ns+' --ignore-not-found --wait=true --timeout=120s',options.cleanup].filter(Boolean).join('\n')});
 }

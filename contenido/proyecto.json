@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Completar y comprobar las clases 24–34 en el laboratorio real antes de abrirlas. Ya están preparados los candidatos de creación y reparación de Static Pods de la clase 24; HA sigue requiriendo su escenario independiente. Las clases 01–23 tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
+      "texto": "Cerrar las clases 24–34 como un bloque conjunto: administración, recuperación, complementos y diagnóstico. El banco candidato incluye Static Pods, mantenimiento, etcd y las clases 29–34; todavía no abre el avanzado. Integrar init/join manuales en un entorno limpio y completar HA, actualización real y verificaciones nativas. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
     },
     {
       "id": "kubernetes-examen",

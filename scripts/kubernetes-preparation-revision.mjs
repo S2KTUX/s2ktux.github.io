@@ -10,7 +10,7 @@ const presentationOnly=new Set([
 ]);
 // Estos complementos se preparan desde una práctica, nunca al restaurar la
 // base limpia sin materiales. Sus cambios no invalidan esos mismos bytes.
-const courseMaterials=new Set(['debian/materiales-curso.mjs','debian/ingress-curso.mjs','debian/gateway-curso.mjs','debian/rewrite-curso.mjs','debian/crds-curso.mjs']);
+const courseMaterials=new Set(['debian/materiales-curso.mjs','debian/ingress-curso.mjs','debian/gateway-curso.mjs','debian/rewrite-curso.mjs','debian/crds-curso.mjs','debian/complementos-avanzados.mjs']);
 export function revisionPreparacion(files,{policies,materials}){
  if(typeof policies!=='boolean'||typeof materials!=='boolean')throw Error('Preparación sin perfil de componentes');
  const records=files.filter(({path})=>path.endsWith('.mjs')&&!presentationOnly.has(path)&&!(!materials&&courseMaterials.has(path))&&!/^debian\/ejercicios-[a-z-]+\.mjs$/.test(path)).map(({path,source})=>{

@@ -1,0 +1,61 @@
+name: Kubernetes real - bloque avanzado candidato
+
+on:
+  workflow_dispatch:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'scripts/test-kubernetes-advanced-native.mjs'
+      - '.github/workflows/kubernetes-native-batch.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kubernetes-native-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  native:
+    # No despliega Pages ni utiliza sesiones de alumnos. Dos VMs reales por
+    # recorrido, sin mocks del motor, API, métricas ni correctores.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 90
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.0-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Construir la copia candidata
+        run: npm run build
+      - name: Probar el bloque en Linux real
+        env:
+          S2KTUX_QA_PORT: '4189'
+          S2KTUX_NATIVE_ORIGIN: http://127.0.0.1:4189
+          S2KTUX_NATIVE_OUTPUT: test-results/kubernetes-native
+        shell: bash
+        run: |
+          node tests/e2e/server.mjs _site > /tmp/s2ktux-native-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:4189/ > /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/test-kubernetes-advanced-native.mjs
+      - name: Conservar resultados incluso si falla
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kubernetes-native-batch
+          path: test-results/kubernetes-native/
+          retention-days: 14
+          if-no-files-found: warn
