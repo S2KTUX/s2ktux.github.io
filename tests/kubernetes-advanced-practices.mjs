@@ -10,6 +10,15 @@ assert.equal(apiDown.environment,'disposable-cluster');
 assert.doesNotMatch(apiDown.preflight,/kubectl/,'Con el API caído, el diagnóstico empieza por consola');
 assert.match(apiDown.solutionDisplay,/crictl logs/);
 assert.doesNotMatch(apiDown.solutionDisplay,/kubeadm (?:init|reset)|renew/);
+for(const command of [apiDown.prepare.at(-1),apiDown.cleanup]){
+ assert.match(command,/curl --fail --silent --show-error --max-time 5/,'El sondeo de preparación no debe lanzar repetidamente clientes Go');
+ assert.match(command,/--cacert \/etc\/kubernetes\/pki\/ca\.crt/,'Conservar verificación de la CA real');
+ assert.match(command,/--cert \/etc\/kubernetes\/pki\/apiserver-kubelet-client\.crt/);
+ assert.match(command,/https:\/\/127\.0\.0\.1:6443\/readyz/,'No aceptar solo un puerto abierto o livez');
+ assert.doesNotMatch(command,/--insecure|(?:^|\s)-k(?:\s|$)|exclude=/);
+}
+assert.match(apiDown.check,/kubectl get --raw=\/readyz/,'El corrector final sigue usando el API de Kubernetes');
+assert.match(apiDown.cleanup,/kubectl wait --for=condition=Ready nodes --all/);
 let unsafeCalled=false;
 await assert.rejects(prepararPractica(apiDown,async()=>{unsafeCalled=true;return {ok:true};}),/entorno independiente/);
 assert.equal(unsafeCalled,false,'Una sesión de curso no puede preparar una caída del API');

@@ -8,8 +8,11 @@ const service=ns=>({apiVersion:'v1',kind:'Service',metadata:{name:'web',namespac
 const traffic=ns=>`test "$(kubectl -n ${ns} exec deployment/web -- wget -T 5 -qO- http://web/)" = WEB_LISTA`;
 const apiManifest='/etc/kubernetes/manifests/kube-apiserver.yaml';
 const apiBackup='/root/p33c-kube-apiserver.yaml';
-const breakAPI=`test "$(grep -Fc -- '--client-ca-file=/etc/kubernetes/pki/ca.crt' ${apiManifest})" = 1; sed -i 's|--client-ca-file=/etc/kubernetes/pki/ca.crt|--client-ca-file=/etc/kubernetes/pki/ca-inexistente.crt|' ${apiManifest}; deadline=$(($(date +%s)+90)); while kubectl get --raw=/readyz --request-timeout=5s; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 3; done`;
-const recoverAPI=`cp ${apiBackup} ${apiManifest}; deadline=$(($(date +%s)+180)); until kubectl get --raw=/readyz --request-timeout=10s; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 3; done; kubectl wait --for=condition=Ready nodes --all --timeout=120s`;
+// Preparación/limpieza, no solución del alumno: no arrancar un cliente Go
+// nuevo cada pocos segundos mientras el propio API intenta inicializarse.
+const httpAPI='curl --fail --silent --show-error --max-time 5 --cacert /etc/kubernetes/pki/ca.crt --cert /etc/kubernetes/pki/apiserver-kubelet-client.crt --key /etc/kubernetes/pki/apiserver-kubelet-client.key https://127.0.0.1:6443/readyz';
+const breakAPI=`test "$(grep -Fc -- '--client-ca-file=/etc/kubernetes/pki/ca.crt' ${apiManifest})" = 1; sed -i 's|--client-ca-file=/etc/kubernetes/pki/ca.crt|--client-ca-file=/etc/kubernetes/pki/ca-inexistente.crt|' ${apiManifest}; deadline=$(($(date +%s)+90)); while ${httpAPI}; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 5; done`;
+const recoverAPI=`cp ${apiBackup} ${apiManifest}; deadline=$(($(date +%s)+210)); until ${httpAPI}; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 5; done; kubectl wait --for=condition=Ready nodes --all --timeout=60s`;
 const apiSolution=`# En cka-cp1, sin depender de kubectl\nsystemctl status kubelet --no-pager\njournalctl -u kubelet -n 30 --no-pager\ncrictl ps -a --name kube-apiserver\n# Consulta el ID que acaba de mostrar crictl:\ncrictl logs ID_DEL_CONTENEDOR\nls /etc/kubernetes/pki/ca.crt\nvi ${apiManifest}\n\n# Corrige la ruta del certificado existente:\n# - --client-ca-file=/etc/kubernetes/pki/ca.crt\n\nkubectl get nodes\nkubectl get pods -n kube-system`;
 const simple=(n,l,title,prompt,solution,check,options={})=>crearPractica(n,l,title,prompt,solution,check,{...options,negative:options.negative||`kubectl -n p${n}${l} scale deployment/web --replicas=0`});
 const reparaciones={

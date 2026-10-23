@@ -463,8 +463,8 @@
     },
     {
       "path": "debian/ejercicios-avanzados.mjs",
-      "bytes": 23806,
-      "sha256": "4861d4a2e170dc508cbaf1b38d12673ecb58aeadaf7e22ad7118de33acd58d5a"
+      "bytes": 24125,
+      "sha256": "59a2bd662748e29eb0cd6f51ac36a6c8a6ac67a5da3224dab25914263b80a819"
     },
     {
       "path": "debian/complementos-avanzados.mjs",
