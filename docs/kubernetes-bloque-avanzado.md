@@ -10,17 +10,17 @@ destructivas se separan de las sesiones de estudio.
 
 | Clase | Ejercicios y comprobaciones | Cierre necesario |
 | --- | --- | --- |
-| 24 | Crear y reparar Static Pods, comparar manifiesto y mirror, borrar el mirror y comprobar su recreación. | Dos casos nativos aprobados el 22/10. Falta HA: tres control planes, LB, quorum y caída/recuperación. |
+| 24 | Crear y reparar Static Pods, comparar manifiesto y mirror, borrar el mirror y comprobar su recreación. | Static Pods aprobados. HA v10 supera 88 comprobaciones: tres CP, LB redundante, tráfico, pérdida de un nodo, pérdida de mayoría y recuperación con datos/TLS/RBAC. Falta integrar ese escenario para el alumno. |
 | 25 | Init con configuración real, kubeconfig, CNI, Static Pods, Ready, DNS y tráfico. | Reutilizar el recorrido privado de init; falta integrarlo como escenario frío y reproducible sin destruir el laboratorio de aplicaciones. |
 | 26 | Join de worker, token nuevo, hash de CA, CSR/certificado de nodo, rechazo de permisos admin y tráfico entre nodos. | Recorrido manual aprobado en copia privada v11: token inválido rechazado, join válido, CSR, certificado y DNS/HTTP entre workers. Falta ofrecer este escenario limpio al alumno. |
-| 27 | Cordon, drain con PDB y desplazamiento al segundo worker. Upgrade APT/kubeadm de control plane y workers, versiones de procesos, objetos conservados y salud final. | Cordon/drain/PDB y actualización real del control plane aprobados. Faltan workers APT y aceptación multinodo del upgrade; no basta editar la versión declarada. |
-| 28 | Snapshot TLS, integridad, restore en directorio nuevo, hostPath, montaje real de etcd y un testigo que debe volver a su valor anterior. | Candidatos preparados. El restore solo puede prepararse en una copia desechable explícita, nunca sobre una sesión de estudio. Repetir en la base actual. |
+| 27 | Cordon, drain con PDB y desplazamiento al segundo worker. Upgrade APT/kubeadm de control plane y workers, versiones de procesos, objetos conservados y salud final. | Cordon/drain/PDB, CP y ambos workers APT comprobados. El intento v4 aprueba además guardar/recuperar 1.36, datos, DNS y RBAC. La recuperación del CP procede de una ejecución reanudada: falta estabilizar el recorrido sin interrupciones e integrarlo para el alumno. |
+| 28 | Snapshot TLS, integridad, restore en directorio nuevo, hostPath, montaje real de etcd y un testigo que debe volver a su valor anterior. | Snapshot/restore aprobados en v11. En administración tras el upgrade, el API no recupera su salud: corregirlo y repetir la aceptación estricta. Siempre sobre una copia desechable, nunca sobre una sesión de estudio. |
 | 29 | Metrics Server y HPA con requests, objetivos y métricas reales. | Banco y ensayo ampliado aprobados en v11: métricas de tres nodos, carga, subida de una a tres réplicas disponibles y bajada a una. |
 | 30 | Instalar Helm con values, aplicación real; Kustomize con base intacta, overlay, prefijo, namespace, etiquetas y réplicas. | Banco y ensayo ampliado aprobados: repositorio HTTP, upgrade/history/rollback/uninstall; generator/hash, referencia, rollout y base intacta. |
-| 31 | CRD y esquema; Operator entregado, Custom Resource, ownerReference, status, reconciliación y respuesta de la aplicación. | Banco conjunto en prueba. Una instancia CRD aislada no acredita el Operator. |
-| 32 | Reinicios, ConfigMap ausente, imagen incorrecta, selector sin nodo, initContainer y readiness. | Banco conjunto en prueba. Conservar los casos de OOM/recursos ya ensayados; no confundir Error 137 con OOMKilled. |
+| 31 | CRD y esquema; Operator entregado, Custom Resource, ownerReference, status, reconciliación y respuesta de la aplicación. | CRD y Operator aprobados en la batería nativa v11, incluidos negativos y reconciliación. Falta integrar el banco en la entrega definitiva. |
+| 32 | Reinicios, ConfigMap ausente, imagen incorrecta, selector sin nodo, initContainer y readiness. | Seis averías aprobadas en v11, con negativos y limpieza. Conservar OOM/recursos ya ensayados y repetir en el perfil definitivo; Error 137 no basta para afirmar OOMKilled. |
 | 33 | Kubelet detenido y kubeconfig incorrecto, sin renovar la CA ni editar manualmente Conditions. API caída por un manifiesto incorrecto, solo en copia desechable y con diagnóstico por consola. | Kubelet/kubeconfig aprobados en la batería conjunta. API caída aprobada en v13: rechazo, reparación, todos los nodos Ready, nuevo rechazo, limpieza y aplicación nueva con DNS. Pendiente de integración pública. |
-| 34 | Selector y targetPort del Service, PVC Pending, montaje y escritura; comprobar tráfico, no solo manifiestos. | Banco conjunto en prueba. Los recorridos de DNS, políticas e Ingress/Gateway se reutilizan del bloque de redes. Local Path no acredita un driver CSI. |
+| 34 | Selector y targetPort del Service, PVC Pending, montaje y escritura; comprobar tráfico, no solo manifiestos. | Tres averías Service/PVC aprobadas en v11. DNS, políticas e Ingress/Gateway ya tienen recorridos de redes. Falta la integración definitiva; Local Path no acredita un driver CSI. |
 
 Cada candidato debe rechazar un estado incompleto y aceptar el resultado
 correcto, aunque se haya usado otra solución equivalente. Los tests de
@@ -91,6 +91,9 @@ CI general 39934116385 sobre 6b1455d: 58 pruebas unitarias y 181 de navegador
 aprobadas. La página publicada sigue sin cambiar; las pruebas privadas de
 máquinas y la integración del nuevo perfil son comprobaciones separadas.
 
+La regresión 39966094886 sobre 5ca5604 también termina SUCCESS: 58 pruebas
+unitarias y 181 de navegador. No despliega el avanzado.
+
 El ensayo ampliado `qa-bloque-v11-reC5No` aprueba HPA, Helm y Kustomize,
 pero su resultado global es FALLIDO: el reinicio del API tras reparar c33-c
 no completa la salud en la base pequeña. Responden algunos endpoints, pero
@@ -113,13 +116,62 @@ los workers ni el guardado del clúster actualizado. La continuación v4 usa
 otra copia QA, conserva registros individuales de los componentes y exige
 salud y hashes antes de continuar; no repite init ni oculta el fallo v3.
 
+La continuación v4 supera esa salud, los tres ejecutables nuevos, permisos y
+una aplicación nueva con DNS. Actualiza cada worker con APT y kubeadm upgrade
+node, verifica el hash del proceso kubelet, respeta PDB y recupera las dos
+réplicas. Guarda y recupera los tres nodos: versiones 1.36, ConfigMap/UID,
+datos de la aplicación, DNS y rechazo RBAC conservados.
+
+v4 NO es un aprobado global: el restore de etcd empieza a comprobar mientras
+todavía responde el API anterior, antes de recrearse etcd, y luego falla la
+recuperación. El intento v5 espera explícitamente el dato ANTES restaurado;
+también falla. Los logs muestran que el API termina por su hook inicial de
+reparación de IP/puertos. Por tanto no basta corregir la carrera del test ni
+aumentar su plazo; falta resolver la recuperación efectiva del API.
+
+Se prepara una variante privada de su conexión interna: mantiene la CA,
+identidad, verificación TLS y hooks, reutiliza el pool y amplía el plazo de
+handshake interno. Sus pruebas Go pasan; no acredita aún recuperación nativa.
+No se sustituyen los binarios de las bases publicadas.
+
 La variante privada de kernel HIGHMEM con ajuste de watchdog de red está
 compilada. Se comprobó el símbolo del parámetro en el ejecutable: la primera
 compilación había reutilizado un objeto antiguo y se conserva como fallida.
-La variante corregida necesita todavía arranque y tráfico nativos; no
-acredita HA por el mero hecho de compilar.
+La variante corregida arranca los tres nodos del ensayo HA v9: parámetro
+real de NIC y journal indican 5000 ms. Init sirve el API a través del VIP
+con certificados verificados. Ambos joins terminan y los cuatro Static
+Pods de cada CP alcanzan Ready. El ensayo global v9 falla antes de las
+caídas: el instrumento intenta transferir una unidad directamente a una
+ruta que su transporte no admite. Se corrige enviándola a /tmp e instalándola
+con systemd; ahora se valida esa ruta antes de arrancar.
+
+El ensayo HA v10 termina PASS: 88 comprobaciones, sin errores de página ni
+de los tres clientes. Tres control planes y miembros etcd, cuatro Static
+Pods sanos por nodo, rutas persistentes y tráfico TCP con integridad en los
+seis sentidos. Al detener toda la primera VM, el VIP migra y se conserva el
+testigo; el clúster puede crear otro objeto. Reintegrar ese miembro recupera
+los tres endpoints. Al detener los otros dos miembros, etcd rechaza escribir
+sin mayoría. Tras recuperarlos conserva ambos testigos, todos los nodos
+Ready y el rechazo RBAC. Esto acredita el escenario nativo, no su entrega
+pública ni un tiempo de arranque garantizado.
 
 Estos resultados no abren todavía el avanzado: faltan integrar los escenarios
-manuales, el upgrade, HA y la integración pública del perfil nuevo. La
+manuales, el upgrade y HA, estabilizar el restore y aceptar la entrega del perfil nuevo. La
 sesión QA reutilizable de tres nodos no es una fábrica pública: se conserva
 aparte, sin reemplazar guardados de alumnos ni reutilizar sus identidades.
+
+## Guardado de varias máquinas
+
+`guardado-consumible-resultado-20261023-v2.json` pasa dos ciclos nativos de
+guardar y recuperar tres nodos actualizados: alrededor de 4,27 GB de estado
+sin comprimir y 1,41 GB comprimidos. Conserva archivo, UID, versiones,
+aplicación disponible y todos los nodos Ready. Los tiempos locales de
+guardado fueron 58,101 y 56,645 s; no son una promesa para otros equipos.
+
+El mismo módulo de compresión, comprobado por SHA, se incorpora al código
+web: Blob conserva los bytes y se libera solo la copia temporal cedida.
+El formato y la identidad de las sesiones no cambian. Se declara compatible
+la base anterior porque no cambian Linux, el kernel ni la preparación; no
+se obliga a descargar otra vez los 549 MiB. Sin ArrayBuffer.transfer se
+conserva el recorrido anterior. Las pruebas incluyen el paso entre iframes,
+datos alterados, fallos de cuota y recuperación de bases compatibles.

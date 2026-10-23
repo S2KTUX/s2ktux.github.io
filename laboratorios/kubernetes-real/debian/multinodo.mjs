@@ -1,7 +1,7 @@
 import {createLocalSwitch} from '../red-local.mjs';
 import {comandosArchivoSerie} from '../archivos-serie.mjs';
 import {perfilWorker} from './preparar-worker.mjs';
-import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c117bcac5582af74';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=d39e1beb6fdb94c6';
 import {ordenarNodosDebian,comandoNatDebian} from './red-cluster.mjs';
 import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cluster.mjs';
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
@@ -11,10 +11,10 @@ import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=d788a7fa5a5d4380';
 import {ordenSaludInicial} from './salud-inicial.mjs?v=84a2e4609f06f611';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
-import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=9367c31b61c7667f';
-import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=27754c457e2bc3ed';
+import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=74f61315cc239a87';
+import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=169b7dda21176f8f';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=979785ed16349130';
-const cleanRevision='f09e92a7d7e965fa4272457dce6969438c71fbb996deed320b2f786820adbf07';
+const cleanRevision='326568ee67071140f2bc3ea3d6260493de65912350c6bf7a8be1a3f0ad028720';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -28,7 +28,7 @@ if(!['v1','v3','v4','v5','v6','v8'].includes(factoryVersion))throw Error('Fábri
 const schedulingAPI=new URLSearchParams(location.search).get('use-scheduling-api')==='1';
 if(factoryVersion==='v8'&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración privada requiere Scheduler API, sin políticas integradas y nivel avanzado');
 const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'||factoryVersion!=='v1';
-const nodeUIRevision='a5c81a4642478106';
+const nodeUIRevision='cd8eceebda64e724';
 const workerComponents=factoryVersion==='v8'?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
 const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
@@ -185,7 +185,7 @@ globalThis.kubeDebianClusterSave=async()=>{
   for(const [id,node] of ordenarNodosDebian(nodes,{progressive})){const access=node.window.kubeDebianSnapshot;const info=access.lock();held.push({id,access,info});}
   network.pause();status.textContent='Guardando todas las máquinas…';
   const stopped=await Promise.allSettled(held.map(node=>node.access.freeze())),failed=stopped.find(result=>result.status==='rejected');if(failed)throw failed.reason;
-  const captures=[];for(const {id,access,info} of held)captures.push(await sessions.packNode(id,await access.state(),info.terminalText));
+  const captures=[];for(const {id,access,info} of held){status.textContent='Guardando '+(id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name)+'…';captures.push(await sessions.packNode(id,await access.state(),info.terminalText,{consumir:true}));}
   saved=await sessions.saveNodes(captures,saved?.sha256||null);globalThis.kubeDebianClusterSaved={nodes:captures.length,bytes:captures.reduce((sum,node)=>sum+node.bytes,0),packedBytes:captures.reduce((sum,node)=>sum+node.packedBytes,0)};status.textContent='Clúster guardado.';return kubeDebianClusterSaved;
  }finally{
   network.resume();const released=await Promise.allSettled(held.map(node=>node.access.release()));busy=false;updateControls();

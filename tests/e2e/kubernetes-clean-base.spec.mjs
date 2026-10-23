@@ -1,4 +1,19 @@
 import {test,expect} from '@playwright/test';
+test('Guardado · ceder la copia temporal conserva bytes y formato entre iframes',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {SesionesClusterDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  const session=new SesionesClusterDebian({workerComponents:'v7',factoryVersion:'v6',progressive:true,level:'inicial'});
+  const frame=document.createElement('iframe');document.body.append(frame);
+  const input=new frame.contentWindow.Uint8Array([3,1,4,1,5]).buffer;
+  const node=await session.packNode('controlplane',input,'ESTADO_CEDIDO',{consumir:true});
+  await session.saveNodes([node]);const saved=await session.getCluster(),stored=saved.nodes[0];
+  const bytes=Array.from(new Uint8Array(await session.unpack(stored,stored.identity)));
+  const ordinary=new Uint8Array([8,9]).buffer;await session.packNode('controlplane',ordinary);
+  frame.remove();return {detached:input.byteLength===0,bytes,format:stored.format,declaredBytes:stored.bytes,originalPreserved:ordinary.byteLength===2};
+ });
+ expect(result).toEqual({detached:true,bytes:[3,1,4,1,5],format:'s2ktux-v86-session-v1',declaredBytes:5,originalPreserved:true});
+});
 test('Base limpia · caché separada, revisión nueva y guardado del alumno intacto',async({page})=>{
  await page.goto('/laboratorios/kubernetes-real/');
  const result=await page.evaluate(async()=>{

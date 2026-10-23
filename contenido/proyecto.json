@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Cerrar las clases 24–34 como un bloque conjunto: administración, recuperación, complementos y diagnóstico. El banco candidato incluye Static Pods, mantenimiento, etcd y las clases 29–34; todavía no abre el avanzado. Integrar init/join manuales en un entorno limpio y completar HA, actualización real y verificaciones nativas. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
+      "texto": "Cerrar las clases 24–34 como un bloque conjunto: integrar init/join manuales, HA y actualización, y estabilizar la recuperación tras restaurar etcd. Ya hay pruebas privadas aprobadas de HA, workers y guardado, pero falta ofrecerlas y comprobarlas en la versión del alumno. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
     },
     {
       "id": "kubernetes-examen",
@@ -44,7 +44,7 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado, y la preparación de complementos. Comprobar también las sesiones tras largos periodos en segundo plano. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
+      "texto": "Seguir reduciendo los tiempos de arranque y preparación de complementos, y el pico de memoria al guardar varios nodos. Comprobar también las sesiones tras largos periodos en segundo plano. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
     },
     {
       "id": "imagen-ligera",

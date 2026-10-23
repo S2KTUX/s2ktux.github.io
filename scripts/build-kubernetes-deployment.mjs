@@ -14,6 +14,10 @@ async function replaceRequired(path,pattern,replacement){
 }
 // El HTML y la interfaz cambian juntos. Versionar la cadena de entrada evita
 // reutilizar módulos de una revisión anterior en pestañas que ya estaban abiertas.
+// Primero el hijo: sus referencias deben cambiar antes de calcular el hash
+// de sesiones, cliente y páginas que lo importan.
+if(!manifest.files.some(record=>record.path==='comprimir-estado.mjs'))manifest.files.push({path:'comprimir-estado.mjs',bytes:0,sha256:''});
+await replaceRequired('debian/sesiones-cluster.mjs',/from '\.\.\/comprimir-estado\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../comprimir-estado.mjs?v="+await revision('comprimir-estado.mjs')+"'");
 for(const parent of ['kube-sessions.mjs','debian/sesiones-cluster.mjs'])await replaceRequired(parent,/from '\/laboratorios\/docker-real\/v86-sessions\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '/laboratorios/docker-real/v86-sessions.mjs?v="+await revision('../docker-real/v86-sessions.mjs')+"'");
 for(const parent of ['debian/sesiones-cluster.mjs','debian/cliente.mjs'])await replaceRequired(parent,/from '\.\.\/kube-sessions\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../kube-sessions.mjs?v="+await revision('kube-sessions.mjs')+"'");
 for(const parent of ['debian/bases-limpias.mjs','debian/multinodo.mjs','debian/cliente.mjs'])await replaceRequired(parent,/from '\.\/sesiones-cluster\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-cluster.mjs?v="+await revision('debian/sesiones-cluster.mjs')+"'");

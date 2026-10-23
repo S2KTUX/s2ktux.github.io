@@ -12,7 +12,7 @@ import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
 import {prepararWorkerDebian,perfilWorker} from './preparar-worker.mjs';
 import {ThreadVM} from '../motor-hilo.mjs?v=e53ba023097977b2';
 import {ordenPromptDinamico,promptConfirmado} from './prompt.mjs';
-import {identidadNodoDebian} from './sesiones-cluster.mjs?v=c117bcac5582af74';
+import {identidadNodoDebian} from './sesiones-cluster.mjs?v=d39e1beb6fdb94c6';
 import {comandosTlsLaboratorio,comandosTlsApiServer,ordenEntornoTls,entornoTlsConfirmado} from './tls-laboratorio.mjs';
 import {comandosMontajeComponentes} from './montaje-componentes.mjs';
 import {PresentacionConsola} from './presentacion-consola.mjs';

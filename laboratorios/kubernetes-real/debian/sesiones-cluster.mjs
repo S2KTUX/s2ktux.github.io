@@ -2,6 +2,7 @@ import {KubeSessions} from '../kube-sessions.mjs?v=8c170f9003793741';
 import {hashBytes,hashBlob} from '/laboratorios/docker-real/v86-sessions.mjs?v=3852a1206e14ad3b';
 import {PERFIL_DEBIAN,perfilFabricaDebian} from './fabrica.mjs';
 import {comprobarNivel} from './niveles.mjs';
+import {comprimirEstado} from '../comprimir-estado.mjs?v=9428ef18ea7ec585';
 const ids=['controlplane','worker1','worker2'],digest=/^[a-f0-9]{64}$/;
 function comprobarComponentesWorker(version){if(!['v7','v8'].includes(version))throw Error('Componentes de worker no comprobados');return version;}
 function comprobarFabrica(version){if(!['v1','v3','v4','v5','v6','v8'].includes(version))throw Error('Fábrica multinodo no comprobada');return version;}
@@ -24,11 +25,11 @@ export class SesionesClusterDebian extends KubeSessions{
   this.key=(workerComponents==='v7'?'cluster-debian-v1':'cluster-debian-netpol386-v1')+(factoryVersion==='v6'?'-balanced650-oom-grupo-tls-v1':factoryVersion==='v5'?'-balanced650-oom-grupo-v2':factoryVersion==='v4'?'-balanced650-oom-v1':factoryVersion==='v3'?'-balanced650-v1':'')+(progressive?'-curso-progresivo-v1':'')+(level==='inicial'?'':'-nivel-'+level+'-v1')+(factoryVersion==='v8'?'-admin-v2-gc200-scheduler-v1':'');
   this.format='s2ktux-kubernetes-debian-cluster-v1';
  }
- async packNode(id,state,terminalText=''){
+ async packNode(id,state,terminalText='',{consumir=false}={}){
   const options={workerComponents:this.workerComponents,factoryVersion:this.factoryVersion},profile=perfilNodoDebian(id,options),identity=await identidadNodoDebian(id,options);
   if(!state?.byteLength||state.byteLength>1536*1048576)throw Error('Estado de nodo inválido');
-  const packed=await new Response(new Blob([state]).stream().pipeThrough(new CompressionStream('gzip'))).blob();
-  return {id,profile,identity,format:'s2ktux-v86-session-v1',bytes:state.byteLength,packedBytes:packed.size,sha256:await hashBlob(packed),packed,terminalText:terminalText.slice(-100000)};
+  const {bytes,packed}=await comprimirEstado(state,{consumir});
+  return {id,profile,identity,format:'s2ktux-v86-session-v1',bytes,packedBytes:packed.size,sha256:await hashBlob(packed),packed,terminalText:terminalText.slice(-100000)};
  }
  async validate(nodes){
   if(!Array.isArray(nodes)||nodes.length<(this.progressive?1:2)||nodes.length>3||nodes.some((node,index)=>node?.id!==ids[index]))throw Error('El clúster debe contener CP y sus workers en orden');

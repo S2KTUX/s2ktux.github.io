@@ -1,4 +1,4 @@
-import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c117bcac5582af74';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=d39e1beb6fdb94c6';
 // Distinto de los guardados del alumno: aquí solo entra la primera base,
 // antes de habilitar su consola y nunca después de recuperar una sesión.
 export class BasesLimpias extends SesionesClusterDebian{
@@ -48,7 +48,7 @@ export async function capturarCluster({ordered,network,pack,write}){
   const stopped=await Promise.allSettled(held.map(node=>node.access.freeze()));
   const rejected=stopped.find(result=>result.status==='rejected');if(rejected)throw rejected.reason;
   const captures=[];
-  for(const node of held)captures.push(await pack(node.id,await node.access.state(),node.info.terminalText));
+  for(const node of held)captures.push(await pack(node.id,await node.access.state(),node.info.terminalText,{consumir:true}));
   return await write(captures);
  }finally{
   let networkError;try{network.resume();}catch(error){networkError=error;}
