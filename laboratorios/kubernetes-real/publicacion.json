@@ -473,8 +473,8 @@
     },
     {
       "path": "debian/ejercicios-ciclo-cluster.mjs",
-      "bytes": 6474,
-      "sha256": "06f293493bd583b5630c2ed779978e67c5e7affa6e630944435f19d67f82d01b"
+      "bytes": 6470,
+      "sha256": "8f8ef762fad2f06de59b8fd3e8c067d3c38144bf7956f854c525491952b24e58"
     }
   ]
 }

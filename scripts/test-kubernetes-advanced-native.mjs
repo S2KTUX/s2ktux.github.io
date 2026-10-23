@@ -54,7 +54,14 @@ try{
  await page.goto(new URL('/laboratorios/kubernetes-real/debian/multinodo.html?mode=course&level=intermedio&factory=v6&tls=classical&persistent-network=1',origin).href);
  await page.waitForFunction(()=>document.querySelector('#enter-lab')?.onclick);await page.click('#enter-lab');
  await page.waitForFunction(()=>globalThis.kubeDebianClusterProfile);await page.click('#start-cluster');
- const began=Date.now();await page.waitForFunction(()=>globalThis.kubeDebianClusterReady||globalThis.kubeDebianClusterErrors?.length,null,{timeout:1200000});
+ const began=Date.now();
+ for(;;){
+  await hardware();
+  const state=await page.evaluate(()=>({ready:globalThis.kubeDebianClusterReady,errors:globalThis.kubeDebianClusterErrors||[]}));
+  if(state.ready||state.errors.length)break;
+  if(Date.now()-began>=1200000)throw Error('El arranque no terminó dentro del plazo de QA');
+  await page.waitForTimeout(1000);
+ }
  assert.deepEqual(await page.evaluate(()=>kubeDebianClusterErrors),[]);report.bootSeconds=(Date.now()-began)/1000;
  await hardware();
  if(experiment){

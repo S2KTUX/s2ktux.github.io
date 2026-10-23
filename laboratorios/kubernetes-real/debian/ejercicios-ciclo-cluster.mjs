@@ -17,7 +17,7 @@ export const EJERCICIOS_CICLO_CLUSTER=Object.freeze([
  {id:'c28-a',classNumber:28,title:'Snapshot de etcd · I',preflight:API,validation:'external-report',
   prompt:'Guarda un snapshot válido de etcd en /opt/p28a-etcd.db. El endpoint es https://127.0.0.1:2379; los certificados ca.crt, server.crt y server.key están en /etc/kubernetes/pki/etcd/. Comprueba la integridad del snapshot con etcdutl.',
   prepare:[API,'test ! -e /opt/p28a-etcd.db'],
-  solution:'ETCDCTL_API=3 etcdctl snapshot save /opt/p28a-etcd.db \\\n+  --endpoints=https://127.0.0.1:2379 \\\n+  --cacert=/etc/kubernetes/pki/etcd/ca.crt \\\n+  --cert=/etc/kubernetes/pki/etcd/server.crt \\\n+  --key=/etc/kubernetes/pki/etcd/server.key\netcdutl snapshot status /opt/p28a-etcd.db -w table',
+  solution:'ETCDCTL_API=3 etcdctl snapshot save /opt/p28a-etcd.db \\\n  --endpoints=https://127.0.0.1:2379 \\\n  --cacert=/etc/kubernetes/pki/etcd/ca.crt \\\n  --cert=/etc/kubernetes/pki/etcd/server.crt \\\n  --key=/etc/kubernetes/pki/etcd/server.key\netcdutl snapshot status /opt/p28a-etcd.db -w table',
   check:exigirJSON(`test -s /opt/p28a-etcd.db && etcdutl snapshot status /opt/p28a-etcd.db -w json | jq -e '.revision>0 and .totalKey>0'`),
   negative:'mv /opt/p28a-etcd.db /opt/p28a-etcd-retirado.db',cleanup:'rm -f /opt/p28a-etcd.db /opt/p28a-etcd-retirado.db'},
  {id:'c28-b',classNumber:28,title:'Restaurar etcd · II',preflight:API,validation:'external-report',environment:'disposable-cluster',

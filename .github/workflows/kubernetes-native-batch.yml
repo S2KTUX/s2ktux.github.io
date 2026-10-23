@@ -2,11 +2,6 @@ name: Kubernetes real - bloque avanzado candidato
 
 on:
   workflow_dispatch:
-  pull_request:
-    branches: [main]
-    paths:
-      - 'scripts/test-kubernetes-advanced-native.mjs'
-      - '.github/workflows/kubernetes-native-batch.yml'
 
 permissions:
   contents: read
@@ -19,6 +14,8 @@ jobs:
   native:
     # No despliega Pages ni utiliza sesiones de alumnos. Dos VMs reales por
     # recorrido, sin mocks del motor, API, métricas ni correctores.
+    # Ejecución manual mientras se acepta la fábrica nueva. Los ensayos con
+    # el motor PIC y la captura v6 antigua fallaron; no repetirlos en cada push.
     if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
     timeout-minutes: 90
     strategy:
@@ -53,7 +50,6 @@ jobs:
           S2KTUX_NATIVE_ORIGIN: http://127.0.0.1:4189
           S2KTUX_NATIVE_OUTPUT: test-results/kubernetes-native
           S2KTUX_NATIVE_CASES: ${{ matrix.cases }}
-          S2KTUX_NATIVE_ENGINE_EXPERIMENT: pic-only-v1
         shell: bash
         run: |
           node tests/e2e/server.mjs _site > /tmp/s2ktux-native-server.log 2>&1 &

@@ -8,6 +8,7 @@ const shell=[];
 for(const task of tasks){
  assert.equal(task.validation,'external-report');assert.ok(task.check&&task.negative&&task.cleanup);
  assert.doesNotMatch(task.solutionDisplay||task.solution,/--bump-revision|--mark-compacted|--disable-eviction|runuser|printf/);
+ assert.doesNotMatch(task.solution,/^\+\s/m,'No mostrar ni ejecutar marcas de diff como comandos');
  for(const input of [...task.prepare,task.check,task.negative,task.cleanup,task.solutionNative||task.solution]){
   if(input.includes('\nvi '))continue;
   shell.push(input);

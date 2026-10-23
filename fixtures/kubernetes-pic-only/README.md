@@ -16,6 +16,8 @@ autoriza a migrar guardados ni a declarar HA o upgrade terminados.
 
 Fuentes base: [v86](https://github.com/copy/v86). Redistribución BSD-2-Clause,
 con el aviso completo en LICENSE. El parche está en pic.patch.
+Se conservan también los avisos de SoftFloat y la licencia BSD de Zstandard,
+que están enlazados en el WASM, en LICENSE-SoftFloat.txt y LICENSE-zstd.txt.
 `pic-original.rs` permite comprobar que no hay otros cambios en ese módulo.
 El caso se contrasta con el [manejador i8259 de Linux](https://github.com/torvalds/linux/blob/master/arch/x86/kernel/i8259.c).
 
