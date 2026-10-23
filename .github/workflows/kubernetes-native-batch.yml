@@ -53,6 +53,7 @@ jobs:
           S2KTUX_NATIVE_ORIGIN: http://127.0.0.1:4189
           S2KTUX_NATIVE_OUTPUT: test-results/kubernetes-native
           S2KTUX_NATIVE_CASES: ${{ matrix.cases }}
+          S2KTUX_NATIVE_ENGINE_EXPERIMENT: pic-only-v1
         shell: bash
         run: |
           node tests/e2e/server.mjs _site > /tmp/s2ktux-native-server.log 2>&1 &
