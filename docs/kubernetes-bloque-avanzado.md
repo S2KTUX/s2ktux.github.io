@@ -175,3 +175,60 @@ la base anterior porque no cambian Linux, el kernel ni la preparación; no
 se obliga a descargar otra vez los 549 MiB. Sin ArrayBuffer.transfer se
 conserva el recorrido anterior. Las pruebas incluyen el paso entre iframes,
 datos alterados, fallos de cuota y recuperación de bases compatibles.
+
+La regresión completa del commit 44032b8 pasa localmente (59 pruebas
+unitarias y 182 de navegador) y en GitHub Actions 39976527550. PR 77
+continúa en borrador; estas comprobaciones no despliegan el nivel avanzado.
+
+## Candidato de recuperación del API
+
+Con autorización expresa del responsable se publica únicamente el paquete
+de pruebas en la rama `assets/kubernetes-loopback-136-20261023`, commit
+`8a7b94d173df6a8df78bcc2fc6fff9364e67d6a1`. Incluye ejecutable, fuentes,
+sumas y licencias de terceros; no claves de clúster ni sesiones. No cambia
+la web publicada. El archivo se identifica por SHA-256
+`853a207e4aed4ca2e2bbf4e0789b5e4cce14e6d52bf33480178e462bc03acc99`.
+
+El intento v6 falla antes de instalar: el relay entrega unos 4,3 MB de los
+34,4 MB en 120 segundos. v7 entrega el archivo mediante un servidor HTTP
+local de la red virtual, respaldado por la descarga HTTPS del navegador.
+El SHA se verifica antes de servir y de nuevo en Debian; no se simulan
+órdenes ni se sustituye el archivo por un resultado prefijado. curl recibe
+los 32,8 MiB en 22 segundos locales; descarga, descompresión y comprobación
+completan en 93,356 segundos. Esto no acredita la velocidad de todo Internet.
+
+v7 comprueba el hash del nuevo proceso, pero el API no recupera su salud
+en 247,282 segundos. No llega a preparar c28-b. El candidato se conserva
+como ensayo fallido y no se incorpora a las imágenes ni a la web.
+
+El intento v8 contrasta una variante de laboratorio sobre otra copia del
+guardado sano v4, con el ejecutable anterior: detener API/controller/scheduler,
+restaurar con el comando corto de etcdutl, exigir el nuevo montaje de etcd
+y reiniciar componentes. Sigue la [recomendación oficial de Kubernetes](https://kubernetes.io/docs/tasks/administer-cluster/configure-upgrade-etcd/#restoring-an-etcd-cluster).
+No cambia AFFiNE ni la chuleta. La variante se registra por separado: no
+acredita el procedimiento sin detener los componentes.
+
+v8 recupera el montaje y la salud de etcd, pero falla la lectura del testigo.
+Se detecta y corrige un error del instrumento: apiserver-kubelet-client ya
+no es una identidad administrativa y no puede leer ConfigMaps. El sondeo
+ahora usa admin.conf únicamente dentro de la copia QA, con archivos 600,
+CA verificada y sin imprimir claves. Antes del incidente exige tanto la
+denegación del usuario de kubelet como la lectura de DESPUES por el admin.
+No se añaden permisos a ese certificado. El cambio de kubeadm se documenta
+en las [notas de Cluster API](https://main.cluster-api.sigs.k8s.io/user/troubleshooting.html#kubeadm-join-fails-after-upgrading-to-kubernetes-patch-releases).
+
+v9 recupera ANTES en 126,038 segundos locales con el sondeo corregido, pero
+sigue FALLIDO: readyz no aprueba start-service-ip-repair-controllers ni
+rbac/bootstrap-roles; los logs muestran timeouts TLS del cliente interno.
+El dato recuperado no se presenta como salud completa del clúster.
+
+v10 contrasta una escucha IPv4 explícita con el MISMO ejecutable anterior.
+Comprueba proceso nuevo, argumento y socket, pero tampoco supera la salud
+en su plazo. No llega a ejecutar el restore ni justifica un cambio de bind
+en las imágenes. Se descarta IPv4 como solución suficiente; tampoco se
+incorpora el binario candidato. Los informes fallidos se conservan.
+
+La rama de recursos incorpora ACLARACION_FUENTES.md en el commit
+4441ae36dcdda25f8876cdf47d3ed3e079894b39: el candidato corresponde a 1.36.5,
+no a la referencia genérica 1.35.9 del laboratorio de origen. El archivo y
+su SHA originales no cambian. Nada de esto despliega la web ni abre el avanzado.
