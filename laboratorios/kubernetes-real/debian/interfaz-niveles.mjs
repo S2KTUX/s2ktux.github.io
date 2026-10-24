@@ -131,7 +131,12 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   const current=task();if(!current||getState().busy||!getState().initialized||checking)return;
   checking=true;globalThis.kubeDebianExerciseResult=null;delete $('exercise-result').dataset.result;setBusy(true);update();$('exercise-result').textContent=prepare?'Preparando el ejercicio…':'Comprobando el resultado en Linux…';
   try{
-   if(prepare){await prepararPractica(current,run);prepared.add(current.id);$('exercise-result').textContent='Ejercicio preparado. Ya puedes resolverlo.';}
+   if(prepare){
+    // La topología real permite el drain con dos workers. Tener tres nodos
+    // no convierte la sesión de estudio en una copia desechable de etcd/API.
+    const environment=current.environment==='three-nodes'&&getState().nodeCount===3?'three-nodes':'course';
+    await prepararPractica(current,run,{environment});prepared.add(current.id);$('exercise-result').textContent='Ejercicio preparado. Ya puedes resolverlo.';
+   }
    else{const result=await comprobarPractica(current,run);globalThis.kubeDebianExerciseResult=result;$('exercise-result').dataset.result=result.state;$('exercise-result').textContent=result.message;}
   }catch(error){$('exercise-result').dataset.result='unverified';$('exercise-result').textContent='No se ha completado la preparación: '+(error.message||error);}
   finally{checking=false;setBusy(false);update();}

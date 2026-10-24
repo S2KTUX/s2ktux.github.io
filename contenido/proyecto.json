@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Cerrar las clases 24–34 como un bloque conjunto: integrar init/join manuales, HA y el paquete final de actualización. El paquete nuevo ya cambia el API a 1.36; falta validar la recuperación al reiniciar kubelet. HA, el restore corto y el guardado tienen pruebas privadas aprobadas, pero falta integrarlos y comprobarlos en la versión del alumno. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
+      "texto": "Cerrar las clases 24–34 como un bloque conjunto: integrar init/join manuales, HA y la actualización. La continuación con las imágenes finales ya comprueba los workers, guardar/recuperar y el restore corto; falta repetir la actualización completa sin interrupciones y llevar estos escenarios al laboratorio del alumno. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
     },
     {
       "id": "kubernetes-examen",

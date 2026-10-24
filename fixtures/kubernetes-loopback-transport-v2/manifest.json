@@ -25,6 +25,17 @@
     "proxyImageSha256": "eba002eefd9e29036d0d1596c854e59ebdcb29c12054d0e8a931ee41242b3060",
     "bytes": 58910437,
     "nativeAccepted": false,
+    "continuation": {
+      "report": "Resultado_upgrade_multinodo_v16.json",
+      "sourceAttempt": 15,
+      "passed": true,
+      "checks": 107,
+      "failures": 0,
+      "pageErrors": 0,
+      "etcdRestoreVariant": "course",
+      "applicationAndDNS": true,
+      "method": "Continuación del estado fallido v15; OCI real sin bind de ejecutables. No acredita un upgrade completo sin interrupciones."
+    },
     "published": false
   }
 }

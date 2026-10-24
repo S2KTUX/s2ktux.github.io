@@ -22,6 +22,7 @@ assert.match(tests,/wrong-token/);assert.match(tests,/not-the-server/);assert.ma
 assert.match(read('regresion-v1/browser_loopback_regression_test.go'),/rest.TransportFor\(config\)/);
 assert.equal(manifest.nativeAcceptance.checks,76);assert.equal(manifest.nativeAcceptance.etcdRestoreVariant,'course');
 assert.equal(manifest.localOCI.nativeAccepted,false);assert.equal(manifest.localOCI.published,false);
+assert.equal(manifest.localOCI.continuation.checks,107);assert.equal(manifest.localOCI.continuation.sourceAttempt,15);assert.equal(manifest.localOCI.continuation.etcdRestoreVariant,'course');
 assert.equal(nivelDisponible('avanzado'),false,'El parche no autoriza abrir el bloque completo');
 assert.match(read('LICENSE'),/Apache License/);
 const attributes=readFileSync(new URL('../.gitattributes',import.meta.url),'utf8');assert.match(attributes,/fixtures\/kubernetes-loopback-transport-v2\/\*\* text eol=lf/);

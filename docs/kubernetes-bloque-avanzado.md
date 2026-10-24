@@ -13,8 +13,8 @@ destructivas se separan de las sesiones de estudio.
 | 24 | Crear y reparar Static Pods, comparar manifiesto y mirror, borrar el mirror y comprobar su recreación. | Static Pods aprobados. HA v10 supera 88 comprobaciones: tres CP, LB redundante, tráfico, pérdida de un nodo, pérdida de mayoría y recuperación con datos/TLS/RBAC. Falta integrar ese escenario para el alumno. |
 | 25 | Init con configuración real, kubeconfig, CNI, Static Pods, Ready, DNS y tráfico. | Reutilizar el recorrido privado de init; falta integrarlo como escenario frío y reproducible sin destruir el laboratorio de aplicaciones. |
 | 26 | Join de worker, token nuevo, hash de CA, CSR/certificado de nodo, rechazo de permisos admin y tráfico entre nodos. | Recorrido manual aprobado en copia privada v11: token inválido rechazado, join válido, CSR, certificado y DNS/HTTP entre workers. Falta ofrecer este escenario limpio al alumno. |
-| 27 | Cordon, drain con PDB y desplazamiento al segundo worker. Upgrade APT/kubeadm de control plane y workers, versiones de procesos, objetos conservados y salud final. | Cordon/drain/PDB, CP y ambos workers APT comprobados. El intento v4 aprueba además guardar/recuperar 1.36, datos, DNS y RBAC. La recuperación del CP procede de una ejecución reanudada: falta estabilizar el recorrido sin interrupciones e integrarlo para el alumno. |
-| 28 | Snapshot TLS, integridad, restore en directorio nuevo, hostPath, montaje real de etcd y un testigo que debe volver a su valor anterior. | El restore corto y la recuperación completa pasan en v14 con el transporte corregido, usando un binario montado de QA. Falta cerrar su aceptación desde el paquete OCI definitivo e integrarlo en una copia desechable para el alumno. |
+| 27 | Cordon, drain con PDB y desplazamiento al segundo worker. Upgrade APT/kubeadm de control plane y workers, versiones de procesos, objetos conservados y salud final. | La continuación v16 con el OCI final supera 107 comprobaciones: salud estable del CP, ambos workers APT, PDB, guardar/recuperar tres nodos, datos, DNS y RBAC. Conserva el fallo original v15; falta repetir el recorrido completo sin interrupciones e integrarlo para el alumno. |
+| 28 | Snapshot TLS, integridad, restore en directorio nuevo, hostPath, montaje real de etcd y un testigo que debe volver a su valor anterior. | El restore corto pasa en v16 con los ejecutables del OCI final, sin bind de QA ni detener manualmente componentes. Verifica el valor restaurado, montaje real, Ready, negativo y aplicación nueva con logs/DNS. Falta integrarlo en una copia desechable para el alumno. |
 | 29 | Metrics Server y HPA con requests, objetivos y métricas reales. | Banco y ensayo ampliado aprobados en v11: métricas de tres nodos, carga, subida de una a tres réplicas disponibles y bajada a una. |
 | 30 | Instalar Helm con values, aplicación real; Kustomize con base intacta, overlay, prefijo, namespace, etiquetas y réplicas. | Banco y ensayo ampliado aprobados: repositorio HTTP, upgrade/history/rollback/uninstall; generator/hash, referencia, rollout y base intacta. |
 | 31 | CRD y esquema; Operator entregado, Custom Resource, ownerReference, status, reconciliación y respuesta de la aplicación. | CRD y Operator aprobados en la batería nativa v11, incluidos negativos y reconciliación. Falta integrar el banco en la entrega definitiva. |
@@ -38,6 +38,31 @@ con v6 y confirman que Reset conserva el guardado anterior. No se convierte
 ningún snapshot: los clientes públicos y la base publicada continúan en v6.
 La revisión compatible conserva la misma base de dos nodos y su descarga;
 no se obliga a repetir el bootstrap por añadir este perfil aislado.
+
+Ensayo final v15: 137 comprobaciones, un fallo y ningún error de página. El
+paquete OCI v2 se descarga, verifica, importa y desempaqueta sin montar un
+ejecutable encima. El plan y upgrade apply terminan; el API publica 1.36 y
+conserva los testigos y UID. APT cambia kubelet/kubectl y se reinicia kubelet.
+La comprobación siguiente lee Ready, pero su segunda consulta al Node recibe
+connection refused. Los registros posteriores muestran el cierre de etcd y
+conexiones rechazadas al puerto 2379. No se considera aprobado el recorrido
+ni se atribuye aún una causa definitiva al cierre.
+
+Se conserva la copia QA de los tres nodos para el diagnóstico. El corrector
+privado exige tres muestras consecutivas de API sano, Ready y versión nueva,
+en lugar de dar por estable una única lectura. En la copia aislada v16 esa
+espera pasa en 92,79 s, sin reparar el clúster. Se verifican los ejecutables
+OCI de los tres componentes y se conservan los objetos anteriores. El ensayo
+v16 termina con 107 comprobaciones aprobadas, sin errores: ambos workers,
+guardado de 4.469.240.752 bytes (1.585.238.893 comprimidos), recuperación de
+los tres nodos, datos, DNS y rechazo RBAC. El restore corto recupera ANTES,
+valida su montaje real, rechaza el estado incompleto y ejecuta una aplicación
+nueva con logs y DNS. La espera del dato restaurado tarda 198,36 s; readyz
+completo requiere otros 27,95 s. No es una restauración instantánea.
+
+No sustituye una repetición del upgrade completo: v16 continúa el estado
+fallido de v15, que permanece conservado. La aceptación pública y la
+activación del avanzado siguen pendientes.
 
 El nivel avanzado permanece cerrado hasta completar su aceptación. Mantener
 los fallos de cada intento: no reescribir un informe anterior como aprobado.
@@ -289,5 +314,7 @@ exige las mismas fuentes y sumas que el ejecutable comprobado.
 Se reconstruye además un paquete OCI local de 58.910.437 bytes: sustituye
 la capa del ejecutable compartido, recalcula los digests de capa/config/
 manifiesto y conserva BusyBox, los enlaces y kube-proxy. No incluye la
-capa antigua del ejecutable ni modifica el paquete anterior. Aún falta
-su importación y actualización nativas; no se publica ni se marca aceptado.
+capa antigua del ejecutable ni modifica el paquete anterior. Su importación
+y el cambio del API pasan en v15, y v16 aprueba la continuación y el restore
+corto. Falta repetir todo el recorrido seguido; no se publica ni se marca
+aceptado como entrega definitiva.
