@@ -1,4 +1,87 @@
 import {test,expect} from '@playwright/test';
+
+test('Entrada rápida · admite el historial publicado y rechaza listas excesivas',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {BasesLimpias}=await import('/laboratorios/kubernetes-real/debian/bases-limpias.mjs');
+  const {revisionesCompatibles}=await import('/laboratorios/kubernetes-real/debian/bases-publicadas.mjs');
+  const options={workerComponents:'v8',factoryVersion:'v6',progressive:true,level:'intermedio'};
+  for(const [revision,compatibleRevisions] of Object.entries(revisionesCompatibles))new BasesLimpias(revision,{...options,compatibleRevisions});
+  let rejected=false;try{new BasesLimpias('a'.repeat(64),{...options,compatibleRevisions:Array.from({length:9},(_,index)=>String(index).repeat(64))});}catch{rejected=true;}
+  return rejected;
+ });
+ expect(result).toBe(true);
+});
+
+test('Escenarios · guardar y resetear la copia no modifica la sesión habitual',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {SesionesClusterDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  const options={factoryVersion:'v13',workerComponents:'v7',progressive:true,level:'avanzado'};
+  const study=new SesionesClusterDebian(options),copy=new SesionesClusterDebian({...options,scenarioId:'c28-b'}),repair=new SesionesClusterDebian({...options,scenarioId:'c33-c'});
+  const regular=await study.saveNodes([await study.packNode('controlplane',new Uint8Array([1,2,3]).buffer,'ESTUDIO')]);
+  const temporary=await copy.saveNodes([await copy.packNode('controlplane',new Uint8Array([4,5,6]).buffer,'COPIA')]);
+  let mixed=false;try{await copy.validateCluster(regular);}catch{mixed=true;}
+  await copy.resetCluster(temporary.sha256);
+  let invalid=false;try{new SesionesClusterDebian({...options,scenarioId:'c28-b',factoryVersion:'v6'});}catch{invalid=true;}
+  return {different:study.key!==copy.key&&copy.key!==repair.key&&study.key!==repair.key,mixed,invalid,study:(await study.getCluster()).nodes[0].terminalText,copyGone:!await copy.getRawCluster()};
+ });
+ expect(result).toEqual({different:true,mixed:true,invalid:true,study:'ESTUDIO',copyGone:true});
+});
+
+test('Entrada rápida · identidades iguales a la base pública anterior, sin volver a descargarla',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const identities=await page.evaluate(async()=>{
+  const {identidadNodoDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  return Promise.all(['controlplane','worker1'].map(id=>identidadNodoDebian(id,{workerComponents:'v8',factoryVersion:'v6'})));
+ });
+ // Pinned cluster.json at resources commit 91502ceb011e65b550c7c10875a60b83cb7c9ea0.
+ expect(identities).toEqual(['6cb8081cc6033f34a3b42bb4bee4cd6e4a6e14ff6c93ede5723659fd8d8e0ad3','d2527704f0c948aa732483cac108670467ff4227a4f41fc2a425b4e1aa38b0f9']);
+});
+
+test('Administración · perfil HIGHMEM separado, sin convertir ni borrar guardados v6',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {SesionesClusterDebian,perfilNodoDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  const {KubeSessions}=await import('/laboratorios/kubernetes-real/kube-sessions.mjs');
+  const common={workerComponents:'v7',progressive:true,level:'avanzado'};
+  const old=new SesionesClusterDebian({...common,factoryVersion:'v6'}),admin=new SesionesClusterDebian({...common,factoryVersion:'v13'});
+  const oldNode=await old.packNode('controlplane',new Uint8Array([1,3,5]).buffer,'TRABAJO_V6');
+  const original=await old.saveNodes([oldNode]);
+  const adminNodes=await Promise.all(['controlplane','worker1','worker2'].map(id=>admin.packNode(id,new Uint8Array([2,4,6]).buffer,'COPIA_ADMIN')));
+  const saved=await admin.saveNodes(adminNodes);
+  let mixedRejected=false,ramRejected=false,kitRejected=false,unknownLimitRejected=false;
+  try{await admin.validate([oldNode]);}catch{mixedRejected=true;}
+  try{await admin.validate([{...adminNodes[0],profile:{...adminNodes[0].profile,memoryMiB:1024}}]);}catch{ramRejected=true;}
+  try{new SesionesClusterDebian({...common,factoryVersion:'v13',workerComponents:'v8'});}catch{kitRejected=true;}
+  try{new KubeSessions({stateLimitMiB:4096});}catch{unknownLimitRejected=true;}
+  await admin.resetCluster(saved.sha256);
+  return {separate:old.key!==admin.key,mixedRejected,ramRejected,kitRejected,unknownLimitRejected,
+   oldLimit:new KubeSessions().maxStateBytes/1048576,adminLimit:admin.maxStateBytes/1048576,
+   cp:perfilNodoDebian('controlplane',{factoryVersion:'v13'}),worker:perfilNodoDebian('worker1',{factoryVersion:'v13'}),
+   oldPreserved:(await old.getCluster()).sha256===original.sha256,adminDeleted:!await admin.getCluster()};
+ });
+ expect(result.separate&&result.mixedRejected&&result.ramRejected&&result.kitRejected&&result.unknownLimitRejected).toBe(true);
+ expect(result.oldLimit).toBe(1536);expect(result.adminLimit).toBe(2048);
+ expect(result.cp).toMatchObject({os:'debian-admin-v3',engine:'jit8192-pic-only-v1',kernel:'highmem-v1',memoryMiB:1536});
+ expect(result.worker).toMatchObject({kernel:'v1',memoryMiB:1024});
+ expect(result.oldPreserved&&result.adminDeleted).toBe(true);
+});
+test('Guardado · ceder la copia temporal conserva bytes y formato entre iframes',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {SesionesClusterDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  const session=new SesionesClusterDebian({workerComponents:'v7',factoryVersion:'v6',progressive:true,level:'inicial'});
+  const frame=document.createElement('iframe');document.body.append(frame);
+  const input=new frame.contentWindow.Uint8Array([3,1,4,1,5]).buffer;
+  const node=await session.packNode('controlplane',input,'ESTADO_CEDIDO',{consumir:true});
+  await session.saveNodes([node]);const saved=await session.getCluster(),stored=saved.nodes[0];
+  const bytes=Array.from(new Uint8Array(await session.unpack(stored,stored.identity)));
+  const ordinary=new Uint8Array([8,9]).buffer;await session.packNode('controlplane',ordinary);
+  frame.remove();return {detached:input.byteLength===0,bytes,format:stored.format,declaredBytes:stored.bytes,originalPreserved:ordinary.byteLength===2};
+ });
+ expect(result).toEqual({detached:true,bytes:[3,1,4,1,5],format:'s2ktux-v86-session-v1',declaredBytes:5,originalPreserved:true});
+});
 test('Base limpia · caché separada, revisión nueva y guardado del alumno intacto',async({page})=>{
  await page.goto('/laboratorios/kubernetes-real/');
  const result=await page.evaluate(async()=>{

@@ -1,0 +1,41 @@
+{
+  "version": "1.36.5",
+  "experimental": true,
+  "upstreamSource": "https://github.com/kubernetes/kubernetes/blob/v1.36.5/staging/src/k8s.io/client-go/transport/cache.go",
+  "upstreamSha256": "807abf09cba645f3d4ee259caa4504993b7db1b02a580b4ce4e9119254f200ed",
+  "patchedSourceSha256": "c0c2b004281979bd628166a9465fa64a48c9f9a523811a6dd4fdf0a783bb3769",
+  "files": {
+    "browser_loopback_transport.go": "cab5beb3b186a95f991f9f492447fe3efd207492a974d2d2c7a759e708b9d987",
+    "browser_loopback_transport_test.go": "65e078a0116bfac9d93f3b03b22d1d22d5db93fd3f82fbded1b404ccf88c8733"
+  },
+  "binarySha256": "6c0d826692bcf9c042f7d2de8e75ac063f15b7eb4f18925c7f03cf4e23fd9c7c",
+  "nativeAcceptance": {
+    "report": "Resultado_upgrade_multinodo_v14.json",
+    "passed": true,
+    "checks": 76,
+    "failures": 0,
+    "pageErrors": 0,
+    "method": "Ejecutable verificado montado en lectura en un API real; no es todavía la actualización con el paquete OCI final.",
+    "etcdRestoreVariant": "course",
+    "applicationAndDNS": true
+  },
+  "localOCI": {
+    "archiveSha256": "a15e031fc2948bef2e1fa8da980e64a4b8f09516e13ea9570b762c117cfb5dde",
+    "coreImageSha256": "841d65226aa558a616b8626ce61154d38356c5715c3559f90b5a007ad35f0f78",
+    "proxyImageSha256": "eba002eefd9e29036d0d1596c854e59ebdcb29c12054d0e8a931ee41242b3060",
+    "bytes": 58910437,
+    "nativeAccepted": false,
+    "continuation": {
+      "report": "Resultado_upgrade_multinodo_v16.json",
+      "sourceAttempt": 15,
+      "passed": true,
+      "checks": 107,
+      "failures": 0,
+      "pageErrors": 0,
+      "etcdRestoreVariant": "course",
+      "applicationAndDNS": true,
+      "method": "Continuación del estado fallido v15; OCI real sin bind de ejecutables. No acredita un upgrade completo sin interrupciones."
+    },
+    "published": false
+  }
+}

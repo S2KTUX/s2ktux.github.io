@@ -1,4 +1,4 @@
-import {IMAGEN,q,aplicar,contenedor,pod,http,obtener,crearPractica,esperarPod} from './herramientas-practicas.mjs?v=b995634347ea1c07';
+import {IMAGEN,q,aplicar,contenedor,pod,http,obtener,crearPractica,esperarPod} from './herramientas-practicas.mjs?v=57b511eb13b1d3ed';
 const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));
 const service=ns=>({apiVersion:'v1',kind:'Service',metadata:{namespace:ns,name:'web'},spec:{selector:{app:'web'},ports:[{port:80,targetPort:8080}]}});
 const backend=(ns,text)=>[aplicar(pod(ns,'web',{containers:[contenedor(http(text))]})),aplicar(service(ns)),esperarPod(ns,'web')];

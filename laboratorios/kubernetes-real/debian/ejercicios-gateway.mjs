@@ -1,4 +1,4 @@
-import {q,aplicar,pod,contenedor,http,obtener,crearPractica,esperarPod} from './herramientas-practicas.mjs?v=b995634347ea1c07';
+import {q,aplicar,pod,contenedor,http,obtener,crearPractica,esperarPod} from './herramientas-practicas.mjs?v=57b511eb13b1d3ed';
 const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));
 const gateway=(ns,tls=false)=>({apiVersion:'gateway.networking.k8s.io/v1',kind:'Gateway',metadata:{name:'entrada',namespace:ns},spec:{gatewayClassName:'traefik',listeners:[tls?{name:'https',protocol:'HTTPS',port:8443,tls:{mode:'Terminate',certificateRefs:[{name:'web-tls'}]}}:{name:'http',protocol:'HTTP',port:8000}]}});
 const route=(ns,host,rules)=>({apiVersion:'gateway.networking.k8s.io/v1',kind:'HTTPRoute',metadata:{name:'web',namespace:ns},spec:{parentRefs:[{name:'entrada'}],hostnames:[host],rules}});

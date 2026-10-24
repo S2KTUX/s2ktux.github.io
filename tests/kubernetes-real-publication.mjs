@@ -15,6 +15,7 @@ for(const file of ['debian/disco-v6/disco-fragmentado.json','componentes/disco-v
 }
 const page=await read('debian/multinodo.html'),hub=await readFile(new URL('../terminal.html',import.meta.url),'utf8');
 const uiRevision=async path=>createHash('sha256').update((await read(path)).replaceAll('\r\n','\n')).digest('hex').slice(0,16);
+for(const child of ['ejercicios-administracion','ejercicios-ciclo-cluster','ejercicios-avanzados'])assert.ok((await read('debian/ejercicios-niveles.mjs')).includes("from './"+child+".mjs?v="+await uiRevision('debian/'+child+'.mjs')+"'"));
 assert.ok(page.includes('src="entrada-laboratorio.mjs?v='+await uiRevision('debian/entrada-laboratorio.mjs')+'"'));
 assert.ok(page.includes('href="niveles.css?v='+await uiRevision('debian/niveles.css')+'"'));
 assert.ok((await read('debian/entrada-laboratorio.mjs')).includes("import('./multinodo.mjs?v="+await uiRevision('debian/multinodo.mjs')+"')"));

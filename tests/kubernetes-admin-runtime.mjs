@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {perfilAdministracion} from '../laboratorios/kubernetes-real/debian/perfil-administracion.mjs';
+import {kernelSha256} from '../laboratorios/kubernetes-real/debian/kernel-perfil.mjs';
+import {parametrosPublicos,nivelDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
+const cp={factoryVersion:'v13',base:'admin-v3',components:'v7',withKube:true,clustered:true,schedulingAPI:true,tlsMode:'classical',engineVariant:'jit8192-pic-only-v1',kernelVariant:'highmem-v1',diskMode:'dma',sharedCode:false,warm:true,threaded:false,worker:null};
+assert.deepEqual(perfilAdministracion(cp),{memoryMiB:1536,stateLimitMiB:2048});
+assert.equal(perfilAdministracion({...cp,factoryVersion:'v6'}),null);
+for(const worker of ['1','2'])assert.deepEqual(perfilAdministracion({...cp,worker,warm:false,threaded:true,kernelVariant:'v1'}),{memoryMiB:1024,stateLimitMiB:1536});
+for(const [key,value]of Object.entries({base:'v6',components:'v8',withKube:false,clustered:false,schedulingAPI:false,tlsMode:null,engineVariant:'jit8192',kernelVariant:'v1',diskMode:'pio',sharedCode:true,warm:false,threaded:true,worker:'3'}))assert.throws(()=>perfilAdministracion({...cp,[key]:value}),/Administración/);
+assert.equal(kernelSha256('highmem-v1'),'356959ed6da96e90c2e446a7d3c74b6cfcb55a3785d5056e6f2ea22a0caaca25');
+assert.throws(()=>kernelSha256('highmem-v2'));
+assert.equal(parametrosPublicos('level=inicial&factory=v13').get('factory'),'v6');
+assert.equal(parametrosPublicos('level=intermedio&use-scheduling-api=1').has('use-scheduling-api'),false);
+const advanced=parametrosPublicos('level=avanzado&factory=v6');assert.equal(advanced.get('factory'),'v13');assert.equal(advanced.get('use-scheduling-api'),'1');
+assert.equal(nivelDisponible('avanzado'),false,'Conectar el perfil no equivale a publicar el nivel');
+const source=readFileSync(new URL('../laboratorios/kubernetes-real/debian/cliente.mjs',import.meta.url),'utf8');assert.match(source,/memory_size:memoryMiB\*1048576/);assert.match(source,/stateLimitMiB:adminProfile\?\.stateLimitMiB\|\|1536/);
+console.log('Administración: runtime estricto, CP HIGHMEM, workers estándar, memoria de guardado y nivel cerrado hasta su aceptación.');

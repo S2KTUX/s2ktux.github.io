@@ -7,7 +7,7 @@
     "test:contracts": "node tests/terminal-contracts.mjs && node tests/terminal-command-coverage.mjs",
     "test:e2e": "npm run build && playwright test",
     "test": "npm run build && npm run test:unit && playwright test",
-    "build": "npm run sync:project && node scripts/build-production.mjs",
+    "build": "npm run sync:project && node scripts/build-kubernetes-deployment.mjs && node scripts/build-production.mjs",
     "sync:project": "node scripts/build-project-pages.mjs",
     "audit:xterm": "node scripts/check-vendored-xterm.mjs"
   },
