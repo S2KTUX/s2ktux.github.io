@@ -166,8 +166,13 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  async function requestScenario(id){
   if(getState().busy||switching||checking)return;
   switching=true;update();$('switch-level-error').textContent='';
-  try{const choice=getState().nodeCount?await choose(null,true):'discard';await cambiarNivel({choice,save,stop,navigate:()=>navigate(urlEscenarioCurso(location.href,id))});}
-  catch(error){$('switch-level-error').textContent='No se ha cambiado de copia: '+(error.message||error);}
+  try{
+   let choice=getState().nodeCount?await choose(null,true):'discard';
+   while(choice!=='cancel'){
+    try{await cambiarNivel({choice,save,stop,navigate:()=>navigate(urlEscenarioCurso(location.href,id))});return;}
+    catch(error){$('switch-level-error').textContent='No se ha cambiado de copia: '+(error.message||error);choice=await choose(null,true);}
+   }
+  }
   finally{switching=false;update();}
  }
  async function requestChange(destination,href){

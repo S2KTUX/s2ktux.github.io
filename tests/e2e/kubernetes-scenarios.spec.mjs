@@ -36,7 +36,9 @@ test('Escenarios · guardar termina antes de detener y entrar en la copia',async
 test('Escenarios · si falla guardar no se detiene ni se cambia de sesión',async({page})=>{
  await mount(page,{saveFails:true});await page.locator('#exercise-prepare').click();await page.locator('[data-switch-action=save]').click();
  await expect(page.locator('#switch-level-error')).toContainText('Sin espacio');
+ await expect(page.locator('#switch-level-error')).toBeVisible();
  expect(await page.evaluate(()=>qaSceneEvents)).toEqual(['save']);
+ await page.locator('[data-switch-action=cancel]').click();
 });
 test('Escenarios · selecciona su ejercicio y permite volver al guardado de estudio',async({page})=>{
  await mount(page,{scenarioId:'c28-b'});
