@@ -5,3 +5,5 @@ laboratorios/kubernetes-real/**/*.mjs text eol=lf
 laboratorios/kubernetes-real/**/*.html text eol=lf
 laboratorios/kubernetes-real/**/*.css text eol=lf
 laboratorios/kubernetes-real/**/*.json text eol=lf
+# Las fuentes del transporte probado también se contrastan por SHA-256.
+fixtures/kubernetes-loopback-transport-v2/** text eol=lf

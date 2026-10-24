@@ -232,3 +232,49 @@ La rama de recursos incorpora ACLARACION_FUENTES.md en el commit
 4441ae36dcdda25f8876cdf47d3ed3e079894b39: el candidato corresponde a 1.36.5,
 no a la referencia genérica 1.35.9 del laboratorio de origen. El archivo y
 su SHA originales no cambian. Nada de esto despliega la web ni abre el avanzado.
+
+### Diagnóstico del 24 de octubre
+
+Un reinicio del API original, sin restaurar etcd ni cambiar su manifiesto,
+reproduce la misma falta de salud. Antes del reinicio se comprueban
+certificados ECDSA, el entorno TLS previsto, más de 1 GiB de memoria
+disponible y ausencia de throttling en los cgroups observados. Esto acota
+el fallo; no descarta saturación de CPU durante el arranque ni lo resuelve.
+
+Se encuentra además un defecto concreto del candidato anterior: client-go
+1.36 devuelve un `trackedTransport` y el ajuste que esperaba directamente
+un `http.Transport` no se aplicaba. Una regresión con `rest.TransportFor`
+real confirma que permanecía en 10 segundos. La prueba simplificada previa
+no cubría ese envoltorio y no era suficiente para acreditar el cambio.
+
+El nuevo ensayo aplica el ajuste antes del envoltorio, sin retirarlo ni
+desactivar la caché: limita las conexiones internas simultáneas y conserva
+TLS, autenticación y HTTP/2. Pasan pruebas con peticiones HTTPS reales,
+token incorrecto, CA incorrecta, hostname incorrecto y reutilización del
+pool.
+
+El intento nativo v14 supera 76 comprobaciones, sin fallos ni errores del
+navegador. Comprueba el hash del proceso nuevo, readyz completo, tres nodos
+Ready, permisos y UID conservados. Después ejecuta el restore corto de
+c28-b: recupera ANTES, verifica el montaje real, rechaza el estado incompleto
+y ejecuta un Deployment nuevo con logs y DNS. No necesita añadir flags de
+restore ni detener manualmente los componentes. Los informes fallidos
+anteriores permanecen conservados; no se sustituyen por este resultado.
+
+El ejecutable verificado tiene SHA-256
+`6c0d826692bcf9c042f7d2de8e75ac063f15b7eb4f18925c7f03cf4e23fd9c7c`.
+El ensayo sigue siendo privado: falta incorporarlo a las imágenes del
+laboratorio y repetir la actualización con ese paquete final. Este PASS
+no abre el nivel avanzado ni acredita por sí solo todas las clases 24–34.
+
+El parche, la fuente upstream, sus pruebas Go y la licencia quedan en
+`fixtures/kubernetes-loopback-transport-v2`, fuera de `_site`. Se conserva
+la regresión que descubre el fallo anterior, sin confundir su FAIL esperado
+con la aceptación del nuevo transporte. La prueba unitaria del repositorio
+exige las mismas fuentes y sumas que el ejecutable comprobado.
+
+Se reconstruye además un paquete OCI local de 58.910.437 bytes: sustituye
+la capa del ejecutable compartido, recalcula los digests de capa/config/
+manifiesto y conserva BusyBox, los enlaces y kube-proxy. No incluye la
+capa antigua del ejecutable ni modifica el paquete anterior. Aún falta
+su importación y actualización nativas; no se publica ni se marca aceptado.

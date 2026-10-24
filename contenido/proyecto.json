@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Cerrar las clases 24–34 como un bloque conjunto: integrar init/join manuales, HA y actualización, y estabilizar la recuperación tras restaurar etcd. Ya hay pruebas privadas aprobadas de HA, workers y guardado, pero falta ofrecerlas y comprobarlas en la versión del alumno. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
+      "texto": "Cerrar las clases 24–34 como un bloque conjunto: integrar init/join manuales, HA y el paquete final de actualización. La prueba privada del API corregido y el restore corto de etcd ya pasa, igual que HA, workers y guardado; falta incorporarlos y comprobarlos en la versión del alumno. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
     },
     {
       "id": "kubernetes-examen",
