@@ -6,8 +6,8 @@
 <link rel="stylesheet" href="../site-shell.css?v=ac5aee15ea13">
 <link rel="stylesheet" href="../fonts.css?v=20260822-local">
 <link rel="stylesheet" href="../visual-system.css?v=dc5253bb5de9">
-<title>Novedades de la versión 2.9 · S2KTUX</title>
-<meta name="description" content="Recuperar las máquinas evita lecturas repetidas, sin perder las comprobaciones de los guardados.">
+<title>Notas agrupadas · S2KTUX</title>
+<meta name="description" content="Los cambios de este día están reunidos en la versión 2.2.">
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
@@ -16,16 +16,16 @@
 <link rel="manifest" href="../manifest.webmanifest">
 <script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../sw.js').catch(function(){});});}</script>
-<link rel="canonical" href="https://s2ktux.github.io/versiones/2.9.html">
-<meta property="og:url" content="https://s2ktux.github.io/versiones/2.9.html">
+<link rel="canonical" href="https://s2ktux.github.io/versiones/2026-10-22.html">
+<meta property="og:url" content="https://s2ktux.github.io/versiones/2026-10-22.html">
 <meta property="og:site_name" content="S2KTUX">
 <meta property="og:locale" content="es_ES">
-<meta name="twitter:title" content="Novedades de la versión 2.9 · S2KTUX">
-<meta name="twitter:description" content="Recuperar las máquinas evita lecturas repetidas, sin perder las comprobaciones de los guardados.">
+<meta name="twitter:title" content="Notas agrupadas · S2KTUX">
+<meta name="twitter:description" content="Los cambios de este día están reunidos en la versión 2.2.">
 <meta name="author" content="S2KTUX">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Novedades de la versión 2.9 · S2KTUX">
-<meta property="og:description" content="Recuperar las máquinas evita lecturas repetidas, sin perder las comprobaciones de los guardados.">
+<meta property="og:title" content="Notas agrupadas · S2KTUX">
+<meta property="og:description" content="Los cambios de este día están reunidos en la versión 2.2.">
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -53,6 +53,7 @@
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script defer src="../site-shell.js?v=20260826-phase3"></script>
 
+<meta http-equiv="refresh" content="0; url=2026-10-22.html">
 </head>
 <body>
 
@@ -71,17 +72,7 @@
   </div>
 </div>
 
-<main id="main-content"><section class="about-page about-release">
-<a href="../sobre.html#version-2.9">← Volver al historial</a>
-<h1>Versión 2.9</h1>
-<p class="about-small"><time datetime="2026-10-22">22/10/2026</time></p>
-<p>Recuperar las máquinas evita lecturas repetidas, sin perder las comprobaciones de los guardados.</p>
-<h2>Qué ha cambiado</h2>
-<p>Linux y Docker reutilizan la comprobación de un mismo archivo de sesión mientras sigue en memoria. Un archivo nuevo o cambiado se verifica de nuevo; no se modifica el formato de los guardados.</p>
-<p>Kubernetes deja de leer dos veces el mismo guardado al entrar y evita repetir la lectura de los archivos que ya acaba de comprobar. Conservamos las entradas rápidas anteriores que sean compatibles, sin obligar a preparar otra vez el nivel inicial. Se mantienen las protecciones frente a datos alterados y cambios desde otra pestaña.</p>
-<p>La comprobación de arranque ya no puede dar por preparado el clúster si la consulta de nodos falla o devuelve una respuesta vacía.</p>
-<p>Se conserva la misma base limpia de dos nodos y las prácticas publicadas hasta la clase 23. El nivel avanzado y el simulacro siguen pendientes.</p>
-</section></main>
+<main id="main-content"><section class="about-page about-release"><h1>Notas agrupadas</h1><p>Los cambios de este día están reunidos en la versión 2.2.</p><a href="../versiones/2026-10-22.html">Ver las notas completas →</a></section></main>
 
 <footer class="site-footer">
   <div class="site-footer-brand">S2KTUX</div>
