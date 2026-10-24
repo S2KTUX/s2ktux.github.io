@@ -1,20 +1,21 @@
 import {createLocalSwitch} from '../red-local.mjs';
 import {comandosArchivoSerie} from '../archivos-serie.mjs';
 import {perfilWorker} from './preparar-worker.mjs';
-import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c2e7edc8846e24aa';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c48a799bc7d9fd9e';
 import {ordenarNodosDebian,comandoNatDebian} from './red-cluster.mjs';
 import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cluster.mjs';
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=fda4c4572d6b3c04';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=d807de41be6f8805';
 import {ordenSaludInicial} from './salud-inicial.mjs?v=84a2e4609f06f611';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
-import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
-import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=3cdc77b2f0656b40';
-import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=f5b0e201461e1558';
+import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=972ae9a30819f731';
+import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=da5f815937aa17c4';
+import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=5f006f96b5520878';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=979785ed16349130';
-const cleanRevision='c402d3d5373a48d52c73ca9486ec36784fff9ad1597a9bfd28334e0c36aa9abd';
+import {escenarioCurso} from './escenarios-curso.mjs?v=d4bec200a84a960f';
+const cleanRevision='303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -24,21 +25,22 @@ const integratedPolicies=new URLSearchParams(location.search).get('policies')===
 if(progressive&&level==='inicial'&&integratedPolicies)throw Error('Las políticas se preparan en el modo intermedio, con workers.');
 const persistentNetwork=new URLSearchParams(location.search).get('persistent-network')==='1';
 const factoryVersion=new URLSearchParams(location.search).get('factory')||(progressive?'v6':'v1');
-if(!['v1','v3','v4','v5','v6','v8'].includes(factoryVersion))throw Error('Fábrica multinodo no admitida');
+if(!['v1','v3','v4','v5','v6','v8','v13'].includes(factoryVersion))throw Error('Fábrica multinodo no admitida');
 const schedulingAPI=new URLSearchParams(location.search).get('use-scheduling-api')==='1';
-if(factoryVersion==='v8'&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración privada requiere Scheduler API, sin políticas integradas y nivel avanzado');
+if(['v8','v13'].includes(factoryVersion)&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración requiere Scheduler API, sin políticas integradas y nivel avanzado');
+const scenario=escenarioCurso(new URLSearchParams(location.search).get('escenario'),{factoryVersion,level});
 const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'||factoryVersion!=='v1';
-const nodeUIRevision='b18d9503ad38b069';
-const workerComponents=factoryVersion==='v8'?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
+const nodeUIRevision='fdc8047ddc7e8740';
+const workerComponents=['v8','v13'].includes(factoryVersion)?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
-const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
+const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level,scenarioId:scenario?.id||'study'}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
 const cleanBases=new BasesLimpias(cleanRevision,{workerComponents,factoryVersion,progressive,level,compatibleRevisions:revisionesCompatibles[cleanRevision]||[]});
 const failedPublishedKey='s2ktux-kubernetes-base-failed:'+level+':'+cleanRevision;
 function basePublicadaBloqueada(){try{return sessionStorage.getItem(failedPublishedKey)==='1';}catch{return false;}}
 function updateControls(){save.disabled=busy||!initialized;reset.disabled=busy||!readSaved;add.disabled=true;add.hidden=true;start.disabled=busy||nodes.size>0||!releaseAvailable();levelUI?.update();}
 if(progressive){document.querySelector('h1').textContent='Laboratorio Kubernetes';start.textContent='Iniciar laboratorio';add.textContent='Añadir primer worker';}
 globalThis.kubeDebianClusterNodes=nodes;globalThis.kubeDebianClusterErrors=[];globalThis.kubeDebianClusterReady=false;globalThis.kubeDebianClusterStages=[];
-globalThis.kubeDebianClusterProfile={level,factoryVersion,workerComponents,progressive};
+globalThis.kubeDebianClusterProfile={level,factoryVersion,workerComponents,progressive,...(scenario?{scenarioId:scenario.id}:{})};
 function fail(error){kubeDebianClusterReady=false;kubeDebianClusterErrors.push(String(error.message||error));status.textContent='No se pudo completar la operación: '+(error.message||error)+'. Puedes usar Reset o cambiar de modo; tus guardados no se borran automáticamente.';}
 async function phase(id,label,command,timeout=180000){
  status.textContent=label+'…';if(!initialized)nodes.get(id).window.kubeDebianBootNotice?.(label+'…');const began=performance.now(),result=await nodes.get(id).window.kubeDebianRun(label,command,timeout);
@@ -53,7 +55,7 @@ async function value(id,command){
  if(!line)throw Error('No se recibió el valor nativo');return line.slice(key.length);
 }
 async function createNode(id,query,restore){
- const frame=document.createElement('iframe');frame.className='node-frame';frame.title='Terminal '+id;frame.hidden=id!=='controlplane';frame.src='index.html?base='+(factoryVersion==='v8'?'admin-v2':['v5','v6'].includes(factoryVersion)?'v6':factoryVersion==='v4'?'v5':'v4')+'&ui='+nodeUIRevision+'&kube=1&components='+(id==='controlplane'?'v7':workerComponents)+'&cluster=1&factory='+factoryVersion+'&'+query+(classicalTls?'&tls=classical':'')+(schedulingAPI?'&use-scheduling-api=1':'');
+ const frame=document.createElement('iframe');frame.className='node-frame';frame.title='Terminal '+id;frame.hidden=id!=='controlplane';frame.src='index.html?base='+(factoryVersion==='v13'?'admin-v3':factoryVersion==='v8'?'admin-v2':['v5','v6'].includes(factoryVersion)?'v6':factoryVersion==='v4'?'v5':'v4')+'&ui='+nodeUIRevision+'&kube=1&components='+(id==='controlplane'?'v7':workerComponents)+'&cluster=1&factory='+factoryVersion+'&'+query+(classicalTls?'&tls=classical':'')+(schedulingAPI?'&use-scheduling-api=1':'')+(factoryVersion==='v13'?'&engine=jit8192-pic-only-v1&kernel='+(id==='controlplane'?'highmem-v1':'v1'):'');
  const loaded=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(Error('No se cargó '+id));});document.querySelector('#nodes').append(frame);levelUI?.update();await loaded;
  const child=frame.contentWindow;nodes.set(id,{id,frame,window:child});document.querySelector(`button[data-node="${id}"]`).hidden=false;levelUI?.update();
  const childStatus=child.document.querySelector('#status');
@@ -218,5 +220,5 @@ async function runForPractice(id,label,command,timeout=180000){
  return node.window.kubeDebianRun(label,command,timeout);
 }
 globalThis.kubeDebianClusterCheck=runForPractice;
-if(progressive)levelUI=montarInterfazNiveles({level,getState:()=>({busy,initialized,nodeCount:nodes.size,nodes:[...nodes].map(([id,node])=>({name:id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name,consoleReady:!!node.window.kubeDebianReady,error:!!node.window.kubeDebianErrors?.length}))}),run:runForPractice,setBusy:value=>{busy=value;updateControls();},save:()=>kubeDebianClusterSave(),stop:stopForLevelChange});
+if(progressive)levelUI=montarInterfazNiveles({level,getState:()=>({busy,initialized,level,factoryVersion,scenarioId:scenario?.id||null,scenarioIndependent:!!scenario,nodeCount:nodes.size,nodes:[...nodes].map(([id,node])=>({name:id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name,consoleReady:!!node.window.kubeDebianReady,error:!!node.window.kubeDebianErrors?.length}))}),run:runForPractice,setBusy:value=>{busy=value;updateControls();},save:()=>kubeDebianClusterSave(),stop:stopForLevelChange});
 updateControls();

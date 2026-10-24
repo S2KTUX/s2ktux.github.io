@@ -10,10 +10,10 @@ import {EJERCICIOS_DNS} from './ejercicios-dns.mjs?v=e4f7dacc1a978183';
 import {EJERCICIOS_GATEWAY} from './ejercicios-gateway.mjs?v=89c47e64947ff7a4';
 import {EJERCICIOS_ADMINISTRACION} from './ejercicios-administracion.mjs?v=1ad7c4fe10eb6232';
 import {EJERCICIOS_CICLO_CLUSTER} from './ejercicios-ciclo-cluster.mjs?v=62884d43e9210e4b';
-import {EJERCICIOS_AVANZADOS} from './ejercicios-avanzados.mjs?v=59a2bd662748e29e';
+import {EJERCICIOS_AVANZADOS} from './ejercicios-avanzados.mjs?v=4830fb2406b6ce0f';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
-import {claseDisponible} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
+import {claseDisponible} from './disponibilidad-curso.mjs?v=972ae9a30819f731';
 import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
 import {EJERCICIOS_PROGRESIVOS,CKA_EXAM_PRACTICE} from './ejercicios-progresivos.mjs';
 export const EJERCICIOS=Object.freeze({

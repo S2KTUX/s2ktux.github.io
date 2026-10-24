@@ -1,4 +1,4 @@
-import {loadEngine} from './perfil-motor.mjs';
+import {loadEngine} from './perfil-motor.mjs?v=e2d5c844a64e023d';
 import {ChunkDisk} from './disco-kubernetes.mjs?v=24e556fdea9d7b1c';
 import {createEthernetInternet} from '/laboratorios/docker-real/ethernet-internet.mjs';
 import {instrumentEngine} from './estadisticas-motor.mjs';

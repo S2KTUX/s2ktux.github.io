@@ -1,5 +1,34 @@
 import {test,expect} from '@playwright/test';
 
+test('Entrada rápida · admite el historial publicado y rechaza listas excesivas',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {BasesLimpias}=await import('/laboratorios/kubernetes-real/debian/bases-limpias.mjs');
+  const {revisionesCompatibles}=await import('/laboratorios/kubernetes-real/debian/bases-publicadas.mjs');
+  const options={workerComponents:'v8',factoryVersion:'v6',progressive:true,level:'intermedio'};
+  for(const [revision,compatibleRevisions] of Object.entries(revisionesCompatibles))new BasesLimpias(revision,{...options,compatibleRevisions});
+  let rejected=false;try{new BasesLimpias('a'.repeat(64),{...options,compatibleRevisions:Array.from({length:9},(_,index)=>String(index).repeat(64))});}catch{rejected=true;}
+  return rejected;
+ });
+ expect(result).toBe(true);
+});
+
+test('Escenarios · guardar y resetear la copia no modifica la sesión habitual',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {SesionesClusterDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  const options={factoryVersion:'v13',workerComponents:'v7',progressive:true,level:'avanzado'};
+  const study=new SesionesClusterDebian(options),copy=new SesionesClusterDebian({...options,scenarioId:'c28-b'}),repair=new SesionesClusterDebian({...options,scenarioId:'c33-c'});
+  const regular=await study.saveNodes([await study.packNode('controlplane',new Uint8Array([1,2,3]).buffer,'ESTUDIO')]);
+  const temporary=await copy.saveNodes([await copy.packNode('controlplane',new Uint8Array([4,5,6]).buffer,'COPIA')]);
+  let mixed=false;try{await copy.validateCluster(regular);}catch{mixed=true;}
+  await copy.resetCluster(temporary.sha256);
+  let invalid=false;try{new SesionesClusterDebian({...options,scenarioId:'c28-b',factoryVersion:'v6'});}catch{invalid=true;}
+  return {different:study.key!==copy.key&&copy.key!==repair.key&&study.key!==repair.key,mixed,invalid,study:(await study.getCluster()).nodes[0].terminalText,copyGone:!await copy.getRawCluster()};
+ });
+ expect(result).toEqual({different:true,mixed:true,invalid:true,study:'ESTUDIO',copyGone:true});
+});
+
 test('Entrada rápida · identidades iguales a la base pública anterior, sin volver a descargarla',async({page})=>{
  await page.goto('/laboratorios/kubernetes-real/');
  const identities=await page.evaluate(async()=>{

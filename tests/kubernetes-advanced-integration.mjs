@@ -15,7 +15,7 @@ for(const task of tasks.filter(t=>t.environment==='disposable-cluster')){
 }
 for(let number=24;number<=34;number++)assert.deepEqual(ejerciciosClase(number),[],'El banco candidato no abre el avanzado');
 const ui=readFileSync(new URL('../laboratorios/kubernetes-real/debian/interfaz-niveles.mjs',import.meta.url),'utf8');
-assert.match(ui,/current.environment==='three-nodes'&&getState\(\).nodeCount===3\?'three-nodes':'course'/);
+assert.match(ui,/const environment=entornoEjercicio\(current,getState\(\)\)/);
 assert.doesNotMatch(ui,/environment\s*=\s*current.environment(?:;|\s*\|\|)/,'No acreditar un entorno por el mero hecho de pedirlo la pregunta');
 assert.deepEqual(ejerciciosClase(0),[]);
 console.log('Banco avanzado conectado: 24 candidatos íntegros, sin duplicar correctores ni preflights y sin habilitar escenas destructivas en la sesión de estudio.');

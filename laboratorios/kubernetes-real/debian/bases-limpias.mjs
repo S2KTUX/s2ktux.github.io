@@ -1,11 +1,11 @@
-import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c2e7edc8846e24aa';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c48a799bc7d9fd9e';
 // Distinto de los guardados del alumno: aquí solo entra la primera base,
 // antes de habilitar su consola y nunca después de recuperar una sesión.
 export class BasesLimpias extends SesionesClusterDebian{
  constructor(revision,options){
   const {compatibleRevisions=[],...profile}=options||{};
   super(profile);if(!/^[a-f0-9]{64}$/.test(revision))throw Error('Revisión de base limpia inválida');
-  if(!Array.isArray(compatibleRevisions)||compatibleRevisions.length>4||compatibleRevisions.some(value=>!/^[a-f0-9]{64}$/.test(value)||value===revision)||new Set(compatibleRevisions).size!==compatibleRevisions.length)throw Error('Compatibilidad de base limpia inválida');
+  if(!Array.isArray(compatibleRevisions)||compatibleRevisions.length>8||compatibleRevisions.some(value=>!/^[a-f0-9]{64}$/.test(value)||value===revision)||new Set(compatibleRevisions).size!==compatibleRevisions.length)throw Error('Compatibilidad de base limpia inválida');
   this.compatibleRevisions=[...compatibleRevisions];this.compatibleProfile=profile;
   this.prefix='base:'+this.level+':';this.key=this.prefix+revision;
  }

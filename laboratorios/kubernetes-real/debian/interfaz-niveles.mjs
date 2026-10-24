@@ -1,11 +1,12 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=c63fee23d3d33a79';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=a9a46c134efbf34f';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=936503e31d26aaf1';
-import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
+import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=972ae9a30819f731';
 import {renderSolutions} from '../../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../../solution-options.mjs?v=20261020-aprendizaje';
 import {practiceProgress} from '../../practice-progress.mjs?v=20261021-resueltas';
+import {urlEscenarioCurso,entornoEjercicio} from './escenarios-curso.mjs?v=d4bec200a84a960f';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
@@ -16,6 +17,11 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  const remembered=new Map([[level,activeClass]]);
  document.title='Kubernetes · '+config.title+' | S2KTUX';
  $('mode-stamp').textContent='Modo práctica · '+config.name;
+ if(getState().scenarioId){
+  $('mode-stamp').textContent+=' · Copia independiente';
+  const back=$('return-study')||document.createElement('button');back.id='return-study';back.type='button';back.className='lab-link';back.textContent='Volver a mis prácticas';
+  $('change-lab').before(back);back.onclick=()=>requestScenario(null);
+ }
  const levelQuestions=clasesNivel(level).reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
  const levelNodes=config.nodes===1?'Un nodo':config.nodes===2?'Control plane y un worker':'Control plane y dos workers';
  $('lab-course-note').textContent='* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
@@ -61,6 +67,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   freeMode=false;
   $('exercise-class-select').value=examPractice?'exam':String(activeClass);
   $('exercise-select').replaceChildren(...tasks().map((item,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent=item.title;return option;}));
+  const sceneIndex=tasks().findIndex(item=>item.id===getState().scenarioId);if(sceneIndex>=0)$('exercise-select').value=String(sceneIndex);
   render();
  }
  function render(){
@@ -83,7 +90,8 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   $('mode-practice').disabled=$('mode-exam').disabled=blocked;
   $('change-lab').disabled=$('return-lab').disabled=blocked;$('return-lab').hidden=!entered;
   $('enter-lab').textContent=!nivelDisponible(preview)||!claseDisponible(previewClass)?'Próximamente':(preview===level&&state.nodeCount>0?'Volver al laboratorio ':'Abrir laboratorio ')+NIVELES[preview].name.toLowerCase();
-  $('exercise-class-select').disabled=$('exercise-select').disabled=checking||switching;
+  $('exercise-class-select').disabled=$('exercise-select').disabled=checking||switching||!!state.scenarioId;
+  if($('return-study'))$('return-study').disabled=blocked;
   $('exercise-solution-toggle').disabled=checking;
   $('exercise-check').hidden=!current;$('exercise-check').disabled=blocked||!state.initialized||!current;
   const needsPreparation=!!current?.prepare?.some(command=>command!==current.preflight);
@@ -129,12 +137,13 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  $('exercise-select').onchange=render;
  async function exercise(prepare){
   const current=task();if(!current||getState().busy||!getState().initialized||checking)return;
+  if(prepare&&current.environment==='disposable-cluster'&&entornoEjercicio(current,getState())!=='disposable-cluster'){await requestScenario(current.id);return;}
   checking=true;globalThis.kubeDebianExerciseResult=null;delete $('exercise-result').dataset.result;setBusy(true);update();$('exercise-result').textContent=prepare?'Preparando el ejercicio…':'Comprobando el resultado en Linux…';
   try{
    if(prepare){
     // La topología real permite el drain con dos workers. Tener tres nodos
     // no convierte la sesión de estudio en una copia desechable de etcd/API.
-    const environment=current.environment==='three-nodes'&&getState().nodeCount===3?'three-nodes':'course';
+    const environment=entornoEjercicio(current,getState());
     await prepararPractica(current,run,{environment});prepared.add(current.id);$('exercise-result').textContent='Ejercicio preparado. Ya puedes resolverlo.';
    }
    else{const result=await comprobarPractica(current,run);globalThis.kubeDebianExerciseResult=result;$('exercise-result').dataset.result=result.state;$('exercise-result').textContent=result.message;}
@@ -145,16 +154,25 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  practiceProgress({mode:'kubernetes-real',select:$('exercise-select'),feedback:$('exercise-result'),getId:()=>task()?.id});
  $('exercise-solution-toggle').onclick=()=>{const body=$('exercise-help');body.hidden=!body.hidden;$('exercise-solution-toggle').textContent=body.hidden?'Ver solución':'Ocultar solución';$('exercise-solution-toggle').setAttribute('aria-expanded',String(!body.hidden));};
  const dialog=$('switch-level-dialog');for(const button of dialog.querySelectorAll('[data-switch-action]'))button.onclick=()=>dialog.close(button.dataset.switchAction);
- async function choose(destination){
+ async function choose(destination,sceneChange=false){
   $('switch-level-title').textContent=destination?'Entrar en la etapa '+NIVELES[destination].stage:'Salir del laboratorio';
   $('switch-level-description').textContent=destination?'Se detendrán las máquinas actuales. Cada etapa tiene su propio guardado; los cambios no se trasladan a la otra.':'Puedes guardar antes de salir. Se detendrán las máquinas; tu último guardado se conserva.';
   dialog.querySelector('[data-switch-action=save]').disabled=!getState().initialized;
   dialog.querySelector('[data-switch-action=save]').textContent=destination?'Guardar y entrar':'Guardar y salir';
   dialog.querySelector('[data-switch-action=discard]').textContent=destination?'Entrar sin guardar':'Salir sin guardar';
+  if(sceneChange){$('switch-level-title').textContent='Cambiar de copia del laboratorio';$('switch-level-description').textContent='Este ejercicio usa una copia independiente. Puedes guardar antes de cambiar; la otra sesión no se borra ni se sobrescribe.';dialog.querySelector('[data-switch-action=save]').textContent='Guardar y continuar';dialog.querySelector('[data-switch-action=discard]').textContent='Continuar sin guardar';}
   dialog.returnValue='';const result=new Promise(resolve=>dialog.addEventListener('close',()=>resolve(dialog.returnValue||'cancel'),{once:true}));dialog.showModal();return result;
+ }
+ async function requestScenario(id){
+  if(getState().busy||switching||checking)return;
+  switching=true;update();$('switch-level-error').textContent='';
+  try{const choice=getState().nodeCount?await choose(null,true):'discard';await cambiarNivel({choice,save,stop,navigate:()=>navigate(urlEscenarioCurso(location.href,id))});}
+  catch(error){$('switch-level-error').textContent='No se ha cambiado de copia: '+(error.message||error);}
+  finally{switching=false;update();}
  }
  async function requestChange(destination,href){
   if(destination===level||getState().busy||switching)return;
+  if(destination){const target=new URL(href);target.searchParams.delete('escenario');href=target.href;}
   switching=true;update();$('switch-level-error').textContent='';
   try{
    let choice=getState().nodeCount?await choose(destination):'discard';

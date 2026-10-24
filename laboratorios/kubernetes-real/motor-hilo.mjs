@@ -4,7 +4,7 @@ export class ThreadVM {
  constructor(settings,{root,components,internet=false,engine='original',schedulingAPI=false,onError=()=>{}}){
   if(typeof schedulingAPI!=='boolean')throw Error('Planificación de motor inválida');
   this.listeners=new Map();this.pending=new Map();this.next=0;this.closed=false;this.onError=onError;
-  const workerURL=new URL('./motor-worker.mjs?v=bfdca3fd4ac58487',import.meta.url);
+  const workerURL=new URL('./motor-worker.mjs?v=85e0144fef8c2e77',import.meta.url);
   if(schedulingAPI)workerURL.searchParams.set('use-scheduling-api','1');
   this.worker=new Worker(workerURL,{type:'module'});
   const handlers=new Map();

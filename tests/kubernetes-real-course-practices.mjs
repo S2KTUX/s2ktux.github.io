@@ -23,7 +23,7 @@ assert.equal(claseDisponible(23),true);assert.equal(ejerciciosClase(23).length,3
 for(let number=24;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
 assert.equal(nivelDisponible('avanzado'),false);assert.equal(limiteNodos('intermedio'),2);
 const safeParams=parametrosPublicos('mode=other&factory=v8&fast=1&use-scheduling-api=1&clase=28&level=avanzado&enter=1');
-assert.equal(safeParams.get('mode'),'course');assert.equal(safeParams.get('factory'),'v6');assert.equal(safeParams.has('fast'),false);assert.equal(safeParams.has('use-scheduling-api'),false);assert.equal(safeParams.get('clase'),'28');
+assert.equal(safeParams.get('mode'),'course');assert.equal(safeParams.get('factory'),'v13');assert.equal(safeParams.has('fast'),false);assert.equal(safeParams.get('use-scheduling-api'),'1');assert.equal(safeParams.get('clase'),'28');
 for(const task of [...EJERCICIOS_INICIALES,...EJERCICIOS_INTERMEDIOS].filter(task=>task.classNumber!==0)){
  assert.ok(task.id&&task.prepare.length&&task.solution&&task.check&&task.negative);
  const visible=ejerciciosClase(task.classNumber).find(value=>value.id===task.id);

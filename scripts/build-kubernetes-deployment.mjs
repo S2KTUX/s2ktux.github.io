@@ -4,6 +4,8 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
+if(!manifest.files.some(record=>record.path==='debian/perfil-administracion.mjs'))manifest.files.push({path:'debian/perfil-administracion.mjs',bytes:0,sha256:''});
+if(!manifest.files.some(record=>record.path==='debian/escenarios-curso.mjs'))manifest.files.push({path:'debian/escenarios-curso.mjs',bytes:0,sha256:''});
 for(const path of ['debian/ejercicios-ciclo-cluster.mjs','debian/ejercicios-avanzados.mjs','debian/complementos-avanzados.mjs','debian/ejercicios-administracion.mjs','debian/ejercicios-gateway.mjs','debian/gateway-curso.mjs','debian/rewrite-curso.mjs','debian/crds-curso.mjs','recursos/curso-debian-v1/materiales.tar.gz'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 for(const path of ['debian/ejercicios-almacenamiento.mjs','debian/almacenamiento-curso.mjs','debian/almacenamiento-paquete.mjs','recursos/almacenamiento-v1/local-path.yaml.gz','recursos/almacenamiento-v1/local-path-original.yaml','debian/ejercicios-controladores.mjs','debian/ejercicios-ingress.mjs','debian/ingress-curso.mjs','debian/ejercicios-scheduling.mjs','debian/ejercicios-red.mjs','debian/ejercicios-dns.mjs','debian/red-politicas-curso.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 const readText=async path=>(await readFile(new URL(path,base),'utf8')).replaceAll('\r\n','\n');
@@ -12,6 +14,7 @@ async function replaceRequired(path,pattern,replacement){
  const original=await readText(path);if(!pattern.test(original))throw Error('No se encuentra la referencia versionada en '+path);
  const updated=original.replace(pattern,replacement);if(updated!==original)await writeFile(new URL(path,base),updated);
 }
+for(const parent of ['debian/sesiones-cluster.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs'])await replaceRequired(parent,/from '\.\/escenarios-curso\.mjs(?:\?v=[a-f0-9]+)?'/,"from './escenarios-curso.mjs?v="+await revision('debian/escenarios-curso.mjs')+"'");
 // El HTML y la interfaz cambian juntos. Versionar la cadena de entrada evita
 // reutilizar módulos de una revisión anterior en pestañas que ya estaban abiertas.
 // Primero el hijo: sus referencias deben cambiar antes de calcular el hash
@@ -46,11 +49,14 @@ await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/almacenamiento-
 await replaceRequired('debian/interfaz-niveles.mjs',/from '\.\/motor-practicas\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './motor-practicas.mjs?v="+await revision('debian/motor-practicas.mjs')+"'");
 await replaceRequired('debian/interfaz-niveles.mjs',/from '\.\/ejercicios-niveles\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-niveles.mjs?v="+await revision('debian/ejercicios-niveles.mjs')+"'");
 await replaceRequired('disco-kubernetes.mjs',/from '\.\/cache-bloques\.mjs(?:\?v=[a-f0-9]+)?'/,"from './cache-bloques.mjs?v="+await revision('cache-bloques.mjs')+"'");
+for(const parent of ['debian/cliente.mjs','motor-worker.mjs'])await replaceRequired(parent,/from '\.\.\/perfil-motor\.mjs(?:\?v=[a-f0-9]+)?'|from '\.\/perfil-motor\.mjs(?:\?v=[a-f0-9]+)?'/,"from '"+(parent.startsWith('debian/')?'../':'./')+'perfil-motor.mjs?v='+await revision('perfil-motor.mjs')+"'");
 await replaceRequired('motor-worker.mjs',/from '\.\/disco-kubernetes\.mjs(?:\?v=[a-f0-9]+)?'/,"from './disco-kubernetes.mjs?v="+await revision('disco-kubernetes.mjs')+"'");
 await replaceRequired('motor-hilo.mjs',/new URL\('\.\/motor-worker\.mjs(?:\?v=[a-f0-9]+)?',import\.meta\.url\)/,"new URL('./motor-worker.mjs?v="+await revision('motor-worker.mjs')+"',import.meta.url)");
 await replaceRequired('debian/cliente.mjs',/from '\.\.\/motor-hilo\.mjs(?:\?v=[a-f0-9]+)?'/,"from '../motor-hilo.mjs?v="+await revision('motor-hilo.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\.\/disco-kubernetes\.mjs(?:\?v=[a-f0-9]+)?'/,"from '../disco-kubernetes.mjs?v="+await revision('disco-kubernetes.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\.\/serial-checks\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../serial-checks.mjs?v="+await revision('serial-checks.mjs')+"'");
+await replaceRequired('debian/cliente.mjs',/from '\.\/perfil-administracion\.mjs(?:\?v=[a-f0-9]+)?'/,"from './perfil-administracion.mjs?v="+await revision('debian/perfil-administracion.mjs')+"'");
+await replaceRequired('debian/cliente.mjs',/from '\.\/kernel-perfil\.mjs(?:\?v=[a-f0-9]+)?'/,"from './kernel-perfil.mjs?v="+await revision('debian/kernel-perfil.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\/comprobar-entorno-preparado\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './comprobar-entorno-preparado.mjs?v="+await revision('debian/comprobar-entorno-preparado.mjs')+"'");
 await replaceRequired('debian/index.html',/src="cliente\.mjs(?:\?v=[a-z0-9-]+)?"/,'src="cliente.mjs?v='+await revision('debian/cliente.mjs')+'"');
 await replaceRequired('debian/multinodo.mjs',/const nodeUIRevision='[a-f0-9]+'/,"const nodeUIRevision='"+await revision('debian/index.html')+"'");

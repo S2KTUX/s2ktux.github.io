@@ -3,6 +3,7 @@ import {hashBytes,hashBlob} from '/laboratorios/docker-real/v86-sessions.mjs?v=3
 import {PERFIL_DEBIAN,perfilFabricaDebian} from './fabrica.mjs';
 import {comprobarNivel} from './niveles.mjs';
 import {comprimirEstado} from '../comprimir-estado.mjs?v=9428ef18ea7ec585';
+import {escenarioCurso} from './escenarios-curso.mjs?v=d4bec200a84a960f';
 const ids=['controlplane','worker1','worker2'],digest=/^[a-f0-9]{64}$/;
 function comprobarComponentesWorker(version){if(!['v7','v8'].includes(version))throw Error('Componentes de worker no comprobados');return version;}
 function comprobarFabrica(version){if(!['v1','v3','v4','v5','v6','v8','v13'].includes(version))throw Error('Fábrica multinodo no comprobada');return version;}
@@ -24,12 +25,14 @@ export async function identidadNodoDebian(id,options={}){
  return hashBytes(new TextEncoder().encode(JSON.stringify({profile:perfilNodoDebian(id,options),base:version==='v1'?PERFIL_DEBIAN:perfilFabricaDebian(version),factorySha256:sha})));
 }
 export class SesionesClusterDebian extends KubeSessions{
- constructor({workerComponents='v7',factoryVersion='v1',progressive=false,level='inicial'}={}){
+ constructor({workerComponents='v7',factoryVersion='v1',progressive=false,level='inicial',scenarioId='study'}={}){
   super({stateLimitMiB:factoryVersion==='v13'?2048:1536});if(typeof progressive!=='boolean')throw Error('Modo de curso inválido');this.progressive=progressive;this.level=comprobarNivel(level);if(!progressive&&level!=='inicial')throw Error('Los niveles requieren el modo de curso');this.workerComponents=comprobarComponentesWorker(workerComponents);this.factoryVersion=comprobarFabrica(factoryVersion);
   if(factoryVersion==='v8'&&workerComponents!=='v7')throw Error('Administración requiere componentes v7');
   this.key=(workerComponents==='v7'?'cluster-debian-v1':'cluster-debian-netpol386-v1')+(factoryVersion==='v6'?'-balanced650-oom-grupo-tls-v1':factoryVersion==='v5'?'-balanced650-oom-grupo-v2':factoryVersion==='v4'?'-balanced650-oom-v1':factoryVersion==='v3'?'-balanced650-v1':'')+(progressive?'-curso-progresivo-v1':'')+(level==='inicial'?'':'-nivel-'+level+'-v1')+(factoryVersion==='v8'?'-admin-v2-gc200-scheduler-v1':'');
   this.format='s2ktux-kubernetes-debian-cluster-v1';
   if(factoryVersion==='v13'){if(workerComponents!=='v7')throw Error('Administración requiere componentes v7');this.key+='-admin-v3-highmem-pic-gc100-v1';}
+  const scene=escenarioCurso(scenarioId,{factoryVersion,level});
+  if(scene){if(!progressive)throw Error('Los escenarios requieren el modo de curso');this.key+='-escenario-'+scene.id;}
  }
  async packNode(id,state,terminalText='',{consumir=false}={}){
   const options={workerComponents:this.workerComponents,factoryVersion:this.factoryVersion},profile=perfilNodoDebian(id,options),identity=await identidadNodoDebian(id,options);

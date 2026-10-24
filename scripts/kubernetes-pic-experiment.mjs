@@ -13,7 +13,7 @@ export async function fuentesExperimentoPIC(){
  const replace=(source,pattern,replacement)=>{const matches=source.match(new RegExp(pattern.source,pattern.flags.includes('g')?pattern.flags:pattern.flags+'g'));if(matches?.length!==1)throw Error('El experimento no reconoce el módulo original');return source.replace(pattern,replacement);};
  let client=await readFile(new URL('debian/cliente.mjs',moduleRoot),'utf8');
  client=replace(client,/const engineVariant=new URL\(location.href\).searchParams.get\('engine'\)\|\|'jit8192';engineHash\(engineVariant\);/,"const engineVariant='jit8192-pic-v1';engineHash(engineVariant);");
- client=replace(client,/^if\(engineVariant!=='jit8192'[^\n]+$/m,"if(engineVariant!=='jit8192-pic-v1'||base!=='v6'||factoryVersion!=='v6'||tlsMode!=='classical')throw Error('El experimento PIC solo admite la fábrica v6 de QA');");
+ client=replace(client,/^if\(!adminProfile&&engineVariant!=='jit8192'[^\n]+$/m,"if(engineVariant!=='jit8192-pic-v1'||base!=='v6'||factoryVersion!=='v6'||tlsMode!=='classical')throw Error('El experimento PIC solo admite la fábrica v6 de QA');");
  modules.set('debian/cliente.mjs',client);
  let engine=await readFile(new URL('perfil-motor.mjs',moduleRoot),'utf8');
  engine=replace(engine,/export const picEngineHash='[a-f0-9]{64}';/,"export const picEngineHash='"+manifest.wasmSha256+"';");modules.set('perfil-motor.mjs',engine);

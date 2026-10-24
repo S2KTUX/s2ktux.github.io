@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {escenarioCurso,urlEscenarioCurso,entornoEjercicio} from '../laboratorios/kubernetes-real/debian/escenarios-curso.mjs';
+const options={factoryVersion:'v13',workerComponents:'v7',progressive:true,level:'avanzado'};
+for(const change of [{factoryVersion:'v6'},{level:'inicial'}])assert.throws(()=>escenarioCurso('c28-b',{...options,...change}));
+assert.equal(escenarioCurso(null),null);assert.equal(escenarioCurso('c28-b',options).classNumber,28);
+assert.throws(()=>escenarioCurso('../c28-b',options));
+const task={id:'c28-b',environment:'disposable-cluster'},state={factoryVersion:'v13',level:'avanzado',scenarioId:'c28-b',scenarioIndependent:true,nodeCount:3};
+assert.equal(entornoEjercicio(task,state),'disposable-cluster');
+for(const change of [{scenarioId:null},{scenarioId:'c33-c'},{scenarioIndependent:false},{factoryVersion:'v6'},{level:'intermedio'}])assert.equal(entornoEjercicio(task,{...state,...change}),'course');
+assert.equal(entornoEjercicio({environment:'three-nodes'},{nodeCount:3}),'three-nodes');assert.equal(entornoEjercicio({environment:'three-nodes'},{nodeCount:2}),'course');
+const href='https://s2ktux.github.io/laboratorios/kubernetes-real/debian/multinodo.html?level=avanzado&clase=28';
+const clone=new URL(urlEscenarioCurso(href,'c28-b'));assert.equal(clone.searchParams.get('escenario'),'c28-b');assert.equal(clone.searchParams.get('clase'),'28');assert.equal(clone.searchParams.get('enter'),'1');
+assert.equal(new URL(urlEscenarioCurso(clone.href,null)).searchParams.has('escenario'),false);
+assert.throws(()=>urlEscenarioCurso('javascript:alert(1)','c28-b'));
+console.log('Copias desechables: escenario concreto obligatorio y regreso a la sesión de estudio. La separación IndexedDB se prueba en navegador.');

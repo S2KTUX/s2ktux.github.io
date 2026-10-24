@@ -12,5 +12,5 @@ assert.throws(()=>validarFabricaDebian(factory,{...profile,memoryMiB:2048}));
 assert.equal(nivelDisponible('avanzado'),false);
 assert.equal(parametrosPublicos('factory=v13').get('factory'),'v6');
 const client=readFileSync(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8');
-assert.doesNotMatch(client,/v13/,'El registro de formato no abre todavía un cliente sin todos sus recursos');
+assert.match(client,/releaseAvailable/,'Conectar el cliente no debe saltarse la disponibilidad del nivel');
 console.log('Administración: perfil HIGHMEM explícito, identidades antiguas intactas, kernel/RAM/motor no intercambiables y publicación todavía cerrada.');
