@@ -25,9 +25,13 @@ Las pruebas Go del transporte usan HTTPS real: 40 peticiones, HTTP/2,
 reutilización del pool, token incorrecto, CA incorrecta y hostname incorrecto.
 
 `manifest.json` separa el ejecutable probado mediante montaje de lectura
-del paquete OCI reconstruido, todavía sin aceptación nativa. Sus sumas
-permiten comprobar ambos sin reutilizar capturas ni datos de alumnos.
-El paquete OCI no está publicado. Esta carpeta queda fuera de `_site`.
+del paquete OCI reconstruido. Este último supera el recorrido completo v18:
+205 comprobaciones desde una copia nueva, sin reanudación, con actualización
+del CP y dos workers, guardar/recuperar y restore corto de etcd. Se conservan
+también las pruebas parciales anteriores, sin presentarlas como ese recorrido.
+Sus sumas permiten comprobar ambos paquetes sin reutilizar capturas ni datos
+de alumnos. El paquete OCI no está publicado y la base limpia aún necesita
+su propia aceptación. Esta carpeta queda fuera de `_site`.
 
 Fuente base: [Kubernetes 1.36.5](https://github.com/kubernetes/kubernetes/tree/v1.36.5).
 Se conserva la licencia Apache-2.0 en LICENSE. Los ajustes propios de esta

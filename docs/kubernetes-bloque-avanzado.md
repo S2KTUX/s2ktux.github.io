@@ -13,8 +13,8 @@ destructivas se separan de las sesiones de estudio.
 | 24 | Crear y reparar Static Pods, comparar manifiesto y mirror, borrar el mirror y comprobar su recreación. | Static Pods aprobados. HA v10 supera 88 comprobaciones: tres CP, LB redundante, tráfico, pérdida de un nodo, pérdida de mayoría y recuperación con datos/TLS/RBAC. Falta integrar ese escenario para el alumno. |
 | 25 | Init con configuración real, kubeconfig, CNI, Static Pods, Ready, DNS y tráfico. | Reutilizar el recorrido privado de init; falta integrarlo como escenario frío y reproducible sin destruir el laboratorio de aplicaciones. |
 | 26 | Join de worker, token nuevo, hash de CA, CSR/certificado de nodo, rechazo de permisos admin y tráfico entre nodos. | Recorrido manual aprobado en copia privada v11: token inválido rechazado, join válido, CSR, certificado y DNS/HTTP entre workers. Falta ofrecer este escenario limpio al alumno. |
-| 27 | Cordon, drain con PDB y desplazamiento al segundo worker. Upgrade APT/kubeadm de control plane y workers, versiones de procesos, objetos conservados y salud final. | La continuación v16 con el OCI final supera 107 comprobaciones: salud estable del CP, ambos workers APT, PDB, guardar/recuperar tres nodos, datos, DNS y RBAC. Conserva el fallo original v15; falta repetir el recorrido completo sin interrupciones e integrarlo para el alumno. |
-| 28 | Snapshot TLS, integridad, restore en directorio nuevo, hostPath, montaje real de etcd y un testigo que debe volver a su valor anterior. | El restore corto pasa en v16 con los ejecutables del OCI final, sin bind de QA ni detener manualmente componentes. Verifica el valor restaurado, montaje real, Ready, negativo y aplicación nueva con logs/DNS. Falta integrarlo en una copia desechable para el alumno. |
+| 27 | Cordon, drain con PDB y desplazamiento al segundo worker. Upgrade APT/kubeadm de control plane y workers, versiones de procesos, objetos conservados y salud final. | El intento v18 pasa el recorrido completo desde una copia nueva, sin reanudar un fallo anterior: 205 comprobaciones, incluidos sondeos. Actualiza realmente el CP y ambos workers, comprueba PDB, ejecutables del OCI final, TLS/RBAC y guardar/recuperar los tres nodos. Falta integrar y aceptar la base que recibirá el alumno. |
+| 28 | Snapshot TLS, integridad, restore en directorio nuevo, hostPath, montaje real de etcd y un testigo que debe volver a su valor anterior. | El restore corto vuelve a pasar en v18 con los ejecutables del OCI final, sin bind de QA ni detener manualmente componentes. Verifica el valor restaurado, montaje real, Ready, negativo y aplicación nueva con logs/DNS. La copia sana se guardó antes de ese ejercicio; no es una fábrica para publicar. Falta aceptar la entrega al alumno. |
 | 29 | Metrics Server y HPA con requests, objetivos y métricas reales. | Banco y ensayo ampliado aprobados en v11: métricas de tres nodos, carga, subida de una a tres réplicas disponibles y bajada a una. |
 | 30 | Instalar Helm con values, aplicación real; Kustomize con base intacta, overlay, prefijo, namespace, etiquetas y réplicas. | Banco y ensayo ampliado aprobados: repositorio HTTP, upgrade/history/rollback/uninstall; generator/hash, referencia, rollout y base intacta. |
 | 31 | CRD y esquema; Operator entregado, Custom Resource, ownerReference, status, reconciliación y respuesta de la aplicación. | CRD y Operator aprobados en la batería nativa v11, incluidos negativos y reconciliación. Falta integrar el banco en la entrega definitiva. |
@@ -318,3 +318,29 @@ capa antigua del ejecutable ni modifica el paquete anterior. Su importación
 y el cambio del API pasan en v15, y v16 aprueba la continuación y el restore
 corto. Falta repetir todo el recorrido seguido; no se publica ni se marca
 aceptado como entrega definitiva.
+
+El 24/10 se completa ese recorrido en el intento v18, desde una copia nueva
+y sin reanudación: actualización real del control plane y dos workers,
+ejecutables del OCI final, PDB, disponibilidad, TLS/RBAC y guardar/recuperar
+los tres nodos. Después vuelve a pasar el restore corto de etcd, incluido
+el dato anterior y una aplicación nueva con logs y DNS. El informe conserva
+205 comprobaciones, cero fallos y cero errores del navegador.
+
+Esto acepta el paquete OCI en ese ensayo privado, no la base que recibirá
+el alumno. La construcción de la nueva base debe incorporar el archivo de
+actualización final, verificar el runtime inicial 1.35 y capturarse desde
+un init limpio antes de abrir la consola. El nivel avanzado permanece cerrado
+hasta comprobar esa entrega y los escenarios manuales de init/join y HA.
+
+El candidato inicial 1.35 supera además 77 comprobaciones en una copia nueva:
+tres reinicios reales del API con TLS/RBAC y nodos Ready, avería c33-c,
+reparación, rechazo del estado incompleto, limpieza y aplicación nueva con
+logs y DNS. Se comprueba el SHA del proceso. En esta versión, el ejecutable
+se monta explícitamente en `/usr/local/bin/kube-browser-shared`, no en la
+ruta `/opt/kubernetes/bin` usada por el OCI 1.36. Los intentos que usaban
+la ruta incorrecta se conservan como fallidos, no como pruebas del candidato.
+
+La nueva captura se construye desde otro init limpio. Ese montaje inicial
+no se añade al directorio de patches de kubeadm: la actualización debe usar
+los ejecutables de sus imágenes OCI, sin conservar el override de 1.35.
+La aceptación del candidato no sustituye la prueba de recuperar la captura.

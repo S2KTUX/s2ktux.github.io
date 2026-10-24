@@ -24,7 +24,7 @@
     "coreImageSha256": "841d65226aa558a616b8626ce61154d38356c5715c3559f90b5a007ad35f0f78",
     "proxyImageSha256": "eba002eefd9e29036d0d1596c854e59ebdcb29c12054d0e8a931ee41242b3060",
     "bytes": 58910437,
-    "nativeAccepted": false,
+    "nativeAccepted": true,
     "continuation": {
       "report": "Resultado_upgrade_multinodo_v16.json",
       "sourceAttempt": 15,
@@ -35,6 +35,19 @@
       "etcdRestoreVariant": "course",
       "applicationAndDNS": true,
       "method": "Continuación del estado fallido v15; OCI real sin bind de ejecutables. No acredita un upgrade completo sin interrupciones."
+    },
+    "fullUpgradeAcceptance": {
+      "report": "Resultado_upgrade_multinodo_v18.json",
+      "passed": true,
+      "resumed": false,
+      "checks": 205,
+      "failures": 0,
+      "pageErrors": 0,
+      "nodes": 3,
+      "savedAndRecovered": true,
+      "etcdRestoreVariant": "course",
+      "applicationAndDNS": true,
+      "method": "Copia privada nueva; CP y dos workers actualizados con APT/kubeadm. Procesos del OCI final verificados, sin bind de QA. No acepta por sí sola la base limpia ni la entrega al alumno."
     },
     "published": false
   }

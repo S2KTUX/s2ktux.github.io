@@ -21,8 +21,9 @@ assert.match(tests,/New\(config\)/);assert.match(tests,/i<40/);assert.match(test
 assert.match(tests,/wrong-token/);assert.match(tests,/not-the-server/);assert.match(tests,/ordinaryLeaf.TLSHandshakeTimeout!=10/);
 assert.match(read('regresion-v1/browser_loopback_regression_test.go'),/rest.TransportFor\(config\)/);
 assert.equal(manifest.nativeAcceptance.checks,76);assert.equal(manifest.nativeAcceptance.etcdRestoreVariant,'course');
-assert.equal(manifest.localOCI.nativeAccepted,false);assert.equal(manifest.localOCI.published,false);
+assert.equal(manifest.localOCI.nativeAccepted,true);assert.equal(manifest.localOCI.published,false);
 assert.equal(manifest.localOCI.continuation.checks,107);assert.equal(manifest.localOCI.continuation.sourceAttempt,15);assert.equal(manifest.localOCI.continuation.etcdRestoreVariant,'course');
+const full=manifest.localOCI.fullUpgradeAcceptance;assert.equal(full.report,'Resultado_upgrade_multinodo_v18.json');assert.equal(full.passed,true);assert.equal(full.resumed,false);assert.equal(full.checks,205);assert.equal(full.failures,0);assert.equal(full.pageErrors,0);assert.equal(full.nodes,3);assert.equal(full.savedAndRecovered,true);assert.equal(full.etcdRestoreVariant,'course');assert.equal(full.applicationAndDNS,true);
 assert.equal(nivelDisponible('avanzado'),false,'El parche no autoriza abrir el bloque completo');
 assert.match(read('LICENSE'),/Apache License/);
 const attributes=readFileSync(new URL('../.gitattributes',import.meta.url),'utf8');assert.match(attributes,/fixtures\/kubernetes-loopback-transport-v2\/\*\* text eol=lf/);
