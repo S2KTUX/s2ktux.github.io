@@ -29,6 +29,7 @@ for(const child of ['ejercicios-controladores','ejercicios-ingress','ejercicios-
  await replaceRequired('debian/'+child+'.mjs',/from '\.\/herramientas-practicas\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './herramientas-practicas.mjs?v="+await revision('debian/herramientas-practicas.mjs')+"'");
  await replaceRequired('debian/ejercicios-niveles.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-z0-9-]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
 }
+for(const child of ['ejercicios-administracion','ejercicios-ciclo-cluster','ejercicios-avanzados'])await replaceRequired('debian/ejercicios-niveles.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-z0-9-]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
 await replaceRequired('debian/ingress-curso.mjs',/from '\.\/materiales-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './materiales-curso.mjs?v="+await revision('debian/materiales-curso.mjs')+"'");
 await replaceRequired('debian/complementos-avanzados.mjs',/from '\.\/materiales-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './materiales-curso.mjs?v="+await revision('debian/materiales-curso.mjs')+"'");
 await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/complementos-avanzados\.mjs(?:\?v=[a-z0-9-]+)?'\)/g,"import('./complementos-avanzados.mjs?v="+await revision('debian/complementos-avanzados.mjs')+"')");

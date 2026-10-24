@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {perfilFabricaDebian,validarFabricaDebian} from '../laboratorios/kubernetes-real/debian/fabrica.mjs';
+import {nivelDisponible,parametrosPublicos} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
+const profile=perfilFabricaDebian('v13'),old=perfilFabricaDebian('v6');
+assert.equal(profile.memoryMiB,1536);assert.notEqual(profile.engineSha256,old.engineSha256);assert.notEqual(profile.kernelSha256,old.kernelSha256);
+const factory={...profile,format:'s2ktux-kubernetes-debian-factory-v1',scope:'debian-controlplane',file:'estado.gz',sha256:'a'.repeat(64),bytes:1166069864,packedBytes:334135566};
+assert.equal(validarFabricaDebian(factory,profile),factory);
+for(const change of [{memoryMiB:1024},{engineSha256:old.engineSha256},{kernelSha256:old.kernelSha256},{configurationSha256:old.configurationSha256}])assert.throws(()=>validarFabricaDebian({...factory,...change},profile));
+assert.throws(()=>validarFabricaDebian(factory,old));
+assert.throws(()=>validarFabricaDebian(factory,{...profile,memoryMiB:2048}));
+assert.equal(nivelDisponible('avanzado'),false);
+assert.equal(parametrosPublicos('factory=v13').get('factory'),'v6');
+const client=readFileSync(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8');
+assert.doesNotMatch(client,/v13/,'El registro de formato no abre todavía un cliente sin todos sus recursos');
+console.log('Administración: perfil HIGHMEM explícito, identidades antiguas intactas, kernel/RAM/motor no intercambiables y publicación todavía cerrada.');

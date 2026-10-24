@@ -14,7 +14,7 @@ destructivas se separan de las sesiones de estudio.
 | 25 | Init con configuración real, kubeconfig, CNI, Static Pods, Ready, DNS y tráfico. | Reutilizar el recorrido privado de init; falta integrarlo como escenario frío y reproducible sin destruir el laboratorio de aplicaciones. |
 | 26 | Join de worker, token nuevo, hash de CA, CSR/certificado de nodo, rechazo de permisos admin y tráfico entre nodos. | Recorrido manual aprobado en copia privada v11: token inválido rechazado, join válido, CSR, certificado y DNS/HTTP entre workers. Falta ofrecer este escenario limpio al alumno. |
 | 27 | Cordon, drain con PDB y desplazamiento al segundo worker. Upgrade APT/kubeadm de control plane y workers, versiones de procesos, objetos conservados y salud final. | Cordon/drain/PDB, CP y ambos workers APT comprobados. El intento v4 aprueba además guardar/recuperar 1.36, datos, DNS y RBAC. La recuperación del CP procede de una ejecución reanudada: falta estabilizar el recorrido sin interrupciones e integrarlo para el alumno. |
-| 28 | Snapshot TLS, integridad, restore en directorio nuevo, hostPath, montaje real de etcd y un testigo que debe volver a su valor anterior. | Snapshot/restore aprobados en v11. En administración tras el upgrade, el API no recupera su salud: corregirlo y repetir la aceptación estricta. Siempre sobre una copia desechable, nunca sobre una sesión de estudio. |
+| 28 | Snapshot TLS, integridad, restore en directorio nuevo, hostPath, montaje real de etcd y un testigo que debe volver a su valor anterior. | El restore corto y la recuperación completa pasan en v14 con el transporte corregido, usando un binario montado de QA. Falta cerrar su aceptación desde el paquete OCI definitivo e integrarlo en una copia desechable para el alumno. |
 | 29 | Metrics Server y HPA con requests, objetivos y métricas reales. | Banco y ensayo ampliado aprobados en v11: métricas de tres nodos, carga, subida de una a tres réplicas disponibles y bajada a una. |
 | 30 | Instalar Helm con values, aplicación real; Kustomize con base intacta, overlay, prefijo, namespace, etiquetas y réplicas. | Banco y ensayo ampliado aprobados: repositorio HTTP, upgrade/history/rollback/uninstall; generator/hash, referencia, rollout y base intacta. |
 | 31 | CRD y esquema; Operator entregado, Custom Resource, ownerReference, status, reconciliación y respuesta de la aplicación. | CRD y Operator aprobados en la batería nativa v11, incluidos negativos y reconciliación. Falta integrar el banco en la entrega definitiva. |
@@ -25,6 +25,19 @@ destructivas se separan de las sesiones de estudio.
 Cada candidato debe rechazar un estado incompleto y aceptar el resultado
 correcto, aunque se haya usado otra solución equivalente. Los tests de
 sintaxis, transporte o interfaz no sustituyen la prueba dentro de Linux.
+
+Integración del 24/10: los 24 candidatos de Static Pods, ciclo y diagnóstico
+ya forman parte del banco avanzado, sin el antiguo par de ejemplos sueltos.
+No se duplican sus correctores ni se añade una consulta al API al preflight
+del ejercicio de API caída. Siguen ocultos por disponibilidad: conectar el
+banco no habilita los escenarios que todavía no puede abrir el alumno.
+
+El formato de guardado reconoce ahora el perfil HIGHMEM v13 con una clave
+distinta, CP de 1536 MiB y workers de 1024 MiB. Las pruebas rechazan mezclarlo
+con v6 y confirman que Reset conserva el guardado anterior. No se convierte
+ningún snapshot: los clientes públicos y la base publicada continúan en v6.
+La revisión compatible conserva la misma base de dos nodos y su descarga;
+no se obliga a repetir el bootstrap por añadir este perfil aislado.
 
 El nivel avanzado permanece cerrado hasta completar su aceptación. Mantener
 los fallos de cada intento: no reescribir un informe anterior como aprobado.
