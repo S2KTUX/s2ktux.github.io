@@ -344,3 +344,33 @@ La nueva captura se construye desde otro init limpio. Ese montaje inicial
 no se añade al directorio de patches de kubeadm: la actualización debe usar
 los ejecutables de sus imágenes OCI, sin conservar el override de 1.35.
 La aceptación del candidato no sustituye la prueba de recuperar la captura.
+
+### Captura limpia y recuperación independiente
+
+El init nuevo v33 termina con 113 comprobaciones aprobadas y produce una
+captura v14, antes de abrir la consola. Incluye el runtime inicial 1.35
+comprobado y el archivo OCI final de actualización, sin aplicar todavía
+la actualización. Una recuperación independiente verifica API, TLS/RBAC,
+Static Pods, aplicación nueva, logs y DNS; también guardar y volver a abrir
+una sesión propia de prueba. Son nueve comprobaciones aprobadas sobre un
+solo control plane, no una aceptación del clúster de tres nodos ni de la
+interfaz pública.
+
+Se detecta además que el lector antiguo de valores del constructor solo
+recogía la primera línea de una salida multilínea. No se retocan la captura
+ni su informe: el perfil candidato fija el SHA completo del estado y la
+prueba independiente verifica los diez archivos de preparación. El lector
+para construcciones futuras transporta la salida completa en una sola línea
+codificada, con regresiones de salidas multilínea y errores.
+
+La alternativa de c24-a espera ahora la etiqueta del mirror Pod nuevo antes
+de consultar Ready. Así no confunde el Pod anterior con el manifiesto recién
+cambiado. La prueba nativa aislada acepta ambas soluciones, rechaza la
+incompleta y limpia el ejercicio, sin relajar el corrector.
+
+Las siguientes recuperaciones de la copia multinodo de QA no mantienen la
+salud: una muestra errores de lectura DMA e interrupciones IDE perdidas.
+La espera adicional no lo resuelve. Se conservan esos informes como fallidos
+y se investiga la restauración y el disco; los resultados de init y de un
+solo nodo no justifican publicar aún el avanzado. Los escenarios del alumno
+para init/join y HA siguen pendientes.

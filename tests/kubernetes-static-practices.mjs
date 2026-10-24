@@ -19,6 +19,10 @@ for(const task of EJERCICIOS_ADMINISTRACION){
  assert.ok(wrapped.length<3000,task.id+' excede la consola');
 }
 const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';
+const variant=EJERCICIOS_ADMINISTRACION[0].equivalent;
+assert.match(variant,/--for=jsonpath='\{\.metadata\.labels\.practica\}'=estatica/);
+assert.ok(variant.indexOf("--for=jsonpath='{.metadata.labels.practica}'=estatica")<variant.lastIndexOf('--for=condition=Ready'),'Esperar el mirror nuevo antes de aceptar su Ready');
+const variantSyntax=spawnSync(bash,['--noprofile','--norc','-n'],{input:variant,encoding:'utf8'});assert.equal(variantSyntax.status,0,variantSyntax.stderr);
 const syntax=spawnSync(bash,['--noprofile','--norc','-n'],{input:fixture,encoding:'utf8'});
 assert.equal(syntax.status,0,syntax.stderr);
 console.log('Static Pods: candidatos de clase 24 con manifiesto local, mirror real y casos negativos; HA y avanzado siguen cerrados.');
