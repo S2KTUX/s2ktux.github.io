@@ -1,21 +1,22 @@
 import {createLocalSwitch} from '../red-local.mjs';
 import {comandosArchivoSerie} from '../archivos-serie.mjs';
 import {perfilWorker} from './preparar-worker.mjs';
-import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c48a799bc7d9fd9e';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=e1883881db6e84f4';
 import {ordenarNodosDebian,comandoNatDebian} from './red-cluster.mjs';
 import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cluster.mjs';
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=74aee7175aee9fac';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=d822fa542d29faa1';
 import {ordenSaludInicial} from './salud-inicial.mjs?v=84a2e4609f06f611';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
-import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=972ae9a30819f731';
-import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=da5f815937aa17c4';
-import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=5f006f96b5520878';
+import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=6b16dc542a7bf064';
+import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=ac1783bb85792bbb';
+import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=6977c9616367f1a7';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=979785ed16349130';
-import {escenarioCurso} from './escenarios-curso.mjs?v=d4bec200a84a960f';
-const cleanRevision='303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b';
+import {escenarioCurso} from './escenarios-curso.mjs?v=1806eaf4b7ea7be5';
+import {prepararMontajeManual} from './montaje-manual-curso.mjs?v=9d4672bb487ea6e8';
+const cleanRevision='1aee2ac9e7efa46560bda7313e50113226c6f26f67d5b609a971c0a79e8fb0cc';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -25,13 +26,13 @@ const integratedPolicies=new URLSearchParams(location.search).get('policies')===
 if(progressive&&level==='inicial'&&integratedPolicies)throw Error('Las políticas se preparan en el modo intermedio, con workers.');
 const persistentNetwork=new URLSearchParams(location.search).get('persistent-network')==='1';
 const factoryVersion=new URLSearchParams(location.search).get('factory')||(progressive?'v6':'v1');
-if(!['v1','v3','v4','v5','v6','v8','v13'].includes(factoryVersion))throw Error('Fábrica multinodo no admitida');
+if(!['v1','v3','v4','v5','v6','v8','v13','v14'].includes(factoryVersion))throw Error('Fábrica multinodo no admitida');
 const schedulingAPI=new URLSearchParams(location.search).get('use-scheduling-api')==='1';
-if(['v8','v13'].includes(factoryVersion)&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración requiere Scheduler API, sin políticas integradas y nivel avanzado');
+if(['v8','v13','v14'].includes(factoryVersion)&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración requiere Scheduler API, sin políticas integradas y nivel avanzado');
 const scenario=escenarioCurso(new URLSearchParams(location.search).get('escenario'),{factoryVersion,level});
 const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'||factoryVersion!=='v1';
-const nodeUIRevision='fdc8047ddc7e8740';
-const workerComponents=['v8','v13'].includes(factoryVersion)?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
+const nodeUIRevision='80767534f182bf73';
+const workerComponents=['v8','v13','v14'].includes(factoryVersion)?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
 const network=createLocalSwitch({onError:error=>fail(error)}),sessions=new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level,scenarioId:scenario?.id||'study'}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
 const cleanBases=new BasesLimpias(cleanRevision,{workerComponents,factoryVersion,progressive,level,compatibleRevisions:revisionesCompatibles[cleanRevision]||[]});
@@ -55,7 +56,7 @@ async function value(id,command){
  if(!line)throw Error('No se recibió el valor nativo');return line.slice(key.length);
 }
 async function createNode(id,query,restore){
- const frame=document.createElement('iframe');frame.className='node-frame';frame.title='Terminal '+id;frame.hidden=id!=='controlplane';frame.src='index.html?base='+(factoryVersion==='v13'?'admin-v3':factoryVersion==='v8'?'admin-v2':['v5','v6'].includes(factoryVersion)?'v6':factoryVersion==='v4'?'v5':'v4')+'&ui='+nodeUIRevision+'&kube=1&components='+(id==='controlplane'?'v7':workerComponents)+'&cluster=1&factory='+factoryVersion+'&'+query+(classicalTls?'&tls=classical':'')+(schedulingAPI?'&use-scheduling-api=1':'')+(factoryVersion==='v13'?'&engine=jit8192-pic-only-v1&kernel='+(id==='controlplane'?'highmem-v1':'v1'):'');
+ const frame=document.createElement('iframe');frame.className='node-frame';frame.title='Terminal '+id;frame.hidden=id!=='controlplane';frame.src='index.html?base='+(['v13','v14'].includes(factoryVersion)?'admin-v3':factoryVersion==='v8'?'admin-v2':['v5','v6'].includes(factoryVersion)?'v6':factoryVersion==='v4'?'v5':'v4')+'&ui='+nodeUIRevision+'&kube=1&components='+(id==='controlplane'?'v7':workerComponents)+'&cluster=1&factory='+factoryVersion+'&'+query+(classicalTls?'&tls=classical':'')+(schedulingAPI?'&use-scheduling-api=1':'')+(['v13','v14'].includes(factoryVersion)?'&engine=jit8192-pic-only-v1&kernel='+(id==='controlplane'?'highmem-v1':'v1'):'');
  const loaded=new Promise((resolve,reject)=>{frame.onload=resolve;frame.onerror=()=>reject(Error('No se cargó '+id));});document.querySelector('#nodes').append(frame);levelUI?.update();await loaded;
  const child=frame.contentWindow;nodes.set(id,{id,frame,window:child});document.querySelector(`button[data-node="${id}"]`).hidden=false;levelUI?.update();
  const childStatus=child.document.querySelector('#status');
@@ -113,8 +114,10 @@ start.onclick=async()=>{
  if(busy||nodes.size||!releaseAvailable())return;busy=true;start.disabled=true;status.textContent='Recuperando cka-cp1…';updateControls();
  try{
   saved=await sessions.getRawCluster();readSaved=true;
-  let cleanBase=saved?null:await cleanBases.read();
-  if(!saved&&!cleanBase){
+  // Un montaje manual no puede reutilizar la base de estudio ni capturarse
+  // después del reset. Solo sus propios guardados, con clave independiente.
+  let cleanBase=saved||scenario?.manual?null:await cleanBases.read();
+  if(!saved&&!cleanBase&&!scenario?.manual){
    const published=basePublicadaBloqueada()?null:basesPublicadas.find(base=>base.level===level&&base.revision===cleanRevision);
    if(published)try{
     cleanBase=await cargarBasePublicada(published,{revision:cleanRevision,sessions:cleanBases,notify:text=>status.textContent=text});
@@ -152,6 +155,22 @@ start.onclick=async()=>{
   // La prueba v4 rechaza arrancar ambas CPUs a la vez: etcd pierde readiness.
   // Conservar la preparación secuencial; fast solo evita recrear CoreDNS.
   await createNode('controlplane','warm=1');
+  if(scenario?.manual){
+   const child=nodes.get('controlplane').window;
+   globalThis.kubeDebianManualPrepared=await prepararMontajeManual({
+    context:{scenario:scenario.id,factoryVersion,factorySha256:child.kubeDebianFactory?.sha256,freshFactory:!saved&&!child.kubeDebianRestoreNode,studentSession:!!saved,consoleOpened:child.kubeDebianSnapshot.terminalOpened,nodeCount:nodes.size},
+    run:(label,command,timeout)=>phase('controlplane',label,command,timeout),
+    upload:(path,text)=>upload('controlplane',path,text)
+   });
+   for(const index of ['1','2']){
+    await createNode('worker'+index,'worker='+index+'&threaded=1');
+    const epoch=await value('controlplane','date +%s');if(!/^[0-9]{10}$/.test(epoch))throw Error('Reloj del montaje inválido');
+    await phase('worker'+index,'Sincronizar el worker sin incorporarlo al clúster',`date -u -s @${epoch} >/dev/null; test ! -e /etc/kubernetes/kubelet.conf; test ! -e /etc/kubernetes/admin.conf`);
+   }
+   initialized=true;kubeDebianClusterReady=false;
+   status.textContent='Nodos preparados. El clúster se inicia desde la terminal en las clases 25 y 26.';
+   return;
+  }
   await phase('controlplane','Repartir CPU nativa del sistema y del control plane','systemctl set-property --runtime system.slice CPUWeight=10 && test "$(cat /sys/fs/cgroup/system.slice/cpu.weight)" = 10');
   if(progressive){
    await phase('controlplane',level==='inicial'?'Preparar un único nodo para las primeras prácticas':'Preparar el control plane del modo '+level,permitirAplicacionesIniciales);

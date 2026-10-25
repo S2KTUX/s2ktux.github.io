@@ -6,7 +6,14 @@ export async function comprobarPractica(task,run){
    const health=await run('controlplane','Comprobar disponibilidad antes de corregir','set -eu; '+task.preflight,45000);
    if(health?.ok!==true)return {id:task.id,state:'unverified',passed:null,message:'El clúster no responde correctamente. No se ha calificado el ejercicio.'};
   }
-  const result=await run('controlplane','Comprobar '+task.title,'set -eu; '+task.check,180000);
+  let result=await run('controlplane','Comprobar '+task.title,'set -eu; '+task.check,180000);
+  // Una incorporación no queda acreditada solo por ver Ready desde el CP:
+  // comprobar también los archivos y credenciales reales del worker.
+  if(result?.ok===true)for(const step of task.checkSteps||[]){
+   const {node,command}=pasoPractica(step);
+   result=await run(node,'Comprobar '+task.title+' en '+node,'set -eu; '+command,90000);
+   if(result?.ok!==true)break;
+  }
   if(result?.ok===true)return {id:task.id,state:'correct',passed:true,message:'Objetivo conseguido.'};
   if(result?.ok===false){
    let message='El resultado todavía no cumple el enunciado.';

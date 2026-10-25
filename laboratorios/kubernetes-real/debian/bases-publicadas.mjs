@@ -3,6 +3,28 @@
 // Estas revisiones solo cambiaron almacenamiento y comprobaciones de lectura,
 // no los perfiles ni la preparación de Linux. No ampliar al cambiar la VM.
 export const revisionesCompatibles=Object.freeze({
+ // Mismos bytes v6; compatibilidad autorizada expresamente el25/10.
+ '1aee2ac9e7efa46560bda7313e50113226c6f26f67d5b609a971c0a79e8fb0cc':Object.freeze([
+  '8be849b4dc401a5fdc621741bcf7605456a2983c7d97de64202465827ce37c2d',
+  '303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b',
+  '61c03e1b79b007c666430da100f51d3b9fdde8034a878ed61d28a988a53ff37e',
+  'c402d3d5373a48d52c73ca9486ec36784fff9ad1597a9bfd28334e0c36aa9abd',
+  '326568ee67071140f2bc3ea3d6260493de65912350c6bf7a8be1a3f0ad028720',
+  'f09e92a7d7e965fa4272457dce6969438c71fbb996deed320b2f786820adbf07',
+  'b9b13ff8628d342553bddc87f32cdb6314accb53d7da8ed84582b6f1175716db',
+  'd66a99f2ca13236a8e3e61cec1afdee442d6ed3a6126998ade42c5a437e9e8be'
+ ]),
+ // Comparación de los21 perfiles/identidades antiguos PASS25/10. Misma
+ // base v6, misma URL y SHA; registrar v14 no altera el estado intermedio.
+ '8be849b4dc401a5fdc621741bcf7605456a2983c7d97de64202465827ce37c2d':Object.freeze([
+  '303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b',
+  '61c03e1b79b007c666430da100f51d3b9fdde8034a878ed61d28a988a53ff37e',
+  'c402d3d5373a48d52c73ca9486ec36784fff9ad1597a9bfd28334e0c36aa9abd',
+  '326568ee67071140f2bc3ea3d6260493de65912350c6bf7a8be1a3f0ad028720',
+  'f09e92a7d7e965fa4272457dce6969438c71fbb996deed320b2f786820adbf07',
+  'b9b13ff8628d342553bddc87f32cdb6314accb53d7da8ed84582b6f1175716db',
+  'd66a99f2ca13236a8e3e61cec1afdee442d6ed3a6126998ade42c5a437e9e8be'
+ ]),
  '303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b':Object.freeze([
   '61c03e1b79b007c666430da100f51d3b9fdde8034a878ed61d28a988a53ff37e',
   'c402d3d5373a48d52c73ca9486ec36784fff9ad1597a9bfd28334e0c36aa9abd',
@@ -35,7 +57,7 @@ export const revisionesCompatibles=Object.freeze({
  ])
 });
 export const basesPublicadas=Object.freeze([Object.freeze({
- level:'intermedio',revision:'303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b',
+ level:'intermedio',revision:'1aee2ac9e7efa46560bda7313e50113226c6f26f67d5b609a971c0a79e8fb0cc',
  sha256:'2e88dd5f575ae0f338fdcb333aa0c55f0e5bec24e467bb4bf182f25050fc59a0',
  url:'https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/91502ceb011e65b550c7c10875a60b83cb7c9ea0/kubernetes/clean-v1/intermedio/cluster.json'
 })]);

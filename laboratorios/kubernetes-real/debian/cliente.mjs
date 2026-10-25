@@ -5,14 +5,14 @@ import {createEthernetInternet} from '/laboratorios/docker-real/ethernet-interne
 import {attachTerminalClipboard} from '/laboratorios/docker-real/v86-clipboard.mjs';
 import {createKubeChecks} from '../serial-checks.mjs?v=b4caa929394c3188';
 import {EstadoConsola} from './estado-consola.mjs';
-import {cargarFabricaDebian,perfilFabricaDebian} from './fabrica.mjs?v=20261020';
+import {cargarFabricaDebian,perfilFabricaDebian} from './fabrica.mjs?v=57bc04e56ce5a955';
 import {liberarEstadoInicial} from '../liberar-arranque.mjs';
 import {KubeSessions} from '../kube-sessions.mjs?v=3a443641bb7b1ca4';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
 import {prepararWorkerDebian,perfilWorker} from './preparar-worker.mjs';
 import {ThreadVM} from '../motor-hilo.mjs?v=165baf06242576ac';
 import {ordenPromptDinamico,promptConfirmado} from './prompt.mjs';
-import {identidadNodoDebian} from './sesiones-cluster.mjs?v=c48a799bc7d9fd9e';
+import {identidadNodoDebian} from './sesiones-cluster.mjs?v=e1883881db6e84f4';
 import {comandosTlsLaboratorio,comandosTlsApiServer,ordenEntornoTls,entornoTlsConfirmado} from './tls-laboratorio.mjs';
 import {comandosMontajeComponentes} from './montaje-componentes.mjs';
 import {PresentacionConsola} from './presentacion-consola.mjs';
@@ -22,7 +22,7 @@ import {comandosEntornoPreparado} from './comprobar-entorno-preparado.mjs?v=523c
 import {panicDeArranque} from './panic-arranque.mjs';
 import {kernelSha256} from './kernel-perfil.mjs?v=f96c96db221cc432';
 import {recursoPesado} from '../recursos-publicados.mjs';
-import {perfilAdministracion} from './perfil-administracion.mjs?v=f68989e7987df91e';
+import {perfilAdministracion} from './perfil-administracion.mjs?v=4008a8ef3cbba05a';
 const status=document.querySelector('#status'),start=document.querySelector('#start'),save=document.querySelector('#save'),reset=document.querySelector('#reset');
 const base=new URL(location.href).searchParams.get('base')||'v3';
 const baseHashes={v1:'66d2cbe7fc76c5d1f618c2cad655ef4979d0e145885637e8ac8d61003cc47302',v2:'175e42905bb8f50cd0bffd3df47071740f098f875b11145fe31c7cf9c3fccff1',v3:'289150401015a0cac0bbb6ce60a602f0c519758527d2d14fc79c4a2984bb70fb',v4:'fcbd48d751b9ace0693783390a1491c8fb6c4e9ee6049660c657f36426a8a800',v5:'fd01e13c792d7ced1953f5d72184bb0fb6611b22fda859ef0e98fdf61b0d9dd1',v6:'b28ae1db29f350845de04ec03188d6d89fa7b86250e5788e45497478fd284716'};
@@ -43,7 +43,7 @@ const threaded=new URL(location.href).searchParams.get('threaded')==='1';
 const engineVariant=new URL(location.href).searchParams.get('engine')||'jit8192';engineHash(engineVariant);
 const kernelVariant=new URL(location.href).searchParams.get('kernel')||'v1';kernelSha256(kernelVariant);
 const requestedFactory=new URLSearchParams(location.search).get('factory')||'v1';
-if(kernelVariant!=='v1'&&requestedFactory!=='v13'&&!(administration&&!warm&&!worker&&!clustered))throw Error('El kernel candidato solo admite administración fría: no capturas ni guardados anteriores');
+if(kernelVariant!=='v1'&&!['v13','v14'].includes(requestedFactory)&&!(administration&&!warm&&!worker&&!clustered))throw Error('El kernel candidato solo admite administración fría: no capturas ni guardados anteriores');
 if(diskMode==='pio'&&(!administration||warm||worker||clustered))throw Error('El ensayo PIO requiere administración fría aislada; no acepta guardados anteriores');
 const schedulingAPI=new URL(location.href).searchParams.get('use-scheduling-api')==='1';
 if(new URL(location.href).searchParams.has('use-scheduling-api')&&!schedulingAPI)throw Error('Planificador del motor desconocido');
@@ -57,6 +57,7 @@ factoryHashes.v7='cca924439589808f8267f7bb16f9815b6c30669fd20cd4c452307c439a4380
 factoryHashes.v8='6e4f96f5c6157536e874d5c5c4ad1862d54d246134505b7e47fd096b2eb1b962';
 factoryHashes.v10='e716b130f539300133e8d42fce48f8f603047e0f6b8c86191b4a5d2337afd285';
 factoryHashes.v13='b99c8b829f3ad8d9f0f17fbcb3451eb2dc32b928a659b4e80640778c40f8db0e';
+factoryHashes.v14='0eefc8d6a447e171e050b7e91c6514fd15f52129ad69c459178c77514e14a882';
 if(!Object.hasOwn(factoryHashes,factoryVersion))throw Error('Fábrica Debian no comprobada');
 if(factoryVersion==='v7'&&(base!=='admin-v1'||!warm||threaded))throw Error('La captura de administración requiere su propia base y arranque preparado aislado');
 if(factoryVersion==='v8'&&(base!=='admin-v2'||(worker?(warm||!threaded):(!warm||threaded))||!schedulingAPI))throw Error('La captura precargada requiere su base propia y Scheduler API');
@@ -170,7 +171,7 @@ async function prepare(){
    // Las fábricas balanceadas ya contienen este entorno en kubelet y el CP.
    // Verificar los procesos reales; no reiniciar kubelet ni reescribir el API
    // al abrir una captura limpia que ya superó init y los controles TLS.
-   const preparedApi=warm&&['v2','v6','v7','v8','v10','v13'].some(version=>factoryHashes[version]&&globalThis.kubeDebianFactory?.sha256===factoryHashes[version]);
+   const preparedApi=warm&&['v2','v6','v7','v8','v10','v13','v14'].some(version=>factoryHashes[version]&&globalThis.kubeDebianFactory?.sha256===factoryHashes[version]);
    if(preparedApi){
     const actual=await checks.run({checks:comandosEntornoPreparado().map((command,index)=>[['Comprobar entorno real de API Server sin reiniciarlo','Comprobar entorno real de kubelet sin reiniciarlo'][index],command])},180000);
     if(!actual.ok)throw Error('La fábrica no conserva el ajuste real de sus procesos');
@@ -257,6 +258,8 @@ start.onclick=async()=>{
  }catch(error){fail(error);internet?.destroy();await vm?.destroy();}
 };
 globalThis.kubeDebianSnapshot={
+ get idle(){return !busy&&consoleState.idle;},
+ get terminalOpened(){return presentation.opened;},
  lock(){
   if(!clustered||!vm||busy||!kubeDebianReady||!consoleState.idle)throw Error('Termina el comando o editor en cada nodo antes de guardar.');
   busy=true;return {terminalText:presentation.text};

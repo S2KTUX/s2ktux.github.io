@@ -4,6 +4,7 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
+for(const path of ['debian/cni-montaje-curso.mjs','debian/montaje-manual-curso.mjs','debian/leer-join-curso.mjs','debian/esperar-nodo-curso.mjs','debian/ejercicios-montaje.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 if(!manifest.files.some(record=>record.path==='debian/perfil-administracion.mjs'))manifest.files.push({path:'debian/perfil-administracion.mjs',bytes:0,sha256:''});
 if(!manifest.files.some(record=>record.path==='debian/escenarios-curso.mjs'))manifest.files.push({path:'debian/escenarios-curso.mjs',bytes:0,sha256:''});
 for(const path of ['debian/ejercicios-ciclo-cluster.mjs','debian/ejercicios-avanzados.mjs','debian/complementos-avanzados.mjs','debian/ejercicios-administracion.mjs','debian/ejercicios-gateway.mjs','debian/gateway-curso.mjs','debian/rewrite-curso.mjs','debian/crds-curso.mjs','recursos/curso-debian-v1/materiales.tar.gz'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
@@ -15,6 +16,10 @@ async function replaceRequired(path,pattern,replacement){
  const updated=original.replace(pattern,replacement);if(updated!==original)await writeFile(new URL(path,base),updated);
 }
 for(const parent of ['debian/sesiones-cluster.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs'])await replaceRequired(parent,/from '\.\/escenarios-curso\.mjs(?:\?v=[a-f0-9]+)?'/,"from './escenarios-curso.mjs?v="+await revision('debian/escenarios-curso.mjs')+"'");
+for(const parent of ['debian/cliente.mjs','debian/sesiones-cluster.mjs'])await replaceRequired(parent,/from '\.\/fabrica\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './fabrica.mjs?v="+await revision('debian/fabrica.mjs')+"'");
+await replaceRequired('debian/montaje-manual-curso.mjs',/from '\.\/cni-montaje-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './cni-montaje-curso.mjs?v="+await revision('debian/cni-montaje-curso.mjs')+"'");
+await replaceRequired('debian/multinodo.mjs',/from '\.\/montaje-manual-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './montaje-manual-curso.mjs?v="+await revision('debian/montaje-manual-curso.mjs')+"'");
+await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-montaje\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-montaje.mjs?v="+await revision('debian/ejercicios-montaje.mjs')+"'");
 // El HTML y la interfaz cambian juntos. Versionar la cadena de entrada evita
 // reutilizar módulos de una revisión anterior en pestañas que ya estaban abiertas.
 // Primero el hijo: sus referencias deben cambiar antes de calcular el hash

@@ -1,5 +1,19 @@
 import {test,expect} from '@playwright/test';
 
+test('Montaje · guardado v14 propio, sin convertir v6/v13 ni sobrescribir estudio',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/');
+ const result=await page.evaluate(async()=>{
+  const {SesionesClusterDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs'),opts={workerComponents:'v7',progressive:true,level:'avanzado'};
+  const study=new SesionesClusterDebian({...opts,factoryVersion:'v14'}),mount=new SesionesClusterDebian({...opts,factoryVersion:'v14',scenarioId:'montaje-cluster'}),old=new SesionesClusterDebian({...opts,factoryVersion:'v13'});
+  const regular=await study.saveNodes([await study.packNode('controlplane',new Uint8Array([1,2,3]).buffer,'ESTUDIO14')]);
+  const copy=await mount.saveNodes([await mount.packNode('controlplane',new Uint8Array([4,5,6]).buffer,'MONTAJE14')]);
+  let wrongScene=false,wrongVersion=false;try{await mount.validateCluster(regular);}catch{wrongScene=true;}try{await old.validateCluster(regular);}catch{wrongVersion=true;}
+  await mount.resetCluster(copy.sha256);
+  return {separate:new Set([study.key,mount.key,old.key]).size===3,wrongScene,wrongVersion,study:(await study.getCluster()).nodes[0].terminalText,mountGone:!await mount.getRawCluster()};
+ });
+ expect(result).toEqual({separate:true,wrongScene:true,wrongVersion:true,study:'ESTUDIO14',mountGone:true});
+});
+
 test('Entrada rápida · admite el historial publicado y rechaza listas excesivas',async({page})=>{
  await page.goto('/laboratorios/kubernetes-real/');
  const result=await page.evaluate(async()=>{

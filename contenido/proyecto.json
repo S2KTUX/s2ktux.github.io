@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Cerrar las clases 24–34 como un bloque conjunto e integrar init/join manuales, HA y mantenimiento. La actualización real y el restore corto de etcd ya han pasado pruebas privadas. También pasan los dos joins manuales y guardar/reabrir tres nodos de la nueva base, conservando archivos, Pods y tráfico entre workers. Falta integrar estos escenarios y comprobar la entrega final. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
+      "texto": "Cerrar las clases 24–34 como un bloque conjunto. El montaje manual de init/join ya está conectado a una copia independiente, con cuatro prácticas y correctores comprobados con resultados correctos e incompletos. La recuperación conserva los tres nodos y su tráfico; corregimos el plazo de la sonda de CoreDNS en la máquina emulada. La actualización real y el restore corto de etcd también tienen pruebas privadas. Falta integrar HA, repetir el banco conjunto y verificar los recursos de entrega. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
     },
     {
       "id": "kubernetes-examen",

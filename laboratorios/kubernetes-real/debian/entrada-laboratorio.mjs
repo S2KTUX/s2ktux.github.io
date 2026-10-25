@@ -1,4 +1,4 @@
-import {parametrosPublicos,nivelDisponible,claseDisponible} from './disponibilidad-curso.mjs?v=972ae9a30819f731';
+import {parametrosPublicos,nivelDisponible,claseDisponible} from './disponibilidad-curso.mjs?v=6b16dc542a7bf064';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs?v=20261020-aprendizaje';
 import {claseDesdeURL,clasesNivel} from './clases-curso.mjs?v=20261020-aprendizaje';
 import {mountLabNotices} from '../../lab-notices.mjs';
@@ -37,7 +37,7 @@ async function open(){
  target.search=parametrosPublicos(target.search).toString();
  const number=previewClass();
  target.searchParams.set('clase',String(number));history.replaceState(history.state,'',target.href);
- try{await import('./multinodo.mjs?v=c21df5a783a330e6');}
+ try{await import('./multinodo.mjs?v=089da63f9a88d3fa');}
  catch(error){loading=false;paint();$('lab-loading').hidden=false;$('lab-loading').textContent='No se ha podido abrir el laboratorio. Vuelve a intentarlo.';$('lab-retry').hidden=false;console.error('Carga del laboratorio:',error);}
 }
 $('enter-lab').onclick=open;$('lab-retry').onclick=()=>location.reload();paint();

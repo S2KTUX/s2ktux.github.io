@@ -7,7 +7,7 @@ export function parametrosPublicos(input){
  const params=new URLSearchParams(input);
  params.set('mode','course');params.set('factory','v6');params.set('tls','classical');params.set('persistent-network','1');
  for(const key of ['fast','policies','netpol','use-scheduling-api'])params.delete(key);
- if(params.get('level')==='avanzado'){params.set('factory','v13');params.set('use-scheduling-api','1');}
+ if(params.get('level')==='avanzado'){params.set('factory',params.get('escenario')==='montaje-cluster'?'v14':'v13');params.set('use-scheduling-api','1');}
  else params.delete('escenario');
  return params;
 }

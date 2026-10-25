@@ -11,8 +11,8 @@ destructivas se separan de las sesiones de estudio.
 | Clase | Ejercicios y comprobaciones | Cierre necesario |
 | --- | --- | --- |
 | 24 | Crear y reparar Static Pods, comparar manifiesto y mirror, borrar el mirror y comprobar su recreación. | Static Pods aprobados. HA v10 supera 88 comprobaciones: tres CP, LB redundante, tráfico, pérdida de un nodo, pérdida de mayoría y recuperación con datos/TLS/RBAC. Falta integrar ese escenario para el alumno. |
-| 25 | Init con configuración real, kubeconfig, CNI, Static Pods, Ready, DNS y tráfico. | Reutilizar el recorrido privado de init; falta integrarlo como escenario frío y reproducible sin destruir el laboratorio de aplicaciones. |
-| 26 | Join de worker, token nuevo, hash de CA, CSR/certificado de nodo, rechazo de permisos admin y tráfico entre nodos. | Recorrido manual aprobado en copia privada v11: token inválido rechazado, join válido, CSR, certificado y DNS/HTTP entre workers. Falta ofrecer este escenario limpio al alumno. |
+| 25 | Init con configuración real, kubeconfig, CNI, Static Pods, Ready, DNS y tráfico. | Conectado a la copia moderna de montaje v14, separada de estudio y de sus guardados. Init nuevo, NotReady sin CNI y aplicar el manifiesto probados; correctores positivo/negativo y recuperación aceptados en QA. Falta publicar recursos y aceptar el bloque completo. |
+| 26 | Join de worker, token nuevo, hash de CA, CSR/certificado de nodo, rechazo de permisos admin y tráfico entre nodos. | La misma copia permite ambos joins manuales sin incorporar workers desde la web. Se comprueban rechazo del token inválido, certificados, ausencia de admin.conf y tráfico real. UI25/26 y correctores positivo/negativo aceptados en QA; avanzado todavía cerrado. |
 | 27 | Cordon, drain con PDB y desplazamiento al segundo worker. Upgrade APT/kubeadm de control plane y workers, versiones de procesos, objetos conservados y salud final. | El intento v18 pasa el recorrido completo desde una copia nueva, sin reanudar un fallo anterior: 205 comprobaciones, incluidos sondeos. Actualiza realmente el CP y ambos workers, comprueba PDB, ejecutables del OCI final, TLS/RBAC y guardar/recuperar los tres nodos. Falta integrar y aceptar la base que recibirá el alumno. |
 | 28 | Snapshot TLS, integridad, restore en directorio nuevo, hostPath, montaje real de etcd y un testigo que debe volver a su valor anterior. | El restore corto vuelve a pasar en v18 con los ejecutables del OCI final, sin bind de QA ni detener manualmente componentes. Verifica el valor restaurado, montaje real, Ready, negativo y aplicación nueva con logs/DNS. La copia sana se guardó antes de ese ejercicio; no es una fábrica para publicar. Falta aceptar la entrega al alumno. |
 | 29 | Metrics Server y HPA con requests, objetivos y métricas reales. | Banco y ensayo ampliado aprobados en v11: métricas de tres nodos, carga, subida de una a tres réplicas disponibles y bajada a una. |
@@ -401,3 +401,29 @@ Quedan la integración del montaje y HA, el banco conjunto sobre la entrega
 final y los recursos limpios. No se da por reparada la recuperación de la
 copia antigua ya actualizada. El avanzado continúa cerrado y no se crea
 una versión pública por esta validación privada.
+
+### Copia de montaje conectada a la interfaz
+
+La interfaz moderna registra v14 con su SHA propio y separa el guardado de
+montaje del de estudio y de v13. En esa copia se navega entre25 y26 sin
+reiniciar máquinas; las otras clases y la práctica de examen quedan fuera
+de ella. Preparar no ejecuta reset sobre un guardado ni sobre estudio.
+
+El recorrido fresco de QA completa reset seguro, init, CNI, dos joins y
+DNS/HTTP entre workers. Su primer informe conserva un fallo de comprobación
+posterior a guardar: CoreDNS alternaba disponibilidad con la sonda de1s.
+Los registros muestran timeouts HTTP reales, no una respuesta mal corregida.
+El manifiesto nuevo conserva la sonda y permite5s; su transformación se prueba
+con jq real, conservando endpoint, periodo, memoria y los otros recursos.
+
+Sobre otra copia del guardado se prueba explícitamente esa corrección y se
+superan27 comprobaciones: recuperación sin repetir init/reset, UI25/26,
+aislamiento de estudio, cuatro resultados correctos, cuatro incompletos,
+limpieza y cuatro correctos de nuevo, además de DNS/HTTP reales. El alias
+del kubeconfig puede variar: se comprueba el CN del certificado, no se exige
+que su alias local tenga el nombre del nodo. No se publica ningún perfil QA.
+
+La base intermedia sigue siendo la misma v6, con los mismos archivos, URL,
+checksum e identidades de nodo. Solo se actualiza su compatibilidad con el
+controlador, con autorización expresa. El avanzado permanece cerrado hasta
+HA, la aceptación conjunta y los recursos limpios de entrega.
