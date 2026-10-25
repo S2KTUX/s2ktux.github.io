@@ -374,3 +374,30 @@ La espera adicional no lo resuelve. Se conservan esos informes como fallidos
 y se investiga la restauración y el disco; los resultados de init y de un
 solo nodo no justifican publicar aún el avanzado. Los escenarios del alumno
 para init/join y HA siguen pendientes.
+
+### Montaje manual y recuperación de tres nodos (25/10)
+
+La copia nueva v14 permite los dos joins manuales con kubeadm, certificados
+propios de cada worker y sin entregarles el kubeconfig de administrador.
+El primer ensayo se detuvo antes de tiempo: join había terminado el bootstrap
+TLS, pero el objeto del segundo Node aún no era visible. No era una prueba
+de fallo de la CNI. La espera distingue ahora registro y Ready, dentro del
+mismo plazo total de180 segundos; se conservan los informes originales.
+
+La recuperación independiente de una copia de esa QA supera los tres nodos
+Ready, API/etcd, CNI/proxy/DNS y una aplicación nueva con HTTP entre ambos
+workers. No repara manifiestos, rutas o servicios al recuperar. Es evidencia
+del perfil nuevo, no una corrección retroactiva de los errores IDE/DMA del
+guardado antiguo actualizado ni una aceptación de la interfaz del alumno.
+La captura contiene aplicaciones de prueba y no se publicará como fábrica.
+
+La segunda copia supera25 comprobaciones: repite la recuperación, crea la
+aplicación, guarda las tres máquinas y vuelve a abrir ese nuevo guardado.
+Conserva los archivos de cada nodo, los UID de los Pods, sus certificados,
+Ready, DNS, HTTP y rechazo RBAC. No aparecen errores nuevos de disco en ese
+recorrido. El guardado sano resultante sigue siendo QA, no una fábrica limpia.
+
+Quedan la integración del montaje y HA, el banco conjunto sobre la entrega
+final y los recursos limpios. No se da por reparada la recuperación de la
+copia antigua ya actualizada. El avanzado continúa cerrado y no se crea
+una versión pública por esta validación privada.

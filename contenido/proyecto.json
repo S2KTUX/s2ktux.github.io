@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Cerrar las clases 24–34 como un bloque conjunto e integrar init/join manuales, HA y mantenimiento. La actualización real del control plane y dos workers ya ha pasado una prueba privada completa, junto con guardar/recuperar y el restore corto de etcd. Falta llevar estos escenarios al laboratorio del alumno y comprobar la base final. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
+      "texto": "Cerrar las clases 24–34 como un bloque conjunto e integrar init/join manuales, HA y mantenimiento. La actualización real y el restore corto de etcd ya han pasado pruebas privadas. También pasan los dos joins manuales y guardar/reabrir tres nodos de la nueva base, conservando archivos, Pods y tráfico entre workers. Falta integrar estos escenarios y comprobar la entrega final. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
     },
     {
       "id": "kubernetes-examen",
