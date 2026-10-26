@@ -10,11 +10,12 @@ import {EJERCICIOS_DNS} from './ejercicios-dns.mjs?v=e4f7dacc1a978183';
 import {EJERCICIOS_GATEWAY} from './ejercicios-gateway.mjs?v=89c47e64947ff7a4';
 import {EJERCICIOS_ADMINISTRACION} from './ejercicios-administracion.mjs?v=2b2d167de12692a8';
 import {EJERCICIOS_MONTAJE} from './ejercicios-montaje.mjs?v=ab806a32b87df297';
+import {EJERCICIOS_HA} from './ejercicios-ha.mjs?v=9a0790b818615e0a';
 import {EJERCICIOS_CICLO_CLUSTER} from './ejercicios-ciclo-cluster.mjs?v=62884d43e9210e4b';
 import {EJERCICIOS_AVANZADOS} from './ejercicios-avanzados.mjs?v=4830fb2406b6ce0f';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
-import {claseDisponible} from './disponibilidad-curso.mjs?v=6b16dc542a7bf064';
+import {claseDisponible} from './disponibilidad-curso.mjs?v=f0f8985c9d7fa136';
 import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
 import {EJERCICIOS_PROGRESIVOS,CKA_EXAM_PRACTICE} from './ejercicios-progresivos.mjs';
 export const EJERCICIOS=Object.freeze({
@@ -30,7 +31,7 @@ export const EJERCICIOS=Object.freeze({
   ...EJERCICIOS_DNS,
   ...EJERCICIOS_GATEWAY
  ],
- avanzado:Object.freeze([...EJERCICIOS_ADMINISTRACION,...EJERCICIOS_MONTAJE,...EJERCICIOS_CICLO_CLUSTER,...EJERCICIOS_AVANZADOS])
+ avanzado:Object.freeze([...EJERCICIOS_ADMINISTRACION,...EJERCICIOS_HA,...EJERCICIOS_MONTAJE,...EJERCICIOS_CICLO_CLUSTER,...EJERCICIOS_AVANZADOS])
 });
 const classForLegacy={seleccion:19};
 export function ejerciciosNivel(level){

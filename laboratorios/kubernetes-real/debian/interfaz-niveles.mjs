@@ -1,12 +1,12 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=1b1366fd2f51a27e';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=fa4a322eaabe08ab';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=20260d0b4dadc45a';
-import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=6b16dc542a7bf064';
+import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=f0f8985c9d7fa136';
 import {renderSolutions} from '../../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../../solution-options.mjs?v=20261020-aprendizaje';
 import {practiceProgress} from '../../practice-progress.mjs?v=20261021-resueltas';
-import {urlEscenarioCurso,entornoEjercicio,clasePermitidaEscenario} from './escenarios-curso.mjs?v=1806eaf4b7ea7be5';
+import {urlEscenarioCurso,entornoEjercicio,clasePermitidaEscenario} from './escenarios-curso.mjs?v=0d0ce2113fc8bea0';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
@@ -24,7 +24,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  }
  const levelQuestions=clasesNivel(level).reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
  const levelNodes=config.nodes===1?'Un nodo':config.nodes===2?'Control plane y un worker':'Control plane y dos workers';
- $('lab-course-note').textContent=getState().scenarioId==='montaje-cluster'?'* Clases 25–26 · Una copia de montaje con control plane y dos workers.':'* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
+ $('lab-course-note').textContent=getState().scenarioId==='montaje-cluster'?'* Clases 25–26 · Una copia de montaje con control plane y dos workers.':getState().scenarioId==='ha-cluster'?'* Clase 24 · Tres control planes con balanceador redundante. Esta copia tiene su propio guardado.':'* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
  $('course-intro').hidden=true;$('course-progression').hidden=true;$('mode-topology').hidden=true;$('change-lab').hidden=false;
  $('exercise-class-select').replaceChildren(...clasesNivel(level).map(lesson=>{
   const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number)||!clasePermitidaEscenario(lesson.number,getState().scenarioId);option.textContent=lesson.id+' — '+lesson.title+(!claseDisponible(lesson.number)?' · Próximamente':'');return option;
@@ -67,7 +67,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   freeMode=false;
   $('exercise-class-select').value=examPractice?'exam':String(activeClass);
   $('exercise-select').replaceChildren(...tasks().map((item,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent=item.title;return option;}));
-  const sceneIndex=tasks().findIndex(item=>item.id===getState().scenarioId);if(sceneIndex>=0)$('exercise-select').value=String(sceneIndex);
+  const sceneIndex=tasks().findIndex(item=>item.id===getState().scenarioId||item.scenarioId===getState().scenarioId);if(sceneIndex>=0)$('exercise-select').value=String(sceneIndex);
   render();
  }
  function render(){
@@ -95,7 +95,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   if($('return-study'))$('return-study').disabled=blocked;
   $('exercise-solution-toggle').disabled=checking;
   $('exercise-check').hidden=!current;$('exercise-check').disabled=blocked||!state.initialized||!current;
-  const needsPreparation=current?.environment==='manual-cluster'||!!current?.prepare?.some(command=>command!==current.preflight);
+  const needsPreparation=['manual-cluster','ha-cluster'].includes(current?.environment)||!!current?.prepare?.some(command=>command!==current.preflight);
   $('exercise-setup').hidden=$('exercise-prepare').hidden=!needsPreparation;$('exercise-prepare').disabled=blocked||!state.initialized||prepared.has(current?.id);
   $('start-cluster').hidden=false;
   $('start-cluster').disabled=blocked||learningMode!=='practice'||!nivelDisponible(level)||!claseDisponible(activeClass)||state.nodeCount>0;
@@ -140,6 +140,10 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   const current=task();if(!current||getState().busy||!getState().initialized||checking)return;
   if(prepare&&current.environment==='disposable-cluster'&&entornoEjercicio(current,getState())!=='disposable-cluster'){await requestScenario(current.id);return;}
   if(prepare&&current.environment==='manual-cluster'&&entornoEjercicio(current,getState())!=='manual-cluster'){await requestScenario('montaje-cluster');return;}
+  if(prepare&&current.environment==='ha-cluster'&&entornoEjercicio(current,getState())!=='ha-cluster'){await requestScenario('ha-cluster');return;}
+  if(!prepare&&current.environment==='ha-cluster'&&entornoEjercicio(current,getState())!=='ha-cluster'){
+   $('exercise-result').dataset.result='unverified';$('exercise-result').textContent='Abre primero la copia HA con Preparar ejercicio. Tus prácticas actuales se conservan.';return;
+  }
   if(!prepare&&current.environment==='manual-cluster'&&entornoEjercicio(current,getState())!=='manual-cluster'){
    $('exercise-result').dataset.result='unverified';$('exercise-result').textContent='Abre primero la copia de montaje con Preparar ejercicio. Tus prácticas actuales se conservan.';return;
   }

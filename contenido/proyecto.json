@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Cerrar las clases 24–34 como un bloque conjunto. El montaje manual de init/join ya está conectado a una copia independiente, con cuatro prácticas y correctores comprobados con resultados correctos e incompletos. La recuperación conserva los tres nodos y su tráfico; corregimos el plazo de la sonda de CoreDNS en la máquina emulada. La actualización real y el restore corto de etcd también tienen pruebas privadas. Falta integrar HA, repetir el banco conjunto y verificar los recursos de entrega. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
+      "texto": "Cerrar las clases 24–34 como un bloque conjunto. Init/join ya usa una copia independiente con cuatro prácticas verificadas. HA está conectado como candidato con tres control planes, su propio kernel y guardado separado; estamos comprobando el recorrido completo y su recuperación antes de ofrecerlo. La actualización real y el restore corto de etcd tienen pruebas privadas; falta repetir el banco conjunto y verificar los recursos de entrega. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
     },
     {
       "id": "kubernetes-examen",

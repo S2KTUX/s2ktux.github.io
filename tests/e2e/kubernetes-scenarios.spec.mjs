@@ -11,7 +11,7 @@ async function mount(page,{scenarioId=null,saveFails=false,classNumber=28}={}){
  await page.evaluate(async({scenarioId,saveFails})=>{
   const {montarInterfazNiveles}=await import('/laboratorios/kubernetes-real/debian/interfaz-niveles.mjs');
   globalThis.qaSceneEvents=[];
-  const state={busy:false,initialized:true,level:'avanzado',factoryVersion:scenarioId==='montaje-cluster'?'v14':'v13',nodeCount:3,scenarioId,scenarioIndependent:!!scenarioId,nodes:[]};
+  const state={busy:false,initialized:true,level:'avanzado',factoryVersion:['montaje-cluster','ha-cluster'].includes(scenarioId)?'v14':'v13',nodeCount:3,scenarioId,scenarioIndependent:!!scenarioId,nodes:[]};
   montarInterfazNiveles({level:'avanzado',getState:()=>state,setBusy:value=>state.busy=value,
    run:async()=>{qaSceneEvents.push('run');return{ok:true};},
    save:async()=>{qaSceneEvents.push('save');if(saveFails)throw Error('Sin espacio de guardado');},
@@ -34,6 +34,29 @@ test('Montaje · preparar solicita otra copia sin resetear estudio',async({page}
  await expect.poll(()=>page.evaluate(()=>qaSceneEvents.length)).toBe(2);
  const events=await page.evaluate(()=>qaSceneEvents),url=new URL(events[1].navigate);expect(events[0]).toBe('stop');
  expect(url.searchParams.get('escenario')).toBe('montaje-cluster');expect(url.searchParams.get('factory')).toBe('v14');expect(events.includes('run')).toBe(false);
+});
+for(const mobile of [false,true])test('HA · selecciona su práctica, muestra tres control planes y conserva la salida a estudio'+(mobile?' @mobile':''),async({page})=>{
+ await mount(page,{scenarioId:'ha-cluster',classNumber:24});
+ await expect(page.locator('#exercise-title')).toHaveText('Alta disponibilidad · II');
+ await expect(page.locator('#lab-course-note')).toContainText('Tres control planes');
+ await expect(page.locator('#lab-course-note')).not.toContainText('workers');
+ await expect(page.locator('#exercise-select')).toBeDisabled();
+ await expect(page.locator('#return-study')).toBeVisible();
+ expect(await page.evaluate(()=>qaSceneEvents)).toEqual([]);
+});
+test('HA · las identidades y la caché limpia no se confunden con estudio ni con su sesión',async({page})=>{
+ await page.goto('/laboratorios/kubernetes-real/debian/multinodo.html');
+ const result=await page.evaluate(async()=>{
+  const {SesionesHA,BasesLimpiasHA}=await import('/laboratorios/kubernetes-real/debian/sesiones-ha.mjs');
+  const {SesionesClusterDebian,identidadNodoDebian}=await import('/laboratorios/kubernetes-real/debian/sesiones-cluster.mjs');
+  const {identidadNodoHA,perfilNodoHA}=await import('/laboratorios/kubernetes-real/debian/perfil-ha.mjs');
+  const ha=new SesionesHA(),clean=new BasesLimpiasHA('a'.repeat(64)),study=new SesionesClusterDebian({factoryVersion:'v14',workerComponents:'v7',level:'avanzado',progressive:true});
+  const node=await ha.packNode('controlplane',new Uint8Array([1,2,3]).buffer),other=await ha.packNode('worker1',new Uint8Array([4,5,6]).buffer),last=await ha.packNode('worker2',new Uint8Array([7,8,9]).buffer);
+  await ha.validate([node,other,last]);let rejects=0;
+  for(const nodes of [[node,other],[{...node,profile:perfilNodoHA('worker1')},other,last],[node,other,{...last,packed:new Blob([new Uint8Array([99])])}]])try{await ha.validate(nodes);}catch{rejects++;}
+  return {keys:[ha.key,clean.key,study.key],identities:[await identidadNodoHA('controlplane'),await identidadNodoHA('worker1'),await identidadNodoDebian('controlplane',{factoryVersion:'v14'})],rejects};
+ });
+ expect(new Set(result.keys).size).toBe(3);expect(new Set(result.identities).size).toBe(3);expect(result.rejects).toBe(3);
 });
 
 for(const mobile of [false,true])test('Montaje · las clases25/26 comparten copia y no ofrecen otras preguntas'+(mobile?' @mobile':''),async({page})=>{

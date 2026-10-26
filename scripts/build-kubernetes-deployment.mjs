@@ -4,6 +4,8 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
+const haFiles=['perfil-ha','ha-configuracion','tiempos-etcd','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','ha-curso','sesiones-ha','ejercicios-ha'];
+for(const path of [...haFiles.map(name=>'debian/'+name+'.mjs'),'debian/materiales-ha/kubeadm.yaml','debian/materiales-ha/etcd-strategic.yaml','debian/vendor/fetch-network.mjs','debian/vendor/LICENSE-v86-network.txt'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 for(const path of ['debian/cni-montaje-curso.mjs','debian/montaje-manual-curso.mjs','debian/leer-join-curso.mjs','debian/esperar-nodo-curso.mjs','debian/ejercicios-montaje.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 if(!manifest.files.some(record=>record.path==='debian/perfil-administracion.mjs'))manifest.files.push({path:'debian/perfil-administracion.mjs',bytes:0,sha256:''});
 if(!manifest.files.some(record=>record.path==='debian/escenarios-curso.mjs'))manifest.files.push({path:'debian/escenarios-curso.mjs',bytes:0,sha256:''});
@@ -15,7 +17,15 @@ async function replaceRequired(path,pattern,replacement){
  const original=await readText(path);if(!pattern.test(original))throw Error('No se encuentra la referencia versionada en '+path);
  const updated=original.replace(pattern,replacement);if(updated!==original)await writeFile(new URL(path,base),updated);
 }
+await replaceRequired('debian/archivo-http-local.mjs',/import\('\.\/vendor\/fetch-network\.mjs(?:\?v=[a-f0-9]+)?'\)/,"import('./vendor/fetch-network.mjs?v="+await revision('debian/vendor/fetch-network.mjs')+"')");
 for(const parent of ['debian/sesiones-cluster.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs'])await replaceRequired(parent,/from '\.\/escenarios-curso\.mjs(?:\?v=[a-f0-9]+)?'/,"from './escenarios-curso.mjs?v="+await revision('debian/escenarios-curso.mjs')+"'");
+// Dependencias HA primero; ninguna captura de estudio se convierte al perfil HA.
+for(const [parent,children] of [
+ ['configuracion-admin-curso',['ha-configuracion','tiempos-etcd']],['ha-rutas',['ha-configuracion']],['archivo-http-local',['perfil-ha']],
+ ['ha-curso',['ha-configuracion','perfil-ha','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local']],
+ ['ejercicios-ha',['ha-curso']],['cliente',['perfil-ha']],['sesiones-ha',['perfil-ha']]
+])for(const child of children)await replaceRequired('debian/'+parent+'.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
+await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-ha\.mjs(?:\?v=[a-f0-9]+)?'/,"from './ejercicios-ha.mjs?v="+await revision('debian/ejercicios-ha.mjs')+"'");
 for(const parent of ['debian/cliente.mjs','debian/sesiones-cluster.mjs'])await replaceRequired(parent,/from '\.\/fabrica\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './fabrica.mjs?v="+await revision('debian/fabrica.mjs')+"'");
 await replaceRequired('debian/montaje-manual-curso.mjs',/from '\.\/cni-montaje-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './cni-montaje-curso.mjs?v="+await revision('debian/cni-montaje-curso.mjs')+"'");
 await replaceRequired('debian/multinodo.mjs',/from '\.\/montaje-manual-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './montaje-manual-curso.mjs?v="+await revision('debian/montaje-manual-curso.mjs')+"'");
@@ -29,6 +39,8 @@ await replaceRequired('debian/sesiones-cluster.mjs',/from '\.\.\/comprimir-estad
 for(const parent of ['kube-sessions.mjs','debian/sesiones-cluster.mjs'])await replaceRequired(parent,/from '\/laboratorios\/docker-real\/v86-sessions\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '/laboratorios/docker-real/v86-sessions.mjs?v="+await revision('../docker-real/v86-sessions.mjs')+"'");
 for(const parent of ['debian/sesiones-cluster.mjs','debian/cliente.mjs'])await replaceRequired(parent,/from '\.\.\/kube-sessions\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../kube-sessions.mjs?v="+await revision('kube-sessions.mjs')+"'");
 for(const parent of ['debian/bases-limpias.mjs','debian/multinodo.mjs','debian/cliente.mjs'])await replaceRequired(parent,/from '\.\/sesiones-cluster\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-cluster.mjs?v="+await revision('debian/sesiones-cluster.mjs')+"'");
+await replaceRequired('debian/sesiones-ha.mjs',/from '\.\/sesiones-cluster\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-cluster.mjs?v="+await revision('debian/sesiones-cluster.mjs')+"'");
+for(const child of ['sesiones-ha','perfil-ha','ha-curso'])await replaceRequired('debian/multinodo.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
 for(const path of ['debian/entrada-laboratorio.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs','debian/ejercicios-niveles.mjs'])await replaceRequired(path,/from '\.\/disponibilidad-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './disponibilidad-curso.mjs?v="+await revision('debian/disponibilidad-curso.mjs')+"'");
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-acceso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-acceso.mjs?v="+await revision('debian/ejercicios-acceso.mjs')+"'");
 await replaceRequired('debian/ejercicios-almacenamiento.mjs',/from '\.\/herramientas-practicas\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './herramientas-practicas.mjs?v="+await revision('debian/herramientas-practicas.mjs')+"'");
@@ -62,6 +74,7 @@ await replaceRequired('debian/cliente.mjs',/from '\.\.\/disco-kubernetes\.mjs(?:
 await replaceRequired('debian/cliente.mjs',/from '\.\.\/serial-checks\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../serial-checks.mjs?v="+await revision('serial-checks.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\/perfil-administracion\.mjs(?:\?v=[a-f0-9]+)?'/,"from './perfil-administracion.mjs?v="+await revision('debian/perfil-administracion.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\/kernel-perfil\.mjs(?:\?v=[a-f0-9]+)?'/,"from './kernel-perfil.mjs?v="+await revision('debian/kernel-perfil.mjs')+"'");
+await replaceRequired('debian/cliente.mjs',/from '\.\/preparar-administracion\.mjs(?:\?v=[a-f0-9]+)?'/,"from './preparar-administracion.mjs?v="+await revision('debian/preparar-administracion.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\/comprobar-entorno-preparado\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './comprobar-entorno-preparado.mjs?v="+await revision('debian/comprobar-entorno-preparado.mjs')+"'");
 await replaceRequired('debian/index.html',/src="cliente\.mjs(?:\?v=[a-z0-9-]+)?"/,'src="cliente.mjs?v='+await revision('debian/cliente.mjs')+'"');
 await replaceRequired('debian/multinodo.mjs',/const nodeUIRevision='[a-f0-9]+'/,"const nodeUIRevision='"+await revision('debian/index.html')+"'");
