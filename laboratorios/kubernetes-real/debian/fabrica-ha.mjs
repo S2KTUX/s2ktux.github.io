@@ -1,7 +1,7 @@
 // Entrega independiente: nunca admite una base v6, un worker ni una sesión.
 import {verifiedDownload} from '../../verified-download.mjs';
 import {descargarFragmentoBase} from './fabrica-cluster.mjs?v=979785ed16349130';
-import {miembrosHA,perfilNodoHA,identidadNodoHA} from './perfil-ha.mjs?v=45527150f768d0ed';
+import {miembrosHA,perfilNodoHA,identidadNodoHA} from './perfil-ha.mjs?v=60a21559ace773d9';
 const sha=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
 export async function validarBaseHA(manifest,config){

@@ -2,13 +2,13 @@
 // Las tres máquinas usan el mismo hardware comprobado en HA nativo v10.
 export const miembrosHA=Object.freeze(['controlplane','worker1','worker2']);
 export const perfilBaseHA=Object.freeze({
- os:'debian-admin-v3',components:'v7',engine:'jit8192-pic-only-v1',kernel:'highmem-net-v2',memoryMiB:1536,
+ os:'debian-admin-v3',components:'v7',engine:'jit8192-pic-v1',kernel:'highmem-net-v2',memoryMiB:1536,
  rootSha256:'9178e37b2784a7cd66b641d45d8a80d16f6745ba518cabe4f4cbe30a4bf33162',
  componentsSha256:'3fc89ed9b511bf8ac32b132295b1f3a887551e2eb008768aa670eae97a8e5345',
- engineSha256:'b31b2045a1ac53ce90e2ead888455b993a24a8c3433a5985ed21e95da47eddef',
+ engineSha256:'2b81820d3c4f0c4928cdc13ed18312e4bb30ba674a6e2c04e5c2601d2ed705c9',
  kernelSha256:'709c16f5901b0474056926e79eae1f1822c1fb154104cd80872f7d049d269891',
  apiSha256:'29197a58b1d43d810c29ef742de6eb167ffd73b516e50b18f19806241a9dcdd1',
- topology:'three-control-planes-v1',bootstrap:'haproxy-keepalived-raft1000-10000-runtime135-leader180-120-phases-v4',scheduler:'native-v1',tls:'classical'
+ topology:'three-control-planes-v1',bootstrap:'haproxy-keepalived-raft1000-10000-runtime135-leader180-120-phases-v5-clock',scheduler:'native-v1',tls:'classical'
 });
 export function perfilNodoHA(id){
  const index=miembrosHA.indexOf(id);if(index<0)throw Error('Miembro HA desconocido');

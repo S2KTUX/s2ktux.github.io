@@ -23,7 +23,7 @@ import {panicDeArranque} from './panic-arranque.mjs';
 import {kernelSha256} from './kernel-perfil.mjs?v=feb1befec359f8d8';
 import {recursoPesado} from '../recursos-publicados.mjs';
 import {perfilAdministracion} from './perfil-administracion.mjs?v=4008a8ef3cbba05a';
-import {validarPerfilHA,miembrosHA,identidadNodoHA} from './perfil-ha.mjs?v=45527150f768d0ed';
+import {validarPerfilHA,miembrosHA,identidadNodoHA} from './perfil-ha.mjs?v=60a21559ace773d9';
 const status=document.querySelector('#status'),start=document.querySelector('#start'),save=document.querySelector('#save'),reset=document.querySelector('#reset');
 const base=new URL(location.href).searchParams.get('base')||'v3';
 const baseHashes={v1:'66d2cbe7fc76c5d1f618c2cad655ef4979d0e145885637e8ac8d61003cc47302',v2:'175e42905bb8f50cd0bffd3df47071740f098f875b11145fe31c7cf9c3fccff1',v3:'289150401015a0cac0bbb6ce60a602f0c519758527d2d14fc79c4a2984bb70fb',v4:'fcbd48d751b9ace0693783390a1491c8fb6c4e9ee6049660c657f36426a8a800',v5:'fd01e13c792d7ced1953f5d72184bb0fb6611b22fda859ef0e98fdf61b0d9dd1',v6:'b28ae1db29f350845de04ec03188d6d89fa7b86250e5788e45497478fd284716'};

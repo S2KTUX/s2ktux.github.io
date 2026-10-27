@@ -1,17 +1,17 @@
 // Escenario independiente. Solo prepara máquinas nuevas: recuperar un guardado
 // no invoca este constructor ni vuelve a configurar sus servicios o datos.
 import {HA,configuracionHA} from './ha-configuracion.mjs?v=8d3e35d945d5f5a8';
-import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=45527150f768d0ed';
+import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=60a21559ace773d9';
 import {configuracionInitHA,configuracionJoinHA} from './configuracion-admin-curso.mjs?v=c815e37848edde27';
 import {parcheControlPlane} from './perfil-controlplane.mjs?v=3bdd05873244d47b';
 import {unidadRutasHA} from './ha-rutas.mjs?v=cea7f05f3340abc0';
 import {inicializarControlPlaneHA} from './inicializacion-ha.mjs?v=74b30ee8a8427627';
 import {esperarFirmaHA} from './esperar-firma-ha.mjs?v=488ca2f524307838';
-import {servirRuntimeHA,runtimeHA} from './archivo-http-local.mjs?v=eeb639357e340f4c';
+import {servirRuntimeHA,runtimeHA} from './archivo-http-local.mjs?v=476d7d2f4c5d39b7';
 import {incorporarControlPlaneHA} from './incorporacion-ha.mjs';
 export const clienteHAQuery=index=>{
  if(!Number.isInteger(index)||index<1||index>3)throw Error('Miembro HA desconocido');
- return 'base=admin-v3&kube=1&components=v7&cluster=1&factory=v14&tls=classical&threaded=1&engine=jit8192-pic-only-v1&kernel=highmem-net-v2&use-scheduling-api=1&ha-member='+index;
+ return 'base=admin-v3&kube=1&components=v7&cluster=1&factory=v14&tls=classical&threaded=1&engine=jit8192-pic-v1&kernel=highmem-net-v2&use-scheduling-api=1&ha-member='+index;
 };
 export const etcdHA='etcdctl --endpoints=https://127.0.0.1:2379 --dial-timeout=15s --command-timeout=40s --cacert=/etc/kubernetes/pki/etcd/ca.crt --cert=/etc/kubernetes/pki/etcd/healthcheck-client.crt --key=/etc/kubernetes/pki/etcd/healthcheck-client.key';
 export function validarContextoHA(context){

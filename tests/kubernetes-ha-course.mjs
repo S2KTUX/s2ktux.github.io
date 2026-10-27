@@ -10,9 +10,9 @@ import {escenarioCurso,entornoEjercicio,urlEscenarioCurso} from '../laboratorios
 import {parametrosPublicos,avanzadoPublicado} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 import {EJERCICIOS_HA} from '../laboratorios/kubernetes-real/debian/ejercicios-ha.mjs';
 import {comprobarPractica,prepararPractica} from '../laboratorios/kubernetes-real/debian/motor-practicas.mjs';
-const options={factoryVersion:'v14',base:'admin-v3',components:'v7',withKube:true,clustered:true,schedulingAPI:true,tlsMode:'classical',engineVariant:'jit8192-pic-only-v1',kernelVariant:'highmem-net-v2',diskMode:'dma',sharedCode:false,warm:false,threaded:true,worker:null};
+const options={factoryVersion:'v14',base:'admin-v3',components:'v7',withKube:true,clustered:true,schedulingAPI:true,tlsMode:'classical',engineVariant:'jit8192-pic-v1',kernelVariant:'highmem-net-v2',diskMode:'dma',sharedCode:false,warm:false,threaded:true,worker:null};
 for(const member of ['1','2','3'])assert.equal(validarPerfilHA(options,member).memoryMiB,1536);
-for(const change of [{factoryVersion:'v13'},{kernelVariant:'highmem-v1'},{warm:true},{worker:'1'},{clustered:false},{threaded:false},{tlsMode:null},{base:'admin-v2'},{schedulingAPI:false},{diskMode:'pio'},{sharedCode:true},{components:'v8'}])assert.throws(()=>validarPerfilHA({...options,...change},'1'));
+for(const change of [{engineVariant:'jit8192-pic-only-v1'},{factoryVersion:'v13'},{kernelVariant:'highmem-v1'},{warm:true},{worker:'1'},{clustered:false},{threaded:false},{tlsMode:null},{base:'admin-v2'},{schedulingAPI:false},{diskMode:'pio'},{sharedCode:true},{components:'v8'}])assert.throws(()=>validarPerfilHA({...options,...change},'1'));
 assert.equal(validarPerfilHA(options,null),null);assert.throws(()=>validarPerfilHA(options,'01'));
 assert.equal(new Set(await Promise.all(miembrosHA.map(identidadNodoHA))).size,3);
 assert.equal(new Set(miembrosHA.map(id=>perfilNodoHA(id).mac)).size,3);

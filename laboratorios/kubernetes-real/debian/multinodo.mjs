@@ -7,19 +7,20 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=35048571102b8611';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=9a18095bc5a0072d';
+import {ordenSaludAPIHA} from './salud-ha.mjs?v=2850be211434a3b7';
 import {ordenSaludInicial} from './salud-inicial.mjs?v=84a2e4609f06f611';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=f0f8985c9d7fa136';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=8cf1eb306d9ca9d0';
-import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=6f85e3c73a32b355';
+import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=78f84c032fd5a505';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=979785ed16349130';
 import {escenarioCurso} from './escenarios-curso.mjs?v=0d0ce2113fc8bea0';
 import {prepararMontajeManual} from './montaje-manual-curso.mjs?v=9d4672bb487ea6e8';
-import {prepararClusterHA,clienteHAQuery} from './ha-curso.mjs?v=24fe3922558b4b51';
-import {SesionesHA,BasesLimpiasHA} from './sesiones-ha.mjs?v=9719d1b92e293731';
-import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=45527150f768d0ed';
-const cleanRevision='48cb12f1ee27c64b8d8e3f9ff2c2f487de468d6f7e7ae62991935898173b2b80';
+import {prepararClusterHA,clienteHAQuery} from './ha-curso.mjs?v=848062a1fb98fb2f';
+import {SesionesHA,BasesLimpiasHA} from './sesiones-ha.mjs?v=57132de85dcf6302';
+import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=60a21559ace773d9';
+const cleanRevision='143313c73180f2eb01ea40f902405f0a7643b20bb28b58ea19ddecdda87fa4b4';
 const releaseAvailable=()=>{const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
 if(!progressive)document.querySelector('#lab-workspace').hidden=false;
@@ -34,7 +35,7 @@ const schedulingAPI=new URLSearchParams(location.search).get('use-scheduling-api
 if(['v8','v13','v14'].includes(factoryVersion)&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración requiere Scheduler API, sin políticas integradas y nivel avanzado');
 const scenario=escenarioCurso(new URLSearchParams(location.search).get('escenario'),{factoryVersion,level});
 const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'||factoryVersion!=='v1';
-const nodeUIRevision='7c4eebbe646932ad';
+const nodeUIRevision='0d0f089288116f30';
 const workerComponents=['v8','v13','v14'].includes(factoryVersion)?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
 const network=createLocalSwitch({onError:error=>fail(error)}),sessions=scenario?.ha?new SesionesHA():new SesionesClusterDebian({workerComponents,factoryVersion,progressive,level,scenarioId:scenario?.id||'study'}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
@@ -141,7 +142,12 @@ start.onclick=async()=>{
     if(cleanBase){
      // El primer handshake puede agotar su plazo mientras vuelve a calentarse
      // el código del API. Esperar su salud real; no reiniciar ni reparar nada.
+     if(scenario?.ha){
+      await phase('controlplane','Esperar los tres APIs HA recuperados',ordenSaludAPIHA(),240000);
+      await phase('controlplane','Comprobar los tres nodos HA recuperados','kubectl wait --for=condition=Ready nodes --all --timeout=120s; test "$(kubectl get nodes -o name | wc -l)" = 3',180000);
+     }else{
      await phase('controlplane','Esperar a que la API y los nodos recuperados estén disponibles',ordenSaludInicial(nodes.size),240000);
+     }
      kubeDebianClusterReady=true;status.textContent='Laboratorio listo desde su base limpia.';
     }else{
     await phase('controlplane','Consultar la API recuperada sin esperar ni reparar nodos','kubectl get --raw=/readyz --request-timeout=15s',45000);
@@ -153,7 +159,8 @@ start.onclick=async()=>{
     }
    }
    catch{
-    if(cleanBase){initialized=false;kubeDebianClusterReady=false;try{sessionStorage.setItem(failedPublishedKey,'1');}catch{}try{await cleanBases.resetCluster(cleanBase.sha256);}catch(error){console.warn('No se ha retirado la base inválida:',error.message);}status.textContent='La entrada rápida no ha superado la comprobación. Pulsa Reset para preparar una base nueva; tus sesiones guardadas no se han modificado.';}
+    if(cleanBase&&scenario?.ha){initialized=false;fail(Error('La base HA se ha recuperado, pero sus APIs todavía no están disponibles; la copia verificada se conserva'));}
+    else if(cleanBase){initialized=false;kubeDebianClusterReady=false;try{sessionStorage.setItem(failedPublishedKey,'1');}catch{}try{await cleanBases.resetCluster(cleanBase.sha256);}catch(error){console.warn('No se ha retirado la base inválida:',error.message);}status.textContent='La entrada rápida no ha superado la comprobación. Pulsa Reset para preparar una base nueva; tus sesiones guardadas no se han modificado.';}
     else status.textContent='Sesión recuperada. Revisa el clúster desde sus terminales; no se han reparado tus cambios.';
    }
    return;
@@ -167,10 +174,11 @@ start.onclick=async()=>{
     connect:id=>{const child=nodes.get(id).window;network.add(id,child.kubeDebianVM.bus,{copyFrame:bytes=>new child.Uint8Array(bytes)});},
     run:phase,upload,value,fetchText:async path=>{const response=await fetch(new URL(path,import.meta.url));if(!response.ok)throw Error('Material HA no disponible: '+path);return response.text();}
    });
-   initialized=true;kubeDebianClusterReady=true;status.textContent='Guardando la entrada rápida de HA antes de abrir las consolas…';
+   initialized=true;kubeDebianClusterReady=false;status.textContent='Guardando la entrada rápida de HA antes de abrir las consolas…';
    try{await capturarCluster({ordered:ordenarNodosDebian(nodes,{progressive}),network,pack:(...args)=>cleanBases.packNode(...args),write:captures=>cleanBases.write(captures)});}
    catch(error){if(error.resumeFailed)throw error;console.warn('La entrada rápida HA no se ha guardado:',error.message);}
-   status.textContent='Copia HA lista: tres control planes y un acceso común.';return;
+   await phase('controlplane','Comprobar HA después de capturar la entrada rápida',ordenSaludAPIHA(),240000);
+   kubeDebianClusterReady=true;status.textContent='Copia HA lista: tres control planes y un acceso común.';return;
   }
   await createNode('controlplane','warm=1');
   if(scenario?.manual){

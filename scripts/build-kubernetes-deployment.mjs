@@ -4,7 +4,7 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
-const haFiles=['perfil-ha','ha-configuracion','tiempos-etcd','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','ha-curso','sesiones-ha','ejercicios-ha','fabrica-ha','esperar-firma-ha','inicializacion-ha','incorporacion-ha'];
+const haFiles=['perfil-ha','ha-configuracion','tiempos-etcd','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','ha-curso','sesiones-ha','ejercicios-ha','fabrica-ha','esperar-firma-ha','inicializacion-ha','incorporacion-ha','salud-ha'];
 for(const path of [...haFiles.map(name=>'debian/'+name+'.mjs'),'debian/materiales-ha/kubeadm.yaml','debian/materiales-ha/etcd-strategic.yaml','debian/vendor/fetch-network.mjs','debian/vendor/LICENSE-v86-network.txt'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 for(const path of ['debian/cni-montaje-curso.mjs','debian/montaje-manual-curso.mjs','debian/leer-join-curso.mjs','debian/esperar-nodo-curso.mjs','debian/ejercicios-montaje.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 if(!manifest.files.some(record=>record.path==='debian/perfil-administracion.mjs'))manifest.files.push({path:'debian/perfil-administracion.mjs',bytes:0,sha256:''});
@@ -81,6 +81,7 @@ await replaceRequired('debian/multinodo.mjs',/const nodeUIRevision='[a-f0-9]+'/,
 await replaceRequired('debian/multinodo.mjs',/from '\.\/interfaz-niveles\.mjs(?:\?v=[a-f0-9]+)?'/,"from './interfaz-niveles.mjs?v="+await revision('debian/interfaz-niveles.mjs')+"'");
 await replaceRequired('debian/multinodo.mjs',/from '\.\/bases-limpias\.mjs(?:\?v=[a-f0-9]+)?'/,"from './bases-limpias.mjs?v="+await revision('debian/bases-limpias.mjs')+"'");
 await replaceRequired('debian/multinodo.mjs',/from '\.\/salud-inicial\.mjs(?:\?v=[a-f0-9]+)?'/,"from './salud-inicial.mjs?v="+await revision('debian/salud-inicial.mjs')+"'");
+await replaceRequired('debian/multinodo.mjs',/from '\.\/salud-ha\.mjs(?:\?v=[a-f0-9]+)?'/,"from './salud-ha.mjs?v="+await revision('debian/salud-ha.mjs')+"'");
 for(const path of ['debian/bases-publicadas.mjs','debian/fabrica-cluster.mjs']){
  if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
  await replaceRequired('debian/multinodo.mjs',new RegExp("from '\\./"+path.split('/').at(-1).replaceAll('.','\\.')+"(?:\\?v=[a-f0-9]+)?'"),"from './"+path.split('/').at(-1)+'?v='+await revision(path)+"'");

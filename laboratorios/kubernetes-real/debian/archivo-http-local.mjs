@@ -2,7 +2,7 @@
 // direcciones externas, datos del alumno ni rutas del equipo del visitante.
 import {verifiedDownload} from '../../verified-download.mjs';
 import {recursoPesado} from '../recursos-publicados.mjs';
-import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=45527150f768d0ed';
+import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=60a21559ace773d9';
 export const runtimeHA=Object.freeze({bytes:33549444,archiveSha256:'a0e056074373441e308f75df0cf6efc84b07dadf856e3898348748085d47ed2a',binarySha256:'29197a58b1d43d810c29ef742de6eb167ffd73b516e50b18f19806241a9dcdd1'});
 export const urlRuntimeHA='http://10.77.0.2/lab/runtime-1.35.tar.gz';
 let downloaded;
