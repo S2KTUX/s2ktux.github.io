@@ -1,4 +1,4 @@
-import {HA} from './ha-configuracion.mjs?v=5750fd1d5858b97c';
+import {HA} from './ha-configuracion.mjs?v=8d3e35d945d5f5a8';
 // La CNI bridge del laboratorio necesita rutas reales entre los PodCIDR.
 // Persistirlas como unidad nativa sin reconfigurar eth0 ni retirar el VIP.
 export function unidadRutasHA(index,cidrs){

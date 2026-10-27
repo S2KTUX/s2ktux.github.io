@@ -22,6 +22,7 @@ for(const index of [1,2,3]){
  assert.match(config.keepalivedUnit,/BindsTo=haproxy.service/);assert.doesNotMatch(config.keepalived,/vrrp_script|pgrep/);
  assert.match(clienteHAQuery(index),new RegExp('ha-member='+index+'$'));
 }
+for(const readyMembers of [1,2,3]){const text=configuracionHA(1,{readyMembers}).haproxy;assert.equal((text.match(/ disabled/g)||[]).length,3-readyMembers);assert.doesNotMatch(text,/server cka-cp1[^\n]*disabled/);}for(const readyMembers of [0,4,1.5])assert.throws(()=>configuracionHA(1,{readyMembers}));
 for(const index of [0,4,1.5])assert.throws(()=>clienteHAQuery(index));
 const original=readFileSync(new URL('../laboratorios/kubernetes-real/debian/materiales-ha/kubeadm.yaml',import.meta.url),'utf8'),init=configuracionInitHA(original);
 assert.match(init,/controlPlaneEndpoint: 10\.77\.0\.100:8443/);assert.match(init,/cgroupDriver: systemd/);

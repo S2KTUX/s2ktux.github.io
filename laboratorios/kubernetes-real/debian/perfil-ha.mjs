@@ -8,7 +8,7 @@ export const perfilBaseHA=Object.freeze({
  engineSha256:'b31b2045a1ac53ce90e2ead888455b993a24a8c3433a5985ed21e95da47eddef',
  kernelSha256:'709c16f5901b0474056926e79eae1f1822c1fb154104cd80872f7d049d269891',
  apiSha256:'29197a58b1d43d810c29ef742de6eb167ffd73b516e50b18f19806241a9dcdd1',
- topology:'three-control-planes-v1',bootstrap:'haproxy-keepalived-raft1000-10000-runtime135-leader180-120-phases-v3',scheduler:'native-v1',tls:'classical'
+ topology:'three-control-planes-v1',bootstrap:'haproxy-keepalived-raft1000-10000-runtime135-leader180-120-phases-v4',scheduler:'native-v1',tls:'classical'
 });
 export function perfilNodoHA(id){
  const index=miembrosHA.indexOf(id);if(index<0)throw Error('Miembro HA desconocido');

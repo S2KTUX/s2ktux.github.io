@@ -1,4 +1,4 @@
-import {etcdHA} from './ha-curso.mjs?v=23e7e52e15ed5b39';
+import {etcdHA} from './ha-curso.mjs?v=24fe3922558b4b51';
 const api='kubectl get --raw=/readyz --request-timeout=15s';
 const vip=`kubectl config view --minify -o json | jq -e '.clusters[0].cluster.server=="https://10.77.0.100:8443" and (.clusters[0].cluster["insecure-skip-tls-verify"]//false)==false'`;
 const healthy=`${etcdHA} member list -w json | jq -e '(.members|length)==3'; ${etcdHA} endpoint health --cluster`;

@@ -1,6 +1,6 @@
 // Adaptación explícita de la configuración privada ya probada; no reescribe
 // guiones ni utiliza opciones que omitan TLS, RBAC o comprobaciones de salud.
-import {HA} from './ha-configuracion.mjs?v=5750fd1d5858b97c';
+import {HA} from './ha-configuracion.mjs?v=8d3e35d945d5f5a8';
 import {configurarTiemposEtcd} from './tiempos-etcd.mjs?v=3d68df3331a80341';
 export function configuracionInitHA(original){
  for(const expected of ['name: controlplane','cgroupDriver: cgroupfs','controlPlaneEndpoint: 10.77.0.20:6443','podSubnet: 192.168.0.0/16'])if(!original.includes(expected))throw Error('Plantilla de kubeadm inesperada: '+expected);
