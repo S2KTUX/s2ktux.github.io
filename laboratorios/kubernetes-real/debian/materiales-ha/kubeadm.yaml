@@ -56,9 +56,9 @@ controllerManager:
     - name: kube-api-burst
       value: "15"
     - name: leader-elect-lease-duration
-      value: 60s
+      value: 180s
     - name: leader-elect-renew-deadline
-      value: 40s
+      value: 120s
     - name: leader-elect-retry-period
       value: 5s
   extraVolumes:
@@ -83,9 +83,9 @@ scheduler:
     - name: tls-private-key-file
       value: /mnt/kube-client/serving/kube-scheduler.key
     - name: leader-elect-lease-duration
-      value: 60s
+      value: 180s
     - name: leader-elect-renew-deadline
-      value: 40s
+      value: 120s
     - name: leader-elect-retry-period
       value: 5s
   extraVolumes:

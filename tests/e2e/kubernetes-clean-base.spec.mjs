@@ -21,7 +21,9 @@ test('Entrada rápida · admite el historial publicado y rechaza listas excesiva
   const {revisionesCompatibles}=await import('/laboratorios/kubernetes-real/debian/bases-publicadas.mjs');
   const options={workerComponents:'v8',factoryVersion:'v6',progressive:true,level:'intermedio'};
   for(const [revision,compatibleRevisions] of Object.entries(revisionesCompatibles))new BasesLimpias(revision,{...options,compatibleRevisions});
-  let rejected=false;try{new BasesLimpias('a'.repeat(64),{...options,compatibleRevisions:Array.from({length:9},(_,index)=>String(index).repeat(64))});}catch{rejected=true;}
+  const references=Array.from({length:17},(_,index)=>index.toString(16).padStart(64,'0'));
+  new BasesLimpias('a'.repeat(64),{...options,compatibleRevisions:references.slice(0,16)});
+  let rejected=false;try{new BasesLimpias('a'.repeat(64),{...options,compatibleRevisions:references});}catch{rejected=true;}
   return rejected;
  });
  expect(result).toBe(true);

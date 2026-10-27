@@ -44,7 +44,7 @@
     {
       "path": "debian/cliente.mjs",
       "bytes": 28109,
-      "sha256": "8e99d59fbd11e23339357d23ddda06ea5bc602e902fb2fcbc66491111018b5a6"
+      "sha256": "9789594cc3b19fd5acef36c0e91d4307fefa50b6f6c28b63f46847fec5dafaa1"
     },
     {
       "path": "debian/compartir-ejecutable-admin.mjs",
@@ -79,12 +79,12 @@
     {
       "path": "debian/ejercicios-niveles.mjs",
       "bytes": 3970,
-      "sha256": "fa4a322eaabe08ab7feb94a4b794fd6cdccb8d1c28f35d1d44598f4686104c65"
+      "sha256": "e47d726436d92b3d58af82495cca5ad25b2ec806d48f0f10e3dede6c6d60a369"
     },
     {
       "path": "debian/entrada-laboratorio.mjs",
       "bytes": 4481,
-      "sha256": "4d90381c63eecd4c0a7a6dfeb155e65803158c7d0d450819d3667f309a89d4a0"
+      "sha256": "957c2833733cbb622abb81186b2b4b3bf46eaa07b03d0aee406ffe598de2ea73"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -114,12 +114,12 @@
     {
       "path": "debian/index.html",
       "bytes": 1708,
-      "sha256": "4a663adb9ed5ba298282d59e43cabb2e00903f541a5d1ab29bb8aafde8cd84d8"
+      "sha256": "7cd9f65b470f94b16ef0ea1d00e645c18e8bbe9aaed439a27a05d29818be530d"
     },
     {
       "path": "debian/interfaz-niveles.mjs",
       "bytes": 19303,
-      "sha256": "331490f45bd2ef1ef982901edda067b364442f6aababbcee15e0095721d66f48"
+      "sha256": "660b7250861221f027e4982d51c477bf4aceb89ec5da7858536083631887d2eb"
     },
     {
       "path": "debian/kernel-perfil.mjs",
@@ -144,12 +144,12 @@
     {
       "path": "debian/multinodo.html",
       "bytes": 8510,
-      "sha256": "cb673250cd688108c5ee174b9ce2a7c704307fbc9220f55dd956beae336fbfc1"
+      "sha256": "6767881d06f392805f67722e08ed400e2c520133893ecaf21aa05833477f5738"
     },
     {
       "path": "debian/multinodo.mjs",
       "bytes": 28047,
-      "sha256": "904dd30e676dea4bb500a5e408478c7d45238cbf528222eb8dbd956ab5b2bb9b"
+      "sha256": "24e52a9b9cbe88713d117fcad41845417ca1f4bea327f800db254d41f12fb14c"
     },
     {
       "path": "debian/niveles.css",
@@ -353,8 +353,8 @@
     },
     {
       "path": "debian/bases-limpias.mjs",
-      "bytes": 3779,
-      "sha256": "8c8f7cecb3301786da7c4945157e9d6ad4256e6526052c40bdee998f12acddcf"
+      "bytes": 3780,
+      "sha256": "8cf1eb306d9ca9d083a55795a28306a23861ddf6a78f28613720b374a886ad16"
     },
     {
       "path": "debian/ejercicios-acceso.mjs",
@@ -363,8 +363,8 @@
     },
     {
       "path": "debian/bases-publicadas.mjs",
-      "bytes": 4853,
-      "sha256": "b1510a70165c3d8e074777b7411e0065b98d13cab754027f9926c6706d709ab9"
+      "bytes": 7677,
+      "sha256": "43bbffca91be6b5df1b8ea7d43bf09b6979f0f9b7d633e4f0d982f67c74cc497"
     },
     {
       "path": "debian/fabrica-cluster.mjs",
@@ -518,8 +518,8 @@
     },
     {
       "path": "debian/perfil-ha.mjs",
-      "bytes": 2099,
-      "sha256": "8d05dc645c1ab09a5756f353d06a80bd712735a9ef43bf633cc09c86f8319d57"
+      "bytes": 2120,
+      "sha256": "d3968d41177729652d767fe18eabda3a681097e5f826789a98b9923cfed91752"
     },
     {
       "path": "debian/ha-configuracion.mjs",
@@ -548,23 +548,23 @@
     },
     {
       "path": "debian/ha-curso.mjs",
-      "bytes": 12553,
-      "sha256": "0748e478c70b97c25879e527256d3399041597cc5262afab567f0c09997cf76e"
+      "bytes": 12995,
+      "sha256": "23e7e52e15ed5b3975c0a274fa26631137eac055a6965439fc194cb77844c942"
     },
     {
       "path": "debian/sesiones-ha.mjs",
       "bytes": 3167,
-      "sha256": "f02d51b504daf0e2285710a81ac4831d3695e2e0e84ac20367c85eafac6bba1b"
+      "sha256": "5e41fb524e1fc81b3eddaa75abdb722747888b7713b30e87e94ce50c2134c6de"
     },
     {
       "path": "debian/ejercicios-ha.mjs",
       "bytes": 2154,
-      "sha256": "9a0790b818615e0a8ae92b103a219f64d81a13e708d18769eccf28c77ae31c2e"
+      "sha256": "833046b1cbfa1809da9ecabfc35d1fc3b6f06a4a5fee392e07de3b9cc98bf2d5"
     },
     {
       "path": "debian/materiales-ha/kubeadm.yaml",
-      "bytes": 3428,
-      "sha256": "c6eac2b8a0ec8693bb9f106f1f992b5fa3f3eddc3e5ff7115863d37f7c6ff34d"
+      "bytes": 3432,
+      "sha256": "672e388003fea3a63303c5203a1072fbd3638914e6403d6b54242ba3feef9b9d"
     },
     {
       "path": "debian/materiales-ha/etcd-strategic.yaml",
@@ -574,7 +574,7 @@
     {
       "path": "debian/archivo-http-local.mjs",
       "bytes": 3416,
-      "sha256": "5dc6b531803e1cf7df265f931afe76ab925518ad0a20e44b481c86dbe34817d7"
+      "sha256": "53c8a665cc89123617b3f764e85b6ea7899c8a6a78d7c35f53ce43751d874fb2"
     },
     {
       "path": "debian/vendor/fetch-network.mjs",
@@ -585,6 +585,21 @@
       "path": "debian/vendor/LICENSE-v86-network.txt",
       "bytes": 1306,
       "sha256": "3f61ba65e3215b09ef264ba8d777d73c19644309fbb705967634eb5147e500a0"
+    },
+    {
+      "path": "debian/fabrica-ha.mjs",
+      "bytes": 4005,
+      "sha256": "b6b7e31194f50d0eaacf1707e5eed27fffd7676f38fcdae62f8cf75ac44f09e0"
+    },
+    {
+      "path": "debian/esperar-firma-ha.mjs",
+      "bytes": 1065,
+      "sha256": "488ca2f524307838d96967b4271bbf495433f11cc84722e26b1af8e80a111a98"
+    },
+    {
+      "path": "debian/inicializacion-ha.mjs",
+      "bytes": 2407,
+      "sha256": "74b30ee8a84276276f4a730dd28954ccf2a662bfe66e5fe6dd43b550f11a6c55"
     }
   ]
 }

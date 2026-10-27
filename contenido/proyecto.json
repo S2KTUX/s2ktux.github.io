@@ -9,7 +9,7 @@
     {
       "id": "kubernetes-curso",
       "tema": "Kubernetes",
-      "texto": "Cerrar las clases 24–34 como un bloque conjunto. Init/join ya usa una copia independiente con cuatro prácticas verificadas. HA está conectado como candidato con tres control planes, su propio kernel y guardado separado; estamos comprobando el recorrido completo y su recuperación antes de ofrecerlo. La actualización real y el restore corto de etcd tienen pruebas privadas; falta repetir el banco conjunto y verificar los recursos de entrega. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
+      "texto": "Cerrar las clases 24–34 como un bloque conjunto. Init/join tiene cuatro prácticas verificadas en una copia independiente. HA sigue como candidato con tres control planes y guardado separado: estamos probando una inicialización por fases que espera al API antes de iniciar los controladores. Falta verificar el recorrido completo, la recuperación y la base que se descargará. La actualización real y el restore corto de etcd tienen pruebas privadas; queda repetir el banco conjunto y resolver el fallo de disco detectado al recuperar una copia actualizada. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
     },
     {
       "id": "kubernetes-examen",

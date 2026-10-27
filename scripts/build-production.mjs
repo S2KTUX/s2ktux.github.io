@@ -1,6 +1,6 @@
 import { build, version as esbuildVersion } from 'esbuild';
 import { createHash } from 'node:crypto';
-import { mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
+import { copyFile, mkdir, readdir, readFile, rm, stat, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, resolve, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { gzipSync } from 'node:zlib';
@@ -23,6 +23,7 @@ const isExcluded = source => {
   return false;
 };
 
+const publicFiles=[];
 async function copyTree(source, destination) {
   if (isExcluded(source)) return;
   const info = await stat(source);
@@ -31,13 +32,20 @@ async function copyTree(source, destination) {
     for (const name of await readdir(source)) await copyTree(join(source, name), join(destination, name));
     return;
   }
-  await mkdir(dirname(destination), { recursive:true });
-  await writeFile(destination, await readFile(source));
+  // Su directorio ya se creó al recorrer el árbol. Copiar bytes con la
+  // operación nativa evita cargar los discos del laboratorio en JavaScript.
+  publicFiles.push({source,destination});
 }
 
 await rm(out, { recursive:true, force:true });
 await mkdir(out, { recursive:true });
 for (const name of await readdir(root)) await copyTree(join(root, name), join(out, name));
+let nextPublicFile=0,copyFailure;
+await Promise.all(Array.from({length:Math.min(8,publicFiles.length)},async()=>{
+  try{while(!copyFailure){const file=publicFiles[nextPublicFile++];if(!file)return;await copyFile(file.source,file.destination);}}
+  catch(error){copyFailure??=error;}
+}));
+if(copyFailure)throw copyFailure;
 await mkdir(terminalAssets, { recursive:true });
 await mkdir(generatedEntries, { recursive:true });
 

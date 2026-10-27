@@ -1,12 +1,13 @@
 // Escenario independiente. Solo prepara máquinas nuevas: recuperar un guardado
 // no invoca este constructor ni vuelve a configurar sus servicios o datos.
 import {HA,configuracionHA} from './ha-configuracion.mjs?v=5750fd1d5858b97c';
-import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=8d05dc645c1ab09a';
+import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=d3968d4117772965';
 import {configuracionInitHA,configuracionJoinHA} from './configuracion-admin-curso.mjs?v=b8957d146aacbba2';
 import {parcheControlPlane} from './perfil-controlplane.mjs?v=3bdd05873244d47b';
 import {unidadRutasHA} from './ha-rutas.mjs?v=5fbe65fed8fa5416';
-import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
-import {servirRuntimeHA,runtimeHA} from './archivo-http-local.mjs?v=5dc6b531803e1cf7';
+import {inicializarControlPlaneHA} from './inicializacion-ha.mjs?v=74b30ee8a8427627';
+import {esperarFirmaHA} from './esperar-firma-ha.mjs?v=488ca2f524307838';
+import {servirRuntimeHA,runtimeHA} from './archivo-http-local.mjs?v=53c8a665cc891236';
 export const clienteHAQuery=index=>{
  if(!Number.isInteger(index)||index<1||index>3)throw Error('Miembro HA desconocido');
  return 'base=admin-v3&kube=1&components=v7&cluster=1&factory=v14&tls=classical&threaded=1&engine=jit8192-pic-only-v1&kernel=highmem-net-v2&use-scheduling-api=1&ha-member='+index;
@@ -76,17 +77,22 @@ export async function prepararClusterHA({context,create,connect,run,upload,value
  await prepareMember(1);
  await upload('controlplane','/tmp/ha-init.yaml',init);
  await execute('controlplane','Validar configuración HA','kubeadm config validate --config=/tmp/ha-init.yaml');
- await background('controlplane','Inicializar el primer control plane HA','kubeadm init --config=/tmp/ha-init.yaml --upload-certs --ignore-preflight-errors=NumCPU,Mem --v=2','ha-init');
+ await inicializarControlPlaneHA({fresh:context.fresh,background,execute});
  await execute('controlplane','Verificar API con el certificado del VIP',`kubectl get --raw=/readyz --request-timeout=30s; test "$(kubectl config view --minify -o jsonpath='{.clusters[0].cluster.server}')" = https://${HA.vip}:${HA.port}`);
  const join=await value('controlplane','kubeadm token create --ttl=2h --print-join-command');
  const match=/^kubeadm join 10\.77\.0\.100:8443 --token ([a-z0-9]{6}\.[a-z0-9]{16})\s+--discovery-token-ca-cert-hash sha256:([a-f0-9]{64})\s*$/.exec(join);
  const certificateKey=await value('controlplane',"grep -E '^[a-f0-9]{64}$' /var/log/ha-init.log | tail -1");
  if(!match||!/^[a-f0-9]{64}$/.test(certificateKey))throw Error('La incorporación no pertenece al clúster HA');
+ // No arrancar otras dos VMs hasta que el primer controlador haya firmado
+ // de verdad el token. Evita gastar CPU y descargar recursos si aún no está listo.
+ await esperarFirmaHA({tokenId:match[1].split('.')[0],
+  read:tokenId=>value('controlplane',`if signature=$(kubectl --request-timeout=15s -n kube-public get cm cluster-info -o jsonpath='{.data.jws-kubeconfig-${tokenId}}'); then printf '%s' "$signature"; fi`),
+  onPending:()=>execute('controlplane','Consultar el arranque real del firmante HA',"crictl --timeout=15s ps -a --name '^kube-controller-manager$'",45000),wait
+ });
  for(const index of [2,3]){
   const id=miembrosHA[index-1];await prepareMember(index);
   await upload(id,'/tmp/ha-join.yaml',configuracionJoinHA(index,{token:match[1],hash:match[2],certificateKey}));
   await execute(id,'Validar incorporación del control plane','kubeadm config validate --config=/tmp/ha-join.yaml');
-  if(index===2)await execute('controlplane','Esperar firma de descubrimiento',ordenEsperarFirmaJWS(match[1].split('.')[0]),180000);
   await background(id,'Incorporar '+perfilNodoHA(id).name+' y su miembro etcd','kubeadm join --config=/tmp/ha-join.yaml --ignore-preflight-errors=NumCPU,Mem --v=2','ha-join');
  }
  const cidrs=[];

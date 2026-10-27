@@ -1,7 +1,7 @@
 import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=75682338f6b8eb97';
 import {hashBytes,hashBlob} from '/laboratorios/docker-real/v86-sessions.mjs';
 import {comprimirEstado} from '../comprimir-estado.mjs';
-import {miembrosHA,perfilNodoHA,identidadNodoHA} from './perfil-ha.mjs?v=8d05dc645c1ab09a';
+import {miembrosHA,perfilNodoHA,identidadNodoHA} from './perfil-ha.mjs?v=d3968d4117772965';
 // Reutiliza las transacciones con control de otra pestaña, no sus identidades.
 export class SesionesHA extends SesionesClusterDebian{
  constructor(){

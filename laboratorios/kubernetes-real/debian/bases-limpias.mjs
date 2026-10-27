@@ -5,7 +5,7 @@ export class BasesLimpias extends SesionesClusterDebian{
  constructor(revision,options){
   const {compatibleRevisions=[],...profile}=options||{};
   super(profile);if(!/^[a-f0-9]{64}$/.test(revision))throw Error('Revisión de base limpia inválida');
-  if(!Array.isArray(compatibleRevisions)||compatibleRevisions.length>8||compatibleRevisions.some(value=>!/^[a-f0-9]{64}$/.test(value)||value===revision)||new Set(compatibleRevisions).size!==compatibleRevisions.length)throw Error('Compatibilidad de base limpia inválida');
+  if(!Array.isArray(compatibleRevisions)||compatibleRevisions.length>16||compatibleRevisions.some(value=>!/^[a-f0-9]{64}$/.test(value)||value===revision)||new Set(compatibleRevisions).size!==compatibleRevisions.length)throw Error('Compatibilidad de base limpia inválida');
   this.compatibleRevisions=[...compatibleRevisions];this.compatibleProfile=profile;
   this.prefix='base:'+this.level+':';this.key=this.prefix+revision;
  }

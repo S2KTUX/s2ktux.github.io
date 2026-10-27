@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {esperarFirmaHA} from '../laboratorios/kubernetes-real/debian/esperar-firma-ha.mjs';
+let time=0,reads=0,progress=0;
+const options={tokenId:'abcdef',read:async()=>++reads===3?'cabecera..firma':'',onPending:async()=>{progress++;},now:()=>time,wait:async ms=>{assert.ok(ms>0&&ms<=10000);time+=ms;}};
+assert.equal(await esperarFirmaHA(options),'cabecera..firma');assert.equal(reads,3);assert.equal(progress,2);assert.equal(time,20000);
+time=0;reads=0;progress=0;
+await assert.rejects(esperarFirmaHA({...options,read:async()=>{reads++;return '';}}),/no ha firmado/);assert.equal(time,600000);assert.equal(reads,60);
+await assert.rejects(esperarFirmaHA({...options,tokenId:'abc;ef'}),/inválida/);
+await assert.rejects(esperarFirmaHA({...options,read:async()=>undefined}),/Respuesta/);
+time=0;for(const response of ['<no value>','null','true','firma','cabecera.payload.firma'])await assert.rejects(esperarFirmaHA({...options,read:async()=>response}),/Respuesta/);
+const failure=Error('La consola no responde');await assert.rejects(esperarFirmaHA({...options,read:async()=>{throw failure;}}),error=>error===failure);
+time=0;await assert.rejects(esperarFirmaHA({...options,read:async()=>{time=600001;return 'demasiado..tarde';}}),/no ha firmado/);
+console.log('HA: firma real obligatoria antes de añadir nodos, progreso bajo demanda y espera fría acotada; no acepta una respuesta tardía ni inventa disponibilidad.');

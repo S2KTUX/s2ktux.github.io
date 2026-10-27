@@ -4,7 +4,7 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
-const haFiles=['perfil-ha','ha-configuracion','tiempos-etcd','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','ha-curso','sesiones-ha','ejercicios-ha'];
+const haFiles=['perfil-ha','ha-configuracion','tiempos-etcd','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','ha-curso','sesiones-ha','ejercicios-ha','fabrica-ha','esperar-firma-ha','inicializacion-ha'];
 for(const path of [...haFiles.map(name=>'debian/'+name+'.mjs'),'debian/materiales-ha/kubeadm.yaml','debian/materiales-ha/etcd-strategic.yaml','debian/vendor/fetch-network.mjs','debian/vendor/LICENSE-v86-network.txt'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 for(const path of ['debian/cni-montaje-curso.mjs','debian/montaje-manual-curso.mjs','debian/leer-join-curso.mjs','debian/esperar-nodo-curso.mjs','debian/ejercicios-montaje.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 if(!manifest.files.some(record=>record.path==='debian/perfil-administracion.mjs'))manifest.files.push({path:'debian/perfil-administracion.mjs',bytes:0,sha256:''});
@@ -22,8 +22,8 @@ for(const parent of ['debian/sesiones-cluster.mjs','debian/multinodo.mjs','debia
 // Dependencias HA primero; ninguna captura de estudio se convierte al perfil HA.
 for(const [parent,children] of [
  ['configuracion-admin-curso',['ha-configuracion','tiempos-etcd']],['ha-rutas',['ha-configuracion']],['archivo-http-local',['perfil-ha']],
- ['ha-curso',['ha-configuracion','perfil-ha','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local']],
- ['ejercicios-ha',['ha-curso']],['cliente',['perfil-ha']],['sesiones-ha',['perfil-ha']]
+ ['ha-curso',['ha-configuracion','perfil-ha','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','esperar-firma-ha','inicializacion-ha']],
+ ['ejercicios-ha',['ha-curso']],['cliente',['perfil-ha']],['sesiones-ha',['perfil-ha']],['fabrica-ha',['perfil-ha','fabrica-cluster']]
 ])for(const child of children)await replaceRequired('debian/'+parent+'.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-ha\.mjs(?:\?v=[a-f0-9]+)?'/,"from './ejercicios-ha.mjs?v="+await revision('debian/ejercicios-ha.mjs')+"'");
 for(const parent of ['debian/cliente.mjs','debian/sesiones-cluster.mjs'])await replaceRequired(parent,/from '\.\/fabrica\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './fabrica.mjs?v="+await revision('debian/fabrica.mjs')+"'");

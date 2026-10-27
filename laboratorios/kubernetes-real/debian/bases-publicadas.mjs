@@ -3,6 +3,48 @@
 // Estas revisiones solo cambiaron almacenamiento y comprobaciones de lectura,
 // no los perfiles ni la preparación de Linux. No ampliar al cambiar la VM.
 export const revisionesCompatibles=Object.freeze({
+ // Equivalencia1177 comprobada el26/10:12 módulos de preparación y21
+ // identidades iguales. Misma base v6, mismo manifiesto, archivos, URL y SHA.
+ // Equivalencia aec7a190: doce módulos v6 y21 identidades comprobados el26/10.
+ // Solo cambia HA; mismos bytes, URL, checksum y claves del intermedio.
+ 'aec7a1906bc5cd3912da50cfb40730a66b347bf8a5444cb9bbb9bc226d5e9f2f':Object.freeze([
+  '1177a406fc29d32679eea1361b9b9f0435063727777de2cf61603d573f768b55',
+  'b4d9ea5c2eceb5c3291aba4dae18b2cb84b77a92e1f55db82c07eaf06b1361ea',
+  '1779c41271a721ba259e05257b7438d67821654584bbad6aea954f8983ec8e22',
+  '1aee2ac9e7efa46560bda7313e50113226c6f26f67d5b609a971c0a79e8fb0cc',
+  '8be849b4dc401a5fdc621741bcf7605456a2983c7d97de64202465827ce37c2d',
+  '303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b',
+  '61c03e1b79b007c666430da100f51d3b9fdde8034a878ed61d28a988a53ff37e',
+  'c402d3d5373a48d52c73ca9486ec36784fff9ad1597a9bfd28334e0c36aa9abd',
+  '326568ee67071140f2bc3ea3d6260493de65912350c6bf7a8be1a3f0ad028720',
+  'f09e92a7d7e965fa4272457dce6969438c71fbb996deed320b2f786820adbf07',
+  'b9b13ff8628d342553bddc87f32cdb6314accb53d7da8ed84582b6f1175716db'
+ ]),
+ '1177a406fc29d32679eea1361b9b9f0435063727777de2cf61603d573f768b55':Object.freeze([
+  'b4d9ea5c2eceb5c3291aba4dae18b2cb84b77a92e1f55db82c07eaf06b1361ea',
+  '1779c41271a721ba259e05257b7438d67821654584bbad6aea954f8983ec8e22',
+  '1aee2ac9e7efa46560bda7313e50113226c6f26f67d5b609a971c0a79e8fb0cc',
+  '8be849b4dc401a5fdc621741bcf7605456a2983c7d97de64202465827ce37c2d',
+  '303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b',
+  '61c03e1b79b007c666430da100f51d3b9fdde8034a878ed61d28a988a53ff37e',
+  'c402d3d5373a48d52c73ca9486ec36784fff9ad1597a9bfd28334e0c36aa9abd',
+  '326568ee67071140f2bc3ea3d6260493de65912350c6bf7a8be1a3f0ad028720',
+  'f09e92a7d7e965fa4272457dce6969438c71fbb996deed320b2f786820adbf07',
+  'b9b13ff8628d342553bddc87f32cdb6314accb53d7da8ed84582b6f1175716db'
+ ]),
+ // Solo cambia el candidato HA. Manifiesto v6 descargado y SHA verificado
+ // el26/10: mismos archivos, URL,21 perfiles/identidades y claves de guardado.
+ 'b4d9ea5c2eceb5c3291aba4dae18b2cb84b77a92e1f55db82c07eaf06b1361ea':Object.freeze([
+  '1779c41271a721ba259e05257b7438d67821654584bbad6aea954f8983ec8e22',
+  '1aee2ac9e7efa46560bda7313e50113226c6f26f67d5b609a971c0a79e8fb0cc',
+  '8be849b4dc401a5fdc621741bcf7605456a2983c7d97de64202465827ce37c2d',
+  '303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b',
+  '61c03e1b79b007c666430da100f51d3b9fdde8034a878ed61d28a988a53ff37e',
+  'c402d3d5373a48d52c73ca9486ec36784fff9ad1597a9bfd28334e0c36aa9abd',
+  '326568ee67071140f2bc3ea3d6260493de65912350c6bf7a8be1a3f0ad028720',
+  'f09e92a7d7e965fa4272457dce6969438c71fbb996deed320b2f786820adbf07',
+  'b9b13ff8628d342553bddc87f32cdb6314accb53d7da8ed84582b6f1175716db'
+ ]),
  // Comparación del26/10: mismos21 perfiles y claves. Sigue siendo la base v6,
  // con los mismos archivos, URL y checksum; no es una sustitución por HA/v14.
  '1779c41271a721ba259e05257b7438d67821654584bbad6aea954f8983ec8e22':Object.freeze([
@@ -69,7 +111,7 @@ export const revisionesCompatibles=Object.freeze({
  ])
 });
 export const basesPublicadas=Object.freeze([Object.freeze({
- level:'intermedio',revision:'1779c41271a721ba259e05257b7438d67821654584bbad6aea954f8983ec8e22',
+ level:'intermedio',revision:'aec7a1906bc5cd3912da50cfb40730a66b347bf8a5444cb9bbb9bc226d5e9f2f',
  sha256:'2e88dd5f575ae0f338fdcb333aa0c55f0e5bec24e467bb4bf182f25050fc59a0',
  url:'https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/91502ceb011e65b550c7c10875a60b83cb7c9ea0/kubernetes/clean-v1/intermedio/cluster.json'
 })]);
