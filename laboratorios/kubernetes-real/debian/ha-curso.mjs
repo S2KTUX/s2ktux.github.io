@@ -7,7 +7,7 @@ import {parcheControlPlane} from './perfil-controlplane.mjs?v=3bdd05873244d47b';
 import {unidadRutasHA} from './ha-rutas.mjs?v=cea7f05f3340abc0';
 import {inicializarControlPlaneHA} from './inicializacion-ha.mjs?v=74b30ee8a8427627';
 import {esperarFirmaHA} from './esperar-firma-ha.mjs?v=488ca2f524307838';
-import {servirRuntimeHA,runtimeHA} from './archivo-http-local.mjs?v=476d7d2f4c5d39b7';
+import {servirRuntimeHA,runtimeHA} from './archivo-http-local.mjs?v=dee799082e048945';
 import {incorporarControlPlaneHA} from './incorporacion-ha.mjs';
 export const clienteHAQuery=index=>{
  if(!Number.isInteger(index)||index<1||index>3)throw Error('Miembro HA desconocido');

@@ -1,5 +1,5 @@
 import {ChunkDisk as BaseDisk} from '/laboratorios/docker-real/v86-disk.mjs';
-import {recursoPesado} from './recursos-publicados.mjs';
+import {recursoPesado} from './recursos-publicados.mjs?v=28e0db74abed5c76';
 import {bloqueVerificado} from './cache-bloques.mjs?v=3baa58ede27a7990';
 const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),byte=>byte.toString(16).padStart(2,'0')).join('');
 // Solo Kubernetes: los discos publicados de Linux/Docker no cambian.

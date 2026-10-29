@@ -12,7 +12,7 @@ assert.equal(kernelSha256('highmem-v1'),'356959ed6da96e90c2e446a7d3c74b6cfcb55a3
 assert.throws(()=>kernelSha256('highmem-v2'));
 assert.equal(parametrosPublicos('level=inicial&factory=v13').get('factory'),'v6');
 assert.equal(parametrosPublicos('level=intermedio&use-scheduling-api=1').has('use-scheduling-api'),false);
-const advanced=parametrosPublicos('level=avanzado&factory=v6');assert.equal(advanced.get('factory'),'v13');assert.equal(advanced.get('use-scheduling-api'),'1');
-assert.equal(nivelDisponible('avanzado'),false,'Conectar el perfil no equivale a publicar el nivel');
+const advanced=parametrosPublicos('level=avanzado&factory=v6');assert.equal(advanced.get('factory'),'v15');assert.equal(advanced.get('use-scheduling-api'),'1');
+assert.equal(nivelDisponible('avanzado'),true,'Entrega avanzada con aceptación nativa');
 const source=readFileSync(new URL('../laboratorios/kubernetes-real/debian/cliente.mjs',import.meta.url),'utf8');assert.match(source,/memory_size:memoryMiB\*1048576/);assert.match(source,/stateLimitMiB:adminProfile\?\.stateLimitMiB\|\|1536/);
-console.log('Administración: runtime estricto, CP HIGHMEM, workers estándar, memoria de guardado y nivel cerrado hasta su aceptación.');
+console.log('Administración: runtime estricto, CP HIGHMEM, workers estándar, memoria de guardado y nivel abierto tras su aceptación.');

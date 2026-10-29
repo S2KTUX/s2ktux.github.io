@@ -1,5 +1,5 @@
 {
-  "version": "2.3",
+  "version": "3.0",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -7,9 +7,9 @@
       "texto": "Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen."
     },
     {
-      "id": "kubernetes-curso",
+      "id": "kubernetes-ha-persistencia",
       "tema": "Kubernetes",
-      "texto": "Cerrar las clases 24–34 como un bloque conjunto. Init/join tiene cuatro prácticas verificadas en una copia independiente. HA sigue como candidato con tres control planes y guardado separado: estamos probando una inicialización por fases que espera al API antes de iniciar los controladores. Falta verificar el recorrido completo, la recuperación y la base que se descargará. La actualización real y el restore corto de etcd tienen pruebas privadas; queda repetir el banco conjunto y resolver el fallo de disco detectado al recuperar una copia actualizada. El avanzado sigue cerrado. Las clases 01–23 tienen prácticas verificadas; Local Path no acredita un driver CSI."
+      "texto": "Permitir guardar y recuperar la copia de HA con sus tres máquinas. Hasta superar esa comprobación, esa copia se prepara de nuevo en cada sesión; el guardado del laboratorio avanzado habitual sí está disponible."
     },
     {
       "id": "kubernetes-examen",
@@ -68,6 +68,21 @@
     }
   ],
   "versiones": [
+    {
+      "version": "3.0",
+      "fecha": "2026-10-29",
+      "resumen": "Abrimos el nivel avanzado de Kubernetes y mejoramos el guardado de sus máquinas.",
+      "cambios": [
+        "Ya puedes practicar las clases 24–34: Static Pods, montaje del clúster, mantenimiento, etcd, autoscaling, Helm, Kustomize, CRDs y resolución de incidencias. Las clases 01–23 siguen disponibles.",
+        "Las prácticas de montaje, HA y las averías que afectan a todo el clúster se abren en copias separadas. Así puedes trabajar en ellas sin sustituir tu sesión de estudio.",
+        "La actualización se ha comprobado con kubeadm, los paquetes APT reales y dos workers. Después de guardar y recuperar las tres máquinas, conservan la versión nueva, la aplicación y el dato de prueba.",
+        "El guardado del avanzado separa la memoria y los bloques modificados del disco para evitar el fallo que aparecía al superar juntos los 2 GiB. Conservamos las claves y comprobaciones de los guardados anteriores.",
+        "La copia de HA permite practicar con tres control planes, un acceso común y quorum de etcd. Se prepara de nuevo al abrirla y no ofrece Guardar: la recuperación de esa copia todavía no es fiable y queda anotada como pendiente.",
+        "La solución de la clase 27 indica la versión y los parámetros propios de este laboratorio. Las imágenes necesarias ya están incluidas; no añadimos una descarga ni actualizamos automáticamente los nodos.",
+        "Conservamos la misma base preparada del nivel intermedio y sus sumas de comprobación. Los módulos del laboratorio cambian de referencia al publicar para evitar mezclar código nuevo con recursos antiguos de la caché.",
+        "El simulacro CKA sigue pendiente y la clase 35 no se ha modificado. Estas prácticas ayudan a seguir el curso; no se presentan como una reproducción completa del examen."
+      ]
+    },
     {
       "version": "2.3",
       "fecha": "2026-10-24",

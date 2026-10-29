@@ -52,5 +52,5 @@ assert.equal((await comprobarPractica(task,async node=>({ok:node!=='worker2'})))
 assert.equal((await comprobarPractica(task,async()=>({ok:true}))).state,'correct');
 const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';
 for(const command of [task.check,...task.checkSteps.map(step=>step.command)]){const result=spawnSync(bash,['--noprofile','--norc','-n'],{input:command,encoding:'utf8'});assert.equal(result.status,0,result.stderr);}
-assert.equal(avanzadoPublicado,false);
-console.log('HA: perfiles y MAC propios, guardas antes de escribir, TLS y quorum auténticos, corrector multinodo; avanzado cerrado hasta aceptar el recorrido nativo.');
+assert.equal(avanzadoPublicado,true);
+console.log('HA: perfiles y MAC propios, guardas antes de escribir, TLS y quorum auténticos, corrector multinodo; sesión nueva, sin ofrecer guardados HA que no superan su recuperación.');

@@ -1,4 +1,4 @@
-import {recursoPesado} from '../recursos-publicados.mjs';
+import {recursoPesado} from '../recursos-publicados.mjs?v=28e0db74abed5c76';
 import {verifiedDownload} from '../../verified-download.mjs';
 // Identidad exclusiva de Debian: no aceptar capturas Alpine ni guardados del alumno.
 export const PERFIL_DEBIAN={
@@ -57,7 +57,9 @@ export const PERFIL_DEBIAN_ADMIN_HIGHMEM={...PERFIL_DEBIAN_ADMIN_PIC,
 export const PERFIL_DEBIAN_ADMIN_TRANSPORTE={...PERFIL_DEBIAN_ADMIN_HIGHMEM,
  sha256:'0eefc8d6a447e171e050b7e91c6514fd15f52129ad69c459178c77514e14a882',
 };
+export const PERFIL_DEBIAN_ADMIN_V15={...PERFIL_DEBIAN_ADMIN_HIGHMEM,setupSha256:'3c0f7a7af399f438cca34f4c4ce8a0388c8d275f2cded0df3460b9197ec3919a',engineSha256:'2b81820d3c4f0c4928cdc13ed18312e4bb30ba674a6e2c04e5c2601d2ed705c9',sha256:'ad292f318da604b79f2bed21761ed8ac16f27577259bb19f54e3e16a41cdbb44'};
 export function perfilFabricaDebian(version){
+ if(version==='v15')return PERFIL_DEBIAN_ADMIN_V15;
  if(['v1','v2'].includes(version))return PERFIL_DEBIAN;
  if(version==='v3')return PERFIL_DEBIAN_BALANCEADO;
  if(version==='v4')return PERFIL_DEBIAN_OOM;
@@ -75,19 +77,19 @@ const digest=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const sha=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),byte=>byte.toString(16).padStart(2,'0')).join('');
 export function validarFabricaDebian(factory,expected=PERFIL_DEBIAN){
  if(factory?.format!=='s2ktux-kubernetes-debian-factory-v1'||factory.scope!=='debian-controlplane'||factory.file!=='estado.gz'||factory.memoryMiB!==(expected.memoryMiB??1024))throw Error('La captura no es una base Debian del curso');
- const known=[PERFIL_DEBIAN,PERFIL_DEBIAN_BALANCEADO,PERFIL_DEBIAN_OOM,PERFIL_DEBIAN_OOM_GRUPO,PERFIL_DEBIAN_PIC,PERFIL_DEBIAN_ADMIN,PERFIL_DEBIAN_ADMIN_PRECARGADO,PERFIL_DEBIAN_ADMIN_RELOJ,PERFIL_DEBIAN_ADMIN_PIC,PERFIL_DEBIAN_ADMIN_HIGHMEM,PERFIL_DEBIAN_ADMIN_TRANSPORTE].some(profile=>Object.keys(profile).length===Object.keys(expected).length&&Object.entries(profile).every(([key,value])=>expected[key]===value));
+ const known=[PERFIL_DEBIAN,PERFIL_DEBIAN_BALANCEADO,PERFIL_DEBIAN_OOM,PERFIL_DEBIAN_OOM_GRUPO,PERFIL_DEBIAN_PIC,PERFIL_DEBIAN_ADMIN,PERFIL_DEBIAN_ADMIN_PRECARGADO,PERFIL_DEBIAN_ADMIN_RELOJ,PERFIL_DEBIAN_ADMIN_PIC,PERFIL_DEBIAN_ADMIN_HIGHMEM,PERFIL_DEBIAN_ADMIN_TRANSPORTE,PERFIL_DEBIAN_ADMIN_V15].some(profile=>Object.keys(profile).length===Object.keys(expected).length&&Object.entries(profile).every(([key,value])=>expected[key]===value));
  if(!known)throw Error('Perfil Debian desconocido');
  for(const [key] of Object.entries(expected)){
   if(factory[key]!==expected[key]||(key.endsWith('Sha256')&&!digest(factory[key])))throw Error('La captura no corresponde al perfil Debian comprobado: '+key);
  }
- const transport=expected.sha256===PERFIL_DEBIAN_ADMIN_TRANSPORTE.sha256;
+ const transport=[PERFIL_DEBIAN_ADMIN_TRANSPORTE.sha256,PERFIL_DEBIAN_ADMIN_V15.sha256].includes(expected.sha256);
  if(!digest(factory.sha256)||!Number.isSafeInteger(factory.bytes)||factory.bytes<1||factory.bytes>(transport?2048:1536)*1048576||!Number.isSafeInteger(factory.packedBytes)||factory.packedBytes<1||factory.packedBytes>(transport?768:512)*1048576)throw Error('Tamaño o checksum inválidos');
  return factory;
 }
 export function validarFragmentosDebian(factory,expected=PERFIL_DEBIAN){
  if(factory?.format!=='s2ktux-kubernetes-debian-factory-parts-v1')throw Error('Formato fragmentado incorrecto');
  validarFabricaDebian({...factory,format:'s2ktux-kubernetes-debian-factory-v1'},expected);
- if(!Array.isArray(factory.parts)||factory.parts.length<1||factory.parts.length>(expected.sha256===PERFIL_DEBIAN_ADMIN_TRANSPORTE.sha256?96:64))throw Error('Lista de fragmentos inválida');
+ if(!Array.isArray(factory.parts)||factory.parts.length<1||factory.parts.length>([PERFIL_DEBIAN_ADMIN_TRANSPORTE.sha256,PERFIL_DEBIAN_ADMIN_V15.sha256].includes(expected.sha256)?96:64))throw Error('Lista de fragmentos inválida');
  let end=0;
  for(const part of factory.parts){
   if(part.offset!==end||!Number.isSafeInteger(part.bytes)||part.bytes<1||part.bytes>8*1048576||!digest(part.sha256)||part.file!==part.sha256+'.part')throw Error('Fragmento inválido');

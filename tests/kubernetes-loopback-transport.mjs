@@ -24,7 +24,7 @@ assert.equal(manifest.nativeAcceptance.checks,76);assert.equal(manifest.nativeAc
 assert.equal(manifest.localOCI.nativeAccepted,true);assert.equal(manifest.localOCI.published,false);
 assert.equal(manifest.localOCI.continuation.checks,107);assert.equal(manifest.localOCI.continuation.sourceAttempt,15);assert.equal(manifest.localOCI.continuation.etcdRestoreVariant,'course');
 const full=manifest.localOCI.fullUpgradeAcceptance;assert.equal(full.report,'Resultado_upgrade_multinodo_v18.json');assert.equal(full.passed,true);assert.equal(full.resumed,false);assert.equal(full.checks,205);assert.equal(full.failures,0);assert.equal(full.pageErrors,0);assert.equal(full.nodes,3);assert.equal(full.savedAndRecovered,true);assert.equal(full.etcdRestoreVariant,'course');assert.equal(full.applicationAndDNS,true);
-assert.equal(nivelDisponible('avanzado'),false,'El parche no autoriza abrir el bloque completo');
+assert.equal(nivelDisponible('avanzado'),true,'Entrega avanzada con aceptación nativa');
 assert.match(read('LICENSE'),/Apache License/);
 const attributes=readFileSync(new URL('../.gitattributes',import.meta.url),'utf8');assert.match(attributes,/fixtures\/kubernetes-loopback-transport-v2\/\*\* text eol=lf/);
 const build=readFileSync(new URL('../scripts/build-production.mjs',import.meta.url),'utf8');assert.match(build,/'fixtures'/);

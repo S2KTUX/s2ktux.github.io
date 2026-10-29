@@ -1,6 +1,6 @@
 import {V86 as OriginalV86} from '/laboratorios/docker-real/motor/libv86-rhcsa.mjs';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
-import {recursoPesado} from './recursos-publicados.mjs';
+import {recursoPesado} from './recursos-publicados.mjs?v=28e0db74abed5c76';
 export const originalEngineHash='c064c94714c4b8eeace32782a4013b6132a2331ba5c008abfd67274cc2d29caf';
 export const extendedEngineHash='5f752e916bef9d76889fe0d14f73bb0e611abe2a5d6abdedca8b50da480bf3ac';
 export const clockEngineHash='af9714105657e52b3a3b0046f3718f0d58c475060b4bdfd31973dfe3d9b1989f';

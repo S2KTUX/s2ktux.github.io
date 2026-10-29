@@ -11,7 +11,7 @@ async function mount(page,{scenarioId=null,saveFails=false,classNumber=28}={}){
  await page.evaluate(async({scenarioId,saveFails})=>{
   const {montarInterfazNiveles}=await import('/laboratorios/kubernetes-real/debian/interfaz-niveles.mjs');
   globalThis.qaSceneEvents=[];
-  const state={busy:false,initialized:true,level:'avanzado',factoryVersion:['montaje-cluster','ha-cluster'].includes(scenarioId)?'v14':'v13',nodeCount:3,scenarioId,scenarioIndependent:!!scenarioId,nodes:[]};
+  const state={busy:false,initialized:true,canSave:scenarioId!=='ha-cluster',level:'avanzado',factoryVersion:['montaje-cluster','ha-cluster'].includes(scenarioId)?'v14':'v13',nodeCount:3,scenarioId,scenarioIndependent:!!scenarioId,nodes:[]};
   montarInterfazNiveles({level:'avanzado',getState:()=>state,setBusy:value=>state.busy=value,
    run:async()=>{qaSceneEvents.push('run');return{ok:true};},
    save:async()=>{qaSceneEvents.push('save');if(saveFails)throw Error('Sin espacio de guardado');},
@@ -42,6 +42,7 @@ for(const mobile of [false,true])test('HA · selecciona su práctica, muestra tr
  await expect(page.locator('#lab-course-note')).not.toContainText('workers');
  await expect(page.locator('#exercise-select')).toBeDisabled();
  await expect(page.locator('#return-study')).toBeVisible();
+ await page.locator('#return-study').click();await expect(page.locator('[data-switch-action=save]')).toBeDisabled();await page.locator('[data-switch-action=cancel]').click();
  expect(await page.evaluate(()=>qaSceneEvents)).toEqual([]);
 });
 test('HA · las identidades y la caché limpia no se confunden con estudio ni con su sesión',async({page})=>{

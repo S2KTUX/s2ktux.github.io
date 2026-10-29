@@ -1,4 +1,4 @@
-import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=75682338f6b8eb97';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c7237db8c69c1abe';
 // Distinto de los guardados del alumno: aquí solo entra la primera base,
 // antes de habilitar su consola y nunca después de recuperar una sesión.
 export class BasesLimpias extends SesionesClusterDebian{

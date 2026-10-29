@@ -4,6 +4,7 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
+for(const path of ['checkpoint-discos.mjs','debian/sesiones-checkpoint.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 const haFiles=['perfil-ha','ha-configuracion','tiempos-etcd','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','ha-curso','sesiones-ha','ejercicios-ha','fabrica-ha','esperar-firma-ha','inicializacion-ha','incorporacion-ha','salud-ha'];
 for(const path of [...haFiles.map(name=>'debian/'+name+'.mjs'),'debian/materiales-ha/kubeadm.yaml','debian/materiales-ha/etcd-strategic.yaml','debian/vendor/fetch-network.mjs','debian/vendor/LICENSE-v86-network.txt'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 for(const path of ['debian/cni-montaje-curso.mjs','debian/montaje-manual-curso.mjs','debian/leer-join-curso.mjs','debian/esperar-nodo-curso.mjs','debian/ejercicios-montaje.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
@@ -17,6 +18,7 @@ async function replaceRequired(path,pattern,replacement){
  const original=await readText(path);if(!pattern.test(original))throw Error('No se encuentra la referencia versionada en '+path);
  const updated=original.replace(pattern,replacement);if(updated!==original)await writeFile(new URL(path,base),updated);
 }
+for(const [parent,prefix]of [['disco-kubernetes.mjs','./'],['perfil-motor.mjs','./'],['debian/fabrica.mjs','../'],['debian/cliente.mjs','../'],['debian/archivo-http-local.mjs','../']])await replaceRequired(parent,/from '(?:\.\/|\.\.\/)recursos-publicados\.mjs(?:\?v=[a-f0-9]+)?'/,"from '"+prefix+"recursos-publicados.mjs?v="+await revision('recursos-publicados.mjs')+"'");
 await replaceRequired('debian/archivo-http-local.mjs',/import\('\.\/vendor\/fetch-network\.mjs(?:\?v=[a-f0-9]+)?'\)/,"import('./vendor/fetch-network.mjs?v="+await revision('debian/vendor/fetch-network.mjs')+"')");
 for(const parent of ['debian/sesiones-cluster.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs'])await replaceRequired(parent,/from '\.\/escenarios-curso\.mjs(?:\?v=[a-f0-9]+)?'/,"from './escenarios-curso.mjs?v="+await revision('debian/escenarios-curso.mjs')+"'");
 // Dependencias HA primero; ninguna captura de estudio se convierte al perfil HA.
@@ -26,7 +28,7 @@ for(const [parent,children] of [
  ['ejercicios-ha',['ha-curso']],['cliente',['perfil-ha']],['sesiones-ha',['perfil-ha']],['fabrica-ha',['perfil-ha','fabrica-cluster']]
 ])for(const child of children)await replaceRequired('debian/'+parent+'.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-ha\.mjs(?:\?v=[a-f0-9]+)?'/,"from './ejercicios-ha.mjs?v="+await revision('debian/ejercicios-ha.mjs')+"'");
-for(const parent of ['debian/cliente.mjs','debian/sesiones-cluster.mjs'])await replaceRequired(parent,/from '\.\/fabrica\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './fabrica.mjs?v="+await revision('debian/fabrica.mjs')+"'");
+for(const parent of ['debian/cliente.mjs','debian/sesiones-cluster.mjs','debian/sesiones-checkpoint.mjs'])await replaceRequired(parent,/from '\.\/fabrica\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './fabrica.mjs?v="+await revision('debian/fabrica.mjs')+"'");
 await replaceRequired('debian/montaje-manual-curso.mjs',/from '\.\/cni-montaje-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './cni-montaje-curso.mjs?v="+await revision('debian/cni-montaje-curso.mjs')+"'");
 await replaceRequired('debian/multinodo.mjs',/from '\.\/montaje-manual-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './montaje-manual-curso.mjs?v="+await revision('debian/montaje-manual-curso.mjs')+"'");
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-montaje\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-montaje.mjs?v="+await revision('debian/ejercicios-montaje.mjs')+"'");
@@ -36,9 +38,13 @@ await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-mont
 // de sesiones, cliente y páginas que lo importan.
 if(!manifest.files.some(record=>record.path==='comprimir-estado.mjs'))manifest.files.push({path:'comprimir-estado.mjs',bytes:0,sha256:''});
 await replaceRequired('debian/sesiones-cluster.mjs',/from '\.\.\/comprimir-estado\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../comprimir-estado.mjs?v="+await revision('comprimir-estado.mjs')+"'");
-for(const parent of ['kube-sessions.mjs','debian/sesiones-cluster.mjs'])await replaceRequired(parent,/from '\/laboratorios\/docker-real\/v86-sessions\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '/laboratorios/docker-real/v86-sessions.mjs?v="+await revision('../docker-real/v86-sessions.mjs')+"'");
+for(const parent of ['kube-sessions.mjs','debian/sesiones-cluster.mjs','checkpoint-discos.mjs','debian/sesiones-checkpoint.mjs'])await replaceRequired(parent,/from '\/laboratorios\/docker-real\/v86-sessions\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '/laboratorios/docker-real/v86-sessions.mjs?v="+await revision('../docker-real/v86-sessions.mjs')+"'");
 for(const parent of ['debian/sesiones-cluster.mjs','debian/cliente.mjs'])await replaceRequired(parent,/from '\.\.\/kube-sessions\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../kube-sessions.mjs?v="+await revision('kube-sessions.mjs')+"'");
-for(const parent of ['debian/bases-limpias.mjs','debian/multinodo.mjs','debian/cliente.mjs'])await replaceRequired(parent,/from '\.\/sesiones-cluster\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-cluster.mjs?v="+await revision('debian/sesiones-cluster.mjs')+"'");
+for(const parent of ['debian/bases-limpias.mjs','debian/multinodo.mjs','debian/cliente.mjs','debian/sesiones-checkpoint.mjs'])await replaceRequired(parent,/from '\.\/sesiones-cluster\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-cluster.mjs?v="+await revision('debian/sesiones-cluster.mjs')+"'");
+await replaceRequired('debian/sesiones-checkpoint.mjs',/from '\.\/bases-limpias\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './bases-limpias.mjs?v="+await revision('debian/bases-limpias.mjs')+"'");
+await replaceRequired('debian/sesiones-checkpoint.mjs',/from '\.\.\/checkpoint-discos\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../checkpoint-discos.mjs?v="+await revision('checkpoint-discos.mjs')+"'");
+await replaceRequired('debian/multinodo.mjs',/from '\.\/sesiones-checkpoint\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-checkpoint.mjs?v="+await revision('debian/sesiones-checkpoint.mjs')+"'");
+for(const parent of ['debian/cliente.mjs','motor-worker.mjs'])await replaceRequired(parent,/from '\.\.\/checkpoint-discos\.mjs(?:\?v=[a-z0-9-]+)?'|from '\.\/checkpoint-discos\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '"+(parent.startsWith('debian/')?'../':'./')+'checkpoint-discos.mjs?v='+await revision('checkpoint-discos.mjs')+"'");
 await replaceRequired('debian/sesiones-ha.mjs',/from '\.\/sesiones-cluster\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-cluster.mjs?v="+await revision('debian/sesiones-cluster.mjs')+"'");
 for(const child of ['sesiones-ha','perfil-ha','ha-curso'])await replaceRequired('debian/multinodo.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
 for(const path of ['debian/entrada-laboratorio.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs','debian/ejercicios-niveles.mjs'])await replaceRequired(path,/from '\.\/disponibilidad-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './disponibilidad-curso.mjs?v="+await revision('debian/disponibilidad-curso.mjs')+"'");

@@ -1,12 +1,12 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=1c8a76c2c653f7f6';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=6638e07ca8c03fa2';
 import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=20260d0b4dadc45a';
-import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=f0f8985c9d7fa136';
+import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=b136ca2f11943ac8';
 import {renderSolutions} from '../../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../../solution-options.mjs?v=20261020-aprendizaje';
 import {practiceProgress} from '../../practice-progress.mjs?v=20261021-resueltas';
-import {urlEscenarioCurso,entornoEjercicio,clasePermitidaEscenario} from './escenarios-curso.mjs?v=0d0ce2113fc8bea0';
+import {urlEscenarioCurso,entornoEjercicio,clasePermitidaEscenario} from './escenarios-curso.mjs?v=ede8456b5e6c6272';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
@@ -24,7 +24,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  }
  const levelQuestions=clasesNivel(level).reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
  const levelNodes=config.nodes===1?'Un nodo':config.nodes===2?'Control plane y un worker':'Control plane y dos workers';
- $('lab-course-note').textContent=getState().scenarioId==='montaje-cluster'?'* Clases 25–26 · Una copia de montaje con control plane y dos workers.':getState().scenarioId==='ha-cluster'?'* Clase 24 · Tres control planes con balanceador redundante. Esta copia tiene su propio guardado.':'* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
+ $('lab-course-note').textContent=getState().scenarioId==='montaje-cluster'?'* Clases 25–26 · Una copia de montaje con control plane y dos workers.':getState().scenarioId==='ha-cluster'?'* Clase 24 · Tres control planes con balanceador redundante. Esta copia se prepara de nuevo al abrirla y no se guarda.':'* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
  $('course-intro').hidden=true;$('course-progression').hidden=true;$('mode-topology').hidden=true;$('change-lab').hidden=false;
  $('exercise-class-select').replaceChildren(...clasesNivel(level).map(lesson=>{
   const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number)||!clasePermitidaEscenario(lesson.number,getState().scenarioId);option.textContent=lesson.id+' — '+lesson.title+(!claseDisponible(lesson.number)?' · Próximamente':'');return option;
@@ -79,6 +79,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   $('exercise-select').closest('.exercise-field').hidden=!current;
   $('exercise-title').textContent=current?.title||'';$('exercise-prompt').textContent=current?.prompt||'';
   renderSolutions($('exercise-solution'),current?solutionsFor('kubernetes',current):[]);
+  const labNote=$('exercise-lab-note');if(labNote){labNote.hidden=!current?.labNote;labNote.textContent=current?.labNote?'* '+current.labNote:'';}
   $('exercise-count').textContent=current?'Práctica '+(Number($('exercise-select').value)+1)+' / '+items.length:'';
   $('exercise-help').hidden=true;$('exercise-solution-toggle').textContent='Ver solución';$('exercise-solution-toggle').setAttribute('aria-expanded','false');$('exercise-result').textContent='';delete $('exercise-result').dataset.result;update();
  }
@@ -166,7 +167,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  async function choose(destination,sceneChange=false){
   $('switch-level-title').textContent=destination?'Entrar en la etapa '+NIVELES[destination].stage:'Salir del laboratorio';
   $('switch-level-description').textContent=destination?'Se detendrán las máquinas actuales. Cada etapa tiene su propio guardado; los cambios no se trasladan a la otra.':'Puedes guardar antes de salir. Se detendrán las máquinas; tu último guardado se conserva.';
-  dialog.querySelector('[data-switch-action=save]').disabled=!getState().initialized;
+  dialog.querySelector('[data-switch-action=save]').disabled=!getState().initialized||getState().canSave===false;
   dialog.querySelector('[data-switch-action=save]').textContent=destination?'Guardar y entrar':'Guardar y salir';
   dialog.querySelector('[data-switch-action=discard]').textContent=destination?'Entrar sin guardar':'Salir sin guardar';
   if(sceneChange){$('switch-level-title').textContent='Cambiar de copia del laboratorio';$('switch-level-description').textContent='Este ejercicio usa una copia independiente. Puedes guardar antes de cambiar; la otra sesión no se borra ni se sobrescribe.';dialog.querySelector('[data-switch-action=save]').textContent='Guardar y continuar';dialog.querySelector('[data-switch-action=discard]').textContent='Continuar sin guardar';}

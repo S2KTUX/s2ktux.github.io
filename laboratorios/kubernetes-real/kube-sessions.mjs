@@ -3,7 +3,7 @@ const DATABASE='s2ktux-kubernetes-real-private-v1';
 const STORE='sessions';
 // Una base propia: no abrir ni borrar los guardados de Linux o Docker.
 export class KubeSessions extends LocalSessions {
- constructor({stateLimitMiB=1536}={}){super();if(![1536,2048].includes(stateLimitMiB))throw Error('Límite de sesión no admitido');this.maxStateBytes=stateLimitMiB*1048576;}
+ constructor({stateLimitMiB=1536,allowExternal=false}={}){super();if(![1536,2048].includes(stateLimitMiB))throw Error('Límite de sesión no admitido');this.maxStateBytes=stateLimitMiB*1048576;if(typeof allowExternal!=='boolean')throw Error('Formato de sesión inválido');this.allowExternal=allowExternal;}
  async open(){
   return new Promise((resolve,reject)=>{
    const request=indexedDB.open(DATABASE,1);
@@ -18,6 +18,10 @@ export class KubeSessions extends LocalSessions {
   return super.save(key,identity,state,...rest);
  }
  async unpack(record,identity){
+  if(record?.format==='s2ktux-v86-external-checkpoint-v1'){
+   if(!this.allowExternal)throw Error('El formato de discos separados requiere su perfil propio');
+   return this.unpack({...record,format:'s2ktux-v86-session-v1'},identity);
+  }
   if(!Number.isSafeInteger(record?.bytes)||record.bytes<1||record.bytes>this.maxStateBytes||!Number.isSafeInteger(record.packedBytes)||record.packedBytes<1||record.packedBytes>this.maxStateBytes+1048576)throw Error('Tamaño de sesión inválido. El guardado no se ha borrado.');
   if(record.format!=='s2ktux-v86-session-v1'||record.identity!==identity)throw Error('La sesión corresponde a otra versión del laboratorio. No se ha borrado.');
   if(!(record.packed instanceof Blob)||record.packed.size!==record.packedBytes||await hashBlob(record.packed)!==record.sha256)throw Error('La sesión guardada está incompleta o alterada. No se ha borrado.');

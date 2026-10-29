@@ -6,7 +6,7 @@ const scenes=Object.freeze({
 });
 export function escenarioCurso(id,{factoryVersion,level}={}){
  if(id===null||id===undefined||id==='study')return null;
- if(!Object.hasOwn(scenes,id)||!['v13','v14'].includes(factoryVersion)||level!=='avanzado'||(['montaje-cluster','ha-cluster'].includes(id)&&factoryVersion!=='v14'))throw Error('Escenario independiente no admitido para este laboratorio');
+ if(!Object.hasOwn(scenes,id)||!['v13','v14','v15'].includes(factoryVersion)||level!=='avanzado'||(['montaje-cluster','ha-cluster'].includes(id)&&factoryVersion!=='v14'))throw Error('Escenario independiente no admitido para este laboratorio');
  return scenes[id];
 }
 export function urlEscenarioCurso(href,id){
@@ -18,7 +18,7 @@ export function urlEscenarioCurso(href,id){
 export function entornoEjercicio(task,state){
  if(task.environment==='ha-cluster')return state.factoryVersion==='v14'&&state.level==='avanzado'&&state.scenarioIndependent===true&&state.scenarioId==='ha-cluster'&&task.classNumber===24?'ha-cluster':'course';
  if(task.environment==='manual-cluster')return state.factoryVersion==='v14'&&state.level==='avanzado'&&state.scenarioIndependent===true&&state.scenarioId==='montaje-cluster'&&[25,26].includes(task.classNumber)?'manual-cluster':'course';
- if(task.environment==='disposable-cluster')return Object.hasOwn(scenes,task.id)&&['v13','v14'].includes(state.factoryVersion)&&state.level==='avanzado'&&state.scenarioIndependent===true&&state.scenarioId===task.id?'disposable-cluster':'course';
+ if(task.environment==='disposable-cluster')return Object.hasOwn(scenes,task.id)&&['v13','v14','v15'].includes(state.factoryVersion)&&state.level==='avanzado'&&state.scenarioIndependent===true&&state.scenarioId===task.id?'disposable-cluster':'course';
  return task.environment==='three-nodes'&&state.nodeCount===3?'three-nodes':'course';
 }
 export function clasePermitidaEscenario(number,id){return id==='montaje-cluster'?[25,26].includes(number):!id||scenes[id]?.classNumber===number;}

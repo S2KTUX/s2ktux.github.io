@@ -1,18 +1,19 @@
-import {loadEngine,engineHash} from '../perfil-motor.mjs?v=e2d5c844a64e023d';
+import {capturarCheckpointExterno,prepararRestauracionDiscosExternos} from '../checkpoint-discos.mjs?v=b5a6e4f42af60fab';
+import {loadEngine,engineHash} from '../perfil-motor.mjs?v=aea979eebc04b75d';
 import {Terminal} from '/laboratorios/docker-real/vendor/xterm.mjs';
-import {ChunkDisk} from '../disco-kubernetes.mjs?v=24e556fdea9d7b1c';
+import {ChunkDisk} from '../disco-kubernetes.mjs?v=0576afa02b3f1762';
 import {createEthernetInternet} from '/laboratorios/docker-real/ethernet-internet.mjs';
 import {attachTerminalClipboard} from '/laboratorios/docker-real/v86-clipboard.mjs';
 import {createKubeChecks} from '../serial-checks.mjs?v=b4caa929394c3188';
 import {EstadoConsola} from './estado-consola.mjs';
-import {cargarFabricaDebian,perfilFabricaDebian} from './fabrica.mjs?v=57bc04e56ce5a955';
+import {cargarFabricaDebian,perfilFabricaDebian} from './fabrica.mjs?v=f8890388a14d848d';
 import {liberarEstadoInicial} from '../liberar-arranque.mjs';
-import {KubeSessions} from '../kube-sessions.mjs?v=3a443641bb7b1ca4';
+import {KubeSessions} from '../kube-sessions.mjs?v=601d790381d8bc16';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
 import {prepararWorkerDebian,perfilWorker} from './preparar-worker.mjs';
-import {ThreadVM} from '../motor-hilo.mjs?v=165baf06242576ac';
+import {ThreadVM} from '../motor-hilo.mjs?v=88373bbf5ea03b75';
 import {ordenPromptDinamico,promptConfirmado} from './prompt.mjs';
-import {identidadNodoDebian} from './sesiones-cluster.mjs?v=75682338f6b8eb97';
+import {identidadNodoDebian} from './sesiones-cluster.mjs?v=c7237db8c69c1abe';
 import {comandosTlsLaboratorio,comandosTlsApiServer,ordenEntornoTls,entornoTlsConfirmado} from './tls-laboratorio.mjs';
 import {comandosMontajeComponentes} from './montaje-componentes.mjs';
 import {PresentacionConsola} from './presentacion-consola.mjs';
@@ -21,8 +22,8 @@ import {prepararAdministracion} from './preparar-administracion.mjs?v=17c552621f
 import {comandosEntornoPreparado} from './comprobar-entorno-preparado.mjs?v=523c698a0ac25012';
 import {panicDeArranque} from './panic-arranque.mjs';
 import {kernelSha256} from './kernel-perfil.mjs?v=feb1befec359f8d8';
-import {recursoPesado} from '../recursos-publicados.mjs';
-import {perfilAdministracion} from './perfil-administracion.mjs?v=4008a8ef3cbba05a';
+import {recursoPesado} from '../recursos-publicados.mjs?v=28e0db74abed5c76';
+import {perfilAdministracion} from './perfil-administracion.mjs?v=d1c6c570e93483cf';
 import {validarPerfilHA,miembrosHA,identidadNodoHA} from './perfil-ha.mjs?v=60a21559ace773d9';
 const status=document.querySelector('#status'),start=document.querySelector('#start'),save=document.querySelector('#save'),reset=document.querySelector('#reset');
 const base=new URL(location.href).searchParams.get('base')||'v3';
@@ -45,7 +46,7 @@ const engineVariant=new URL(location.href).searchParams.get('engine')||'jit8192'
 const kernelVariant=new URL(location.href).searchParams.get('kernel')||'v1';kernelSha256(kernelVariant);
 const requestedFactory=new URLSearchParams(location.search).get('factory')||'v1';
 const haMember=new URLSearchParams(location.search).get('ha-member');
-if(kernelVariant!=='v1'&&!['v13','v14'].includes(requestedFactory)&&!(administration&&!warm&&!worker&&!clustered))throw Error('El kernel candidato solo admite administración fría: no capturas ni guardados anteriores');
+if(kernelVariant!=='v1'&&!['v13','v14','v15'].includes(requestedFactory)&&!(administration&&!warm&&!worker&&!clustered))throw Error('El kernel candidato solo admite administración fría: no capturas ni guardados anteriores');
 if(diskMode==='pio'&&(!administration||warm||worker||clustered))throw Error('El ensayo PIO requiere administración fría aislada; no acepta guardados anteriores');
 const schedulingAPI=new URL(location.href).searchParams.get('use-scheduling-api')==='1';
 if(new URL(location.href).searchParams.has('use-scheduling-api')&&!schedulingAPI)throw Error('Planificador del motor desconocido');
@@ -62,6 +63,7 @@ factoryHashes.v7='cca924439589808f8267f7bb16f9815b6c30669fd20cd4c452307c439a4380
 factoryHashes.v8='6e4f96f5c6157536e874d5c5c4ad1862d54d246134505b7e47fd096b2eb1b962';
 factoryHashes.v10='e716b130f539300133e8d42fce48f8f603047e0f6b8c86191b4a5d2337afd285';
 factoryHashes.v13='b99c8b829f3ad8d9f0f17fbcb3451eb2dc32b928a659b4e80640778c40f8db0e';
+factoryHashes.v15='ad292f318da604b79f2bed21761ed8ac16f27577259bb19f54e3e16a41cdbb44';
 factoryHashes.v14='0eefc8d6a447e171e050b7e91c6514fd15f52129ad69c459178c77514e14a882';
 if(!Object.hasOwn(factoryHashes,factoryVersion))throw Error('Fábrica Debian no comprobada');
 if(factoryVersion==='v7'&&(base!=='admin-v1'||!warm||threaded))throw Error('La captura de administración requiere su propia base y arranque preparado aislado');
@@ -89,7 +91,7 @@ globalThis.kubeDebianBootNotice=text=>status.textContent=String(text);
 globalThis.kubeDebianOpenTerminal=options=>{if(!options?.diagnostic&&(busy||!consoleState.idle))throw Error('El shell todavía está ocupado');presentation.open(kubeDebianTranscript,options);};
 globalThis.kubeDebianVisibleTerminal=()=>presentation.text;
 let vm,internet,busy=false,preparing=false,timer,bytes=[],record,identity,sessionRead=false;
-const sessions=new KubeSessions({stateLimitMiB:adminProfile?.stateLimitMiB||1536}),sessionKey='debian-cka-cp1-'+factoryBase+'-components-v7-factory-'+factoryVersion;
+const sessions=new KubeSessions({stateLimitMiB:adminProfile?.stateLimitMiB||1536,allowExternal:factoryVersion==='v15'&&clustered}),sessionKey='debian-cka-cp1-'+factoryBase+'-components-v7-factory-'+factoryVersion;
 save.hidden=reset.hidden=!warm||clustered;
 const consoleState=new EstadoConsola(),encoder=new TextEncoder();
 const decoder=new TextDecoder();
@@ -176,7 +178,7 @@ async function prepare(){
    // Las fábricas balanceadas ya contienen este entorno en kubelet y el CP.
    // Verificar los procesos reales; no reiniciar kubelet ni reescribir el API
    // al abrir una captura limpia que ya superó init y los controles TLS.
-   const preparedApi=warm&&['v2','v6','v7','v8','v10','v13','v14'].some(version=>factoryHashes[version]&&globalThis.kubeDebianFactory?.sha256===factoryHashes[version]);
+   const preparedApi=warm&&['v2','v6','v7','v8','v10','v13','v14','v15'].some(version=>factoryHashes[version]&&globalThis.kubeDebianFactory?.sha256===factoryHashes[version]);
    if(preparedApi){
     const actual=await checks.run({checks:comandosEntornoPreparado().map((command,index)=>[['Comprobar entorno real de API Server sin reiniciarlo','Comprobar entorno real de kubelet sin reiniciarlo'][index],command])},180000);
     if(!actual.ok)throw Error('La fábrica no conserva el ajuste real de sus procesos');
@@ -216,7 +218,7 @@ start.onclick=async()=>{
    componentDisk=globalThis.kubeDebianComponentDisk=new ChunkDisk(componentManifest,new URL(`../componentes/disco-${components}/`,import.meta.url),diskFailure,96);
   }
   const {V86,wasm_fn}=threaded?{}:await loadEngine(engineVariant,fail);
-  let initial;
+  let initial,applyExternalDisks=null;
   if(clustered&&globalThis.kubeDebianRestoreNode){
    identity=haProfile?await identidadNodoHA(miembrosHA[haProfile.member-1]):await identidadNodoDebian(worker?'worker'+worker:'controlplane',{workerComponents:worker?components:'v7',factoryVersion});record=globalThis.kubeDebianRestoreNode;
    initial={buffer:await sessions.unpack(record,identity)};presentation.restore(record.terminalText);
@@ -231,6 +233,7 @@ start.onclick=async()=>{
     initial={buffer:loaded.buffer};globalThis.kubeDebianFactory=loaded.factory;
    }
   }
+  if(!threaded&&record?.format==='s2ktux-v86-external-checkpoint-v1')applyExternalDisks=await prepararRestauracionDiscosExternos(record.externalDisks,[{id:'root',disk},{id:'components',disk:componentDisk}]);
   let bzimage={url:new URL('/laboratorios/docker-real/artefactos/vmlinuz-docker-v3',import.meta.url).href};
   if(['v3','v4','v5','v6'].includes(base)||administration){
    const response=await fetch(recursoPesado(new URL('kernel/'+kernelVariant+'/vmlinuz',import.meta.url)));if(!response.ok)throw Error('Kernel CKA no disponible');
@@ -243,7 +246,7 @@ start.onclick=async()=>{
   if(haProfile)settings.cmdline+=' ne2k_pci.tx_watchdog_ms=5000';
   if(threaded){
    const {hda,hdb,wasm_fn,...threadSettings}=settings;
-   vm=new ThreadVM(threadSettings,{root:{manifest:disk.manifest,base:disk.base.href},components:{manifest:componentDisk.manifest,base:componentDisk.base.href},internet:true,engine:engineVariant,schedulingAPI,onError:fail});
+   vm=new ThreadVM(threadSettings,{root:{manifest:disk.manifest,base:disk.base.href},components:{manifest:componentDisk.manifest,base:componentDisk.base.href},internet:true,engine:engineVariant,schedulingAPI,checkpointAllowed:factoryVersion==='v15'&&clustered,externalDisks:record?.format==='s2ktux-v86-external-checkpoint-v1'?record.externalDisks:null,onError:fail});
    // Las escrituras pertenecen al hilo, no a los adaptadores de metadatos.
    globalThis.kubeDebianDisk={manifest:disk.manifest,settle:()=>vm.settle()};
    globalThis.kubeDebianComponentDisk={manifest:componentDisk.manifest,settle:()=>vm.settle()};
@@ -253,11 +256,22 @@ start.onclick=async()=>{
   vm.add_listener('emulator-loaded',async()=>{
    try{
     liberarEstadoInicial(settings);
+    if(applyExternalDisks)applyExternalDisks();
     let actual;
     if(threaded)actual=await vm.configureJit(3);
     else{vm.v86.cpu.set_jit_config(1,3);actual={loopProtection:vm.v86.cpu.wm.exports.get_jit_config(2)};}
     if(actual.loopProtection!==1)throw Error('Protección del motor no disponible');
     if(!threaded)internet=globalThis.kubeDebianInternet=createEthernetInternet(vm.bus);
+    if(!threaded&&factoryVersion==='v15'){
+     const engine=vm.v86,nativeYield=engine.yield;
+     const observation=globalThis.kubeDiskCooperation={policy:'pending-storage-2ms',nativeScheduling:nativeYield.toString().includes('postTask'),delayed:0,normal:0};
+     engine.yield=function(delay,tick){
+      if([disk,componentDisk].some(d=>d?.operations?.size>0)){
+       observation.delayed++;return setTimeout(()=>this.yield_callback(tick),Math.max(2,delay));
+      }
+      observation.normal++;return nativeYield.call(this,delay,tick);
+     };
+    }
     await vm.run();if(initial)vm.serial0_send('\n');initial=undefined;
    }catch(error){fail(error);}
   });
@@ -271,7 +285,7 @@ globalThis.kubeDebianSnapshot={
   busy=true;return {terminalText:presentation.text};
  },
  async freeze(){await vm.stop();flush();await kubeDebianDisk.settle();await kubeDebianComponentDisk.settle();},
- state(){return vm.save_state();},
+ state(){return factoryVersion==='v15'&&clustered?(threaded?vm.save_checkpoint():capturarCheckpointExterno(vm,[{id:'root',disk:kubeDebianDisk},{id:'components',disk:kubeDebianComponentDisk}])):vm.save_state();},
  async release(){try{await vm.run();}finally{busy=false;}},
 };
 save.onclick=async()=>{
