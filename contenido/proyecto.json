@@ -1,5 +1,5 @@
 {
-  "version": "2.9",
+  "version": "3.0",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -7,9 +7,9 @@
       "texto": "Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen."
     },
     {
-      "id": "kubernetes-curso",
+      "id": "kubernetes-ha-persistencia",
       "tema": "Kubernetes",
-      "texto": "Completar y comprobar las clases 24–34 en el laboratorio real antes de abrirlas. Ya están preparados los candidatos de creación y reparación de Static Pods de la clase 24; HA sigue requiriendo su escenario independiente. Las clases 01–23 tienen prácticas verificadas; el almacenamiento dinámico actual usa Local Path, no un driver CSI."
+      "texto": "Permitir guardar y recuperar la copia de HA con sus tres máquinas. Hasta superar esa comprobación, esa copia se prepara de nuevo en cada sesión; el guardado del laboratorio avanzado habitual sí está disponible."
     },
     {
       "id": "kubernetes-examen",
@@ -44,7 +44,7 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir midiendo y reduciendo los tiempos, especialmente en inicial y avanzado, y la preparación de complementos. Comprobar también las sesiones tras largos periodos en segundo plano. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
+      "texto": "Seguir reduciendo los tiempos de arranque y preparación de complementos, y el pico de memoria al guardar varios nodos. Comprobar también las sesiones tras largos periodos en segundo plano. Integrar y comprobar la entrega local de materiales descargados y verificados por el navegador, para evitar transferencias lentas dentro de las máquinas. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
     },
     {
       "id": "imagen-ligera",
@@ -69,58 +69,66 @@
   ],
   "versiones": [
     {
-      "version": "2.9",
-      "fecha": "2026-10-22",
-      "resumen": "Recuperar las máquinas evita lecturas repetidas, sin perder las comprobaciones de los guardados.",
+      "version": "3.0",
+      "fecha": "2026-10-29",
+      "resumen": "Abrimos el nivel avanzado de Kubernetes y mejoramos el guardado de sus máquinas.",
       "cambios": [
+        "Ya puedes practicar las clases 24–34: Static Pods, montaje del clúster, mantenimiento, etcd, autoscaling, Helm, Kustomize, CRDs y resolución de incidencias. Las clases 01–23 siguen disponibles.",
+        "Las prácticas de montaje, HA y las averías que afectan a todo el clúster se abren en copias separadas. Así puedes trabajar en ellas sin sustituir tu sesión de estudio.",
+        "La actualización se ha comprobado con kubeadm, los paquetes APT reales y dos workers. Después de guardar y recuperar las tres máquinas, conservan la versión nueva, la aplicación y el dato de prueba.",
+        "El guardado del avanzado separa la memoria y los bloques modificados del disco para evitar el fallo que aparecía al superar juntos los 2 GiB. Conservamos las claves y comprobaciones de los guardados anteriores.",
+        "La copia de HA permite practicar con tres control planes, un acceso común y quorum de etcd. Se prepara de nuevo al abrirla y no ofrece Guardar: la recuperación de esa copia todavía no es fiable y queda anotada como pendiente.",
+        "La solución de la clase 27 indica la versión y los parámetros propios de este laboratorio. Las imágenes necesarias ya están incluidas; no añadimos una descarga ni actualizamos automáticamente los nodos.",
+        "Conservamos la misma base preparada del nivel intermedio y sus sumas de comprobación. Los módulos del laboratorio cambian de referencia al publicar para evitar mezclar código nuevo con recursos antiguos de la caché.",
+        "El simulacro CKA sigue pendiente y la clase 35 no se ha modificado. Estas prácticas ayudan a seguir el curso; no se presentan como una reproducción completa del examen."
+      ]
+    },
+    {
+      "version": "2.3",
+      "fecha": "2026-10-24",
+      "resumen": "Reunimos los cambios de cada día en una sola versión, con todas sus notas en el mismo lugar.",
+      "cambios": [
+        "A partir de ahora hay una sola versión por día. Si publicamos más cambios ese mismo día, ampliamos sus notas sin crear otro número.",
+        "También agrupamos y renumeramos las entregas anteriores por fecha. La versión actual pasa a ser la 2.3; conservamos los cambios y los enlaces antiguos a las notas."
+      ]
+    },
+    {
+      "version": "2.2",
+      "fecha": "2026-10-22",
+      "resumen": "Ampliamos las prácticas de Kubernetes y reducimos las esperas al entrar y recuperar las máquinas.",
+      "cambios": [
+        "Abrimos nueve prácticas de Ingress, DaemonSets, StatefulSets y Jobs/CronJobs, basadas en las clases de AFFiNE y con comprobación del resultado real.",
+        "Añadimos diez prácticas de las clases 19–22: nodeSelector, afinidad, asignación manual, tolerations, NetworkPolicies y CoreDNS. Empiezan con ejemplos sencillos y pasan después a combinar lo aprendido.",
+        "La clase 23 incorpora tres prácticas de Gateway API: una entrada HTTP sencilla, pasar de Ingress a Gateway y publicar con HTTPS. Los correctores comprueban los recursos y que las peticiones lleguen de verdad a la aplicación.",
+        "La clase 15 incluye su práctica de quitar un prefijo con Traefik. Traefik, las políticas y las extensiones de rewrite y Gateway se preparan cuando hacen falta, no al arrancar cada laboratorio.",
+        "Las pruebas de red comprueban quién puede entrar, quién queda fuera, los puertos y DNS por UDP y TCP. Borrar un cliente o quitar un puerto del Service no cuenta como bloquear el tráfico con una política. Se aceptan formas equivalentes de escribir los selectores y la afinidad.",
+        "Al comprobar estas prácticas indicamos qué conexión o requisito falla. Una caída de la API no se presenta como una respuesta incorrecta, y no añadimos consultas de diagnóstico cuando el ejercicio ya está bien.",
+        "Los materiales llegan en un solo archivo verificado, con el mismo contenido y sus comprobaciones de integridad. Evitamos reconstruirlos archivo por archivo dentro de la máquina emulada; se conserva la alternativa desde el navegador si no hay conexión.",
+        "Los certificados de HTTPS que prepara el laboratorio usan ECDSA para evitar la espera de generar una clave RSA en el navegador. Las soluciones y los correctores mantienen la comprobación del certificado.",
+        "Descargamos en paralelo la base del nivel intermedio y evitamos repetir comprobaciones ya superadas. La caché tiene espacio para sus 69 fragmentos y ya no compite con los recursos de Linux y Docker.",
+        "El aprovisionador de almacenamiento se prepara en el worker y tiene recursos definidos. Evitamos cargar todas sus imágenes en el control plane.",
         "Linux y Docker reutilizan la comprobación de un mismo archivo de sesión mientras sigue en memoria. Un archivo nuevo o cambiado se verifica de nuevo; no se modifica el formato de los guardados.",
-        "Kubernetes deja de leer dos veces el mismo guardado al entrar y evita repetir la lectura de los archivos que ya acaba de comprobar. Conservamos las entradas rápidas anteriores que sean compatibles, sin obligar a preparar otra vez el nivel inicial. Se mantienen las protecciones frente a datos alterados y cambios desde otra pestaña.",
+        "Kubernetes deja de leer dos veces el mismo guardado y evita repetir la lectura de los archivos recién comprobados. Conservamos las entradas rápidas compatibles, sin perder las protecciones frente a datos alterados o cambios desde otra pestaña.",
         "La comprobación de arranque ya no puede dar por preparado el clúster si la consulta de nodos falla o devuelve una respuesta vacía.",
+        "El historial de Sobre muestra una frase por versión y un enlace a las notas completas, explicadas con más detalle.",
         "Se conserva la misma base limpia de dos nodos y las prácticas publicadas hasta la clase 23. El nivel avanzado y el simulacro siguen pendientes."
       ]
     },
     {
-      "version": "2.8",
-      "fecha": "2026-10-22",
-      "resumen": "Ya puedes practicar Gateway API y preparar los ejercicios de redes con menos esperas.",
-      "cambios": [
-        "Abrimos la clase 23 con tres prácticas: una entrada HTTP sencilla, pasar de Ingress a Gateway y publicar con HTTPS. Los correctores comprueban las condiciones de los recursos y que las peticiones lleguen de verdad a la aplicación.",
-        "La clase 15 incluye también su práctica de quitar un prefijo con Traefik. Las extensiones de rewrite y Gateway se preparan cuando hacen falta; un Ingress normal ya no instala todos sus CRDs.",
-        "Los materiales llegan en un solo archivo verificado, con el mismo contenido y sus comprobaciones de integridad. Evitamos reconstruirlos archivo por archivo dentro de la máquina emulada.",
-        "Los certificados que prepara el laboratorio para HTTPS usan ECDSA, que evita la espera de generar una clave RSA en el navegador. Se mantiene la comprobación del certificado en las soluciones y los correctores.",
-        "La entrada rápida conserva la misma base limpia de dos nodos. Cambiar prácticas o sus complementos bajo demanda no obliga a prepararla otra vez ni sustituye los guardados del alumno. El nivel avanzado y el simulacro siguen pendientes."
-      ]
-    },
-    {
-      "version": "2.7",
-      "fecha": "2026-10-22",
-      "resumen": "Kubernetes suma prácticas para elegir nodos, limitar conexiones y descubrir servicios por su nombre.",
-      "cambios": [
-        "Añadimos diez prácticas de las clases 19–22: nodeSelector, afinidad, asignación manual, tolerations, NetworkPolicies y CoreDNS. Empiezan con ejemplos sencillos y pasan después a combinar lo aprendido.",
-        "El filtrado de red se prepara cuando un ejercicio lo necesita, no al arrancar el laboratorio. Las pruebas comprueban tráfico real: quién puede entrar, quién queda fuera, los puertos y el acceso a DNS por UDP y TCP cuando la salida está limitada.",
-        "Los correctores de red comprueban que siguen presentes los clientes de prueba y que el servidor continúa escuchando. Borrar un cliente o quitar un puerto del Service no cuenta como haber bloqueado el tráfico con una política.",
-        "Al comprobar estas prácticas indicamos qué conexión o requisito falla. Una caída de la API no se presenta como una respuesta incorrecta, y no añadimos consultas de diagnóstico cuando el ejercicio ya está bien.",
-        "Se aceptan formas equivalentes de escribir los selectores y la afinidad. Los guardados del alumno no se reescriben; las clases 23–34 y el simulacro siguen cerrados hasta comprobarlos."
-      ]
-    },
-    {
-      "version": "2.6",
-      "fecha": "2026-10-22",
-      "resumen": "Kubernetes arranca más rápido y ya puedes practicar Ingress, DaemonSets, StatefulSets y tareas programadas.",
-      "cambios": [
-        "Aceleramos la entrada de Kubernetes intermedio: descargamos la base en paralelo y evitamos repetir comprobaciones ya superadas, sin saltarnos la salud de la API ni de los nodos.",
-        "La caché de la base tiene espacio para sus 69 fragmentos y ya no compite con los recursos de Linux y Docker. Los guardados del alumno se conservan.",
-        "Abrimos nueve prácticas de Ingress, DaemonSets, StatefulSets y Jobs/CronJobs, basadas en las clases actuales de AFFiNE y con comprobación del resultado real.",
-        "Traefik se prepara al necesitarlo, no al arrancar cada laboratorio. Los materiales se descargan y verifican dentro de Linux; si no hay conexión, se conserva la alternativa desde el navegador.",
-        "El aprovisionador de almacenamiento se prepara en el worker y tiene recursos definidos. Evitamos cargar todas sus imágenes en el control plane; los guardados anteriores no se reescriben.",
-        "El historial de Sobre se queda en una frase por versión. Debajo tienes un enlace a las notas completas, con los cambios explicados con más detalle."
-      ]
-    },
-    {
-      "version": "2.5",
+      "version": "2.1",
       "fecha": "2026-10-21",
-      "resumen": "El laboratorio intermedio de Kubernetes entra con dos nodos preparados y estrena las prácticas de almacenamiento.",
+      "resumen": "Revisamos LPIC-1 y mejoramos las prácticas y la entrada al laboratorio de Kubernetes.",
       "cambios": [
+        "Completamos los detalles de LPIC-1 que faltaban para entender las preguntas revisadas, dentro de las explicaciones y ejemplos de siempre. No cambiamos el orden ni el diseño de las clases.",
+        "Corregimos las erratas detectadas en arranque, paquetería, comandos, permisos y redes. El informe conserva lo que faltaba y enlaza dónde se explica ahora.",
+        "Arreglamos el índice de las clases con apartados numéricos, sin cambiar su aspecto.",
+        "El banco de preguntas no cambia. Su ampliación para practicar más variantes sigue pendiente.",
+        "Las prácticas realizadas se marcan en verde como «Resuelta», sin guardar una marca de error en la lista. Quitamos el estado repetido encima del ejercicio; las marcas se siguen guardando en el navegador.",
+        "Al comprobar una práctica mostramos los requisitos que faltan, sin la etiqueta «Resultado solicitado». En los ejercicios de archivos distinguimos si falta el fichero o si su contenido no coincide.",
+        "Conservamos los enunciados, las soluciones, los modos examen y los guardados de las máquinas.",
+        "Kubernetes conserva una base limpia al preparar el laboratorio por primera vez para acelerar las siguientes entradas. No es un guardado de tus ejercicios ni sustituye Guardar sesión.",
+        "Reutilizamos bloques del disco verificados y mostramos la fase real de preparación, también al arrancar el worker. La consola muestra salida de Linux, sin líneas de arranque inventadas.",
+        "Abrimos las clases 13 y 14 del laboratorio intermedio: cinco prácticas de RBAC, certificados de usuario y ServiceAccounts, comprobadas con casos correctos e incompletos. Las demás clases pendientes siguen cerradas.",
         "Kubernetes intermedio recupera una base de dos nodos ya preparada, sin repetir el montaje del worker. Tus sesiones guardadas siguen teniendo prioridad.",
         "Editar preguntas ya no invalida la entrada rápida. Las descargas de la nueva base tienen límite de espera, reintentos y verificación de integridad.",
         "Abrimos tres prácticas de la clase 12: volúmenes temporales, persistencia con PV/PVC y aprovisionamiento dinámico con StorageClass.",
@@ -128,86 +136,48 @@
       ]
     },
     {
-      "version": "2.4",
-      "fecha": "2026-10-21",
-      "resumen": "Kubernetes guarda una base limpia para volver antes al laboratorio y añade las prácticas de permisos y cuentas de servicio.",
-      "cambios": [
-        "Kubernetes conserva una base limpia al preparar el laboratorio por primera vez para acelerar las siguientes entradas. No es un guardado de tus ejercicios ni sustituye Guardar sesión.",
-        "Reutilizamos bloques del disco verificados y mostramos la fase real de preparación, también al arrancar el worker. La consola muestra salida de Linux, sin líneas de arranque inventadas.",
-        "Abrimos las clases 13 y 14 del laboratorio intermedio: cinco prácticas de RBAC, certificados de usuario y ServiceAccounts, comprobadas con casos correctos e incompletos. Las demás clases pendientes siguen cerradas."
-      ]
-    },
-    {
-      "version": "2.3",
-      "fecha": "2026-10-21",
-      "resumen": "Las prácticas realizadas quedan en verde y, al comprobarlas, se entiende mejor qué falta.",
-      "cambios": [
-        "Las prácticas realizadas se marcan en verde como «Resuelta», sin guardar una marca de error en la lista. Quitamos el estado repetido encima del ejercicio; las marcas se siguen guardando en el navegador.",
-        "Al comprobar una práctica mostramos los requisitos que faltan, sin la etiqueta «Resultado solicitado». En los ejercicios de archivos distinguimos si falta el fichero o si su contenido no coincide.",
-        "Conservamos los enunciados, las soluciones, los modos examen y los guardados de las máquinas."
-      ]
-    },
-    {
-      "version": "2.2",
-      "fecha": "2026-10-21",
-      "resumen": "Los apuntes de LPIC-1 incluyen los detalles que faltaban para entender las preguntas, sin cambiar el orden de las clases.",
-      "cambios": [
-        "Completamos los detalles de LPIC-1 que faltaban para entender las preguntas revisadas, dentro de las explicaciones y ejemplos de siempre. No cambiamos el orden ni el diseño de las clases.",
-        "Corregimos las erratas detectadas en arranque, paquetería, comandos, permisos y redes. El informe conserva lo que faltaba y enlaza dónde se explica ahora.",
-        "Arreglamos el índice de las clases con apartados numéricos, sin cambiar su aspecto.",
-        "El banco de preguntas no cambia. Su ampliación para practicar más variantes sigue pendiente."
-      ]
-    },
-    {
-      "version": "2.1",
+      "version": "2.0",
       "fecha": "2026-10-20",
-      "resumen": "LPIC-1 pasa a tener 120 preguntas por examen, con explicaciones y un índice para seguir lo que llevas hecho.",
+      "resumen": "LPIC-1 tiene 120 preguntas por examen, explicaciones y un índice para seguir lo que llevas hecho.",
       "cambios": [
         "LPIC-1 usa los bancos autorizados de Deza92 en Daypo: 120 preguntas para el 101 y otras 120 para el 102. Añadimos explicaciones y un registro de erratas corregidas.",
         "Añadimos una lista lateral con marcas discretas de acierto y error. El orden cambia al entrar en práctica, sin perder el avance guardado por examen.",
         "Cada simulacro elige 60 preguntas del banco correspondiente, manteniendo el peso de los objetivos.",
         "LPIC-1 aparece primero en Terminal. Las otras prácticas guardan marcas discretas y permiten señalar lo ya realizado, sin el recuadro de seguimiento.",
         "Linux conserva la entrada rápida y muestra registros reales del arranque guardado y servicios activos, en lugar de mensajes propios dentro de la consola.",
-        "Revisamos las 240 preguntas frente al curso. Publicamos el inventario de lagunas y dejamos anotadas las correcciones y ampliaciones necesarias."
-      ]
-    },
-    {
-      "version": "2.0",
-      "fecha": "2026-10-20",
-      "resumen": "Llegan los primeros tests de LPIC-1, ampliamos el repaso de Linux y recuperamos el aspecto de la portada.",
-      "cambios": [
-        "Añadimos 120 preguntas originales para practicar LPIC-1 y hacer los simulacros 101 y 102, con explicaciones y resultados por tema.",
-        "Las prácticas muestran marcas de acierto y error que se conservan en el navegador.",
+        "Revisamos las 240 preguntas frente al curso. Publicamos el inventario de lagunas y dejamos anotadas las correcciones y ampliaciones necesarias.",
         "El repaso Linux pasa de 8 a 22 ejercicios. Mostramos el avance real del arranque y reutilizamos sus descargas verificadas.",
         "Vuelve «Domina Linux. Sin límites.», sustituimos SUSE por Debian y ajustamos la terminal de Kubernetes para evitar el scroll interior sobrante."
       ]
     },
     {
-      "version": "1.2",
+      "version": "1.0",
       "fecha": "2026-10-19",
-      "resumen": "Las licencias de Linux se leen en una página sencilla, sin el diseño del prototipo.",
+      "resumen": "Organizamos las prácticas, renovamos Sobre y ajustamos la página para leerla mejor desde el móvil.",
       "cambios": [
-        "Las licencias del laboratorio Linux se abren en una página sencilla, sin el antiguo diseño oscuro. El texto y los enlaces no cambian."
-      ]
-    },
-    {
-      "version": "1.1",
-      "fecha": "2026-10-19",
-      "resumen": "Sobre reúne las novedades y lo pendiente, y la página se adapta mejor al móvil.",
-      "cambios": [
+        "Empezamos a registrar las versiones desde la publicación de las prácticas por clase y objetivos I/II, con una estructura común para los laboratorios reales y simulados.",
         "Sobre reúne las mejoras pendientes, el historial y las licencias, sin llenar el resto de páginas de avisos.",
         "Revisamos erratas, simplificamos soluciones y corregimos la preparación de prácticas.",
         "Ajustamos tarjetas, textos y rejillas para que los cursos y las demás páginas se lean bien desde el móvil.",
-        "Limpiamos archivos de pruebas y documentación antigua sin retirar recursos necesarios de las máquinas."
-      ]
-    },
-    {
-      "version": "1.0",
-      "fecha": "2026-10-19",
-      "resumen": "Empezamos a registrar los cambios de la página, con las prácticas organizadas por clase.",
-      "cambios": [
-        "Empezamos a registrar las versiones desde la publicación de las prácticas por clase y objetivos I/II, con una estructura común para los laboratorios reales y simulados."
+        "Limpiamos archivos de pruebas y documentación antigua sin retirar recursos necesarios de las máquinas.",
+        "Las licencias del laboratorio Linux se abren en una página sencilla, sin el antiguo diseño oscuro. El texto y los enlaces no cambian."
       ]
     }
-  ]
+  ],
+  "versionesAgrupadas": {
+    "2.10": "2026-10-24",
+    "2.9": "2026-10-22",
+    "2.8": "2026-10-22",
+    "2.7": "2026-10-22",
+    "2.6": "2026-10-22",
+    "2.5": "2026-10-21",
+    "2.4": "2026-10-21",
+    "2.3": "2026-10-21",
+    "2.2": "2026-10-21",
+    "2.1": "2026-10-20",
+    "2.0": "2026-10-20",
+    "1.2": "2026-10-19",
+    "1.1": "2026-10-19",
+    "1.0": "2026-10-19"
+  }
 }

@@ -1,0 +1,47 @@
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {spawnSync} from 'node:child_process';
+import {perfilFabricaDebian,validarFabricaDebian} from '../laboratorios/kubernetes-real/debian/fabrica.mjs';
+import {perfilAdministracion} from '../laboratorios/kubernetes-real/debian/perfil-administracion.mjs';
+import {escenarioCurso,entornoEjercicio,urlEscenarioCurso,clasePermitidaEscenario} from '../laboratorios/kubernetes-real/debian/escenarios-curso.mjs';
+import {parametrosPublicos,nivelDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
+import {EJERCICIOS_MONTAJE} from '../laboratorios/kubernetes-real/debian/ejercicios-montaje.mjs';
+import {prepararPractica,comprobarPractica} from '../laboratorios/kubernetes-real/debian/motor-practicas.mjs';
+import {validarContextoMontajeManual} from '../laboratorios/kubernetes-real/debian/montaje-manual-curso.mjs';
+import {ordenEsperarNodoCurso} from '../laboratorios/kubernetes-real/debian/esperar-nodo-curso.mjs';
+const profile=perfilFabricaDebian('v14'),previous=perfilFabricaDebian('v13');
+assert.equal(profile.sha256,'0eefc8d6a447e171e050b7e91c6514fd15f52129ad69c459178c77514e14a882');
+assert.equal(previous.sha256,undefined);assert.equal(profile.memoryMiB,1536);
+const metadata={...profile,format:'s2ktux-kubernetes-debian-factory-v1',scope:'debian-controlplane',file:'estado.gz',bytes:1897661124,packedBytes:726788020};
+assert.equal(validarFabricaDebian(metadata,profile),metadata);
+for(const change of [{sha256:'a'.repeat(64)},{bytes:2147483649},{packedBytes:805306369},{memoryMiB:1024}])assert.throws(()=>validarFabricaDebian({...metadata,...change},profile));
+assert.throws(()=>validarFabricaDebian(metadata,previous));
+const options={factoryVersion:'v14',level:'avanzado'},scene=escenarioCurso('montaje-cluster',options);
+assert.deepEqual(scene.classNumbers,[25,26]);assert.equal(scene.manual,true);
+for(const change of [{factoryVersion:'v13'},{factoryVersion:'v6'},{level:'intermedio'}])assert.throws(()=>escenarioCurso(scene.id,{...options,...change}));
+const href='https://s2ktux.github.io/laboratorios/kubernetes-real/debian/multinodo.html?mode=course&level=avanzado&clase=26';
+const url=new URL(urlEscenarioCurso(href,scene.id));assert.equal(url.searchParams.get('clase'),'26');assert.equal(parametrosPublicos(url.search).get('factory'),'v14');
+assert.equal(clasePermitidaEscenario(25,scene.id),true);assert.equal(clasePermitidaEscenario(26,scene.id),true);assert.equal(clasePermitidaEscenario(28,scene.id),false);
+const state={...options,scenarioId:scene.id,scenarioIndependent:true,nodeCount:3},context={scenario:scene.id,factoryVersion:'v14',factorySha256:profile.sha256,freshFactory:true,studentSession:false,consoleOpened:false,nodeCount:1};
+assert.equal(validarContextoMontajeManual(context),context);
+for(const change of [{freshFactory:false},{studentSession:true},{consoleOpened:true},{nodeCount:3},{factorySha256:'a'.repeat(64)}])assert.throws(()=>validarContextoMontajeManual({...context,...change}));
+for(const task of EJERCICIOS_MONTAJE){
+ assert.equal(entornoEjercicio(task,state),'manual-cluster');
+ for(const change of [{scenarioId:null},{scenarioIndependent:false},{factoryVersion:'v13'},{level:'inicial'}])assert.equal(entornoEjercicio(task,{...state,...change}),'course');
+ let calls=0;await assert.rejects(prepararPractica(task,async()=>{calls++;return{ok:true};}),/entorno independiente/);assert.equal(calls,0);
+ await prepararPractica(task,async()=>{calls++;return{ok:true};},{environment:'manual-cluster'});assert.ok(calls>0);
+ const commands=[task.preflight,task.check,...(task.checkSteps||[]).map(s=>s.command),ordenEsperarNodoCurso('cka-w2')];
+ const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';
+ for(const command of commands){const result=spawnSync(bash,['--noprofile','--norc','-n'],{input:command,encoding:'utf8'});assert.equal(result.status,0,result.stderr);}
+}
+const withWorker=EJERCICIOS_MONTAJE.find(t=>t.id==='c26-a');
+assert.ok(withWorker.checkSteps[0].command.includes('openssl x509'));
+assert.ok(!withWorker.checkSteps[0].command.includes('.users[0].name=="system:node:'),'El alias del kubeconfig no es el CN autenticado; aceptar alias equivalentes');
+assert.equal((await comprobarPractica(withWorker,async node=>({ok:node==='controlplane'}))).state,'incomplete','Ready no oculta archivos del worker ausentes');
+assert.equal((await comprobarPractica(withWorker,async()=>({ok:true}))).state,'correct');
+const runtime={factoryVersion:'v14',base:'admin-v3',components:'v7',withKube:true,clustered:true,schedulingAPI:true,tlsMode:'classical',engineVariant:'jit8192-pic-only-v1',kernelVariant:'highmem-v1',diskMode:'dma',sharedCode:false,warm:true,threaded:false,worker:null};
+assert.deepEqual(perfilAdministracion(runtime),{memoryMiB:1536,stateLimitMiB:2048});
+const controller=readFileSync(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8');assert.match(controller,/let cleanBase=!persistSession\|\|saved\|\|scenario\?\.manual\?null/);assert.match(controller,/studentSession:!!saved/);
+const ui=readFileSync(new URL('../laboratorios/kubernetes-real/debian/interfaz-niveles.mjs',import.meta.url),'utf8');assert.match(ui,/const needsPreparation=\['manual-cluster','ha-cluster'\]\.includes/,'Preparar debe permitir abrir la copia aunque sus pasos internos solo comprueben materiales');
+assert.equal(nivelDisponible('avanzado'),true,'Entrega avanzada con aceptación nativa');
+console.log('Montaje25/26: copia y perfil v14 separados, registro/Ready, archivos del worker y sintaxis; no abre avanzado ni acredita por sí solo el recorrido nativo.');

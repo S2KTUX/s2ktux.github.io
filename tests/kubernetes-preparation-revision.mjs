@@ -11,6 +11,7 @@ assert.notEqual(revisionPreparacion([...files,{path:'debian/nuevo-componente.mjs
 assert.notEqual(revisionPreparacion(files,{...profile,materials:true}),hash,'Activar materiales modifica la preparación');
 assert.notEqual(revisionPreparacion(files,{...profile,policies:true}),hash);
 const optional=[...files,{path:'debian/gateway-curso.mjs',source:'addon1'},{path:'debian/materiales-curso.mjs',source:'archive1'}],editedOptional=optional.map(file=>({...file,source:file.source.replace('addon1','addon2').replace('archive1','archive2')}));
+const manual=[...files,{path:'debian/montaje-manual-curso.mjs',source:'montaje1'}];assert.equal(revisionPreparacion(manual,profile),revisionPreparacion(manual.map(file=>({...file,source:file.source.replace('montaje1','montaje2')})),profile),'El montaje independiente no se ejecuta ni se captura en la base de estudio');
 assert.equal(revisionPreparacion(optional,profile),revisionPreparacion(editedOptional,profile),'Un complemento bajo demanda no invalida la base sin complementos');
 assert.notEqual(revisionPreparacion(optional,{...profile,materials:true}),revisionPreparacion(editedOptional,{...profile,materials:true}),'Sí invalida una captura que lo incluyera');
 assert.throws(()=>revisionPreparacion(files,{}));

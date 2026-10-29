@@ -6,7 +6,14 @@ export async function comprobarPractica(task,run){
    const health=await run('controlplane','Comprobar disponibilidad antes de corregir','set -eu; '+task.preflight,45000);
    if(health?.ok!==true)return {id:task.id,state:'unverified',passed:null,message:'El clúster no responde correctamente. No se ha calificado el ejercicio.'};
   }
-  const result=await run('controlplane','Comprobar '+task.title,'set -eu; '+task.check,180000);
+  let result=await run('controlplane','Comprobar '+task.title,'set -eu; '+task.check,180000);
+  // Una incorporación no queda acreditada solo por ver Ready desde el CP:
+  // comprobar también los archivos y credenciales reales del worker.
+  if(result?.ok===true)for(const step of task.checkSteps||[]){
+   const {node,command}=pasoPractica(step);
+   result=await run(node,'Comprobar '+task.title+' en '+node,'set -eu; '+command,90000);
+   if(result?.ok!==true)break;
+  }
   if(result?.ok===true)return {id:task.id,state:'correct',passed:true,message:'Objetivo conseguido.'};
   if(result?.ok===false){
    let message='El resultado todavía no cumple el enunciado.';
@@ -26,7 +33,8 @@ export async function comprobarPractica(task,run){
   throw Error('El comprobador no ha recibido un resultado válido');
  }catch(error){return {id:task.id,state:'unverified',passed:null,message:'No se ha podido comprobar el ejercicio: '+String(error.message||error)};}
 }
-export async function prepararPractica(task,run){
+export async function prepararPractica(task,run,{environment='course'}={}){
+ if(task.environment&&task.environment!==environment)throw Error('Esta práctica necesita un entorno independiente: '+task.environment+'. No se modifica la sesión actual.');
  for(const requirement of task.requirements||[]){
   if(requirement==='local-path'){
    const {prepararAlmacenamiento}=await import('./almacenamiento-curso.mjs?v=0bb85c4d4cb510a9');await prepararAlmacenamiento(run);
@@ -38,11 +46,21 @@ export async function prepararPractica(task,run){
    const {prepararGateway}=await import('./gateway-curso.mjs?v=3d5f33f66174384c');await prepararGateway(run);
   }else if(requirement==='traefik-rewrite'){
    const {prepararRewrite}=await import('./rewrite-curso.mjs?v=9b9aeeac4b6500b5');await prepararRewrite(run);
+  }else if(requirement==='course-materials'){
+   const {materialesAvanzados}=await import('./complementos-avanzados.mjs?v=fd02080d549d450f');await materialesAvanzados(run);
+  }else if(requirement==='metrics'||requirement==='metrics-files'){
+   const {prepararMetricas}=await import('./complementos-avanzados.mjs?v=fd02080d549d450f');await prepararMetricas(run,{install:requirement==='metrics'});
   }else throw Error('Componente de práctica desconocido');
  }
- for(const command of task.prepare||[]){
-  const result=await run('controlplane','Preparar '+task.title,'set -eu; '+command,240000);
+ for(const step of task.prepare||[]){
+  const {node,command}=pasoPractica(step);
+  const result=await run(node,'Preparar '+task.title,'set -eu; '+command,240000);
   if(result?.ok!==true)throw Error('No se ha completado la preparación. No se considera preparado el ejercicio.');
  }
  return task.id;
+}
+export function pasoPractica(step){
+ const value=typeof step==='string'?{node:'controlplane',command:step}:step;
+ if(!value||!['controlplane','worker1','worker2'].includes(value.node)||typeof value.command!=='string'||!value.command.trim())throw Error('Paso de práctica no válido');
+ return {node:value.node,command:value.command};
 }

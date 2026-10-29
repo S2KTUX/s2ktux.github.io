@@ -1,11 +1,12 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=859480e1da0a107d';
-import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=67c5982572e37e51';
-import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=282d3b448ddaff9a';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=6638e07ca8c03fa2';
+import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=20260d0b4dadc45a';
+import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=b136ca2f11943ac8';
 import {renderSolutions} from '../../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../../solution-options.mjs?v=20261020-aprendizaje';
 import {practiceProgress} from '../../practice-progress.mjs?v=20261021-resueltas';
+import {urlEscenarioCurso,entornoEjercicio,clasePermitidaEscenario} from './escenarios-curso.mjs?v=ede8456b5e6c6272';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
@@ -16,15 +17,20 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  const remembered=new Map([[level,activeClass]]);
  document.title='Kubernetes · '+config.title+' | S2KTUX';
  $('mode-stamp').textContent='Modo práctica · '+config.name;
+ if(getState().scenarioId){
+  $('mode-stamp').textContent+=' · Copia independiente';
+  const back=$('return-study')||document.createElement('button');back.id='return-study';back.type='button';back.className='lab-link';back.textContent='Volver a mis prácticas';
+  $('change-lab').before(back);back.onclick=()=>requestScenario(null);
+ }
  const levelQuestions=clasesNivel(level).reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
  const levelNodes=config.nodes===1?'Un nodo':config.nodes===2?'Control plane y un worker':'Control plane y dos workers';
- $('lab-course-note').textContent='* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
+ $('lab-course-note').textContent=getState().scenarioId==='montaje-cluster'?'* Clases 25–26 · Una copia de montaje con control plane y dos workers.':getState().scenarioId==='ha-cluster'?'* Clase 24 · Tres control planes con balanceador redundante. Esta copia se prepara de nuevo al abrirla y no se guarda.':'* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
  $('course-intro').hidden=true;$('course-progression').hidden=true;$('mode-topology').hidden=true;$('change-lab').hidden=false;
  $('exercise-class-select').replaceChildren(...clasesNivel(level).map(lesson=>{
-  const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number);option.textContent=lesson.id+' — '+lesson.title+(option.disabled?' · Próximamente':'');return option;
+  const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number)||!clasePermitidaEscenario(lesson.number,getState().scenarioId);option.textContent=lesson.id+' — '+lesson.title+(!claseDisponible(lesson.number)?' · Próximamente':'');return option;
  }));
  const free=document.createElement('option');free.value='free';free.textContent='Práctica libre';$('exercise-class-select').prepend(free);
- const examPracticeOption=document.createElement('option');examPracticeOption.value='exam';examPracticeOption.textContent='EXAMEN';$('exercise-class-select').append(examPracticeOption);
+ const examPracticeOption=document.createElement('option');examPracticeOption.value='exam';examPracticeOption.textContent='EXAMEN';examPracticeOption.disabled=!!getState().scenarioId;$('exercise-class-select').append(examPracticeOption);
  $('exercises').hidden=false;
  function tasks(){return examPractice?ejerciciosExamen(level):claseDisponible(activeClass)?ejerciciosClase(activeClass):[];}
  function task(){return freeMode?null:tasks()[Number($('exercise-select').value)];}
@@ -61,6 +67,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   freeMode=false;
   $('exercise-class-select').value=examPractice?'exam':String(activeClass);
   $('exercise-select').replaceChildren(...tasks().map((item,index)=>{const option=document.createElement('option');option.value=String(index);option.textContent=item.title;return option;}));
+  const sceneIndex=tasks().findIndex(item=>item.id===getState().scenarioId||item.scenarioId===getState().scenarioId);if(sceneIndex>=0)$('exercise-select').value=String(sceneIndex);
   render();
  }
  function render(){
@@ -72,6 +79,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   $('exercise-select').closest('.exercise-field').hidden=!current;
   $('exercise-title').textContent=current?.title||'';$('exercise-prompt').textContent=current?.prompt||'';
   renderSolutions($('exercise-solution'),current?solutionsFor('kubernetes',current):[]);
+  const labNote=$('exercise-lab-note');if(labNote){labNote.hidden=!current?.labNote;labNote.textContent=current?.labNote?'* '+current.labNote:'';}
   $('exercise-count').textContent=current?'Práctica '+(Number($('exercise-select').value)+1)+' / '+items.length:'';
   $('exercise-help').hidden=true;$('exercise-solution-toggle').textContent='Ver solución';$('exercise-solution-toggle').setAttribute('aria-expanded','false');$('exercise-result').textContent='';delete $('exercise-result').dataset.result;update();
  }
@@ -83,10 +91,12 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   $('mode-practice').disabled=$('mode-exam').disabled=blocked;
   $('change-lab').disabled=$('return-lab').disabled=blocked;$('return-lab').hidden=!entered;
   $('enter-lab').textContent=!nivelDisponible(preview)||!claseDisponible(previewClass)?'Próximamente':(preview===level&&state.nodeCount>0?'Volver al laboratorio ':'Abrir laboratorio ')+NIVELES[preview].name.toLowerCase();
-  $('exercise-class-select').disabled=$('exercise-select').disabled=checking||switching;
+  $('exercise-class-select').disabled=checking||switching||!!state.scenarioId&&state.scenarioId!=='montaje-cluster';
+  $('exercise-select').disabled=checking||switching||!!state.scenarioId&&state.scenarioId!=='montaje-cluster';
+  if($('return-study'))$('return-study').disabled=blocked;
   $('exercise-solution-toggle').disabled=checking;
   $('exercise-check').hidden=!current;$('exercise-check').disabled=blocked||!state.initialized||!current;
-  const needsPreparation=!!current?.prepare?.some(command=>command!==current.preflight);
+  const needsPreparation=['manual-cluster','ha-cluster'].includes(current?.environment)||!!current?.prepare?.some(command=>command!==current.preflight);
   $('exercise-setup').hidden=$('exercise-prepare').hidden=!needsPreparation;$('exercise-prepare').disabled=blocked||!state.initialized||prepared.has(current?.id);
   $('start-cluster').hidden=false;
   $('start-cluster').disabled=blocked||learningMode!=='practice'||!nivelDisponible(level)||!claseDisponible(activeClass)||state.nodeCount>0;
@@ -122,16 +132,30 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  $('exercise-class-select').onchange=event=>{
   if(event.target.value==='free'){freeMode=true;examPractice=false;render();return;}
   if(event.target.value==='exam'){examPractice=true;populateTasks();return;}
-  const value=Number(event.target.value);if(!claseDisponible(value)||switching||checking||!clasesNivel(level).some(lesson=>lesson.number===value))return;
+  const value=Number(event.target.value);if(!claseDisponible(value)||!clasePermitidaEscenario(value,getState().scenarioId)||switching||checking||!clasesNivel(level).some(lesson=>lesson.number===value))return;
   freeMode=false;examPractice=false;
   activeClass=value;remembered.set(level,value);const href=new URL(location.href);href.searchParams.set('clase',String(value));history.replaceState(history.state,'',href.href);populateTasks();
  };
  $('exercise-select').onchange=render;
  async function exercise(prepare){
   const current=task();if(!current||getState().busy||!getState().initialized||checking)return;
+  if(prepare&&current.environment==='disposable-cluster'&&entornoEjercicio(current,getState())!=='disposable-cluster'){await requestScenario(current.id);return;}
+  if(prepare&&current.environment==='manual-cluster'&&entornoEjercicio(current,getState())!=='manual-cluster'){await requestScenario('montaje-cluster');return;}
+  if(prepare&&current.environment==='ha-cluster'&&entornoEjercicio(current,getState())!=='ha-cluster'){await requestScenario('ha-cluster');return;}
+  if(!prepare&&current.environment==='ha-cluster'&&entornoEjercicio(current,getState())!=='ha-cluster'){
+   $('exercise-result').dataset.result='unverified';$('exercise-result').textContent='Abre primero la copia HA con Preparar ejercicio. Tus prácticas actuales se conservan.';return;
+  }
+  if(!prepare&&current.environment==='manual-cluster'&&entornoEjercicio(current,getState())!=='manual-cluster'){
+   $('exercise-result').dataset.result='unverified';$('exercise-result').textContent='Abre primero la copia de montaje con Preparar ejercicio. Tus prácticas actuales se conservan.';return;
+  }
   checking=true;globalThis.kubeDebianExerciseResult=null;delete $('exercise-result').dataset.result;setBusy(true);update();$('exercise-result').textContent=prepare?'Preparando el ejercicio…':'Comprobando el resultado en Linux…';
   try{
-   if(prepare){await prepararPractica(current,run);prepared.add(current.id);$('exercise-result').textContent='Ejercicio preparado. Ya puedes resolverlo.';}
+   if(prepare){
+    // La topología real permite el drain con dos workers. Tener tres nodos
+    // no convierte la sesión de estudio en una copia desechable de etcd/API.
+    const environment=entornoEjercicio(current,getState());
+    await prepararPractica(current,run,{environment});prepared.add(current.id);$('exercise-result').textContent='Ejercicio preparado. Ya puedes resolverlo.';
+   }
    else{const result=await comprobarPractica(current,run);globalThis.kubeDebianExerciseResult=result;$('exercise-result').dataset.result=result.state;$('exercise-result').textContent=result.message;}
   }catch(error){$('exercise-result').dataset.result='unverified';$('exercise-result').textContent='No se ha completado la preparación: '+(error.message||error);}
   finally{checking=false;setBusy(false);update();}
@@ -140,16 +164,30 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  practiceProgress({mode:'kubernetes-real',select:$('exercise-select'),feedback:$('exercise-result'),getId:()=>task()?.id});
  $('exercise-solution-toggle').onclick=()=>{const body=$('exercise-help');body.hidden=!body.hidden;$('exercise-solution-toggle').textContent=body.hidden?'Ver solución':'Ocultar solución';$('exercise-solution-toggle').setAttribute('aria-expanded',String(!body.hidden));};
  const dialog=$('switch-level-dialog');for(const button of dialog.querySelectorAll('[data-switch-action]'))button.onclick=()=>dialog.close(button.dataset.switchAction);
- async function choose(destination){
+ async function choose(destination,sceneChange=false){
   $('switch-level-title').textContent=destination?'Entrar en la etapa '+NIVELES[destination].stage:'Salir del laboratorio';
   $('switch-level-description').textContent=destination?'Se detendrán las máquinas actuales. Cada etapa tiene su propio guardado; los cambios no se trasladan a la otra.':'Puedes guardar antes de salir. Se detendrán las máquinas; tu último guardado se conserva.';
-  dialog.querySelector('[data-switch-action=save]').disabled=!getState().initialized;
+  dialog.querySelector('[data-switch-action=save]').disabled=!getState().initialized||getState().canSave===false;
   dialog.querySelector('[data-switch-action=save]').textContent=destination?'Guardar y entrar':'Guardar y salir';
   dialog.querySelector('[data-switch-action=discard]').textContent=destination?'Entrar sin guardar':'Salir sin guardar';
+  if(sceneChange){$('switch-level-title').textContent='Cambiar de copia del laboratorio';$('switch-level-description').textContent='Este ejercicio usa una copia independiente. Puedes guardar antes de cambiar; la otra sesión no se borra ni se sobrescribe.';dialog.querySelector('[data-switch-action=save]').textContent='Guardar y continuar';dialog.querySelector('[data-switch-action=discard]').textContent='Continuar sin guardar';}
   dialog.returnValue='';const result=new Promise(resolve=>dialog.addEventListener('close',()=>resolve(dialog.returnValue||'cancel'),{once:true}));dialog.showModal();return result;
+ }
+ async function requestScenario(id){
+  if(getState().busy||switching||checking)return;
+  switching=true;update();$('switch-level-error').textContent='';
+  try{
+   let choice=getState().nodeCount?await choose(null,true):'discard';
+   while(choice!=='cancel'){
+    try{await cambiarNivel({choice,save,stop,navigate:()=>navigate(urlEscenarioCurso(location.href,id))});return;}
+    catch(error){$('switch-level-error').textContent='No se ha cambiado de copia: '+(error.message||error);choice=await choose(null,true);}
+   }
+  }
+  finally{switching=false;update();}
  }
  async function requestChange(destination,href){
   if(destination===level||getState().busy||switching)return;
+  if(destination){const target=new URL(href);target.searchParams.delete('escenario');href=target.href;}
   switching=true;update();$('switch-level-error').textContent='';
   try{
    let choice=getState().nodeCount?await choose(destination):'discard';

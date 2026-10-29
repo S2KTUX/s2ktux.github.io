@@ -1,0 +1,12 @@
+{
+  "status": "qa-only-state-compatibility-experiment",
+  "variant": "jit8192-pic-only-v1",
+  "parentWasmSha256": "5f752e916bef9d76889fe0d14f73bb0e611abe2a5d6abdedca8b50da480bf3ac",
+  "wasmSha256": "b31b2045a1ac53ce90e2ead888455b993a24a8c3433a5985ed21e95da47eddef",
+  "picSourceSha256": "1a35df0cf3a7de279c23afb1ca3cac348ce7bfacaf75dab744dbfd1035e3fe78",
+  "unchangedCPUSourceSha256": "9268cad1019fef8339ce4eb7e1e4e809713df86e958574102e4d4e0d6cf24bf8",
+  "source": "https://github.com/copy/v86",
+  "license": "BSD-2-Clause; see LICENSE",
+  "change": "Deliver the spurious slave IRQ15 vector after the master acknowledges a vanished cascade request. CPU/TSC source is identical to the existing jit8192 build.",
+  "scope": "Only a new QA browser profile may load the immutable v6 factory with this candidate. No saved student session, engine identity migration, production default, or persistence acceptance."
+}

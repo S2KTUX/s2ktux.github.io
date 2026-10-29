@@ -2,9 +2,9 @@
   "kind": "beta",
   "route": "/laboratorios/kubernetes-real/",
   "replacesCurrentTerminal": true,
-  "assetCommit": "82f7db652c378f6599658cc102c3d56d83fa90d0",
-  "assetBranch": "assets/kubernetes-beta-20261017",
-  "assetBytes": 883400984,
+  "assetCommit": "599f0e06c2301510bd498a2a9d1fd484c60aaf1c",
+  "assetBranch": "assets/kubernetes-avanzado-20261029",
+  "assetBytes": 3001719109,
   "files": [
     {
       "path": "archivos-serie.mjs",
@@ -43,8 +43,8 @@
     },
     {
       "path": "debian/cliente.mjs",
-      "bytes": 26655,
-      "sha256": "f5148fefde13a91699d7ddb77e694b24a5abe94aa3d6fe9050ff5086e133ac11"
+      "bytes": 29549,
+      "sha256": "0ed330a5221db95ad0219a02b192cef13f798560fbae722a155d2edd111b08a8"
     },
     {
       "path": "debian/compartir-ejecutable-admin.mjs",
@@ -78,13 +78,13 @@
     },
     {
       "path": "debian/ejercicios-niveles.mjs",
-      "bytes": 5518,
-      "sha256": "859480e1da0a107d33aa25bc811db2ff025d230fadc9a1cbaa281315ea9d7723"
+      "bytes": 3970,
+      "sha256": "6638e07ca8c03fa22b6b74780038d68085486f46afe126e847298ccb25391462"
     },
     {
       "path": "debian/entrada-laboratorio.mjs",
-      "bytes": 4420,
-      "sha256": "6aa5f85078ca16f78a7893b6b4036b0f9e04fb8dfec67760c993d4081600fe6a"
+      "bytes": 4481,
+      "sha256": "1bdaac10a761faa375d0f9308f3bbfc873d4c9b315acebf0ea03904045bb8811"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -98,8 +98,8 @@
     },
     {
       "path": "debian/fabrica.mjs",
-      "bytes": 6739,
-      "sha256": "83f07d8f379ffd3d1255e6dd14ee9ca6a1501b17417ced88fa6f05a4c4748cc9"
+      "bytes": 8815,
+      "sha256": "f8890388a14d848d308067ce224c8409de31312b1ea4b49dfa10f847e1acbd2a"
     },
     {
       "path": "debian/fabrica/v6/estado-fragmentado.json",
@@ -114,17 +114,17 @@
     {
       "path": "debian/index.html",
       "bytes": 1708,
-      "sha256": "a5c81a46424781062dc4994564eb266ea9f5158b3d5fd602449190467344eb35"
+      "sha256": "0b2d1900aa3d7689c41443f30c32d21db7167638fd7847675b1ac4a20d737a44"
     },
     {
       "path": "debian/interfaz-niveles.mjs",
-      "bytes": 15538,
-      "sha256": "39cdbf880aefc6cc19fb495e2e6ab62b3e06ed564242f1c4437c693157a35ed6"
+      "bytes": 19499,
+      "sha256": "d3b0559c5bc7fe0ba1618049888263647790ef8ef47fa2f1576309d7367cfae7"
     },
     {
       "path": "debian/kernel-perfil.mjs",
-      "bytes": 387,
-      "sha256": "541a856bb1d21457d2b5f4c6e8547ceb9f5e5cb0981e38e2c2f937869f00b499"
+      "bytes": 551,
+      "sha256": "feb1befec359f8d83ee16bb92d9480513034c628cfca311e3623bfaa2f55f187"
     },
     {
       "path": "debian/kernel/v1/kernel.config",
@@ -143,13 +143,13 @@
     },
     {
       "path": "debian/multinodo.html",
-      "bytes": 8510,
-      "sha256": "2131a24362c16b9e6d38703edfb0a4d57704aec52a445095e333494ed7276c5b"
+      "bytes": 8568,
+      "sha256": "41f8a0b0d050d28e0ea2eb91ca77a28891afd3e27dd9e49e96c39acdb59ed0eb"
     },
     {
       "path": "debian/multinodo.mjs",
-      "bytes": 24092,
-      "sha256": "2c0e3a35115dc7f07cdd4a93320b7f19d582b449cf34276f61b429d388730e4a"
+      "bytes": 30383,
+      "sha256": "a961d4c6b09daf5b7ab5b7a6eee42bba6f1e280269603a0f9056e14df01ab241"
     },
     {
       "path": "debian/niveles.css",
@@ -173,8 +173,8 @@
     },
     {
       "path": "debian/preparar-administracion.mjs",
-      "bytes": 1644,
-      "sha256": "3ffb0460d87d28d855adc0215ad0f74b2dc9ed255cbef588e8e70e9729c3398e"
+      "bytes": 1852,
+      "sha256": "17c552621f536152dd6a544bd7791b26691a9d2c7b9bf2e8b5fb38710808b44e"
     },
     {
       "path": "debian/preparar-worker.mjs",
@@ -208,8 +208,8 @@
     },
     {
       "path": "debian/sesiones-cluster.mjs",
-      "bytes": 6532,
-      "sha256": "c117bcac5582af74bf7c48c49b21e4b5e72deb4fff9680a83bfc8b0bfb39b1eb"
+      "bytes": 8990,
+      "sha256": "c7237db8c69c1abeebab4412293985c2ec0e94a330470e466a514989701c5335"
     },
     {
       "path": "debian/tls-laboratorio.mjs",
@@ -218,8 +218,8 @@
     },
     {
       "path": "disco-kubernetes.mjs",
-      "bytes": 3845,
-      "sha256": "24e556fdea9d7b1cbb7732a9b2fd870fcffba717be56ca427722e15a94406957"
+      "bytes": 3864,
+      "sha256": "0576afa02b3f1762aac241d12147fba9470b7ff98491cdd8c712dd165e184bf4"
     },
     {
       "path": "estadisticas-motor.mjs",
@@ -233,8 +233,8 @@
     },
     {
       "path": "kube-sessions.mjs",
-      "bytes": 2935,
-      "sha256": "8c170f9003793741508c405ae4a07ae5625225d77235bdd1216c87ec25560ad9"
+      "bytes": 3508,
+      "sha256": "601d790381d8bc1606836d8d39cf05581f268dfe952af54949988829ddf8787c"
     },
     {
       "path": "liberar-arranque.mjs",
@@ -248,23 +248,23 @@
     },
     {
       "path": "motor-hilo.mjs",
-      "bytes": 3503,
-      "sha256": "e53ba023097977b280a94040b1d3cca4aacab438a98cdde57f3506183ccc2807"
+      "bytes": 4072,
+      "sha256": "88373bbf5ea03b75c0341db8edeca72b67ec2549c03d217ab36ddf9fc55274fb"
     },
     {
       "path": "motor-worker.mjs",
-      "bytes": 3758,
-      "sha256": "bfdca3fd4ac584874d22cfbea9001f547a954e01d6a3b932dc70b769518a248a"
+      "bytes": 4818,
+      "sha256": "f9eea8e547bdd42feee7a8fea305d358cd9994f9301b6dc48b97ab6734ceba32"
     },
     {
       "path": "perfil-motor.mjs",
-      "bytes": 1981,
-      "sha256": "c6d2eefe135ed3e502da1814a67691897fbe07ad58b2d6380101006133abff7f"
+      "bytes": 2234,
+      "sha256": "aea979eebc04b75d18f4867c534bca00dd117e3553ede1d0b7821aa59f9a5a3a"
     },
     {
       "path": "recursos-publicados.mjs",
-      "bytes": 1273,
-      "sha256": "78d97c041e259853d6c05e0ac318054156b0184ee2d33ae6a1ec23b58f7813ab"
+      "bytes": 1874,
+      "sha256": "28e0db74abed5c76bc4e3adb78eb62a977b6b57ea34b06143ae5b5b7fdc10e24"
     },
     {
       "path": "recursos/curso-debian-v1/materiales.json.gz",
@@ -288,8 +288,8 @@
     },
     {
       "path": "FUENTES_Y_LICENCIAS.md",
-      "bytes": 2623,
-      "sha256": "667501bd06fc90fef3b32e5a5ac97c893e7fce825ccb2321ad33461fdd7f577c"
+      "bytes": 4293,
+      "sha256": "646fcbc61e84da0dd9c8e4409ad9ae399d7c7c1e623556b553457267660a722a"
     },
     {
       "path": "debian/clases-curso.mjs",
@@ -303,13 +303,13 @@
     },
     {
       "path": "debian/comprobaciones-json.mjs",
-      "bytes": 390,
-      "sha256": "a12b009ae63206a34d1d3da14e2592bb055b6df7a342e9e35411fd6d9289671e"
+      "bytes": 371,
+      "sha256": "68b19c6ff88596f5f6404fbf16994c3e5f5bf6149528b550fad09b9548fa790e"
     },
     {
       "path": "debian/motor-practicas.mjs",
-      "bytes": 3133,
-      "sha256": "67c5982572e37e51eb57169fa5c9c6f1662299331f65e5874e1b41a23ca2e4e3"
+      "bytes": 4472,
+      "sha256": "20260d0b4dadc45a53edbab641da87447cda9ee51784554d48b2139907bdae44"
     },
     {
       "path": "debian/salud-inicial.mjs",
@@ -323,8 +323,8 @@
     },
     {
       "path": "debian/herramientas-practicas.mjs",
-      "bytes": 3383,
-      "sha256": "b995634347ea1c077e75979d586d65ff87a76d14b093a8fd40958f9feab4d734"
+      "bytes": 3471,
+      "sha256": "57b511eb13b1d3ed81f88ccdb81ea8ca3da406a4271a87f0c151113612c325e0"
     },
     {
       "path": "debian/criterios-equivalentes.mjs",
@@ -333,8 +333,8 @@
     },
     {
       "path": "debian/disponibilidad-curso.mjs",
-      "bytes": 631,
-      "sha256": "282d3b448ddaff9a6a829c75f6a20235816816ac3ee3c731b40e21c891ae9292"
+      "bytes": 984,
+      "sha256": "b136ca2f11943ac852d5af48e3afd8e3c442d25d467d8e6f701a5ced71b45645"
     },
     {
       "path": "debian/ejercicios-aprender.mjs",
@@ -353,8 +353,8 @@
     },
     {
       "path": "debian/bases-limpias.mjs",
-      "bytes": 3763,
-      "sha256": "9367c31b61c7667ff277905620dc826d6d8b5d56010f46cc8054f2ccb02f1da5"
+      "bytes": 3780,
+      "sha256": "cc76958a7d5c485baed2b81cdbbd7b320b2c55b7a1843c1a02a330efe3b109ba"
     },
     {
       "path": "debian/ejercicios-acceso.mjs",
@@ -363,8 +363,8 @@
     },
     {
       "path": "debian/bases-publicadas.mjs",
-      "bytes": 989,
-      "sha256": "27754c457e2bc3ed125e270fefccfdd3130d7f63935b654307ab675c474dc530"
+      "bytes": 10911,
+      "sha256": "34b9c145076860f4c7855e49b18a6256e2b7c6137db2b1ad00ef94b9355c768c"
     },
     {
       "path": "debian/fabrica-cluster.mjs",
@@ -374,7 +374,7 @@
     {
       "path": "debian/ejercicios-almacenamiento.mjs",
       "bytes": 6723,
-      "sha256": "9e73779cb79a1c9e1e1a9222627468b15d19a587aa670d4c55ccbdcf074a5113"
+      "sha256": "4f9ebf1eaf2f80be1a39935164029bec03d27b331ae70897e3241b15dd1772d6"
     },
     {
       "path": "debian/almacenamiento-curso.mjs",
@@ -399,12 +399,12 @@
     {
       "path": "debian/ejercicios-controladores.mjs",
       "bytes": 8080,
-      "sha256": "7516c665c03377accfa4aac4db3a5b47e50d79d30638de223bc1c68408c04156"
+      "sha256": "61dc17ffde6c1b3c2c768ccb232db896547a300e1774218128fa4b10d79f8794"
     },
     {
       "path": "debian/ejercicios-ingress.mjs",
       "bytes": 6646,
-      "sha256": "e3807e98acd2ccd5a849a55fce679fe997ce546cce47393fde2dfed521f5543a"
+      "sha256": "c59792058a3610b1aff9dadcee811bb8c312f0544c24a29d4f31676b61512a3c"
     },
     {
       "path": "debian/ingress-curso.mjs",
@@ -414,17 +414,17 @@
     {
       "path": "debian/ejercicios-scheduling.mjs",
       "bytes": 6273,
-      "sha256": "56508fb26c7d2b9ea2d2270a1a89cdf57c507f548a447841b6c42be208141f1f"
+      "sha256": "9949a7fb81edc087d193145db5b2ef2e299797dd3fe9ad0af915c5ce24646b50"
     },
     {
       "path": "debian/ejercicios-red.mjs",
       "bytes": 9661,
-      "sha256": "cbe7a2f928f4843900a3db5ba12fbe15f9c1ea5afe677320ff444f2a0661c8f6"
+      "sha256": "ff23ed3a419127b579445eb4c44cbfb41a37a654669d7c45d0da0f177fb57c97"
     },
     {
       "path": "debian/ejercicios-dns.mjs",
       "bytes": 3118,
-      "sha256": "e00ad26fa5ec35580ea37dbbe811c90d99a9c5444dfbd64081f77ef28379664b"
+      "sha256": "e4f7dacc1a978183874dc8bb17bd61efcb0bc5a2bb2f00f18ebb5bb5a554dde4"
     },
     {
       "path": "debian/red-politicas-curso.mjs",
@@ -434,7 +434,7 @@
     {
       "path": "debian/ejercicios-gateway.mjs",
       "bytes": 7196,
-      "sha256": "9afe5326ae19449e6722b73c06bd537e6a8873a70d42416e6f14c2af473b1893"
+      "sha256": "89c47e64947ff7a42dc70eb3adf2e73d159e7c64b6fe31c25638ee97bc0d6c6f"
     },
     {
       "path": "debian/gateway-curso.mjs",
@@ -458,8 +458,213 @@
     },
     {
       "path": "debian/ejercicios-administracion.mjs",
-      "bytes": 4770,
-      "sha256": "1ad7c4fe10eb6232a73643605a8190a64f7f50101af4a17ca226a1e2f9d17669"
+      "bytes": 5033,
+      "sha256": "2b2d167de12692a81ed5efb9dfa45570b971503c343b26ca52ddf4b03855a180"
+    },
+    {
+      "path": "debian/ejercicios-avanzados.mjs",
+      "bytes": 24149,
+      "sha256": "4830fb2406b6ce0fb9e248b78ff5917424bb7cf9137351510d42f28ada609c34"
+    },
+    {
+      "path": "debian/complementos-avanzados.mjs",
+      "bytes": 3143,
+      "sha256": "fd02080d549d450f61a3b663f358e3ce1d77a073e2be03f455ea87a5305faeb0"
+    },
+    {
+      "path": "debian/ejercicios-ciclo-cluster.mjs",
+      "bytes": 7089,
+      "sha256": "dc04eeb8c2c4a467687f290c20ae8497bb69d36da0a7b2eb0e041b955cab8b84"
+    },
+    {
+      "path": "comprimir-estado.mjs",
+      "bytes": 938,
+      "sha256": "9428ef18ea7ec5858575e884474dc50dae67ff42bfbff346b393b68bc0aa8a0f"
+    },
+    {
+      "path": "debian/perfil-administracion.mjs",
+      "bytes": 975,
+      "sha256": "d1c6c570e93483cf9a5238706f12eee896ed173de73f4dae6e51bda08263e9ca"
+    },
+    {
+      "path": "debian/escenarios-curso.mjs",
+      "bytes": 2484,
+      "sha256": "ede8456b5e6c62725a417a6251e66ca20ab85df71423c9d341d9978fc62fc5a5"
+    },
+    {
+      "path": "debian/cni-montaje-curso.mjs",
+      "bytes": 4248,
+      "sha256": "c464abab731e1c4b9a5c465a340635902aaf6cd43c489e334a9ef75e07798aa8"
+    },
+    {
+      "path": "debian/montaje-manual-curso.mjs",
+      "bytes": 5214,
+      "sha256": "9d4672bb487ea6e8349139c8147c6d3cc8a741a4e1f7888fe7eb3f957c56d75c"
+    },
+    {
+      "path": "debian/leer-join-curso.mjs",
+      "bytes": 577,
+      "sha256": "75343a57337eb777b171784fc02037e5025bc3dab9276fc117fc528fbc153c4a"
+    },
+    {
+      "path": "debian/esperar-nodo-curso.mjs",
+      "bytes": 731,
+      "sha256": "022357a3a7413dad306a4c1fea16ae4c533807069e7ebcd0838877cd743c7196"
+    },
+    {
+      "path": "debian/ejercicios-montaje.mjs",
+      "bytes": 4761,
+      "sha256": "ab806a32b87df2975f017c555e0a4fe4da5a5cdc71df3337c63d4e18b25b2d86"
+    },
+    {
+      "path": "debian/perfil-ha.mjs",
+      "bytes": 2121,
+      "sha256": "60a21559ace773d96e2010d46d2bef0166360ad944175ec25c276dbf927db5bd"
+    },
+    {
+      "path": "debian/ha-configuracion.mjs",
+      "bytes": 1587,
+      "sha256": "8d3e35d945d5f5a80776338f44cbd61aab0f919ff39d7b57640cbebf7356aae4"
+    },
+    {
+      "path": "debian/tiempos-etcd.mjs",
+      "bytes": 710,
+      "sha256": "3d68df3331a8034172e1833e6841db605a1496b5059a4464b1c0de8ea329e68b"
+    },
+    {
+      "path": "debian/configuracion-admin-curso.mjs",
+      "bytes": 2648,
+      "sha256": "c815e37848edde278b7e5a1b4c40b0c2a67da3969a6c26f24b23627f120a902c"
+    },
+    {
+      "path": "debian/perfil-controlplane.mjs",
+      "bytes": 761,
+      "sha256": "3bdd05873244d47b5ef674336ed3dc48f27b605d4d41a78ed2db680d7cc52a4d"
+    },
+    {
+      "path": "debian/ha-rutas.mjs",
+      "bytes": 889,
+      "sha256": "cea7f05f3340abc0159c5862a0d1767a962176179d1faa593b7037594fc7ef7c"
+    },
+    {
+      "path": "debian/ha-curso.mjs",
+      "bytes": 13555,
+      "sha256": "e95f9736944e61abb540b81bf6cdbdfe9844afe162377a58c705710fd169d0cc"
+    },
+    {
+      "path": "debian/sesiones-ha.mjs",
+      "bytes": 3167,
+      "sha256": "11db15bb1ed5e61016b01221d30c8152bd99152d5d21c81a12a1524fa5a669dc"
+    },
+    {
+      "path": "debian/ejercicios-ha.mjs",
+      "bytes": 2154,
+      "sha256": "852b4d889e7f7991b9b8e593a51769d5fd2a9c37bc476f520f8c6c7ae9add54f"
+    },
+    {
+      "path": "debian/materiales-ha/kubeadm.yaml",
+      "bytes": 3432,
+      "sha256": "672e388003fea3a63303c5203a1072fbd3638914e6403d6b54242ba3feef9b9d"
+    },
+    {
+      "path": "debian/materiales-ha/etcd-strategic.yaml",
+      "bytes": 433,
+      "sha256": "18b96901116a7012d5bbf0991ec7e63d4366ad99deb9edd6e529b5753ee1ea4e"
+    },
+    {
+      "path": "debian/archivo-http-local.mjs",
+      "bytes": 3435,
+      "sha256": "dee799082e04894596ad4eb13b154e13fb2731ff8e7c47c35dc6cffceb13857a"
+    },
+    {
+      "path": "debian/vendor/fetch-network.mjs",
+      "bytes": 63611,
+      "sha256": "b92bcd8e3b6d28d8fa180f51f46022bea981e6de6dd3c7f98e9c31a8800ef56e"
+    },
+    {
+      "path": "debian/vendor/LICENSE-v86-network.txt",
+      "bytes": 1306,
+      "sha256": "3f61ba65e3215b09ef264ba8d777d73c19644309fbb705967634eb5147e500a0"
+    },
+    {
+      "path": "debian/fabrica-ha.mjs",
+      "bytes": 4005,
+      "sha256": "c5ff51839385c9c41885a988b567da95816fed13b3c91e9d4e2ce910099b1b4c"
+    },
+    {
+      "path": "debian/esperar-firma-ha.mjs",
+      "bytes": 1065,
+      "sha256": "488ca2f524307838d96967b4271bbf495433f11cc84722e26b1af8e80a111a98"
+    },
+    {
+      "path": "debian/inicializacion-ha.mjs",
+      "bytes": 2407,
+      "sha256": "74b30ee8a84276276f4a730dd28954ccf2a662bfe66e5fe6dd43b550f11a6c55"
+    },
+    {
+      "path": "debian/incorporacion-ha.mjs",
+      "bytes": 1802,
+      "sha256": "1a54de4684a9401c246d44b04cac89dbde835eb478b867a37969aee462801e8f"
+    },
+    {
+      "path": "debian/salud-ha.mjs",
+      "bytes": 698,
+      "sha256": "2850be211434a3b74e6cf63ae31606582c77ebb682e24a8a7b2a341183bd7617"
+    },
+    {
+      "path": "checkpoint-discos.mjs",
+      "bytes": 7076,
+      "sha256": "b5a6e4f42af60fabd4c0cef519113345220ae1186148c3872325f56bda2a5e0e"
+    },
+    {
+      "path": "debian/sesiones-checkpoint.mjs",
+      "bytes": 3917,
+      "sha256": "6aaf0deed4f32b694eecbb260a0ce112bf08818f36d7642d66aa3d3e1535e4f0"
+    },
+    {
+      "path": "debian/disco-admin-v3/disco-fragmentado.json",
+      "bytes": 646959,
+      "sha256": "50d6f34af321d6690fb0e3aac3c895bb00e27ee63247d7c489c129699e46abdf"
+    },
+    {
+      "path": "debian/fabrica/v14/estado-fragmentado.json",
+      "bytes": 21271,
+      "sha256": "0a1848b3dfc8101e60ba3678af6654fe26aa95764dd78d4df2fcd487a0c88976"
+    },
+    {
+      "path": "debian/fabrica/v15/estado-fragmentado.json",
+      "bytes": 19867,
+      "sha256": "9d91642cdf29267d6be7ad4627c3fa70310b46a827149a8184e92d2b56944dc4"
+    },
+    {
+      "path": "debian/kernel/highmem-v1/kernel.config",
+      "bytes": 100668,
+      "sha256": "d4de7ebd1d03171c59b76e0e574685af3ff0f2b0736af1d985ede1bf5ea9965f"
+    },
+    {
+      "path": "debian/kernel/highmem-v1/modules.builtin",
+      "bytes": 18628,
+      "sha256": "d767bcdc14f2be395585e68fc5309286c292603feb69332368e9d1c2b4a71864"
+    },
+    {
+      "path": "debian/kernel/highmem-v1/modules.builtin.modinfo",
+      "bytes": 190663,
+      "sha256": "a57fddca013633ba89969d634d0a8fe66f2025522eec5628ee5c385b88adfa22"
+    },
+    {
+      "path": "debian/kernel/highmem-net-v2/kernel.config",
+      "bytes": 100668,
+      "sha256": "d4de7ebd1d03171c59b76e0e574685af3ff0f2b0736af1d985ede1bf5ea9965f"
+    },
+    {
+      "path": "debian/kernel/highmem-net-v2/modules.builtin",
+      "bytes": 18628,
+      "sha256": "d767bcdc14f2be395585e68fc5309286c292603feb69332368e9d1c2b4a71864"
+    },
+    {
+      "path": "debian/kernel/highmem-net-v2/modules.builtin.modinfo",
+      "bytes": 190777,
+      "sha256": "eccdfea204f465c7d2c17baf8fac3dd9fbecd7195b59874eb2d62b355fc278d6"
     }
   ]
 }

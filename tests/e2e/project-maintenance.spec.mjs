@@ -14,8 +14,24 @@ test('Sobre · pendientes y versiones discretos, licencias y descarga',async({pa
  await expect(page.locator('h1')).toHaveText('Sobre S2KTUX');await expect(page.locator('#pendientes')).not.toHaveAttribute('open','');
  await page.locator('#pendientes summary').click();await expect(page.locator('#pendientes')).toContainText('LPIC-1');await expect(page.locator('#pendientes')).toContainText('Helm y Gateway API');
  const response=await page.request.get('/contenido/pendientes.md');expect(response.ok()).toBe(true);expect(await response.text()).toContain('dos horas');
- await page.locator('#versiones summary').click();await expect(page.locator('#versiones')).toContainText('v1.1');await expect(page.locator('#versiones')).toContainText('v1.0');
+ await page.locator('#versiones summary').click();await expect(page.locator('#versiones')).toContainText('v1.0');await expect(page.locator('#versiones')).not.toContainText('v1.1');await expect(page.locator('#versiones')).not.toContainText('v1.2');
+ const dates=await page.locator('.about-version time').evaluateAll(nodes=>nodes.map(node=>node.dateTime));expect(new Set(dates).size).toBe(dates.length);
  await page.locator('#licencias summary').click();await expect(page.locator('#licencias')).toContainText('MIT');await expect(page.locator('#licencias')).toContainText('CC BY-NC-SA');expect(errors).toEqual([]);
+});
+
+test('Versiones · los enlaces antiguos llevan a las notas agrupadas del mismo día',async({page})=>{
+ await page.goto('/versiones/2.8.html');await expect(page).toHaveURL(/\/versiones\/2026-10-22\.html$/);
+ await expect(page.locator('h1')).toHaveText('Versión 2.2');
+ await expect(page.locator('.site-nav').getByRole('link',{name:'Proyectos',exact:true})).toBeVisible();
+});
+
+test('Versiones · un número reutilizado no cambia el destino del enlace antiguo',async({page})=>{
+ await page.goto('/versiones/2.3.html');await expect(page).toHaveURL(/\/versiones\/2026-10-21\.html$/);
+ await expect(page.locator('h1')).toHaveText('Versión 2.1');
+ await page.goto('/sobre.html');await page.locator('#versiones summary').click();
+ const current=page.locator('#version-2\\.3');await expect(current.locator('h3')).toContainText('v2.3');
+ await current.getByRole('link').click();await expect(page).toHaveURL(/\/versiones\/2026-10-24\.html$/);
+ await expect(page.locator('h1')).toHaveText('Versión 2.3');
 });
 
 test('Versiones · una frase y enlace a las notas con el mismo diseño',async({page},testInfo)=>{
@@ -23,10 +39,11 @@ test('Versiones · una frase y enlace a las notas con el mismo diseño',async({p
  const version=page.locator('.about-version').first();
  await expect(version.locator('p')).toHaveCount(1);
  const versionNumber=(await version.locator('h3').innerText()).match(/v(\d+\.\d+)/)[1];
+ const date=await version.locator('time').getAttribute('datetime');
  await version.scrollIntoViewIfNeeded();
  await page.screenshot({path:testInfo.outputPath('historial-resumido.png')});
  await version.getByRole('link',{name:'Notas completas de la nueva versión de la página'}).click();
- await expect(page).toHaveURL(new RegExp(`/versiones/${versionNumber.replace('.','\\.')}.html$`));
+ await expect(page).toHaveURL(new RegExp(`/versiones/${date}.html$`));
  await expect(page.locator('h1')).toHaveText('Versión '+versionNumber);
  await expect(page.locator('.site-nav').getByRole('link',{name:'Proyectos',exact:true})).toHaveAttribute('href','../proyectos.html');
  await expect(page.locator('.about-release p')).not.toHaveCount(1);

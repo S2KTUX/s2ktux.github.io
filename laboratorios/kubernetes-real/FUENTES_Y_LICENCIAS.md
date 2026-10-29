@@ -1,4 +1,4 @@
-# Laboratorio Kubernetes · versión preliminar
+# Laboratorio Kubernetes · fuentes y licencias
 
 La interfaz y las máquinas se ejecutan en el navegador. Los discos, el kernel
 y el motor se descargan de una revisión inmutable de este mismo repositorio;
@@ -26,3 +26,15 @@ Fuentes y materiales de construcción:
 La rama de recursos incluye los scripts, overlays y configuración empleados
 para construir los componentes propios. Los informes internos de pruebas y
 perfiles de navegador no forman parte de la entrega pública.
+
+## Base del nivel avanzado
+
+Kubernetes 1.35 y la actualización a 1.36 utilizan compilaciones propias linux/386. Se conservan los avisos, cambios y recetas de construcción:
+
+- [Fuentes, cambios y licencias de los componentes](https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/599f0e06c2301510bd498a2a9d1fd484c60aaf1c/kubernetes/v1/fuentes/componentes-avanzado-20261024/fuentes-y-licencias.tar.gz).
+- [Fuentes de la infraestructura del laboratorio](https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/599f0e06c2301510bd498a2a9d1fd484c60aaf1c/kubernetes/v1/fuentes/componentes-avanzado-20261024/fuentes-infraestructura.tar.gz).
+- [Fuentes y configuración de la base Debian](https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/599f0e06c2301510bd498a2a9d1fd484c60aaf1c/kubernetes/v1/fuentes/componentes-ha-20261026/fuentes-debian-admin.tar.gz).
+- [Configuración y modificaciones del kernel](https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/599f0e06c2301510bd498a2a9d1fd484c60aaf1c/kubernetes/v1/fuentes/componentes-ha-20261026/fuentes-kernel-ha.tar.gz). Las fuentes completas de Linux 6.19.3 se conservan en el [paquete de fuentes de Docker](https://github.com/S2KTUX/s2ktux.github.io/releases/download/docker-real-2026-10-11/fuentes-docker-real-2026-10-11.tar.gz).
+- [Fuentes exactas y licencias del motor v86 utilizado](https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/599f0e06c2301510bd498a2a9d1fd484c60aaf1c/kubernetes/v1/fuentes/componentes-motor-ha-20261027/fuentes-v86-pic-reloj-licencias.tar.gz).
+
+Estos archivos contienen componentes y materiales de construcción; no incluyen sesiones de alumnos ni perfiles de navegador.

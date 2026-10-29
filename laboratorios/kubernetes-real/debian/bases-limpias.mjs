@@ -1,11 +1,11 @@
-import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c117bcac5582af74';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c7237db8c69c1abe';
 // Distinto de los guardados del alumno: aquí solo entra la primera base,
 // antes de habilitar su consola y nunca después de recuperar una sesión.
 export class BasesLimpias extends SesionesClusterDebian{
  constructor(revision,options){
   const {compatibleRevisions=[],...profile}=options||{};
   super(profile);if(!/^[a-f0-9]{64}$/.test(revision))throw Error('Revisión de base limpia inválida');
-  if(!Array.isArray(compatibleRevisions)||compatibleRevisions.length>4||compatibleRevisions.some(value=>!/^[a-f0-9]{64}$/.test(value)||value===revision)||new Set(compatibleRevisions).size!==compatibleRevisions.length)throw Error('Compatibilidad de base limpia inválida');
+  if(!Array.isArray(compatibleRevisions)||compatibleRevisions.length>16||compatibleRevisions.some(value=>!/^[a-f0-9]{64}$/.test(value)||value===revision)||new Set(compatibleRevisions).size!==compatibleRevisions.length)throw Error('Compatibilidad de base limpia inválida');
   this.compatibleRevisions=[...compatibleRevisions];this.compatibleProfile=profile;
   this.prefix='base:'+this.level+':';this.key=this.prefix+revision;
  }
@@ -48,7 +48,7 @@ export async function capturarCluster({ordered,network,pack,write}){
   const stopped=await Promise.allSettled(held.map(node=>node.access.freeze()));
   const rejected=stopped.find(result=>result.status==='rejected');if(rejected)throw rejected.reason;
   const captures=[];
-  for(const node of held)captures.push(await pack(node.id,await node.access.state(),node.info.terminalText));
+  for(const node of held)captures.push(await pack(node.id,await node.access.state(),node.info.terminalText,{consumir:true}));
   return await write(captures);
  }finally{
   let networkError;try{network.resume();}catch(error){networkError=error;}

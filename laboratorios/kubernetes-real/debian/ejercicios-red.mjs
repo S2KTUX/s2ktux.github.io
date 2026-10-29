@@ -1,4 +1,4 @@
-import {IMAGEN,aplicar,pod,contenedor,obtener,listo,crearPractica,q} from './herramientas-practicas.mjs?v=b995634347ea1c07';
+import {IMAGEN,aplicar,pod,contenedor,obtener,listo,crearPractica,q} from './herramientas-practicas.mjs?v=57b511eb13b1d3ed';
 import {exigirJSON} from './comprobaciones-json.mjs';
 const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));
 const server=ns=>pod(ns,'api',{containers:[contenedor(['sh','-c','mkdir -p /www; echo RED_OK > /www/index.html; httpd -p 80 -h /www; exec httpd -f -p 8080 -h /www'])]});

@@ -20,10 +20,10 @@ assert.equal(ejerciciosClase(12).length,3);
 for(let number=15;number<=18;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===15?4:2);}
 for(let number=19;number<=22;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===19||number===21?3:2);}
 assert.equal(claseDisponible(23),true);assert.equal(ejerciciosClase(23).length,3);
-for(let number=24;number<=34;number++){assert.equal(claseDisponible(number),false);assert.deepEqual(ejerciciosClase(number),[]);}
-assert.equal(nivelDisponible('avanzado'),false);assert.equal(limiteNodos('intermedio'),2);
+for(let number=24;number<=34;number++){assert.equal(claseDisponible(number),true);assert.equal(ejerciciosClase(number).length,number===24||number===33||number===34?3:number===32?6:2);}
+assert.equal(nivelDisponible('avanzado'),true,'Entrega avanzada con aceptación nativa');assert.equal(limiteNodos('intermedio'),2);
 const safeParams=parametrosPublicos('mode=other&factory=v8&fast=1&use-scheduling-api=1&clase=28&level=avanzado&enter=1');
-assert.equal(safeParams.get('mode'),'course');assert.equal(safeParams.get('factory'),'v6');assert.equal(safeParams.has('fast'),false);assert.equal(safeParams.has('use-scheduling-api'),false);assert.equal(safeParams.get('clase'),'28');
+assert.equal(safeParams.get('mode'),'course');assert.equal(safeParams.get('factory'),'v15');assert.equal(safeParams.has('fast'),false);assert.equal(safeParams.get('use-scheduling-api'),'1');assert.equal(safeParams.get('clase'),'28');
 for(const task of [...EJERCICIOS_INICIALES,...EJERCICIOS_INTERMEDIOS].filter(task=>task.classNumber!==0)){
  assert.ok(task.id&&task.prepare.length&&task.solution&&task.check&&task.negative);
  const visible=ejerciciosClase(task.classNumber).find(value=>value.id===task.id);

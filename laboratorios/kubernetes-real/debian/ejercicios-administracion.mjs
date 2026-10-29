@@ -26,7 +26,9 @@ export const EJERCICIOS_ADMINISTRACION=Object.freeze([
   prompt:`En cka-cp1 crea ${path('a')} para ejecutar el Static Pod curso-static-a, en p24a, con ${IMAGEN}. Debe permanecer en ejecución. Comprueba su mirror Pod y el contenedor con crictl. No modifiques los componentes del control plane.`,
   solution:write('a',a)+'\n'+wait('a')+'\nkubectl -n p24a get pods -o wide\ncrictl ps',
   solutionDisplay:display('a',a)+'\n\n'+wait('a')+'\nkubectl -n p24a get pods -o wide\ncrictl ps',
-  equivalent:write('a',{...a,metadata:{...a.metadata,labels:{practica:'estatica'}},spec:{...a.spec,containers:[{...a.spec.containers[0],command:['sh','-c','exec sleep 3600']}]}})+'\n'+wait('a')
+  // Ready puede pertenecer todavía al mirror anterior. Esperar primero a
+  // que kubelet publique el manifiesto nuevo; no aceptar un estado viejo.
+  equivalent:write('a',{...a,metadata:{...a.metadata,labels:{practica:'estatica'}},spec:{...a.spec,containers:[{...a.spec.containers[0],command:['sh','-c','exec sleep 3600']}]}})+`\nkubectl -n p24a wait --for=jsonpath='{.metadata.labels.practica}'=estatica pod/${mirror('a')} --timeout=180s`+'\n'+wait('a')
  }),
  create('b',{
   title:'Reparar un Static Pod · II',

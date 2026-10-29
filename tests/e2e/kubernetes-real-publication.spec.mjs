@@ -28,7 +28,7 @@ test('Kubernetes · primero modo y después exactamente tres laboratorios',async
  await page.locator('[data-choose-stage=intermedio]').click();await expect(page.locator('[data-choose-stage=intermedio]')).toHaveAttribute('aria-pressed','true');
  await expect(page.locator('#entry-intro')).toBeHidden();await expect(page.locator('#lab-entry')).not.toContainText('Control plane y un worker');await expect(page.locator('#enter-lab')).toHaveText('Abrir laboratorio intermedio');
  await page.locator('[data-choose-stage=avanzado]').click();
- await expect(page.locator('#enter-lab')).toBeDisabled();await expect(page.locator('#entry-intro')).toContainText('Próximamente');
+ await expect(page.locator('#enter-lab')).toBeEnabled();await expect(page.locator('#entry-intro')).toBeHidden();
  await expect(page.locator('#nodes iframe')).toHaveCount(0);expect(errors).toEqual([]);
 });
 test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arrancarlo',async({page},testInfo)=>{
@@ -58,15 +58,17 @@ test('Kubernetes · clases y preguntas comparten el laboratorio sin volver a arr
  expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);await expect(page.locator('#exercise-class-select option[value="23"]')).toBeEnabled();await expect(page.locator('#add-worker')).toBeHidden();
  await page.selectOption('#exercise-class-select','23');await expect(page.locator('#exercise-select option')).toHaveCount(3);await page.screenshot({path:testInfo.outputPath('kubernetes-practicas-gateway.png')});
 });
-test('Kubernetes · pendientes bloqueados incluso por enlaces y acciones directas',async({page})=>{
- for(const [level,number] of [['avanzado',24],['avanzado',28],['avanzado',34]]){
-  await page.goto(root+'debian/multinodo.html?mode=course&level='+level+'&clase='+number+'&enter=1&factory=v8&fast=1');
-  await expect(page.locator('#lab-entry')).toBeVisible();await expect(page.locator('#entry-intro')).toContainText('Próximamente');
-  await expect(page.locator('#enter-lab')).toBeDisabled();await expect(page.locator('#start-cluster')).toBeDisabled();
-  await page.evaluate(async()=>{await document.querySelector('#enter-lab').onclick();document.querySelector('#start-cluster').click();});
-  await expect(page.locator('#nodes iframe')).toHaveCount(0);await expect(page.locator('#exercise-help')).toBeHidden();expect(await page.evaluate(()=>globalThis.kubeDebianClusterProfile)).toBeUndefined();
+test('Kubernetes · el avanzado muestra sus prácticas sin arrancar máquinas',async({page})=>{
+ await mockBoot(page);
+ for(const [number,count]of [[24,3],[28,2],[34,3]]){
+  await page.goto(root+'debian/multinodo.html?mode=course&level=avanzado&clase='+number+'&enter=1&factory=v8&fast=1');
+  await expect(page.locator('#exercise-class-select')).toHaveValue(String(number));
+  await expect(page.locator('#exercise-select option')).toHaveCount(count);
+  expect(await page.evaluate(()=>kubeDebianClusterProfile.factoryVersion)).toBe('v15');
+  await expect(page.locator('#nodes iframe')).toHaveCount(0);expect(await page.evaluate(()=>globalThis.testStarts||0)).toBe(0);
  }
 });
+
 test('Kubernetes · examen separado, español e inglés y sin un intento ficticio',async({page})=>{
  await page.goto(root);await page.locator('#mode-exam').click();await expect(page.locator('#practice-configuration')).toBeHidden();
  await expect(page.locator('#exam-configuration')).toBeVisible();await expect(page.locator('#start-exam')).toBeDisabled();await expect(page.locator('#exam-language-note')).toContainText('no es un idioma oficial');

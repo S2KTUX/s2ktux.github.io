@@ -1,0 +1,70 @@
+name: Kubernetes real - bloque avanzado candidato
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: kubernetes-native-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  native:
+    # No despliega Pages ni utiliza sesiones de alumnos. Dos VMs reales por
+    # recorrido, sin mocks del motor, API, métricas ni correctores.
+    # Ejecución manual mientras se acepta la fábrica nueva. Los ensayos con
+    # el motor PIC y la captura v6 antigua fallaron; no repetirlos en cada push.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      max-parallel: 2
+      matrix:
+        include:
+          - block: complementos
+            cases: c29-a,c29-b,c30-a,c30-b,c31-a,c31-b,c34-c
+          - block: diagnostico
+            cases: c32-a,c32-b,c32-c,c32-d,c32-e,c32-f,c33-b,c34-a,c34-b
+          - block: mantenimiento
+            cases: c24-a,c24-b,c27-a,c28-a,c33-a
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.0-noble
+      options: --user 1001
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - name: Construir la copia candidata
+        run: npm run build
+      - name: Probar el bloque en Linux real
+        env:
+          S2KTUX_QA_PORT: '4189'
+          S2KTUX_NATIVE_ORIGIN: http://127.0.0.1:4189
+          S2KTUX_NATIVE_OUTPUT: test-results/kubernetes-native
+          S2KTUX_NATIVE_CASES: ${{ matrix.cases }}
+        shell: bash
+        run: |
+          node tests/e2e/server.mjs _site > /tmp/s2ktux-native-server.log 2>&1 &
+          server_pid=$!
+          trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 30); do
+            if curl --silent --fail http://127.0.0.1:4189/ > /dev/null; then break; fi
+            sleep 1
+          done
+          node scripts/test-kubernetes-advanced-native.mjs
+      - name: Conservar resultados incluso si falla
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: kubernetes-native-${{ matrix.block }}
+          path: test-results/kubernetes-native/
+          retention-days: 14
+          if-no-files-found: warn

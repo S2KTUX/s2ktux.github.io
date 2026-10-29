@@ -1,0 +1,15 @@
+--- a/src/rust/cpu/pic.rs
++++ b/src/rust/cpu/pic.rs
+@@ -333,4 +333,11 @@ fn acknowledge_irq_slave(pic: &mut Pic) -> Option<u8> {
+     let irq = match pic.slave.get_irq() {
+         Some(i) => i,
+-        None => return None,
++        // INTR can disappear after the master latched its cascade edge.
++        // The real 8259A responds with its default IR7 vector, without
++        // setting slave ISR7. The OS must still EOI master IRQ2. Dropping
++        // the vector instead strands master ISR2 and blocks all slave IRQs.
++        None => {
++            pic.clear_irq(2);
++            return Some(pic.slave.irq_map | 7);
++        },
+     };

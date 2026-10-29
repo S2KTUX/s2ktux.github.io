@@ -7,14 +7,16 @@ const deployment=JSON.parse(await read('publicacion.json'));
 assert.equal(deployment.kind,'beta');assert.equal(deployment.replacesCurrentTerminal,true);assert.match(deployment.assetCommit,/^[a-f0-9]{40}$/);
 assert.ok(deployment.files.length>40);let total=0;
 for(const record of deployment.files){assert.ok(!record.path.split('/').includes('..'));const data=await readFile(new URL(record.path,base));assert.equal(data.length,record.bytes,record.path);assert.equal(createHash('sha256').update(data).digest('hex'),record.sha256,record.path);total+=data.length;assert.doesNotMatch(record.path,/(?:^|\/)(?:qa-|Resultado|diagnosticar|probar-|ha-privado)/);}
-assert.ok(total<4*1048576,'Solo la interfaz y los manifiestos van a Pages');
+assert.ok(total<5*1048576,'Solo la interfaz, materiales pequeños y manifiestos van a Pages');
+for(const record of deployment.files){assert.ok(record.bytes<1048576,'No incluir discos o capturas en Pages: '+record.path);assert.doesNotMatch(record.path,/\.(?:ext4|qcow2|wasm|bin|data)$/);}
 const resolve=crearResolverRecursos(`https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/${deployment.assetCommit}/kubernetes/v1/`);
-for(const file of ['debian/disco-v6/disco-fragmentado.json','componentes/disco-v7/disco-fragmentado.json','componentes/disco-v8/disco-fragmentado.json','debian/fabrica/v6/estado-fragmentado.json']){
+for(const file of ['debian/disco-v6/disco-fragmentado.json','componentes/disco-v7/disco-fragmentado.json','componentes/disco-v8/disco-fragmentado.json','debian/fabrica/v6/estado-fragmentado.json','debian/disco-admin-v3/disco-fragmentado.json','debian/fabrica/v14/estado-fragmentado.json','debian/fabrica/v15/estado-fragmentado.json']){
  const manifest=JSON.parse(await read(file));assert.ok(manifest.parts.length);
  for(const part of manifest.parts)if(part.file){assert.match(part.file,/^[a-f0-9]{64}\.(gz|part)$/);assert.equal(resolve(new URL('fragmentos/'+part.file,new URL(file,base))).hostname,'raw.githubusercontent.com');}
 }
 const page=await read('debian/multinodo.html'),hub=await readFile(new URL('../terminal.html',import.meta.url),'utf8');
 const uiRevision=async path=>createHash('sha256').update((await read(path)).replaceAll('\r\n','\n')).digest('hex').slice(0,16);
+for(const child of ['ejercicios-administracion','ejercicios-ciclo-cluster','ejercicios-avanzados'])assert.ok((await read('debian/ejercicios-niveles.mjs')).includes("from './"+child+".mjs?v="+await uiRevision('debian/'+child+'.mjs')+"'"));
 assert.ok(page.includes('src="entrada-laboratorio.mjs?v='+await uiRevision('debian/entrada-laboratorio.mjs')+'"'));
 assert.ok(page.includes('href="niveles.css?v='+await uiRevision('debian/niveles.css')+'"'));
 assert.ok((await read('debian/entrada-laboratorio.mjs')).includes("import('./multinodo.mjs?v="+await uiRevision('debian/multinodo.mjs')+"')"));
