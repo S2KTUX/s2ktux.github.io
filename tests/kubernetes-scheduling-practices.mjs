@@ -23,7 +23,7 @@ for(const t of EJERCICIOS_RED)assert.ok(fixture.includes('GUARDA_ESCENARIO_'+t.i
 for(const t of EJERCICIOS_RED){assert.ok(t.prepare.some(c=>c.includes('wget -T 3')),'Probar los servidores antes de filtrar');assert.match(t.check,/if kubectl/);assert.doesNotMatch(t.check,/fi if/);}
 assert.doesNotMatch(read('laboratorios/kubernetes-real/debian/multinodo.mjs'),/level!=='inicial'&&claseDisponible\(21\)/,'Abrir la clase 21 no instala componentes durante el arranque');
 const calls=[];await prepararPoliticasCurso(async(id,label,command)=>{calls.push({id,label,command});return {ok:true};});
-assert.equal(calls.length,3);assert.ok(calls.every(x=>!/(?:kubectl apply|mount --|systemctl|install -m)/.test(x.command)),'Un controlador existente no se repara ni reinstala');
+assert.equal(calls.length,6);assert.equal(calls.filter(x=>x.id==='worker1').length,3);assert.ok(calls.every(x=>!/(?:kubectl (?:apply|create)|mount --|systemctl (?:start|stop|restart|enable|daemon-reload)|install -m)/.test(x.command)),'Verificar archivos, montaje y servicio no repara ni reinstala el controlador existente');
 await assert.rejects(()=>prepararPoliticasCurso(async()=>({ok:false})),/Comprobar la API/);
 let step=0;const question={id:'qa',title:'Conexiones',check:'main',preflight:'health',diagnostics:[{check:'connection',message:'El cliente no llega al servicio.'}]};
 const failed=await comprobarPractica(question,async()=>({ok:[true,false,false,true][step++]}));assert.equal(failed.message,'El cliente no llega al servicio.');assert.equal(failed.state,'incomplete');

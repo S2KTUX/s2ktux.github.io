@@ -4,8 +4,9 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
-for(const path of ['checkpoint-discos.mjs','debian/sesiones-checkpoint.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
-const haFiles=['perfil-ha','ha-configuracion','tiempos-etcd','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','ha-curso','sesiones-ha','ejercicios-ha','fabrica-ha','esperar-firma-ha','inicializacion-ha','incorporacion-ha','salud-ha'];
+if(!manifest.files.some(record=>record.path==='debian/examen-base-publicada.mjs'))manifest.files.push({path:'debian/examen-base-publicada.mjs',bytes:0,sha256:''});
+for(const path of ['checkpoint-discos.mjs','debian/sesiones-checkpoint.mjs','debian/sesiones-ha-discos.mjs','debian/examen-cka-banco.mjs','debian/examen-cka-motor.mjs','debian/examen-cka-ui.mjs','debian/examen-runtime.mjs','debian/examen-cache.mjs','debian/examen.html','debian/examen-cka.css'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
+const haFiles=['perfil-ha','ha-configuracion','tiempos-etcd','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','ha-curso','sesiones-ha','ejercicios-ha','fabrica-ha','esperar-firma-ha','inicializacion-ha','incorporacion-ha','salud-ha','arranque-ha-discos'];
 for(const path of [...haFiles.map(name=>'debian/'+name+'.mjs'),'debian/materiales-ha/kubeadm.yaml','debian/materiales-ha/etcd-strategic.yaml','debian/vendor/fetch-network.mjs','debian/vendor/LICENSE-v86-network.txt'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 for(const path of ['debian/cni-montaje-curso.mjs','debian/montaje-manual-curso.mjs','debian/leer-join-curso.mjs','debian/esperar-nodo-curso.mjs','debian/ejercicios-montaje.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 if(!manifest.files.some(record=>record.path==='debian/perfil-administracion.mjs'))manifest.files.push({path:'debian/perfil-administracion.mjs',bytes:0,sha256:''});
@@ -25,7 +26,7 @@ for(const parent of ['debian/sesiones-cluster.mjs','debian/multinodo.mjs','debia
 for(const [parent,children] of [
  ['configuracion-admin-curso',['ha-configuracion','tiempos-etcd']],['ha-rutas',['ha-configuracion']],['archivo-http-local',['perfil-ha']],
  ['ha-curso',['ha-configuracion','perfil-ha','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','esperar-firma-ha','inicializacion-ha']],
- ['ejercicios-ha',['ha-curso']],['cliente',['perfil-ha']],['sesiones-ha',['perfil-ha']],['fabrica-ha',['perfil-ha','fabrica-cluster']]
+ ['ejercicios-ha',['ha-curso']],['cliente',['perfil-ha']],['sesiones-ha',['perfil-ha']],['fabrica-ha',['perfil-ha','fabrica-cluster']],['arranque-ha-discos',['perfil-ha']]
 ])for(const child of children)await replaceRequired('debian/'+parent+'.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-ha\.mjs(?:\?v=[a-f0-9]+)?'/,"from './ejercicios-ha.mjs?v="+await revision('debian/ejercicios-ha.mjs')+"'");
 for(const parent of ['debian/cliente.mjs','debian/sesiones-cluster.mjs','debian/sesiones-checkpoint.mjs'])await replaceRequired(parent,/from '\.\/fabrica\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './fabrica.mjs?v="+await revision('debian/fabrica.mjs')+"'");
@@ -46,7 +47,7 @@ await replaceRequired('debian/sesiones-checkpoint.mjs',/from '\.\.\/checkpoint-d
 await replaceRequired('debian/multinodo.mjs',/from '\.\/sesiones-checkpoint\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-checkpoint.mjs?v="+await revision('debian/sesiones-checkpoint.mjs')+"'");
 for(const parent of ['debian/cliente.mjs','motor-worker.mjs'])await replaceRequired(parent,/from '\.\.\/checkpoint-discos\.mjs(?:\?v=[a-z0-9-]+)?'|from '\.\/checkpoint-discos\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '"+(parent.startsWith('debian/')?'../':'./')+'checkpoint-discos.mjs?v='+await revision('checkpoint-discos.mjs')+"'");
 await replaceRequired('debian/sesiones-ha.mjs',/from '\.\/sesiones-cluster\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './sesiones-cluster.mjs?v="+await revision('debian/sesiones-cluster.mjs')+"'");
-for(const child of ['sesiones-ha','perfil-ha','ha-curso'])await replaceRequired('debian/multinodo.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
+for(const child of ['sesiones-ha','perfil-ha','ha-curso','arranque-ha-discos'])await replaceRequired('debian/multinodo.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
 for(const path of ['debian/entrada-laboratorio.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs','debian/ejercicios-niveles.mjs'])await replaceRequired(path,/from '\.\/disponibilidad-curso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './disponibilidad-curso.mjs?v="+await revision('debian/disponibilidad-curso.mjs')+"'");
 await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-acceso\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-acceso.mjs?v="+await revision('debian/ejercicios-acceso.mjs')+"'");
 await replaceRequired('debian/ejercicios-almacenamiento.mjs',/from '\.\/herramientas-practicas\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './herramientas-practicas.mjs?v="+await revision('debian/herramientas-practicas.mjs')+"'");
@@ -93,13 +94,31 @@ for(const path of ['debian/bases-publicadas.mjs','debian/fabrica-cluster.mjs']){
  await replaceRequired('debian/multinodo.mjs',new RegExp("from '\\./"+path.split('/').at(-1).replaceAll('.','\\.')+"(?:\\?v=[a-f0-9]+)?'"),"from './"+path.split('/').at(-1)+'?v='+await revision(path)+"'");
 }
 for(const path of ['debian/politicas-cluster.mjs','debian/red-persistente.mjs','componentes/root/network-policies.yaml'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
+for(const child of ['perfil-ha','sesiones-ha'])await replaceRequired('debian/sesiones-ha-discos.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
+await replaceRequired('debian/sesiones-ha-discos.mjs',/from '\.\.\/checkpoint-discos\.mjs(?:\?v=[a-f0-9]+)?'/,"from '../checkpoint-discos.mjs?v="+await revision('checkpoint-discos.mjs')+"'");
+await replaceRequired('debian/multinodo.mjs',/from '\.\/sesiones-ha-discos\.mjs(?:\?v=[a-f0-9]+)?'/,"from './sesiones-ha-discos.mjs?v="+await revision('debian/sesiones-ha-discos.mjs')+"'");
+for(const child of ['herramientas-practicas','comprobaciones-json'])await replaceRequired('debian/examen-cka-banco.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
+await replaceRequired('debian/examen-cka-motor.mjs',/from '\.\/examen-cka-banco\.mjs(?:\?v=[a-f0-9]+)?'/,"from './examen-cka-banco.mjs?v="+await revision('debian/examen-cka-banco.mjs')+"'");
+for(const child of ['complementos-avanzados','gateway-curso','red-politicas-curso'])await replaceRequired('debian/examen-cka-motor.mjs',new RegExp("import\\('\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'\\)"),"import('./"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"')");
+await replaceRequired('debian/examen-cka-motor.mjs',/from '\.\/examen-runtime\.mjs(?:\?v=[a-f0-9]+)?'/,"from './examen-runtime.mjs?v="+await revision('debian/examen-runtime.mjs')+"'");
+await replaceRequired('debian/examen-cache.mjs',/from '\.\/sesiones-checkpoint\.mjs(?:\?v=[a-f0-9]+)?'/,"from './sesiones-checkpoint.mjs?v="+await revision('debian/sesiones-checkpoint.mjs')+"'");
+await replaceRequired('debian/examen-base-publicada.mjs',/from '\.\/fabrica-cluster\.mjs(?:\?v=[a-f0-9]+)?'/,"from './fabrica-cluster.mjs?v="+await revision('debian/fabrica-cluster.mjs')+"'");
+await replaceRequired('debian/multinodo.mjs',/from '\.\/examen-base-publicada\.mjs(?:\?v=[a-f0-9]+)?'/,"from './examen-base-publicada.mjs?v="+await revision('debian/examen-base-publicada.mjs')+"'");
 const nativeFiles=[...new Set([...manifest.files.map(record=>record.path),'debian/bases-limpias.mjs','debian/ejercicios-acceso.mjs'])].filter(path=>path.endsWith('.mjs')&&path!=='debian/entrada-laboratorio.mjs').sort();
 const preparation=[];
 for(const path of nativeFiles)preparation.push({path,source:await readText(path)});
+const examRecipe=createHash('sha256').update(revisionPreparacion(preparation,{policies:true,materials:true}));
+for(const path of ['debian/examen-cache.mjs','debian/examen-runtime.mjs','debian/examen-cka-motor.mjs'])examRecipe.update(path).update((await readText(path)).replace(/\?v=[a-f0-9]+/g,'').replace(/REVISION_EXAMEN='[a-f0-9]+'/g,"REVISION_EXAMEN='recipe'"));
+await replaceRequired('debian/examen-cache.mjs',/REVISION_EXAMEN='[a-f0-9]+'/,"REVISION_EXAMEN='"+examRecipe.digest('hex')+"'");
+await replaceRequired('debian/multinodo.mjs',/from '\.\/examen-cache\.mjs(?:\?v=[a-f0-9]+)?'/,"from './examen-cache.mjs?v="+await revision('debian/examen-cache.mjs')+"'");
 await replaceRequired('debian/multinodo.mjs',/const cleanRevision='[a-f0-9]+'/,"const cleanRevision='"+revisionPreparacion(preparation,{policies:false,materials:false})+"'");
 await replaceRequired('debian/entrada-laboratorio.mjs',/import\('\.\/multinodo\.mjs(?:\?v=[a-f0-9]+)?'\)/,"import('./multinodo.mjs?v="+await revision('debian/multinodo.mjs')+"')");
 await replaceRequired('debian/multinodo.html',/src="entrada-laboratorio\.mjs(?:\?v=[a-f0-9]+)?"/,'src="entrada-laboratorio.mjs?v='+await revision('debian/entrada-laboratorio.mjs')+'"');
 await replaceRequired('debian/multinodo.html',/href="niveles\.css(?:\?v=[a-f0-9]+)?"/,'href="niveles.css?v='+await revision('debian/niveles.css')+'"');
+for(const child of ['examen-cka-banco','examen-cka-motor'])await replaceRequired('debian/examen-cka-ui.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
+await replaceRequired('debian/examen-cka-ui.mjs',/import\('\.\/multinodo\.mjs(?:\?v=[a-f0-9]+)?'\)/,"import('./multinodo.mjs?v="+await revision('debian/multinodo.mjs')+"')");
+await replaceRequired('debian/examen.html',/src="examen-cka-ui\.mjs(?:\?v=[a-f0-9]+)?"/,'src="examen-cka-ui.mjs?v='+await revision('debian/examen-cka-ui.mjs')+'"');
+await replaceRequired('debian/examen.html',/href="examen-cka\.css(?:\?v=[a-f0-9]+)?"/,'href="examen-cka.css?v='+await revision('debian/examen-cka.css')+'"');
 for(const path of ['debian/bases-limpias.mjs','debian/ejercicios-acceso.mjs','cache-bloques.mjs','debian/disponibilidad-curso.mjs','debian/clases-curso.mjs','debian/ejercicios-iniciales.mjs','debian/ejercicios-aprender.mjs','debian/ejercicios-progresivos.mjs','debian/comprobaciones-json.mjs','debian/motor-practicas.mjs','debian/salud-inicial.mjs','debian/ejercicios-intermedios.mjs','debian/herramientas-practicas.mjs','debian/criterios-equivalentes.mjs']){
  if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 }

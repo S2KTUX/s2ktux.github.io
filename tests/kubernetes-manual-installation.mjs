@@ -41,7 +41,7 @@ assert.equal((await comprobarPractica(withWorker,async node=>({ok:node==='contro
 assert.equal((await comprobarPractica(withWorker,async()=>({ok:true}))).state,'correct');
 const runtime={factoryVersion:'v14',base:'admin-v3',components:'v7',withKube:true,clustered:true,schedulingAPI:true,tlsMode:'classical',engineVariant:'jit8192-pic-only-v1',kernelVariant:'highmem-v1',diskMode:'dma',sharedCode:false,warm:true,threaded:false,worker:null};
 assert.deepEqual(perfilAdministracion(runtime),{memoryMiB:1536,stateLimitMiB:2048});
-const controller=readFileSync(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8');assert.match(controller,/let cleanBase=!persistSession\|\|saved\|\|scenario\?\.manual\?null/);assert.match(controller,/studentSession:!!saved/);
+const controller=readFileSync(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8');assert.match(controller,/let cleanBase=preparedExam\|\|\(scenario\?\.ha\|\|\(!persistSession&&!examRuntime\)\|\|saved\|\|scenario\?\.manual\?null/);assert.match(controller,/studentSession:!!saved/);
 const ui=readFileSync(new URL('../laboratorios/kubernetes-real/debian/interfaz-niveles.mjs',import.meta.url),'utf8');assert.match(ui,/const needsPreparation=\['manual-cluster','ha-cluster'\]\.includes/,'Preparar debe permitir abrir la copia aunque sus pasos internos solo comprueben materiales');
 assert.equal(nivelDisponible('avanzado'),true,'Entrega avanzada con aceptación nativa');
 console.log('Montaje25/26: copia y perfil v14 separados, registro/Ready, archivos del worker y sintaxis; no abre avanzado ni acredita por sí solo el recorrido nativo.');

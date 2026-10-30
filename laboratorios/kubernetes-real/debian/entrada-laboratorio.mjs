@@ -26,10 +26,11 @@ for(const button of document.querySelectorAll('[data-exam-language]'))button.onc
  const english=button.dataset.examLanguage==='en';for(const item of document.querySelectorAll('[data-exam-language]'))item.setAttribute('aria-pressed',String(item===button));
  $('exam-configuration').lang=english?'en':'es';$('exam-heading').textContent=english?'CKA mock exam':'Simulacro CKA';
  $('exam-description').textContent=english?'Two hours to complete hands-on Kubernetes administration tasks. A score of at least 66/100 is required to pass. We recommend completing the mock exam using only the official Kubernetes documentation.':'Dos horas para resolver tareas prácticas de administración de Kubernetes. Para aprobar se necesita al menos 66/100. Se recomienda realizar el simulacro consultando únicamente la documentación oficial de Kubernetes.';
- $('exam-pending').textContent=english?'Coming soon. The mock exam is not available yet.':'Próximamente. El simulacro todavía no está disponible.';
- $('start-exam').textContent=english?'Start exam · Coming soon':'Iniciar examen · Próximamente';
+ $('exam-pending').hidden=true;
+ $('start-exam').textContent=english?'Start exam':'Iniciar examen';
  $('exam-language-note').textContent=english?'* Spanish is a learning aid in this simulator, not an official CKA exam language.':'* El castellano es una ayuda de este simulacro; no es un idioma oficial del examen CKA.';
 };
+$('start-exam').onclick=()=>{if(!loading)location.assign(new URL('./examen.html?lang='+($('exam-configuration').lang==='en'?'en':'es'),import.meta.url));};
 async function open(){
  if(loading||mode!=='practice'||!available())return;
  loading=true;paint();$('lab-loading').hidden=true;$('lab-retry').hidden=true;
@@ -37,7 +38,7 @@ async function open(){
  target.search=parametrosPublicos(target.search).toString();
  const number=previewClass();
  target.searchParams.set('clase',String(number));history.replaceState(history.state,'',target.href);
- try{await import('./multinodo.mjs?v=a961d4c6b09daf5b');}
+ try{await import('./multinodo.mjs?v=a212fa8846fe9700');}
  catch(error){loading=false;paint();$('lab-loading').hidden=false;$('lab-loading').textContent='No se ha podido abrir el laboratorio. Vuelve a intentarlo.';$('lab-retry').hidden=false;console.error('Carga del laboratorio:',error);}
 }
 $('enter-lab').onclick=open;$('lab-retry').onclick=()=>location.reload();paint();

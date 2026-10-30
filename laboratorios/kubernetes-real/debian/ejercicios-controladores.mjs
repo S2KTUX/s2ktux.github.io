@@ -1,4 +1,4 @@
-import {IMAGEN,q,aplicar,contenedor,obtener,listo,crearPractica,esperarPod} from './herramientas-practicas.mjs?v=57b511eb13b1d3ed';
+import {IMAGEN,q,aplicar,contenedor,obtener,listo,crearPractica,esperarPod} from './herramientas-practicas.mjs?v=10519a9c2390f8e7';
 import {equivalenciaJQ} from './criterios-equivalentes.mjs';
 const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));
 const controller=(kind,ns,name,spec={})=>({apiVersion:'apps/v1',kind,metadata:{namespace:ns,name},spec:{selector:{matchLabels:{app:name}},template:{metadata:{labels:{app:name}},spec:{terminationGracePeriodSeconds:1,containers:[contenedor()]}},...spec}});

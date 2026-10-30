@@ -1,6 +1,11 @@
 {
-  "version": "3.0",
+  "version": "3.1",
   "pendientes": [
+    {
+      "id": "kubernetes-recuperacion-con-carga",
+      "tema": "Kubernetes",
+      "texto": "Revisar la recuperación de sesiones con muchas aplicaciones: en las pruebas del simulacro se conservaron sus recursos, pero no todos los nodos volvieron a estar disponibles. No presentar esa recuperación como verificada hasta resolverlo."
+    },
     {
       "id": "lpic-banco-cobertura",
       "tema": "LPIC-1",
@@ -10,11 +15,6 @@
       "id": "kubernetes-ha-persistencia",
       "tema": "Kubernetes",
       "texto": "Permitir guardar y recuperar la copia de HA con sus tres máquinas. Hasta superar esa comprobación, esa copia se prepara de nuevo en cada sesión; el guardado del laboratorio avanzado habitual sí está disponible."
-    },
-    {
-      "id": "kubernetes-examen",
-      "tema": "Kubernetes",
-      "texto": "Terminar el simulacro CKA real: dos horas, corrección por resultados y nota por dominio. Incluir el alias k, la variable $do y tareas de Helm y Gateway API; esas tareas todavía no están disponibles en el simulacro."
     },
     {
       "id": "kubernetes-tres-practicas",
@@ -68,6 +68,19 @@
     }
   ],
   "versiones": [
+    {
+      "version": "3.1",
+      "fecha": "2026-10-30",
+      "resumen": "Ya puedes hacer el simulacro de CKA en dos máquinas, en castellano o en inglés.",
+      "cambios": [
+        "El simulacro tiene doce tareas propias, dos horas y aprobado desde 66/100. Las máquinas se preparan antes de que empiece el cronómetro y puedes terminar cuando quieras.",
+        "El corrector consulta los recursos, permisos, conexiones y datos del clúster. No compara los comandos que has escrito. Al finalizar verás el porcentaje de cada dominio y, en un apartado plegado, las comprobaciones y una solución por tarea.",
+        "Las tareas incluyen Helm, Gateway API, RBAC, recursos personalizados, aplicaciones, tareas programadas, red, almacenamiento y resolución de incidencias. Los atajos k y $do están preparados en la consola.",
+        "El examen utiliza su propia base limpia de dos nodos. Se comprueba antes de reutilizarla y queda separada de las prácticas y de sus guardados. Hemos reducido la descarga de esa base más de 200 MB; la primera entrada sigue dependiendo de tu conexión y del equipo.",
+        "Corregimos la retención del Job manual para que no desaparezca mientras haces otras tareas. También aceptamos el nombre completo de las imágenes de Docker Hub en sus comprobaciones.",
+        "La conmutación de la copia HA ya está comprobada. Guardar y recuperar esa copia sigue pendiente, igual que reanudar un intento de examen después de recargar; por eso avisamos antes de empezar."
+      ]
+    },
     {
       "version": "3.0",
       "fecha": "2026-10-29",

@@ -3,7 +3,7 @@ import {readFileSync} from 'node:fs';
 import {spawnSync} from 'node:child_process';
 import {EJERCICIOS_ADMINISTRACION} from '../laboratorios/kubernetes-real/debian/ejercicios-administracion.mjs';
 import {claseDisponible,nivelDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
-const fixture=readFileSync(new URL('../fixtures/kubernetes-static-nativo.sh',import.meta.url),'utf8');
+const fixture=readFileSync(new URL('../fixtures/kubernetes-static-nativo.sh',import.meta.url),'utf8').replaceAll('\r\n','\n');
 assert.deepEqual(EJERCICIOS_ADMINISTRACION.map(t=>t.id),['c24-a','c24-b']);
 assert.equal(claseDisponible(24),true);
 assert.equal(nivelDisponible('avanzado'),true,'Entrega avanzada con aceptación nativa');

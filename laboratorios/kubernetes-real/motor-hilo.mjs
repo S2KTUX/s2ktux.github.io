@@ -1,13 +1,13 @@
 // CPU, disco y red exterior se ejecutan en un Worker del navegador. No hay
 // backend: los mensajes transportan las mismas instrucciones y bytes de v86.
 export class ThreadVM {
- constructor(settings,{root,components,internet=false,engine='original',schedulingAPI=false,checkpointAllowed=false,externalDisks=null,onError=()=>{}}){
+ constructor(settings,{root,components,internet=false,engine='original',schedulingAPI=false,checkpointAllowed=false,persistentDisksAllowed=false,externalDisks=null,onError=()=>{}}){
   if(typeof schedulingAPI!=='boolean')throw Error('Planificación de motor inválida');
-  if(typeof checkpointAllowed!=='boolean'||externalDisks&&!checkpointAllowed||checkpointAllowed&&engine!=='jit8192-pic-v1')throw Error('Checkpoint externo fuera del candidato');
-  if(checkpointAllowed&&settings.autostart!==false)throw Error('El checkpoint necesita arrancar la CPU después de restaurar el disco');
-  this.checkpointAllowed=checkpointAllowed;
+  if(typeof checkpointAllowed!=='boolean'||typeof persistentDisksAllowed!=='boolean'||externalDisks&&!(checkpointAllowed||persistentDisksAllowed)||(checkpointAllowed||persistentDisksAllowed)&&engine!=='jit8192-pic-v1')throw Error('Checkpoint externo fuera del candidato');
+  if((checkpointAllowed||persistentDisksAllowed)&&settings.autostart!==false)throw Error('El checkpoint necesita arrancar la CPU después de restaurar el disco');
+  this.checkpointAllowed=checkpointAllowed;this.persistentDisksAllowed=persistentDisksAllowed;
   this.listeners=new Map();this.pending=new Map();this.next=0;this.closed=false;this.onError=onError;
-  const workerURL=new URL('./motor-worker.mjs?v=f9eea8e547bdd42f',import.meta.url);
+  const workerURL=new URL('./motor-worker.mjs?v=aab34569baa6bc2d',import.meta.url);
   if(schedulingAPI)workerURL.searchParams.set('use-scheduling-api','1');
   this.worker=new Worker(workerURL,{type:'module'});
   const handlers=new Map();
@@ -27,7 +27,7 @@ export class ThreadVM {
   };
   this.worker.onerror=event=>this.fail(Error(event.message||'El hilo del motor se ha detenido.'));
   const transfer=[];if(settings.initial_state?.buffer)transfer.push(settings.initial_state.buffer);if(components.buffer)transfer.push(components.buffer);
-  this.call('init',[{settings,root,components,internet,engine,checkpointAllowed,externalDisks}],transfer).catch(error=>this.fail(error));
+  this.call('init',[{settings,root,components,internet,engine,checkpointAllowed,persistentDisksAllowed,externalDisks}],transfer).catch(error=>this.fail(error));
  }
  emit(name,value){for(const callback of this.listeners.get(name)||[])callback(value);}
  add_listener(name,callback){if(!this.listeners.has(name))this.listeners.set(name,new Set());this.listeners.get(name).add(callback);}
@@ -52,6 +52,7 @@ export class ThreadVM {
  settle(){return this.call('settle');}
  save_state(){return this.call('save');}
  save_checkpoint(){if(!this.checkpointAllowed)return Promise.reject(Error('Checkpoint no permitido'));return this.call('checkpoint');}
+ save_disks(){if(!this.persistentDisksAllowed)return Promise.reject(Error('Guardado de discos no permitido'));return this.call('persistent-disks');}
  stats(){return this.call('stats');}
  suspend(){return this.call('suspend');}
  resume(){return this.call('resume');}

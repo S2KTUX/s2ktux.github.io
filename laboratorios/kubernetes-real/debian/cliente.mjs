@@ -1,4 +1,4 @@
-import {capturarCheckpointExterno,prepararRestauracionDiscosExternos} from '../checkpoint-discos.mjs?v=b5a6e4f42af60fab';
+import {capturarCheckpointExterno,prepararRestauracionDiscosExternos} from '../checkpoint-discos.mjs?v=b410b9411a1ecd95';
 import {loadEngine,engineHash} from '../perfil-motor.mjs?v=aea979eebc04b75d';
 import {Terminal} from '/laboratorios/docker-real/vendor/xterm.mjs';
 import {ChunkDisk} from '../disco-kubernetes.mjs?v=0576afa02b3f1762';
@@ -11,9 +11,9 @@ import {liberarEstadoInicial} from '../liberar-arranque.mjs';
 import {KubeSessions} from '../kube-sessions.mjs?v=601d790381d8bc16';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
 import {prepararWorkerDebian,perfilWorker} from './preparar-worker.mjs';
-import {ThreadVM} from '../motor-hilo.mjs?v=88373bbf5ea03b75';
+import {ThreadVM} from '../motor-hilo.mjs?v=11ee7c94132d4177';
 import {ordenPromptDinamico,promptConfirmado} from './prompt.mjs';
-import {identidadNodoDebian} from './sesiones-cluster.mjs?v=c7237db8c69c1abe';
+import {identidadNodoDebian} from './sesiones-cluster.mjs?v=25abbd6d725f88a9';
 import {comandosTlsLaboratorio,comandosTlsApiServer,ordenEntornoTls,entornoTlsConfirmado} from './tls-laboratorio.mjs';
 import {comandosMontajeComponentes} from './montaje-componentes.mjs';
 import {PresentacionConsola} from './presentacion-consola.mjs';
@@ -132,6 +132,18 @@ globalThis.kubeDebianRun=async(label,command,timeout=180000)=>{
  if(!vm||busy||!consoleState.idle)throw Error('Espera al prompt vacío.');busy=true;
  try{return await checks.run({checks:[[label,command]]},timeout);}finally{busy=false;}
 };
+globalThis.kubeDebianExamShortcuts=async()=>{
+ if(factoryVersion!=='v15'||!clustered||worker||busy||!consoleState.idle)throw Error('La consola del examen todavía no está disponible');
+ busy=true;
+ try{
+  const marker='__CKA_SHORTCUTS_'+crypto.randomUUID().replaceAll('-','')+'__';
+  const command=`alias k=kubectl; export do='--dry-run=client -o yaml'; printf '\\n${marker}\\n'\n`;
+  consoleState.input(command);vm.serial0_send(command);const deadline=Date.now()+30000;
+  while(!kubeDebianTranscript.replace(/\r/g,'').split('\n').includes(marker)||!consoleState.idle){
+   if(Date.now()>deadline)throw Error('Bash no confirmó los atajos del examen');await new Promise(resolve=>setTimeout(resolve,100));
+  }
+ }finally{busy=false;}
+};
 // Solo las máquinas frías privadas de HA cambian su identidad tras arrancar.
 // Cambiar el PS1 del Bash real; nunca dibujar un nombre distinto en xterm.
 globalThis.kubeDebianPromptHA=async name=>{
@@ -221,7 +233,7 @@ start.onclick=async()=>{
   let initial,applyExternalDisks=null;
   if(clustered&&globalThis.kubeDebianRestoreNode){
    identity=haProfile?await identidadNodoHA(miembrosHA[haProfile.member-1]):await identidadNodoDebian(worker?'worker'+worker:'controlplane',{workerComponents:worker?components:'v7',factoryVersion});record=globalThis.kubeDebianRestoreNode;
-   initial={buffer:await sessions.unpack(record,identity)};presentation.restore(record.terminalText);
+   if(record.format!=='s2ktux-ha-persistent-node-v1')initial={buffer:await sessions.unpack(record,identity)};else if(!haProfile)throw Error('Los discos HA requieren su perfil propio');presentation.restore(record.terminalText);
   }else if(warm){
    identity=await hashBytes(encoder.encode(JSON.stringify({profile:factoryProfile,factorySha256:factoryHashes[factoryVersion]})));
    if(!clustered){record=await sessions.get(sessionKey);sessionRead=true;reset.disabled=false;}
@@ -246,7 +258,7 @@ start.onclick=async()=>{
   if(haProfile)settings.cmdline+=' ne2k_pci.tx_watchdog_ms=5000';
   if(threaded){
    const {hda,hdb,wasm_fn,...threadSettings}=settings;
-   vm=new ThreadVM(threadSettings,{root:{manifest:disk.manifest,base:disk.base.href},components:{manifest:componentDisk.manifest,base:componentDisk.base.href},internet:true,engine:engineVariant,schedulingAPI,checkpointAllowed:factoryVersion==='v15'&&clustered,externalDisks:record?.format==='s2ktux-v86-external-checkpoint-v1'?record.externalDisks:null,onError:fail});
+   vm=new ThreadVM(threadSettings,{root:{manifest:disk.manifest,base:disk.base.href},components:{manifest:componentDisk.manifest,base:componentDisk.base.href},internet:true,engine:engineVariant,schedulingAPI,checkpointAllowed:factoryVersion==='v15'&&clustered,persistentDisksAllowed:!!haProfile,externalDisks:['s2ktux-v86-external-checkpoint-v1','s2ktux-ha-persistent-node-v1'].includes(record?.format)?record.externalDisks:null,onError:fail});
    // Las escrituras pertenecen al hilo, no a los adaptadores de metadatos.
    globalThis.kubeDebianDisk={manifest:disk.manifest,settle:()=>vm.settle()};
    globalThis.kubeDebianComponentDisk={manifest:componentDisk.manifest,settle:()=>vm.settle()};
@@ -272,7 +284,7 @@ start.onclick=async()=>{
       observation.normal++;return nativeYield.call(this,delay,tick);
      };
     }
-    await vm.run();if(initial)vm.serial0_send('\n');initial=undefined;
+    await globalThis.kubeDebianBeforeRun?.();await vm.run();if(initial)vm.serial0_send('\n');initial=undefined;
    }catch(error){fail(error);}
   });
  }catch(error){fail(error);internet?.destroy();await vm?.destroy();}
@@ -285,6 +297,7 @@ globalThis.kubeDebianSnapshot={
   busy=true;return {terminalText:presentation.text};
  },
  async freeze(){await vm.stop();flush();await kubeDebianDisk.settle();await kubeDebianComponentDisk.settle();},
+ disks(){if(!haProfile)throw Error('Los discos persistentes requieren HA');return vm.save_disks();},
  state(){return factoryVersion==='v15'&&clustered?(threaded?vm.save_checkpoint():capturarCheckpointExterno(vm,[{id:'root',disk:kubeDebianDisk},{id:'components',disk:kubeDebianComponentDisk}])):vm.save_state();},
  async release(){try{await vm.run();}finally{busy=false;}},
 };

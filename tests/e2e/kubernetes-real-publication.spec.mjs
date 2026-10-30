@@ -71,10 +71,10 @@ test('Kubernetes · el avanzado muestra sus prácticas sin arrancar máquinas',a
 
 test('Kubernetes · examen separado, español e inglés y sin un intento ficticio',async({page})=>{
  await page.goto(root);await page.locator('#mode-exam').click();await expect(page.locator('#practice-configuration')).toBeHidden();
- await expect(page.locator('#exam-configuration')).toBeVisible();await expect(page.locator('#start-exam')).toBeDisabled();await expect(page.locator('#exam-language-note')).toContainText('no es un idioma oficial');
+ await expect(page.locator('#exam-configuration')).toBeVisible();await expect(page.locator('#start-exam')).toBeEnabled();await expect(page.locator('#exam-language-note')).toContainText('no es un idioma oficial');
  await expect(page.locator('#exam-language')).toHaveCount(0);
  await page.locator('[data-exam-language=en]').click();await expect(page.locator('[data-exam-language=en]')).toHaveAttribute('aria-pressed','true');
- await expect(page.locator('#exam-heading')).toHaveText('CKA mock exam');await expect(page.locator('#exam-pending')).toContainText('Coming soon');
+ await expect(page.locator('#exam-heading')).toHaveText('CKA mock exam');await expect(page.locator('#exam-pending')).toBeHidden();await expect(page.locator('#start-exam')).toHaveText('Start exam');
  await expect(page.locator('#exam-description')).toHaveText('Two hours to complete hands-on Kubernetes administration tasks. A score of at least 66/100 is required to pass. We recommend completing the mock exam using only the official Kubernetes documentation.');
  await expect(page.locator('#exam-configuration')).toHaveAttribute('lang','en');await page.locator('[data-exam-language=es]').click();await expect(page.locator('#exam-heading')).toHaveText('Simulacro CKA');
  const gaps=await page.evaluate(()=>({heading:document.querySelector('#exam-description').getBoundingClientRect().top-document.querySelector('#exam-heading').getBoundingClientRect().bottom,note:document.querySelector('#exam-language-note').getBoundingClientRect().top-document.querySelector('#start-exam').getBoundingClientRect().bottom}));
@@ -88,6 +88,7 @@ test('Kubernetes · examen separado, español e inglés y sin un intento fictici
  await page.evaluate(async()=>{document.querySelector('#start-cluster').click();await document.querySelector('#enter-lab').onclick();});await expect(page.locator('#nodes iframe')).toHaveCount(0);
  await page.goto(root+'debian/multinodo.html?mode=course&level=inicial&view=exam&enter=1');
  await expect(page.locator('#exam-configuration')).toBeVisible();await expect(page.locator('#lab-workspace')).toBeHidden();await expect(page.locator('#nodes iframe')).toHaveCount(0);
+ await page.locator('[data-exam-language=en]').click();await page.locator('#start-exam').click();await expect(page).toHaveURL(/\/examen\.html\?lang=en/);await expect(page.locator('#begin-exam')).toBeVisible();await expect(page.locator('#nodes iframe')).toHaveCount(0);
 });
 test('Kubernetes · consultar clases y modos conserva la sesión existente',async({page})=>{
  await page.goto(root+'debian/multinodo.html?level=inicial&view=practice');await page.locator('#lab-entry').waitFor();

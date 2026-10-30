@@ -1,4 +1,5 @@
 const scenes=Object.freeze({
+ 'cka-exam':Object.freeze({id:'cka-exam',classNumber:24,title:'Simulacro CKA',exam:true}),
  'c28-b':Object.freeze({id:'c28-b',classNumber:28,title:'Restaurar etcd'}),
  'c33-c':Object.freeze({id:'c33-c',classNumber:33,title:'Recuperar el API Server'}),
  'montaje-cluster':Object.freeze({id:'montaje-cluster',classNumber:25,classNumbers:Object.freeze([25,26]),title:'Montar el clúster',manual:true}),

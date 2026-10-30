@@ -23,6 +23,6 @@ const originalFetch=globalThis.fetch,installCalls=[];globalThis.fetch=async url=
 try{await prepararAlmacenamiento(async(node,label,command)=>{installCalls.push({node,label,command});return {ok:label!=='Consultar el aprovisionador existente'};});}finally{globalThis.fetch=originalFetch;}
 assert.equal(installCalls.find(call=>call.label.startsWith('Importar')).node,'worker1');assert.ok(installCalls.filter(call=>!call.label.startsWith('Importar')).every(call=>call.node==='controlplane'));
 let calls=0;await assert.rejects(()=>prepararPractica({requirements:['componente-no-autorizado']},async()=>{calls++;return{ok:true};}));assert.equal(calls,0);
-const fixture=readFileSync(new URL('../fixtures/kubernetes-almacenamiento-nativo.sh',import.meta.url),'utf8');for(const task of tasks){assert.ok(fixture.includes(task.check));assert.ok(fixture.includes(task.solution));}
+const fixture=readFileSync(new URL('../fixtures/kubernetes-almacenamiento-nativo.sh',import.meta.url),'utf8').replaceAll('\r\n','\n');for(const task of tasks){assert.ok(fixture.includes(task.check));assert.ok(fixture.includes(task.solution));}
 const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';const result=spawnSync(bash,['--noprofile','--norc','-n'],{input:fixture,encoding:'utf8'});assert.equal(result.status,0,result.stderr);
 console.log('Almacenamiento: tres ejercicios coherentes, importación en el worker y manifiesto verificado. Esta prueba no ejecuta el clúster.');

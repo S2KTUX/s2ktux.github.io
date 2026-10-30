@@ -3,6 +3,10 @@ export const IMAGEN='busybox:1.37.0-musl';
 export const API='kubectl get --raw=/readyz --request-timeout=20s';
 export const q=value=>"'"+value.replaceAll("'","'\\''")+"'";
 const readable=new Map();
+export function solucionLegible(command){
+ for(const [native,display]of readable)command=command.split(native).join(display);
+ return command;
+}
 export function yaml(value,indent=0){
  const pad=' '.repeat(indent);
  if(Array.isArray(value))return value.map(item=>{

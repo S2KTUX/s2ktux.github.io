@@ -38,3 +38,9 @@ Kubernetes 1.35 y la actualización a 1.36 utilizan compilaciones propias linux/
 - [Fuentes exactas y licencias del motor v86 utilizado](https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/599f0e06c2301510bd498a2a9d1fd484c60aaf1c/kubernetes/v1/fuentes/componentes-motor-ha-20261027/fuentes-v86-pic-reloj-licencias.tar.gz).
 
 Estos archivos contienen componentes y materiales de construcción; no incluyen sesiones de alumnos ni perfiles de navegador.
+
+## Base limpia del simulacro CKA
+
+La entrada rápida del simulacro utiliza los mismos componentes del nivel avanzado, con un control plane y un worker. Su instantánea se guarda antes de abrir las consolas y de crear las preguntas, sin historial de terminal. No añade programas ni cambia las licencias: las fuentes, modificaciones y avisos se encuentran en los paquetes enlazados arriba.
+
+La configuración y las credenciales incluidas pertenecen únicamente al clúster de prácticas. La base distribuida no contiene sesiones de alumnos ni archivos del equipo anfitrión.

@@ -1,0 +1,10 @@
+#exam-results table{width:100%;border-collapse:collapse;margin:1.25rem 0 1.5rem}
+#exam-results th,#exam-results td{font:inherit;font-size:.95rem;padding:.6rem .5rem;border-bottom:1px solid var(--border-color,#c5ae83)}
+#exam-results th{text-align:left;font-weight:normal;padding-left:0}
+#exam-results td{text-align:right;white-space:nowrap;padding-right:0}
+#exam-results details{margin:1rem 0}
+#exam-results summary{cursor:pointer;line-height:1.7}
+#exam-results pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:.9rem;padding:1rem;border-left:3px solid currentColor}
+#exam-task-prompt{max-width:80ch;line-height:1.8}
+#exam-attempt .exercise-nav{margin:1.5rem 0;display:flex;flex-wrap:wrap;gap:.7rem 1rem;align-items:center}
+#exam-question{min-width:10rem;max-width:100%}
