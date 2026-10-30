@@ -12,8 +12,9 @@ test('Licencias Linux · documento sencillo sin el diseño del prototipo',async(
 test('Sobre · pendientes y versiones discretos, licencias y descarga',async({page})=>{
  const errors=[];page.on('pageerror',error=>errors.push(error.message));await page.goto('/sobre.html');
  await expect(page.locator('h1')).toHaveText('Sobre S2KTUX');await expect(page.locator('#pendientes')).not.toHaveAttribute('open','');
- await page.locator('#pendientes summary').click();await expect(page.locator('#pendientes')).toContainText('LPIC-1');await expect(page.locator('#pendientes')).toContainText('Helm y Gateway API');
- const response=await page.request.get('/contenido/pendientes.md');expect(response.ok()).toBe(true);expect(await response.text()).toContain('dos horas');
+ await page.locator('#pendientes summary').click();await expect(page.locator('#pendientes')).toContainText('LPIC-1');await expect(page.locator('#pendientes')).not.toContainText('Terminar el simulacro CKA real');
+ const response=await page.request.get('/contenido/pendientes.md');expect(response.ok()).toBe(true);expect(await response.text()).toContain('LPIC-1');
+ const completed=await page.request.get('/versiones/2026-10-30.html');expect(completed.ok()).toBe(true);const release=await completed.text();expect(release).toContain('Helm, Gateway API');expect(release).toContain('dos horas');
  await page.locator('#versiones summary').click();await expect(page.locator('#versiones')).toContainText('v1.0');await expect(page.locator('#versiones')).not.toContainText('v1.1');await expect(page.locator('#versiones')).not.toContainText('v1.2');
  const dates=await page.locator('.about-version time').evaluateAll(nodes=>nodes.map(node=>node.dateTime));expect(new Set(dates).size).toBe(dates.length);
  await page.locator('#licencias summary').click();await expect(page.locator('#licencias')).toContainText('MIT');await expect(page.locator('#licencias')).toContainText('CC BY-NC-SA');expect(errors).toEqual([]);
