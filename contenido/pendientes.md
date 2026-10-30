@@ -2,9 +2,9 @@
 
 Esta lista cambia con el proyecto. Las mejoras comprobadas salen de aquí y pasan al historial de Sobre.
 
+- **Kubernetes:** Revisar la recuperación de sesiones con muchas aplicaciones: en las pruebas del simulacro se conservaron sus recursos, pero no todos los nodos volvieron a estar disponibles. No presentar esa recuperación como verificada hasta resolverlo.
 - **LPIC-1:** Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen.
 - **Kubernetes:** Permitir guardar y recuperar la copia de HA con sus tres máquinas. Hasta superar esa comprobación, esa copia se prepara de nuevo en cada sesión; el guardado del laboratorio avanzado habitual sí está disponible.
-- **Kubernetes:** Terminar el simulacro CKA real: dos horas, corrección por resultados y nota por dominio. Incluir el alias k, la variable $do y tareas de Helm y Gateway API; esas tareas todavía no están disponibles en el simulacro.
 - **Kubernetes:** Revisar hasta tres ejercicios por clase: uno para empezar, otro para aplicar lo aprendido y otro orientado al examen. Ampliar las variantes de afinidad y reparto, y practicar NoExecute en un worker aislado sin afectar al resto del laboratorio. Sin ejercicios para la clase 00.
 - **Laboratorios:** Comprobar la persistencia tras reiniciar antes de puntuar el simulacro, con respaldo y tratamiento de máquinas que no consiguen arrancar.
 - **Laboratorios:** Guardar de forma conjunta las máquinas, el intento y el cronómetro para poder continuar un examen tras recargar.

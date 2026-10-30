@@ -1,12 +1,12 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=6638e07ca8c03fa2';
-import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=20260d0b4dadc45a';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=7d338c2f46948e8d';
+import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=cfd58f60d936f4b5';
 import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=b136ca2f11943ac8';
 import {renderSolutions} from '../../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../../solution-options.mjs?v=20261020-aprendizaje';
 import {practiceProgress} from '../../practice-progress.mjs?v=20261021-resueltas';
-import {urlEscenarioCurso,entornoEjercicio,clasePermitidaEscenario} from './escenarios-curso.mjs?v=ede8456b5e6c6272';
+import {urlEscenarioCurso,entornoEjercicio,clasePermitidaEscenario} from './escenarios-curso.mjs?v=4fe1a4528b2e23b6';
 
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
@@ -123,10 +123,11 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   $('exam-heading').textContent=english?'CKA mock exam':'Simulacro CKA';
   $('exam-description').textContent=english?'Two hours to complete hands-on Kubernetes administration tasks. A score of at least 66/100 is required to pass. We recommend completing the mock exam using only the official Kubernetes documentation.':'Dos horas para resolver tareas prácticas de administración de Kubernetes. Para aprobar se necesita al menos 66/100. Se recomienda realizar el simulacro consultando únicamente la documentación oficial de Kubernetes.';
   $('exam-language-note').textContent=english?'* Spanish is a learning aid in this simulator, not an official CKA exam language.':'* El castellano es una ayuda de este simulacro; no es un idioma oficial del examen CKA.';
-  $('exam-pending').textContent=english?'Coming soon. The mock exam is not available yet.':'Próximamente. El simulacro todavía no está disponible.';
-  $('start-exam').textContent=english?'Start exam · Coming soon':'Iniciar examen · Próximamente';
+  $('exam-pending').hidden=true;
+  $('start-exam').textContent=english?'Start exam':'Iniciar examen';
  }
  for(const button of document.querySelectorAll('[data-exam-language]'))button.onclick=()=>selectExamLanguage(button.dataset.examLanguage);
+ $('start-exam').onclick=()=>requestChange(null,new URL('./examen.html?lang='+($('exam-configuration').lang==='en'?'en':'es'),import.meta.url).href).catch(error=>{$('exercise-result').textContent='No se ha salido: '+error.message;});
  $('change-lab').onclick=()=>{showEntry();$('stage-'+level).focus();};
  $('return-lab').onclick=()=>{showWorkspace();$('change-lab').focus();};
  $('exercise-class-select').onchange=event=>{

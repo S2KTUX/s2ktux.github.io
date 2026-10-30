@@ -1,4 +1,4 @@
-import {IMAGEN,aplicar,pod,contenedor,obtener,listo,crearPractica,esperarPod} from './herramientas-practicas.mjs?v=57b511eb13b1d3ed';
+import {IMAGEN,aplicar,pod,contenedor,obtener,listo,crearPractica,esperarPod} from './herramientas-practicas.mjs?v=10519a9c2390f8e7';
 const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));
 add(22,'a','Consultar el DNS del clúster · I',
  `En p22a crea cliente con ${IMAGEN} y sleep 3600. Desde ese Pod consulta kubernetes.default.svc.cluster.local con nslookup. Revisa también /etc/resolv.conf del Pod y comprueba que CoreDNS está disponible en kube-system. No cambies la configuración DNS.`,

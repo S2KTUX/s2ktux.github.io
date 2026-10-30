@@ -1,4 +1,4 @@
-import {IMAGEN,aplicar,pod,obtener,listo,crearPractica,esperarPod,q} from './herramientas-practicas.mjs?v=57b511eb13b1d3ed';
+import {IMAGEN,aplicar,pod,obtener,listo,crearPractica,esperarPod,q} from './herramientas-practicas.mjs?v=10519a9c2390f8e7';
 const tasks=[],add=(...args)=>tasks.push(crearPractica(...args));
 const label19='p19a.s2ktux.local/disco',labelAffinity='p19b.s2ktux.local/disco';
 const nodeLabel=(key,value)=>`kubectl label node cka-w1 ${key}=${value}`;

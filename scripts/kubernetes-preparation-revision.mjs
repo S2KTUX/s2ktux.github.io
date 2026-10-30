@@ -6,7 +6,10 @@ const presentationOnly=new Set([
  'debian/entrada-laboratorio.mjs','debian/interfaz-niveles.mjs','debian/bases-publicadas.mjs',
  'debian/clases-curso.mjs','debian/disponibilidad-curso.mjs',
  'debian/herramientas-practicas.mjs','debian/criterios-equivalentes.mjs',
- 'debian/comprobaciones-json.mjs','debian/motor-practicas.mjs'
+ 'debian/comprobaciones-json.mjs','debian/motor-practicas.mjs',
+ // El banco y el flujo de examen se preparan después del arranque del
+ // clúster. No invalidar las entradas limpias de estudio al editarlos.
+ 'debian/examen-cka-banco.mjs','debian/examen-cka-motor.mjs','debian/examen-cka-ui.mjs','debian/examen-runtime.mjs','debian/examen-cache.mjs','debian/examen-base-publicada.mjs'
 ]);
 // Estos complementos se preparan desde una práctica, nunca al restaurar la
 // base limpia sin materiales. Sus cambios no invalidan esos mismos bytes.

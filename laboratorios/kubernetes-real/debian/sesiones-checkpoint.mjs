@@ -1,7 +1,7 @@
-import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c7237db8c69c1abe';
-import {BasesLimpias} from './bases-limpias.mjs?v=cc76958a7d5c485b';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=25abbd6d725f88a9';
+import {BasesLimpias} from './bases-limpias.mjs?v=6370340954d893dd';
 import {perfilFabricaDebian} from './fabrica.mjs?v=f8890388a14d848d';
-import {validarDiscoExterno} from '../checkpoint-discos.mjs?v=b5a6e4f42af60fab';
+import {validarDiscoExterno} from '../checkpoint-discos.mjs?v=b410b9411a1ecd95';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs?v=3852a1206e14ad3b';
 export const FORMATO_NODO_CHECKPOINT='s2ktux-v86-external-checkpoint-v1';
 export function manifiestosCheckpointV15(){
@@ -45,7 +45,7 @@ export class SesionesCheckpointV15 extends SesionesClusterDebian{
 export class BasesLimpiasCheckpointV15 extends BasesLimpias{
  constructor(revision,options){
   if(options?.factoryVersion!=='v15')throw Error('La caché de discos separados requiere su base propia');
-  super(revision,{...options,compatibleRevisions:[]});
+  super(revision,options);
   this.format='s2ktux-kubernetes-external-cluster-v1';
   this.prefix='base-checkpoint-v15:'+this.level+':';this.key=this.prefix+revision;
  }

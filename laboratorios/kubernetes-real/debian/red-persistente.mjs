@@ -25,10 +25,11 @@ export async function persistirRutaDebian(id,peer,record,run){
  await install(id,path,source,'644',run,{onlyNew:true});
  await run(id,'Leer rutas persistentes desde networkd','networkctl reload');
 }
+export const scriptNamespacesDebian='#!/bin/sh\nset -eu\nmkdir -p /run/netns\nif ! mountpoint -q /run/netns; then mount --bind /run/netns /run/netns; fi\nmount --make-rshared /run/netns\n';
+ export const unidadNamespacesDebian='[Unit]\nDescription=Namespaces de red del laboratorio Kubernetes\nAfter=local-fs.target\nBefore=containerd.service kubelet.service\n\n[Service]\nType=oneshot\nExecStart=/usr/local/sbin/kube-lab-netns\nRemainAfterExit=yes\n\n[Install]\nWantedBy=multi-user.target\n';
 export async function persistirNamespacesDebian(id,run){
  if(!['worker1','worker2'].includes(id))throw Error('Worker desconocido');
- const source='#!/bin/sh\nset -eu\nmkdir -p /run/netns\nif ! mountpoint -q /run/netns; then mount --bind /run/netns /run/netns; fi\nmount --make-rshared /run/netns\n';
- const unit='[Unit]\nDescription=Namespaces de red del laboratorio Kubernetes\nAfter=local-fs.target\nBefore=containerd.service kubelet.service\n\n[Service]\nType=oneshot\nExecStart=/usr/local/sbin/kube-lab-netns\nRemainAfterExit=yes\n\n[Install]\nWantedBy=multi-user.target\n';
+ const source=scriptNamespacesDebian,unit=unidadNamespacesDebian;
  await install(id,'/usr/local/sbin/kube-lab-netns',source,'755',run);
  await install(id,'/etc/systemd/system/kube-lab-netns.service',unit,'644',run);
  await run(id,'Mantener los namespaces disponibles después de reiniciar','systemctl daemon-reload && systemctl enable --now kube-lab-netns.service && systemctl is-active --quiet kube-lab-netns.service');

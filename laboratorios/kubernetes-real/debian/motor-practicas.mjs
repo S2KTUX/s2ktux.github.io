@@ -41,7 +41,7 @@ export async function prepararPractica(task,run,{environment='course'}={}){
   }else if(requirement==='traefik'){
    const {prepararIngress}=await import('./ingress-curso.mjs?v=6ceb5bb8f0af85f7');await prepararIngress(run);
   }else if(requirement==='network-policy'){
-   const {prepararPoliticasCurso}=await import('./red-politicas-curso.mjs?v=3c77baf60f84d25b');await prepararPoliticasCurso(run);
+   const {prepararPoliticasCurso}=await import('./red-politicas-curso.mjs?v=f58312c9062cfb18');await prepararPoliticasCurso(run);
   }else if(requirement==='gateway'){
    const {prepararGateway}=await import('./gateway-curso.mjs?v=3d5f33f66174384c');await prepararGateway(run);
   }else if(requirement==='traefik-rewrite'){

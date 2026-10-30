@@ -3,7 +3,7 @@ import {hashBytes,hashBlob} from '/laboratorios/docker-real/v86-sessions.mjs?v=3
 import {PERFIL_DEBIAN,perfilFabricaDebian} from './fabrica.mjs?v=f8890388a14d848d';
 import {comprobarNivel} from './niveles.mjs';
 import {comprimirEstado} from '../comprimir-estado.mjs?v=9428ef18ea7ec585';
-import {escenarioCurso} from './escenarios-curso.mjs?v=ede8456b5e6c6272';
+import {escenarioCurso} from './escenarios-curso.mjs?v=4fe1a4528b2e23b6';
 const ids=['controlplane','worker1','worker2'],digest=/^[a-f0-9]{64}$/;
 function comprobarComponentesWorker(version){if(!['v7','v8'].includes(version))throw Error('Componentes de worker no comprobados');return version;}
 function comprobarFabrica(version){if(!['v1','v3','v4','v5','v6','v8','v13','v14','v15'].includes(version))throw Error('Fábrica multinodo no comprobada');return version;}

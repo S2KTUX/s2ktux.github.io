@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import {mkdtemp,mkdir,writeFile,readFile} from 'node:fs/promises';
+import {tmpdir} from 'node:os';
+import {join,resolve} from 'node:path';
+import {spawnSync} from 'node:child_process';
+import {apartarManifiestosHA,arrancarAPIsHAEnOrden} from '../laboratorios/kubernetes-real/debian/arranque-ha-discos.mjs';
+const root=await mkdtemp(join(tmpdir(),'s2ktux-ha-files-')),token='a'.repeat(32),ids=['controlplane','worker1','worker2'];
+const files=['kube-apiserver.yaml','kube-controller-manager.yaml','kube-scheduler.yaml'];
+const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';
+const posix=path=>process.platform==='win32'?path.replaceAll('\\','/').replace(/^([A-Za-z]):/,(m,c)=>'/'+c.toLowerCase()):path;
+const calls=[];
+const run=async(id,label,command)=>{
+ calls.push({id,label,command});
+ if(label.startsWith('Esperar el consenso de etcd'))return {ok:true};
+ if(label.startsWith('Esperar la API local'))return {ok:id!=='controlplane'};
+ const own=resolve(root,id);assert.ok(own.startsWith(resolve(root)));
+ let transformed=command.replaceAll('/etc/kubernetes/manifests',posix(join(own,'manifests'))).replaceAll('/var/lib/kube-lab/arranque-ha',posix(join(own,'stage'))).replaceAll('/tmp/ha-boot-',posix(join(own,'temp-')));
+ // NTFS no reproduce chmod: esta prueba comprueba contenido y conflictos.
+ if(process.platform==='win32')transformed=transformed.replace('mkdir -m 700 ','mkdir ');
+ assert.doesNotMatch(transformed,/\/etc\/kubernetes|\/var\/lib\/kube-lab|\/tmp\/ha-boot-/);
+ const script='crictl(){ echo \'{"containers":[]}\'; }; jq(){ return 0; }; timeout(){ shift; "$@"; };\n'+transformed;
+ const result=spawnSync(bash,['--noprofile','--norc','-c',script],{encoding:'utf8'});
+ return {ok:result.status===0};
+};
+for(const id of ids){await mkdir(join(root,id,'manifests'),{recursive:true});for(const name of files)await writeFile(join(root,id,'manifests',name),'FAULT_SAVED_'+id+'_'+name);}
+for(const id of ids)await apartarManifiestosHA(id,token,run);
+await arrancarAPIsHAEnOrden(token,run);
+assert.deepEqual(calls.filter(c=>c.label.startsWith('Esperar el consenso')).map(c=>c.id),ids);
+assert.ok(calls.findIndex(c=>c.label.startsWith('Iniciar la API'))>calls.findLastIndex(c=>c.label.startsWith('Esperar el consenso')));
+assert.deepEqual(calls.filter(c=>c.label.startsWith('Esperar la API')).map(c=>c.id),ids);
+for(const id of ids)for(const name of files)assert.equal(await readFile(join(root,id,'manifests',name),'utf8'),'FAULT_SAVED_'+id+'_'+name);
+for(const id of ids)await apartarManifiestosHA(id,token,run);
+await assert.rejects(arrancarAPIsHAEnOrden(token,(id,label,command,timeout)=>label.startsWith('Esperar el consenso')?Promise.resolve({ok:false}):run(id,label,command,timeout)));
+for(const id of ids)for(const name of files)assert.equal(await readFile(join(root,id,'manifests',name),'utf8'),'FAULT_SAVED_'+id+'_'+name);
+for(const id of ids)await apartarManifiestosHA(id,token,run);
+await writeFile(join(root,'controlplane','manifests','kube-apiserver.yaml'),'OTHER_CONFIGURATION');
+await assert.rejects(arrancarAPIsHAEnOrden(token,run));
+assert.equal(await readFile(join(root,'controlplane','manifests','kube-apiserver.yaml'),'utf8'),'OTHER_CONFIGURATION');
+assert.equal(await readFile(join(root,'controlplane','stage',token,'kube-apiserver.yaml'),'utf8'),'FAULT_SAVED_controlplane_kube-apiserver.yaml');
+for(const id of ['worker1','worker2'])for(const name of files)assert.equal(await readFile(join(root,id,'manifests',name),'utf8'),'FAULT_SAVED_'+id+'_'+name);
+await assert.rejects(apartarManifiestosHA('unknown',token,run));await assert.rejects(apartarManifiestosHA('controlplane','bad;command',run));
+console.log('HA: arranque en orden, archivos defectuosos conservados y conflictos sin sobrescribir. La prueba usa solo archivos temporales; no acredita el clúster.');

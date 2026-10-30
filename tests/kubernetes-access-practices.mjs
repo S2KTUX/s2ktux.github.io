@@ -12,7 +12,7 @@ for(const task of EJERCICIOS_ACCESO){
 }
 const group=EJERCICIOS_ACCESO.find(t=>t.id==='c13-b');assert.match(group.check,/--subresource=log/);assert.doesNotMatch(group.solution,/auth can-i get pods\/log/);
 const token=EJERCICIOS_ACCESO.find(t=>t.id==='c14-b');assert.match(token.check,/system:serviceaccount:p14b:lectora/);assert.match(token.solution,/--cacert/);
-const fixture=readFileSync(new URL('../fixtures/kubernetes-acceso-nativo.sh',import.meta.url),'utf8');
+const fixture=readFileSync(new URL('../fixtures/kubernetes-acceso-nativo.sh',import.meta.url),'utf8').replaceAll('\r\n','\n');
 for(const task of EJERCICIOS_ACCESO){assert.ok(fixture.includes(task.check));assert.ok(fixture.includes(task.solution));}
 const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';
 const result=spawnSync(bash,['--noprofile','--norc','-n'],{input:fixture,encoding:'utf8'});assert.equal(result.status,0,result.stderr);

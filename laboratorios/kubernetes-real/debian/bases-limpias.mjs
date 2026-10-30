@@ -1,7 +1,8 @@
-import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=c7237db8c69c1abe';
+import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=25abbd6d725f88a9';
 // Distinto de los guardados del alumno: aquí solo entra la primera base,
 // antes de habilitar su consola y nunca después de recuperar una sesión.
 export class BasesLimpias extends SesionesClusterDebian{
+ get expectedNodeCount(){return ({inicial:1,intermedio:2,avanzado:3})[this.level];}
  constructor(revision,options){
   const {compatibleRevisions=[],...profile}=options||{};
   super(profile);if(!/^[a-f0-9]{64}$/.test(revision))throw Error('Revisión de base limpia inválida');
@@ -17,17 +18,17 @@ export class BasesLimpias extends SesionesClusterDebian{
  });}
  async read(){try{
   const record=await this.getCluster();
-  if(record){if(record.nodes.length!==({inicial:1,intermedio:2,avanzado:3})[this.level])throw Error('Base limpia incompleta');return record;}
+  if(record){if(record.nodes.length!==this.expectedNodeCount)throw Error('Base limpia incompleta');return record;}
   // Solo revisiones declaradas equivalentes. Cada registro conserva su
   // validación completa de perfil, identidad, tamaño y sumas antes de migrar.
   for(const revision of this.compatibleRevisions){
-   const previous=await new BasesLimpias(revision,this.compatibleProfile).read();
+   const previous=await new this.constructor(revision,this.compatibleProfile).read();
    if(previous)return await this.write(previous.nodes);
   }
   return null;
  }catch(error){console.warn('Base limpia no reutilizada:',error.message);return null;}}
  async write(nodes){
-  if(nodes.length!==({inicial:1,intermedio:2,avanzado:3})[this.level])throw Error('No se guarda una base limpia parcial');
+  if(nodes.length!==this.expectedNodeCount)throw Error('No se guarda una base limpia parcial');
   const current=await this.getRawCluster(),record=await this.saveNodes(nodes,current?.sha256||null);
   // Conservar una sola revisión por nivel; no se abre la BD de sesiones.
   const db=await this.open();

@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {corregirExamenCKA,informeCKA} from '../laboratorios/kubernetes-real/debian/examen-cka-motor.mjs';
+let health=0,checks=0;
+const complete=await corregirExamenCKA(async(node,label)=>{if(label==='Comprobar disponibilidad del clúster')health++;else checks++;return {ok:true};});
+assert.equal(informeCKA(complete,{startedAt:0,finishedAt:1}).score,100);
+assert.equal(health,12);assert.equal(checks,24);
+let evaluated=0;
+const down=await corregirExamenCKA(async(node,label)=>{if(label!=='Comprobar disponibilidad del clúster')evaluated++;return {ok:false};});
+assert.equal(evaluated,0);assert.ok(down.every(task=>task.conditions.every(c=>c===null)));
+assert.equal(informeCKA(down,{startedAt:0,finishedAt:1}).passed,null);
+const wrong=await corregirExamenCKA(async(node,label)=>({ok:label==='Comprobar disponibilidad del clúster'}));
+const zero=informeCKA(wrong,{startedAt:0,finishedAt:1});assert.equal(zero.score,0);assert.equal(zero.unverified,false);assert.equal(zero.passed,false);
+let online=true;
+const lost=await corregirExamenCKA(async(node,label)=>{if(label==='Comprobar disponibilidad del clúster')return {ok:online};online=false;return {ok:false};});
+assert.ok(lost.every(task=>task.conditions.every(c=>c===null)));
+console.log('CKA: respuestas válidas, incorrectas y caída durante la evaluación diferenciadas; una consulta inicial de salud por tarea. Prueba lógica, no nativa.');

@@ -1,0 +1,18 @@
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {validarBaseExamen,cargarBaseExamen,BASE_EXAMEN_PUBLICADA} from '../laboratorios/kubernetes-real/debian/examen-base-publicada.mjs';
+import {readFileSync} from 'node:fs';
+assert.equal(BASE_EXAMEN_PUBLICADA.revision,/REVISION_EXAMEN='([a-f0-9]{64})'/.exec(readFileSync(new URL('../laboratorios/kubernetes-real/debian/examen-cache.mjs',import.meta.url),'utf8'))[1]);
+assert.match(BASE_EXAMEN_PUBLICADA.url,/githubusercontent\.com\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/examen-v1\/cluster\.json$/);
+const data=new Uint8Array([1,2,3]),hash=value=>createHash('sha256').update(value).digest('hex'),revision='a'.repeat(64);
+const disk=id=>({id,format:'s2ktux-external-disk-v1',diskBytes:id==='root'?3221225472:805306368,chunkSize:1048576,sha256:'b'.repeat(64),manifestSha256:'c'.repeat(64),parts:[]});
+const node=id=>({id,format:'s2ktux-v86-external-checkpoint-v1',identity:'d'.repeat(64),bytes:1024,packedBytes:3,sha256:hash(data),externalDisks:[disk('root'),disk('components')],parts:[{offset:0,bytes:3,sha256:hash(data),file:hash(data)+'.part'}]});
+const manifest={format:'s2ktux-cka-clean-v1',revision,sha256:'e'.repeat(64),nodes:[node('controlplane'),node('worker1')]},bytes=new TextEncoder().encode(JSON.stringify(manifest)),config={revision,sha256:hash(bytes),url:'https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/'+'f'.repeat(40)+'/kubernetes/examen-v1/cluster.json'};
+assert.equal(validarBaseExamen(manifest,revision),manifest);
+for(const wrong of [{...manifest,revision:'0'.repeat(64)},{...manifest,nodes:manifest.nodes.slice(0,1)},{...manifest,nodes:manifest.nodes.toReversed()},{...manifest,nodes:[{...manifest.nodes[0],parts:[{...manifest.nodes[0].parts[0],file:'../secreto'}]},manifest.nodes[1]]},{...manifest,nodes:[{...manifest.nodes[0],externalDisks:[disk('root'),disk('root')]},manifest.nodes[1]]}])assert.throws(()=>validarBaseExamen(wrong,revision));
+let downloads=0,checked=false;
+const deps={revision,fetcher:async()=>new Response(bytes),download:async(url,options)=>{downloads++;assert.equal(options.hash,hash(data));assert.equal(options.bytes,3);return data.buffer;},sessions:{validate:async nodes=>{checked=true;assert.equal(nodes.length,2);for(const n of nodes)assert.equal(hash(Buffer.from(await n.packed.arrayBuffer())),n.sha256);return manifest.sha256;}}};
+const restored=await cargarBaseExamen(config,deps);assert.equal(restored.nodes.length,2);assert.equal(downloads,2);assert.equal(checked,true);
+const before=downloads;await assert.rejects(cargarBaseExamen({...config,url:'https://otro.test/cluster.json'},deps));await assert.rejects(cargarBaseExamen({...config,sha256:'0'.repeat(64)},deps));assert.equal(downloads,before);
+await assert.rejects(cargarBaseExamen(config,{...deps,sessions:{validate:async()=>{throw Error('Perfil o disco alterado');}}}),/Perfil o disco alterado/);
+console.log('Examen publicado: origen y revisión fijados, manifiesto íntegro, fragmentos limitados, rutas seguras y validación completa de nodos antes de aceptar la base.');

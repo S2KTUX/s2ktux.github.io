@@ -65,6 +65,17 @@ export async function capturarCheckpointExterno(vm,disks){
  for(const {id,manifest,state:diskState} of diskStates)externalDisks.push({id,...await empaquetarDiscoExterno(manifest,diskState)});
  return {format:CHECKPOINT,state,externalDisks};
 }
+// Recuperación mediante arranque real: solo persisten los discos, nunca el
+// reloj, las conexiones ni la memoria de etcd de una máquina suspendida.
+export async function capturarDiscosPersistentes(vm,disks){
+ if(typeof vm?.is_running!=='function'||vm.is_running()!==false||!Array.isArray(disks)||disks.length!==2||new Set(disks.map(d=>d.id)).size!==2||!disks.some(d=>d.id==='root')||!disks.some(d=>d.id==='components'))throw Error('Detén la máquina antes de guardar sus discos');
+ const result=[];
+ for(const {id,disk} of disks){
+  if(!disk||disk.failure||disk.operations?.size||disk.pending?.size||typeof disk.get_state!=='function')throw Error('El disco tiene operaciones pendientes o errores');
+  result.push({id,...await empaquetarDiscoExterno(disk.manifest,disk.get_state())});
+ }
+ return {format:'s2ktux-persistent-disks-v1',externalDisks:result};
+}
 export async function prepararRestauracionDiscosExternos(records,disks){
  if(!Array.isArray(records)||records.length!==2||!Array.isArray(disks)||disks.length!==2||new Set(records.map(r=>r?.id)).size!==2||new Set(disks.map(d=>d?.id)).size!==2)throw Error('Faltan discos del checkpoint');
  const staged=[];
