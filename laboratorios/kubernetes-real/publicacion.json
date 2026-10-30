@@ -698,8 +698,8 @@
     },
     {
       "path": "debian/examen.html",
-      "bytes": 3351,
-      "sha256": "a46708222ad49e0d2f0f3296a2eecd0cc29d54f39988883006d4009e7698fc62"
+      "bytes": 3407,
+      "sha256": "43238e3e22fb0314dada274d27af72c61cf240c4d2e281cb3fa8646738ee6918"
     },
     {
       "path": "debian/examen-cka.css",
