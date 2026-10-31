@@ -1,8 +1,9 @@
 import {apartarManifiestosHA,restaurarManifiestosHA,arrancarAPIsHAEnOrden} from './arranque-ha-discos.mjs?v=409ac9a11399d82f';
 import {SesionesDiscosHA} from './sesiones-ha-discos.mjs?v=883ef4dc71cefb00';
-import {BasesLimpiasExamen,REVISION_EXAMEN} from './examen-cache.mjs?v=ba1743e48cef8e79';
-import {BASE_EXAMEN_PUBLICADA,cargarBaseExamen} from './examen-base-publicada.mjs?v=49fd512b85e94396';
-import {SesionesCheckpointV15,BasesLimpiasCheckpointV15} from './sesiones-checkpoint.mjs?v=6d85bedd96a81e62';
+import {BasesLimpiasExamen,REVISION_EXAMEN,PREPARACIONES_EXAMEN_COMPATIBLES} from './examen-cache.mjs?v=08928c4db15fe666';
+import {BASE_EXAMEN_PUBLICADA,cargarBaseExamen} from './examen-base-publicada.mjs?v=3417521281f7f97f';
+import {SesionesCheckpointV15,BasesLimpiasCheckpointV15} from './sesiones-checkpoint.mjs?v=e3101f60c453dfff';
+import {SesionesExamen} from './sesiones-examen.mjs?v=cc4d5faabea6d480';
 import {createLocalSwitch} from '../red-local.mjs';
 import {comandosArchivoSerie} from '../archivos-serie.mjs';
 import {perfilWorker} from './preparar-worker.mjs';
@@ -12,20 +13,20 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=699ef9702fc0f133';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=f846a48632572154';
 import {ordenSaludAPIHA,esperarAPIsHARecuperadas} from './salud-ha.mjs?v=4319be87a1d35356';
-import {ordenSaludInicial} from './salud-inicial.mjs?v=84a2e4609f06f611';
+import {ordenSaludInicial} from './salud-inicial.mjs?v=c634a9a627305264';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=b136ca2f11943ac8';
-import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=6370340954d893dd';
-import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=edde8ebebe1b327c';
+import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=dac077a059f3f703';
+import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=2739f95506d4675d';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=979785ed16349130';
 import {escenarioCurso} from './escenarios-curso.mjs?v=4fe1a4528b2e23b6';
 import {prepararMontajeManual} from './montaje-manual-curso.mjs?v=9d4672bb487ea6e8';
 import {prepararClusterHA,clienteHAQuery} from './ha-curso.mjs?v=e95f9736944e61ab';
 import {SesionesHA,BasesLimpiasHA} from './sesiones-ha.mjs?v=0ca5abaa216f6e3a';
 import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=60a21559ace773d9';
-const cleanRevision='f1084afe2c54553e9ce458b89c53f03ffb681c61e6b5d18ba3b16bd09d7bddae';
+const cleanRevision='b4785b7fb2a2fc82e5bbfb7040984eaac203ec79a7604bcef9b35e717785f970';
 const examRuntime=document.documentElement.dataset.ckaExam==='true';
 const releaseAvailable=()=>{if(examRuntime)return scenario?.exam===true&&factoryVersion==='v15'&&level==='avanzado';const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
@@ -46,10 +47,10 @@ const workerComponents=['v8','v13','v14','v15'].includes(factoryVersion)?'v7':ne
 // Recuperación desde discos HA: candidato solo local hasta validarlo.
 const persistentHA=scenario?.ha&&['127.0.0.1','localhost','[::1]'].includes(location.hostname)&&new URLSearchParams(location.search).get('ha-disks')==='1';
 const nodes=new Map(),networks=new Map(),status=document.querySelector('#cluster-status'),start=document.querySelector('#start-cluster'),add=document.querySelector('#add-worker');
-const network=createLocalSwitch({onError:error=>fail(error)}),sessions=scenario?.ha?(persistentHA?new SesionesDiscosHA():new SesionesHA()):new (factoryVersion==='v15'?SesionesCheckpointV15:SesionesClusterDebian)({workerComponents,factoryVersion,progressive,level,scenarioId:scenario?.id||'study'}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI;
-// El intento de examen empieza en una copia nueva. No recuperar respuestas
-// de una sesión anterior ni escribir en los guardados del curso.
-const persistSession=!examRuntime&&(!scenario?.ha||persistentHA);
+const network=createLocalSwitch({onError:error=>fail(error)}),sessions=examRuntime?new SesionesExamen():scenario?.ha?(persistentHA?new SesionesDiscosHA():new SesionesHA()):new (factoryVersion==='v15'?SesionesCheckpointV15:SesionesClusterDebian)({workerComponents,factoryVersion,progressive,level,scenarioId:scenario?.id||'study'}),save=document.querySelector('#save-cluster'),reset=document.querySelector('#reset-cluster');let busy=false,saved,readSaved=false,initialized=false,levelUI,examPriorSha=null;
+// Reanudar requiere elegirlo expresamente. Un examen nuevo nunca recupera
+// respuestas anteriores y ninguno escribe en los guardados del curso.
+const persistSession=true;
 const haBootToken=crypto.randomUUID().replaceAll('-',''),stagedHANodes=new Set();
 const nodeName=id=>scenario?.ha?perfilNodoHA(id).name:id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name;
 if(scenario?.ha)for(const button of document.querySelectorAll('button[data-node]'))button.textContent=nodeName(button.dataset.node);
@@ -137,13 +138,16 @@ globalThis.kubeDebianClusterRun=phase;
 start.onclick=async()=>{
  if(busy||nodes.size||!releaseAvailable())return;busy=true;start.disabled=true;status.textContent='Recuperando cka-cp1…';updateControls();
  try{
-  saved=persistSession?await sessions.getRawCluster():null;readSaved=true;
+  const previous=persistSession?await sessions.getRawCluster():null;
+  examPriorSha=examRuntime?previous?.sha256||null:null;
+  saved=examRuntime&&!globalThis.kubeDebianExamResumeRequested?null:previous;readSaved=true;
+  if(examRuntime&&globalThis.kubeDebianExamResumeRequested&&!saved)throw Error('No se encuentra el intento guardado. No se ha iniciado otro examen.');
   // Un montaje manual no puede reutilizar la base de estudio ni capturarse
   // después del reset. Solo sus propios guardados, con clave independiente.
-  let preparedExam=examCleanBases?await examCleanBases.read():null;
+  let preparedExam=examCleanBases&&!saved?await examCleanBases.read():null;
   let examBlocked=false;try{examBlocked=sessionStorage.getItem(failedExamKey)==='1';}catch{}
-  if(examRuntime&&!preparedExam&&!examBlocked&&BASE_EXAMEN_PUBLICADA)try{
-   preparedExam=await cargarBaseExamen(BASE_EXAMEN_PUBLICADA,{revision:REVISION_EXAMEN,sessions:examCleanBases,notify:text=>status.textContent=text});
+  if(examRuntime&&!saved&&!preparedExam&&!examBlocked&&BASE_EXAMEN_PUBLICADA)try{
+   preparedExam=await cargarBaseExamen(BASE_EXAMEN_PUBLICADA,{revision:REVISION_EXAMEN,compatibleRevisions:PREPARACIONES_EXAMEN_COMPATIBLES,sessions:examCleanBases,notify:text=>status.textContent=text});
    try{await examCleanBases.write(preparedExam.nodes);}catch(error){console.warn('No se ha guardado localmente la base del examen:',error.message);}
   }catch(error){console.warn('No se ha recuperado la base publicada del examen:',error.message);}
   globalThis.kubeDebianExamBaseUsed=!!preparedExam;
@@ -157,6 +161,7 @@ start.onclick=async()=>{
   }
   if(saved||cleanBase){
    if(saved)saved=await sessions.validateCluster(saved);
+   if(examRuntime&&saved){globalThis.kubeDebianExamSavedMetadata=structuredClone(saved.metadata);globalThis.kubeDebianExamLastSaved=saved.savedAt;}
    const restore=saved||cleanBase;
    if(restore.nodes.length>limiteNodos(level))throw Error('Este guardado corresponde a una configuración todavía no publicada. Se conserva sin modificarlo.');
    if(persistentHA){const results=await Promise.allSettled(restore.nodes.map(record=>createNode(record.id,'',record)));const failed=results.find(r=>r.status==='rejected');if(failed)throw failed.reason;await arrancarAPIsHAEnOrden(haBootToken,runForPractice);}
@@ -178,7 +183,7 @@ start.onclick=async()=>{
      }
      kubeDebianClusterReady=true;status.textContent='Laboratorio listo desde su base limpia.';
     }else{
-    if(persistentHA)await esperarAPIsHARecuperadas(runForPractice);
+    if(scenario?.ha)await esperarAPIsHARecuperadas(runForPractice);
     else if(examRuntime)await phase('controlplane','Esperar el clúster del simulacro sin modificarlo',ordenSaludInicial(nodes.size),240000);
     else await phase('controlplane','Consultar la API recuperada sin esperar ni reparar nodos','kubectl get --raw=/readyz --request-timeout=15s',45000);
     const ready=await value('controlplane',`kubectl get nodes -o json --request-timeout=15s | jq -r '(.items|length)>0 and all(.items[]; any(.status.conditions[]; .type=="Ready" and .status=="True"))'`);
@@ -266,19 +271,18 @@ add.onclick=async()=>{
  const index=siguienteWorker(nodes.keys());if(!releaseAvailable()||nodes.size>=limiteNodos(level)||busy||!initialized||!index||(progressive&&level==='inicial'))return;busy=true;updateControls();
  try{await phase('controlplane','Comprobar la API antes de añadir un nodo','kubectl get --raw=/readyz --request-timeout=15s',45000);if(!networks.size){for(const [id,node] of nodes){const name=id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name,ip=id==='controlplane'?'10.77.0.10':perfilWorker(id.slice(-1)).ip;const cidr=await value('controlplane',`kubectl get node ${name} -o jsonpath='{.spec.podCIDR}'`);if(!/^10\.244\.\d{1,3}\.0\/24$/.test(cidr))throw Error('CIDR recuperado inválido');networks.set(id,{cidr,ip});}}await addWorker(index);if(progressive&&index==='1')await phase('controlplane','Reservar el control plane para coordinar; conservar los Pods existentes',separarControlPlane);if(integratedPolicies)await phase('controlplane','Comprobar políticas en el nuevo worker','kubectl -n kube-system rollout status daemonset/kube-network-policies --timeout=180s',240000);kubeDebianClusterReady=true;status.textContent=index==='1'?'Primer worker disponible. Los Pods existentes se conservan; los nuevos sin toleración al control plane se programan en el worker.':'Control plane y dos workers disponibles. Prueba privada.';}catch(error){fail(error);}finally{for(const node of nodes.values())try{node.window.kubeDebianOpenTerminal({diagnostic:!kubeDebianClusterReady});}catch(error){fail(error);}busy=false;updateControls();}
 };
-globalThis.kubeDebianClusterSave=async()=>{
- if(!persistSession)throw Error(examRuntime?'El intento de examen no se guarda como una práctica.':'La copia HA se utiliza durante esta sesión y se prepara de nuevo al abrirla.');
- if(busy||!initialized)throw Error('Espera a las terminales antes de guardar');busy=true;save.disabled=reset.disabled=add.disabled=true;const held=[];
+globalThis.kubeDebianClusterSave=async(metadata)=>{
+ if(!persistSession)throw Error('La copia HA se utiliza durante esta sesión y se prepara de nuevo al abrirla.');
+ if(examRuntime&&!metadata)throw Error('Faltan el reloj y los datos del intento');
+ if(busy||!initialized)throw Error('Espera a las terminales antes de guardar');busy=true;save.disabled=reset.disabled=add.disabled=true;
  try{
   if(persistentHA)for(const [id]of nodes)await phase(id,'Sincronizar los discos antes de guardar','sync',120000);
-  for(const [id,node] of ordenarNodosDebian(nodes,{progressive})){const access=node.window.kubeDebianSnapshot;const info=access.lock();held.push({id,access,info});}
-  network.pause();status.textContent='Guardando todas las máquinas…';
-  const stopped=await Promise.allSettled(held.map(node=>node.access.freeze())),failed=stopped.find(result=>result.status==='rejected');if(failed)throw failed.reason;
-  const captures=[];for(const {id,access,info} of held){status.textContent='Guardando '+nodeName(id)+'…';captures.push(await sessions.packNode(id,await (persistentHA?access.disks():access.state()),info.terminalText,{consumir:true}));}
-  saved=await sessions.saveNodes(captures,saved?.sha256||null);globalThis.kubeDebianClusterSaved={nodes:captures.length,bytes:captures.reduce((sum,node)=>sum+node.bytes,0),packedBytes:captures.reduce((sum,node)=>sum+node.packedBytes,0)};status.textContent='Clúster guardado.';return kubeDebianClusterSaved;
- }finally{
-  network.resume();const released=await Promise.allSettled(held.map(node=>node.access.release()));busy=false;updateControls();
-  const failed=released.find(result=>result.status==='rejected');if(failed)fail(failed.reason);
+  status.textContent='Guardando todas las máquinas…';
+  return await capturarCluster({ordered:ordenarNodosDebian(nodes,{progressive}),network,capture:access=>persistentHA?access.disks():access.state(),pack:async(id,state,text,options)=>{status.textContent='Guardando '+nodeName(id)+'…';return sessions.packNode(id,state,text,options);},write:async captures=>{
+   saved=examRuntime?await sessions.saveAttempt(captures,metadata,saved?.sha256||examPriorSha):await sessions.saveNodes(captures,saved?.sha256||null);globalThis.kubeDebianClusterSaved={nodes:captures.length,bytes:captures.reduce((sum,node)=>sum+node.bytes,0),packedBytes:captures.reduce((sum,node)=>sum+node.packedBytes,0),savedAt:saved.savedAt};status.textContent='Clúster guardado.';return kubeDebianClusterSaved;
+  }});
+ }catch(error){if(error.resumeFailed)fail(error);throw error;}finally{
+  busy=false;updateControls();
  }
 };
 save.onclick=()=>kubeDebianClusterSave().catch(error=>status.textContent='No se ha guardado: '+(error.message||error));

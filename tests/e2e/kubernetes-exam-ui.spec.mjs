@@ -3,7 +3,7 @@ for(const lang of ['es','en'])test('simulacro · interfaz '+lang+', finalizar va
  await page.setViewportSize({width:375,height:812});const errors=[];page.on('pageerror',e=>errors.push(e.message));
  await page.route('**/examen-cka-motor.mjs*',async route=>{
   if(route.request().url().includes('qa-ui-logic=1'))return route.continue();
-  await route.fulfill({contentType:'text/javascript',body:"export {nuevoIntento,informeCKA,corregirExamenCKA,CKA_CREDENTIAL_DIR} from './examen-cka-motor.mjs?qa-ui-logic=1'; export async function prepararExamenCKA(){}"});
+  await route.fulfill({contentType:'text/javascript',body:"export {nuevoIntento,informeCKA,corregirExamenCKA,CKA_CREDENTIAL_DIR} from './examen-cka-motor.mjs?qa-ui-logic=1'; export async function prepararExamenCKA(){} export async function prepararCredencialExamen(){}"});
  });
  await page.route('**/multinodo.mjs*',route=>route.fulfill({contentType:'text/javascript',body:`globalThis.kubeDebianClusterNodes=new Map([['controlplane',{window:{kubeDebianExamShortcuts:async()=>{}}}]]);globalThis.kubeDebianClusterErrors=[];globalThis.kubeDebianClusterReady=true;globalThis.kubeDebianClusterCheck=async(node,label)=>({ok:label==='Comprobar disponibilidad del clúster'});globalThis.kubeDebianExamOpenTerminals=()=>{};document.querySelector('#start-cluster').onclick=async()=>{};`}));
  await page.goto('/laboratorios/kubernetes-real/debian/examen.html?lang='+lang);await page.locator('#begin-exam').click();await page.waitForFunction(()=>globalThis.ckaExam?.attempt);

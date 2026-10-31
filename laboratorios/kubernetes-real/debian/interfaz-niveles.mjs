@@ -24,7 +24,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  }
  const levelQuestions=clasesNivel(level).reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
  const levelNodes=config.nodes===1?'Un nodo':config.nodes===2?'Control plane y un worker':'Control plane y dos workers';
- $('lab-course-note').textContent=getState().scenarioId==='montaje-cluster'?'* Clases 25–26 · Una copia de montaje con control plane y dos workers.':getState().scenarioId==='ha-cluster'?'* Clase 24 · Tres control planes con balanceador redundante. Esta copia se prepara de nuevo al abrirla y no se guarda.':'* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
+ $('lab-course-note').textContent=getState().scenarioId==='montaje-cluster'?'* Clases 25–26 · Una copia de montaje con control plane y dos workers.':getState().scenarioId==='ha-cluster'?'* Clase 24 · Tres control planes con balanceador redundante. Su guardado es independiente de las otras prácticas.':'* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
  $('course-intro').hidden=true;$('course-progression').hidden=true;$('mode-topology').hidden=true;$('change-lab').hidden=false;
  $('exercise-class-select').replaceChildren(...clasesNivel(level).map(lesson=>{
   const option=document.createElement('option');option.value=String(lesson.number);option.disabled=!claseDisponible(lesson.number)||!clasePermitidaEscenario(lesson.number,getState().scenarioId);option.textContent=lesson.id+' — '+lesson.title+(!claseDisponible(lesson.number)?' · Próximamente':'');return option;

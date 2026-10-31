@@ -6,6 +6,7 @@ const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new 
 const manifest=JSON.parse(await readFile(file,'utf8'));
 if(!manifest.files.some(record=>record.path==='debian/examen-base-publicada.mjs'))manifest.files.push({path:'debian/examen-base-publicada.mjs',bytes:0,sha256:''});
 for(const path of ['checkpoint-discos.mjs','debian/sesiones-checkpoint.mjs','debian/sesiones-ha-discos.mjs','debian/examen-cka-banco.mjs','debian/examen-cka-motor.mjs','debian/examen-cka-ui.mjs','debian/examen-runtime.mjs','debian/examen-cache.mjs','debian/examen.html','debian/examen-cka.css'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
+if(!manifest.files.some(record=>record.path==='debian/sesiones-examen.mjs'))manifest.files.push({path:'debian/sesiones-examen.mjs',bytes:0,sha256:''});
 const haFiles=['perfil-ha','ha-configuracion','tiempos-etcd','configuracion-admin-curso','perfil-controlplane','ha-rutas','archivo-http-local','ha-curso','sesiones-ha','ejercicios-ha','fabrica-ha','esperar-firma-ha','inicializacion-ha','incorporacion-ha','salud-ha','arranque-ha-discos'];
 for(const path of [...haFiles.map(name=>'debian/'+name+'.mjs'),'debian/materiales-ha/kubeadm.yaml','debian/materiales-ha/etcd-strategic.yaml','debian/vendor/fetch-network.mjs','debian/vendor/LICENSE-v86-network.txt'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
 for(const path of ['debian/cni-montaje-curso.mjs','debian/montaje-manual-curso.mjs','debian/leer-join-curso.mjs','debian/esperar-nodo-curso.mjs','debian/ejercicios-montaje.mjs'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
@@ -103,6 +104,9 @@ for(const child of ['complementos-avanzados','gateway-curso','red-politicas-curs
 await replaceRequired('debian/examen-cka-motor.mjs',/from '\.\/examen-runtime\.mjs(?:\?v=[a-f0-9]+)?'/,"from './examen-runtime.mjs?v="+await revision('debian/examen-runtime.mjs')+"'");
 await replaceRequired('debian/examen-cache.mjs',/from '\.\/sesiones-checkpoint\.mjs(?:\?v=[a-f0-9]+)?'/,"from './sesiones-checkpoint.mjs?v="+await revision('debian/sesiones-checkpoint.mjs')+"'");
 await replaceRequired('debian/examen-base-publicada.mjs',/from '\.\/fabrica-cluster\.mjs(?:\?v=[a-f0-9]+)?'/,"from './fabrica-cluster.mjs?v="+await revision('debian/fabrica-cluster.mjs')+"'");
+for(const child of ['sesiones-checkpoint','examen-cka-banco'])await replaceRequired('debian/sesiones-examen.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
+await replaceRequired('debian/sesiones-examen.mjs',/from '\/laboratorios\/docker-real\/v86-sessions\.mjs(?:\?v=[a-f0-9]+)?'/,"from '/laboratorios/docker-real/v86-sessions.mjs?v="+await revision('../docker-real/v86-sessions.mjs')+"'");
+for(const parent of ['multinodo','examen-cka-ui'])await replaceRequired('debian/'+parent+'.mjs',/from '\.\/sesiones-examen\.mjs(?:\?v=[a-f0-9]+)?'/,"from './sesiones-examen.mjs?v="+await revision('debian/sesiones-examen.mjs')+"'");
 await replaceRequired('debian/multinodo.mjs',/from '\.\/examen-base-publicada\.mjs(?:\?v=[a-f0-9]+)?'/,"from './examen-base-publicada.mjs?v="+await revision('debian/examen-base-publicada.mjs')+"'");
 const nativeFiles=[...new Set([...manifest.files.map(record=>record.path),'debian/bases-limpias.mjs','debian/ejercicios-acceso.mjs'])].filter(path=>path.endsWith('.mjs')&&path!=='debian/entrada-laboratorio.mjs').sort();
 const preparation=[];

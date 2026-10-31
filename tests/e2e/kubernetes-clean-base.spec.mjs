@@ -1,5 +1,19 @@
 import {test,expect} from '@playwright/test';
 
+test('captura · reanuda todos los nodos antes de comprimir y conserva sus copias',async({page})=>{
+ await page.goto('/sobre.html');
+ const result=await page.evaluate(async()=>{
+  const {capturarCluster}=await import('/laboratorios/kubernetes-real/debian/bases-limpias.mjs');const events=[],buffers=[];
+  const ordered=['controlplane','worker1'].map((id,i)=>[id,{window:{kubeDebianSnapshot:{lock(){events.push('lock:'+id);return {terminalText:id};},async freeze(){events.push('freeze:'+id);},async state(){events.push('state:'+id);const data=new Uint8Array([i+1]);buffers.push(data);return data.buffer;},async release(){events.push('run:'+id);}}}}]);
+  const saved=await capturarCluster({ordered,network:{pause(){events.push('pause');},resume(){events.push('network');}},pack:async(id,state)=>{events.push('pack:'+id);return {id,value:new Uint8Array(state)[0]};},write:async rows=>rows});
+  return {events,saved};
+ });
+ expect(result.events.indexOf('pack:controlplane')).toBeGreaterThan(result.events.indexOf('run:worker1'));
+ expect(result.events.indexOf('state:worker1')).toBeLessThan(result.events.indexOf('network'));
+ expect(result.events.filter(e=>e==='run:controlplane')).toHaveLength(1);
+ expect(result.saved).toEqual([{id:'controlplane',value:1},{id:'worker1',value:2}]);
+});
+
 test('Montaje · guardado v14 propio, sin convertir v6/v13 ni sobrescribir estudio',async({page})=>{
  await page.goto('/laboratorios/kubernetes-real/');
  const result=await page.evaluate(async()=>{

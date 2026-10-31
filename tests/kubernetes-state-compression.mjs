@@ -17,7 +17,8 @@ try{
 }finally{Object.defineProperty(ArrayBuffer.prototype,'transfer',descriptor);}
 for(const bad of [new Uint8Array(10),new ArrayBuffer(0),{byteLength:4,[Symbol.toStringTag]:'ArrayBuffer'}])await assert.rejects(comprimirEstado(bad),/inválido/);
 await assert.rejects(comprimirEstado(data.buffer,{consumir:'si'}),/inválida/);
-for(const path of ['debian/multinodo.mjs','debian/bases-limpias.mjs'])assert.match(await readFile(new URL('../laboratorios/kubernetes-real/'+path,import.meta.url),'utf8'),/consumir:true/);
+assert.match(await readFile(new URL('../laboratorios/kubernetes-real/debian/bases-limpias.mjs',import.meta.url),'utf8'),/consumir:true/);
+assert.match(await readFile(new URL('../laboratorios/kubernetes-real/debian/multinodo.mjs',import.meta.url),'utf8'),/return await capturarCluster/);
 const build=await readFile(new URL('../scripts/build-kubernetes-deployment.mjs',import.meta.url),'utf8');
 assert.ok(build.indexOf("await replaceRequired('debian/sesiones-cluster.mjs',")<build.indexOf("for(const parent of ['kube-sessions.mjs'"),'Versionar la compresión antes de calcular las referencias de sus padres');
 console.log('Guardado: bytes íntegros, copia cedida liberada, compatibilidad entre iframes y alternativa sin transfer. No altera formatos ni identidades de las máquinas.');

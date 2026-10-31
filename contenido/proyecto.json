@@ -1,20 +1,10 @@
 {
-  "version": "3.1",
+  "version": "3.2",
   "pendientes": [
-    {
-      "id": "kubernetes-recuperacion-con-carga",
-      "tema": "Kubernetes",
-      "texto": "Revisar la recuperación de sesiones con muchas aplicaciones: en las pruebas del simulacro se conservaron sus recursos, pero no todos los nodos volvieron a estar disponibles. No presentar esa recuperación como verificada hasta resolverlo."
-    },
     {
       "id": "lpic-banco-cobertura",
       "tema": "LPIC-1",
       "texto": "Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen."
-    },
-    {
-      "id": "kubernetes-ha-persistencia",
-      "tema": "Kubernetes",
-      "texto": "Permitir guardar y recuperar la copia de HA con sus tres máquinas. Hasta superar esa comprobación, esa copia se prepara de nuevo en cada sesión; el guardado del laboratorio avanzado habitual sí está disponible."
     },
     {
       "id": "kubernetes-tres-practicas",
@@ -29,7 +19,7 @@
     {
       "id": "examen-reanudar",
       "tema": "Laboratorios",
-      "texto": "Guardar de forma conjunta las máquinas, el intento y el cronómetro para poder continuar un examen tras recargar."
+      "texto": "Aplicar al simulacro de Linux el guardado conjunto de máquinas, intento y cronómetro. En Kubernetes ya se puede guardar y reanudar el intento tras recargar."
     },
     {
       "id": "escenarios-rotos",
@@ -68,6 +58,19 @@
     }
   ],
   "versiones": [
+    {
+      "version": "3.2",
+      "fecha": "2026-10-31",
+      "resumen": "Ya puedes guardar la copia HA y continuar el simulacro de Kubernetes después de recargar.",
+      "cambios": [
+        "El simulacro guarda las dos máquinas junto con el tiempo, la pregunta abierta y las marcas de revisión. Al volver puedes reanudar el último guardado o empezar otro intento; las prácticas quedan aparte.",
+        "Hay un botón para guardar y un guardado cada cinco minutos cuando las terminales están libres. Guarda antes de salir: solo se recuperan los cambios confirmados en este navegador y el reloj sigue corriendo mientras la página está cerrada.",
+        "La copia HA conserva sus tres control planes, los datos y las averías que estés practicando. Hemos comprobado un segundo ciclo de guardado y recuperación con quorum de etcd y el corrector real.",
+        "Las máquinas vuelven a ejecutarse antes de comprimir la captura. Así evitamos mantenerlas detenidas durante todo el guardado. También aligeramos las consultas de salud del arranque sin reiniciar ni reparar automáticamente tus servicios.",
+        "Comprobamos la recuperación del examen con aplicaciones en marcha y un archivo creado desde la terminal. Se conservaron las respuestas, los nodos y el tiempo original. La primera preparación sigue tardando varios minutos según el equipo y la conexión.",
+        "Conservamos las bases limpias publicadas, sus archivos y sumas de comprobación, las licencias y los guardados anteriores. El guardado del examen usa un espacio propio y rechaza capturas incompletas o cambios de otra pestaña."
+      ]
+    },
     {
       "version": "3.1",
       "fecha": "2026-10-30",

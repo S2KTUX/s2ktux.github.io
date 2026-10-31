@@ -1,16 +1,19 @@
 import {TAREAS_CKA} from './examen-cka-banco.mjs?v=146843198f26771b';
-import {nuevoIntento,informeCKA,prepararExamenCKA,corregirExamenCKA,CKA_CREDENTIAL_DIR} from './examen-cka-motor.mjs?v=bddf4e44711d2882';
+import {nuevoIntento,informeCKA,prepararExamenCKA,prepararCredencialExamen,corregirExamenCKA,CKA_CREDENTIAL_DIR} from './examen-cka-motor.mjs?v=bddf4e44711d2882';
+import {SesionesExamen} from './sesiones-examen.mjs?v=cc4d5faabea6d480';
 const $=id=>document.getElementById(id),english=new URL(location.href).searchParams.get('lang')==='en',lang=english?'en':'es';
 const say=(es,en)=>english?en:es;
 document.title=say('Simulacro CKA','CKA mock exam')+' · S2KTUX';document.querySelector('h1').textContent=say('Simulacro CKA','CKA mock exam');
 document.querySelector('label[for="exam-question"]').textContent=say('Pregunta','Task');
 const url=new URL(location.href);for(const [key,value]of Object.entries({mode:'course',level:'avanzado',factory:'v15',tls:'classical','persistent-network':'1','use-scheduling-api':'1',escenario:'cka-exam',clase:'24'}))url.searchParams.set(key,value);
 history.replaceState(history.state,'',url.href);document.documentElement.lang=lang;
-let attempt=null,finishing=false,interval=null;
+let attempt=null,finishing=false,interval=null,autosave=null,saving=null,results=null;
 const run=(node,label,command,timeout)=>globalThis.kubeDebianClusterCheck(node,label,'export S2KTUX_CKA_CERT='+CKA_CREDENTIAL_DIR+'/tls.crt S2KTUX_CKA_KEY='+CKA_CREDENTIAL_DIR+'/tls.key; '+command,timeout);
 globalThis.kubeDebianExamRun=run;
 $('exam-intro-text').textContent=say('Dos horas, 100 puntos y aprobado desde 66. La preparación de las máquinas queda fuera del tiempo. Podrás finalizar cuando quieras.','Two hours, 100 points, passing score 66. Machine preparation is not timed. You can finish at any time.');
-$('exam-session-note').textContent=say('* El intento no se conserva si cierras o recargas la página.','* Closing or reloading the page loses this attempt.');
+$('exam-session-note').textContent=say('* Guarda antes de salir. Hay guardado cada cinco minutos con las terminales libres. El tiempo sigue corriendo al cerrar.','* Save before leaving. Autosave runs every five minutes when the terminals are idle. Time keeps running while the page is closed.');
+$('save-exam').textContent=say('Guardar intento','Save attempt');
+$('resume-exam').textContent=say('Reanudar intento','Resume attempt');
 $('begin-exam').textContent=say('Preparar e iniciar','Prepare and start');$('finish-exam').textContent=say('Finalizar examen','Finish exam');$('exam-mark-label').textContent=say('Marcar para revisar','Flag for review');
 function renderQuestion(){
  const index=Number($('exam-question').value),task=TAREAS_CKA[index];
@@ -45,29 +48,55 @@ function showResults(report){
  section.append(details);section.hidden=false;
 }
 async function finish(){
- if(!attempt||finishing)return;finishing=true;clearInterval(interval);attempt.finishedAt=Date.now();$('finish-exam').disabled=true;
+ if(!attempt||finishing)return;finishing=true;clearInterval(interval);clearInterval(autosave);attempt.finishedAt=Date.now();$('finish-exam').disabled=true;
+ if(saving)await saving;
  $('exam-attempt').hidden=true;$('cluster-status').textContent=say('Evaluando el resultado de las tareas…','Evaluating task results…');
  // La evaluación consulta el estado real; no compara el historial de comandos.
- const results=await corregirExamenCKA(run);showResults(informeCKA(results,attempt));
+ results=await corregirExamenCKA(run);showResults(informeCKA(results,attempt));
  $('cluster-status').textContent=say('Evaluación finalizada.','Assessment complete.');
+ await saveAttempt();
 }
 $('finish-exam').onclick=()=>finish();
-$('begin-exam').onclick=async()=>{
- $('begin-exam').disabled=true;$('exam-error').textContent='';
+async function saveAttempt(){
+ if(!attempt||saving)return saving;
+ const metadata={attempt:structuredClone(attempt),question:Number($('exam-question').value),results:results?structuredClone(results):null};
+ $('save-exam').disabled=true;$('exam-save-status').textContent=say('Guardando intento…','Saving attempt…');
+ saving=(async()=>{try{
+  const record=await globalThis.kubeDebianClusterSave(metadata);
+  $('exam-save-status').textContent=say('Guardado a las ','Saved at ')+new Date(record.savedAt).toLocaleTimeString(lang,{hour:'2-digit',minute:'2-digit'});
+  globalThis.kubeDebianExamLastSaved=record.savedAt;
+ }catch(error){$('exam-save-status').textContent=say('No se ha guardado: ','Not saved: ')+String(error.message||error);}finally{saving=null;$('save-exam').disabled=false;}})();
+ return saving;
+}
+$('save-exam').onclick=()=>saveAttempt();
+async function begin(resume){
+ $('begin-exam').disabled=$('resume-exam').disabled=true;$('exam-error').textContent='';
  try{
-  await import('./multinodo.mjs?v=a212fa8846fe9700');
+  globalThis.kubeDebianExamResumeRequested=resume;
+  await import('./multinodo.mjs?v=16b73696b745b14e');
   document.querySelector('h1').textContent=say('Simulacro CKA','CKA mock exam');
   await $('start-cluster').onclick();
   if(!globalThis.kubeDebianClusterReady||globalThis.kubeDebianClusterErrors?.length)throw Error(say('El clúster no está disponible. No ha comenzado el tiempo.','The cluster is not ready. The timer has not started.'));
-  // Una base limpia, nunca un intento anterior. El simulacro tiene su propia
-  // identidad de sesión y no reutiliza el guardado de las prácticas.
-  await prepararExamenCKA(run,{fresh:globalThis.kubeDebianClusterRecovered!==true,prepared:globalThis.kubeDebianExamBaseUsed===true,capture:globalThis.kubeDebianExamCacheSave});
+  if(resume){
+   if(globalThis.kubeDebianClusterRecovered!==true||!globalThis.kubeDebianExamSavedMetadata)throw Error(say('No se ha recuperado el intento.','The attempt was not restored.'));
+   await prepararCredencialExamen(run);
+   const metadata=globalThis.kubeDebianExamSavedMetadata;attempt=metadata.attempt;results=metadata.results;
+   $('exam-question').value=String(metadata.question);
+  }else{
+   await prepararExamenCKA(run,{fresh:globalThis.kubeDebianClusterRecovered!==true,prepared:globalThis.kubeDebianExamBaseUsed===true,capture:globalThis.kubeDebianExamCacheSave});
+   attempt=nuevoIntento();
+  }
   globalThis.kubeDebianExamOpenTerminals();
   await globalThis.kubeDebianClusterNodes.get('controlplane').window.kubeDebianExamShortcuts();
-  attempt=nuevoIntento();$('exam-intro').hidden=true;$('exam-attempt').hidden=false;renderIndex();clock();interval=setInterval(clock,1000);
-  globalThis.ckaExam={get attempt(){return attempt;},finish,get tasks(){return TAREAS_CKA;}};
+  $('exam-intro').hidden=true;$('exam-attempt').hidden=false;renderIndex();
+  globalThis.ckaExam={get attempt(){return attempt;},finish,save:saveAttempt,get tasks(){return TAREAS_CKA;}};
+  if(attempt.finishedAt&&results){finishing=true;$('exam-attempt').hidden=true;showResults(informeCKA(results,attempt));return;}
+  clock();if(!finishing){interval=setInterval(clock,1000);autosave=setInterval(()=>{if(!finishing&&[...globalThis.kubeDebianClusterNodes.values()].every(node=>node.window.kubeDebianSnapshot.idle))saveAttempt();},300000);if(!resume)await saveAttempt();else $('exam-save-status').textContent=say('Intento recuperado del último guardado.','Attempt restored from the last save.');}
  }catch(error){$('exam-error').textContent=String(error.message||error);}
-};
+}
+$('begin-exam').onclick=()=>{if(!$('resume-exam').hidden&&!confirm(say('¿Empezar otro examen? Su primer guardado sustituirá el intento anterior.','Start another exam? Its first save will replace the previous attempt.')))return;return begin(false);};
+$('resume-exam').onclick=()=>begin(true);
+try{const record=await new SesionesExamen().getRawCluster();if(record?.metadata?.attempt){$('resume-exam').hidden=false;$('begin-exam').textContent=say('Empezar otro','Start another');}}catch(error){$('exam-error').textContent=say('No se pudo leer el guardado: ','Could not read the saved attempt: ')+error.message;}
 window.addEventListener('beforeunload',event=>{if(attempt&&!attempt.finishedAt){event.preventDefault();event.returnValue='';}});
 // El acceso se habilita en la portada después de la aceptación nativa.
 document.querySelector('#save-cluster').style.display='none';document.querySelector('#reset-cluster').style.display='none';

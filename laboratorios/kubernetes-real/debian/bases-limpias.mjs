@@ -41,20 +41,32 @@ export class BasesLimpias extends SesionesClusterDebian{
  }
 }
 
-export async function capturarCluster({ordered,network,pack,write}){
- const held=[];
+export async function capturarCluster({ordered,network,pack,write,capture=access=>access.state()}){
+ const held=[];let released=false;
+ async function release(){
+  if(released)return;released=true;
+  let networkError;try{network.resume();}catch(error){networkError=error;}
+  const results=await Promise.allSettled(held.map(node=>node.access.release()));
+  const rejected=results.find(result=>result.status==='rejected');
+  if(rejected||networkError){const error=Error('No se pudieron reanudar todas las máquinas tras la captura',{cause:rejected?.reason||networkError});error.resumeFailed=true;throw error;}
+ }
  try{
   for(const [id,node]of ordered){const access=node.window.kubeDebianSnapshot,info=access.lock();held.push({id,access,info});}
   network.pause();
   const stopped=await Promise.allSettled(held.map(node=>node.access.freeze()));
   const rejected=stopped.find(result=>result.status==='rejected');if(rejected)throw rejected.reason;
+  // save_state devuelve una copia independiente de la RAM. Obtener todas
+  // antes de comprimir evita suspender Raft y sus conexiones durante minutos.
+  const states=[];
+  for(const node of held)states.push(await capture(node.access));
+  await release();
   const captures=[];
-  for(const node of held)captures.push(await pack(node.id,await node.access.state(),node.info.terminalText,{consumir:true}));
+  for(const [i,node]of held.entries()){
+   captures.push(await pack(node.id,states[i],node.info.terminalText,{consumir:true}));
+   states[i]=null;
+  }
   return await write(captures);
  }finally{
-  let networkError;try{network.resume();}catch(error){networkError=error;}
-  const released=await Promise.allSettled(held.map(node=>node.access.release()));
-  const rejected=released.find(result=>result.status==='rejected');
-  if(rejected||networkError){const error=Error('No se pudieron reanudar todas las máquinas tras la captura',{cause:rejected?.reason||networkError});error.resumeFailed=true;throw error;}
+  await release();
  }
 }
