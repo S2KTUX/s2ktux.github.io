@@ -20,13 +20,13 @@ export function validarBaseExamen(manifest,revision){
  }
  return manifest;
 }
-export async function cargarBaseExamen(config,{revision,sessions,notify=()=>{},fetcher=fetch,download}={}){
- if(!sha(config?.sha256)||config.revision!==revision)throw Error('Revisión de examen no autorizada');
+export async function cargarBaseExamen(config,{revision,compatibleRevisions=[],sessions,notify=()=>{},fetcher=fetch,download}={}){
+ if(!sha(config?.sha256)||!sha(revision)||!Array.isArray(compatibleRevisions)||compatibleRevisions.length>4||compatibleRevisions.some(value=>!sha(value))||config.revision!==revision&&!compatibleRevisions.includes(config.revision))throw Error('Revisión de examen no autorizada');
  const url=new URL(config.url);
  if(url.origin!=='https://raw.githubusercontent.com'||!/^\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/examen-v1\/cluster\.json$/.test(url.pathname)||url.search||url.hash)throw Error('Origen del examen no autorizado');
  const response=await fetcher(url,{signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('Base de examen no disponible');
  const bytes=await response.arrayBuffer();if(bytes.byteLength>2*1048576||await hash(bytes)!==config.sha256)throw Error('Manifiesto del examen alterado');
- const manifest=validarBaseExamen(JSON.parse(new TextDecoder().decode(bytes)),revision),jobs=[];
+ const manifest=validarBaseExamen(JSON.parse(new TextDecoder().decode(bytes)),config.revision),jobs=[];
  const nodes=manifest.nodes.map(node=>{const {parts,...metadata}=node;const buffers=new Array(parts.length),result={...metadata,packed:null,terminalText:'',externalDisks:node.externalDisks.map(d=>({...d,parts:d.parts.map(p=>({...p,packed:null}))}))};
   parts.forEach((part,i)=>jobs.push({part,bytes:part.bytes,put:value=>buffers[i]=value}));
   result.externalDisks.forEach(d=>d.parts.forEach(part=>jobs.push({part,bytes:part.packedBytes,put:value=>{part.packed=new Blob([value]);delete part.file;}})));

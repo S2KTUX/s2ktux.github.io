@@ -1,10 +1,13 @@
-import {BasesLimpiasCheckpointV15} from './sesiones-checkpoint.mjs?v=6d85bedd96a81e62';
+import {BasesLimpiasCheckpointV15} from './sesiones-checkpoint.mjs?v=e3101f60c453dfff';
 // Revisión propia: los componentes del examen no sustituyen la base de estudio.
-export const REVISION_EXAMEN='a374b800a490aebea96548a4540ca8e52135bd9f1012e836ac9350221cef3a19';
+export const REVISION_EXAMEN='11dd0b5dfa8f6b946014fe9f8cd482d37f7d04cab76706cb507be87ee27eb3af';
+// Misma VM y preparación: esta revisión solo cambió el guardado del intento,
+// la recuperación y consultas de salud. No aceptar otras bases por semejanza.
+export const PREPARACIONES_EXAMEN_COMPATIBLES=Object.freeze(['a374b800a490aebea96548a4540ca8e52135bd9f1012e836ac9350221cef3a19']);
 export class BasesLimpiasExamen extends BasesLimpiasCheckpointV15{
  constructor(revision=REVISION_EXAMEN,options={}){
   if(options.compatibleRevisions?.length)throw Error('El examen no migra bases de otra preparación');
-  super(revision,{...options,factoryVersion:'v15',workerComponents:'v7',progressive:true,level:'avanzado',scenarioId:'cka-exam',compatibleRevisions:[]});
+  super(revision,{...options,factoryVersion:'v15',workerComponents:'v7',progressive:true,level:'avanzado',scenarioId:'cka-exam',compatibleRevisions:revision===REVISION_EXAMEN?PREPARACIONES_EXAMEN_COMPATIBLES.filter(value=>value!==revision):[]});
   this.prefix='base-examen-v1:';this.key=this.prefix+revision;
  }
  get expectedNodeCount(){return 2;}

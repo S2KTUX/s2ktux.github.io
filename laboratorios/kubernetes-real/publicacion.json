@@ -84,7 +84,7 @@
     {
       "path": "debian/entrada-laboratorio.mjs",
       "bytes": 4486,
-      "sha256": "1a4161bb7fb859846f2c9b3e6a1ea258e1288a14e2a524a6ec95c6e1abd312bd"
+      "sha256": "4a0632b8d49e3854ca10552c34350475f50962d41943c069d10c23c58b210030"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -118,8 +118,8 @@
     },
     {
       "path": "debian/interfaz-niveles.mjs",
-      "bytes": 19582,
-      "sha256": "699ef9702fc0f133edc97385d51938210527c795d2182167796a3da27e3ba639"
+      "bytes": 19578,
+      "sha256": "f846a4863257215477bbaea1ad73862e079a05a4d2e583e514f21ccb9d19dec1"
     },
     {
       "path": "debian/kernel-perfil.mjs",
@@ -144,12 +144,12 @@
     {
       "path": "debian/multinodo.html",
       "bytes": 8492,
-      "sha256": "a8f51f41372271c22c8ef18a7a4fb558dfd17545d843217f337bc17e026d4dba"
+      "sha256": "6bdffb0cf784f9e255cc18c157e14cb380ae6f368a95b72a65c5c776949b2688"
     },
     {
       "path": "debian/multinodo.mjs",
-      "bytes": 35435,
-      "sha256": "a212fa8846fe9700dec971e714d530f2bb5a7e1f58b4f18fff0f3fc57451657e"
+      "bytes": 35784,
+      "sha256": "16b73696b745b14eba80ff972ac2ded5a01942c32814d8da8331a6e72cb9a939"
     },
     {
       "path": "debian/niveles.css",
@@ -313,8 +313,8 @@
     },
     {
       "path": "debian/salud-inicial.mjs",
-      "bytes": 927,
-      "sha256": "84a2e4609f06f611aa7ba41c69e48db69b367a681f76b39103df5a32cb2f616a"
+      "bytes": 1213,
+      "sha256": "c634a9a627305264888d99451edb08258caf7304bbf01090a987db5bda671e88"
     },
     {
       "path": "debian/ejercicios-intermedios.mjs",
@@ -353,8 +353,8 @@
     },
     {
       "path": "debian/bases-limpias.mjs",
-      "bytes": 3814,
-      "sha256": "6370340954d893dda189ec2c90bfde3a33084c7697e12581cd033fed3055c7de"
+      "bytes": 4229,
+      "sha256": "dac077a059f3f703daf372469d162b4ff054865dfd360272008acfe39a7993e2"
     },
     {
       "path": "debian/ejercicios-acceso.mjs",
@@ -363,8 +363,8 @@
     },
     {
       "path": "debian/bases-publicadas.mjs",
-      "bytes": 12129,
-      "sha256": "edde8ebebe1b327c87a635ae76b213c56d7346b0a2450b8020de680c88a87bc3"
+      "bytes": 14627,
+      "sha256": "2739f95506d4675d1dbc9697bad6111848a59f6eb6b9cbd23451a467ed91f2cb"
     },
     {
       "path": "debian/fabrica-cluster.mjs",
@@ -619,7 +619,7 @@
     {
       "path": "debian/sesiones-checkpoint.mjs",
       "bytes": 3889,
-      "sha256": "6d85bedd96a81e6298ee98bade356275f7bfeb9a1ede872db7138a6e7ce3d0e5"
+      "sha256": "e3101f60c453dfffb28cc3cf2ee12dff2ffb6d7588a0f0b34b0f005e24b84cf0"
     },
     {
       "path": "debian/disco-admin-v3/disco-fragmentado.json",
@@ -683,8 +683,8 @@
     },
     {
       "path": "debian/examen-cka-ui.mjs",
-      "bytes": 7592,
-      "sha256": "8be6e6249c1cd6e2276581a394e8db50e1c0087e84e2153020996981973db62a"
+      "bytes": 10350,
+      "sha256": "17a373b61a9b6c4190f8ed351e1ca586217c43ab5ec56a33d23349f48e41baaa"
     },
     {
       "path": "debian/examen-runtime.mjs",
@@ -693,13 +693,13 @@
     },
     {
       "path": "debian/examen-cache.mjs",
-      "bytes": 1220,
-      "sha256": "ba1743e48cef8e79922f995f329e14ca2744ccedd264ae5af879892630154cac"
+      "bytes": 1604,
+      "sha256": "08928c4db15fe66636b680a1f8a2a62a410f9d3407bd9b43cce82734863b872d"
     },
     {
       "path": "debian/examen.html",
-      "bytes": 3407,
-      "sha256": "43238e3e22fb0314dada274d27af72c61cf240c4d2e281cb3fa8646738ee6918"
+      "bytes": 3668,
+      "sha256": "57a64773517b4c340815572689177c3657b02f91da1c96070a69e414eafca6a8"
     },
     {
       "path": "debian/examen-cka.css",
@@ -713,8 +713,13 @@
     },
     {
       "path": "debian/examen-base-publicada.mjs",
-      "bytes": 4923,
-      "sha256": "49fd512b85e943965ff91185b3ac6493450dc967dc45cbd7fd02d1adb51fcd47"
+      "bytes": 5130,
+      "sha256": "3417521281f7f97f0a1f5a19026fc09d2a4297b16c7870ae0fcf2921ee43313c"
+    },
+    {
+      "path": "debian/sesiones-examen.mjs",
+      "bytes": 4080,
+      "sha256": "cc4d5faabea6d4800e2ca4bc8fac7e951164fb35f496972791747a5911d5c417"
     }
   ]
 }

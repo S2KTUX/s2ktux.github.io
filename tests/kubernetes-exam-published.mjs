@@ -2,7 +2,9 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {validarBaseExamen,cargarBaseExamen,BASE_EXAMEN_PUBLICADA} from '../laboratorios/kubernetes-real/debian/examen-base-publicada.mjs';
 import {readFileSync} from 'node:fs';
-assert.equal(BASE_EXAMEN_PUBLICADA.revision,/REVISION_EXAMEN='([a-f0-9]{64})'/.exec(readFileSync(new URL('../laboratorios/kubernetes-real/debian/examen-cache.mjs',import.meta.url),'utf8'))[1]);
+const cacheSource=readFileSync(new URL('../laboratorios/kubernetes-real/debian/examen-cache.mjs',import.meta.url),'utf8'),current=/REVISION_EXAMEN='([a-f0-9]{64})'/.exec(cacheSource)[1];
+const certified=JSON.parse(/PREPARACIONES_EXAMEN_COMPATIBLES=Object.freeze\((\[[^\]]*\])\)/.exec(cacheSource)[1].replaceAll("'",'"'));assert.ok(BASE_EXAMEN_PUBLICADA.revision===current||certified.includes(BASE_EXAMEN_PUBLICADA.revision));
+assert.equal(BASE_EXAMEN_PUBLICADA.sha256,'c09e61bf5ce47bd5a6764b521ea5a0764944c1329a15dad2ed4c421110307253');
 assert.match(BASE_EXAMEN_PUBLICADA.url,/githubusercontent\.com\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/examen-v1\/cluster\.json$/);
 const data=new Uint8Array([1,2,3]),hash=value=>createHash('sha256').update(value).digest('hex'),revision='a'.repeat(64);
 const disk=id=>({id,format:'s2ktux-external-disk-v1',diskBytes:id==='root'?3221225472:805306368,chunkSize:1048576,sha256:'b'.repeat(64),manifestSha256:'c'.repeat(64),parts:[]});
@@ -13,6 +15,7 @@ for(const wrong of [{...manifest,revision:'0'.repeat(64)},{...manifest,nodes:man
 let downloads=0,checked=false;
 const deps={revision,fetcher:async()=>new Response(bytes),download:async(url,options)=>{downloads++;assert.equal(options.hash,hash(data));assert.equal(options.bytes,3);return data.buffer;},sessions:{validate:async nodes=>{checked=true;assert.equal(nodes.length,2);for(const n of nodes)assert.equal(hash(Buffer.from(await n.packed.arrayBuffer())),n.sha256);return manifest.sha256;}}};
 const restored=await cargarBaseExamen(config,deps);assert.equal(restored.nodes.length,2);assert.equal(downloads,2);assert.equal(checked,true);
+const equivalent=await cargarBaseExamen(config,{...deps,revision:'9'.repeat(64),compatibleRevisions:[revision]});assert.equal(equivalent.nodes.length,2);await assert.rejects(cargarBaseExamen(config,{...deps,revision:'9'.repeat(64),compatibleRevisions:['8'.repeat(64)]}),/no autorizada/);
 const before=downloads;await assert.rejects(cargarBaseExamen({...config,url:'https://otro.test/cluster.json'},deps));await assert.rejects(cargarBaseExamen({...config,sha256:'0'.repeat(64)},deps));assert.equal(downloads,before);
 await assert.rejects(cargarBaseExamen(config,{...deps,sessions:{validate:async()=>{throw Error('Perfil o disco alterado');}}}),/Perfil o disco alterado/);
 console.log('Examen publicado: origen y revisión fijados, manifiesto íntegro, fragmentos limitados, rutas seguras y validación completa de nodos antes de aceptar la base.');
