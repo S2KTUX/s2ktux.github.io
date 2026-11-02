@@ -26,7 +26,7 @@ async function init(options){
   liberarEstadoInicial(options.settings);
   if(applyExternalDisks)applyExternalDisks();
   schedulingUsesPostTask=vm.v86.yield.toString().includes('postTask');
-  if(persistentDisksAllowed||checkpointAllowed){
+  if(root){
    // Dejar terminar la E/S del navegador antes de avanzar otros ciclos de
    // Linux. Evita que un bloque pendiente parezca un timeout del disco IDE.
    const engine=vm.v86,nativeYield=engine.yield;

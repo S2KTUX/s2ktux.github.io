@@ -1,5 +1,5 @@
 import {SesionesClusterDebian} from './sesiones-cluster.mjs?v=25abbd6d725f88a9';
-import {BasesLimpias} from './bases-limpias.mjs?v=dac077a059f3f703';
+import {BasesLimpias} from './bases-limpias.mjs?v=5f2be752bfb9a545';
 import {perfilFabricaDebian} from './fabrica.mjs?v=f8890388a14d848d';
 import {validarDiscoExterno} from '../checkpoint-discos.mjs?v=b410b9411a1ecd95';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs?v=3852a1206e14ad3b';

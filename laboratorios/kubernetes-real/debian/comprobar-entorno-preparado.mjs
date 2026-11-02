@@ -1,6 +1,14 @@
 // Leer el proceso real evita lanzar dos clientes CRI pesados solo para
 // consultar una variable. Exigir que pertenezca a kubepods, no solo el nombre.
 // No se cambian TLS, certificados, procesos ni manifiestos.
+export async function comprobarArranquePorFases(run,checks){
+ for(const [label,command]of checks){
+  // Cada orden espera como máximo 180 s dentro de Linux. El transporte
+  // conserva margen propio, sin consumir el plazo de la fase siguiente.
+  const result=await run({checks:[[label,command]]},240000);
+  if(result?.ok!==true)throw Error('No se ha superado: '+label);
+ }
+}
 export function comandosEntornoPreparado(){
  return [
   `set -eu; deadline=$(($(date +%s)+60)); while test "$(date +%s)" -lt "$deadline"; do for comm in /proc/[0-9]*/comm; do test -r "$comm" || continue; read -r name <"$comm" || continue; test "$name" = kube-apiserver || continue; proc=\${comm%/comm}; grep -q kubepods "$proc/cgroup" || continue; if tr '\\0' '\\n' <"$proc/environ" | grep -Fxq 'GODEBUG=tlsmlkem=0'; then exit 0; fi; done; sleep 2; done; exit 1`,

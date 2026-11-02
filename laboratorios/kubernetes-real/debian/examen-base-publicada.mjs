@@ -1,4 +1,4 @@
-import {descargarFragmentoBase} from './fabrica-cluster.mjs?v=979785ed16349130';
+import {descargarFragmentoBase} from './fabrica-cluster.mjs?v=813117dc890bf97d';
 export const BASE_EXAMEN_PUBLICADA=Object.freeze({
  revision:'a374b800a490aebea96548a4540ca8e52135bd9f1012e836ac9350221cef3a19',
  sha256:'c09e61bf5ce47bd5a6764b521ea5a0764944c1329a15dad2ed4c421110307253',

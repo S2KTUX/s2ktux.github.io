@@ -4,14 +4,14 @@ import {Terminal} from '/laboratorios/docker-real/vendor/xterm.mjs';
 import {ChunkDisk} from '../disco-kubernetes.mjs?v=0576afa02b3f1762';
 import {createEthernetInternet} from '/laboratorios/docker-real/ethernet-internet.mjs';
 import {attachTerminalClipboard} from '/laboratorios/docker-real/v86-clipboard.mjs';
-import {createKubeChecks} from '../serial-checks.mjs?v=b4caa929394c3188';
-import {EstadoConsola} from './estado-consola.mjs';
+import {createKubeChecks} from '../serial-checks.mjs?v=87535b5febf9085c';
+import {EstadoConsola} from './estado-consola.mjs?v=260cd7eea01d1e54';
 import {cargarFabricaDebian,perfilFabricaDebian} from './fabrica.mjs?v=f8890388a14d848d';
 import {liberarEstadoInicial} from '../liberar-arranque.mjs';
 import {KubeSessions} from '../kube-sessions.mjs?v=601d790381d8bc16';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
 import {prepararWorkerDebian,perfilWorker} from './preparar-worker.mjs';
-import {ThreadVM} from '../motor-hilo.mjs?v=11ee7c94132d4177';
+import {ThreadVM} from '../motor-hilo.mjs?v=2f8c355c2a21087a';
 import {ordenPromptDinamico,promptConfirmado} from './prompt.mjs';
 import {identidadNodoDebian} from './sesiones-cluster.mjs?v=25abbd6d725f88a9';
 import {comandosTlsLaboratorio,comandosTlsApiServer,ordenEntornoTls,entornoTlsConfirmado} from './tls-laboratorio.mjs';
@@ -19,7 +19,8 @@ import {comandosMontajeComponentes} from './montaje-componentes.mjs';
 import {PresentacionConsola} from './presentacion-consola.mjs';
 import {prepararPerfilConsola,ordenCambiarConsola,consolaConfirmada,consolaCgroup} from './consola-scope.mjs';
 import {prepararAdministracion} from './preparar-administracion.mjs?v=17c552621f536152';
-import {comandosEntornoPreparado} from './comprobar-entorno-preparado.mjs?v=523c698a0ac25012';
+import {comandosEntornoPreparado,comprobarArranquePorFases} from './comprobar-entorno-preparado.mjs?v=da24e0b668632cf4';
+import {ordenSaludInicial} from './salud-inicial.mjs?v=c634a9a627305264';
 import {panicDeArranque} from './panic-arranque.mjs';
 import {kernelSha256} from './kernel-perfil.mjs?v=feb1befec359f8d8';
 import {recursoPesado} from '../recursos-publicados.mjs?v=28e0db74abed5c76';
@@ -166,16 +167,15 @@ async function prepare(){
    if(!result.ok)throw Error('No se ha recuperado la consola guardada');
    kubeDebianReady=true;save.disabled=false;status.textContent='Sesión Debian recuperada, sin reparar ni cambiar tus prácticas.';return;
   }
-  const result=await checks.run({checks:[
+  await comprobarArranquePorFases((...args)=>checks.run(...args),[
    ['systemd es PID 1',`test "$(cat /proc/1/comm)" = systemd && test "$(dpkg --print-architecture)" = i386 && systemctl --version`],
    ['containerd responde a systemd',`deadline=$(($(date +%s)+90)); while test "$(date +%s)" -lt "$deadline"; do systemctl is-active --quiet containerd && test -S /run/containerd/containerd.sock && exit 0; sleep 2; done; journalctl -u containerd -n 30 --no-pager; exit 1`],
    ...(warm?[
     ['Repartir CPU nativa antes de consultar la fábrica limpia','systemctl set-property system.slice CPUWeight=10 && test "$(cat /sys/fs/cgroup/system.slice/cpu.weight)" = 10'],
-    ['Comprobar API recuperada sin repararla',`${tlsMode==='classical'?'export GODEBUG=tlsmlkem=0; ':''}deadline=$(($(date +%s)+180)); while test "$(date +%s)" -lt "$deadline"; do kubectl get --raw=/readyz --request-timeout=10s && exit 0; sleep 3; done; exit 1`],
-    ['Comprobar identidad y servicios del clúster recuperado',`${tlsMode==='classical'?'export GODEBUG=tlsmlkem=0; ':''}test "$(hostname)" = cka-cp1 && ip -4 -o address show dev eth0 | grep -q '10.77.0.10/24' && systemctl is-active --quiet kubelet && kubectl wait --for=condition=Ready node/cka-cp1 --timeout=120s`],
+    ['Comprobar API y nodo recuperados sin repararlos',ordenSaludInicial(1)],
+    ['Comprobar identidad y servicios del clúster recuperado',`test "$(hostname)" = cka-cp1 && ip -4 -o address show dev eth0 | grep -q '10.77.0.10/24' && systemctl is-active --quiet kubelet`],
    ]:[]),
-  ]},180000);
-  if(!result.ok)throw Error('No se ha superado: '+result.results.filter(check=>!check.ok).map(check=>check.label).join('; '));
+  ]);
   if(administration&&!warm)await prepararAdministracion(async(label,command,timeout=180000)=>{const result=await checks.run({checks:[[label,command]]},timeout);if(!result.ok)throw Error(label+' falló');},{sharedCode});
   if(warm){for(const command of comandosMontajeComponentes()){const mounted=await checks.run({checks:[['Conservar componentes al reiniciar',command]]},180000);if(!mounted.ok)throw Error('El montaje persistente no ha pasado');}}
   if(worker){
@@ -213,7 +213,7 @@ function flush(){
  consoleState.receive(kubeDebianTranscript);
  if(!checks.receive(text)){if(!presentation.opened)terminal.write(text);else presentation.write(text);}
  if(panicDeArranque(kubeDebianTranscript,kubeDebianReady))fail(Error('El kernel no ha podido arrancar.'));
- if(prompt()&&!kubeDebianReady)prepare();
+ if(!kubeDebianReady&&prompt())prepare();
 }
 terminal.onData(text=>{if(vm&&!busy&&presentation.opened){consoleState.input(text);vm.serial0_send(Array.from(encoder.encode(text),byte=>String.fromCharCode(byte)).join(''));}});
 attachTerminalClipboard(terminal,document.querySelector('#terminal'),{canPaste:()=>!!vm&&!busy&&presentation.opened,notify:text=>status.textContent=text});
@@ -274,7 +274,7 @@ start.onclick=async()=>{
     else{vm.v86.cpu.set_jit_config(1,3);actual={loopProtection:vm.v86.cpu.wm.exports.get_jit_config(2)};}
     if(actual.loopProtection!==1)throw Error('Protección del motor no disponible');
     if(!threaded)internet=globalThis.kubeDebianInternet=createEthernetInternet(vm.bus);
-    if(!threaded&&factoryVersion==='v15'){
+    if(!threaded&&clustered){
      const engine=vm.v86,nativeYield=engine.yield;
      const observation=globalThis.kubeDiskCooperation={policy:'pending-storage-2ms',nativeScheduling:nativeYield.toString().includes('postTask'),delayed:0,normal:0};
      engine.yield=function(delay,tick){
