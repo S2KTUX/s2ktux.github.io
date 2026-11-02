@@ -1,5 +1,34 @@
 // Plazos del entorno emulado; no cambia permisos, datos ni las respuestas.
 // Se aplica únicamente a una copia nueva del examen, nunca al estudio guardado.
+// Las órdenes canónicas de preparación llevan JSON ya generado por el banco.
+// Crear esos recursos nuevos mediante la API evita arrancar Go por cada uno.
+export function ordenPreparacionExamen(command){
+ const prefix="printf '%s\\n' ",suffix=' | kubectl apply -f -';
+ if(typeof command!=='string'||!command.startsWith(prefix)||!command.endsWith(suffix))return command;
+ const quoted=command.slice(prefix.length,-suffix.length),quote=value=>"'"+value.replaceAll("'","'\\''")+"'";
+ let object;try{object=JSON.parse(quoted.slice(1,-1).replaceAll("'\\''","'"));if(quote(JSON.stringify(object))!==quoted)return command;}catch{return command;}
+ if(!object||typeof object!=='object'||Array.isArray(object))return command;
+ const resource={'apps/v1:Deployment':['/apis/apps/v1','deployments',true],'v1:Service':['/api/v1','services',true],'v1:Pod':['/api/v1','pods',true],'v1:PersistentVolume':['/api/v1','persistentvolumes',false]}[object.apiVersion+':'+object.kind];
+ if(!resource||!object.metadata||typeof object.metadata.name!=='string'||!/^[-a-z0-9]+$/.test(object.metadata.name)||resource[2]&&!/^examen-[0-9]{2}$/.test(object.metadata.namespace))return command;
+ const path=resource[0]+(resource[2]?'/namespaces/'+object.metadata.namespace:'')+'/'+resource[1];
+ return 'curl --fail --silent --show-error --max-time 30 --cacert /etc/kubernetes/pki/ca.crt --cert "$S2KTUX_CKA_CERT" --key "$S2KTUX_CKA_KEY" -H '+quote('Content-Type: application/json')+' --data '+quote(JSON.stringify(object))+' '+quote('https://127.0.0.1:6443'+path+'?fieldValidation=Strict')+' >/dev/null';
+}
+export function ordenRetirarWorkerExamen(){return `set -eu
+umask 077
+dir=$(mktemp -d /run/s2ktux-cka-start.XXXXXX)
+trap 'rm -f "$dir/cert" "$dir/key" "$dir/response"; rmdir "$dir"' EXIT
+config=/etc/kubernetes/super-admin.conf
+test -r "$config" || config=/etc/kubernetes/admin.conf
+test "$(grep -c 'client-certificate-data:' "$config")" = 1
+test "$(grep -c 'client-key-data:' "$config")" = 1
+awk '/client-certificate-data:/{print $2}' "$config" | base64 -d > "$dir/cert"
+awk '/client-key-data:/{print $2}' "$config" | base64 -d > "$dir/key"
+code=$(curl --silent --show-error --retry 2 --retry-all-errors --retry-delay 2 --retry-max-time 45 --max-time 20 --cacert /etc/kubernetes/pki/ca.crt --cert "$dir/cert" --key "$dir/key" -X DELETE -o "$dir/response" -w '%{http_code}' https://127.0.0.1:6443/api/v1/nodes/cka-w2)
+case "$code" in
+ 200|202) jq -e '(.kind=="Node" and .metadata.name=="cka-w2") or (.kind=="Status" and .status=="Success")' "$dir/response" ;;
+ 404) jq -e '.kind=="Status" and .reason=="NotFound" and .details.name=="cka-w2"' "$dir/response" ;;
+ *) cat "$dir/response"; exit 1 ;;
+esac`;}
 export async function comprobarRuntimeExamen(run){
  const dir='/var/lib/kube-lab/exam-runtime-v1';
  const result=await run('controlplane','Comprobar la preparación del examen recuperado',`set -eu; test "$(cat ${dir}/complete)" = prepared; test -s ${dir}/openapi-v2.pb; grep -q '(full)' /sys/kernel/debug/sched/preempt; test "$(awk '/^    livenessProbe:/{live=1;next} live && /^    [^ ]/{live=0} live && /failureThreshold:/{print $2}' /etc/kubernetes/manifests/kube-apiserver.yaml)" = 30; containerd --config /etc/containerd/config.toml config dump | grep -q "io.containerd.timeout.task.state.*30s"; response=$(curl --fail --silent --show-error --max-time 20 --cacert /etc/kubernetes/pki/ca.crt --cert "$S2KTUX_CKA_CERT" --key "$S2KTUX_CKA_KEY" https://127.0.0.1:6443/readyz); test "$response" = ok`,60000);

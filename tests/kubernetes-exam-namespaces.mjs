@@ -19,4 +19,7 @@ const interrupted=[];
 await assert.rejects(prepararEjerciciosCKA(async(node,label)=>{interrupted.push(label);return {ok:true};},{fresh:true,beforeQuestions:async()=>{const error=Error('No reanudada');error.resumeFailed=true;throw error;}}),/No reanudada/);
 assert.deepEqual(interrupted,['Preparar la validación OpenAPI de los manifiestos']);
 assert.ok(calls.findIndex(c=>c.label==='Comprobar la API después de guardar la base')<calls.findIndex(c=>c.label==='Crear los namespaces del simulacro'));
+const missingAccounts=[];
+await assert.rejects(prepararEjerciciosCKA(async(node,label,command,timeout)=>{missingAccounts.push({label,command,timeout});return {ok:label!=='Esperar las cuentas de los namespaces'};},{fresh:true,prepared:true}),/No se han preparado las cuentas/);
+assert.equal(missingAccounts.at(-1).label,'Esperar las cuentas de los namespaces');assert.equal(missingAccounts.at(-1).timeout,240000);assert.match(missingAccounts.at(-1).command,/api\/v1\/serviceaccounts/);assert.match(missingAccounts.at(-1).command,/length==12/);assert.doesNotMatch(missingAccounts.at(-1).command,/create serviceaccount/);
 console.log('Examen: JSON correcto en los doce namespaces, validación estricta del servidor y precarga OpenAPI sin desactivar la validación. Prueba de la preparación, no del clúster.');

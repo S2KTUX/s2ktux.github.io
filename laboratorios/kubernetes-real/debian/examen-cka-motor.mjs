@@ -1,5 +1,5 @@
 import {DOMINIOS_CKA,DURACION_CKA,MINIMO_CKA,TAREAS_CKA} from './examen-cka-banco.mjs?v=146843198f26771b';
-import {prepararRuntimeExamen,comprobarRuntimeExamen} from './examen-runtime.mjs?v=2fe076165705ea9b';
+import {prepararRuntimeExamen,comprobarRuntimeExamen,ordenPreparacionExamen} from './examen-runtime.mjs?v=89d88e61eb5725c9';
 export const CKA_CREDENTIAL_DIR='/run/s2ktux-cka-eval-'+crypto.randomUUID().replaceAll('-','');
 export async function prepararCredencialExamen(run){
  const dir=CKA_CREDENTIAL_DIR;
@@ -63,10 +63,10 @@ export async function prepararEjerciciosCKA(run,context){
  const names=TAREAS_CKA.map(task=>'examen-'+task.id).join(' ');
  const created=await run('controlplane','Crear los namespaces del simulacro',`set -eu; for name in ${names}; do curl --fail --silent --show-error --max-time 20 --cacert /etc/kubernetes/pki/ca.crt --cert "$S2KTUX_CKA_CERT" --key "$S2KTUX_CKA_KEY" -H 'Content-Type: application/json' --data '{"apiVersion":"v1","kind":"Namespace","metadata":{"name":"'"$name"'"}}' 'https://127.0.0.1:6443/api/v1/namespaces?fieldValidation=Strict' >/dev/null; done`,120000);
  if(created?.ok!==true)throw Error('No se han creado los namespaces del simulacro');
- const accounts=await run('controlplane','Esperar las cuentas de los namespaces',`deadline=$(($(date +%s)+60)); until object=$(curl --fail --silent --show-error --max-time 10 --cacert /etc/kubernetes/pki/ca.crt --cert "$S2KTUX_CKA_CERT" --key "$S2KTUX_CKA_KEY" https://127.0.0.1:6443/api/v1/serviceaccounts) && test -n "$object" && printf '%s\\n' "$object" | jq -e '[.items[] | select(.metadata.name=="default" and (.metadata.namespace|startswith("examen-")))] | length==12'; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 1; done`,90000);
+ const accounts=await run('controlplane','Esperar las cuentas de los namespaces',`deadline=$(($(date +%s)+180)); until object=$(curl --fail --silent --show-error --max-time 10 --cacert /etc/kubernetes/pki/ca.crt --cert "$S2KTUX_CKA_CERT" --key "$S2KTUX_CKA_KEY" https://127.0.0.1:6443/api/v1/serviceaccounts) && test -n "$object" && printf '%s\\n' "$object" | jq -e '[.items[] | select(.metadata.name=="default" and (.metadata.namespace|startswith("examen-")))] | length==12'; do test "$(date +%s)" -lt "$deadline" || exit 1; sleep 1; done`,240000);
  if(accounts?.ok!==true)throw Error('No se han preparado las cuentas de los namespaces');
  // Los controladores reales crean las ServiceAccounts de estos namespaces.
- for(const task of TAREAS_CKA)for(const command of task.prepare.slice(2)){const r=await run('controlplane','Preparar el entorno del simulacro','set -eu; '+command,240000);if(r?.ok!==true)throw Error('No se ha completado la preparación del simulacro');}
+ for(const task of TAREAS_CKA)for(const command of task.prepare.slice(2)){const r=await run('controlplane','Preparar el entorno del simulacro','set -eu; '+ordenPreparacionExamen(command),240000);if(r?.ok!==true)throw Error('No se ha completado la preparación del simulacro');}
 }
 export async function corregirExamenCKA(run){
  const results=[];
