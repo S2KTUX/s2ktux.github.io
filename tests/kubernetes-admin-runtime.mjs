@@ -11,7 +11,7 @@ for(const [key,value]of Object.entries({base:'v6',components:'v8',withKube:false
 assert.equal(kernelSha256('highmem-v1'),'356959ed6da96e90c2e446a7d3c74b6cfcb55a3785d5056e6f2ea22a0caaca25');
 assert.throws(()=>kernelSha256('highmem-v2'));
 assert.equal(parametrosPublicos('level=inicial&factory=v13').get('factory'),'v6');
-assert.equal(parametrosPublicos('level=intermedio&use-scheduling-api=1').has('use-scheduling-api'),false);
+for(const level of ['inicial','intermedio'])assert.equal(parametrosPublicos('level='+level).get('use-scheduling-api'),'1');
 const advanced=parametrosPublicos('level=avanzado&factory=v6');assert.equal(advanced.get('factory'),'v15');assert.equal(advanced.get('use-scheduling-api'),'1');
 assert.equal(nivelDisponible('avanzado'),true,'Entrega avanzada con aceptación nativa');
 const source=readFileSync(new URL('../laboratorios/kubernetes-real/debian/cliente.mjs',import.meta.url),'utf8');assert.match(source,/memory_size:memoryMiB\*1048576/);assert.match(source,/stateLimitMiB:adminProfile\?\.stateLimitMiB\|\|1536/);

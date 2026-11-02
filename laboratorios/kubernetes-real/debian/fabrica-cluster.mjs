@@ -7,7 +7,8 @@ export async function descargarFragmentoBase(url,options,download=verifiedDownlo
 }
 export function validarBasePublicada(manifest,config){
  const count={inicial:1,intermedio:2,avanzado:3}[config.level];
- if(!count||manifest?.format!=='s2ktux-kubernetes-clean-cluster-v1'||manifest.level!==config.level||manifest.factoryVersion!=='v6'||manifest.workerComponents!=='v8'||!sha(manifest.sourceRevision)||!sha(manifest.sha256)||!Array.isArray(manifest.nodes)||manifest.nodes.length!==count)throw Error('Base multinodo incompatible');
+ const components=config.level==='inicial'?'v7':'v8';
+ if(!count||manifest?.format!=='s2ktux-kubernetes-clean-cluster-v1'||manifest.level!==config.level||manifest.factoryVersion!=='v6'||manifest.workerComponents!==components||!sha(manifest.sourceRevision)||!sha(manifest.sha256)||!Array.isArray(manifest.nodes)||manifest.nodes.length!==count)throw Error('Base multinodo incompatible');
  for(const [index,node]of manifest.nodes.entries()){
   if(node.id!==['controlplane','worker1','worker2'][index]||!sha(node.sha256)||!Number.isSafeInteger(node.bytes)||node.bytes<1||node.bytes>1536*1048576||!Number.isSafeInteger(node.packedBytes)||node.packedBytes<1||node.packedBytes>512*1048576||!Array.isArray(node.parts)||!node.parts.length||node.parts.length>64)throw Error('Nodo publicado inválido');
   let offset=0;

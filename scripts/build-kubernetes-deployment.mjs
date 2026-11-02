@@ -80,6 +80,8 @@ await replaceRequired('motor-hilo.mjs',/new URL\('\.\/motor-worker\.mjs(?:\?v=[a
 await replaceRequired('debian/cliente.mjs',/from '\.\.\/motor-hilo\.mjs(?:\?v=[a-f0-9]+)?'/,"from '../motor-hilo.mjs?v="+await revision('motor-hilo.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\.\/disco-kubernetes\.mjs(?:\?v=[a-f0-9]+)?'/,"from '../disco-kubernetes.mjs?v="+await revision('disco-kubernetes.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\.\/serial-checks\.mjs(?:\?v=[a-z0-9-]+)?'/,"from '../serial-checks.mjs?v="+await revision('serial-checks.mjs')+"'");
+await replaceRequired('debian/cliente.mjs',/from '\.\/estado-consola\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './estado-consola.mjs?v="+await revision('debian/estado-consola.mjs')+"'");
+await replaceRequired('debian/cliente.mjs',/from '\.\/salud-inicial\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './salud-inicial.mjs?v="+await revision('debian/salud-inicial.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\/perfil-administracion\.mjs(?:\?v=[a-f0-9]+)?'/,"from './perfil-administracion.mjs?v="+await revision('debian/perfil-administracion.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\/kernel-perfil\.mjs(?:\?v=[a-f0-9]+)?'/,"from './kernel-perfil.mjs?v="+await revision('debian/kernel-perfil.mjs')+"'");
 await replaceRequired('debian/cliente.mjs',/from '\.\/preparar-administracion\.mjs(?:\?v=[a-f0-9]+)?'/,"from './preparar-administracion.mjs?v="+await revision('debian/preparar-administracion.mjs')+"'");

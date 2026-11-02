@@ -1,5 +1,5 @@
 {
-  "version": "3.2",
+  "version": "3.3",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -7,9 +7,9 @@
       "texto": "Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen."
     },
     {
-      "id": "kubernetes-tres-practicas",
+      "id": "kubernetes-dos-practicas",
       "tema": "Kubernetes",
-      "texto": "Revisar hasta tres ejercicios por clase: uno para empezar, otro para aplicar lo aprendido y otro orientado al examen. Ampliar las variantes de afinidad y reparto, y practicar NoExecute en un worker aislado sin afectar al resto del laboratorio. Sin ejercicios para la clase 00."
+      "texto": "Mantener dos prácticas por contenido, como en Linux y Docker: una sencilla y otra para aplicar lo aprendido. Revisar su relación con el curso, sin añadir una tercera práctica ni ejercicios a la clase 00."
     },
     {
       "id": "examen-reinicio",
@@ -34,7 +34,12 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir reduciendo los tiempos de arranque y preparación de complementos, y el pico de memoria al guardar varios nodos. Comprobar también las sesiones tras largos periodos en segundo plano. Integrar y comprobar la entrega local de materiales descargados y verificados por el navegador, para evitar transferencias lentas dentro de las máquinas. El intermedio puede descargar una base de dos nodos ya preparada (549 MiB), separada de los guardados del alumno. No se descargan máquinas desde otras páginas."
+      "texto": "Seguir reduciendo la descarga inicial, la preparación de complementos y el consumo de memoria al guardar varios nodos. El inicial y el intermedio ya pueden recuperar bases limpias preparadas y verificadas. Mantener sus guardados separados y no descargar máquinas desde otras páginas."
+    },
+    {
+      "id": "kubernetes-uso-prolongado",
+      "tema": "Kubernetes",
+      "texto": "Ampliar las pruebas a sesiones de dos horas, más equipos y el nivel avanzado. El inicial ya superó doce minutos de comandos, una pausa real del navegador y la recuperación del guardado; no presentarlo como garantía para cualquier duración o equipo."
     },
     {
       "id": "imagen-ligera",
@@ -58,6 +63,20 @@
     }
   ],
   "versiones": [
+    {
+      "version": "3.3",
+      "fecha": "2026-11-02",
+      "resumen": "Kubernetes entra desde una base inicial preparada y responde mejor al usar la terminal.",
+      "cambios": [
+        "El nivel inicial puede descargar una base limpia de un solo nodo ya preparado. Sus archivos se verifican antes de abrirla y su caché queda separada de las sesiones del alumno. La descarga inicial ronda los 306 MiB; después se reutiliza en este navegador.",
+        "Activamos la planificación de tareas del navegador también en los niveles inicial e intermedio. Cuando hay lecturas de disco pendientes, el motor deja terminar esa entrada y salida antes de seguir avanzando; los equipos sin esa API conservan la alternativa disponible.",
+        "Corregimos el arranque: las comprobaciones tenían un plazo compartido y podían agotar el tiempo de la fase siguiente. Ahora cada fase tiene su propio plazo y las consultas de salud evitan iniciar clientes pesados repetidamente. No se reinician servicios para ocultar averías.",
+        "Las comprobaciones procesan solo la salida nueva, en lugar de analizar todo el historial una y otra vez. El diagnóstico tiene un tamaño limitado y conserva los resultados aunque haya mucha salida.",
+        "Comprobamos el nivel inicial durante doce minutos, con comandos, una pausa del navegador y guardado y recuperación del archivo creado. El intermedio también superó el arranque desde su misma base pública con los dos nodos disponibles.",
+        "Linux y Docker superaron una nueva comprobación en sus máquinas publicadas: arranque, tareas básicas del curso, Internet, guardar, recuperar y Reset. En Docker se comprobaron también imágenes, contenedores, HTTP, volúmenes, redes y construcción. Siguen aplicándose las limitaciones de Debian y de las imágenes de 32 bits que se indican en cada laboratorio.",
+        "Mantenemos dos prácticas por contenido. La velocidad depende del equipo y la conexión; estas pruebas no garantizan el mismo tiempo en todos los navegadores ni sesiones de cualquier duración."
+      ]
+    },
     {
       "version": "3.2",
       "fecha": "2026-10-31",

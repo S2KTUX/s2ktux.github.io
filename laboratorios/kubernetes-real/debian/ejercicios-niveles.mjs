@@ -15,7 +15,7 @@ import {EJERCICIOS_CICLO_CLUSTER} from './ejercicios-ciclo-cluster.mjs?v=dc04eeb
 import {EJERCICIOS_AVANZADOS} from './ejercicios-avanzados.mjs?v=4830fb2406b6ce0f';
 import {exigirJSON} from './comprobaciones-json.mjs';
 import {API} from './herramientas-practicas.mjs';
-import {claseDisponible} from './disponibilidad-curso.mjs?v=b136ca2f11943ac8';
+import {claseDisponible} from './disponibilidad-curso.mjs?v=88821d6eaeb21bd5';
 import {EJERCICIOS_APRENDER} from './ejercicios-aprender.mjs';
 import {EJERCICIOS_PROGRESIVOS,CKA_EXAM_PRACTICE} from './ejercicios-progresivos.mjs';
 export const EJERCICIOS=Object.freeze({

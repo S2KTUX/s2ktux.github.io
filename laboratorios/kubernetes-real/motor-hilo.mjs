@@ -7,7 +7,7 @@ export class ThreadVM {
   if((checkpointAllowed||persistentDisksAllowed)&&settings.autostart!==false)throw Error('El checkpoint necesita arrancar la CPU después de restaurar el disco');
   this.checkpointAllowed=checkpointAllowed;this.persistentDisksAllowed=persistentDisksAllowed;
   this.listeners=new Map();this.pending=new Map();this.next=0;this.closed=false;this.onError=onError;
-  const workerURL=new URL('./motor-worker.mjs?v=aab34569baa6bc2d',import.meta.url);
+  const workerURL=new URL('./motor-worker.mjs?v=008c62573ade6bc3',import.meta.url);
   if(schedulingAPI)workerURL.searchParams.set('use-scheduling-api','1');
   this.worker=new Worker(workerURL,{type:'module'});
   const handlers=new Map();

@@ -11,8 +11,9 @@ const publicRevision='143313c73180f2eb01ea40f902405f0a7643b20bb28b58ea19ddecdda8
 const previousRevision='5924dff001deaf3e54f5f4d46ef8a394fa65c1e5543a2d4e6392be612e19d51c';
 assert.deepEqual(revisionesCompatibles[previousRevision],[publicRevision,...revisionesCompatibles[publicRevision]],'Conservar también la cadena publicada anterior');
 const lastPublished='f1084afe2c54553e9ce458b89c53f03ffb681c61e6b5d18ba3b16bd09d7bddae';assert.deepEqual(revisionesCompatibles[lastPublished],[previousRevision,...revisionesCompatibles[previousRevision]]);
-assert.deepEqual(revisionesCompatibles[current],[lastPublished,...revisionesCompatibles[lastPublished]],'Conservar la última base publicada y todas sus referencias');assert.equal(revisionesCompatibles[current].length,16);
-const historical=revisionesCompatibles[current].slice(3);
+const release32='b4785b7fb2a2fc82e5bbfb7040984eaac203ec79a7604bcef9b35e717785f970';assert.deepEqual(revisionesCompatibles[release32],[lastPublished,...revisionesCompatibles[lastPublished]]);
+assert.deepEqual(revisionesCompatibles[current],[release32,...revisionesCompatibles[release32]],'Conservar la última base publicada y todas sus referencias');assert.equal(revisionesCompatibles[current].length,17);
+const historical=revisionesCompatibles[current].slice(4);
 assert.equal(historical[0],'1177a406fc29d32679eea1361b9b9f0435063727777de2cf61603d573f768b55');
 assert.equal(historical[1],'b4d9ea5c2eceb5c3291aba4dae18b2cb84b77a92e1f55db82c07eaf06b1361ea');
 assert.deepEqual(historical.slice(2,11),['1779c41271a721ba259e05257b7438d67821654584bbad6aea954f8983ec8e22','1aee2ac9e7efa46560bda7313e50113226c6f26f67d5b609a971c0a79e8fb0cc','8be849b4dc401a5fdc621741bcf7605456a2983c7d97de64202465827ce37c2d','303364f3fd95b5cbbc88a46937d1ca5a95f20786ea8a67ebce27e99df2fa1b8b','61c03e1b79b007c666430da100f51d3b9fdde8034a878ed61d28a988a53ff37e','c402d3d5373a48d52c73ca9486ec36784fff9ad1597a9bfd28334e0c36aa9abd','326568ee67071140f2bc3ea3d6260493de65912350c6bf7a8be1a3f0ad028720','f09e92a7d7e965fa4272457dce6969438c71fbb996deed320b2f786820adbf07','b9b13ff8628d342553bddc87f32cdb6314accb53d7da8ed84582b6f1175716db'],'Conservar las nueve revisiones equivalentes sin alterar los bytes ni la identidad v6');
@@ -26,6 +27,10 @@ const manifest={format:'s2ktux-kubernetes-clean-cluster-v1',sourceRevision:'b'.r
 const bytes=new TextEncoder().encode(JSON.stringify(manifest));
 const config={level:'intermedio',revision:'d'.repeat(64),sha256:hash(bytes),url:'https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/'+'e'.repeat(40)+'/kubernetes/clean-v1/intermedio/cluster.json'};
 assert.equal(validarBasePublicada(manifest,config),manifest);
+const initial={...manifest,level:'inicial',workerComponents:'v7',nodes:manifest.nodes.slice(0,1)};
+assert.equal(validarBasePublicada(initial,{...config,level:'inicial'}),initial);
+assert.throws(()=>validarBasePublicada({...initial,workerComponents:'v8'},{...config,level:'inicial'}));
+assert.throws(()=>validarBasePublicada({...initial,nodes:manifest.nodes},{...config,level:'inicial'}));
 for(const bad of [{...manifest,level:'inicial'},{...manifest,nodes:[manifest.nodes[0]]},{...manifest,nodes:[manifest.nodes[1],manifest.nodes[0]]},{...manifest,nodes:[{...manifest.nodes[0],parts:[{...manifest.nodes[0].parts[0],file:'../otro'}]},manifest.nodes[1]]}])assert.throws(()=>validarBasePublicada(bad,config));
 let validated=false;
 const dependencies={revision:config.revision,fetcher:async()=>new Response(bytes),download:async(url,options)=>{assert.equal(options.hash,hash(data));return data.buffer;},sessions:{validate:async nodes=>{for(const node of nodes)assert.equal(hash(Buffer.from(await node.packed.arrayBuffer())),node.sha256);validated=true;return manifest.sha256;}}};
