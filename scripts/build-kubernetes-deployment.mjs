@@ -109,6 +109,7 @@ await replaceRequired('debian/examen-cache.mjs',/from '\.\/sesiones-checkpoint\.
 await replaceRequired('debian/examen-base-publicada.mjs',/from '\.\/fabrica-cluster\.mjs(?:\?v=[a-f0-9]+)?'/,"from './fabrica-cluster.mjs?v="+await revision('debian/fabrica-cluster.mjs')+"'");
 await replaceRequired('debian/base-avanzada-publicada.mjs',/from '\.\/fabrica-cluster\.mjs(?:\?v=[a-f0-9]+)?'/,"from './fabrica-cluster.mjs?v="+await revision('debian/fabrica-cluster.mjs')+"'");
 await replaceRequired('debian/multinodo.mjs',/from '\.\/base-avanzada-publicada\.mjs(?:\?v=[a-f0-9]+)?'/,"from './base-avanzada-publicada.mjs?v="+await revision('debian/base-avanzada-publicada.mjs')+"'");
+await replaceRequired('debian/multinodo.mjs',/from '\.\/examen-runtime\.mjs(?:\?v=[a-f0-9]+)?'/,"from './examen-runtime.mjs?v="+await revision('debian/examen-runtime.mjs')+"'");
 for(const child of ['sesiones-checkpoint','examen-cka-banco'])await replaceRequired('debian/sesiones-examen.mjs',new RegExp("from '\\./"+child+"\\.mjs(?:\\?v=[a-f0-9]+)?'"),"from './"+child+".mjs?v="+await revision('debian/'+child+'.mjs')+"'");
 await replaceRequired('debian/sesiones-examen.mjs',/from '\/laboratorios\/docker-real\/v86-sessions\.mjs(?:\?v=[a-f0-9]+)?'/,"from '/laboratorios/docker-real/v86-sessions.mjs?v="+await revision('../docker-real/v86-sessions.mjs')+"'");
 for(const parent of ['multinodo','examen-cka-ui'])await replaceRequired('debian/'+parent+'.mjs',/from '\.\/sesiones-examen\.mjs(?:\?v=[a-f0-9]+)?'/,"from './sesiones-examen.mjs?v="+await revision('debian/sesiones-examen.mjs')+"'");

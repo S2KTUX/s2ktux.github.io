@@ -1,8 +1,9 @@
 import {apartarManifiestosHA,restaurarManifiestosHA,arrancarAPIsHAEnOrden} from './arranque-ha-discos.mjs?v=409ac9a11399d82f';
 import {SesionesDiscosHA} from './sesiones-ha-discos.mjs?v=883ef4dc71cefb00';
-import {BasesLimpiasExamen,REVISION_EXAMEN,PREPARACIONES_EXAMEN_COMPATIBLES} from './examen-cache.mjs?v=7a5f23b375bfcfaf';
-import {BASE_EXAMEN_PUBLICADA,cargarBaseExamen} from './examen-base-publicada.mjs?v=2b4ef71459c37975';
-import {cargarBaseAvanzada} from './base-avanzada-publicada.mjs?v=144cdf118df4b5df';
+import {BasesLimpiasExamen,REVISION_EXAMEN,PREPARACIONES_EXAMEN_COMPATIBLES} from './examen-cache.mjs?v=34dfec46204e185b';
+import {BASE_EXAMEN_PUBLICADA,cargarBaseExamen} from './examen-base-publicada.mjs?v=ff57bb923ea89583';
+import {cargarBaseAvanzada} from './base-avanzada-publicada.mjs?v=8a07180113db2f82';
+import {ordenRetirarWorkerExamen} from './examen-runtime.mjs?v=89d88e61eb5725c9';
 import {SesionesCheckpointV15,BasesLimpiasCheckpointV15} from './sesiones-checkpoint.mjs?v=e4977b7d1c40bbf8';
 import {SesionesExamen} from './sesiones-examen.mjs?v=6dd894e77c0412af';
 import {createLocalSwitch} from '../red-local.mjs';
@@ -20,14 +21,14 @@ import {ordenSaludInicial} from './salud-inicial.mjs?v=c634a9a627305264';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=88821d6eaeb21bd5';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=5f2be752bfb9a545';
-import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=b2113c6876a0da64';
+import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=129ccfb708374a2d';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=813117dc890bf97d';
 import {escenarioCurso} from './escenarios-curso.mjs?v=4fe1a4528b2e23b6';
 import {prepararMontajeManual} from './montaje-manual-curso.mjs?v=9d4672bb487ea6e8';
 import {prepararClusterHA,clienteHAQuery} from './ha-curso.mjs?v=e95f9736944e61ab';
 import {SesionesHA,BasesLimpiasHA} from './sesiones-ha.mjs?v=0ca5abaa216f6e3a';
 import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=60a21559ace773d9';
-const cleanRevision='026459ac403d49f43612b539f0ddb3e113f52d9f4d199625901410a1758adb4a';
+const cleanRevision='4bb4a9dd353ac7ee3eb36501a922b121921fde4e619cc72c5367591774f8be1b';
 const examRuntime=document.documentElement.dataset.ckaExam==='true';
 const releaseAvailable=()=>{if(examRuntime)return scenario?.exam===true&&factoryVersion==='v15'&&level==='avanzado';const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
@@ -172,7 +173,7 @@ start.onclick=async()=>{
    try{
     // Solo en la copia nueva del examen: suprimir el Node del worker que
     // no se ha arrancado. La base validada y el curso conservan los tres.
-    if(examRuntime&&!saved&&nodes.size===2)await phase('controlplane','Preparar los dos nodos de la copia del examen','kubectl delete node cka-w2 --ignore-not-found --wait=false --request-timeout=20s',60000);
+    if(examRuntime&&!saved&&nodes.size===2)await phase('controlplane','Preparar los dos nodos de la copia del examen',ordenRetirarWorkerExamen(),90000);
     if(cleanBase){
      // El primer handshake puede agotar su plazo mientras vuelve a calentarse
      // el código del API. Esperar su salud real; no reiniciar ni reparar nada.

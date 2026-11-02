@@ -32,8 +32,9 @@ export async function cargarBaseExamen(config,{revision,compatibleRevisions=[],s
   result.externalDisks.forEach(d=>d.parts.forEach(part=>jobs.push({part,bytes:part.packedBytes,put:value=>{part.packed=new Blob([value]);delete part.file;}})));
   return {result,buffers};
  });
- const total=jobs.reduce((n,j)=>n+j.bytes,0),progress=new Map();let next=0,received=0,percent=-1;
- await Promise.all(Array.from({length:Math.min(6,jobs.length)},async()=>{for(;;){const i=next++,job=jobs[i];if(!job)return;const update=count=>{received+=count-(progress.get(i)||0);progress.set(i,count);const current=Math.floor(received/total*100);if(current!==percent){percent=current;notify('Descargando el examen preparado… '+current+' %');}};const value=await descargarFragmentoBase(new URL('fragmentos/'+job.part.file,url),{hash:job.part.sha256,bytes:job.bytes,cacheGroup:'kubernetes-base',notify:update},download);update(job.bytes);job.put(value);}}));
+ const total=jobs.reduce((n,j)=>n+j.bytes,0),progress=new Map();let next=0,received=0,percent=-1,failure;
+ await Promise.all(Array.from({length:Math.min(6,jobs.length)},async()=>{try{while(!failure){const i=next++,job=jobs[i];if(!job)return;const update=count=>{received+=count-(progress.get(i)||0);progress.set(i,count);const current=Math.floor(received/total*100);if(current!==percent){percent=current;notify('Descargando el examen preparado… '+current+' %');}};const value=await descargarFragmentoBase(new URL('fragmentos/'+job.part.file,url),{hash:job.part.sha256,bytes:job.bytes,cacheGroup:'kubernetes-base',notify:update},download);update(job.bytes);job.put(value);}}catch(error){failure??=error;}}));
+ if(failure)throw failure;
  for(const node of nodes)node.result.packed=new Blob(node.buffers);
  const results=nodes.map(n=>n.result);notify('Verificando la base del examen…');const combined=await sessions.validate(results);if(combined!==manifest.sha256)throw Error('Las máquinas del examen no coinciden');return {nodes:results,sha256:combined};
 }

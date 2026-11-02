@@ -1,5 +1,5 @@
 import {TAREAS_CKA} from './examen-cka-banco.mjs?v=146843198f26771b';
-import {nuevoIntento,informeCKA,prepararExamenCKA,prepararCredencialExamen,corregirExamenCKA,CKA_CREDENTIAL_DIR} from './examen-cka-motor.mjs?v=bddf4e44711d2882';
+import {nuevoIntento,informeCKA,prepararExamenCKA,prepararCredencialExamen,corregirExamenCKA,CKA_CREDENTIAL_DIR} from './examen-cka-motor.mjs?v=6757a92739c59658';
 import {SesionesExamen} from './sesiones-examen.mjs?v=6dd894e77c0412af';
 const $=id=>document.getElementById(id),english=new URL(location.href).searchParams.get('lang')==='en',lang=english?'en':'es';
 const say=(es,en)=>english?en:es;
@@ -73,7 +73,7 @@ async function begin(resume){
  $('begin-exam').disabled=$('resume-exam').disabled=true;$('exam-error').textContent='';
  try{
   globalThis.kubeDebianExamResumeRequested=resume;
-  await import('./multinodo.mjs?v=9c048e7a1b8318d4');
+  await import('./multinodo.mjs?v=3b4180ae6398a756');
   document.querySelector('h1').textContent=say('Simulacro CKA','CKA mock exam');
   await $('start-cluster').onclick();
   if(!globalThis.kubeDebianClusterReady||globalThis.kubeDebianClusterErrors?.length)throw Error(say('El clúster no está disponible. No ha comenzado el tiempo.','The cluster is not ready. The timer has not started.'));

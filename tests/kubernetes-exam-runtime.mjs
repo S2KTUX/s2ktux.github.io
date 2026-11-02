@@ -3,7 +3,7 @@ import {mkdtemp,mkdir,writeFile,readFile} from 'node:fs/promises';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
-import {prepararRuntimeExamen} from '../laboratorios/kubernetes-real/debian/examen-runtime.mjs';
+import {prepararRuntimeExamen,ordenRetirarWorkerExamen} from '../laboratorios/kubernetes-real/debian/examen-runtime.mjs';
 let calls=[];
 const run=async(node,label,command,timeout)=>{calls.push({node,label,command,timeout});return {ok:true};};
 for(const context of [{},{scenario:'study',fresh:true,studentSession:false},{scenario:'cka-exam',fresh:false,studentSession:true}])await assert.rejects(prepararRuntimeExamen(run,context));
@@ -12,6 +12,7 @@ await prepararRuntimeExamen(run,{scenario:'cka-exam',fresh:true,studentSession:f
 const bash=process.platform==='win32'?'C:/Program Files/Git/bin/bash.exe':'bash';
 const quote=s=>"'"+s.replaceAll("'","'\\''")+"'";
 for(const {command}of calls){const check=spawnSync(bash,['--noprofile','--norc','-n','-c',command],{encoding:'utf8'});assert.equal(check.status,0,check.stderr);assert.ok(('/bin/sh -c '+quote(command)).length<2600);}
+const remove=ordenRetirarWorkerExamen(),syntax=spawnSync(bash,['--noprofile','--norc','-n','-c',remove],{encoding:'utf8'});assert.equal(syntax.status,0,syntax.stderr);assert.ok(('/bin/sh -c '+quote(remove)).length<2600);assert.doesNotMatch(remove,/kubectl|--insecure|--insecure-skip-tls-verify/);assert.match(remove,/--cacert/);assert.match(remove,/\.reason=="NotFound" and \.details.name=="cka-w2"/);
 const root=await mkdtemp(join(tmpdir(),'s2ktux-exam-runtime-'));
 await mkdir(join(root,'containerd'));await mkdir(join(root,'kubernetes','manifests'),{recursive:true});
 const api='spec:\n  containers:\n  - name: kube-apiserver\n    livenessProbe:\n      failureThreshold: 8\n      timeoutSeconds: 15\n    readinessProbe:\n      failureThreshold: 3\n      timeoutSeconds: 15\n    resources: {}\n';
