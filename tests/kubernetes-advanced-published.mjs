@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {validarBaseAvanzada,cargarBaseAvanzada} from '../laboratorios/kubernetes-real/debian/base-avanzada-publicada.mjs';
+const data=new Uint8Array([1,2,3]),hash=value=>createHash('sha256').update(value).digest('hex'),revision='a'.repeat(64);
+const disk=id=>({id,format:'s2ktux-external-disk-v1',diskBytes:id==='root'?3221225472:805306368,chunkSize:1048576,sha256:'b'.repeat(64),manifestSha256:'c'.repeat(64),parts:[]});
+const node=id=>({id,format:'s2ktux-v86-external-checkpoint-v1',identity:'d'.repeat(64),bytes:1024,packedBytes:3,sha256:hash(data),externalDisks:[disk('root'),disk('components')],parts:[{offset:0,bytes:3,sha256:hash(data),file:hash(data)+'.part'}]});
+const manifest={format:'s2ktux-kubernetes-advanced-clean-v1',sourceRevision:revision,level:'avanzado',factoryVersion:'v15',workerComponents:'v7',sha256:'e'.repeat(64),nodes:['controlplane','worker1','worker2'].map(node)},bytes=new TextEncoder().encode(JSON.stringify(manifest)),config={level:'avanzado',revision,sha256:hash(bytes),url:'https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/'+'f'.repeat(40)+'/kubernetes/advanced-clean-v1/cluster.json'};
+assert.equal(validarBaseAvanzada(manifest),manifest);
+for(const wrong of [{...manifest,factoryVersion:'v6'},{...manifest,workerComponents:'v8'},{...manifest,level:'intermedio'},{...manifest,nodes:manifest.nodes.slice(0,2)},{...manifest,nodes:manifest.nodes.toReversed()},{...manifest,nodes:[{...manifest.nodes[0],parts:[{...manifest.nodes[0].parts[0],file:'../secreto'}]},...manifest.nodes.slice(1)]},{...manifest,nodes:[{...manifest.nodes[0],externalDisks:[disk('root'),disk('root')]},...manifest.nodes.slice(1)]}])assert.throws(()=>validarBaseAvanzada(wrong));
+let downloads=0,validated=false;const notices=[];
+const deps={revision,fetcher:async()=>new Response(bytes),download:async(url,options)=>{downloads++;assert.equal(options.hash,hash(data));assert.equal(options.bytes,3);options.notify(1);options.notify(3);return data.buffer;},notify:text=>notices.push(text),sessions:{validate:async nodes=>{validated=true;assert.equal(nodes.length,3);for(const n of nodes){assert.equal(n.terminalText,'');assert.equal(hash(Buffer.from(await n.packed.arrayBuffer())),n.sha256);}return manifest.sha256;}}};
+assert.equal((await cargarBaseAvanzada(config,deps)).nodes.length,3);assert.equal(downloads,3);assert.equal(validated,true);
+assert.ok(notices.some(text=>text.endsWith('100 %')));assert.equal(notices.at(-1),'Verificando los tres nodos…');
+const before=downloads;for(const wrong of [{...config,level:'inicial'},{...config,revision:'0'.repeat(64)},{...config,url:'https://otro.test/cluster.json'},{...config,url:config.url+'?otro=1'},{...config,sha256:'0'.repeat(64)}])await assert.rejects(cargarBaseAvanzada(wrong,deps));assert.equal(downloads,before);
+await assert.rejects(cargarBaseAvanzada(config,{...deps,sessions:{validate:async()=>{throw Error('Perfil o disco alterado');}}}),/Perfil o disco alterado/);
+console.log('Base avanzada: tres nodos v15, origen y checksum fijados; rechaza estados parciales y no omite validar perfiles ni discos.');
