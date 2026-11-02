@@ -34,12 +34,12 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir reduciendo la descarga inicial, la preparación de complementos y el consumo de memoria al guardar varios nodos. El inicial y el intermedio ya pueden recuperar bases limpias preparadas y verificadas. Mantener sus guardados separados y no descargar máquinas desde otras páginas."
+      "texto": "Seguir reduciendo la descarga inicial, la preparación de complementos y el consumo de memoria al guardar varios nodos. Inicial, intermedio y avanzado ya disponen de bases limpias preparadas; el examen tiene la suya. Mantener sus guardados separados y estudiar la primera preparación de los escenarios independientes, especialmente HA."
     },
     {
       "id": "kubernetes-uso-prolongado",
       "tema": "Kubernetes",
-      "texto": "Ampliar las pruebas a sesiones de dos horas, más equipos y el nivel avanzado. El inicial ya superó doce minutos de comandos, una pausa real del navegador y la recuperación del guardado; no presentarlo como garantía para cualquier duración o equipo."
+      "texto": "Ampliar las pruebas a sesiones de dos horas y más equipos. El avanzado y el simulacro ya superaron treinta minutos cada uno, una pausa real y la recuperación del guardado. El inicial también pasó doce minutos; no presentarlo como garantía para cualquier duración o equipo."
     },
     {
       "id": "imagen-ligera",
@@ -66,7 +66,7 @@
     {
       "version": "3.3",
       "fecha": "2026-11-02",
-      "resumen": "Kubernetes entra desde una base inicial preparada y responde mejor al usar la terminal.",
+      "resumen": "Kubernetes entra más rápido y hemos comprobado sesiones más largas en el avanzado y el simulacro.",
       "cambios": [
         "El nivel inicial puede descargar una base limpia de un solo nodo ya preparado. Sus archivos se verifican antes de abrirla y su caché queda separada de las sesiones del alumno. La descarga inicial ronda los 306 MiB; después se reutiliza en este navegador.",
         "Activamos la planificación de tareas del navegador también en los niveles inicial e intermedio. Cuando hay lecturas de disco pendientes, el motor deja terminar esa entrada y salida antes de seguir avanzando; los equipos sin esa API conservan la alternativa disponible.",
@@ -74,6 +74,10 @@
         "Las comprobaciones procesan solo la salida nueva, en lugar de analizar todo el historial una y otra vez. El diagnóstico tiene un tamaño limitado y conserva los resultados aunque haya mucha salida.",
         "Comprobamos el nivel inicial durante doce minutos, con comandos, una pausa del navegador y guardado y recuperación del archivo creado. El intermedio también superó el arranque desde su misma base pública con los dos nodos disponibles.",
         "Linux y Docker superaron una nueva comprobación en sus máquinas publicadas: arranque, tareas básicas del curso, Internet, guardar, recuperar y Reset. En Docker se comprobaron también imágenes, contenedores, HTTP, volúmenes, redes y construcción. Siguen aplicándose las limitaciones de Debian y de las imágenes de 32 bits que se indican en cada laboratorio.",
+        "El avanzado también dispone de una base limpia preparada con sus tres nodos. Se verifican el manifiesto, los fragmentos, los perfiles y los discos antes de abrirla. La primera descarga ronda 1,05 GiB y queda en una caché separada de los guardados. Los escenarios de montaje y HA conservan su preparación independiente.",
+        "Las descargas del avanzado y del examen actualizan el indicador cuando cambia el porcentaje. Si falla un fragmento, terminan las peticiones que ya estaban en marcha y dejan de solicitar los restantes; así no sigue una descarga completa en segundo plano tras el fallo.",
+        "Al preparar el examen, sus recursos iniciales se crean con llamadas autenticadas a la API y validación estricta. Evitamos iniciar un cliente pesado por cada manifiesto y conservamos los datos de los ejercicios. Ajustamos también la espera de sus cuentas internas: el tiempo del intento empieza cuando la preparación termina.",
+        "Comprobamos treinta minutos de uso en el avanzado y otros treinta en el simulacro, con consultas periódicas y una pausa real del navegador. Después recuperamos los archivos y recursos guardados; en el examen también se conservaron la pregunta abierta, las marcas y el reloj original. Estas pruebas corresponden a un equipo y no garantizan cualquier duración o navegador.",
         "Mantenemos dos prácticas por contenido. La velocidad depende del equipo y la conexión; estas pruebas no garantizan el mismo tiempo en todos los navegadores ni sesiones de cualquier duración."
       ]
     },
