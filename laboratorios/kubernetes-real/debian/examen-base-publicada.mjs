@@ -1,4 +1,4 @@
-import {descargarFragmentoBase} from './fabrica-cluster.mjs?v=813117dc890bf97d';
+import {descargarFragmentoBase} from './fabrica-cluster.mjs?v=adb42d0139f75c33';
 export const BASE_EXAMEN_PUBLICADA=Object.freeze({
  revision:'a374b800a490aebea96548a4540ca8e52135bd9f1012e836ac9350221cef3a19',
  sha256:'c09e61bf5ce47bd5a6764b521ea5a0764944c1329a15dad2ed4c421110307253',
@@ -28,13 +28,13 @@ export async function cargarBaseExamen(config,{revision,compatibleRevisions=[],s
  const bytes=await response.arrayBuffer();if(bytes.byteLength>2*1048576||await hash(bytes)!==config.sha256)throw Error('Manifiesto del examen alterado');
  const manifest=validarBaseExamen(JSON.parse(new TextDecoder().decode(bytes)),config.revision),jobs=[];
  const nodes=manifest.nodes.map(node=>{const {parts,...metadata}=node;const buffers=new Array(parts.length),result={...metadata,packed:null,terminalText:'',externalDisks:node.externalDisks.map(d=>({...d,parts:d.parts.map(p=>({...p,packed:null}))}))};
-  parts.forEach((part,i)=>jobs.push({part,bytes:part.bytes,put:value=>buffers[i]=value}));
+  parts.forEach((part,i)=>jobs.push({part,bytes:part.bytes,put:value=>buffers[i]=new Blob([value])}));
   result.externalDisks.forEach(d=>d.parts.forEach(part=>jobs.push({part,bytes:part.packedBytes,put:value=>{part.packed=new Blob([value]);delete part.file;}})));
   return {result,buffers};
  });
  const total=jobs.reduce((n,j)=>n+j.bytes,0),progress=new Map();let next=0,received=0,percent=-1,failure;
  await Promise.all(Array.from({length:Math.min(6,jobs.length)},async()=>{try{while(!failure){const i=next++,job=jobs[i];if(!job)return;const update=count=>{received+=count-(progress.get(i)||0);progress.set(i,count);const current=Math.floor(received/total*100);if(current!==percent){percent=current;notify('Descargando el examen preparado… '+current+' %');}};const value=await descargarFragmentoBase(new URL('fragmentos/'+job.part.file,url),{hash:job.part.sha256,bytes:job.bytes,cacheGroup:'kubernetes-base',notify:update},download);update(job.bytes);job.put(value);}}catch(error){failure??=error;}}));
  if(failure)throw failure;
- for(const node of nodes)node.result.packed=new Blob(node.buffers);
+ for(const node of nodes){node.result.packed=new Blob(node.buffers);node.buffers.length=0;}
  const results=nodes.map(n=>n.result);notify('Verificando la base del examen…');const combined=await sessions.validate(results);if(combined!==manifest.sha256)throw Error('Las máquinas del examen no coinciden');return {nodes:results,sha256:combined};
 }

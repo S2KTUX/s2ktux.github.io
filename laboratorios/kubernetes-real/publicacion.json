@@ -84,7 +84,7 @@
     {
       "path": "debian/entrada-laboratorio.mjs",
       "bytes": 4486,
-      "sha256": "6fce241f6d3e6efbace3091fd7615ea28ed0ec9759158808547495bfa03adddb"
+      "sha256": "9c9bc132c1d717e1adfe260ebd0ade3afe9f5ece442cf01f991cd5aa76c1fa89"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -144,12 +144,12 @@
     {
       "path": "debian/multinodo.html",
       "bytes": 8492,
-      "sha256": "985015201ce06a334eb631fcdce81395625364a43e0a21bcb6d85824c7851105"
+      "sha256": "6895eb14685c2d18b164a00a86a538c839782280a44e62cf1d4b474cf5a38c57"
     },
     {
       "path": "debian/multinodo.mjs",
       "bytes": 35935,
-      "sha256": "556c6d92d0ae465cf577d297a47a2c7bf9c86f7d564cc8d59f4b206075922311"
+      "sha256": "170d833bb49b4d3722bf58a6baa87a3078068a953f25dcf5000fb7f632064382"
     },
     {
       "path": "debian/niveles.css",
@@ -363,13 +363,13 @@
     },
     {
       "path": "debian/bases-publicadas.mjs",
-      "bytes": 25947,
-      "sha256": "2dbc94370677b29a700d21bf768092ff7c7434bcbb4b327f47a6086c578ae24c"
+      "bytes": 27392,
+      "sha256": "b5084fa1eeaab7fe84c32cc596bf2dd5f726608f2dba495cd713546f99fbd240"
     },
     {
       "path": "debian/fabrica-cluster.mjs",
-      "bytes": 4148,
-      "sha256": "813117dc890bf97d4271242371c59683d08ed5087624beebff948a9f4ce4f55b"
+      "bytes": 4341,
+      "sha256": "adb42d0139f75c335f63eaeac4d8f3610c5d9114ca31e2076c0ba0826cf88fae"
     },
     {
       "path": "debian/ejercicios-almacenamiento.mjs",
@@ -589,7 +589,7 @@
     {
       "path": "debian/fabrica-ha.mjs",
       "bytes": 4005,
-      "sha256": "c3172a3f64ce06d270d14f7a8a5f2744cacd9ff6652a8787ef55a4f4f8cdd153"
+      "sha256": "4a94e063699e62bf66045f43486db56d55c1e735821638f39dd6440b989cf9ba"
     },
     {
       "path": "debian/esperar-firma-ha.mjs",
@@ -684,7 +684,7 @@
     {
       "path": "debian/examen-cka-ui.mjs",
       "bytes": 10436,
-      "sha256": "dc6c815bfb15ec47c95cb0f9c1c15544fbae64da26375721a6eb7d93db22c2fb"
+      "sha256": "f1f21ddc0cf64f82d56cb54b9f290375546eaf7c57ceb8d4b3c3d28a0b8f013d"
     },
     {
       "path": "debian/examen-runtime.mjs",
@@ -694,12 +694,12 @@
     {
       "path": "debian/examen-cache.mjs",
       "bytes": 1802,
-      "sha256": "833ae350abfe0a5568285cc312100efe9ddd230df6693bc770aa69bed794141c"
+      "sha256": "c298f9e406a192ba8cb7dfb890b297044f510f1edefdbe8424a1b31ffdd2d173"
     },
     {
       "path": "debian/examen.html",
       "bytes": 3668,
-      "sha256": "c63a913c16706ce6e2a2de715106fddb0c1992bb2cd8e5c6942f12c5d942d428"
+      "sha256": "cd77f621318a6c78e90603865a6e3d197a16b1dce5c2936554be7afb3bf4add3"
     },
     {
       "path": "debian/examen-cka.css",
@@ -713,8 +713,8 @@
     },
     {
       "path": "debian/examen-base-publicada.mjs",
-      "bytes": 5331,
-      "sha256": "ff57bb923ea895837cf8e8daa153acd47e73635021f215a2a21cd106befc572d"
+      "bytes": 5367,
+      "sha256": "2fe77af510df2834499818f10517cab9ea1681cd244e0bd3014f27796359e97c"
     },
     {
       "path": "debian/sesiones-examen.mjs",
@@ -723,8 +723,8 @@
     },
     {
       "path": "debian/base-avanzada-publicada.mjs",
-      "bytes": 4815,
-      "sha256": "8a07180113db2f82f005e42761aef5110825753b67598533f737b87db1d05138"
+      "bytes": 4851,
+      "sha256": "1c9073581035d6745d9003a5faee4ad8e245be66e7c07f1ab1ac0cd2e5cf03ac"
     },
     {
       "path": "reloj-pausable.mjs",

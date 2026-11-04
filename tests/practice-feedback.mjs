@@ -20,3 +20,13 @@ assert.equal(task.checkFeedback[1].dependsOn,0,'No mostrar un fallo de contenido
 assert.match(linux.find(task=>task.id==='salida-ii').checkFeedback[1].failed,/líneas, en este orden/);
 assert.equal(task.goal,'Guarda Hola en /root/salida.txt y comprueba su contenido.');
 console.log('Prácticas: requisitos legibles, archivo ausente/contenido incorrecto diferenciados y criterios de aprobado conservados.');
+
+for(const id of ['ipv4-i','ipv4-ii','chrony-i','hostname-ii']){
+ const t=linux.find(task=>task.sourceId===id);assert.ok(t.checks.length>=3);
+ assert.equal(t.checks.length,t.checkFeedback.length);
+ for(const [index,feedback]of t.checkFeedback.entries()){
+  assert.ok(feedback.failed.length>15);assert.doesNotMatch(feedback.failed,/Resultado solicitado|Pendiente:/);
+  const lines=t.checks.map((_,i)=>prefix+i+'='+(i===index?1:0)+'\n').join('')+prefix+'END=0\n';
+  const result=parseProbe(t,nonce,lines);assert.equal(result.ok,false);assert.equal(result.results.filter(c=>!c.ok).length,1);
+ }
+}

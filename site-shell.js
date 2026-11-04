@@ -1,5 +1,7 @@
 const THEME_KEY = 's2ktux-theme';
 const root = document.documentElement;
+const shellBase = new URL('.', document.currentScript.src);
+import(new URL('site-analytics.mjs?v=20261104', shellBase)).then(({mountAnalytics})=>mountAnalytics()).catch(()=>{});
 
 function syncThemeControls() {
   const dark = root.classList.contains('dark');

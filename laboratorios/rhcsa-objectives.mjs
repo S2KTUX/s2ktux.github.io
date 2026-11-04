@@ -177,6 +177,30 @@ for(const task of newTasks){
   task.solution=task.solution.split('\n').filter(line=>!line.startsWith('useradd ')).join('\n');
  }
 }
+// Separar requisitos permite explicar qué falta sin mostrar los comandos.
+const diagnostics={
+ 'ipv4-i':[
+  ['Dirección 10.42.0.20/24 activa en eth0','ip -4 addr show eth0 | grep -q "10.42.0.20/24"','eth0 todavía no tiene activa la dirección 10.42.0.20/24.'],
+  ['Método IPv4 manual','test "$(nmcli -g ipv4.method con show ipv4-practica)" = manual','El perfil ipv4-practica debe usar una dirección IPv4 manual.'],
+  ['Autoconexión del perfil','test "$(nmcli -g connection.autoconnect con show ipv4-practica)" = yes','Falta activar la autoconexión de ipv4-practica.']
+ ],
+ 'ipv4-ii':[
+  ['Dirección IPv4 conservada','ip -4 addr show eth0 | grep -q "10.42.0.20/24"','No está activa la dirección 10.42.0.20/24 en eth0.'],
+  ['Ruta predeterminada','ip route show default | grep -q "via 10.42.0.1"','La puerta de enlace activa debe ser 10.42.0.1.'],
+  ['DNS del perfil','test "$(nmcli -g ipv4.dns con show ipv4-practica)" = 1.1.1.1','El DNS guardado en ipv4-practica debe ser 1.1.1.1.'],
+  ['Autoconexión','test "$(nmcli -g connection.autoconnect con show ipv4-practica)" = yes','El perfil ipv4-practica no tiene activada la autoconexión.']
+ ],
+ 'chrony-i':[
+  ['Pool con iburst','grep -Eq "^[[:space:]]*pool[[:space:]]+2[.]debian[.]pool[.]ntp[.]org[[:space:]]+.*iburst" /etc/chrony/chrony.conf','Falta configurar el pool 2.debian.pool.ntp.org con iburst.'],
+  ['Servicio activo','systemctl is-active --quiet chrony','El servicio chrony no está activo.'],
+  ['Servicio habilitado','systemctl is-enabled --quiet chrony','chrony debe quedar habilitado para el próximo arranque.']
+ ],
+ 'hostname-ii':[
+  ['Nombre actual','test "$(hostname)" = servidor.lab.local','El hostname actual no es servidor.lab.local.'],
+  ['Nombre guardado','test "$(cat /etc/hostname)" = servidor.lab.local','Falta conservar servidor.lab.local en /etc/hostname.'],
+  ['Resolución local','getent hosts servidor.lab.local | grep -q "^127.0.1.1"','servidor.lab.local todavía no se resuelve como 127.0.1.1.']
+ ]
+};
 export function buildRhcsaBank(base){
  const all=new Map([...base,...newTasks].map(task=>[task.id,task]));
  const result=[];let order=0;
@@ -193,6 +217,7 @@ export function buildRhcsaBank(base){
    task.checks=task.checks.map(([label,command,...rest])=>[label,command.replace('= equipo','= equipo-sgid'),...rest]);
    task.note='El grupo equipo-sgid ya está disponible en la máquina de prácticas.';
   }
+  if(diagnostics[id]){task.checks=diagnostics[id].map(([label,command])=>[label,command]);task.checkFeedback=diagnostics[id].map(([, ,failed])=>({failed}));}
   result.push(task);
  }
  result.push(...linuxExamPractice);

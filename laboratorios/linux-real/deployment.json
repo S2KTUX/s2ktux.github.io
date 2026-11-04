@@ -8,13 +8,13 @@
     {
       "path": "index.html",
       "before": "4bfc8891ba06a56294a617a077e2f23efcc577b03a8e1c69189a19b26789aa2f",
-      "sha256": "636752403a2f9839e610aed202bfd70d7010559785f77c27482541a7af6e5ed3",
+      "sha256": "13440b47e4be435a8e7a8f3bbfec1cca51f2c203a1e522596fb842d54e1a3f1d",
       "bytes": 5338
     },
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "a9848b069a6de3457bf10c434cba4cd53bb4dcf560bc8826ba591a1ec0dcfeb1",
+      "sha256": "1c64696eb1e8b5ce4a8b2d02270484941e99e9c433cfe4bdb42e301495124085",
       "bytes": 5231
     },
     {
@@ -107,7 +107,7 @@
     },
     {
       "path": "examen.html",
-      "sha256": "fb35288f5a9618d115fa5489a6f545fd68595e7b761204d78e478b45929df6b0",
+      "sha256": "bc9c8275963499ea7d0da96cc8a2db5a4b2bc51472ebcb55aaf3d5336d5f1c7f",
       "bytes": 4173
     },
     {

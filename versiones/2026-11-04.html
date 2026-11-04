@@ -5,27 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../site-shell.css?v=ac5aee15ea13">
 <link rel="stylesheet" href="../fonts.css?v=20260822-local">
-<link rel="stylesheet" href="../visual-system.css?v=dc5253bb5de9">
+<link rel="stylesheet" href="../visual-system.css?v=c115d3150f8d">
 <title>Novedades de la versión 3.4 · S2KTUX</title>
-<meta name="description" content="Kubernetes conserva las sesiones largas y el simulacro muestra correctamente el resultado después de guardar.">
+<meta name="description" content="Mejoramos las sesiones de Kubernetes, la descarga de sus bases y las comprobaciones de prácticas; la página incorpora estadísticas opcionales de visitas.">
 <meta name="robots" content="index,follow">
 <meta http-equiv="content-language" content="es">
 <meta name="theme-color" content="#f6ecd9">
 <link rel="icon" type="image/png" sizes="192x192" href="../assets/icon-192.png">
 <link rel="apple-touch-icon" href="../assets/icon-192.png">
 <link rel="manifest" href="../manifest.webmanifest">
-<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('../sw.js').catch(function(){});});}</script>
 <link rel="canonical" href="https://s2ktux.github.io/versiones/2026-11-04.html">
 <meta property="og:url" content="https://s2ktux.github.io/versiones/2026-11-04.html">
 <meta property="og:site_name" content="S2KTUX">
 <meta property="og:locale" content="es_ES">
 <meta name="twitter:title" content="Novedades de la versión 3.4 · S2KTUX">
-<meta name="twitter:description" content="Kubernetes conserva las sesiones largas y el simulacro muestra correctamente el resultado después de guardar.">
+<meta name="twitter:description" content="Mejoramos las sesiones de Kubernetes, la descarga de sus bases y las comprobaciones de prácticas; la página incorpora estadísticas opcionales de visitas.">
 <meta name="author" content="S2KTUX">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Novedades de la versión 3.4 · S2KTUX">
-<meta property="og:description" content="Kubernetes conserva las sesiones largas y el simulacro muestra correctamente el resultado después de guardar.">
+<meta property="og:description" content="Mejoramos las sesiones de Kubernetes, la descarga de sus bases y las comprobaciones de prácticas; la página incorpora estadísticas opcionales de visitas.">
 <meta property="og:image" content="https://s2ktux.github.io/assets/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -51,7 +50,7 @@
 </style>
 <link rel="stylesheet" href="../sobre.css?v=20261022-notas-version">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
-<script defer src="../site-shell.js?v=20260826-phase3"></script>
+<script defer src="../site-shell.js?v=20261104-analytics"></script>
 
 </head>
 <body>
@@ -75,7 +74,7 @@
 <a href="../sobre.html#version-3.4">← Volver al historial</a>
 <h1>Versión 3.4</h1>
 <p class="about-small"><time datetime="2026-11-04">04/11/2026</time></p>
-<p>Kubernetes conserva las sesiones largas y el simulacro muestra correctamente el resultado después de guardar.</p>
+<p>Mejoramos las sesiones de Kubernetes, la descarga de sus bases y las comprobaciones de prácticas; la página incorpora estadísticas opcionales de visitas.</p>
 <h2>Qué ha cambiado</h2>
 <p>Comprimimos la memoria por bloques al guardar, sin crear antes un archivo temporal con toda la RAM. Los formatos, las identidades y las claves de los guardados se conservan.</p>
 <p>El reloj del hardware emulado deja de acumular tiempo mientras la máquina está detenida. Así evitamos reinicios de servicios al volver de una pausa; el cronómetro del examen sigue contando tiempo real.</p>
@@ -84,6 +83,13 @@
 <p>El avanzado superó dos horas, el guardado y la recuperación de sus tres nodos y una pausa real de treinta minutos. El simulacro también llegó a las dos horas y conservó el reloj, la pregunta, la marca y la aplicación al reanudar.</p>
 <p>Recuperamos el informe final de las doce tareas del simulacro: la única resuelta obtuvo sus siete puntos y las restantes quedaron sin puntuar, sin condiciones pendientes de comprobar. La evaluación y el guardado habían terminado en unos cuatro minutos; corregimos el comprobador que interpretaba el mensaje de guardado como una evaluación sin terminar. Son pruebas en un equipo, sin garantizar el mismo rendimiento en todos los navegadores.</p>
 <p>Cloudflare prepara la web antes de desplegar y publica solo la carpeta de producción, en lugar del repositorio completo. Excluimos también la configuración y la caché de Wrangler de los archivos públicos.</p>
+<p>La caché de bases de Kubernetes conserva hasta 2048 fragmentos, en lugar de 96. Evitamos expulsar partes de las bases grandes durante su propia descarga; el navegador puede limitarla si no dispone de espacio. No se borran los guardados del alumno.</p>
+<p>Las descargas reservan un solo bloque de memoria del tamaño esperado y rechazan respuestas cortadas o demasiado grandes. Los cargadores convierten cada fragmento verificado en un Blob y liberan las referencias temporales al reunir los nodos. No cambiamos los discos, perfiles ni certificados.</p>
+<p>Si falla un fragmento de la base inicial o intermedia, se dejan de iniciar descargas y se esperan las que estaban en marcha. El indicador solo cambia cuando avanza el porcentaje.</p>
+<p>Las prácticas de red IPv4, hostname y chrony muestran qué requisito falta: dirección activa, ruta, DNS, autoconexión, nombre guardado o servicio activo y habilitado. La presentación sigue siendo la lista breve habitual y no revela los comandos.</p>
+<p>Revisamos el banco: las clases prácticas de Kubernetes de la 1 a la 34 tienen al menos dos ejercicios, y la 00 no plantea comandos. Los simulacros mantienen la puntuación por resultados y no aprueban comprobaciones que no se hayan podido completar. La recuperación del intento de Linux y la evaluación tras reiniciar siguen anotadas como mejoras pendientes.</p>
+<p>Sustituimos la etiqueta anterior de estadísticas por Google Analytics. Solo se carga si el visitante acepta; la elección se puede cambiar al pie de página sin reiniciar el laboratorio. No enviamos respuestas, comandos ni parámetros de la URL y desactivamos publicidad y medición mejorada.</p>
+<p>Retiramos de pendientes la ampliación del banco LPIC-1 por decisión del autor; sus preguntas actuales se conservan.</p>
 </section></main>
 
 <footer class="site-footer">

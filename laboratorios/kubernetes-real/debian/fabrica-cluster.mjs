@@ -1,4 +1,4 @@
-import {verifiedDownload} from '../../verified-download.mjs?v=ee82ca1992889877';
+import {verifiedDownload} from '../../verified-download.mjs?v=d08a06a28614dd4e';
 const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
 const sha=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 export async function descargarFragmentoBase(url,options,download=verifiedDownload){
@@ -25,16 +25,18 @@ export async function cargarBasePublicada(config,{revision,sessions,notify=()=>{
  const bytes=await response.arrayBuffer();if(bytes.byteLength>1048576||await digest(bytes)!==config.sha256)throw Error('Manifiesto de base alterado');
  const manifest=validarBasePublicada(JSON.parse(new TextDecoder().decode(bytes)),config),nodes=[];
  const total=manifest.nodes.reduce((sum,node)=>sum+node.packedBytes,0),progress=new Map();
- const pending=manifest.nodes.flatMap((node,nodeIndex)=>node.parts.map((part,partIndex)=>({part,nodeIndex,partIndex}))),buffers=manifest.nodes.map(node=>new Array(node.parts.length));let next=0;
- // Se descargan ambos nodos con un límite global. Sus CPUs siguen arrancando
- // de forma secuencial: paralelizar la red no hace competir etcd con el worker.
+ const pending=manifest.nodes.flatMap((node,nodeIndex)=>node.parts.map((part,partIndex)=>({part,nodeIndex,partIndex}))),buffers=manifest.nodes.map(node=>new Array(node.parts.length));let next=0,received=0,percent=-1,failure;
+ // Un límite global de red; un fallo detiene nuevos trabajos y espera los activos.
  await Promise.all(Array.from({length:Math.min(6,pending.length)},async()=>{
-  for(;;){const index=next++,job=pending[index];if(!job)return;const {part,nodeIndex,partIndex}=job;
-   buffers[nodeIndex][partIndex]=await descargarFragmentoBase(new URL('fragmentos/'+part.file,url),{hash:part.sha256,bytes:part.bytes,cacheGroup:'kubernetes-base',notify:count=>{progress.set(index,count);notify('Descargando base preparada… '+Math.floor([...progress.values()].reduce((a,b)=>a+b,0)/total*100)+' %');}},download);
-  }
+  try{while(!failure){const index=next++,job=pending[index];if(!job)return;const {part,nodeIndex,partIndex}=job;
+   const update=count=>{received+=count-(progress.get(index)||0);progress.set(index,count);const current=Math.floor(received/total*100);if(current!==percent){percent=current;notify('Descargando base preparada… '+current+' %');}};
+   const value=await descargarFragmentoBase(new URL('fragmentos/'+part.file,url),{hash:part.sha256,bytes:part.bytes,cacheGroup:'kubernetes-base',notify:update},download);
+   buffers[nodeIndex][partIndex]=new Blob([value]);update(part.bytes);
+  }}catch(error){failure??=error;}
  }));
+ if(failure)throw failure;
  for(const [index,node]of manifest.nodes.entries()){
-  const {parts:_,...metadata}=node;nodes.push({...metadata,packed:new Blob(buffers[index]),terminalText:''});
+  const {parts:_,...metadata}=node;nodes.push({...metadata,packed:new Blob(buffers[index]),terminalText:''});buffers[index].length=0;
  }
  notify('Verificando las máquinas preparadas…');
  const combined=await sessions.validate(nodes);if(combined!==manifest.sha256)throw Error('El conjunto de nodos no coincide');

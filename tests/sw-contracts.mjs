@@ -12,7 +12,7 @@ const visualFingerprint = createHash('sha256').update(visualCss.replace(/\r\n/g,
 for (const asset of [
   `site-shell.css?v=${shellFingerprint}`,
   `visual-system.css?v=${visualFingerprint}`,
-  'site-shell.js?v=20260826-phase3',
+  'site-shell.js?v=20261104-analytics',
   'fonts.css?v=20260822-local',
   'assets/fonts/press-start-2p-latin-400.woff2',
   'manifest.webmanifest',
@@ -171,7 +171,7 @@ assert.equal(scriptOffline.type, 'error', 'Offline JavaScript failure must be an
 
 const thirdPartyAnalytics = {
   method: 'GET', mode: 'no-cors', destination: 'script',
-  url: 'https://plausible.io/js/script.js', headers: new Headers()
+  url: 'https://www.googletagmanager.com/gtag/js?id=G-EDJP6K0JVY', headers: new Headers()
 };
 assert.equal(await dispatchFetch(thirdPartyAnalytics), null, 'Non-allowlisted third parties must bypass Cache Storage');
 for(const lab of ['linux-real','docker-real'])assert.equal(await dispatchFetch({...terminalNavigation,url:`${scope}laboratorios/${lab}/`}),null,'Real laboratories must bypass the shell cache');

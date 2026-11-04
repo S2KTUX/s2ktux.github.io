@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="./site-shell.css?v=ac5aee15ea13">
 <link rel="stylesheet" href="./fonts.css?v=20260822-local">
-<link rel="stylesheet" href="./visual-system.css?v=dc5253bb5de9">
+<link rel="stylesheet" href="./visual-system.css?v=c115d3150f8d">
 <title>Sobre S2KTUX · El proyecto, mejoras y licencias</title>
 <meta name="description" content="Soy el autor de S2KTUX. Aquí cuento cómo funciona el proyecto, qué quiero mejorar, las novedades y las licencias.">
 <meta name="robots" content="index,follow">
@@ -14,7 +14,6 @@
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png">
 <link rel="apple-touch-icon" href="assets/icon-192.png">
 <link rel="manifest" href="manifest.webmanifest">
-<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
 <script>if('serviceWorker' in navigator){window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});}</script>
 <link rel="canonical" href="https://s2ktux.github.io/sobre.html">
 <meta property="og:url" content="https://s2ktux.github.io/sobre.html">
@@ -51,7 +50,7 @@
 </style>
 <link rel="stylesheet" href="./sobre.css?v=20261022-notas-version">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
-<script defer src="./site-shell.js?v=20260826-phase3"></script>
+<script defer src="./site-shell.js?v=20261104-analytics"></script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"AboutPage","name":"Sobre S2KTUX","url":"https://s2ktux.github.io/sobre.html","inLanguage":"es","mainEntity":{"@type":"Organization","name":"S2KTUX","url":"https://s2ktux.github.io/","sameAs":["https://www.youtube.com/@S2KTUX/featured","https://www.linkedin.com/in/alai-molina-delgado-563b70184"]}}</script>
 </head>
 <body>
@@ -94,8 +93,7 @@
       <summary>Lo que quiero mejorar</summary>
       <div>
         <p class="about-small">Esta es la lista de trabajo, no una promesa de fechas. Cuando una mejora está terminada y comprobada, sale de aquí y pasa al historial.</p>
-        <ul><!-- proyecto:pendientes --><li><span>LPIC-1.</span> Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen.</li>
-<li><span>Kubernetes.</span> Mantener dos prácticas por contenido, como en Linux y Docker: una sencilla y otra para aplicar lo aprendido. Revisar su relación con el curso, sin añadir una tercera práctica ni ejercicios a la clase 00.</li>
+        <ul><!-- proyecto:pendientes --><li><span>Kubernetes.</span> Mantener dos prácticas por contenido, como en Linux y Docker: una sencilla y otra para aplicar lo aprendido. Revisar su relación con el curso, sin añadir una tercera práctica ni ejercicios a la clase 00.</li>
 <li><span>Laboratorios.</span> Comprobar la persistencia tras reiniciar antes de puntuar el simulacro, con respaldo y tratamiento de máquinas que no consiguen arrancar.</li>
 <li><span>Laboratorios.</span> Aplicar al simulacro de Linux el guardado conjunto de máquinas, intento y cronómetro. En Kubernetes ya se puede guardar y reanudar el intento tras recargar.</li>
 <li><span>Laboratorios.</span> Ampliar los ejercicios de diagnóstico con fallos controlados de fstab, SELinux, servicios y red; en Kubernetes, Pods, nodos, selectores y PVC.</li>
@@ -110,7 +108,7 @@
     </details>
     <details id="versiones">
       <summary>Qué ha cambiado · v<!-- proyecto:version -->3.4<!-- /proyecto:version --></summary>
-      <div><!-- proyecto:versiones --><article class="about-version" id="version-3.4"><h3>v3.4 <time datetime="2026-11-04">04/11/2026</time></h3><p>Kubernetes conserva las sesiones largas y el simulacro muestra correctamente el resultado después de guardar.</p><a class="about-version-link" href="versiones/2026-11-04.html">Notas completas de la nueva versión de la página →</a></article>
+      <div><!-- proyecto:versiones --><article class="about-version" id="version-3.4"><h3>v3.4 <time datetime="2026-11-04">04/11/2026</time></h3><p>Mejoramos las sesiones de Kubernetes, la descarga de sus bases y las comprobaciones de prácticas; la página incorpora estadísticas opcionales de visitas.</p><a class="about-version-link" href="versiones/2026-11-04.html">Notas completas de la nueva versión de la página →</a></article>
 <article class="about-version" id="version-3.3"><h3>v3.3 <time datetime="2026-11-02">02/11/2026</time></h3><p>Kubernetes entra más rápido y hemos comprobado sesiones más largas en el avanzado y el simulacro.</p><a class="about-version-link" href="versiones/2026-11-02.html">Notas completas de la nueva versión de la página →</a></article>
 <article class="about-version" id="version-3.2"><h3>v3.2 <time datetime="2026-10-31">31/10/2026</time></h3><p>Ya puedes guardar la copia HA y continuar el simulacro de Kubernetes después de recargar.</p><a class="about-version-link" href="versiones/2026-10-31.html">Notas completas de la nueva versión de la página →</a></article>
 <article class="about-version" id="version-3.1"><h3>v3.1 <time datetime="2026-10-30">30/10/2026</time></h3><p>Ya puedes hacer el simulacro de CKA en dos máquinas, en castellano o en inglés.</p><a class="about-version-link" href="versiones/2026-10-30.html">Notas completas de la nueva versión de la página →</a></article>
@@ -139,7 +137,7 @@
     <details id="privacidad">
       <summary>Privacidad y uso del material</summary>
       <div class="about-licences">
-        <p>La página no pide registro. Usa <a href="https://plausible.io/data-policy" target="_blank" rel="noopener">Plausible</a> para estadísticas agregadas sin cookies de seguimiento. Las preferencias y los guardados del laboratorio se almacenan en tu navegador, no en una cuenta de S2KTUX.</p>
+        <p>La página no pide registro. Si lo aceptas, usa Google Analytics para conocer las visitas y las páginas consultadas. No enviamos comandos, respuestas ni archivos de los laboratorios. Puedes rechazarlo o cambiar tu elección en «Estadísticas de visitas», al pie de la página. <a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">Cómo utiliza Google estos datos</a>. Las preferencias y los guardados del laboratorio se almacenan en tu navegador, no en una cuenta de S2KTUX.</p>
         <p>También se conservan las últimas comprobaciones de las prácticas y los intentos de LPIC-1. Borrar progreso elimina esas marcas, no las máquinas guardadas. Los archivos verificados de arranque pueden reutilizarse desde la caché del navegador para no descargarlos otra vez.</p>
         <p>Los vídeos se alojan en YouTube. Las conexiones a Internet de las máquinas pasan por servicios externos: utiliza solo datos de prácticas, no contraseñas ni información privada.</p>
         <p>Esto es material educativo: prueba los comandos en un laboratorio antes de usarlos en un sistema importante. S2KTUX no está afiliado a Red Hat, LPI, Docker, la Linux Foundation ni a las demás marcas mencionadas.</p>

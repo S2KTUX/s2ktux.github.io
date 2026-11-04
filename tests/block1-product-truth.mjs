@@ -6,7 +6,7 @@ assert.ok(existsSync('LICENSE'),'LICENSE debe existir');
 assert.match(read('LICENSE'),/MIT License/,'LICENSE debe conservar MIT para el código');
 assert.match(read('LICENSE'),/CC BY-NC-SA 4\.0/,'LICENSE debe conservar CC BY-NC-SA 4.0 para el contenido');
 assert.match(read('sobre.html'),/código original[\s\S]*licencia MIT[\s\S]*CC BY-NC-SA 4\.0/i,'Sobre debe explicar el alcance de la licencia dual');
-assert.match(read('sobre.html'),/https:\/\/plausible.io\/data-policy/);
+assert.match(read('sobre.html'),/https:\/\/policies.google.com\/technologies\/partner-sites/);
 assert.ok(read('docs/historial-tecnico.md').includes('solución definitiva mientras S2KTUX viva exclusivamente en \u0060s2ktux.github.io\u0060'));
 assert.equal((read('docs/historial-tecnico.md').match(/\*\*Estado: completada y validada\.\*\*/g)||[]).length,5,'el historial conserva las cinco fases anteriores');
 
