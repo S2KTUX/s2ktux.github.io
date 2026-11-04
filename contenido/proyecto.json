@@ -2,11 +2,6 @@
   "version": "3.4",
   "pendientes": [
     {
-      "id": "lpic-banco-cobertura",
-      "tema": "LPIC-1",
-      "texto": "Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen."
-    },
-    {
       "id": "kubernetes-dos-practicas",
       "tema": "Kubernetes",
       "texto": "Mantener dos prácticas por contenido, como en Linux y Docker: una sencilla y otra para aplicar lo aprendido. Revisar su relación con el curso, sin añadir una tercera práctica ni ejercicios a la clase 00."
@@ -61,7 +56,7 @@
     {
       "version": "3.4",
       "fecha": "2026-11-04",
-      "resumen": "Kubernetes conserva las sesiones largas y el simulacro muestra correctamente el resultado después de guardar.",
+      "resumen": "Mejoramos las sesiones de Kubernetes, la descarga de sus bases y las comprobaciones de prácticas; la página incorpora estadísticas opcionales de visitas.",
       "cambios": [
         "Comprimimos la memoria por bloques al guardar, sin crear antes un archivo temporal con toda la RAM. Los formatos, las identidades y las claves de los guardados se conservan.",
         "El reloj del hardware emulado deja de acumular tiempo mientras la máquina está detenida. Así evitamos reinicios de servicios al volver de una pausa; el cronómetro del examen sigue contando tiempo real.",
@@ -69,7 +64,14 @@
         "El cierre mantiene el mensaje de evaluación finalizada después del guardado y al recuperar un examen terminado. Una prueba detecta si el guardado vuelve a sustituir ese mensaje.",
         "El avanzado superó dos horas, el guardado y la recuperación de sus tres nodos y una pausa real de treinta minutos. El simulacro también llegó a las dos horas y conservó el reloj, la pregunta, la marca y la aplicación al reanudar.",
         "Recuperamos el informe final de las doce tareas del simulacro: la única resuelta obtuvo sus siete puntos y las restantes quedaron sin puntuar, sin condiciones pendientes de comprobar. La evaluación y el guardado habían terminado en unos cuatro minutos; corregimos el comprobador que interpretaba el mensaje de guardado como una evaluación sin terminar. Son pruebas en un equipo, sin garantizar el mismo rendimiento en todos los navegadores.",
-        "Cloudflare prepara la web antes de desplegar y publica solo la carpeta de producción, en lugar del repositorio completo. Excluimos también la configuración y la caché de Wrangler de los archivos públicos."
+        "Cloudflare prepara la web antes de desplegar y publica solo la carpeta de producción, en lugar del repositorio completo. Excluimos también la configuración y la caché de Wrangler de los archivos públicos.",
+        "La caché de bases de Kubernetes conserva hasta 2048 fragmentos, en lugar de 96. Evitamos expulsar partes de las bases grandes durante su propia descarga; el navegador puede limitarla si no dispone de espacio. No se borran los guardados del alumno.",
+        "Las descargas reservan un solo bloque de memoria del tamaño esperado y rechazan respuestas cortadas o demasiado grandes. Los cargadores convierten cada fragmento verificado en un Blob y liberan las referencias temporales al reunir los nodos. No cambiamos los discos, perfiles ni certificados.",
+        "Si falla un fragmento de la base inicial o intermedia, se dejan de iniciar descargas y se esperan las que estaban en marcha. El indicador solo cambia cuando avanza el porcentaje.",
+        "Las prácticas de red IPv4, hostname y chrony muestran qué requisito falta: dirección activa, ruta, DNS, autoconexión, nombre guardado o servicio activo y habilitado. La presentación sigue siendo la lista breve habitual y no revela los comandos.",
+        "Revisamos el banco: las clases prácticas de Kubernetes de la 1 a la 34 tienen al menos dos ejercicios, y la 00 no plantea comandos. Los simulacros mantienen la puntuación por resultados y no aprueban comprobaciones que no se hayan podido completar. La recuperación del intento de Linux y la evaluación tras reiniciar siguen anotadas como mejoras pendientes.",
+        "Sustituimos la etiqueta anterior de estadísticas por Google Analytics. Solo se carga si el visitante acepta; la elección se puede cambiar al pie de página sin reiniciar el laboratorio. No enviamos respuestas, comandos ni parámetros de la URL y desactivamos publicidad y medición mejorada.",
+        "Retiramos de pendientes la ampliación del banco LPIC-1 por decisión del autor; sus preguntas actuales se conservan."
       ]
     },
     {

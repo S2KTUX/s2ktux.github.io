@@ -16,7 +16,9 @@ const release33='7fee7ec3c4324984f8b6bab48888d8e42995510ddc70a0c2e7b8fbb133988cd
 assert.deepEqual(revisionesCompatibles[release33],[release32,...revisionesCompatibles[release32]]);
 const previousPublished='4bb4a9dd353ac7ee3eb36501a922b121921fde4e619cc72c5367591774f8be1b';
 assert.deepEqual(revisionesCompatibles[previousPublished],[release33,...revisionesCompatibles[release33]]);assert.equal(revisionesCompatibles[previousPublished].length,18);
-assert.deepEqual(revisionesCompatibles[current],[previousPublished,...revisionesCompatibles[previousPublished]],'Conservar la última base publicada y todas sus referencias');assert.equal(revisionesCompatibles[current].length,19);
+const release34='fe4c635b7dcc6e6d93c42a7164ddd3e7d0a8259caef31fc48d804b33ff5d61bc';
+assert.deepEqual(revisionesCompatibles[release34],[previousPublished,...revisionesCompatibles[previousPublished]]);
+assert.deepEqual(revisionesCompatibles[current],[release34,...revisionesCompatibles[release34]],'Conservar la misma base y todas sus referencias');assert.equal(revisionesCompatibles[current].length,20);
 const historical=revisionesCompatibles[release33].slice(4);
 assert.equal(historical[0],'1177a406fc29d32679eea1361b9b9f0435063727777de2cf61603d573f768b55');
 assert.equal(historical[1],'b4d9ea5c2eceb5c3291aba4dae18b2cb84b77a92e1f55db82c07eaf06b1361ea');
@@ -49,3 +51,7 @@ let active=0,maximum=0;const touched=new Set();
 await cargarBasePublicada(config,{...dependencies,download:async(url,options)=>{assert.equal(options.cacheGroup,'kubernetes-base');active++;maximum=Math.max(maximum,active);touched.add(url.href);await new Promise(resolve=>setTimeout(resolve,5));active--;options.notify(options.bytes);return data.buffer;}});
 assert.equal(maximum,2,'Ambos nodos comparten la cola de descarga sin esperar al nodo anterior');assert.equal(touched.size,1,'Los fragmentos idénticos mantienen una URL inmutable');
 console.log('Kubernetes: base publicada verificada por revisión, origen, perfiles y checksums; los estados incompletos o alterados no se restauran.');
+
+const many={...manifest,nodes:manifest.nodes.map(n=>({...n,packedBytes:48,parts:Array.from({length:12},(_,i)=>({offset:i*4,bytes:4,sha256:hash(data),file:hash(data)+'.part'}))}))},manyBytes=new TextEncoder().encode(JSON.stringify(many));let attempted=0,inFlight=0;
+await assert.rejects(cargarBasePublicada({...config,sha256:hash(manyBytes)},{...dependencies,fetcher:async()=>new Response(manyBytes),sessions:{validate:async()=>{throw Error('No validar una descarga incompleta');}},download:async()=>{const first=++attempted===1;inFlight++;try{await new Promise(r=>setTimeout(r,first?0:5));if(first)throw Error('Checksum incorrecto');return data.buffer;}finally{inFlight--;}}}),/Checksum incorrecto/);
+assert.equal(inFlight,0);assert.ok(attempted<=6,'Un fallo no deja descargas de la base inicial o intermedia en segundo plano');

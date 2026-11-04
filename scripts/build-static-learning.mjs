@@ -87,8 +87,7 @@ const head = ({ title, description, canonical, jsonLd, type = 'article', robots 
 <link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=${shellFingerprint}"><link rel="stylesheet" href="/learning-pages.css?v=${learningFingerprint}"><link rel="stylesheet" href="/visual-system.css?v=${visualFingerprint}">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">${escapeJson(jsonLd)}</script>
-<script defer data-domain="s2ktux.github.io" src="https://plausible.io/js/script.js"></script>
-<script defer src="/site-shell.js?v=20260826-phase3"></script>
+<script defer src="/site-shell.js?v=20261104-analytics"></script>
 <script type="module" src="/learning-pages.js?v=20260826-phase3"></script>
 </head>`;
 

@@ -1,6 +1,6 @@
 // Entrega independiente: nunca admite una base v6, un worker ni una sesión.
 import {verifiedDownload} from '../../verified-download.mjs';
-import {descargarFragmentoBase} from './fabrica-cluster.mjs?v=813117dc890bf97d';
+import {descargarFragmentoBase} from './fabrica-cluster.mjs?v=adb42d0139f75c33';
 import {miembrosHA,perfilNodoHA,identidadNodoHA} from './perfil-ha.mjs?v=60a21559ace773d9';
 const sha=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const digest=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');

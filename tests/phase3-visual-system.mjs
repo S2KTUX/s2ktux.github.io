@@ -22,7 +22,7 @@ for (const path of shellPages) {
 
 for (const path of shellPages.filter((path) => path !== 'terminal.html')) {
   const html = await read(path);
-  assert.match(html, /site-shell\.js\?v=20260826-phase3/, `${path} debe compartir el controlador de tema`);
+  assert.match(html, /site-shell\.js\?v=20261104-analytics/, `${path} debe compartir el controlador de tema`);
   assert.doesNotMatch(html, /updateIcons|setTimeout\(updateIcons/, `${path} no debe sincronizar el tema mediante temporizadores`);
 }
 

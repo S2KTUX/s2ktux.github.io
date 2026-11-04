@@ -2,7 +2,6 @@
 
 Esta lista cambia con el proyecto. Las mejoras comprobadas salen de aquí y pasan al historial de Sobre.
 
-- **LPIC-1:** Ampliar el banco, sin sustituir las preguntas autorizadas, para practicar los contenidos poco representados: GPG, scripts, filtros, paquetes, NTP, impresión y túneles SSH. No presentar las 240 preguntas como cobertura exhaustiva del examen.
 - **Kubernetes:** Mantener dos prácticas por contenido, como en Linux y Docker: una sencilla y otra para aplicar lo aprendido. Revisar su relación con el curso, sin añadir una tercera práctica ni ejercicios a la clase 00.
 - **Laboratorios:** Comprobar la persistencia tras reiniciar antes de puntuar el simulacro, con respaldo y tratamiento de máquinas que no consiguen arrancar.
 - **Laboratorios:** Aplicar al simulacro de Linux el guardado conjunto de máquinas, intento y cronómetro. En Kubernetes ya se puede guardar y reanudar el intento tras recargar.
