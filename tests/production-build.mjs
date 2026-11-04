@@ -10,6 +10,7 @@ const REQUIRED_MARGIN=8192;
 const read=path=>readFile(new URL(path,assets));
 
 const html=await readFile(new URL('terminal.html',site),'utf8');
+for(const internal of ['wrangler.jsonc','.wrangler/'])await assert.rejects(stat(new URL(internal,site)),{code:'ENOENT'},'La publicación no debe incluir configuración ni datos internos de Wrangler');
 assert.match(html,/assets\/terminal\/terminal-bootstrap\.min\.js/,'La página publicada no usa el bootstrap minificado');
 assert.doesNotMatch(html,/src="\.\/terminal-bootstrap\.js/,'La página publicada todavía sirve el bootstrap fuente');
 
