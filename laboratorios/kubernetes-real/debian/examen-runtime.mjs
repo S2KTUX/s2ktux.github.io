@@ -36,6 +36,43 @@ export async function comprobarRuntimeExamen(run){
  const worker=await run('worker1','Comprobar la red del examen recuperado','systemctl is-active --quiet kube-lab-netns.service && mountpoint -q /run/netns',60000);
  if(worker?.ok!==true)throw Error('La red del worker no está disponible');
 }
+export async function prepararCargaControladoresExamen(run,context){
+ if(context?.scenario!=='cka-exam'||context.fresh!==true||context.studentSession!==false)throw Error('Los controladores solo se preparan antes de un intento nuevo');
+ const command=`set -eu
+dir=/var/lib/kube-lab/exam-controller-load-v1
+if test ! -e "$dir/complete"; then
+ test ! -e "$dir"; mkdir -m 700 "$dir"
+ for component in kube-controller-manager kube-scheduler; do
+  path=/etc/kubernetes/manifests/$component.yaml
+  test "$(grep -Fc -- '    - --kube-api-qps=10' "$path")" = 1
+  test "$(grep -Fc -- '    - --kube-api-burst=15' "$path")" = 1
+  cp "$path" "$dir/$component.before.yaml"
+  sed -e 's/--kube-api-qps=10$/--kube-api-qps=5/' -e 's/--kube-api-burst=15$/--kube-api-burst=10/' "$path" | sed '/^    livenessProbe:/,/^    [a-zA-Z]/s/^      failureThreshold: 8$/      failureThreshold: 30/' > "$dir/$component.yaml"
+  grep -Fq -- '--kube-api-qps=5' "$dir/$component.yaml"
+  test "$(awk '/^    livenessProbe:/{live=1;next} live && /^    [^ ]/{live=0} live && /failureThreshold:/{print $2}' "$dir/$component.yaml")" = 30
+ done
+ for component in kube-controller-manager kube-scheduler; do
+  cp "$dir/$component.yaml" /etc/kubernetes/.$component.exam.yaml
+  mv /etc/kubernetes/.$component.exam.yaml /etc/kubernetes/manifests/$component.yaml
+ done
+fi
+deadline=$(($(date +%s)+180))
+while test "$(date +%s)" -lt "$deadline"; do
+ found=0
+ for file in /proc/[0-9]*/comm; do
+  test -r "$file" || continue; read -r name < "$file" || continue
+  case "$name" in kube-controller|kube-scheduler)
+   proc=\${file%/comm}; grep -q kubepods "$proc/cgroup" || continue
+   if tr '\\0' '\\n' < "$proc/cmdline" | grep -Fxq -- '--kube-api-qps=5'; then found=$((found+1)); fi
+  esac
+ done
+ if test "$found" = 2 && response=$(curl --fail --silent --show-error --max-time 15 --cacert /etc/kubernetes/pki/ca.crt --cert "$S2KTUX_CKA_CERT" --key "$S2KTUX_CKA_KEY" https://127.0.0.1:6443/readyz) && test "$response" = ok; then echo prepared > "$dir/complete"; exit 0; fi
+ sleep 3
+done
+exit 1`;
+ const result=await run('controlplane','Preparar la carga de los controladores antes del simulacro',command,240000);
+ if(result?.ok!==true)throw Error('No se ha confirmado la configuración de los controladores del examen');
+}
 export async function prepararRuntimeExamen(run,context){
  if(context?.scenario!=='cka-exam'||context.fresh!==true||context.studentSession!==false)throw Error('Los plazos del examen solo se preparan en una copia nueva');
  const execute=async(label,command,timeout=120000)=>{const result=await run('controlplane',label,command,timeout);if(result?.ok!==true)throw Error(label);};

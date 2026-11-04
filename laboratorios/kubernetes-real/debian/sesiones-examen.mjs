@@ -1,4 +1,4 @@
-import {SesionesCheckpointV15} from './sesiones-checkpoint.mjs?v=e4977b7d1c40bbf8';
+import {SesionesCheckpointV15} from './sesiones-checkpoint.mjs?v=b978ec0f4145b839';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs?v=3852a1206e14ad3b';
 import {TAREAS_CKA,DURACION_CKA} from './examen-cka-banco.mjs?v=146843198f26771b';
 

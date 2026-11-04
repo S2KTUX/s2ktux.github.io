@@ -10,6 +10,13 @@ async function compare(record,expected){
 }
 const own=data.buffer.slice(0);await compare(await comprimirEstado(own),data);assert.equal(own.byteLength,data.byteLength,'No consumir un buffer sin cesión explícita');
 const donated=data.buffer.slice(0);await compare(await comprimirEstado(donated,{consumir:true}),data);assert.equal(donated.byteLength,0);
+const NativeBlob=globalThis.Blob;
+try{
+ globalThis.Blob=class extends NativeBlob{constructor(parts=[],options){
+  assert.ok(!parts.some(part=>part instanceof ArrayBuffer&&part.byteLength>1048576),'No volcar la RAM completa a un Blob temporal');super(parts,options);
+ }};
+ await compare(await comprimirEstado(data.buffer.slice(0),{consumir:true}),data);
+}finally{globalThis.Blob=NativeBlob;}
 const foreign=runInNewContext('new Uint8Array([1,2,3,4]).buffer');await compare(await comprimirEstado(foreign,{consumir:true}),new Uint8Array([1,2,3,4]));assert.equal(foreign.byteLength,0,'Los estados de otro iframe también se pueden ceder');
 const descriptor=Object.getOwnPropertyDescriptor(ArrayBuffer.prototype,'transfer');
 try{

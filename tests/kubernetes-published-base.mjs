@@ -14,7 +14,9 @@ const lastPublished='f1084afe2c54553e9ce458b89c53f03ffb681c61e6b5d18ba3b16bd09d7
 const release32='b4785b7fb2a2fc82e5bbfb7040984eaac203ec79a7604bcef9b35e717785f970';assert.deepEqual(revisionesCompatibles[release32],[lastPublished,...revisionesCompatibles[lastPublished]]);
 const release33='7fee7ec3c4324984f8b6bab48888d8e42995510ddc70a0c2e7b8fbb133988cd6';
 assert.deepEqual(revisionesCompatibles[release33],[release32,...revisionesCompatibles[release32]]);
-assert.deepEqual(revisionesCompatibles[current],[release33,...revisionesCompatibles[release33]],'Conservar la última base publicada y todas sus referencias');assert.equal(revisionesCompatibles[current].length,18);
+const previousPublished='4bb4a9dd353ac7ee3eb36501a922b121921fde4e619cc72c5367591774f8be1b';
+assert.deepEqual(revisionesCompatibles[previousPublished],[release33,...revisionesCompatibles[release33]]);assert.equal(revisionesCompatibles[previousPublished].length,18);
+assert.deepEqual(revisionesCompatibles[current],[previousPublished,...revisionesCompatibles[previousPublished]],'Conservar la última base publicada y todas sus referencias');assert.equal(revisionesCompatibles[current].length,19);
 const historical=revisionesCompatibles[release33].slice(4);
 assert.equal(historical[0],'1177a406fc29d32679eea1361b9b9f0435063727777de2cf61603d573f768b55');
 assert.equal(historical[1],'b4d9ea5c2eceb5c3291aba4dae18b2cb84b77a92e1f55db82c07eaf06b1361ea');

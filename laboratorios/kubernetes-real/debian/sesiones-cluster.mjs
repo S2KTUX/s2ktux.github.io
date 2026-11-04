@@ -2,7 +2,7 @@ import {KubeSessions} from '../kube-sessions.mjs?v=601d790381d8bc16';
 import {hashBytes,hashBlob} from '/laboratorios/docker-real/v86-sessions.mjs?v=3852a1206e14ad3b';
 import {PERFIL_DEBIAN,perfilFabricaDebian} from './fabrica.mjs?v=f8890388a14d848d';
 import {comprobarNivel} from './niveles.mjs';
-import {comprimirEstado} from '../comprimir-estado.mjs?v=9428ef18ea7ec585';
+import {comprimirEstado} from '../comprimir-estado.mjs?v=92733f6a88e4d330';
 import {escenarioCurso} from './escenarios-curso.mjs?v=4fe1a4528b2e23b6';
 const ids=['controlplane','worker1','worker2'],digest=/^[a-f0-9]{64}$/;
 function comprobarComponentesWorker(version){if(!['v7','v8'].includes(version))throw Error('Componentes de worker no comprobados');return version;}

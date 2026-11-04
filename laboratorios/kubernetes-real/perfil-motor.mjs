@@ -1,6 +1,7 @@
 import {V86 as OriginalV86} from '/laboratorios/docker-real/motor/libv86-rhcsa.mjs';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
 import {recursoPesado} from './recursos-publicados.mjs?v=28e0db74abed5c76';
+import {motorConRelojPausable} from './reloj-pausable.mjs?v=ce656591c415d4fb';
 export const originalEngineHash='c064c94714c4b8eeace32782a4013b6132a2331ba5c008abfd67274cc2d29caf';
 export const extendedEngineHash='5f752e916bef9d76889fe0d14f73bb0e611abe2a5d6abdedca8b50da480bf3ac';
 export const clockEngineHash='af9714105657e52b3a3b0046f3718f0d58c475060b4bdfd31973dfe3d9b1989f';
@@ -24,5 +25,6 @@ export async function loadEngine(variant='original',onError=()=>{}){
  }
  const [,bytes]=await Promise.all([checked(front,'1ecbc7853d3da1331e935531424aa729216a2148690345a2ceda2983eb1f2659'),checked(recursoPesado(wasm),engineHash(variant))]);
  const {V86}=await import(front.href);
- return {V86,wasm_fn:async env=>{try{return (await WebAssembly.instantiate(bytes,env)).instance.exports;}catch(error){onError(error);throw error;}}};
+ const wasm_fn=async env=>{try{return (await WebAssembly.instantiate(bytes,env)).instance.exports;}catch(error){onError(error);throw error;}};
+ return {V86:motorConRelojPausable(V86,wasm_fn),wasm_fn};
 }
