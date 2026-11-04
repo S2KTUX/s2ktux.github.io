@@ -1,5 +1,5 @@
 import {DOMINIOS_CKA,DURACION_CKA,MINIMO_CKA,TAREAS_CKA} from './examen-cka-banco.mjs?v=146843198f26771b';
-import {prepararRuntimeExamen,comprobarRuntimeExamen,ordenPreparacionExamen} from './examen-runtime.mjs?v=89d88e61eb5725c9';
+import {prepararRuntimeExamen,comprobarRuntimeExamen,ordenPreparacionExamen,prepararCargaControladoresExamen} from './examen-runtime.mjs?v=bf0f315f540fa13e';
 export const CKA_CREDENTIAL_DIR='/run/s2ktux-cka-eval-'+crypto.randomUUID().replaceAll('-','');
 export async function prepararCredencialExamen(run){
  const dir=CKA_CREDENTIAL_DIR;
@@ -32,10 +32,12 @@ export async function prepararExamenCKA(run,context){
  await prepararCredencialExamen(run);
  if(context.prepared===true){
   await comprobarRuntimeExamen(run);
+  await prepararCargaControladoresExamen(run,{scenario:'cka-exam',fresh:true,studentSession:false});
   await prepararEjerciciosCKA(run,{fresh:true,prepared:true});
   return;
  }
  await prepararRuntimeExamen(run,{scenario:'cka-exam',fresh:true,studentSession:false});
+ await prepararCargaControladoresExamen(run,{scenario:'cka-exam',fresh:true,studentSession:false});
  const {materialesAvanzados}=await import('./complementos-avanzados.mjs?v=fd02080d549d450f');
  const {prepararGateway}=await import('./gateway-curso.mjs?v=3d5f33f66174384c');
  const {prepararPoliticasCurso}=await import('./red-politicas-curso.mjs?v=f58312c9062cfb18');

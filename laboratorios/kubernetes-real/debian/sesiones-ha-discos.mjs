@@ -1,4 +1,4 @@
-import {SesionesHA} from './sesiones-ha.mjs?v=0ca5abaa216f6e3a';
+import {SesionesHA} from './sesiones-ha.mjs?v=da53704e47cf028e';
 import {miembrosHA,perfilNodoHA,perfilBaseHA,identidadNodoHA} from './perfil-ha.mjs?v=60a21559ace773d9';
 import {validarDiscoExterno} from '../checkpoint-discos.mjs?v=b410b9411a1ecd95';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';

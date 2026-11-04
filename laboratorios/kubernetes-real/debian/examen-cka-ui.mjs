@@ -1,6 +1,6 @@
 import {TAREAS_CKA} from './examen-cka-banco.mjs?v=146843198f26771b';
-import {nuevoIntento,informeCKA,prepararExamenCKA,prepararCredencialExamen,corregirExamenCKA,CKA_CREDENTIAL_DIR} from './examen-cka-motor.mjs?v=6757a92739c59658';
-import {SesionesExamen} from './sesiones-examen.mjs?v=6dd894e77c0412af';
+import {nuevoIntento,informeCKA,prepararExamenCKA,prepararCredencialExamen,corregirExamenCKA,CKA_CREDENTIAL_DIR} from './examen-cka-motor.mjs?v=8586ddf673b18865';
+import {SesionesExamen} from './sesiones-examen.mjs?v=0fb81b015ee71b34';
 const $=id=>document.getElementById(id),english=new URL(location.href).searchParams.get('lang')==='en',lang=english?'en':'es';
 const say=(es,en)=>english?en:es;
 document.title=say('Simulacro CKA','CKA mock exam')+' · S2KTUX';document.querySelector('h1').textContent=say('Simulacro CKA','CKA mock exam');
@@ -53,8 +53,8 @@ async function finish(){
  $('exam-attempt').hidden=true;$('cluster-status').textContent=say('Evaluando el resultado de las tareas…','Evaluating task results…');
  // La evaluación consulta el estado real; no compara el historial de comandos.
  results=await corregirExamenCKA(run);showResults(informeCKA(results,attempt));
- $('cluster-status').textContent=say('Evaluación finalizada.','Assessment complete.');
  await saveAttempt();
+ $('cluster-status').textContent=say('Evaluación finalizada.','Assessment complete.');
 }
 $('finish-exam').onclick=()=>finish();
 async function saveAttempt(){
@@ -73,7 +73,7 @@ async function begin(resume){
  $('begin-exam').disabled=$('resume-exam').disabled=true;$('exam-error').textContent='';
  try{
   globalThis.kubeDebianExamResumeRequested=resume;
-  await import('./multinodo.mjs?v=3b4180ae6398a756');
+  await import('./multinodo.mjs?v=556c6d92d0ae465c');
   document.querySelector('h1').textContent=say('Simulacro CKA','CKA mock exam');
   await $('start-cluster').onclick();
   if(!globalThis.kubeDebianClusterReady||globalThis.kubeDebianClusterErrors?.length)throw Error(say('El clúster no está disponible. No ha comenzado el tiempo.','The cluster is not ready. The timer has not started.'));
@@ -90,7 +90,7 @@ async function begin(resume){
   await globalThis.kubeDebianClusterNodes.get('controlplane').window.kubeDebianExamShortcuts();
   $('exam-intro').hidden=true;$('exam-attempt').hidden=false;renderIndex();
   globalThis.ckaExam={get attempt(){return attempt;},finish,save:saveAttempt,get tasks(){return TAREAS_CKA;}};
-  if(attempt.finishedAt&&results){finishing=true;$('exam-attempt').hidden=true;showResults(informeCKA(results,attempt));return;}
+  if(attempt.finishedAt&&results){finishing=true;$('exam-attempt').hidden=true;showResults(informeCKA(results,attempt));$('cluster-status').textContent=say('Evaluación finalizada.','Assessment complete.');return;}
   clock();if(!finishing){interval=setInterval(clock,1000);autosave=setInterval(()=>{if(!finishing&&[...globalThis.kubeDebianClusterNodes.values()].every(node=>node.window.kubeDebianSnapshot.idle))saveAttempt();},300000);if(!resume)await saveAttempt();else $('exam-save-status').textContent=say('Intento recuperado del último guardado.','Attempt restored from the last save.');}
  }catch(error){$('exam-error').textContent=String(error.message||error);}
 }

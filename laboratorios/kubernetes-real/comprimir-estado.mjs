@@ -4,11 +4,16 @@ export async function comprimirEstado(state,{consumir=false}={}){
  if(typeof consumir!=='boolean')throw Error('Propiedad del estado inválida');
  let bytes;try{bytes=Object.getOwnPropertyDescriptor(ArrayBuffer.prototype,'byteLength').get.call(state);}catch{throw Error('Estado serializado inválido');}
  if(!bytes)throw Error('Estado serializado inválido');
- const source=new Blob([state]);
- // Blob ya conserva sus bytes inmutables. Soltar la copia original antes de
- // comprimir evita retener dos buffers de más de 1 GiB durante el guardado.
  const transfer=ArrayBuffer.prototype.transfer;
- if(consumir&&typeof transfer==='function')transfer.call(state,0);
- const packed=await new Response(source.stream().pipeThrough(new CompressionStream('gzip'))).blob();
+ // No crear un Blob temporal de toda la RAM: Chromium puede volcarlo al
+ // disco y fallar al releerlo. Solo el resultado comprimido necesita un Blob.
+ let owned=consumir&&typeof transfer==='function'?transfer.call(state):ArrayBuffer.prototype.slice.call(state,0);
+ let offset=0;
+ const source=new ReadableStream({pull(controller){
+  if(offset===bytes){owned=null;controller.close();return;}
+  const length=Math.min(1048576,bytes-offset);
+  controller.enqueue(new Uint8Array(owned,offset,length).slice());offset+=length;
+ },cancel(){owned=null;}});
+ const packed=await new Response(source.pipeThrough(new CompressionStream('gzip'))).blob();
  return {bytes,packed};
 }

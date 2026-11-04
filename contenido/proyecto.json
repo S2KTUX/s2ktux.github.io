@@ -1,5 +1,5 @@
 {
-  "version": "3.3",
+  "version": "3.4",
   "pendientes": [
     {
       "id": "lpic-banco-cobertura",
@@ -37,11 +37,6 @@
       "texto": "Seguir reduciendo la descarga inicial, la preparación de complementos y el consumo de memoria al guardar varios nodos. Inicial, intermedio y avanzado ya disponen de bases limpias preparadas; el examen tiene la suya. Mantener sus guardados separados y estudiar la primera preparación de los escenarios independientes, especialmente HA."
     },
     {
-      "id": "kubernetes-uso-prolongado",
-      "tema": "Kubernetes",
-      "texto": "Ampliar las pruebas a sesiones de dos horas y más equipos. El avanzado y el simulacro ya superaron treinta minutos cada uno, una pausa real y la recuperación del guardado. El inicial también pasó doce minutos; no presentarlo como garantía para cualquier duración o equipo."
-    },
-    {
       "id": "imagen-ligera",
       "tema": "Rendimiento",
       "texto": "Estudiar qué se puede quitar de las imágenes sin perder herramientas, páginas de man, licencias ni ejercicios del curso. Importar solo las imágenes necesarias al preparar un complemento, sin cargar el paquete completo si se puede evitar."
@@ -63,6 +58,19 @@
     }
   ],
   "versiones": [
+    {
+      "version": "3.4",
+      "fecha": "2026-11-04",
+      "resumen": "Kubernetes conserva las sesiones largas y el simulacro muestra correctamente el resultado después de guardar.",
+      "cambios": [
+        "Comprimimos la memoria por bloques al guardar, sin crear antes un archivo temporal con toda la RAM. Los formatos, las identidades y las claves de los guardados se conservan.",
+        "El reloj del hardware emulado deja de acumular tiempo mientras la máquina está detenida. Así evitamos reinicios de servicios al volver de una pausa; el cronómetro del examen sigue contando tiempo real.",
+        "Antes de comenzar un intento nuevo, ajustamos las ráfagas de peticiones y el margen de arranque de los controladores. El cambio se aplica solo a la copia nueva del simulacro, sin modificar las sesiones guardadas del alumno.",
+        "El cierre mantiene el mensaje de evaluación finalizada después del guardado y al recuperar un examen terminado. Una prueba detecta si el guardado vuelve a sustituir ese mensaje.",
+        "El avanzado superó dos horas, el guardado y la recuperación de sus tres nodos y una pausa real de treinta minutos. El simulacro también llegó a las dos horas y conservó el reloj, la pregunta, la marca y la aplicación al reanudar.",
+        "Recuperamos el informe final de las doce tareas del simulacro: la única resuelta obtuvo sus siete puntos y las restantes quedaron sin puntuar, sin condiciones pendientes de comprobar. La evaluación y el guardado habían terminado en unos cuatro minutos; corregimos el comprobador que interpretaba el mensaje de guardado como una evaluación sin terminar. Son pruebas en un equipo, sin garantizar el mismo rendimiento en todos los navegadores."
+      ]
+    },
     {
       "version": "3.3",
       "fecha": "2026-11-02",

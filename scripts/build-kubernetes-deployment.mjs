@@ -4,6 +4,7 @@ import {revisionPreparacion} from './kubernetes-preparation-revision.mjs';
 import {claseDisponible} from '../laboratorios/kubernetes-real/debian/disponibilidad-curso.mjs';
 const base=new URL('../laboratorios/kubernetes-real/',import.meta.url),file=new URL('publicacion.json',base);
 const manifest=JSON.parse(await readFile(file,'utf8'));
+if(!manifest.files.some(record=>record.path==='reloj-pausable.mjs'))manifest.files.push({path:'reloj-pausable.mjs',bytes:0,sha256:''});
 if(!manifest.files.some(record=>record.path==='debian/examen-base-publicada.mjs'))manifest.files.push({path:'debian/examen-base-publicada.mjs',bytes:0,sha256:''});
 if(!manifest.files.some(record=>record.path==='debian/base-avanzada-publicada.mjs'))manifest.files.push({path:'debian/base-avanzada-publicada.mjs',bytes:0,sha256:''});
 for(const path of ['checkpoint-discos.mjs','debian/sesiones-checkpoint.mjs','debian/sesiones-ha-discos.mjs','debian/examen-cka-banco.mjs','debian/examen-cka-motor.mjs','debian/examen-cka-ui.mjs','debian/examen-runtime.mjs','debian/examen-cache.mjs','debian/examen.html','debian/examen-cka.css'])if(!manifest.files.some(record=>record.path===path))manifest.files.push({path,bytes:0,sha256:''});
@@ -75,6 +76,7 @@ await replaceRequired('debian/motor-practicas.mjs',/import\('\.\/almacenamiento-
 await replaceRequired('debian/interfaz-niveles.mjs',/from '\.\/motor-practicas\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './motor-practicas.mjs?v="+await revision('debian/motor-practicas.mjs')+"'");
 await replaceRequired('debian/interfaz-niveles.mjs',/from '\.\/ejercicios-niveles\.mjs(?:\?v=[a-z0-9-]+)?'/,"from './ejercicios-niveles.mjs?v="+await revision('debian/ejercicios-niveles.mjs')+"'");
 await replaceRequired('disco-kubernetes.mjs',/from '\.\/cache-bloques\.mjs(?:\?v=[a-f0-9]+)?'/,"from './cache-bloques.mjs?v="+await revision('cache-bloques.mjs')+"'");
+await replaceRequired('perfil-motor.mjs',/from '\.\/reloj-pausable\.mjs(?:\?v=[a-f0-9]+)?'/,"from './reloj-pausable.mjs?v="+await revision('reloj-pausable.mjs')+"'");
 for(const parent of ['debian/cliente.mjs','motor-worker.mjs'])await replaceRequired(parent,/from '\.\.\/perfil-motor\.mjs(?:\?v=[a-f0-9]+)?'|from '\.\/perfil-motor\.mjs(?:\?v=[a-f0-9]+)?'/,"from '"+(parent.startsWith('debian/')?'../':'./')+'perfil-motor.mjs?v='+await revision('perfil-motor.mjs')+"'");
 await replaceRequired('motor-worker.mjs',/from '\.\/disco-kubernetes\.mjs(?:\?v=[a-f0-9]+)?'/,"from './disco-kubernetes.mjs?v="+await revision('disco-kubernetes.mjs')+"'");
 await replaceRequired('motor-hilo.mjs',/new URL\('\.\/motor-worker\.mjs(?:\?v=[a-f0-9]+)?',import\.meta\.url\)/,"new URL('./motor-worker.mjs?v="+await revision('motor-worker.mjs')+"',import.meta.url)");
