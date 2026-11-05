@@ -84,6 +84,7 @@
 <p>La práctica de IPv6 pedía un perfil distinto al creado en IPv4. Ahora el enunciado, la solución y el corrector utilizan ipv4-practica. En el volumen de Podman añadimos el etiquetado previo de SELinux que necesita esta máquina; no desactivamos su protección.</p>
 <p>Corregimos un fallo de guardado que reproducimos después de utilizar contenedores. La memoria se comprime por bloques y se reúnen las partes comprimidas sin pasar por el archivo temporal que fallaba en Chromium. Comprobamos guardar, recuperar y reiniciar, conservando el contenedor de usuario y el formato de las sesiones anteriores.</p>
 <p>Recorrimos las prácticas de aprendizaje y las 22 de repaso de examen desde la terminal real. También comprobamos la recuperación de root con rd.break e init=/bin/bash, el reetiquetado con SELinux activo, man, XFS, Internet con ping y HTTPS, APT y Reset. Estas pruebas no garantizan la ausencia de fallos en cualquier equipo.</p>
+<p>Las pestañas de práctica y examen reaparecían dentro de la consola del simulacro por una regla compartida de estilo. Corregimos esa superposición y comprobamos que allí se ocultan sin ocultar la terminal.</p>
 </section></main>
 
 <footer class="site-footer">

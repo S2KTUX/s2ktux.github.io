@@ -3,19 +3,19 @@
   "imageSha256": "95d428c63c01967ef44e573955c3f05d25fb6fa7db363584551b3754851f7c97",
   "originalFileCount": 1501,
   "originalBytes": 715816799,
-  "verifiedPackageBytes": 715713001,
+  "verifiedPackageBytes": 715713007,
   "modifications": [
     {
       "path": "index.html",
       "before": "4bfc8891ba06a56294a617a077e2f23efcc577b03a8e1c69189a19b26789aa2f",
-      "sha256": "2965860ba6f4d29d08afc2276eaf01dc46371833a6f6d7b406590aee9f4c06d8",
-      "bytes": 5555
+      "sha256": "8e741eb97bb646e7dc2369af86c13fff7e4e8c0a8e1beaa4c5caf58646ee402e",
+      "bytes": 5558
     },
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "9e0b2c889df66a9195e9e9d857681ae408ddf1de2eb6d4dc23c35af40bb3b906",
-      "bytes": 5226
+      "sha256": "7516c2e2eba00ec01022e51e7f6dd4a8c9ba4b634d3c29aa9ab30c4d1513513b",
+      "bytes": 5229
     },
     {
       "path": "v86-test.mjs",
@@ -98,8 +98,8 @@
     },
     {
       "path": "linux-real.css",
-      "sha256": "119af6087ac0c66e3d52124ca3ef3183f1a73d6bb3d0d2e1b1f389d09bc38854",
-      "bytes": 5592
+      "sha256": "21072356d1112abd101e4de9c75ac230e0274b6c783e26df90b569a03768b95b",
+      "bytes": 5727
     },
     {
       "path": "v86-clipboard.mjs",

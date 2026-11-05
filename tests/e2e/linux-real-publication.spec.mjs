@@ -138,3 +138,11 @@ test('Linux real · diseño integrado sin desbordamiento @mobile', async ({page}
   await expect(page.locator('.site-logo')).toHaveText('S2KTUX');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+test('Linux real · la consola del examen oculta los enlaces de modo, no la terminal', async ({page})=>{
+  await page.goto('/laboratorios/linux-real/v86-test.html');
+  await expect(page.locator('.lab-modes')).toBeVisible();
+  await page.evaluate(()=>document.documentElement.classList.add('exam-embed'));
+  await expect(page.locator('.lab-modes')).toBeHidden();
+  await expect(page.locator('#terminal')).toBeVisible();
+});
