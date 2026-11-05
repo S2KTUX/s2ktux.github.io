@@ -50,6 +50,11 @@
       "id": "diagnosticos-restantes",
       "tema": "Laboratorios",
       "texto": "Ampliar las pistas de Comprobar a los requisitos que todavía dan un resultado genérico. Ya se indican recursos o archivos que faltan en varias prácticas; falta desglosar más condiciones sin revelar soluciones."
+    },
+    {
+      "id": "search-console-indexacion",
+      "tema": "Página web",
+      "texto": "Resolver el error de reCAPTCHA al solicitar la indexación en Search Console. La prueba de acceso de Google funciona, pero el envío manual todavía no está confirmado; falta aislar si depende del navegador o del servicio de Google."
     }
   ],
   "versiones": [

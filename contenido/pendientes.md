@@ -12,3 +12,4 @@ Esta lista cambia con el proyecto. Las mejoras comprobadas salen de aquí y pasa
 - **Más adelante:** Revisar si la validación con OpenAPI mejora el simulador de Kubernetes, aprovechando sus objetos y controladores actuales sin reconstruirlo innecesariamente.
 - **Más adelante:** Cuando exista un curso de AWS, plantear un banco de preguntas con explicaciones como el de LPIC-1.
 - **Laboratorios:** Ampliar las pistas de Comprobar a los requisitos que todavía dan un resultado genérico. Ya se indican recursos o archivos que faltan en varias prácticas; falta desglosar más condiciones sin revelar soluciones.
+- **Página web:** Resolver el error de reCAPTCHA al solicitar la indexación en Search Console. La prueba de acceso de Google funciona, pero el envío manual todavía no está confirmado; falta aislar si depende del navegador o del servicio de Google.
