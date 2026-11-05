@@ -63,11 +63,11 @@ export const extraExercises = [
   },
   {
     id:'curso-ipv6',title:'Curso · IPv6 y resolución local',classes:[8],
-    goal:'Añade fd42::20/64 al perfil examen y resuelve curso-node2 como 10.42.0.11 usando /etc/hosts.',
-    note:'Requiere la práctica 02 de red. La resolución es local; no se simula un servidor DNS ni se promete tráfico IPv6 que no se haya probado.',
+    goal:'Añade fd42::20/64 al perfil ipv4-practica y resuelve curso-node2 como 10.42.0.11 usando /etc/hosts.',
+    note:'Utiliza el perfil ipv4-practica creado en Direcciones IPv4 · I. La resolución del nombre se configura en /etc/hosts.',
     explanation:'Se comprueba dirección aplicada, configuración guardada y resolución con getent.',
-    solution:"nmcli con mod examen ipv6.method manual ipv6.addresses fd42::20/64\nnmcli con up examen\nprintf '\\n10.42.0.11 curso-node2\\n' >> /etc/hosts\n\nip -6 addr show eth0\ngetent ahostsv4 curso-node2",
-    checks:[['IPv6 aplicado y guardado','ip -6 -o addr show eth0 | grep -Fq fd42::20/64 && test "$(nmcli --escape no -g ipv6.addresses con show examen)" = fd42::20/64'],['Resolución local','getent ahostsv4 curso-node2 | grep -Fq 10.42.0.11']],
+    solution:"nmcli con mod ipv4-practica ipv6.method manual ipv6.addresses fd42::20/64\nnmcli con up ipv4-practica\nprintf '\\n10.42.0.11 curso-node2\\n' >> /etc/hosts\n\nip -6 addr show eth0\ngetent ahostsv4 curso-node2",
+    checks:[['IPv6 aplicado y guardado','ip -6 -o addr show eth0 | grep -Fq fd42::20/64 && test "$(nmcli --escape no -g ipv6.addresses con show ipv4-practica)" = fd42::20/64'],['Resolución local','getent ahostsv4 curso-node2 | grep -Fq 10.42.0.11']],
   },
   {
     id:'curso-selinux',title:'Curso · Booleano SELinux persistente',classes:[10],

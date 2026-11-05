@@ -61,13 +61,16 @@
     {
       "version": "3.5",
       "fecha": "2026-11-05",
-      "resumen": "Corregimos los comandos largos de Linux y actualizamos los títulos y las descripciones de las páginas principales.",
+      "resumen": "Revisamos Linux con ejercicios reales, corregimos el guardado y dos prácticas, y actualizamos los títulos de la web.",
       "cambios": [
         "La consola del navegador dibujaba 100 columnas mientras Linux utilizaba 80. Al continuar una línea, Bash redibujaba el texto en posiciones distintas y parte del comando parecía desaparecer. Ahora ambos usan 80 columnas y la preparación sincroniza también las 28 filas.",
         "Quitamos el ancho mínimo artificial de la consola; en pantallas estrechas se conserva el desplazamiento dentro de la terminal sin ensanchar la página.",
         "Probamos el comando largo de grep de la captura, una línea de más de 400 caracteres, pegado y edición con borrado en una máquina real privada. Conservamos una prueba manual reproducible y una comprobación que detecta si vuelve a diferir el ancho de Linux y el navegador.",
         "Actualizamos los títulos y las descripciones aprobados de Inicio, Cursos, Terminal y los tres laboratorios. Conservamos los enlaces de los vídeos y no activamos eventos adicionales de Analytics. No cambian los discos ni los guardados de los alumnos.",
-        "Ampliamos la prueba de Linux a 17 comprobaciones con una máquina real: escritura de más de 600 caracteres, edición, historial, autocompletado, acentos, pegado de varias líneas, interrupción de procesos, pausa y reanudación de salida, vi y guardado con recuperación. No apareció otro bloqueo de entrada en esos recorridos; la prueba queda disponible para repetirla."
+        "Ampliamos la prueba de Linux a 17 comprobaciones con una máquina real: escritura de más de 600 caracteres, edición, historial, autocompletado, acentos, pegado de varias líneas, interrupción de procesos, pausa y reanudación de salida, vi y guardado con recuperación. Repetimos el recorrido en Chromium y Brave; no apareció otro bloqueo de entrada en esas pruebas.",
+        "La práctica de IPv6 pedía un perfil distinto al creado en IPv4. Ahora el enunciado, la solución y el corrector utilizan ipv4-practica. En el volumen de Podman añadimos el etiquetado previo de SELinux que necesita esta máquina; no desactivamos su protección.",
+        "Corregimos un fallo de guardado que reproducimos después de utilizar contenedores. La memoria se comprime por bloques y se reúnen las partes comprimidas sin pasar por el archivo temporal que fallaba en Chromium. Comprobamos guardar, recuperar y reiniciar, conservando el contenedor de usuario y el formato de las sesiones anteriores.",
+        "Recorrimos las prácticas de aprendizaje y las 22 de repaso de examen desde la terminal real. También comprobamos la recuperación de root con rd.break e init=/bin/bash, el reetiquetado con SELinux activo, man, XFS, Internet con ping y HTTPS, APT y Reset. Estas pruebas no garantizan la ausencia de fallos en cualquier equipo."
       ]
     },
     {
