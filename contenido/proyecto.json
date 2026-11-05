@@ -56,12 +56,13 @@
     {
       "version": "3.5",
       "fecha": "2026-11-05",
-      "resumen": "Corregimos la escritura de comandos largos en la consola Linux.",
+      "resumen": "Corregimos los comandos largos de Linux y actualizamos los títulos y las descripciones de las páginas principales.",
       "cambios": [
         "La consola del navegador dibujaba 100 columnas mientras Linux utilizaba 80. Al continuar una línea, Bash redibujaba el texto en posiciones distintas y parte del comando parecía desaparecer. Ahora ambos usan 80 columnas y la preparación sincroniza también las 28 filas.",
         "Quitamos el ancho mínimo artificial de la consola; en pantallas estrechas se conserva el desplazamiento dentro de la terminal sin ensanchar la página.",
         "Probamos el comando largo de grep de la captura, una línea de más de 400 caracteres, pegado y edición con borrado en una máquina real privada. Conservamos una prueba manual reproducible y una comprobación que detecta si vuelve a diferir el ancho de Linux y el navegador.",
-        "La corrección mantiene los discos, las claves de sesión y las prácticas. Los títulos y las descripciones propuestos no forman parte de esta publicación; tampoco se activan eventos nuevos de Analytics."
+        "Actualizamos los títulos y las descripciones aprobados de Inicio, Cursos, Terminal y los tres laboratorios. Conservamos los enlaces de los vídeos y no activamos eventos adicionales de Analytics. No cambian los discos ni los guardados de los alumnos.",
+        "Ampliamos la prueba de Linux a 17 comprobaciones con una máquina real: escritura de más de 600 caracteres, edición, historial, autocompletado, acentos, pegado de varias líneas, interrupción de procesos, pausa y reanudación de salida, vi y guardado con recuperación. No apareció otro bloqueo de entrada en esos recorridos; la prueba queda disponible para repetirla."
       ]
     },
     {
