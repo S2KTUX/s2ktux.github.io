@@ -52,7 +52,7 @@
 .console-bar { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px; padding: 10px 14px; border-bottom: 2px solid var(--line); background: #2c2218; color: #e0a458; font: 14px/1.5 'Share Tech Mono', monospace; }
 .console-bar span { color: #b5a58a; }
 .console-scroll { padding: 14px; overflow-x: auto; }
-#terminal { min-width: 870px; }
+#terminal { min-width: 0; }
 #clipboard-status, #session-status, #downloads, .exercise-hint { color: var(--muted); font-size: 14px; }
 #clipboard-status { margin-bottom: 24px; }
 .warning { border-left: 4px solid #d97757; padding: 10px 14px; background: var(--surface2); }

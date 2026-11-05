@@ -78,7 +78,7 @@ assert.throws(()=>parseProbe(q,nonce,output.replace(`__LAB_${nonce}_0=0`,`__LAB_
 assert.throws(()=>parseProbe(q,nonce,output.replace(/__LAB_[a-f0-9]{24}_OBS0=[^\n]+\n/,'')));
 const guest=readFileSync(new URL('../laboratorios/linux-real/v86-test.mjs',import.meta.url),'utf8');
 assert.match(guest,/v86-exam-setup\.mjs\?v=20261020-aprendizaje/,'Renovar la caché de la preparación de examen');
-assert.match(guest,/v86-guest-console\.mjs\?v=20261020-aprendizaje/,'La configuración del nombre no debe reutilizar la caché anterior');
+assert.match(guest,/v86-guest-console\.mjs\?v=20261105-columnas/,'La configuración del nombre no debe reutilizar la caché anterior');
 assert.match(guest,/examMode\?undefined:nodeName==='2'\?'s2ktux-lab-2':'s2ktux-lab'/,'No renombrar las máquinas del examen');
 assert.match(guest,/examConsole\.run\(exercise\)/,'El corrector no utiliza la consola del alumno');
 assert.match(guest,/await examConsole\.reconnect\(\)/,'Reconectar la consola independiente después de un reinicio');

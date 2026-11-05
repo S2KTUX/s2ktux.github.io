@@ -8,20 +8,20 @@
     {
       "path": "index.html",
       "before": "4bfc8891ba06a56294a617a077e2f23efcc577b03a8e1c69189a19b26789aa2f",
-      "sha256": "13440b47e4be435a8e7a8f3bbfec1cca51f2c203a1e522596fb842d54e1a3f1d",
-      "bytes": 5338
+      "sha256": "7b5aecf16984ef860e85d53ff8a2ccf69a8871a44fda2b757df9f1e514288984",
+      "bytes": 5330
     },
     {
       "path": "v86-test.html",
       "before": "ebe0f96af6baeb2a084f2b0e8885ce543d4fd7de881b21a7ea921bbf4874e16d",
-      "sha256": "1c64696eb1e8b5ce4a8b2d02270484941e99e9c433cfe4bdb42e301495124085",
-      "bytes": 5231
+      "sha256": "8267dc5ff3c35984dc5eb0c47c496a94768868541f5a6f3166ae6ee61e505b8d",
+      "bytes": 5223
     },
     {
       "path": "v86-test.mjs",
       "before": "19daeca171274eacbdd2b4d982aaf678dd9db0baeb42d00c68b08593b722475b",
-      "sha256": "7f560f7ed20bd0cd5e923a034a830d2880cc4a5fc59aca153553a113450b1d9d",
-      "bytes": 25533
+      "sha256": "bd00dbe4599042cf0cd855382370b95479bfebc0a41bb8ed3cee70d07eb2c4c6",
+      "bytes": 25715
     },
     {
       "path": "v86-exercise-panel.mjs",
@@ -92,8 +92,8 @@
     },
     {
       "path": "linux-real.css",
-      "sha256": "fc9e4cc6e5fd4b38a5d596fdcc2d5951431c30925b7215378a40fbc1866b53f5",
-      "bytes": 5596
+      "sha256": "119af6087ac0c66e3d52124ca3ef3183f1a73d6bb3d0d2e1b1f389d09bc38854",
+      "bytes": 5592
     },
     {
       "path": "v86-clipboard.mjs",
@@ -102,8 +102,8 @@
     },
     {
       "path": "v86-guest-console.mjs",
-      "sha256": "598a80cf89e0b3c41042276ef84fae72f1ef74d3f94999a797188e62d581d50a",
-      "bytes": 3940
+      "sha256": "dba0135c93db266b597bebaa0891604b7bfa372efa56f460092187eac33edcf8",
+      "bytes": 3980
     },
     {
       "path": "examen.html",
