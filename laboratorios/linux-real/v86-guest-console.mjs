@@ -18,6 +18,7 @@ export function consoleSetupCommand(recovery, password, epochSeconds, initialize
   const script = [
     'set -e',
     'test "$(id -u)" = 0',
+    'stty -F /dev/tty cols 80 rows 28',
     ...(epochSeconds!==undefined?[`date -u -s '@${epochSeconds}'`]:[]),
     'if test ! -f /etc/profile.d/s2ktux-prompt.sh; then',
     "printf '%s\\n' " + quote("export PS1='[\\u@\\h \\W]\\$ '") + ' > /etc/profile.d/s2ktux-prompt.sh',

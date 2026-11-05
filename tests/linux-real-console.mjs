@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
 import {atShellPrompt, createCheckRunner} from '../laboratorios/linux-real/v86-check-runner.mjs';
 import {consoleSetupCommand} from '../laboratorios/linux-real/v86-guest-console.mjs';
 for (const prompt of ['V86TEST# ', 'V86USER$ ', '[root@laboratorio ~]# ', '[ana@nodo1 etc]$ ', 'ana@nodo1:/home/ana$ ']) {
@@ -32,3 +33,7 @@ assert.match(consoleSetupCommand(false,undefined,undefined,false,'s2ktux-lab-2')
 assert.doesNotMatch(consoleSetupCommand(false),/hostnamectl|debian-motor-test/,'Examen no cambia de nombre');
 assert.throws(()=>consoleSetupCommand(false,undefined,undefined,false,'unsafe;value'));
 console.log('✓ Consola Linux: prompt real, línea vacía, setup comprobado y recuperación sin autologin.');
+
+assert.match(setup,/stty -F \/dev\/tty cols 80 rows 28/,'Sincronizar la consola serie con xterm antes de aceptar comandos');
+const runtime=readFileSync(new URL('../laboratorios/linux-real/v86-test.mjs',import.meta.url),'utf8');
+assert.equal(Number(/new Terminal\(\{cols:(\d+)/.exec(runtime)[1]),Number(/stty -F \/dev\/tty cols (\d+)/.exec(setup)[1]),'El ancho dibujado debe coincidir con el de Readline en Linux');
