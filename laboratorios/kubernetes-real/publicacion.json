@@ -143,8 +143,8 @@
     },
     {
       "path": "debian/multinodo.html",
-      "bytes": 8492,
-      "sha256": "6895eb14685c2d18b164a00a86a538c839782280a44e62cf1d4b474cf5a38c57"
+      "bytes": 8713,
+      "sha256": "66b8334fa64f6fd1c3e633f4883f012f4bd942d82f94ed7242a25fbc3d9c94a3"
     },
     {
       "path": "debian/multinodo.mjs",
