@@ -1,5 +1,6 @@
 import assert from 'node:assert/strict';
 import {exercises} from '../laboratorios/linux-real/v86-exercises.mjs';
+import {examQuestions} from '../laboratorios/linux-real/v86-exam-data.mjs';
 const get=id=>{const task=exercises.find(x=>x.id===id);assert.ok(task,id);return task;};
 const profile=/con-name (\S+)/.exec(get('ipv4-i').solution)[1],ipv6=get('curso-ipv6');
 assert.ok(ipv6.goal.includes(profile),'IPv6 utiliza el perfil que se enseña a crear en esta misma clase');
@@ -8,4 +9,6 @@ assert.ok(ipv6.checks.some(([,command])=>command.includes('con show '+profile)),
 const volume=get('podman-ii').solution;
 assert.ok(volume.indexOf('semanage fcontext')<volume.indexOf('podman run')&&volume.includes('restorecon -RF /opt/datos-podman'),'El volumen se etiqueta antes de que Podman intente asignarle su etiqueta privada');
 assert.doesNotMatch(volume,/setenforce 0|--security-opt.*label=disable/,'La práctica mantiene el confinamiento de SELinux');
+const rootless=examQuestions.find(q=>q.id==='exam-21').solution.split('# Como hermes:')[1].split('exit')[0];
+assert.match(rootless,/\/usr\/sbin\/restorecon -RF ~\/\.config\/systemd/,'La cuenta sin privilegios no tiene sbin en PATH al entrar por SSH');
 console.log('Requisitos del curso Linux: perfil de red coherente y volumen Podman preparado sin desactivar SELinux.');

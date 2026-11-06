@@ -1,4 +1,4 @@
-import {examQuestions,EXAM_SECONDS,EXAM_TOTAL,EXAM_PASS,scoreQuestion} from './v86-exam-data.mjs?v=20261010-exam';
+import {examQuestions,EXAM_SECONDS,EXAM_TOTAL,EXAM_PASS,scoreQuestion} from './v86-exam-data.mjs?v=20261105-auditoria';
 import {examNode2Information} from './v86-exam-fixtures.mjs?v=20261010-exam';
 import {renderSolutions} from '../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../solution-options.mjs?v=20261020-aprendizaje';
