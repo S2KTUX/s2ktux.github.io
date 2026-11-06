@@ -1,4 +1,4 @@
-const VERSION = 'v40';
+const VERSION = 'v41';
 const CACHE_PREFIX = 's2ktux-';
 const STATIC_CACHE = `${CACHE_PREFIX}static-${VERSION}`;
 const PAGE_CACHE = `${CACHE_PREFIX}pages-${VERSION}`;
@@ -11,8 +11,8 @@ const PRECACHE = [
   './',
   'index.html',
   'site-shell.css?v=ac5aee15ea13',
-  'visual-system.css?v=c115d3150f8d',
-  'site-shell.js?v=20261104-analytics',
+  'visual-system.css?v=dc5253bb5de9',
+  'site-shell.js?v=85774ad6facf',
   'fonts.css?v=20260822-local',
   'learning-pages.css?v=7baf76ac0a7d',
   'learning-pages.js?v=20260822-static2',
@@ -70,7 +70,9 @@ self.addEventListener('activate', event => {
   event.waitUntil((async () => {
     const names = await caches.keys();
     await Promise.all(names
-      .filter(name => name.startsWith(CACHE_PREFIX) && !CURRENT_CACHES.has(name))
+      // Solo las cachés del shell. Las bases de las máquinas tienen su propia
+      // gestión y no deben borrarse al cambiar las estadísticas de la web.
+      .filter(name => name.startsWith(CACHE_PREFIX) && /^s2ktux-(?:(?:static|pages|media)-)?v\d+$/.test(name) && !CURRENT_CACHES.has(name))
       .map(name => caches.delete(name)));
   })());
 });

@@ -44,7 +44,7 @@ const schedulingAPI=new URLSearchParams(location.search).get('use-scheduling-api
 if(['v8','v13','v14','v15'].includes(factoryVersion)&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración requiere Scheduler API, sin políticas integradas y nivel avanzado');
 const scenario=escenarioCurso(new URLSearchParams(location.search).get('escenario'),{factoryVersion,level});
 const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'||factoryVersion!=='v1';
-const nodeUIRevision='aa4e2a8cfd8bb63c';
+const nodeUIRevision='c1e990968b246dfa';
 const workerComponents=['v8','v13','v14','v15'].includes(factoryVersion)?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 // Recuperación desde discos HA: candidato solo local hasta validarlo.
 const persistentHA=scenario?.ha&&['127.0.0.1','localhost','[::1]'].includes(location.hostname)&&new URLSearchParams(location.search).get('ha-disks')==='1';

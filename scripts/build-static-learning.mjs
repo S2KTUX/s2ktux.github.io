@@ -12,6 +12,8 @@ const shellCss = await fs.readFile(path.join(root, 'site-shell.css'), 'utf8');
 const shellFingerprint = createHash('sha256').update(shellCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 const visualCss = await fs.readFile(path.join(root, 'visual-system.css'), 'utf8');
 const visualFingerprint = createHash('sha256').update(visualCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
+const shellJs = await fs.readFile(path.join(root, 'site-shell.js'), 'utf8');
+const shellJsFingerprint = createHash('sha256').update(shellJs.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 const learningFingerprint = createHash('sha256').update((await fs.readFile(path.join(root, 'learning-pages.css'), 'utf8')).replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 const context = { window: {} };
 vm.createContext(context);
@@ -87,7 +89,7 @@ const head = ({ title, description, canonical, jsonLd, type = 'article', robots 
 <link rel="stylesheet" href="/fonts.css?v=20260822-local"><link rel="stylesheet" href="/site-shell.css?v=${shellFingerprint}"><link rel="stylesheet" href="/learning-pages.css?v=${learningFingerprint}"><link rel="stylesheet" href="/visual-system.css?v=${visualFingerprint}">
 <script>try{if(localStorage.getItem('s2ktux-theme')==='dark')document.documentElement.classList.add('dark')}catch(e){}</script>
 <script type="application/ld+json">${escapeJson(jsonLd)}</script>
-<script defer src="/site-shell.js?v=20261104-analytics"></script>
+<script defer src="/site-shell.js?v=${shellJsFingerprint}"></script>
 <script type="module" src="/learning-pages.js?v=20260826-phase3"></script>
 </head>`;
 

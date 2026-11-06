@@ -84,7 +84,7 @@
     {
       "path": "debian/entrada-laboratorio.mjs",
       "bytes": 4486,
-      "sha256": "9c9bc132c1d717e1adfe260ebd0ade3afe9f5ece442cf01f991cd5aa76c1fa89"
+      "sha256": "a3d45f7f6e46df7af06a258b7b6eb2927ec7e8ca8fa2471defec8b47d05aa8eb"
     },
     {
       "path": "debian/esperar-firma-jws.mjs",
@@ -113,8 +113,8 @@
     },
     {
       "path": "debian/index.html",
-      "bytes": 1708,
-      "sha256": "aa4e2a8cfd8bb63ce24099b3ec73450a7c13a54571df817dae065eb210ed7b2f"
+      "bytes": 1723,
+      "sha256": "c1e990968b246dfa3a7c311b650a4c7380f1e6895ced9eecb9388a5b6a78d497"
     },
     {
       "path": "debian/interfaz-niveles.mjs",
@@ -143,13 +143,13 @@
     },
     {
       "path": "debian/multinodo.html",
-      "bytes": 8713,
-      "sha256": "66b8334fa64f6fd1c3e633f4883f012f4bd942d82f94ed7242a25fbc3d9c94a3"
+      "bytes": 8728,
+      "sha256": "12b89e21b5e62ec33ac40aaeb1ec66546098386f50ea1d9253ee20a5ced86f9d"
     },
     {
       "path": "debian/multinodo.mjs",
       "bytes": 35935,
-      "sha256": "170d833bb49b4d3722bf58a6baa87a3078068a953f25dcf5000fb7f632064382"
+      "sha256": "659ee872edb41371fb1409827e371c4e7a293ca8cbd5aa76d6597a090a0c3554"
     },
     {
       "path": "debian/niveles.css",
@@ -684,7 +684,7 @@
     {
       "path": "debian/examen-cka-ui.mjs",
       "bytes": 10436,
-      "sha256": "f1f21ddc0cf64f82d56cb54b9f290375546eaf7c57ceb8d4b3c3d28a0b8f013d"
+      "sha256": "020d2695b160f3b0ad0f29f598713887e295f701c76160405f1c49ce7f936bf3"
     },
     {
       "path": "debian/examen-runtime.mjs",
@@ -698,8 +698,8 @@
     },
     {
       "path": "debian/examen.html",
-      "bytes": 3668,
-      "sha256": "cd77f621318a6c78e90603865a6e3d197a16b1dce5c2936554be7afb3bf4add3"
+      "bytes": 3683,
+      "sha256": "7cfa53319c97b632e7752404ddd28b052380a4b5518695d9159407900dcc7ed6"
     },
     {
       "path": "debian/examen-cka.css",
