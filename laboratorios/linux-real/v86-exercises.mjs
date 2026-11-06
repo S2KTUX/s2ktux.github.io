@@ -1,9 +1,9 @@
 // Prácticas de la candidata Debian: no equivalencia automática con RHEL.
 // Los checks consultan resultados; nunca ejecutan la solución ni preparan datos.
 import { courseExercises } from './v86-course-exercises.mjs?v=20261018-aprender';
-import { extraExercises } from './v86-extra-exercises.mjs?v=20261018-aprender';
+import { extraExercises } from './v86-extra-exercises.mjs?v=20261105-auditoria';
 import {nativeLearningLinux} from '../learning-linux.mjs';
-import {buildRhcsaBank} from '../rhcsa-objectives.mjs?v=20261021-resueltas';
+import {buildRhcsaBank} from '../rhcsa-objectives.mjs?v=20261105-auditoria';
 export const introExercises = [
   {
     id: 'archivo', title: 'Archivo y permisos',

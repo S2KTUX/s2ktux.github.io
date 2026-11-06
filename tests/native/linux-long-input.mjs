@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import {chromium} from '@playwright/test';
 import {mkdir,writeFile} from 'node:fs/promises';
 const out=process.env.S2KTUX_QA_OUT||'test-results/linux-long-input';await mkdir(out,{recursive:true});
-const browser=await chromium.launch({headless:true}),page=await browser.newPage({viewport:{width:1100,height:900}}),report={passed:false,checks:[]};
+const browser=await chromium.launch({headless:true,...(process.env.S2KTUX_BROWSER_PATH?{executablePath:process.env.S2KTUX_BROWSER_PATH}:{})}),page=await browser.newPage({viewport:{width:1100,height:900}}),report={passed:false,browser:await browser.version(),checks:[]};
 async function run(command){
  const marker='__LONG_INPUT_'+crypto.randomUUID().replaceAll('-',''),offset=await page.evaluate(()=>vmTranscript.length);
  const quoted="'"+('set -e; '+command).replaceAll("'","'\\''")+"'";

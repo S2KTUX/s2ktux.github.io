@@ -2,6 +2,28 @@
 const DATABASE='s2ktux-v86-sessions-v1';
 const STORE='sessions';
 export const hashBytes=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
+// No convertir toda la RAM en un Blob temporal: Chromium puede volcarlo al
+// disco antes de comprimirlo y fallar al leerlo en equipos con poco espacio.
+export function stateStream(state){
+  if(!(state instanceof ArrayBuffer))throw TypeError('Se requiere la memoria guardada de la máquina');
+  let offset=0;
+  return new ReadableStream({pull(controller){
+    if(offset===state.byteLength){controller.close();return;}
+    const length=Math.min(1048576,state.byteLength-offset);
+    controller.enqueue(new Uint8Array(state,offset,length));offset+=length;
+  }});
+}
+export async function packState(state,signal){
+  signal?.throwIfAborted();
+  const reader=stateStream(state).pipeThrough(new CompressionStream('gzip')).getReader(),parts=[];
+  try{
+    for(;;){const {value,done}=await reader.read();signal?.throwIfAborted();if(done)break;parts.push(value);}
+  }catch(error){await reader.cancel(error).catch(()=>{});throw error;}
+  finally{reader.releaseLock();}
+  // Response(stream).blob() puede intentar crear un archivo temporal incluso
+  // cuando hay RAM suficiente. Las partes comprimidas tienen un tamaño conocido.
+  return new Blob(parts);
+}
 // El archivo es inmutable: comprobar el mismo Blob no necesita releerlo.
 const blobHashes=new WeakMap();
 export function hashBlob(blob){
@@ -37,7 +59,7 @@ export class LocalSessions {
   delete(key){return this.access('readwrite',store=>store.delete(key));}
   async save(key,identity,state,terminalText='',expectedSha=null,signal=null){
     signal?.throwIfAborted();
-    const packed=await new Response(new Blob([state]).stream().pipeThrough(new CompressionStream('gzip'))).blob();
+    const packed=await packState(state,signal);
     const record={key,format:'s2ktux-v86-session-v1',identity,savedAt:new Date().toISOString(),
       bytes:state.byteLength,packedBytes:packed.size,sha256:await hashBlob(packed),packed,terminalText:terminalText.slice(-100000)};
     // Una transacción fallida (por ejemplo sin espacio) conserva la sesión anterior.

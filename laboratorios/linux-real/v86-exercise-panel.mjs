@@ -1,4 +1,4 @@
-import { exercises } from './v86-exercises.mjs?v=20261021-resueltas';
+import { exercises } from './v86-exercises.mjs?v=20261105-auditoria';
 import {renderSolutions} from '../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../solution-options.mjs?v=20261020-aprendizaje';
 import {mountGroups} from '../lab-groups.mjs?v=20261020-aprendizaje';

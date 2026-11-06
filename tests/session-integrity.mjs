@@ -2,6 +2,14 @@ import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {hashBlob,LocalSessions} from '../laboratorios/docker-real/v86-sessions.mjs';
 import * as linux from '../laboratorios/linux-real/v86-sessions.mjs';
+const streamState=new Uint8Array(2*1048576+37);for(let i=0;i<streamState.length;i++)streamState[i]=i%251;
+const reader=linux.stateStream(streamState.buffer).getReader();let streamed=0;
+for(;;){const {value,done}=await reader.read();if(done)break;assert.ok(value.byteLength<=1048576);assert.deepEqual(value,streamState.subarray(streamed,streamed+value.length));streamed+=value.length;}
+assert.equal(streamed,streamState.length,'La memoria se comprime por bloques, sin un Blob temporal con toda la RAM');
+const streamedPacked=await linux.packState(streamState.buffer);
+assert.deepEqual(new Uint8Array(await new Response(streamedPacked.stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer()),streamState,'El formato gzip anterior sigue siendo compatible');
+assert.throws(()=>linux.stateStream(new Uint8Array(1)),/memoria/);
+await assert.rejects(linux.packState(streamState.buffer,AbortSignal.abort()),{name:'AbortError'});
 const hash=bytes=>createHash('sha256').update(bytes).digest('hex');
 class CountedBlob extends Blob{
  reads=0;
