@@ -9,6 +9,8 @@ const shell = await read('site-shell.css');
 const shellFingerprint = createHash('sha256').update(shell.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 const visual = await read('visual-system.css');
 const visualFingerprint = createHash('sha256').update(visual.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
+const shellJs = await read('site-shell.js');
+const shellJsFingerprint = createHash('sha256').update(shellJs.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 
 for (const path of shellPages) {
   const html = await read(path);
@@ -22,8 +24,11 @@ for (const path of shellPages) {
 
 for (const path of shellPages.filter((path) => path !== 'terminal.html')) {
   const html = await read(path);
-  assert.match(html, /site-shell\.js\?v=20261104-analytics/, `${path} debe compartir el controlador de tema`);
+  assert.ok(html.includes(`site-shell.js?v=${shellJsFingerprint}`), `${path} debe compartir el controlador de tema actualizado`);
   assert.doesNotMatch(html, /updateIcons|setTimeout\(updateIcons/, `${path} no debe sincronizar el tema mediante temporizadores`);
+}
+for(const path of ['laboratorios/docker-real/index.html','laboratorios/docker-real/informacion.html','laboratorios/linux-real/v86-test.html','laboratorios/kubernetes-real/debian/multinodo.html']){
+  assert.ok((await read(path)).includes(`site-shell.js?v=${shellJsFingerprint}`),`${path} debe evitar reutilizar el aviso antiguo desde la caché`);
 }
 
 assert.match(visual, /html body\s*\{[^}]*font-family:\s*"Space Mono"/s, 'El cuerpo debe usar Space Mono');

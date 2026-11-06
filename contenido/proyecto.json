@@ -61,14 +61,16 @@
     {
       "version": "3.6",
       "fecha": "2026-11-06",
-      "resumen": "Revisamos Linux en la máquina real y corregimos el guardado, varias soluciones y la consola del examen.",
+      "resumen": "Revisamos Linux y cambiamos las estadísticas por una medición sin cookies ni ventanas de aceptación.",
       "cambios": [
         "Ampliamos la prueba de Linux a 17 comprobaciones con una máquina real: escritura de más de 600 caracteres, edición, historial, autocompletado, acentos, pegado de varias líneas, interrupción de procesos, pausa y reanudación de salida, vi y guardado con recuperación. Repetimos el recorrido en Chromium y Brave; no apareció otro bloqueo de entrada en esas pruebas.",
         "La práctica de IPv6 pedía un perfil distinto al creado en IPv4. Ahora el enunciado, la solución y el corrector utilizan ipv4-practica. En el volumen de Podman añadimos el etiquetado previo de SELinux que necesita esta máquina; no desactivamos su protección.",
         "Corregimos un fallo de guardado que reproducimos después de utilizar contenedores. La memoria se comprime por bloques y se reúnen las partes comprimidas sin pasar por el archivo temporal que fallaba en Chromium. Comprobamos guardar, recuperar y reiniciar, conservando el contenedor de usuario y el formato de las sesiones anteriores.",
         "Recorrimos las prácticas de aprendizaje y las 22 de repaso de examen desde la terminal real. También comprobamos la recuperación de root con rd.break e init=/bin/bash, el reetiquetado con SELinux activo, man, XFS, Internet con ping y HTTPS, APT y Reset. Estas pruebas no garantizan la ausencia de fallos en cualquier equipo.",
         "Las pestañas de práctica y examen reaparecían dentro de la consola del simulacro por una regla compartida de estilo. Corregimos esa superposición y comprobamos que allí se ocultan sin ocultar la terminal.",
-        "En la solución del contenedor del examen usamos /usr/sbin/restorecon al entrar por SSH como hermes. Esa cuenta no tiene sbin en su ruta de comandos: el nombre corto fallaba y el servicio quedaba sin etiquetar. Con la ruta completa, systemd arranca el contenedor manteniendo SELinux activo."
+        "En la solución del contenedor del examen usamos /usr/sbin/restorecon al entrar por SSH como hermes. Esa cuenta no tiene sbin en su ruta de comandos: el nombre corto fallaba y el servicio quedaba sin etiquetar. Con la ruta completa, systemd arranca el contenedor manteniendo SELinux activo.",
+        "Sustituimos Google Analytics por Cloudflare Web Analytics en las dos direcciones de la página. Quitamos la ventana de aceptar o rechazar y el botón del pie. La medición no utiliza cookies ni identificadores persistentes de visitantes; respeta Do Not Track y Global Privacy Control. La explicación queda en Sobre.",
+        "Retiramos únicamente las cookies y la preferencia del antiguo Analytics, conservando los datos del alumno. Actualizamos las referencias del código para evitar que se siga cargando el aviso desde la caché y limitamos su limpieza a los recursos de la página, sin borrar las bases de los laboratorios."
       ]
     },
     {

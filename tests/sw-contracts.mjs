@@ -8,11 +8,13 @@ const shellCss = await readFile(new URL('../site-shell.css', import.meta.url), '
 const shellFingerprint = createHash('sha256').update(shellCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 const visualCss = await readFile(new URL('../visual-system.css', import.meta.url), 'utf8');
 const visualFingerprint = createHash('sha256').update(visualCss.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
+const shellJs = await readFile(new URL('../site-shell.js', import.meta.url), 'utf8');
+const shellJsFingerprint = createHash('sha256').update(shellJs.replace(/\r\n/g, '\n')).digest('hex').slice(0, 12);
 
 for (const asset of [
   `site-shell.css?v=${shellFingerprint}`,
   `visual-system.css?v=${visualFingerprint}`,
-  'site-shell.js?v=20261104-analytics',
+  `site-shell.js?v=${shellJsFingerprint}`,
   'fonts.css?v=20260822-local',
   'assets/fonts/press-start-2p-latin-400.woff2',
   'manifest.webmanifest',
@@ -178,10 +180,12 @@ for(const lab of ['linux-real','docker-real'])assert.equal(await dispatchFetch({
 
 await memoryCaches.open('unrelated-app-v1');
 await memoryCaches.open('s2ktux-v12');
+await memoryCaches.open('s2ktux-kubernetes-base-v6');
 const activateEvent = lifetimeEvent();
 handlers.activate(activateEvent);
 await activateEvent.done();
 assert.ok(buckets.has('unrelated-app-v1'), 'Activation must preserve caches not owned by S2KTUX');
 assert.ok(!buckets.has('s2ktux-v12'), 'Activation must remove obsolete S2KTUX caches');
+assert.ok(buckets.has('s2ktux-kubernetes-base-v6'), 'Una actualización del shell no borra las bases de los laboratorios');
 
 console.log('service worker contracts: versioning, routing, fallback and bounded caches are valid');
