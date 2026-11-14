@@ -111,7 +111,7 @@ export const shellQuote = value => "'" + String(value).replaceAll("'", "'\\''") 
 
 const conditionTimeout=check=>{
   const seconds=check[2]??20;
-  if(!Number.isInteger(seconds)||seconds<1||seconds>60)throw Error('Plazo de comprobación inválido');
+  if(!Number.isInteger(seconds)||seconds<1||seconds>65)throw Error('Plazo de comprobación inválido');
   return seconds;
 };
 const firewallConditions=new Map([

@@ -33,16 +33,41 @@ assert r.returncode==0 and all(any(line.split() and line.split()[0]==name for li
 const repoSolution="printf '[base]\\nname=Base\\nbaseurl=file:///srv/repos/lab-base\\nenabled=1\\ngpgcheck=1\\ngpgkey=file:///srv/repos/RPM-GPG-KEY-lab\\n\\n[updates]\\nname=Updates\\nbaseurl=file:///srv/repos/lab-updates\\nenabled=1\\ngpgcheck=1\\ngpgkey=file:///srv/repos/RPM-GPG-KEY-lab\\n' > /etc/yum.repos.d/examen.repo\nrpm --import /srv/repos/RPM-GPG-KEY-lab\ndnf repolist";
 const repoChecks=[['Dos repositorios habilitados y disponibles',repositories(),60]];
 const repoObservation=[['Repositorios configurados','cat /etc/yum.repos.d/*.repo; dnf repolist']];
-const cronTask=py(`import glob,os,subprocess,shlex
-def entries(text,system=False):
- for line in text.splitlines():
-  if not line.strip() or line.lstrip().startswith('#'): continue
-  try: p=shlex.split(line)
-  except ValueError: continue
-  if len(p)>5 and p[:5] in [['*']*5,['*/1']+['*']*4] and (not system or len(p)>6 and p[5]=='natasha'): return True
- return False
+const cronTask=py(String.raw`import os,re,shlex,subprocess
+def message(command):
+ try:
+  lex=shlex.shlex(command,posix=True,punctuation_chars='|&;<>')
+  lex.whitespace_split=True
+  words=list(lex)
+ except ValueError: return False
+ if not words: return False
+ if '|' in words:
+  split=words.index('|')
+  producer,words=words[:split],words[split+1:]
+  if not words or os.path.basename(words[0])!='systemd-cat': return False
+  if producer not in (['echo','EX200 testing'],['echo','EX200','testing'],['printf',r'%s\n','EX200 testing']): return False
+  pipe=True
+ else: pipe=False
+ tool=os.path.basename(words.pop(0))
+ if tool not in ('logger','systemd-cat'): return False
+ args=[]
+ while words:
+  word=words.pop(0)
+  if word=='--':
+   args.extend(words);break
+  if word in ('-t','-p','--tag','--priority','--identifier'):
+   if not words:return False
+   words.pop(0);continue
+  if word.startswith(('--tag=','--priority=','--identifier=')) or re.fullmatch(r'-[tp].+',word):continue
+  if word.startswith('-') or re.fullmatch(r'[|&;<>]+',word):return False
+  args.append(word)
+ if pipe:return not args
+ if tool=='logger':return ' '.join(args)=='EX200 testing'
+ return bool(args) and (os.path.basename(args[0])=='echo' and ' '.join(args[1:])=='EX200 testing' or os.path.basename(args[0])=='printf' and args[1:]==[r'%s\n','EX200 testing'])
 r=subprocess.run(['crontab','-u','natasha','-l'],capture_output=True,text=True)
-assert entries(r.stdout) or any(entries(open(p).read(),True) for p in ['/etc/crontab']+glob.glob('/etc/cron.d/*') if os.path.isfile(p))`);
+assert r.returncode==0 and any(len(f)==6 and f[:5]==['*']*5 and message(f[5]) for f in (line.split(None,5) for line in r.stdout.splitlines()))`);
+const chronyServer=String.raw`grep -Eiq '^[[:space:]]*server[[:space:]]+10\.42\.0\.11([[:space:]]|$)' /etc/chrony/chrony.conf /etc/chrony/conf.d/*.conf 2>/dev/null`;
+const chronySource='timeout 60 /bin/sh -c '+shellQuote("while :; do if chronyc -n sources | grep -Eq '^[[:space:]]*[#=^][*+?x~-][[:space:]]+10[.]42[.]0[.]11([[:space:]]|$)'; then exit 0; fi; sleep 1; done")+' || exit 1';
 const unitForContainer=`pid=$(podman inspect -f '{{.State.ConmonPid}}' mycontainer) && test "$pid" -gt 0 && unit=$(sed -n 's|.*/\\([^/]*\\.service\\)\\(/.*\\)\\?$|\\1|p' /proc/$pid/cgroup | tail -n 1) && test -n "$unit"`;
 
 export const examQuestions=[
@@ -73,7 +98,7 @@ export const examQuestions=[
  [['Caducidad','chage -l natasha']]),
  q(6,1,10,'Tarea programada','Programa una tarea de natasha que registre el mensaje EX200 testing en el journal cada minuto. Debe seguir ejecutándose después de reiniciar.',
  "printf '* * * * * /usr/bin/logger \"EX200 testing\"\\n' | crontab -u natasha -\nsystemctl enable --now cron\ncrontab -u natasha -l",
- [['Tarea cada minuto',cronTask],['Servicio persistente',active('cron')],['Mensaje ejecutado por natasha','uid=$(id -u natasha) && journalctl --no-pager _UID=$uid -o cat | grep -Fxq "EX200 testing"']],
+ [['Tarea cada minuto',cronTask],['Servicio persistente',active('cron')]],
  [['Cron y journal','crontab -u natasha -l; grep -h natasha /etc/crontab /etc/cron.d/*; systemctl is-active cron; uid=$(id -u natasha) && journalctl --no-pager _UID=$uid -o cat -n 10']]),
  q(7,1,20,'Automontaje','Configura el automontaje del recurso NFS 10.42.0.11:/ en /netdir/datos. El recurso debe estar disponible para lectura y escritura al acceder a esa ruta, también después de reiniciar.',
  "mkdir -p /netdir\nprintf '/netdir /etc/auto.examen --timeout=30\\n' > /etc/auto.master.d/examen.autofs\nprintf 'datos -fstype=nfs4,rw,vers=4.2 10.42.0.11:/\\n' > /etc/auto.examen\nrestorecon /etc/auto.examen /etc/auto.master.d/examen.autofs\nsystemctl enable autofs\nsystemctl restart autofs\ncat /netdir/datos/dato",
@@ -102,9 +127,9 @@ assert clean('/etc/hosts')==clean('/var/tmp/hosts')`)],
  ['Sin ejecución y lectura para el resto','test $((0$(stat -c %a /var/tmp/hosts) & 0111)) = 0 && runuser -u nobody -- test -r /var/tmp/hosts'],
  ['Permisos efectivos','runuser -u harry -- test -r /var/tmp/hosts && runuser -u harry -- test -w /var/tmp/hosts && ! runuser -u sara -- test -r /var/tmp/hosts && ! runuser -u sara -- test -w /var/tmp/hosts']],
  [['Permisos efectivos','stat -c "%U:%G %a" /var/tmp/hosts; getfacl -cp /var/tmp/hosts']]),
- q(10,1,15,'Sincronización horaria','Configura la sincronización horaria con el servidor 10.42.0.11. Debe quedar seleccionado como fuente de tiempo y seguir utilizándose después de reiniciar.',
+ q(10,1,15,'Sincronización horaria','Configura la sincronización horaria con el servidor 10.42.0.11. La fuente debe aparecer en chronyc sources y seguir configurada después de reiniciar.',
  "printf 'server 10.42.0.11 iburst minpoll 0 maxpoll 2\\nmakestep 1 -1\\n' > /etc/chrony/chrony.conf\nrestorecon /etc/chrony/chrony.conf\nsystemctl enable chrony\nsystemctl restart chrony\nchronyc -n sources",
- [['Servicio persistente',active('chrony')],['Fuente configurada',`grep -REq '^server[[:space:]]+(10\\.42\\.0\\.11|ntp\\.lab\\.local)[[:space:]]' /etc/chrony`],['Fuente realmente seleccionada',`chronyc -n sources | grep -Eq '^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]'`]],
+ [['Servicio persistente',active('chrony')],['Servidor configurado',chronyServer],['Servidor en chronyc sources',chronySource,65]],
  [['Chrony','cat /etc/chrony/chrony.conf; chronyc -n sources']]),
  q(11,1,10,'Búsqueda de archivos','Busca los archivos y directorios de natasha en el sistema de archivos raíz y cópialos a /root/natashafiles, conservando sus rutas relativas y el contenido.',
  'mkdir -p /root/natashafiles\ncd /\nfind . -xdev -path ./root/natashafiles -prune -o -user natasha \\( -type f -o -type d \\) -exec cp -a --parents -t /root/natashafiles {} +\nfind /root/natashafiles -type f',

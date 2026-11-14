@@ -38,7 +38,7 @@
     {
       "path": "v86-exercises.mjs",
       "before": "172951a817f4989725d6c56308a126f890e6b650f1056f827ba6a7d00075ef04",
-      "sha256": "91c9896fa17df4a832ce4d5ecbcfcca670c52f421f4742fc4d2a712f71ea27a6",
+      "sha256": "c84c77a6a5ad360b300875a831113cccb463efd745eee8138cf5805782f24d6f",
       "bytes": 12200
     },
     {
@@ -123,7 +123,7 @@
     },
     {
       "path": "v86-exam-data.mjs",
-      "sha256": "4da55fcb78712f7b2a776d780bed63e435ac97899ce953c6f97d750fd9cd0673",
+      "sha256": "9100e4cb9cfa8c83c81a50c9f3572ac2338e72bbfcab4e76ab3bb2fb7a10ff70",
       "bytes": 27017
     },
     {
