@@ -11,6 +11,7 @@
 <section id="exam-intro">
 <p>Simulacro de examen: 22 ejercicios en dos máquinas y 3 horas de tiempo, lo más realista posible. Puedes finalizar cuando quieras y luego verás el resultado y sus soluciones. Para aprobar necesitas sacar 210/300 como mínimo.</p>
 <div class="controls"><button id="exam-start" type="button" disabled>Iniciar examen</button></div>
+<p class="lab-information"><small>Recomendado: 8 GB de RAM y 4 núcleos. Si no los tienes, usa la <a href="/terminal.html?mode=linux&amp;enter=1">versión simulada</a>.</small></p>
 </section>
 <p id="exam-status" role="status" aria-live="polite"></p>
 <section id="exam-workspace" hidden>
@@ -19,8 +20,8 @@
 <section class="exam-question-workspace" aria-label="Pregunta del examen"><div class="question-navigation"><button id="question-prev" type="button" aria-label="Pregunta anterior">Anterior</button><label for="question-select" class="sr-only">Elige una pregunta</label><select id="question-select"></select><button id="question-next" type="button" aria-label="Pregunta siguiente">Siguiente</button></div><div id="exam-questions"></div></section>
 <div class="exam-machines" id="exam-machines"></div>
 </section>
-<section id="exam-results" class="exam-results" hidden aria-labelledby="exam-score"><h2 id="exam-score"></h2><p id="exam-verdict"></p><details id="exam-review"><summary>Revisar las preguntas y sus soluciones</summary><div id="exam-report"></div></details><div class="controls"><button type="button" id="exam-retry">Nuevo examen</button><a href="v86-test.html">Volver a practicar</a></div></section>
+<section id="exam-results" class="exam-results" hidden aria-labelledby="exam-score"><h2 id="exam-score"></h2><p id="exam-verdict"></p><details id="exam-review"><summary>Revisar las preguntas y sus soluciones</summary><div id="exam-report"></div></details><div class="controls"><button type="button" id="exam-recheck" hidden>Reintentar solo estas tareas</button><button type="button" id="exam-retry">Nuevo examen</button><a href="v86-test.html">Volver a practicar</a></div><p id="exam-recheck-status" role="status"></p></section>
 <aside class="lab-information" id="exam-information"><p><small>* Es Debian, no Red Hat: algunos servicios y rutas cambian. DNF trabaja con RPM locales de prácticas; APT administra Debian.</small></p><p><small>* La recuperación de root y el reetiquetado pueden tardar aproximadamente 5–10 minutos, o más según el equipo.</small></p></aside>
 <p class="lab-information" id="exam-alternative"><small>* Si el laboratorio va lento o falla, puedes practicar en la <a href="/terminal.html?mode=linux&amp;enter=1">versión simulada antigua</a>. No es el mismo examen.</small></p>
 </main><footer class="site-footer"><div class="site-footer-inner"><a class="site-footer-brand" href="/">S2KTUX</a><p>Aprender practicando</p></div></footer>
-</div><script type="module" src="v86-exam.mjs?v=20261105-auditoria"></script></body></html>
+</div><script type="module" src="v86-exam.mjs?v=20261114"></script></body></html>

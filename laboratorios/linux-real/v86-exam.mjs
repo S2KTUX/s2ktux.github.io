@@ -1,6 +1,6 @@
-import {examQuestions,EXAM_SECONDS,EXAM_TOTAL,EXAM_PASS,scoreQuestion} from './v86-exam-data.mjs?v=20261105-auditoria';
+import {examQuestions,EXAM_SECONDS,EXAM_TOTAL,EXAM_PASS,scoreQuestion} from './v86-exam-data.mjs?v=20261114';
 import {examNode2Information} from './v86-exam-fixtures.mjs?v=20261010-exam';
-import {renderSolutions} from '../lab-solutions.mjs?v=20261020-aprendizaje';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261114';
 import {solutionsFor} from '../solution-options.mjs?v=20261020-aprendizaje';
 import {domainResults,renderDomains,rhcsaDomain} from '../exam-report.mjs';
 const $=s=>document.querySelector(s),make=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e;};
@@ -80,21 +80,35 @@ $('#exam-start').onclick=()=>{
  document.documentElement.classList.add('exam-running');selectNode('1');startMachine('1');
 };
 const unanswered=q=>({id:q.id,points:0,max:q.points,unanswered:true,criteria:q.checks.map(([label])=>({label,ok:false})),observations:[]});
+let finalReports=[];
+let expiredAttempt=false;
 async function finish(expired=false){
  if(!['preparing','running','failed'].includes(phase))return;
  if(!expired&&!confirm('¿Finalizar el examen y ver los resultados? Este intento quedará cerrado.'))return;
- phase='grading';clearInterval(clock);$('#exam-finish').disabled=true;$('#exam-machine-start').disabled=true;
+ expiredAttempt=expired;
+ clearInterval(clock);$('#exam-finish').disabled=true;$('#exam-machine-start').disabled=true;
+ await grade(examQuestions);
+}
+async function grade(questions){
+ phase='grading';
+ $('#exam-recheck').disabled=true;
  const unavailable=new Map();
- await Promise.all([...machines].map(async([node,m])=>{if(!m.ready||!m.touched)return;try{const r=await request(node,'lock');if(!r.available)unavailable.set(node,'Linux no está disponible para consultar su estado. La máquina está apagada, bloqueada o aún en recuperación.');}catch(e){unavailable.set(node,e.message);}}));
- const reports=[];
- for(const q of examQuestions){
-  const m=machines.get(String(q.node));if(!m?.ready||!m.touched){reports.push(unanswered(q));continue;}
+ const nodes=new Set(questions.map(q=>String(q.node)));
+ await Promise.all([...machines].map(async([node,m])=>{if(!nodes.has(node)||!m.ready||!m.touched)return;try{const r=await request(node,'lock');if(!r.available)unavailable.set(node,'Linux no está disponible para consultar su estado. La máquina está apagada, bloqueada o aún en recuperación.');}catch(e){unavailable.set(node,e.message);}}));
+ const reports=new Map(finalReports.map(r=>[r.id,r]));
+ for(const q of questions){
+  const m=machines.get(String(q.node));if(!m?.ready||!m.touched){reports.set(q.id,unanswered(q));continue;}
   $('#exam-status').textContent=`Comprobando máquina ${q.node}: ${q.title}…`;
+  $('#exam-recheck-status').textContent=`Comprobando ${q.title}…`;
   try{
    if(unavailable.has(String(q.node)))throw Error(unavailable.get(String(q.node)));
-   reports.push(scoreQuestion(q,await request(q.node,'check',q.id)));
-  }catch(e){reports.push({id:q.id,error:e.message,max:q.points});}
+   reports.set(q.id,scoreQuestion(q,await request(q.node,'check',q.id)));
+  }catch(e){reports.set(q.id,{id:q.id,error:e.message,max:q.points});}
  }
+ finalReports=examQuestions.map(q=>reports.get(q.id));
+ renderResults(finalReports);
+}
+function renderResults(reports){
  phase='finished';$('#exam-workspace').hidden=true;$('#exam-results').hidden=false;document.documentElement.classList.remove('exam-running');
  const incomplete=reports.some(r=>r.error),score=reports.reduce((n,r)=>n+(r.points||0),0);
  $('#exam-score').textContent=`${score}/${EXAM_TOTAL} puntos`;
@@ -105,7 +119,10 @@ async function finish(expired=false){
  renderDomains(summary,domainResults(examQuestions.map(q=>{const report=reports.find(r=>r.id===q.id);return{domain:rhcsaDomain(q),earned:report.points||0,total:q.points,unverified:!!report.error};})));
  $('#exam-verdict').textContent=incomplete?'Corrección incompleta: hay preguntas que no se han podido consultar. No se emite un aprobado con comprobaciones pendientes.':score>=EXAM_PASS?'Aprobado.':'No aprobado. Necesitas 210 puntos.';
  $('#exam-verdict').dataset.result=incomplete?'unverified':score>=EXAM_PASS?'passed':'failed';
- $('#exam-status').textContent=expired?'Tiempo agotado. Intento finalizado.':'Intento finalizado.';
+ $('#exam-status').textContent=expiredAttempt?'Tiempo agotado. Intento finalizado.':'Intento finalizado.';
+ $('#exam-recheck').hidden=!incomplete;
+ $('#exam-recheck').disabled=false;
+ $('#exam-recheck-status').textContent='';
  const root=$('#exam-report');root.replaceChildren();
  for(const q of examQuestions){
   const r=reports.find(r=>r.id===q.id),item=make('details','');
@@ -118,14 +135,16 @@ async function finish(expired=false){
    for(const c of r.criteria)item.append(make('p',`${c.ok?'Cumplido':'No cumplido'} · ${c.label}`));
    for(const o of r.observations)item.append(make('h4',o.label),make('pre',o.text||'(sin salida)'));
   }
-  const solution=document.createElement('div');solution.className='lab-solutions';renderSolutions(solution,solutionsFor('linux',q));
+  const solution=document.createElement('div');solution.className='lab-solutions';renderSolutions(solution,solutionsFor('linux',q),{copy:true});
   item.append(make('h3','Una solución válida'),solution);root.append(item);
  }
  globalThis.examReport={startedAt,finishedAt:Date.now(),score,total:EXAM_TOTAL,incomplete,reports};
  for(const m of machines.values())clearTimeout(m.timer);
  for(const job of pending.values()){clearTimeout(job.timeout);job.reject(Error('Intento finalizado.'));}pending.clear();
- $('#exam-machines').replaceChildren();machines.clear();$('#exam-results').scrollIntoView({behavior:'smooth',block:'start'});
+ if(!incomplete){$('#exam-machines').replaceChildren();machines.clear();}
+ $('#exam-results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 $('#exam-finish').onclick=()=>finish();$('#exam-retry').onclick=()=>location.reload();
+$('#exam-recheck').onclick=()=>{if(phase==='finished')return grade(examQuestions.filter(q=>finalReports.some(r=>r.id===q.id&&r.error)));};
 window.addEventListener('beforeunload',e=>{if(['preparing','running','grading'].includes(phase)){e.preventDefault();e.returnValue='';}});
 $('#exam-start').disabled=false;

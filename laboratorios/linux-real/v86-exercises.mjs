@@ -3,7 +3,7 @@
 import { courseExercises } from './v86-course-exercises.mjs?v=20261018-aprender';
 import { extraExercises } from './v86-extra-exercises.mjs?v=20261105-auditoria';
 import {nativeLearningLinux} from '../learning-linux.mjs';
-import {buildRhcsaBank} from '../rhcsa-objectives.mjs?v=20261105-auditoria';
+import {buildRhcsaBank} from '../rhcsa-objectives.mjs?v=20261114';
 export const introExercises = [
   {
     id: 'archivo', title: 'Archivo y permisos',
@@ -114,6 +114,23 @@ const conditionTimeout=check=>{
   if(!Number.isInteger(seconds)||seconds<1||seconds>60)throw Error('Plazo de comprobación inválido');
   return seconds;
 };
+const firewallConditions=new Map([
+  ['firewall-cmd --query-service=http && firewall-cmd --permanent --query-service=http',['queryService','s','http']],
+  ['firewall-cmd --query-port=8083/tcp && firewall-cmd --permanent --query-port=8083/tcp',['queryPort','ss','8083 tcp']],
+]);
+function fastCondition(check){
+  const target=firewallConditions.get(check);
+  if(!target)return check;
+  const [method,signature,args]=target;
+  const service='org.fedoraproject.FirewallD1',path='/org/fedoraproject/FirewallD1';
+  return `call(){ busctl --system call ${service} "$@"; }
+zone=$(call ${path} ${service} getDefaultZone) || exit 1
+zone=\${zone#'s "'}; zone=\${zone%'"'}
+test "$(call ${path} ${service}.zone ${method} s${signature} "$zone" ${args})" = 'b true' || exit 1
+config=$(call ${path}/config ${service}.config getZoneByName s "$zone") || exit 1
+config=\${config#'o "'}; config=\${config%'"'}
+test "$(call "$config" ${service}.config.zone ${method} ${signature} ${args})" = 'b true'`;
+}
 export const probeTimeoutMs=exercise=>10000+exercise.checks.reduce((ms,check)=>ms+(conditionTimeout(check)+2)*1000,0)+(exercise.observations?.length||0)*12000;
 
 export function buildProbe(exercise, nonce) {
@@ -124,7 +141,7 @@ export function buildProbe(exercise, nonce) {
   const lines = ['export LC_ALL=C PAGER=cat SYSTEMD_PAGER=cat RES_OPTIONS="attempts:1 timeout:1"', actor];
   exercise.checks.forEach((condition, index) => {
     const [,check]=condition;
-    lines.push(`if /usr/bin/timeout -k 2 ${conditionTimeout(condition)} /bin/sh -c ${shellQuote(check)} >/dev/null 2>&1; then printf '${prefix}${index}=0\\n'; else result=$?; printf '${prefix}${index}=%s\\n' "$result"; fi`);
+    lines.push(`if /usr/bin/timeout -k 2 ${conditionTimeout(condition)} /bin/sh -c ${shellQuote(fastCondition(check))} >/dev/null 2>&1; then printf '${prefix}${index}=0\\n'; else result=$?; printf '${prefix}${index}=%s\\n' "$result"; fi`);
   });
   (exercise.observations||[]).forEach(([,command],index)=>{
     lines.push(`observed=$(/usr/bin/timeout -k 2 10 /bin/sh -c ${shellQuote(command)} 2>&1 | head -c 4096 | base64 -w0); printf '${prefix}OBS${index}=%s\\n' "$observed"`);

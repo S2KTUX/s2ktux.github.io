@@ -1,10 +1,10 @@
 import {Terminal} from './vendor/xterm.mjs';
 import {ChunkDisk} from './v86-disk.mjs';
-import {LocalSessions,hashBytes} from './v86-sessions.mjs?v=20261105-auditoria';
-import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261105-auditoria';
+import {LocalSessions,hashBytes} from './v86-sessions.mjs?v=20261114';
+import {mountExercisePanel} from './v86-exercise-panel.mjs?v=20261114';
 import {createCheckRunner,atShellPrompt,cleanSerial} from './v86-check-runner.mjs?v=20261105-auditoria';
 import {examSetupCommand} from './v86-exam-setup.mjs?v=20261020-aprendizaje';
-import {examQuestions} from './v86-exam-data.mjs?v=20261105-auditoria';
+import {examQuestions} from './v86-exam-data.mjs?v=20261114';
 import {createEthernetInternet} from './v86-ethernet-internet.mjs?v=20261020-aprendizaje';
 import {restartMachine} from './v86-restart.mjs?v=20261020-aprendizaje';
 import {attachTerminalClipboard} from './v86-clipboard.mjs?v=20261020-aprendizaje';
@@ -14,6 +14,7 @@ import {createExamConsole,examConsoleSetupCommand,createExamBootDetector} from '
 import {mountLabNotices} from '../lab-notices.mjs';
 import {createGuestBootLog} from './v86-boot-log.mjs';
 import {verifiedDownload} from '../verified-download.mjs';
+import {payloadBase,retryAsset} from './v86-assets.mjs';
 // La consola serie de Linux arranca con 80 columnas. Usar su mismo ancho
 // evita que Readline redibuje encima de la línea al continuar un comando.
 const terminal=new Terminal({cols:80,rows:28,scrollback:5000,fontSize:15,fontFamily:'"Share Tech Mono", monospace',theme:{background:'#161009',foreground:'#e9ddc7',cursor:'#e0a458',selectionBackground:'#6b543f'}});
@@ -32,8 +33,9 @@ if(examMode)document.documentElement.classList.add('exam-embed');
 const recoveryScenario=params.get('scenario')==='recovery';
 let recoveryBootPending=recoveryScenario;
 let consolePrepared=false,consolePreparing=false,consolePreparationFailed=false;
-let guestBootLog;
-const readyMessage=()=>guestBootLog?.finished?'Laboratorio disponible · registros del arranque guardado.':'Laboratorio disponible.';
+let guestBootLog; let qaBaked=false;
+let internetUnavailable=false;
+const readyMessage=()=>(guestBootLog?.finished?'Laboratorio disponible · registros del arranque guardado.':'Laboratorio disponible.')+(internetUnavailable?' Internet no está disponible. Puedes seguir usando Linux.':'');
 const defaultFinal=!['boot','disk','estado','motor','extras'].some(name=>params.has(name));
 const bootGrub=defaultFinal||params.get('boot')==='grub';
 const requestedDisk=params.get('disk')||(defaultFinal?'final':null);
@@ -51,9 +53,15 @@ const exercisePanel=mountExercisePanel(document.querySelector('#exercise-panel')
   try{return await promise;}
   finally{busy=false;document.querySelector('#save').disabled=!emulator;updateExerciseAvailability();}
 });
-function updateExerciseAvailability(){exercisePanel.setEnabled(supportsExercises&&!!emulator&&!busy&&!resetting&&!recoveryBootPending&&!inputPending&&atShellPrompt(globalThis.vmTranscript));document.querySelector('#reboot').disabled=!emulator||busy||resetting||recoveryBootPending;document.querySelector('#save').disabled=!emulator||busy||resetting||recoveryBootPending;}
+function updateExerciseAvailability(){
+ const ready=!!emulator&&!busy&&!resetting&&!recoveryBootPending;
+ const reason=!emulator?'Inicia el laboratorio para comprobar.':!ready?'Espera a que Linux termine la operación.':'Vuelve al prompt de Linux y deja la línea vacía para comprobar.';
+ exercisePanel.setEnabled(supportsExercises&&ready&&!inputPending&&atShellPrompt(globalThis.vmTranscript),reason);
+ document.querySelector('#reboot').disabled=!ready;document.querySelector('#save').disabled=!ready;
+}
 const sessionKey='v86:'+stateName+':'+motorName+(bootGrub?':grub':'')+(diskProfile!=='grub'?':'+requestedDisk:'')+(extras?':extras':'')+(nodeName==='2'?':node2':'')+(recoveryScenario?':recovery':'')+(examMode?':exam:'+examAttempt:'');
 const sessionStatus=document.querySelector('#session-status');
+let previousSessionSha=null;
 const otherNode=new URL(location.href);otherNode.searchParams.set('node',nodeName==='1'?'2':'1');
 if(defaultFinal){otherNode.searchParams.set('boot','grub');otherNode.searchParams.set('disk','final');otherNode.searchParams.set('estado','grub-rhcsa-final');}
 document.querySelector('#other-node').href=otherNode.href;
@@ -80,8 +88,8 @@ async function prepareConsole(){
  const password=Array.from(crypto.getRandomValues(new Uint8Array(24)),b=>b.toString(16).padStart(2,'0')).join('');
  try{
    const initialClock=!savedRecord?Math.floor(Date.now()/1000):undefined;
-   const setup=rootShell?(examMode?examSetupCommand(examAttempt,nodeName)+' && '+examConsoleSetupCommand()+' && ':!recoveryScenario?practiceAccountsCommand()+' && ':'')+consoleSetupCommand(recoveryScenario,password,initialClock,!savedRecord&&!examMode,examMode?undefined:nodeName==='2'?'s2ktux-lab-2':'s2ktux-lab'):"stty -F /dev/tty cols 80 rows 28 && export PS1='[\\u@\\h \\W]\\$ '";
-   let command=setup;
+   const setup=rootShell?(examMode?(qaBaked&&nodeName==='2'?'cat /proc/sys/kernel/random/boot_id > /var/lib/s2ktux-exam/initial-boot-id && touch /var/lib/s2ktux-exam-'+examAttempt:examSetupCommand(examAttempt,nodeName))+' && '+examConsoleSetupCommand()+' && ':!recoveryScenario?practiceAccountsCommand()+' && ':'')+consoleSetupCommand(recoveryScenario,password,initialClock,!savedRecord&&!examMode,examMode?undefined:nodeName==='2'?'s2ktux-lab-2':'s2ktux-lab'):"stty -F /dev/tty cols 80 rows 28 && export PS1='[\\u@\\h \\W]\\$ '";
+   let command=qaBaked&&rootShell&&!savedRecord&&!examMode&&!recoveryScenario?'stty -F /dev/tty cols 80 rows 28 && date -u -s @'+initialClock:setup;
    if(rootShell&&!savedRecord&&!examMode&&!recoveryScenario){
      const nonce=Array.from(crypto.getRandomValues(new Uint8Array(12)),b=>b.toString(16).padStart(2,'0')).join('');
      guestBootLog=createGuestBootLog(nonce,text=>{terminal.write(text);displayTranscript=appendTranscript(displayTranscript,text,100000);});
@@ -139,7 +147,8 @@ globalThis.vmSaveSession=async()=>{
   try{
     await emulator.stop();serialOutput?.flush();await Promise.all([vmDisk.settle(),vmPracticeDisk.settle()]);
     const state=await emulator.save_state();
-    savedRecord=await sessions.save(sessionKey,identity,state,displayTranscript,savedRecord?.sha256||null,saveController.signal);
+    savedRecord=await sessions.save(sessionKey,identity,state,displayTranscript,previousSessionSha,saveController.signal);
+    previousSessionSha=savedRecord.sha256;
     const protectedStorage=await navigator.storage?.persist?.().catch(()=>false);
     sessionStatus.textContent='Sesión guardada: '+new Date(savedRecord.savedAt).toLocaleString()+' · '+(savedRecord.packedBytes/1048576).toFixed(1)+' MiB.'+(protectedStorage?'':' El navegador puede eliminarla si necesita espacio.');
     return {savedAt:savedRecord.savedAt,bytes:savedRecord.bytes,packedBytes:savedRecord.packedBytes};
@@ -151,8 +160,11 @@ document.querySelector('#start').onclick=async()=>{
   document.querySelector('#start').disabled=true;status.textContent='Cargando Linux real…';
   const internetEnabled=!examMode;
   const base=new URL('./assets/v86-test/',import.meta.url);
-  const fail=error=>{document.documentElement.dataset.vmState='failed';status.textContent='Laboratorio detenido: '+error.message;document.querySelector('#result').hidden=false;document.querySelector('#result').textContent='Puedes usar Reset para empezar con la base limpia; perderás el guardado de esta máquina.';console.error(error);emulator?.stop();if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);};
+    const qaVariant=examMode&&nodeName==='2'?1:!examMode&&!recoveryScenario&&nodeName==='1'?0:null;
+  const fail=error=>{document.documentElement.dataset.vmState='failed';status.textContent='Laboratorio detenido: '+error.message;document.querySelector('#result').hidden=false;document.querySelector('#result').textContent=error.recoverableDownload?'Vuelve a cargar esta página. Tu guardado se conserva.':'Puedes usar Reset para empezar con la base limpia; perderás el guardado de esta máquina.';console.error(error);emulator?.stop();if(examMode)parent.postMessage({kind:'s2ktux-exam-failed',attempt:examAttempt,error:error.message},location.origin);};
   try{
+    const assets=payloadBase(document.querySelector('meta[name="linux-assets-base"]')?.content,base);
+    const external=assets.href!==base.href;
     if(diskProfile!=='grub'&&!bootGrub)throw Error('La nueva imagen requiere arranque BIOS/GRUB.');
     const diskBase=bootGrub?new URL(diskProfile+'/',base):base;
     const response=await fetch(new URL('disco-fragmentado.json',diskBase));if(!response.ok)throw Error('La imagen de prueba aún no está preparada');
@@ -161,7 +173,7 @@ document.querySelector('#start').onclick=async()=>{
       const requestedCache=new URL(location.href).searchParams.get('cache');
       const cacheMiB=requestedCache===null?192:Number(requestedCache);
       if(![192,384,512].includes(cacheMiB))throw Error('Caché de ensayo inválida');
-      const disk=new ChunkDisk(manifest,diskBase,fail,cacheMiB);
+    const disk=new ChunkDisk(manifest,bootGrub?new URL(diskProfile+'/',assets):assets,fail,cacheMiB);
     const practiceMiB=['grub-ampliado','grub-curso','grub-rhcsa','grub-rhcsa-final'].includes(diskProfile)?2048:1024;
     const empty={format:'s2ktux-blocks-v1',chunkSize:1048576,bytes:practiceMiB*1048576,parts:Array.from({length:practiceMiB},(_,index)=>({index,bytes:1048576,zero:true}))};
     let practiceManifest=empty,practiceBase=base;
@@ -169,23 +181,29 @@ document.querySelector('#start').onclick=async()=>{
       practiceBase=new URL('extras/',base);const response=await fetch(new URL('disco-fragmentado.json',practiceBase));
       if(!response.ok)throw Error('Disco privado de herramientas no disponible');practiceManifest=await response.json();
     }
-    const practice=new ChunkDisk(practiceManifest,practiceBase,fail);
+    const practice=new ChunkDisk(practiceManifest,extras?new URL('extras/',assets):practiceBase,fail);
     globalThis.vmDisk=disk;globalThis.vmPracticeDisk=practice;
     const prepared=['preparado','administracion','etiquetado','dominios','selinux','persistente','grub','grub-final','grub-reinicio','grub-ampliado','grub-curso','grub-rhcsa','grub-rhcsa-final'].includes(stateName);
     if(stateName.startsWith('grub')&&!bootGrub)throw Error('El estado GRUB requiere el disco y arranque GRUB.');
     if(prepared&&diskProfile!==(['grub-ampliado','grub-curso','grub-rhcsa','grub-rhcsa-final'].includes(stateName)?stateName:'grub'))throw Error('El estado preparado no corresponde a este disco. Usa la entrada de su propia versión.');
     let metadata;
     if(prepared){
-      const metadataResponse=await fetch(new URL('estado-'+stateName+'.json',base));
+      const metadataResponse=await fetch(new URL(qaVariant!==null&&stateName==='grub-rhcsa-final'?'release-state-'+qaVariant+'.json':'estado-'+stateName+'.json',base));
       if(!metadataResponse.ok)throw Error('No hay un estado preparado verificado');
-      metadata=await metadataResponse.json();
+      metadata=await metadataResponse.json(); qaBaked=qaVariant!==null&&metadata.sha256===["64ca29e80bbb1b85113c5c68b656ee30207e87e878a2e86e2dcc4f66bbd17417","af40760968a09bbec0ffb1533945642b5f5d63f678108f0d1eeb9ce52902704a"][qaVariant];
       if(metadata.diskProfile&&metadata.diskProfile!==diskProfile)throw Error('Identidad de disco y estado diferentes.');
       if(diskProfile==='grub-rhcsa-final'&&metadata.imageSha256!==manifest.sha256)throw Error('El estado preparado pertenece a otra versión de la fábrica.');
     }
     identity=await hashBytes(encoder.encode(JSON.stringify({format:1,node:nodeName,manifest,practice:practiceManifest,motor:motorName,
-      motorBuild:motorName==='rhcsa'?'c064c94714c4b8eeace32782a4013b6132a2331ba5c008abfd67274cc2d29caf':motorName==='reinicio'?'7d13ee9c2494306a6b786a5266d5f875c7fba9178ca00361f5e7c1a12d70c10c':'upstream-1e4f43c95',
+      motorBuild:qaBaked?["1a6bcdafe262829a64732364a1ca30e75b73c9dc2bad240be0d9eb3f31aaffa0","1a6bcdafe262829a64732364a1ca30e75b73c9dc2bad240be0d9eb3f31aaffa0"][qaVariant]:motorName==='rhcsa'?'c064c94714c4b8eeace32782a4013b6132a2331ba5c008abfd67274cc2d29caf':motorName==='reinicio'?'7d13ee9c2494306a6b786a5266d5f875c7fba9178ca00361f5e7c1a12d70c10c':'upstream-1e4f43c95',
       stateName,...(recoveryScenario?{scenario:'recovery-v1'}:{}),factory:metadata?.sha256||null,boot:bootGrub?'bios-grub-v1':'direct-kernel-v2-selinux-config'})));
-    savedRecord=examMode?null:await sessions.get(sessionKey);
+    savedRecord=null;
+    if(!examMode){
+      const original=await sessions.get(sessionKey);
+      previousSessionSha=original?.sha256||null;
+      if(original?.identity===identity)savedRecord=original;
+      else if(original)sessionStatus.textContent='La sesión anterior ya no se puede abrir con esta versión. Al guardar se sustituirá por la nueva.';
+    }
     let initialState;
     if(savedRecord){
       status.textContent='Recuperando tu sesión guardada…';
@@ -200,10 +218,13 @@ document.querySelector('#start').onclick=async()=>{
       const parts=metadata.parts||[{file:metadata.file,bytes:metadata.packedBytes,sha256:metadata.sha256}];
       if(!parts.length||parts.reduce((n,p)=>n+p.bytes,0)!==metadata.packedBytes)throw Error('Lista de estado incompleta');
       const blocks=new Array(parts.length),receivedParts=parts.map(()=>0);let next=0,downloaded=0;
+      const loading=()=>document.documentElement.dataset.vmState!=='failed';
+      const progress=received=>{if(loading())status.textContent='Recuperando Linux: '+Math.floor(received/metadata.packedBytes*100)+' %';};
       await Promise.all(Array.from({length:Math.min(4,parts.length)},async()=>{
-        while(next<parts.length){const index=next++,part=parts[index];
-          const data=await verifiedDownload(new URL(part.file,base),{hash:part.sha256,bytes:part.bytes,notify:received=>{receivedParts[index]=received;status.textContent='Recuperando Linux: '+Math.floor(receivedParts.reduce((a,b)=>a+b,0)/metadata.packedBytes*100)+' %';}});
-          blocks[index]=data;downloaded+=data.byteLength;status.textContent='Recuperando Linux: '+Math.floor(downloaded/metadata.packedBytes*100)+' %';
+        while(next<parts.length&&loading()){const index=next++,part=parts[index];
+          const location=new URL(external?'estados/'+part.sha256+'.gz':part.file,assets);
+          const data=await retryAsset(()=>verifiedDownload(location,{hash:part.sha256,bytes:part.bytes,timeoutMs:30000,notify:received=>{receivedParts[index]=received;progress(receivedParts.reduce((a,b)=>a+b,0));}}).catch(error=>{if(error.message==='No se pudo descargar el recurso de arranque')error.retryable=true;throw error;}),'un fragmento del estado de Linux');
+          blocks[index]=data;downloaded+=data.byteLength;progress(downloaded);
         }
       }));
       const packedBlob=new Blob(blocks);
@@ -213,7 +234,7 @@ document.querySelector('#start').onclick=async()=>{
       if(buffer.byteLength!==metadata.bytes)throw Error('Estado preparado incompleto');
       initialState={buffer};
     }
-    const Motor=motorName==='original'?globalThis.V86:(await import('./assets/v86-test/libv86-'+motorName+'.mjs')).V86;
+    const Motor=motorName==='original'?globalThis.V86:(await import('./assets/v86-test/libv86-'+(qaBaked?'release-'+qaVariant:motorName)+'.mjs')).V86;
     const machineOptions={wasm_path:new URL('v86.wasm',base).href,memory_size:768*1048576,
       bios:{url:new URL('seabios.bin',base).href},vga_bios:{url:new URL('vgabios.bin',base).href},
       ...(bootGrub?{}:{bzimage:{url:new URL('vmlinuz',base).href},initrd:{url:new URL('initrd.img',base).href},
@@ -228,7 +249,13 @@ document.querySelector('#start').onclick=async()=>{
     serialOutput=createSerialOutput(text=>{
       guestBootLog?.receive(text);
       examBootDetector?.(text);
+      const previousTail=globalThis.vmTranscript.slice(-45);
+      const restart=/reboot:\s*Restarting system/.exec(previousTail+text);
       globalThis.vmTranscript=appendTranscript(globalThis.vmTranscript,text);
+      if(restart&&restart.index+restart[0].length>previousTail.length){
+        document.documentElement.dataset.vmState='running';
+        status.textContent='Reiniciando Linux. Puede tardar varios minutos.';
+      }
       // Solo el reinicio inicial preparado: Linux ya desmontó y sincronizó
       // sus discos. Drenar el motor evita callbacks viejos tras el reset.
       if(initialRecoveryRestart&&/reboot:\s*Restarting system/.test(globalThis.vmTranscript.slice(-200))){
@@ -256,7 +283,15 @@ document.querySelector('#start').onclick=async()=>{
       // de toda la RAM, especialmente al abrir las dos máquinas del examen.
       delete machineOptions.initial_state;initialState=undefined;
       if(examMode){examConsole=createExamConsole(emulator);examBootDetector=createExamBootDetector(()=>examConsole.invalidate());}
-      if(internetEnabled){try{globalThis.labInternet=createEthernetInternet(emulator.bus);emulator.run();}catch(error){fail(error);}}
+      if(internetEnabled){
+        const internetStatus=state=>{
+          if(state==='connecting')return;
+          internetUnavailable=state==='unavailable';
+          if(document.documentElement.dataset.vmState==='shell'&&!busy)status.textContent=readyMessage();
+        };
+        try{globalThis.labInternet=createEthernetInternet(emulator.bus,{onStatus:internetStatus});}catch{internetStatus('unavailable');}
+        emulator.run();
+      }
     });
     let started=false;
     emulator.add_listener('emulator-started',()=>{

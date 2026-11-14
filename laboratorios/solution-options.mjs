@@ -6,6 +6,7 @@ export const withHTTPWait=code=>code.replace(/^curl (http:\/\/localhost:\d+(?:\/
 function replace(code,from,to){if(!code.includes(from))throw Error('La solución de partida ha cambiado: '+from);return code.replace(from,to);}
 function replacements(code,pairs){for(const [from,to] of pairs)code=replace(code,from,to);return code;}
 const linux={
+ 'vi-ii':()=>option('Con sed', "echo 'Servidor' > /root/nota-editada.txt\necho 'Estado: pendiente' >> /root/nota-editada.txt\nsed -i '2s/^Estado: pendiente$/Estado: activo/' /root/nota-editada.txt"),
  archivo:()=>option('Permisos simbólicos',"printf 'Linux real\\n' > /root/practica.txt\nchown root:root /root/practica.txt\nchmod u=rw,g=r,o= /root/practica.txt\nstat -c '%U:%G %a' /root/practica.txt"),
  usuarios:()=>option('Añadir el grupo después',"groupadd equipo\nuseradd -m -s /bin/bash ana\nusermod -aG equipo ana\nid ana"),
  sgid:e=>option('Permisos simbólicos',replace(e.solution,'chmod 2770 /datos/equipo','chmod ug=rwx,o= /datos/equipo\nchmod g+s /datos/equipo')),
@@ -82,4 +83,13 @@ function originalSolutions(mode,exercise){
  const extras=mode==='kubernetes'?kubernetes(exercise):((mode==='linux'?linux:docker)[exercise.id]?[ (mode==='linux'?linux:docker)[exercise.id](exercise) ]:[]);
  return [first,...extras];
 }
-export function solutionsFor(mode,exercise){return originalSolutions(mode,exercise).map(solution=>mode==='linux'?studentSolution(solution):solution);}
+const linuxSteps={
+ 'su-i':[['Entra como practica-su','su - practica-su'],['Guarda el nombre','whoami > ~/quien.txt'],['Vuelve a root','exit']],
+ 'ssh-i':[['Conecta y escribe la contraseña practica','ssh ssh-estudio@localhost'],['Guarda el nombre en la sesión SSH','whoami > ~/quien-ssh.txt'],['Cierra la sesión SSH','exit']],
+ 'ssh-ii':[['Ejecuta la orden remota y escribe la contraseña practica',"ssh ssh-estudio@localhost 'pwd > ~/directorio-ssh.txt'"]],
+};
+export function solutionsFor(mode,exercise){
+ const steps=mode==='linux'&&linuxSteps[exercise.sourceId||exercise.id];
+ if(steps)return [{steps}];
+ return originalSolutions(mode,exercise).map(solution=>mode==='linux'?studentSolution(solution):solution);
+}

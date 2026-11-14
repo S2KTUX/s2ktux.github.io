@@ -6,7 +6,7 @@ const course=id=>structuredClone(courseExercises.find(e=>e.id===`sim-${String(id
 const py=code=>'python3 -c '+shellQuote(code);
 const password=(user,value)=>`getent passwd ${user} >/dev/null && printf '%s\\0' ${shellQuote(value)} | /usr/sbin/unix_chkpwd ${user} nonull`;
 const active=unit=>`systemctl is-active --quiet ${unit} && systemctl is-enabled --quiet ${unit}`;
-const q=(number,node,points,title,goal,solution,checks,observations,extra={})=>({id:`exam-${number}`,number,node,points,title,goal,solution,checks,observations,note:'',...extra});
+const q=(number,node,points,title,goal,solution,checks,observations,extra={})=>({id:`exam-${number}`,number,node,points,title,goal,solution,checks:number===20||number===21?checks.map(check=>check[1].includes('podman ')?[...check,60]:check):checks,observations,note:'',...extra});
 const asHermes=command=>`uid=$(id -u hermes) && runuser -u hermes -- env HOME=/home/hermes XDG_RUNTIME_DIR=/run/user/$uid DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus /bin/sh -c ${shellQuote(`cd /home/hermes && ${command}`)}`;
 const examDisk=`exam_pv=$(pvs --noheadings -o pv_name -S vg_name=seedvg | xargs) && test -b "$exam_pv" && exam_disk="/dev/$(lsblk -dno PKNAME "$exam_pv")" && test -b "$exam_disk" && test "$(blockdev --getsize64 "$exam_disk")" = 2147483648`;
 const diskIdentification=examDisk+' || { echo "No se ha identificado el disco adicional de 2 GiB"; exit 1; }\nlsblk "$exam_disk"\n';
@@ -23,14 +23,15 @@ if not ok:
  if what.startswith(('UUID=','LABEL=')): what=run(['findfs',what]).stdout.strip()
  ok=run(['systemctl','is-enabled','--quiet',unit]).returncode==0 and os.path.realpath(what)==d and props.get('Where')==p and props.get('Type')=='ext4'
 assert ok`);
-const repositories=py(`import configparser,glob,subprocess
+const repositories=(signature=false)=>py(`import configparser,glob,subprocess
 c=configparser.ConfigParser(interpolation=None);c.read(glob.glob('/etc/yum.repos.d/*.repo'))
 for name,path in [('base','lab-base'),('updates','lab-updates')]:
  assert name in c and c[name].getboolean('enabled',fallback=True) and c[name]['baseurl'].rstrip('/')=='file:///srv/repos/'+path
+ ${signature?"assert c[name].getboolean('gpgcheck',fallback=False)":'pass'}
 r=subprocess.run(['dnf','--disablerepo=*','--enablerepo=base,updates','repolist','--enabled'],capture_output=True,text=True,timeout=45)
 assert r.returncode==0 and all(any(line.split() and line.split()[0]==name for line in r.stdout.splitlines()) for name in ['base','updates'])`);
 const repoSolution="printf '[base]\\nname=Base\\nbaseurl=file:///srv/repos/lab-base\\nenabled=1\\ngpgcheck=1\\ngpgkey=file:///srv/repos/RPM-GPG-KEY-lab\\n\\n[updates]\\nname=Updates\\nbaseurl=file:///srv/repos/lab-updates\\nenabled=1\\ngpgcheck=1\\ngpgkey=file:///srv/repos/RPM-GPG-KEY-lab\\n' > /etc/yum.repos.d/examen.repo\nrpm --import /srv/repos/RPM-GPG-KEY-lab\ndnf repolist";
-const repoChecks=[['Dos repositorios habilitados y disponibles',repositories,60]];
+const repoChecks=[['Dos repositorios habilitados y disponibles',repositories(),60]];
 const repoObservation=[['Repositorios configurados','cat /etc/yum.repos.d/*.repo; dnf repolist']];
 const cronTask=py(`import glob,os,subprocess,shlex
 def entries(text,system=False):
@@ -125,8 +126,8 @@ assert n>0`)]],
  [['Todas las líneas coincidentes',py(`a=open('/usr/share/dict/words').readlines();assert open('/root/lines.txt').read()==''.join(x for x in a if 'seismic' in x)`)]],
  [['Resultado','wc -l /root/lines.txt; cat /root/lines.txt']]),
  {...course(13),id:'exam-13',number:13,node:1,points:10,title:'Usuario con UID concreto',note:'',observations:[['Cuenta','getent passwd apolo; id apolo']]},
- {...course(1),id:'exam-root',number:'root',node:2,points:20,title:'Recuperar la contraseña de root',goal:'La contraseña inicial de root no se proporciona. Recupera el acceso y establece titanio7 como nueva contraseña. Deja la máquina arrancada normalmente, con SELinux Enforcing.',note:'',requireFirst:true,observations:[['Estado tras recuperar root','cat /proc/1/comm; getenforce; test -e /.autorelabel && echo "Reetiquetado pendiente"; systemctl show serial-getty@ttyS0.service -p ExecStart --value']],solution:course(1).solution.replace('# Abre la máquina de recuperación y pulsa Iniciar laboratorio.\n# Si ya pasó GRUB, pulsa Reiniciar máquina (GRUB).','# Trabaja en la máquina 2.\n# Si ya pasó GRUB, pulsa Reiniciar máquina.')},
- q(14,2,10,'Repositorios','Configura en esta máquina los repositorios DNF base y updates, habilitados y con las direcciones file:///srv/repos/lab-base y file:///srv/repos/lab-updates. La clave de firma está en file:///srv/repos/RPM-GPG-KEY-lab.',repoSolution,repoChecks,repoObservation,{requireFirst:true}),
+ {...course(1),checks:course(1).checks.map(([label,command])=>[label,command,60]),id:'exam-root',number:'root',node:2,points:20,title:'Recuperar la contraseña de root',goal:'La contraseña inicial de root no se proporciona. Recupera el acceso y establece titanio7 como nueva contraseña. Deja la máquina arrancada normalmente, con SELinux Enforcing.',note:'',requireFirst:true,observations:[['Estado tras recuperar root','cat /proc/1/comm; getenforce; test -e /.autorelabel && echo "Reetiquetado pendiente"; systemctl show serial-getty@ttyS0.service -p ExecStart --value']],solution:course(1).solution.replace('# Abre la máquina de recuperación y pulsa Iniciar laboratorio.\n# Si ya pasó GRUB, pulsa Reiniciar máquina (GRUB).','# Trabaja en la máquina 2.\n# Si ya pasó GRUB, pulsa Reiniciar máquina.')},
+ q(14,2,10,'Repositorios','Configura en esta máquina los repositorios DNF base y updates, habilitados y con las direcciones file:///srv/repos/lab-base y file:///srv/repos/lab-updates. Activa la comprobación de firma (gpgcheck=1). La clave está en file:///srv/repos/RPM-GPG-KEY-lab.',repoSolution,[['Repositorios habilitados y con firma',repositories(true),60]],repoObservation,{requireFirst:true}),
  q(15,2,20,'Volumen lógico','En el espacio libre del disco adicional, crea el grupo de volúmenes Wgroup con extents de 8 MiB y el volumen lógico WCR de 50 extents. Utiliza ext4 y móntalo en /mnt/WCA de forma persistente. Conserva las particiones existentes y deja espacio para la swap de la pregunta 16.',
  diskIdentification+'parted -s "$exam_disk" mkpart LVM 769MiB 1535MiB set 2 lvm on\npartprobe "$exam_disk"\nudevadm settle\npvcreate "${exam_disk}2"\nvgcreate -s 8M Wgroup "${exam_disk}2"\nlvcreate -l 50 -n WCR Wgroup\nmkfs.ext4 /dev/Wgroup/WCR\nmkdir -p /mnt/WCA\nmount /dev/Wgroup/WCR /mnt/WCA\nrestorecon -RF /mnt/WCA\nprintf \'UUID=%s /mnt/WCA ext4 defaults 0 2\\n\' "$(blkid -s UUID -o value /dev/Wgroup/WCR)" >> /etc/fstab\nsystemctl daemon-reload',
  [['VG y extents',examDisk+' && test "$(vgs --noheadings --units b --nosuffix -o vg_extent_size Wgroup | xargs)" = 8388608 && for pv in $(pvs --noheadings -o pv_name -S vg_name=Wgroup); do test "$(lsblk -dno PKNAME "$pv")" = "${exam_disk#/dev/}" || exit 1; done',60],['LV de 50 extents y ext4',`test "$(blockdev --getsize64 /dev/Wgroup/WCR)" = 419430400 && `+mounted('/dev/Wgroup/WCR','/mnt/WCA')],['Montaje persistente',persistent('/dev/Wgroup/WCR','/mnt/WCA')]],

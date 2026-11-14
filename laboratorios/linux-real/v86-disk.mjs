@@ -1,3 +1,4 @@
+import {retryAsset} from './v86-assets.mjs';
 // Adaptador de bloques real: base inmutable por HTTPS y escrituras privadas en RAM.
 // No necesita peticiones Range, WebSocket ni un backend que ejecute comandos.
 export class ChunkDisk {
@@ -16,8 +17,13 @@ export class ChunkDisk {
       let data;
       if(part.zero)data=new Uint8Array(part.bytes);
       else{
-        const response=await fetch(new URL('fragmentos/'+part.file,this.base));if(!response.ok)throw Error('Descarga incompleta: '+response.status);
-        const packed=new Uint8Array(await response.arrayBuffer());this.stats.requests++;this.stats.downloadedBytes+=packed.length;
+        const packed=await retryAsset(async attempt=>{
+          this.stats.requests++;
+          const response=await fetch(new URL('fragmentos/'+part.file,this.base),{signal:AbortSignal.timeout(30000),cache:attempt?'reload':'default',credentials:'omit'});
+          if(!response.ok){const error=Error('Descarga incompleta: '+response.status);error.retryable=true;throw error;}
+          return new Uint8Array(await response.arrayBuffer());
+        },'un fragmento del disco de Linux');
+        this.stats.downloadedBytes+=packed.length;
         const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),b=>b.toString(16).padStart(2,'0')).join('');
         if(await hash(packed)!==part.packedSha256)throw Error('Hash del fragmento comprimido incorrecto');
         data=new Uint8Array(await new Response(new Blob([packed]).stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer());
