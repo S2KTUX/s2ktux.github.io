@@ -7,9 +7,9 @@ export function createDockerChecks(send,idle,onFinish){
    if(pending||!idle())return Promise.reject(Error('Termina el comando o editor y vuelve al prompt vacío antes de comprobar.'));
    if(!exercise?.checks?.length)return Promise.reject(Error('Esta práctica se consulta directamente en la terminal.'));
    const nonce=Array.from(crypto.getRandomValues(new Uint8Array(12)),n=>n.toString(16).padStart(2,'0')).join(''),prefix='__DOCKER_CHECK_'+nonce+'_';
-   const script=exercise.checks.map(([,command],i)=>`if /bin/sh -c ${quote(command)} >/dev/null 2>&1; then rc=0; else rc=$?; fi; printf '\\n${prefix}${i}=%s\\n' "$rc"`).join('; ');
+   const script=exercise.checks.map(([,command,seconds=60],i)=>`if timeout -k 2 ${seconds} /bin/sh -c ${quote(command)} >/dev/null 2>&1; then rc=0; else rc=$?; fi; printf '\\n${prefix}${i}=%s\\n' "$rc"`).join('; ');
    return new Promise((resolve,reject)=>{
-    const timer=setTimeout(()=>{const task=pending;pending=undefined;onFinish(task?.output||'');reject(Error('La consulta no terminó. No se considera aprobada; vuelve al prompt o usa Reset.'));},90000);
+    const timer=setTimeout(()=>{const task=pending;pending=undefined;onFinish(task?.output||'');reject(Error('La consulta no terminó. No se considera aprobada; vuelve al prompt o usa Reset.'));},Math.max(90000,exercise.checks.reduce((total,condition)=>total+((condition[2]||60)+2)*1000,30000)));
     pending={exercise,prefix,output:'',timer,resolve,reject};
     try{send(`/bin/sh -c ${quote(script)}\n`);}catch(e){clearTimeout(timer);pending=undefined;onFinish('');reject(e);}
    });
