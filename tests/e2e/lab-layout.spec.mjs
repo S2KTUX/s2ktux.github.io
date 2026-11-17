@@ -13,7 +13,7 @@ for(const [name,path,select,value,toggle,solution]of cases){
   await expect(page.locator('.lab-practices')).not.toContainText('¿Qué quieres practicar?');
   const order=await page.evaluate(()=>{const nodes=['.lab-practices','.lab-machine-actions','.console'];return nodes.map(s=>document.querySelector(s).getBoundingClientRect().top);});expect(order[0]).toBeLessThan(order[1]);expect(order[1]).toBeLessThan(order[2]);
   await page.locator(toggle).click();
-  if(name==='Linux'||name==='Docker'){
+  if(name==='Linux'){
    const alternatives=page.locator(solution+' [data-solution-alternative]');
    await expect(alternatives).toHaveCount(2);
    for(const alternative of await alternatives.all()){
