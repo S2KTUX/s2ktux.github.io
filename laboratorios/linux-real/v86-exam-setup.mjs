@@ -6,6 +6,8 @@ const write=(path,content)=>`printf '%s' ${shellQuote(content)} > ${path}`;
 const service=(description,command,extra='')=>`[Unit]\nDescription=${description}\nAfter=network.target\n[Service]\n${extra}ExecStart=${command}\nRestart=on-failure\n[Install]\nWantedBy=multi-user.target\n`;
 const confined='/usr/bin/runcon unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023';
 
+const waitForFirewall = "timeout 120 /bin/sh -c 'until systemctl is-active --quiet firewalld; do sleep 2; done' || { echo 'firewalld no está activo tras 120 segundos' >&2; exit 1; }";
+
 // Solo sobre las nuevas VM de examen, nunca sobre la sesión de práctica.
 export function examSetupCommand(attempt,node){
   if(!/^[a-f0-9]{32}$/.test(attempt)||!['1','2'].includes(node))throw Error('Sesión de examen inválida');
@@ -26,6 +28,7 @@ export function examSetupCommand(attempt,node){
     "sed -i 's/^Listen 80$/Listen 82/' /etc/apache2/ports.conf",
     "sed -i 's/<VirtualHost \*:80>/<VirtualHost *:82>/' /etc/apache2/sites-available/000-default.conf",
     'restorecon /etc/apache2/ports.conf /etc/apache2/sites-available/000-default.conf',
+    waitForFirewall,
     'firewall-cmd --permanent --add-port=82/tcp','firewall-cmd --reload',
     'systemctl disable apache2','systemctl restart apache2 || true',
     // No IP inicial: el alumno debe configurar NetworkManager.
@@ -50,6 +53,7 @@ export function examSetupCommand(attempt,node){
     write('/etc/systemd/system/s2ktux-exam-destination.service',service('Destino detrás del router privado',`${confined} /usr/bin/python3 -m http.server 8080 --bind 10.43.0.2 --directory /srv/s2ktux-exam/public`,'NetworkNamespacePath=/run/netns/exam-servicios\n').replace('After=network.target','After=network.target s2ktux-exam-gateway.service\nRequires=s2ktux-exam-gateway.service')),
     'restorecon -RF /usr/local/lib/s2ktux-exam /srv/s2ktux-exam /etc/systemd/system/s2ktux-exam-*.service',
     // Enrutamiento real exclusivamente entre interfaces de la LAN del examen.
+    waitForFirewall,
     'firewall-cmd --permanent --zone=internal --add-interface=eth0',
     'firewall-cmd --permanent --zone=internal --add-interface=exam-gw',
     'firewall-cmd --permanent --zone=internal --add-forward',

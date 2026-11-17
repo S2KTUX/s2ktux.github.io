@@ -149,8 +149,8 @@ globalThis.vmSaveSession=async()=>{
     const state=await emulator.save_state();
     savedRecord=await sessions.save(sessionKey,identity,state,displayTranscript,previousSessionSha,saveController.signal);
     previousSessionSha=savedRecord.sha256;
-    const protectedStorage=await navigator.storage?.persist?.().catch(()=>false);
-    sessionStatus.textContent='Sesión guardada: '+new Date(savedRecord.savedAt).toLocaleString()+' · '+(savedRecord.packedBytes/1048576).toFixed(1)+' MiB.'+(protectedStorage?'':' El navegador puede eliminarla si necesita espacio.');
+    sessionStatus.textContent='Sesión guardada: '+new Date(savedRecord.savedAt).toLocaleString()+' · '+(savedRecord.packedBytes/1048576).toFixed(1)+' MiB.';
+    setTimeout(()=>{void navigator.storage?.persist?.().catch(()=>false);},0);
     return {savedAt:savedRecord.savedAt,bytes:savedRecord.bytes,packedBytes:savedRecord.packedBytes};
   }catch(error){if(!resetting)sessionStatus.textContent='No se pudo guardar; se conserva el guardado anterior: '+error.message;throw error;}
   finally{if(activeSave===saveController)activeSave=null;if(!resetting){await emulator.run();busy=false;document.querySelector('#save').disabled=false;document.querySelector('#reset').disabled=false;updateExerciseAvailability();terminal.focus();}}

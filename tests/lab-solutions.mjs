@@ -8,7 +8,7 @@ const kubernetes=Array.from({length:12},(_,n)=>ejerciciosClase(n)).flat();
 const totals=[];
 for(const [mode,exercises,expected]of [['linux',linux,18],['docker',docker,18],['kubernetes',kubernetes,17]]){
  let alternatives=0;
- for(const e of exercises){const before=JSON.stringify(e),options=solutionsFor(mode,e);assert.equal(JSON.stringify(e),before);assert.ok(options.every(s=>s.code.trim()));assert.equal(new Set(options.map(s=>s.code)).size,options.length);if(options.length>1)alternatives++;if(e.id!=='sim-01'&&e.sourceId!=='sim-01')assert.equal(options[0].code,mode==='linux'?studentSolution({code:e.solutionDisplay||e.solution}).code:e.solutionDisplay||e.solution);}
+ for(const e of exercises){const before=JSON.stringify(e),options=solutionsFor(mode,e);assert.equal(JSON.stringify(e),before);if(options.length===1&&options[0].steps){assert.ok(options[0].steps.length>0);assert.ok(options[0].steps.every(([title,command])=>title.trim()&&command.trim()));continue;}assert.ok(options.every(s=>(s.blocks?s.blocks.some(block=>block.text.trim()):s.code?.trim())));assert.equal(new Set(options.map(s=>s.code)).size,options.length);if(options.length>1)alternatives++;if(e.id!=='sim-01'&&e.sourceId!=='sim-01')assert.equal(options[0].code,mode==='linux'?studentSolution({code:e.solutionDisplay||e.solution}).code:e.solutionDisplay||e.solution);}
  assert.ok(alternatives>0);totals.push(mode+': '+alternatives);
 }
 const named=solutionsFor('kubernetes',kubernetes.find(e=>e.id==='c09-a'))[1].code;assert.match(named,/containerPort/);
