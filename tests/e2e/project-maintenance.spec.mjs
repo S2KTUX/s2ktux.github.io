@@ -62,7 +62,7 @@ test('Versiones · notas completas legibles en móvil @mobile',async({page})=>{
 });
 test('Linux · archivo de repositorio legible y separación en las soluciones',async({page})=>{
  await page.goto('/laboratorios/linux-real/');await expect(page.locator('#start')).toBeEnabled();await page.selectOption('#exercise-select-class','2');await page.locator('[data-exercise-solution]').click();
- const solution=page.locator('#exercise-solution');await expect(solution).toContainText('# Solución 1\n\n');await expect(solution.locator('pre')).toHaveCount(1);await expect(solution).not.toContainText('# Solución 2');await expect(solution).not.toContainText('printf');
+ const solution=page.locator('#exercise-solution');await expect(solution.locator('[data-solution-alternative="1"] > p').first()).toHaveText('Solución 1');await expect(solution.locator('pre')).toHaveCount(1);await expect(solution.locator('[data-solution-alternative]')).toHaveCount(1);await expect(solution).not.toContainText('printf');
  await expect(solution.locator('.lab-file-content')).toContainText('[curso-base]\nname=Curso RPM local');
  await page.selectOption('#exercise-select-class','5');await page.selectOption('#exercise-select','fstab-i');await expect(page.getByRole('button',{name:'Preparar ejercicio',exact:true})).toBeHidden();
 });

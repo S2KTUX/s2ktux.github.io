@@ -19,7 +19,14 @@ export function renderSolutions(root, solutions, {copy=false}={}) {
    const pre=document.createElement('pre'),code=document.createElement('code');
    if(solution.explanation){const explanation=document.createElement('p');explanation.textContent=solution.explanation;section.append(heading,explanation);}
    else section.append(heading);
-   code.textContent=solution.blocks?solution.blocks.map(block=>block.kind==='file'?'# Contenido de '+block.path+' (guarda y sal del editor):\n\n'+block.text:block.text).join('\n\n'):solution.code;
+   if(solution.blocks){
+    solution.blocks.forEach((block,i)=>{
+     if(i)code.append('\n\n');
+     if(block.kind!=='file'){code.append(block.text);return;}
+     code.append('# Contenido de '+block.path+' (guarda y sal del editor):\n\n');
+     const file=document.createElement('span');file.className='lab-file-content';file.textContent=block.text;code.append(file);
+    });
+   }else code.textContent=solution.code??'';
    if(!code.textContent.trim())return;
    pre.append(code);section.append(pre);root.append(section);
    addSolutionCopy(section,pre,code);
