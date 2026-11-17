@@ -1,5 +1,5 @@
-import { exercises } from './v86-exercises.mjs?v=20261105-auditoria';
-import {renderSolutions} from '../lab-solutions.mjs?v=20261020-aprendizaje';
+import { exercises } from './v86-exercises.mjs?v=20261114';
+import {renderSolutions} from '../lab-solutions.mjs?v=20261114';
 import {solutionsFor} from '../solution-options.mjs?v=20261020-aprendizaje';
 import {mountGroups} from '../lab-groups.mjs?v=20261020-aprendizaje';
 import {practiceProgress} from '../practice-progress.mjs?v=20261021-resueltas';
@@ -15,8 +15,10 @@ export function mountExercisePanel(root, runCheck) {
   const solution = root.querySelector('[data-exercise-solution-body]');
   const feedback = root.querySelector('[data-exercise-feedback]');
   const card = root.querySelector('[data-exercise-card]');
+  const checkHint=document.createElement('small');checkHint.id='check-hint';
+  check.setAttribute('aria-describedby',checkHint.id);check.parentElement.after(checkHint);
   const prepare=document.createElement('button'),setup=document.createElement('div');prepare.type='button';prepare.textContent='Preparar ejercicio';setup.className='controls';setup.hidden=true;setup.append(prepare);check.parentElement.before(setup);
-  let enabled = false, checking = false, generation = 0;
+  let enabled = false, checking = false, generation = 0, disabledReason='Inicia el laboratorio para comprobar.';
   const available = () => exercises;
   const populate = () => {
     select.replaceChildren();
@@ -34,6 +36,8 @@ export function mountExercisePanel(root, runCheck) {
   const selected = () => available().find(exercise => exercise.id === select.value);
   const sync = () => {
     check.disabled = !enabled || checking;
+    checkHint.hidden=enabled||checking||!selected();
+    checkHint.textContent=checkHint.hidden?'':disabledReason;
     select.disabled = checking;
     const classSelect=document.getElementById(select.id+'-class');if(classSelect)classSelect.disabled=checking;
     toggle.disabled = checking;
@@ -46,7 +50,7 @@ export function mountExercisePanel(root, runCheck) {
     if(!exercise){card.hidden=true;feedback.replaceChildren();solution.hidden=true;sync();return;}
     title.textContent = exercise.title; goal.textContent = exercise.goal;
     note.textContent = exercise.note || ''; note.hidden = !exercise.note;
-    renderSolutions(solution,solutionsFor('linux',exercise));
+    renderSolutions(solution,solutionsFor('linux',exercise),{copy:true});
     solution.hidden = true; toggle.textContent = 'Ver solución'; toggle.setAttribute('aria-expanded', 'false');
     feedback.replaceChildren();
     feedback.dataset.result = 'pending'; sync();
@@ -81,5 +85,5 @@ export function mountExercisePanel(root, runCheck) {
   populate(); render();
   const classSelect=mountGroups({select,mode:'linux',tasks:exercises,onChange:render});
   practiceProgress({mode:'linux-real',select,feedback});
-  return { setEnabled(value) { enabled = !!value; classSelect.disabled=checking; sync(); } };
+  return { setEnabled(value,reason) { enabled = !!value; disabledReason=reason; classSelect.disabled=checking; sync(); } };
 }

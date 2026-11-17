@@ -1,3 +1,4 @@
+import {rootCronCheck} from './linux-cron-check.mjs';
 const tasks=[];
 const add=(id,title,goal,solution,checks)=>tasks.push({id:'repaso-'+id,title,goal,solution,checks,classes:[],practiceExam:true,group:'EXAMEN',order:tasks.length});
 add('usuarios','Cuentas de un equipo','Crea operaciones y la cuenta luna con Bash, directorio personal y operaciones como grupo secundario. Su contraseña tendrá una validez máxima de 60 días y aviso de 5 días.',
@@ -8,7 +9,7 @@ add('directorio','Un directorio de trabajo','Usa operaciones del ejercicio anter
  [['Propiedad y permisos','test -d /datos/turno && test "$(stat -c %U:%G /datos/turno)" = root:operaciones && test "$(stat -c %a /datos/turno)" = 2770']]);
 add('cron','Una tarea de mantenimiento','Programa para root, de lunes a viernes a las 18:20, logger "Revision del laboratorio". Conserva las tareas existentes.',
  'crontab -e\n# Añade: 20 18 * * 1-5 logger "Revision del laboratorio"\ncrontab -l',
- [['Horario y comando','crontab -l | python3 -c \'import sys,shlex; rows=[shlex.split(x) for x in sys.stdin if x.strip() and not x.lstrip().startswith("#")]; assert any(a[:5]==["20","18","*","*","1-5"] and a[5] in ["logger","/usr/bin/logger"] and " ".join(a[6:])=="Revision del laboratorio" for a in rows if len(a)>6)\'']]);
+ [['Horario y comando',rootCronCheck("20 18 * * 1-5","Revision del laboratorio")]]);
 add('texto','Filtrar un registro','Crea /root/registro-repaso.txt con aviso 10, ERROR 20, error 30 y INFO 40 en ese orden y en líneas separadas. Guarda en /root/incidencias.txt las líneas que comiencen por ERROR, sin distinguir mayúsculas de minúsculas y conservando el orden.',
  "printf 'aviso 10\\nERROR 20\\nerror 30\\nINFO 40\\n' > /root/registro-repaso.txt\ngrep -i '^ERROR' /root/registro-repaso.txt > /root/incidencias.txt\ncat /root/incidencias.txt",
  [['Líneas correctas','test "$(cat /root/incidencias.txt)" = "$(printf \'ERROR 20\\nerror 30\')" && test "$(cat /root/registro-repaso.txt)" = "$(printf \'aviso 10\\nERROR 20\\nerror 30\\nINFO 40\')"']]);
@@ -53,10 +54,14 @@ add('hostname','Identidad del equipo','Configura equipo-repaso.example.com como 
  [['Nombre actual y persistente','test "$(hostname)" = equipo-repaso.example.com && test "$(cat /etc/hostname)" = equipo-repaso.example.com']]);
 add('red','Un perfil de conexión estática','Crea el perfil NetworkManager repaso-estatico para eth0, con IPv4 manual 10.42.0.20/24, puerta de enlace y DNS 10.42.0.1 y conexión automática habilitada. No es necesario interrumpir la conexión actual.',
  'nmcli connection add type ethernet ifname eth0 con-name repaso-estatico ipv4.method manual ipv4.addresses 10.42.0.20/24 ipv4.gateway 10.42.0.1 ipv4.dns 10.42.0.1 connection.autoconnect yes\nnmcli connection show repaso-estatico',
- [['Perfil guardado','test "$(nmcli -g ipv4.method connection show repaso-estatico)" = manual && test "$(nmcli -g ipv4.addresses connection show repaso-estatico)" = 10.42.0.20/24 && test "$(nmcli -g ipv4.gateway connection show repaso-estatico)" = 10.42.0.1 && test "$(nmcli -g ipv4.dns connection show repaso-estatico)" = 10.42.0.1 && test "$(nmcli -g connection.autoconnect connection show repaso-estatico)" = yes']]);
+ [['Perfil guardado',`for uuid in $(nmcli -t -f UUID,NAME connection show | awk -F: '$2 == "repaso-estatico" {print $1}'); do
+  profile=$(nmcli -g connection.interface-name,ipv4.method,ipv4.addresses,ipv4.gateway,ipv4.dns,connection.autoconnect connection show uuid "$uuid") || continue
+  test "$profile" = "$(printf '%s\\n' eth0 manual 10.42.0.20/24 10.42.0.1 10.42.0.1 yes)" && exit 0
+done
+exit 1`]]);
 add('rpm','Consultar un paquete instalado','Instala lab-base desde los repositorios locales de prácticas y guarda su información en /root/paquete-repaso.txt.',
  'dnf install -y lab-base\nrpm -qi lab-base > /root/paquete-repaso.txt',
- [['Información de un paquete real','rpm -q lab-base && test -s /root/paquete-repaso.txt && grep -qw lab-base /root/paquete-repaso.txt']]);
+ [['Información de un paquete real','rpm -q lab-base >/dev/null && test -s /root/paquete-repaso.txt && rpm -qi lab-base | diff - /root/paquete-repaso.txt']]);
 add('caducidad','Una cuenta temporal','Crea temporal-repaso con directorio personal, sin shell interactiva y con fecha de caducidad de la cuenta 2030-12-31.',
  'useradd -m -s /usr/sbin/nologin -e 2030-12-31 temporal-repaso\nchage -l temporal-repaso',
  [['Cuenta y fecha de caducidad','getent passwd temporal-repaso | grep -Eq ":/home/temporal-repaso:/(usr/)?sbin/nologin$" && test -d /home/temporal-repaso && test "$(getent shadow temporal-repaso | cut -d: -f8)" = "$(($(date -u -d 2030-12-31 +%s)/86400))"']]);

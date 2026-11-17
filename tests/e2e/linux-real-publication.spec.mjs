@@ -14,7 +14,8 @@ test('Linux real · acceso independiente, guía y soluciones sin ejecutar', asyn
   await expect(page.locator('#clipboard-status')).toBeHidden();
   await expect(page.locator('.lab-modes')).toBeVisible();
   for(const selector of ['#lab-help','#more-options','#internet','a[href="CHULETA_LINUX_REAL.html"]','.lab-legal'])await expect(page.locator(selector)).toHaveCount(0);
-  await expect(page.locator('.lab-information small')).toHaveCount(5);
+  await expect(page.locator('.lab-information small')).toHaveCount(6);
+  await expect(page.getByText('Recomendado: Chrome o Edge. Firefox funciona, pero es más lento.',{exact:false})).toBeVisible();
   expect(await page.locator('.lab-information').first().evaluate(e=>parseFloat(getComputedStyle(e).fontSize))).toBeLessThan(14);
   await expect(page.locator('#network-note')).not.toContainText('no ping externo');
   await expect(page.locator('[data-exercise-card]')).toBeHidden();

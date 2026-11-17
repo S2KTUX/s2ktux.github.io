@@ -9,6 +9,9 @@ assert.equal(examQuestions.length,22);
 assert.equal(new Set(examQuestions.map(q=>q.id)).size,22);
 assert.equal(examQuestions.reduce((n,q)=>n+q.points,0),EXAM_TOTAL);
 assert.equal(EXAM_TOTAL,300);assert.equal(EXAM_PASS,210);assert.equal(EXAM_SECONDS,10800);
+const sessionControls=name=>readFileSync(new URL('../laboratorios/linux-real/'+name,import.meta.url),'utf8').match(/<div class="controls lab-machine-actions">[^\n]+\n<p id="session-status"[^\n]+/)?.[0];
+assert.ok(sessionControls('index.html'));
+assert.equal(sessionControls('index.html'),sessionControls('v86-test.html'));
 const task=number=>examQuestions.find(q=>q.number===number);
 assert.match(task(1).goal,/puerta de enlace 10\.42\.0\.11/);
 assert.doesNotMatch(task(1).goal,/MAC/);
@@ -107,7 +110,7 @@ for(const number of [3,17]){
 }
 assert.match(guest,/examMode\?':exam:'\+examAttempt/);
 assert.match(guest,/if\(examMode\)throw Error\('El modo examen no tiene guardado/);
-assert.match(guest,/savedRecord=examMode\?null:/);
+assert.match(guest,/savedRecord=null;\s*if\(!examMode\)\{\s*const original=await sessions\.get\(sessionKey\)/);
 assert.match(guest,/initialRecoveryRestart&&\/reboot:/);
 assert.match(guest,/examMode\?600000:undefined/,'La preparación completa de la segunda máquina puede superar cinco minutos');
 assert.match(guest,/consolePreparationFailed\|\|!emulator/,'No reintentar silenciosamente una preparación fallida');

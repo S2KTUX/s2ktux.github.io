@@ -6,7 +6,7 @@ const course=id=>structuredClone(courseExercises.find(e=>e.id===`sim-${String(id
 const py=code=>'python3 -c '+shellQuote(code);
 const password=(user,value)=>`getent passwd ${user} >/dev/null && printf '%s\\0' ${shellQuote(value)} | /usr/sbin/unix_chkpwd ${user} nonull`;
 const active=unit=>`systemctl is-active --quiet ${unit} && systemctl is-enabled --quiet ${unit}`;
-const q=(number,node,points,title,goal,solution,checks,observations,extra={})=>({id:`exam-${number}`,number,node,points,title,goal,solution,checks,observations,note:'',...extra});
+const q=(number,node,points,title,goal,solution,checks,observations,extra={})=>({id:`exam-${number}`,number,node,points,title,goal,solution,checks:number===20||number===21?checks.map(check=>check[1].includes('podman ')?[...check,60]:check):checks,observations,note:'',...extra});
 const asHermes=command=>`uid=$(id -u hermes) && runuser -u hermes -- env HOME=/home/hermes XDG_RUNTIME_DIR=/run/user/$uid DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$uid/bus /bin/sh -c ${shellQuote(`cd /home/hermes && ${command}`)}`;
 const examDisk=`exam_pv=$(pvs --noheadings -o pv_name -S vg_name=seedvg | xargs) && test -b "$exam_pv" && exam_disk="/dev/$(lsblk -dno PKNAME "$exam_pv")" && test -b "$exam_disk" && test "$(blockdev --getsize64 "$exam_disk")" = 2147483648`;
 const diskIdentification=examDisk+' || { echo "No se ha identificado el disco adicional de 2 GiB"; exit 1; }\nlsblk "$exam_disk"\n';
@@ -23,25 +23,51 @@ if not ok:
  if what.startswith(('UUID=','LABEL=')): what=run(['findfs',what]).stdout.strip()
  ok=run(['systemctl','is-enabled','--quiet',unit]).returncode==0 and os.path.realpath(what)==d and props.get('Where')==p and props.get('Type')=='ext4'
 assert ok`);
-const repositories=py(`import configparser,glob,subprocess
+const repositories=(signature=false)=>py(`import configparser,glob,subprocess
 c=configparser.ConfigParser(interpolation=None);c.read(glob.glob('/etc/yum.repos.d/*.repo'))
 for name,path in [('base','lab-base'),('updates','lab-updates')]:
  assert name in c and c[name].getboolean('enabled',fallback=True) and c[name]['baseurl'].rstrip('/')=='file:///srv/repos/'+path
+ ${signature?"assert c[name].getboolean('gpgcheck',fallback=False)":'pass'}
 r=subprocess.run(['dnf','--disablerepo=*','--enablerepo=base,updates','repolist','--enabled'],capture_output=True,text=True,timeout=45)
 assert r.returncode==0 and all(any(line.split() and line.split()[0]==name for line in r.stdout.splitlines()) for name in ['base','updates'])`);
 const repoSolution="printf '[base]\\nname=Base\\nbaseurl=file:///srv/repos/lab-base\\nenabled=1\\ngpgcheck=1\\ngpgkey=file:///srv/repos/RPM-GPG-KEY-lab\\n\\n[updates]\\nname=Updates\\nbaseurl=file:///srv/repos/lab-updates\\nenabled=1\\ngpgcheck=1\\ngpgkey=file:///srv/repos/RPM-GPG-KEY-lab\\n' > /etc/yum.repos.d/examen.repo\nrpm --import /srv/repos/RPM-GPG-KEY-lab\ndnf repolist";
-const repoChecks=[['Dos repositorios habilitados y disponibles',repositories,60]];
+const repoChecks=[['Dos repositorios habilitados y disponibles',repositories(),60]];
 const repoObservation=[['Repositorios configurados','cat /etc/yum.repos.d/*.repo; dnf repolist']];
-const cronTask=py(`import glob,os,subprocess,shlex
-def entries(text,system=False):
- for line in text.splitlines():
-  if not line.strip() or line.lstrip().startswith('#'): continue
-  try: p=shlex.split(line)
-  except ValueError: continue
-  if len(p)>5 and p[:5] in [['*']*5,['*/1']+['*']*4] and (not system or len(p)>6 and p[5]=='natasha'): return True
- return False
+const cronTask=py(String.raw`import os,re,shlex,subprocess
+def message(command):
+ try:
+  lex=shlex.shlex(command,posix=True,punctuation_chars='|&;<>')
+  lex.whitespace_split=True
+  words=list(lex)
+ except ValueError: return False
+ if not words: return False
+ if '|' in words:
+  split=words.index('|')
+  producer,words=words[:split],words[split+1:]
+  if not words or os.path.basename(words[0])!='systemd-cat': return False
+  if producer not in (['echo','EX200 testing'],['echo','EX200','testing'],['printf',r'%s\n','EX200 testing']): return False
+  pipe=True
+ else: pipe=False
+ tool=os.path.basename(words.pop(0))
+ if tool not in ('logger','systemd-cat'): return False
+ args=[]
+ while words:
+  word=words.pop(0)
+  if word=='--':
+   args.extend(words);break
+  if word in ('-t','-p','--tag','--priority','--identifier'):
+   if not words:return False
+   words.pop(0);continue
+  if word.startswith(('--tag=','--priority=','--identifier=')) or re.fullmatch(r'-[tp].+',word):continue
+  if word.startswith('-') or re.fullmatch(r'[|&;<>]+',word):return False
+  args.append(word)
+ if pipe:return not args
+ if tool=='logger':return ' '.join(args)=='EX200 testing'
+ return bool(args) and (os.path.basename(args[0])=='echo' and ' '.join(args[1:])=='EX200 testing' or os.path.basename(args[0])=='printf' and args[1:]==[r'%s\n','EX200 testing'])
 r=subprocess.run(['crontab','-u','natasha','-l'],capture_output=True,text=True)
-assert entries(r.stdout) or any(entries(open(p).read(),True) for p in ['/etc/crontab']+glob.glob('/etc/cron.d/*') if os.path.isfile(p))`);
+assert r.returncode==0 and any(len(f)==6 and f[:5]==['*']*5 and message(f[5]) for f in (line.split(None,5) for line in r.stdout.splitlines()))`);
+const chronyServer=String.raw`grep -Eiq '^[[:space:]]*server[[:space:]]+10\.42\.0\.11([[:space:]]|$)' /etc/chrony/chrony.conf /etc/chrony/conf.d/*.conf 2>/dev/null`;
+const chronySource='timeout 60 /bin/sh -c '+shellQuote("while :; do if chronyc -n sources | grep -Eq '^[[:space:]]*[#=^][*+?x~-][[:space:]]+10[.]42[.]0[.]11([[:space:]]|$)'; then exit 0; fi; sleep 1; done")+' || exit 1';
 const unitForContainer=`pid=$(podman inspect -f '{{.State.ConmonPid}}' mycontainer) && test "$pid" -gt 0 && unit=$(sed -n 's|.*/\\([^/]*\\.service\\)\\(/.*\\)\\?$|\\1|p' /proc/$pid/cgroup | tail -n 1) && test -n "$unit"`;
 
 export const examQuestions=[
@@ -72,7 +98,7 @@ export const examQuestions=[
  [['Caducidad','chage -l natasha']]),
  q(6,1,10,'Tarea programada','Programa una tarea de natasha que registre el mensaje EX200 testing en el journal cada minuto. Debe seguir ejecutándose después de reiniciar.',
  "printf '* * * * * /usr/bin/logger \"EX200 testing\"\\n' | crontab -u natasha -\nsystemctl enable --now cron\ncrontab -u natasha -l",
- [['Tarea cada minuto',cronTask],['Servicio persistente',active('cron')],['Mensaje ejecutado por natasha','uid=$(id -u natasha) && journalctl --no-pager _UID=$uid -o cat | grep -Fxq "EX200 testing"']],
+ [['Tarea cada minuto',cronTask],['Servicio persistente',active('cron')]],
  [['Cron y journal','crontab -u natasha -l; grep -h natasha /etc/crontab /etc/cron.d/*; systemctl is-active cron; uid=$(id -u natasha) && journalctl --no-pager _UID=$uid -o cat -n 10']]),
  q(7,1,20,'Automontaje','Configura el automontaje del recurso NFS 10.42.0.11:/ en /netdir/datos. El recurso debe estar disponible para lectura y escritura al acceder a esa ruta, también después de reiniciar.',
  "mkdir -p /netdir\nprintf '/netdir /etc/auto.examen --timeout=30\\n' > /etc/auto.master.d/examen.autofs\nprintf 'datos -fstype=nfs4,rw,vers=4.2 10.42.0.11:/\\n' > /etc/auto.examen\nrestorecon /etc/auto.examen /etc/auto.master.d/examen.autofs\nsystemctl enable autofs\nsystemctl restart autofs\ncat /netdir/datos/dato",
@@ -101,9 +127,9 @@ assert clean('/etc/hosts')==clean('/var/tmp/hosts')`)],
  ['Sin ejecución y lectura para el resto','test $((0$(stat -c %a /var/tmp/hosts) & 0111)) = 0 && runuser -u nobody -- test -r /var/tmp/hosts'],
  ['Permisos efectivos','runuser -u harry -- test -r /var/tmp/hosts && runuser -u harry -- test -w /var/tmp/hosts && ! runuser -u sara -- test -r /var/tmp/hosts && ! runuser -u sara -- test -w /var/tmp/hosts']],
  [['Permisos efectivos','stat -c "%U:%G %a" /var/tmp/hosts; getfacl -cp /var/tmp/hosts']]),
- q(10,1,15,'Sincronización horaria','Configura la sincronización horaria con el servidor 10.42.0.11. Debe quedar seleccionado como fuente de tiempo y seguir utilizándose después de reiniciar.',
+ q(10,1,15,'Sincronización horaria','Configura la sincronización horaria con el servidor 10.42.0.11. La fuente debe aparecer en chronyc sources y seguir configurada después de reiniciar.',
  "printf 'server 10.42.0.11 iburst minpoll 0 maxpoll 2\\nmakestep 1 -1\\n' > /etc/chrony/chrony.conf\nrestorecon /etc/chrony/chrony.conf\nsystemctl enable chrony\nsystemctl restart chrony\nchronyc -n sources",
- [['Servicio persistente',active('chrony')],['Fuente configurada',`grep -REq '^server[[:space:]]+(10\\.42\\.0\\.11|ntp\\.lab\\.local)[[:space:]]' /etc/chrony`],['Fuente realmente seleccionada',`chronyc -n sources | grep -Eq '^\\^\\*[[:space:]]+10\\.42\\.0\\.11[[:space:]]'`]],
+ [['Servicio persistente',active('chrony')],['Servidor configurado',chronyServer],['Servidor en chronyc sources',chronySource,65]],
  [['Chrony','cat /etc/chrony/chrony.conf; chronyc -n sources']]),
  q(11,1,10,'Búsqueda de archivos','Busca los archivos y directorios de natasha en el sistema de archivos raíz y cópialos a /root/natashafiles, conservando sus rutas relativas y el contenido.',
  'mkdir -p /root/natashafiles\ncd /\nfind . -xdev -path ./root/natashafiles -prune -o -user natasha \\( -type f -o -type d \\) -exec cp -a --parents -t /root/natashafiles {} +\nfind /root/natashafiles -type f',
@@ -125,8 +151,8 @@ assert n>0`)]],
  [['Todas las líneas coincidentes',py(`a=open('/usr/share/dict/words').readlines();assert open('/root/lines.txt').read()==''.join(x for x in a if 'seismic' in x)`)]],
  [['Resultado','wc -l /root/lines.txt; cat /root/lines.txt']]),
  {...course(13),id:'exam-13',number:13,node:1,points:10,title:'Usuario con UID concreto',note:'',observations:[['Cuenta','getent passwd apolo; id apolo']]},
- {...course(1),id:'exam-root',number:'root',node:2,points:20,title:'Recuperar la contraseña de root',goal:'La contraseña inicial de root no se proporciona. Recupera el acceso y establece titanio7 como nueva contraseña. Deja la máquina arrancada normalmente, con SELinux Enforcing.',note:'',requireFirst:true,observations:[['Estado tras recuperar root','cat /proc/1/comm; getenforce; test -e /.autorelabel && echo "Reetiquetado pendiente"; systemctl show serial-getty@ttyS0.service -p ExecStart --value']],solution:course(1).solution.replace('# Abre la máquina de recuperación y pulsa Iniciar laboratorio.\n# Si ya pasó GRUB, pulsa Reiniciar máquina (GRUB).','# Trabaja en la máquina 2.\n# Si ya pasó GRUB, pulsa Reiniciar máquina.')},
- q(14,2,10,'Repositorios','Configura en esta máquina los repositorios DNF base y updates, habilitados y con las direcciones file:///srv/repos/lab-base y file:///srv/repos/lab-updates. La clave de firma está en file:///srv/repos/RPM-GPG-KEY-lab.',repoSolution,repoChecks,repoObservation,{requireFirst:true}),
+ {...course(1),checks:course(1).checks.map(([label,command])=>[label,command,60]),id:'exam-root',number:'root',node:2,points:20,title:'Recuperar la contraseña de root',goal:'La contraseña inicial de root no se proporciona. Recupera el acceso y establece titanio7 como nueva contraseña. Deja la máquina arrancada normalmente, con SELinux Enforcing.',note:'',requireFirst:true,observations:[['Estado tras recuperar root','cat /proc/1/comm; getenforce; test -e /.autorelabel && echo "Reetiquetado pendiente"; systemctl show serial-getty@ttyS0.service -p ExecStart --value']],solution:course(1).solution.replace('# Abre la máquina de recuperación y pulsa Iniciar laboratorio.\n# Si ya pasó GRUB, pulsa Reiniciar máquina (GRUB).','# Trabaja en la máquina 2.\n# Si ya pasó GRUB, pulsa Reiniciar máquina.')},
+ q(14,2,10,'Repositorios','Configura en esta máquina los repositorios DNF base y updates, habilitados y con las direcciones file:///srv/repos/lab-base y file:///srv/repos/lab-updates. Activa la comprobación de firma (gpgcheck=1). La clave está en file:///srv/repos/RPM-GPG-KEY-lab.',repoSolution,[['Repositorios habilitados y con firma',repositories(true),60]],repoObservation,{requireFirst:true}),
  q(15,2,20,'Volumen lógico','En el espacio libre del disco adicional, crea el grupo de volúmenes Wgroup con extents de 8 MiB y el volumen lógico WCR de 50 extents. Utiliza ext4 y móntalo en /mnt/WCA de forma persistente. Conserva las particiones existentes y deja espacio para la swap de la pregunta 16.',
  diskIdentification+'parted -s "$exam_disk" mkpart LVM 769MiB 1535MiB set 2 lvm on\npartprobe "$exam_disk"\nudevadm settle\npvcreate "${exam_disk}2"\nvgcreate -s 8M Wgroup "${exam_disk}2"\nlvcreate -l 50 -n WCR Wgroup\nmkfs.ext4 /dev/Wgroup/WCR\nmkdir -p /mnt/WCA\nmount /dev/Wgroup/WCR /mnt/WCA\nrestorecon -RF /mnt/WCA\nprintf \'UUID=%s /mnt/WCA ext4 defaults 0 2\\n\' "$(blkid -s UUID -o value /dev/Wgroup/WCR)" >> /etc/fstab\nsystemctl daemon-reload',
  [['VG y extents',examDisk+' && test "$(vgs --noheadings --units b --nosuffix -o vg_extent_size Wgroup | xargs)" = 8388608 && for pv in $(pvs --noheadings -o pv_name -S vg_name=Wgroup); do test "$(lsblk -dno PKNAME "$pv")" = "${exam_disk#/dev/}" || exit 1; done',60],['LV de 50 extents y ext4',`test "$(blockdev --getsize64 /dev/Wgroup/WCR)" = 419430400 && `+mounted('/dev/Wgroup/WCR','/mnt/WCA')],['Montaje persistente',persistent('/dev/Wgroup/WCR','/mnt/WCA')]],
