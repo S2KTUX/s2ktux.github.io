@@ -18,7 +18,13 @@ const previousPublished='4bb4a9dd353ac7ee3eb36501a922b121921fde4e619cc72c5367591
 assert.deepEqual(revisionesCompatibles[previousPublished],[release33,...revisionesCompatibles[release33]]);assert.equal(revisionesCompatibles[previousPublished].length,18);
 const release34='fe4c635b7dcc6e6d93c42a7164ddd3e7d0a8259caef31fc48d804b33ff5d61bc';
 assert.deepEqual(revisionesCompatibles[release34],[previousPublished,...revisionesCompatibles[previousPublished]]);
-assert.deepEqual(revisionesCompatibles[current],[release34,...revisionesCompatibles[release34]],'Conservar la misma base y todas sus referencias');assert.equal(revisionesCompatibles[current].length,20);
+const oldPreparation='17c51a7017bf044696d3a092ef3262e07d6331a5570657cde9981c8c0732fe7e';
+assert.deepEqual(revisionesCompatibles[oldPreparation],[release34,...revisionesCompatibles[release34]],'Conservar el historial de la base anterior');assert.equal(revisionesCompatibles[oldPreparation].length,20);
+assert.notEqual(current,oldPreparation,'La captura normalizada utiliza otra revisión de caché limpia');
+assert.equal(revisionesCompatibles[current],undefined,'La nueva caché no debe migrar la captura inicial con reinicios');
+const publishedInitial=basesPublicadas.find(base=>base.level==='inicial');
+assert.equal(publishedInitial.sha256,'55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d');
+assert.equal(publishedInitial.url,'https://s2ktux-recursos.pages.dev/kubernetes/'+publishedInitial.sha256+'/cluster.json');
 const historical=revisionesCompatibles[release33].slice(4);
 assert.equal(historical[0],'1177a406fc29d32679eea1361b9b9f0435063727777de2cf61603d573f768b55');
 assert.equal(historical[1],'b4d9ea5c2eceb5c3291aba4dae18b2cb84b77a92e1f55db82c07eaf06b1361ea');
@@ -41,6 +47,9 @@ for(const bad of [{...manifest,level:'inicial'},{...manifest,nodes:[manifest.nod
 let validated=false;
 const dependencies={revision:config.revision,fetcher:async()=>new Response(bytes),download:async(url,options)=>{assert.equal(options.hash,hash(data));return data.buffer;},sessions:{validate:async nodes=>{for(const node of nodes)assert.equal(hash(Buffer.from(await node.packed.arrayBuffer())),node.sha256);validated=true;return manifest.sha256;}}};
 const result=await cargarBasePublicada(config,dependencies);assert.equal(result.nodes.length,2);assert.ok(validated);
+const resourceURL='https://s2ktux-recursos.pages.dev/kubernetes/'+config.sha256+'/cluster.json';
+assert.equal((await cargarBasePublicada({...config,url:resourceURL},{...dependencies,download:async(url,options)=>{assert.equal(url.origin,'https://s2ktux-recursos.pages.dev');assert.ok(url.pathname.startsWith('/kubernetes/'+config.sha256+'/fragmentos/'));assert.equal(options.hash,hash(data));return data.buffer;}})).nodes.length,2);
+for(const url of [resourceURL.replace(config.sha256,'0'.repeat(64)),resourceURL.replace('s2ktux-recursos','otro-proyecto'),resourceURL+'?x=1',resourceURL.replace('https://','https://usuario:clave@')])await assert.rejects(()=>cargarBasePublicada({...config,url},dependencies),/Origen/);
 await assert.rejects(()=>cargarBasePublicada({...config,revision:'f'.repeat(64)},dependencies),/Revisión/);
 await assert.rejects(()=>cargarBasePublicada({...config,url:'https://otro.example/cluster.json'},dependencies),/Origen/);
 await assert.rejects(()=>cargarBasePublicada(config,{...dependencies,fetcher:async()=>new Response('alterado')}),/alterado/);

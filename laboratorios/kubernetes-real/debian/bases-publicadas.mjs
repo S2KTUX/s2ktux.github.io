@@ -353,8 +353,8 @@ export const revisionesCompatibles=Object.freeze({
   'd66a99f2ca13236a8e3e61cec1afdee442d6ed3a6126998ade42c5a437e9e8be'
  ])
 });
-export const basesPublicadas=Object.freeze([Object.freeze({"level":"avanzado","revision":"17c51a7017bf044696d3a092ef3262e07d6331a5570657cde9981c8c0732fe7e","sha256":"281fe2c18540ccee381e67cb2ea41f82c5463b17533b4c4cc382ffcd5448e0d6","url":"https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/7156e2d223ac6476e1e62c2d0565314951283e15/kubernetes/advanced-clean-v1/cluster.json"}),Object.freeze({level:'inicial',revision:'17c51a7017bf044696d3a092ef3262e07d6331a5570657cde9981c8c0732fe7e',sha256:'4584e919897107bde2db42addfcdafa09dd2c4968d4562676435ae16a26aa2e7',url:'https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/d0d77b16ba60a235b02554011e89f4781a23eef0/kubernetes/clean-v1/inicial/cluster.json'}),Object.freeze({
- level:'intermedio',revision:'17c51a7017bf044696d3a092ef3262e07d6331a5570657cde9981c8c0732fe7e',
+export const basesPublicadas=Object.freeze([Object.freeze({"level":"avanzado","revision":"a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8","sha256":"281fe2c18540ccee381e67cb2ea41f82c5463b17533b4c4cc382ffcd5448e0d6","url":"https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/7156e2d223ac6476e1e62c2d0565314951283e15/kubernetes/advanced-clean-v1/cluster.json"}),Object.freeze({level:'inicial',revision:'a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8',sha256:'55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d',url:'https://s2ktux-recursos.pages.dev/kubernetes/55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d/cluster.json'}),Object.freeze({
+ level:'intermedio',revision:'a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8',
  sha256:'2e88dd5f575ae0f338fdcb333aa0c55f0e5bec24e467bb4bf182f25050fc59a0',
  url:'https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/91502ceb011e65b550c7c10875a60b83cb7c9ea0/kubernetes/clean-v1/intermedio/cluster.json'
 })]);

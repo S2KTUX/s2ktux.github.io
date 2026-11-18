@@ -1,4 +1,4 @@
-import {descargarFragmentoBase} from './fabrica-cluster.mjs?v=adb42d0139f75c33';
+import {descargarFragmentoBase} from './fabrica-cluster.mjs?v=c320e045489d6b44';
 const sha=value=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
 const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');
 export function validarBaseAvanzada(manifest){
