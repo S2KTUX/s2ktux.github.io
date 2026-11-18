@@ -1,5 +1,5 @@
 {
-  "version": "3.6",
+  "version": "3.7",
   "pendientes": [
     {
       "id": "kubernetes-dos-practicas",
@@ -58,6 +58,17 @@
     }
   ],
   "versiones": [
+    {
+      "version": "3.7",
+      "fecha": "2026-11-18",
+      "resumen": "Corregimos el reinicio del API al entrar en Kubernetes y conservamos las sesiones guardadas.",
+      "cambios": [
+        "Preparamos de nuevo la entrada limpia del nivel inicial después de reiniciar kubelet y comprobar la salud del clúster, antes de abrir la consola. La captura conserva las sondas originales del API y de etcd.",
+        "Comprobamos tres restauraciones de diez minutos: el API respondió en las 33 muestras y no se reinició. En el ensayo remoto también resolvimos tres prácticas y comprobamos guardar, recargar, recuperar y Reset.",
+        "La captura se descarga de Cloudflare en partes de hasta 8 MiB verificadas por SHA-256. Conservamos todos los recursos anteriores y una copia de respaldo verificada.",
+        "Las claves e identidades de los guardados siguen siendo las mismas. Abrimos un guardado anterior con su archivo intacto después de actualizar el ensayo; la captura nueva se utiliza en sesiones nuevas o después de Reset."
+      ]
+    },
     {
       "version": "3.6",
       "fecha": "2026-11-06",

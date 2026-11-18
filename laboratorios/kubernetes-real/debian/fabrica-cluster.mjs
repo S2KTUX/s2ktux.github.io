@@ -20,7 +20,9 @@ export function validarBasePublicada(manifest,config){
 export async function cargarBasePublicada(config,{revision,sessions,notify=()=>{},fetcher=fetch,download=verifiedDownload}={}){
  if(!sha(config?.sha256)||config.revision!==revision||!sha(revision))throw Error('Revisión de base no autorizada');
  const url=new URL(config.url);
- if(url.origin!=='https://raw.githubusercontent.com'||!/^\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/clean-v1\/(inicial|intermedio|avanzado)\/cluster\.json$/.test(url.pathname)||url.search||url.hash)throw Error('Origen de base no autorizado');
+ const repository=url.origin==='https://raw.githubusercontent.com'&&/^\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/clean-v1\/(inicial|intermedio|avanzado)\/cluster\.json$/.test(url.pathname);
+ const resources=url.origin==='https://s2ktux-recursos.pages.dev'&&url.pathname==='/kubernetes/'+config.sha256+'/cluster.json';
+ if((!repository&&!resources)||url.search||url.hash||url.username||url.password)throw Error('Origen de base no autorizado');
  const response=await fetcher(url,{signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('Base preparada no disponible');
  const bytes=await response.arrayBuffer();if(bytes.byteLength>1048576||await digest(bytes)!==config.sha256)throw Error('Manifiesto de base alterado');
  const manifest=validarBasePublicada(JSON.parse(new TextDecoder().decode(bytes)),config),nodes=[];
