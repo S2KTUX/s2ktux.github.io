@@ -1,4 +1,4 @@
-import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs?v=20261020-aprendizaje';
+import {EJERCICIOS_INICIALES} from './ejercicios-iniciales.mjs?v=6abb8bc4610d45e3';
 import {EJERCICIOS_INTERMEDIOS} from './ejercicios-intermedios.mjs?v=20261020-aprendizaje';
 import {EJERCICIOS_ACCESO} from './ejercicios-acceso.mjs?v=d5f8b79c9654a632';
 import {EJERCICIOS_ALMACENAMIENTO} from './ejercicios-almacenamiento.mjs?v=3b28f84ff9272863';
@@ -10,7 +10,7 @@ import {EJERCICIOS_DNS} from './ejercicios-dns.mjs?v=f366bac777648677';
 import {EJERCICIOS_GATEWAY} from './ejercicios-gateway.mjs?v=e5fbd6c9d0ff7534';
 import {EJERCICIOS_ADMINISTRACION} from './ejercicios-administracion.mjs?v=2b2d167de12692a8';
 import {EJERCICIOS_MONTAJE} from './ejercicios-montaje.mjs?v=ab806a32b87df297';
-import {EJERCICIOS_HA} from './ejercicios-ha.mjs?v=852b4d889e7f7991';
+import {EJERCICIOS_HA} from './ejercicios-ha.mjs?v=75971a7d56559b9b';
 import {EJERCICIOS_CICLO_CLUSTER} from './ejercicios-ciclo-cluster.mjs?v=dc04eeb8c2c4a467';
 import {EJERCICIOS_AVANZADOS} from './ejercicios-avanzados.mjs?v=4830fb2406b6ce0f';
 import {exigirJSON} from './comprobaciones-json.mjs';

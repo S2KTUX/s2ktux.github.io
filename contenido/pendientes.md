@@ -2,6 +2,7 @@
 
 Esta lista cambia con el proyecto. Las mejoras comprobadas salen de aquí y pasan al historial de Sobre.
 
+- **Kubernetes:** Terminar la validación del copiado por alternativa, el guardado sin esperas añadidas y los reintentos de salud. Añadir las notas de memoria de los tres niveles, HA y examen antes de publicar estos ajustes.
 - **Kubernetes:** Mantener dos prácticas por contenido, como en Linux y Docker: una sencilla y otra para aplicar lo aprendido. Revisar su relación con el curso, sin añadir una tercera práctica ni ejercicios a la clase 00.
 - **Laboratorios:** Comprobar la persistencia tras reiniciar antes de puntuar el simulacro, con respaldo y tratamiento de máquinas que no consiguen arrancar.
 - **Laboratorios:** Aplicar al simulacro de Linux el guardado conjunto de máquinas, intento y cronómetro. En Kubernetes ya se puede guardar y reanudar el intento tras recargar.

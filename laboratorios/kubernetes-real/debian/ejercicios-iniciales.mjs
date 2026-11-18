@@ -23,6 +23,7 @@ const absent=(kind,name)=>'test -z "$(kubectl -n default get '+kind+' '+name+' -
 const rollout=name=>'kubectl -n default rollout status deployment/'+name+' --timeout=180s';
 const serving=(name,text)=>'test "$(kubectl -n default exec deployment/'+name+' -- wget -T 5 -qO- http://127.0.0.1:8080/)" = '+quote(text);
 const ready=name=>'kubectl -n default wait --for=condition=Ready pod/'+name+' --timeout=120s';
+const logs=(name,text)=>'{ attempts=0; until output=$(kubectl -n default logs '+name+' --request-timeout=30s); do attempts=$((attempts+1)); test "$attempts" -lt 3 || exit 1; sleep 2; done; test "$output" = '+quote(text)+'; }';
 const cleanupResource=(kind,name)=>'kubectl -n default delete '+kind+' '+name+' --ignore-not-found --wait=true --timeout=90s';
 const entries=[];
 function add(classNumber,letter,title,prompt,solution,check,options={}){
@@ -52,7 +53,7 @@ add(1,'b','Comprobar los servicios de Linux',
 add(2,'a','Tu primer Pod',
  'En default crea el Pod saludo con '+image+'. Debe escribir Hola Kubernetes una sola vez y terminar correctamente, sin reiniciarse.',
  'kubectl -n default run saludo --image='+image+' --image-pull-policy=Never --restart=Never --command -- sh -c \'echo Hola Kubernetes\'\nkubectl -n default wait --for=jsonpath=\'{.status.phase}\'=Succeeded pod/saludo --timeout=120s',
- 'kubectl -n default get pod saludo -o json | jq -e \'.spec.restartPolicy=="Never" and .spec.containers[0].image=="'+image+'" and .status.phase=="Succeeded" and .status.containerStatuses[0].state.terminated.exitCode==0\' && test "$(kubectl -n default logs saludo)" = \'Hola Kubernetes\'',
+ 'kubectl -n default get pod saludo -o json | jq -e \'.spec.restartPolicy=="Never" and .spec.containers[0].image=="'+image+'" and .status.phase=="Succeeded" and .status.containerStatuses[0].state.terminated.exitCode==0\' && '+logs('saludo','Hola Kubernetes'),
  {prepare:[absent('pod','saludo')],cleanup:cleanupResource('pod','saludo'),negative:cleanupResource('pod','saludo')});
 add(2,'b','Trabajar dentro del contenedor',
  'En default crea el Pod utilidades con '+image+' y sleep 3600. Dentro de su contenedor crea /tmp/mensaje.txt con el contenido PRACTICA_PODS.',

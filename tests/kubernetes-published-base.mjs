@@ -21,7 +21,9 @@ assert.deepEqual(revisionesCompatibles[release34],[previousPublished,...revision
 const oldPreparation='17c51a7017bf044696d3a092ef3262e07d6331a5570657cde9981c8c0732fe7e';
 assert.deepEqual(revisionesCompatibles[oldPreparation],[release34,...revisionesCompatibles[release34]],'Conservar el historial de la base anterior');assert.equal(revisionesCompatibles[oldPreparation].length,20);
 assert.notEqual(current,oldPreparation,'La captura normalizada utiliza otra revisión de caché limpia');
-assert.equal(revisionesCompatibles[current],undefined,'La nueva caché no debe migrar la captura inicial con reinicios');
+const stablePreparation='a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8';
+assert.equal(revisionesCompatibles[stablePreparation],undefined,'La caché estable no debe migrar la captura inicial con reinicios');
+assert.deepEqual(revisionesCompatibles[current],[stablePreparation],'El arreglo HTTP de HA conserva solo las bases estables idénticas');
 const publishedInitial=basesPublicadas.find(base=>base.level==='inicial');
 assert.equal(publishedInitial.sha256,'55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d');
 assert.equal(publishedInitial.url,'https://s2ktux-recursos.pages.dev/kubernetes/'+publishedInitial.sha256+'/cluster.json');

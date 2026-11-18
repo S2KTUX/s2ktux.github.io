@@ -30,10 +30,14 @@ async function request(path,port){
   }
  }
 }
-await request('/lab/runtime-1.35.tar.gz',42001);assert.equal(server.stats.requests,1);
+await request('/lab/runtime-1.35.tar.gz',42003);assert.equal(server.stats.requests,1);
+// Reproducir el alojamiento real HTTPS, donde el adaptador eleva el esquema.
+globalThis.window={location:{protocol:'https:'}};
+await request('/lab/runtime-1.35.tar.gz',42001);assert.equal(server.stats.requests,2);
 assert.ok(frames.some(frame=>new TextDecoder().decode(frame.subarray(54)).includes('HTTP/1.1 200')));
 assert.ok(frames.some(frame=>new TextDecoder().decode(frame.subarray(54)).includes('ARCHIVO_LOCAL_REAL')));
-await request('/otra-ruta',42002);assert.equal(server.stats.requests,1);assert.ok(frames.some(frame=>new TextDecoder().decode(frame.subarray(54)).includes('HTTP/1.1 404')));
+await request('/otra-ruta',42002);assert.equal(server.stats.requests,2);assert.ok(frames.some(frame=>new TextDecoder().decode(frame.subarray(54)).includes('HTTP/1.1 404')));
 const count=frames.length,foreign=arp.slice();foreign.set([10,77,0,10],28);listeners.get('net0-send')(foreign);assert.equal(frames.length,count);
 server.close();assert.equal(listeners.size,0);
+delete globalThis.window;
 console.log('HTTP local: ARP/TCP y contenido real, segunda IP del escenario, ruta ajena404, tráfico de otro nodo ignorado y cierre. No acredita init/join ni el SHA del archivo distribuido.');

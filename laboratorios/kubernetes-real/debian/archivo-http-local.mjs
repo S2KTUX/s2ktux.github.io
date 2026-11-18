@@ -37,7 +37,9 @@ export async function servirArchivoRuntime(bus,id,buffer,{copyFrame=bytes=>new U
  };
  const adapter=new FetchNetworkAdapter(filtered,{router_ip:address.join('.'),router_mac:'02:42:00:00:fe:02',vm_ip:source.join('.'),masquerade:false,dns_method:'static'});
  adapter.fetch=async(url,options)=>{
-  if(!active||url!==urlRuntimeHA||options?.method!=='GET')return new Response('No disponible',{status:404});
+  // El adaptador cambia http a https cuando la página anfitriona usa HTTPS.
+  // La petición sigue siendo local: nunca se envía a Internet.
+  if(!active||(url!==urlRuntimeHA&&url!==urlRuntimeHA.replace('http:','https:'))||options?.method!=='GET')return new Response('No disponible',{status:404});
   stats.requests++;return new Response(data,{headers:{'Content-Type':'application/gzip','Content-Length':String(size)}});
  };
  return {url:urlRuntimeHA,stats,close(){active=false;for(const [event,handler] of callbacks)bus.unregister?.(event,handler);for(const connection of Object.values(adapter.tcp_conn))connection.close?.();local.clear();data=null;}};

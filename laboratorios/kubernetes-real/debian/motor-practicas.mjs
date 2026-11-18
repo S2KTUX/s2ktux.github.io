@@ -1,10 +1,26 @@
 // Un fallo de transporte no equivale a un ejercicio mal resuelto.
-export async function comprobarPractica(task,run){
+export async function comprobarPractica(task,run,{now=Date.now,sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms))}={}){
+ const deadline=now()+180000;
+ const health=async()=>{
+  let recovering=false;
+  do{
+   try{
+    const remaining=deadline-now();
+    const seconds=Math.max(1,Math.min(25,Math.floor((remaining-2000)/1000)));
+    const script=("set -eu; "+task.preflight).replaceAll("'","'\\''");
+    const result=await run('controlplane',recovering?'El clúster se está recuperando, vuelve a intentarlo':'Comprobar disponibilidad antes de corregir',"timeout -k 2 "+seconds+" sh -c '"+script+"'",Math.max(1,Math.min(45000,remaining)));
+    if(result?.ok===true)return true;
+   }catch{}
+   recovering=true;
+   if(now()>=deadline)return false;
+   await sleep(Math.min(5000,deadline-now()));
+  }while(now()<deadline);
+  return false;
+ };
  if(!task?.id||typeof task.check!=='string'||!task.check.trim())throw Error('Práctica sin comprobador');
  try{
   if(task.preflight){
-   const health=await run('controlplane','Comprobar disponibilidad antes de corregir','set -eu; '+task.preflight,45000);
-   if(health?.ok!==true)return {id:task.id,state:'unverified',passed:null,message:'El clúster no responde correctamente. No se ha calificado el ejercicio.'};
+   if(!await health())return {id:task.id,state:'unverified',passed:null,message:'El clúster se está recuperando, vuelve a intentarlo'};
   }
   let result=await run('controlplane','Comprobar '+task.title,'set -eu; '+task.check,180000);
   // Una incorporación no queda acreditada solo por ver Ready desde el CP:
