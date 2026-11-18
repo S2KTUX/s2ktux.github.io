@@ -15,7 +15,7 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=01345b78430632a1';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=00a9494a1356d24e';
 import {ordenSaludAPIHA,esperarAPIsHARecuperadas} from './salud-ha.mjs?v=4319be87a1d35356';
 import {ordenSaludInicial} from './salud-inicial.mjs?v=c634a9a627305264';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';

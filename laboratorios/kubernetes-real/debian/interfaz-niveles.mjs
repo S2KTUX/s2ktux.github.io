@@ -8,9 +8,13 @@ import {solutionsFor} from '../../solution-options.mjs?v=20261020-aprendizaje';
 import {practiceProgress} from '../../practice-progress.mjs?v=20261021-resueltas';
 import {urlEscenarioCurso,entornoEjercicio,clasePermitidaEscenario} from './escenarios-curso.mjs?v=4fe1a4528b2e23b6';
 
+export function solicitarPersistenciaEnSegundoPlano(request=()=>navigator.storage?.persist?.()){
+ void Promise.resolve().then(request).catch(()=>{});
+}
+
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
- $('save-cluster').addEventListener('click',()=>setTimeout(()=>{void navigator.storage?.persist?.().catch(()=>false);},0));
+ $('save-cluster').addEventListener('click',()=>setTimeout(solicitarPersistenciaEnSegundoPlano,0));
  const currentURL=new URL(location.href),prepared=new Set();
  let activeClass=claseDesdeURL(currentURL.searchParams,level),preview=level,previewClass=activeClass;
  let switching=false,checking=false,entered=false,wasInitialized=false,learningMode=null,freeMode=false,examPractice=false;
