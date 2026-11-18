@@ -31,7 +31,7 @@ function prepareSession(){
  if(initializing||dockerShellReady)return;initializing=true;
  const clock=record?`date -u -s @${Math.floor(Date.now()/1000)} >/dev/null; `:'';
  const defaultTag=record?'':'docker image inspect alpine:latest >/dev/null 2>&1 || docker tag alpine:3.23 alpine:latest; ';
- const result=checker.run({checks:[['Docker disponible',clock+'for n in $(seq 1 45); do test -S /var/run/docker.sock && docker version >/dev/null 2>&1 && { '+defaultTag+'exit 0; }; sleep 1; done; exit 1']]});
+ const result=checker.run({checks:[['Docker disponible',clock+'for n in $(seq 1 120); do test -S /var/run/docker.sock && docker version >/dev/null 2>&1 && { '+defaultTag+'exit 0; }; sleep 1; done; exit 1',120]]});
  busy=true;save.disabled=true;reset.disabled=true;status.textContent='Preparando Docker…';
  result.then(r=>{if(!r.ok)throw Error('Docker no ha terminado de arrancar.');globalThis.dockerShellReady=true;status.textContent=record?'Sesión recuperada.':'Laboratorio disponible.';}).catch(e=>{dockerErrors.push(e.message);status.textContent=e.message;}).finally(()=>{busy=false;save.disabled=false;reset.disabled=false;syncPractice();});
 }
