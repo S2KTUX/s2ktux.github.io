@@ -4,7 +4,7 @@
     {
       "id": "kubernetes-memoria-ha",
       "tema": "Kubernetes",
-      "texto": "Medir el consumo de HA con los tres control planes listos y completar su nota de equipo. La mejora del cargador de su futura base publicada está probada de forma aislada; falta integrarla y validarla con la base real."
+      "texto": "Resolver la preparación de HA y medirlo con los tres control planes listos. En la prueba bajo carga no alcanzó Ready en 40 minutos; se observaron esperas de etcd al incorporar el tercer nodo. La mejora del cargador de su futura base publicada sigue pendiente de integrar y validar con la base real."
     },
     {
       "id": "kubernetes-dos-practicas",
