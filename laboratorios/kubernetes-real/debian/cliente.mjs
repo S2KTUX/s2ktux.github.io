@@ -1,7 +1,7 @@
 import {capturarCheckpointExterno,prepararRestauracionDiscosExternos} from '../checkpoint-discos.mjs?v=b410b9411a1ecd95';
 import {loadEngine,engineHash} from '../perfil-motor.mjs?v=5498b3f4299b2d80';
 import {Terminal} from '/laboratorios/docker-real/vendor/xterm.mjs';
-import {ChunkDisk} from '../disco-kubernetes.mjs?v=0576afa02b3f1762';
+import {ChunkDisk} from '../disco-kubernetes.mjs?v=a4680d3c99966a44';
 import {createEthernetInternet} from '/laboratorios/docker-real/ethernet-internet.mjs';
 import {attachTerminalClipboard} from '/laboratorios/docker-real/v86-clipboard.mjs';
 import {createKubeChecks} from '../serial-checks.mjs?v=87535b5febf9085c';
@@ -11,7 +11,7 @@ import {liberarEstadoInicial} from '../liberar-arranque.mjs';
 import {KubeSessions} from '../kube-sessions.mjs?v=601d790381d8bc16';
 import {hashBytes} from '/laboratorios/docker-real/v86-sessions.mjs';
 import {prepararWorkerDebian,perfilWorker} from './preparar-worker.mjs';
-import {ThreadVM} from '../motor-hilo.mjs?v=3f325acb4a680864';
+import {ThreadVM} from '../motor-hilo.mjs?v=cddb3621f22d182e';
 import {ordenPromptDinamico,promptConfirmado} from './prompt.mjs';
 import {identidadNodoDebian} from './sesiones-cluster.mjs?v=11a5d7a0fcdfee23';
 import {comandosTlsLaboratorio,comandosTlsApiServer,ordenEntornoTls,entornoTlsConfirmado} from './tls-laboratorio.mjs';

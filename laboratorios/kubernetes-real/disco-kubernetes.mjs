@@ -42,7 +42,9 @@ export class ChunkDisk extends BaseDisk{
     const packed=await bloqueVerificado(url,{hash:part.packedSha256,bytes:part.packedBytes,onCacheHit:()=>this.stats.cacheHits++,download:async()=>{
      const bytes=await descargarBloque(url,{onRetry:()=>this.stats.retries++});this.stats.requests++;this.stats.downloadedBytes+=bytes.length;return bytes;
     }});
-    if(packed.length!==part.packedBytes||await digest(packed)!==part.packedSha256)throw Error('Hash o tamaño del fragmento comprimido incorrecto');
+    // bloqueVerificado ya comprueba tamaño y SHA-256, tanto desde red como
+    // desde caché. No volver a recorrer el mismo bloque comprimido aquí.
+    if(packed.length!==part.packedBytes)throw Error('Tamaño del fragmento comprimido incorrecto');
     data=await unpack(packed,part.bytes);
    }
    if(await digest(data)!==part.sha256)throw Error('Fragmento alterado');

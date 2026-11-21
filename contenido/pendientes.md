@@ -2,7 +2,7 @@
 
 Esta lista cambia con el proyecto. Las mejoras comprobadas salen de aquí y pasan al historial de Sobre.
 
-- **Kubernetes:** Medir el consumo de HA con los tres control planes listos y completar su nota de equipo.
+- **Kubernetes:** Medir el consumo de HA con los tres control planes listos y completar su nota de equipo. La mejora del cargador de su futura base publicada está probada de forma aislada; falta integrarla y validarla con la base real.
 - **Kubernetes:** Mantener dos prácticas por contenido, como en Linux y Docker: una sencilla y otra para aplicar lo aprendido. Revisar su relación con el curso, sin añadir una tercera práctica ni ejercicios a la clase 00.
 - **Laboratorios:** Comprobar la persistencia tras reiniciar antes de puntuar el simulacro, con respaldo y tratamiento de máquinas que no consiguen arrancar.
 - **Laboratorios:** Aplicar al simulacro de Linux el guardado conjunto de máquinas, intento y cronómetro. En Kubernetes ya se puede guardar y reanudar el intento tras recargar.

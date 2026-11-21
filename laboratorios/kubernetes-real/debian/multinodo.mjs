@@ -1,6 +1,6 @@
 import {apartarManifiestosHA,restaurarManifiestosHA,arrancarAPIsHAEnOrden} from './arranque-ha-discos.mjs?v=409ac9a11399d82f';
 import {SesionesDiscosHA} from './sesiones-ha-discos.mjs?v=47182e9f6caade91';
-import {BasesLimpiasExamen,REVISION_EXAMEN,PREPARACIONES_EXAMEN_COMPATIBLES} from './examen-cache.mjs?v=82eb51d9a85dacf4';
+import {BasesLimpiasExamen,REVISION_EXAMEN,PREPARACIONES_EXAMEN_COMPATIBLES} from './examen-cache.mjs?v=38bb36e57d8a63e5';
 import {BASE_EXAMEN_PUBLICADA,cargarBaseExamen} from './examen-base-publicada.mjs?v=d29813af99384114';
 import {cargarBaseAvanzada} from './base-avanzada-publicada.mjs?v=e68e2f3d5d35ad48';
 import {ordenRetirarWorkerExamen} from './examen-runtime.mjs?v=bf0f315f540fa13e';
@@ -21,14 +21,14 @@ import {ordenSaludInicial} from './salud-inicial.mjs?v=c634a9a627305264';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=88821d6eaeb21bd5';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=0b809b3940f9dc11';
-import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=392a8f80cdd95406';
+import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=de11f0d7a05a16fc';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=c320e045489d6b44';
 import {escenarioCurso} from './escenarios-curso.mjs?v=4fe1a4528b2e23b6';
 import {prepararMontajeManual} from './montaje-manual-curso.mjs?v=9d4672bb487ea6e8';
 import {prepararClusterHA,clienteHAQuery} from './ha-curso.mjs?v=1cd66385d0612049';
 import {SesionesHA,BasesLimpiasHA} from './sesiones-ha.mjs?v=da53704e47cf028e';
 import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=60a21559ace773d9';
-const cleanRevision='c7a3f374e211737a7604a3486229d8269431ef8476270d2cc966e7c5ccf70ef8';
+const cleanRevision='2865a208976d945518cff48de1438f520488edffd0b7cb3934ae5c491277a607';
 const examRuntime=document.documentElement.dataset.ckaExam==='true';
 const releaseAvailable=()=>{if(examRuntime)return scenario?.exam===true&&factoryVersion==='v15'&&level==='avanzado';const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
@@ -44,7 +44,7 @@ const schedulingAPI=new URLSearchParams(location.search).get('use-scheduling-api
 if(['v8','v13','v14','v15'].includes(factoryVersion)&&(!schedulingAPI||integratedPolicies||(progressive&&level!=='avanzado')))throw Error('Administración requiere Scheduler API, sin políticas integradas y nivel avanzado');
 const scenario=escenarioCurso(new URLSearchParams(location.search).get('escenario'),{factoryVersion,level});
 const classicalTls=new URLSearchParams(location.search).get('tls')==='classical'||factoryVersion!=='v1';
-const nodeUIRevision='c1e990968b246dfa';
+const nodeUIRevision='e522b5d9d187f37c';
 const workerComponents=['v8','v13','v14','v15'].includes(factoryVersion)?'v7':new URLSearchParams(location.search).get('netpol')==='metrics386'||(progressive&&level!=='inicial')?'v8':'v7';
 // Recuperación desde discos HA: candidato solo local hasta validarlo.
 const persistentHA=scenario?.ha&&['127.0.0.1','localhost','[::1]'].includes(location.hostname)&&new URLSearchParams(location.search).get('ha-disks')==='1';

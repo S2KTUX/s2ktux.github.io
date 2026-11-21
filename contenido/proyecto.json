@@ -4,7 +4,7 @@
     {
       "id": "kubernetes-memoria-ha",
       "tema": "Kubernetes",
-      "texto": "Medir el consumo de HA con los tres control planes listos y completar su nota de equipo."
+      "texto": "Medir el consumo de HA con los tres control planes listos y completar su nota de equipo. La mejora del cargador de su futura base publicada está probada de forma aislada; falta integrarla y validarla con la base real."
     },
     {
       "id": "kubernetes-dos-practicas",

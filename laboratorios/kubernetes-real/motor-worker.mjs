@@ -1,6 +1,6 @@
 import {capturarDiscosPersistentes,capturarCheckpointExterno,prepararRestauracionDiscosExternos} from './checkpoint-discos.mjs?v=b410b9411a1ecd95';
 import {loadEngine} from './perfil-motor.mjs?v=5498b3f4299b2d80';
-import {ChunkDisk} from './disco-kubernetes.mjs?v=0576afa02b3f1762';
+import {ChunkDisk} from './disco-kubernetes.mjs?v=a4680d3c99966a44';
 import {createEthernetInternet} from '/laboratorios/docker-real/ethernet-internet.mjs';
 import {instrumentEngine} from './estadisticas-motor.mjs';
 import {liberarEstadoInicial} from './liberar-arranque.mjs';
