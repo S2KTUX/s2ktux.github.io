@@ -1,15 +1,20 @@
 import {NIVELES,urlNivel,cambiarNivel} from './niveles.mjs';
 import {clasesNivel,claseDesdeURL} from './clases-curso.mjs';
-import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=0061a01441902053';
-import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=cfd58f60d936f4b5';
+import {ejerciciosClase,ejerciciosExamen} from './ejercicios-niveles.mjs?v=0cc625f4b976cf59';
+import {comprobarPractica,prepararPractica} from './motor-practicas.mjs?v=8154fbc4088414ce';
 import {claseDisponible,nivelDisponible} from './disponibilidad-curso.mjs?v=88821d6eaeb21bd5';
 import {renderSolutions} from '../../lab-solutions.mjs?v=20261020-aprendizaje';
 import {solutionsFor} from '../../solution-options.mjs?v=20261020-aprendizaje';
 import {practiceProgress} from '../../practice-progress.mjs?v=20261021-resueltas';
 import {urlEscenarioCurso,entornoEjercicio,clasePermitidaEscenario} from './escenarios-curso.mjs?v=4fe1a4528b2e23b6';
 
+export function solicitarPersistenciaEnSegundoPlano(request=()=>navigator.storage?.persist?.()){
+ void Promise.resolve().then(request).catch(()=>{});
+}
+
 export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,start=()=>document.querySelector('#start-cluster').click(),navigate=href=>location.assign(href)}){
  const $=id=>document.getElementById(id),config=NIVELES[level];
+ $('save-cluster').addEventListener('click',()=>setTimeout(solicitarPersistenciaEnSegundoPlano,0));
  const currentURL=new URL(location.href),prepared=new Set();
  let activeClass=claseDesdeURL(currentURL.searchParams,level),preview=level,previewClass=activeClass;
  let switching=false,checking=false,entered=false,wasInitialized=false,learningMode=null,freeMode=false,examPractice=false;
@@ -24,6 +29,10 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
  }
  const levelQuestions=clasesNivel(level).reduce((total,lesson)=>total+ejerciciosClase(lesson.number).length,0);
  const levelNodes=config.nodes===1?'Un nodo':config.nodes===2?'Control plane y un worker':'Control plane y dos workers';
+ const equipment=document.createElement('p');equipment.className='lab-footnote';equipment.id='lab-equipment-note';
+ equipment.hidden=getState().scenarioId==='ha-cluster';
+ equipment.textContent='* '+({inicial:'Recomendado: 16 GB de RAM. Con el clúster listo, el navegador usó unos 5,2 GB.',intermedio:'Recomendado: 16 GB de RAM. Con los dos nodos listos, el navegador usó unos 6,8 GB.',avanzado:'Recomendado: 32 GB de RAM. Con los tres nodos listos, el navegador usó unos 11 GB.'}[level])+' Chrome o Edge; Firefox puede tardar más.';
+ document.querySelector('.lab-machine-actions').after(equipment);
  $('lab-course-note').textContent=getState().scenarioId==='montaje-cluster'?'* Clases 25–26 · Una copia de montaje con control plane y dos workers.':getState().scenarioId==='ha-cluster'?'* Clase 24 · Tres control planes con balanceador redundante. Su guardado es independiente de las otras prácticas.':'* Clases '+config.classes+' · '+levelNodes+' · '+levelQuestions+' preguntas disponibles.';
  $('course-intro').hidden=true;$('course-progression').hidden=true;$('mode-topology').hidden=true;$('change-lab').hidden=false;
  $('exercise-class-select').replaceChildren(...clasesNivel(level).map(lesson=>{
@@ -78,7 +87,7 @@ export function montarInterfazNiveles({level,getState,run,setBusy,save,stop,star
   $('exercise-select').hidden=$('exercise-count').hidden=!current;
   $('exercise-select').closest('.exercise-field').hidden=!current;
   $('exercise-title').textContent=current?.title||'';$('exercise-prompt').textContent=current?.prompt||'';
-  renderSolutions($('exercise-solution'),current?solutionsFor('kubernetes',current):[]);
+  renderSolutions($('exercise-solution'),current?solutionsFor('kubernetes',current):[],{copy:true});
   const labNote=$('exercise-lab-note');if(labNote){labNote.hidden=!current?.labNote;labNote.textContent=current?.labNote?'* '+current.labNote:'';}
   $('exercise-count').textContent=current?'Práctica '+(Number($('exercise-select').value)+1)+' / '+items.length:'';
   $('exercise-help').hidden=true;$('exercise-solution-toggle').textContent='Ver solución';$('exercise-solution-toggle').setAttribute('aria-expanded','false');$('exercise-result').textContent='';delete $('exercise-result').dataset.result;update();

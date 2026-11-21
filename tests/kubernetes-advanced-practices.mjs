@@ -61,6 +61,8 @@ assert.deepEqual(steps.map(args=>args[2]),['set -eu; echo cp','set -eu; echo wor
 for(const task of tasks){
  const positive=await comprobarPractica(task,async()=>({ok:true}));assert.equal(positive.state,'correct');
  const partial=await comprobarPractica(task,async(node,label)=>({ok:!label.startsWith('Comprobar '+task.title)&&!label.startsWith('Revisar '+task.title)}));assert.equal(partial.state,'incomplete');
- const failure=await comprobarPractica(task,async()=>{throw Error('UART sin respuesta');});assert.equal(failure.state,'unverified');
+ let clock=0;
+ const failure=await comprobarPractica(task,async()=>{throw Error('UART sin respuesta');},{now:()=>clock,sleep:async ms=>{clock+=ms;}});assert.equal(failure.state,'unverified');
+ if(task.preflight)assert.equal(clock,180000,'Agotar el plazo virtual de recuperación sin esperas reales en la prueba');
 }
 console.log('Banco conjunto 29–34: 18 candidatos, API caída solo en copia desechable, sintaxis shell, límites UART y resultados de transporte. No sustituye la aceptación nativa.');

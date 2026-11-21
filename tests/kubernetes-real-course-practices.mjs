@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {readFile} from 'node:fs/promises';
 import {CLASES,clasesNivel,nivelClase,claseDesdeURL} from '../laboratorios/kubernetes-real/debian/clases-curso.mjs';
 import {EJERCICIOS_INICIALES} from '../laboratorios/kubernetes-real/debian/ejercicios-iniciales.mjs';
@@ -12,6 +13,9 @@ assert.equal(CLASES.length,35);assert.deepEqual(['inicial','intermedio','avanzad
 assert.equal(nivelClase(23),'intermedio');assert.equal(nivelClase(24),'avanzado');assert.throws(()=>nivelClase(35));
 assert.equal(claseDesdeURL(new URLSearchParams('clase=19'),'intermedio'),19);assert.throws(()=>claseDesdeURL(new URLSearchParams('clase=19'),'inicial'));
 assert.equal(EJERCICIOS_INICIALES.length,14);
+const initialSource=(await readFile(new URL('../laboratorios/kubernetes-real/debian/ejercicios-iniciales.mjs',import.meta.url),'utf8')).replaceAll('\r\n','\n');
+const initialHash=createHash('sha256').update(initialSource).digest('hex').slice(0,16);
+assert.ok((await readFile(new URL('../laboratorios/kubernetes-real/debian/ejercicios-niveles.mjs',import.meta.url),'utf8')).includes('./ejercicios-iniciales.mjs?v='+initialHash),'El navegador debe pedir la revisión actual del probe de logs');
 assert.equal(EJERCICIOS_INTERMEDIOS.length,10);
 assert.deepEqual(ejerciciosClase(0),[]);assert.equal(claseDesdeURL(new URLSearchParams('clase=0'),'inicial'),1);
 for(let number=1;number<=11;number++)assert.equal(ejerciciosClase(number).length,number<=3||number===5?2:number===6||number===7?3:4);
@@ -34,7 +38,10 @@ assert.equal((await comprobarPractica(fixture,async()=>({ok:true}))).state,'corr
 assert.equal((await comprobarPractica(fixture,async()=>({ok:false}))).state,'incomplete');
 assert.equal((await comprobarPractica(fixture,async()=>{throw Error('timeout');})).passed,null);
 assert.equal((await comprobarPractica(fixture,async()=>undefined)).state,'unverified');
-assert.equal((await comprobarPractica({...fixture,preflight:'health'},async()=>({ok:false}))).state,'unverified');
+let clock=0;const retryClock={now:()=>clock,sleep:async ms=>{clock+=ms;}};
+assert.equal((await comprobarPractica({...fixture,preflight:'health'},async()=>({ok:false}),retryClock)).state,'unverified');
+assert.equal(clock,180000);
+let recovering=0;assert.equal((await comprobarPractica({...fixture,preflight:'health'},async()=>({ok:++recovering>2}),retryClock)).state,'correct');
 let calls=0;
 assert.equal((await comprobarPractica({...fixture,preflight:'health'},async()=>({ok:++calls===1}))).state,'unverified');
 assert.equal(calls,3);

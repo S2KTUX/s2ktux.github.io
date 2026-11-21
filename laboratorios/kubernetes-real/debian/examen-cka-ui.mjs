@@ -1,3 +1,4 @@
+import {renderSolutions} from '../../lab-solutions.mjs';
 import {TAREAS_CKA} from './examen-cka-banco.mjs?v=146843198f26771b';
 import {nuevoIntento,informeCKA,prepararExamenCKA,prepararCredencialExamen,corregirExamenCKA,CKA_CREDENTIAL_DIR} from './examen-cka-motor.mjs?v=8586ddf673b18865';
 import {SesionesExamen} from './sesiones-examen.mjs?v=0fb81b015ee71b34';
@@ -12,6 +13,7 @@ const run=(node,label,command,timeout)=>globalThis.kubeDebianClusterCheck(node,l
 globalThis.kubeDebianExamRun=run;
 $('exam-intro-text').textContent=say('Dos horas, 100 puntos y aprobado desde 66. La preparación de las máquinas queda fuera del tiempo. Podrás finalizar cuando quieras.','Two hours, 100 points, passing score 66. Machine preparation is not timed. You can finish at any time.');
 $('exam-session-note').textContent=say('* Guarda antes de salir. Hay guardado cada cinco minutos con las terminales libres. El tiempo sigue corriendo al cerrar.','* Save before leaving. Autosave runs every five minutes when the terminals are idle. Time keeps running while the page is closed.');
+const equipment=document.createElement('p');equipment.className='lab-footnote';equipment.textContent=say('* Recomendado: 32 GB de RAM y Chrome o Edge. Con el clúster listo, el navegador usó unos 10,9 GB en la prueba. Firefox puede tardar más.','* Recommended: 32 GB RAM and Chrome or Edge. With the cluster ready, the browser used about 10.9 GB in testing. Firefox may take longer.');$('exam-intro').append(equipment);
 $('save-exam').textContent=say('Guardar intento','Save attempt');
 $('resume-exam').textContent=say('Reanudar intento','Resume attempt');
 $('begin-exam').textContent=say('Preparar e iniciar','Prepare and start');$('finish-exam').textContent=say('Finalizar examen','Finish exam');$('exam-mark-label').textContent=say('Marcar para revisar','Flag for review');
@@ -43,7 +45,7 @@ function showResults(report){
  for(const [i,result]of report.tasks.entries()){
   const task=TAREAS_CKA[i],item=el('details'),summary=el('summary',say('Pregunta ','Task ')+(i+1)+` · ${result.earned}/${result.max}`);summary.dataset.result=result.conditions.includes(null)?'unverified':result.earned===result.max?'correct':result.earned>0?'incomplete':'incorrect';item.append(summary);item.append(el('p',task.prompt[lang]));
   const list=el('ul');for(const [n,value]of result.conditions.entries()){const condition=el('li',(value===true?'✓ ':value===false?'✗ ':'? ')+task.conditions[n].label[lang]);condition.dataset.result=value===true?'correct':value===false?'incorrect':'unverified';list.append(condition);}item.append(list);
-  item.append(el('h3',say('Solución de referencia','Reference solution')),el('pre',task.solution));details.append(item);
+  const solution=el('div');solution.className='lab-solutions';renderSolutions(solution,[{code:task.solution}],{copy:true});item.append(el('h3',say('Solución de referencia','Reference solution')),solution);details.append(item);
  }
  section.append(details);section.hidden=false;
 }
@@ -73,7 +75,7 @@ async function begin(resume){
  $('begin-exam').disabled=$('resume-exam').disabled=true;$('exam-error').textContent='';
  try{
   globalThis.kubeDebianExamResumeRequested=resume;
-  await import('./multinodo.mjs?v=704e1289c749bde2');
+  await import('./multinodo.mjs?v=fe52edfe7dd94eaa');
   document.querySelector('h1').textContent=say('Simulacro CKA','CKA mock exam');
   await $('start-cluster').onclick();
   if(!globalThis.kubeDebianClusterReady||globalThis.kubeDebianClusterErrors?.length)throw Error(say('El clúster no está disponible. No ha comenzado el tiempo.','The cluster is not ready. The timer has not started.'));

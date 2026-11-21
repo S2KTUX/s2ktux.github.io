@@ -24,6 +24,7 @@ async function replaceRequired(path,pattern,replacement){
 }
 for(const [parent,prefix]of [['disco-kubernetes.mjs','./'],['perfil-motor.mjs','./'],['debian/fabrica.mjs','../'],['debian/cliente.mjs','../'],['debian/archivo-http-local.mjs','../']])await replaceRequired(parent,/from '(?:\.\/|\.\.\/)recursos-publicados\.mjs(?:\?v=[a-f0-9]+)?'/,"from '"+prefix+"recursos-publicados.mjs?v="+await revision('recursos-publicados.mjs')+"'");
 await replaceRequired('debian/archivo-http-local.mjs',/import\('\.\/vendor\/fetch-network\.mjs(?:\?v=[a-f0-9]+)?'\)/,"import('./vendor/fetch-network.mjs?v="+await revision('debian/vendor/fetch-network.mjs')+"')");
+await replaceRequired('debian/ejercicios-niveles.mjs',/from '\.\/ejercicios-iniciales\.mjs(?:\?v=[a-zA-Z0-9-]+)?'/,"from './ejercicios-iniciales.mjs?v="+await revision('debian/ejercicios-iniciales.mjs')+"'");
 for(const parent of ['debian/sesiones-cluster.mjs','debian/multinodo.mjs','debian/interfaz-niveles.mjs'])await replaceRequired(parent,/from '\.\/escenarios-curso\.mjs(?:\?v=[a-f0-9]+)?'/,"from './escenarios-curso.mjs?v="+await revision('debian/escenarios-curso.mjs')+"'");
 // Dependencias HA primero; ninguna captura de estudio se convierte al perfil HA.
 for(const [parent,children] of [
