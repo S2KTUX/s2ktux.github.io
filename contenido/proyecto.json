@@ -1,10 +1,10 @@
 {
-  "version": "3.7",
+  "version": "3.8",
   "pendientes": [
     {
-      "id": "kubernetes-ajustes-ligeros",
+      "id": "kubernetes-memoria-ha",
       "tema": "Kubernetes",
-      "texto": "Terminar la validación del copiado por alternativa, el guardado sin esperas añadidas y los reintentos de salud. Añadir las notas de memoria de los tres niveles, HA y examen antes de publicar estos ajustes."
+      "texto": "Medir el consumo de HA con los tres control planes listos y completar su nota de equipo."
     },
     {
       "id": "kubernetes-dos-practicas",
@@ -34,7 +34,7 @@
     {
       "id": "arranque-cache",
       "tema": "Rendimiento",
-      "texto": "Seguir reduciendo la descarga inicial, la preparación de complementos y el consumo de memoria al guardar varios nodos. Inicial, intermedio y avanzado ya disponen de bases limpias preparadas; el examen tiene la suya. Mantener sus guardados separados y estudiar la primera preparación de los escenarios independientes, especialmente HA."
+      "texto": "Seguir reduciendo la descarga inicial, la preparación de complementos y el consumo de memoria al guardar varios nodos. Inicial, intermedio y avanzado ya disponen de bases limpias preparadas; el examen tiene la suya. Mantener sus guardados separados y estudiar la primera preparación de los escenarios independientes, especialmente HA. Evitar que un fallo de lectura de la base preparada obligue a iniciar el clúster desde cero."
     },
     {
       "id": "imagen-ligera",
@@ -63,6 +63,18 @@
     }
   ],
   "versiones": [
+    {
+      "version": "3.8",
+      "fecha": "2026-11-21",
+      "resumen": "En Kubernetes puedes copiar cada solución y comprobar las prácticas con menos interrupciones.",
+      "cambios": [
+        "Cada alternativa tiene su propio botón Copiar, también al revisar las soluciones del simulacro.",
+        "El guardado continúa sin esperar al permiso de almacenamiento del navegador. Una petición pendiente o rechazada no interrumpe la operación.",
+        "El comprobador espera hasta tres minutos cuando la API no responde y muestra que el clúster se está recuperando. La lectura de logs reintenta los fallos de conexión; una salida incorrecta sigue sin aceptarse.",
+        "Corregimos la descarga interna del componente de HA cuando la página se abre por HTTPS. Añadimos notas orientativas de memoria para los tres niveles de estudio y el simulacro.",
+        "Conservamos las mismas bases, sumas de verificación, perfiles e identidades de guardado. Comprobamos tres recorridos del inicial con prácticas, guardado, recuperación y Reset, y el arranque de intermedio y avanzado."
+      ]
+    },
     {
       "version": "3.7",
       "fecha": "2026-11-18",

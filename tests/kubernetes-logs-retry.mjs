@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {mkdtempSync,writeFileSync,readFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,writeFileSync,readFileSync,rmSync,rmdirSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {spawnSync} from 'node:child_process';
@@ -22,5 +22,5 @@ try{
   assert.equal(result.status,status,mode+': '+result.stderr);
   assert.equal(Number(readFileSync(counter,'utf8')),calls,mode);
  }
-}finally{rmSync(dir,{recursive:true,force:true});}
+}finally{rmSync(counter,{force:true});rmdirSync(dir);}
 console.log('Logs: reintento limitado ante transporte, salida incorrecta rechazada sin reintentar y sin aprobación si fallan las tres lecturas. No ejecuta un clúster.');
