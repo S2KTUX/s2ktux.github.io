@@ -9,6 +9,7 @@ import {inicializarControlPlaneHA} from './inicializacion-ha.mjs?v=74b30ee8a8427
 import {esperarFirmaHA} from './esperar-firma-ha.mjs?v=488ca2f524307838';
 import {servirRuntimeHA,runtimeHA} from './archivo-http-local.mjs?v=b2ec8cc5c0062f12';
 import {incorporarControlPlaneHA} from './incorporacion-ha.mjs';
+import {instalarKubeadmHA} from './kubeadm-ha.mjs?v=14afd0a70473b689';
 export const clienteHAQuery=index=>{
  if(!Number.isInteger(index)||index<1||index>3)throw Error('Miembro HA desconocido');
  return 'base=admin-v3&kube=1&components=v7&cluster=1&factory=v14&tls=classical&threaded=1&engine=jit8192-pic-v1&kernel=highmem-net-v2&use-scheduling-api=1&ha-member='+index;
@@ -68,6 +69,7 @@ export async function prepararClusterHA({context,create,connect,run,upload,value
   const transfer=await servirRuntimeHA(child.kubeDebianVM.bus,id,{copyFrame:bytes=>new child.Uint8Array(bytes)});
   try{await execute(id,'Instalar el runtime verificado del API 1.35',`test ! -e ${runtimePath}; mkdir -p ${runtimePath}; curl --fail --show-error --max-time 150 ${transfer.url} -o ${runtimePath}/paquete.tar.gz; test "$(sha256sum ${runtimePath}/paquete.tar.gz | cut -d ' ' -f1)" = ${runtimeHA.archiveSha256}; tar -xzf ${runtimePath}/paquete.tar.gz --no-same-owner --no-same-permissions -C ${runtimePath}; (cd ${runtimePath} && sha256sum -c SHA256SUMS); test "$(sha256sum ${runtimePath}/kube-browser-shared | cut -d ' ' -f1)" = ${runtimeHA.binarySha256}; chmod 755 ${runtimePath}/kube-browser-shared; rm ${runtimePath}/paquete.tar.gz`,240000);}
   finally{transfer.close();}
+  await instalarKubeadmHA({id,fresh:context.fresh,bus:child.kubeDebianVM.bus,run:execute,copyFrame:bytes=>new child.Uint8Array(bytes)});
   for(const component of ['kube-apiserver','kube-controller-manager','kube-scheduler']){
    const patch=component==='kube-apiserver'?JSON.stringify({spec:{containers:[{name:component,resources:{requests:{cpu:'250m'}},readinessProbe:{periodSeconds:10},volumeMounts:[{name:'api-runtime-browser',mountPath:'/usr/local/bin/kube-browser-shared',readOnly:true}]}],volumes:[{name:'api-runtime-browser',hostPath:{path:runtimePath+'/kube-browser-shared',type:'File'}}]}}):parcheControlPlane(component);
    await upload(id,'/etc/kubernetes/patches/'+component+'+strategic.yaml',patch);

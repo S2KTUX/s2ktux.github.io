@@ -11,5 +11,6 @@ test('HA · guardado propio y lectura sin sobrescribir las prácticas',async({pa
  await page.evaluate(()=>document.querySelector('#start-cluster').onclick());
  expect(await page.evaluate(()=>qaFreshHA)).toBe(1);expect(await page.evaluate(()=>globalThis.qaHAPersistence||0)).toBe(0);
  await expect(page.locator('#lab-course-note')).toContainText('guardado es independiente');expect(await page.evaluate(()=>qaHAReads)).toBe(1);await expect(page.locator('#save-cluster')).toBeEnabled();
+ await expect(page.locator('#lab-equipment-note')).toBeVisible();await expect(page.locator('#lab-equipment-note')).toContainText('32 GB');await expect(page.locator('#lab-equipment-note')).toContainText('14,8 GB');
  expect(await page.evaluate(()=>globalThis.qaHAPersistence||0)).toBe(0);expect(errors).toEqual([]);
 });

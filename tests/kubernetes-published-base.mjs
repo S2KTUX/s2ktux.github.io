@@ -24,7 +24,8 @@ assert.notEqual(current,oldPreparation,'La captura normalizada utiliza otra revi
 const stablePreparation='a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8';
 assert.equal(revisionesCompatibles[stablePreparation],undefined,'La caché estable no debe migrar la captura inicial con reinicios');
 const previousPreparation='c7a3f374e211737a7604a3486229d8269431ef8476270d2cc966e7c5ccf70ef8';
-assert.deepEqual(revisionesCompatibles[current],[previousPreparation,stablePreparation],'El cargador HA conserva las bases estables con los mismos bytes');
+const previousCandidate='2865a208976d945518cff48de1438f520488edffd0b7cb3934ae5c491277a607';
+assert.deepEqual(revisionesCompatibles[current],[previousCandidate,previousPreparation,stablePreparation],'La preparación HA no cambia las bases de estudio ni sus bytes');
 assert.deepEqual(revisionesCompatibles[previousPreparation],[stablePreparation],'Conservar también la compatibilidad publicada');
 const publishedInitial=basesPublicadas.find(base=>base.level==='inicial');
 assert.equal(publishedInitial.sha256,'55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d');
