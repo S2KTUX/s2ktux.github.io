@@ -8,6 +8,7 @@ import {abrirEspacioK8s} from './k8s-abrir-espacio.mjs';
 import {esperarEquipoLibre} from './k8s-cpu-guard.mjs';
 import {randomUUID} from 'node:crypto';
 import {instrumentarBaseHA} from './ha-base-rapida.mjs';
+import {habilitarExportacionHA} from './ha-exportar-base.mjs';
 let activePage,closeRequested=false;const controlToken=randomUUID();
 const root=path.resolve('_site'),output=process.env.QA_OUTPUT||'qa/evidencia/k8s-medicion-real-20261121.json';
 fs.mkdirSync(path.dirname(output),{recursive:true});
@@ -28,8 +29,9 @@ const server=http.createServer(async(req,res)=>{
  try{const url=new URL(req.url,'http://localhost');let file=path.resolve(root,'.'+decodeURIComponent(url.pathname));if(!file.startsWith(root+path.sep))throw Error('Ruta');if(fs.statSync(file).isDirectory())file=path.join(file,'index.html');const ext=path.extname(file),mime={'.html':'text/html','.mjs':'text/javascript','.js':'text/javascript','.css':'text/css','.json':'application/json','.wasm':'application/wasm'};res.writeHead(200,{'content-type':mime[ext]||'application/octet-stream'});fs.createReadStream(file).pipe(res);}catch{res.writeHead(404);res.end();}
 });
 await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
-const origin='http://127.0.0.1:'+server.address().port;
-if(process.env.QA_KEEP_OPEN==='1')fs.writeFileSync('qa/evidencia/ha-control-20261122.json',JSON.stringify({origin,token:controlToken}));
+const controlOrigin='http://127.0.0.1:'+server.address().port;
+const origin=process.env.QA_ORIGIN||controlOrigin;
+if(process.env.QA_KEEP_OPEN==='1')fs.writeFileSync('qa/evidencia/ha-control-20261122.json',JSON.stringify({origin:controlOrigin,token:controlToken}));
 async function measure(profile,variant,rep){
  if(rows.some(row=>row.profile===profile&&row.variant===variant&&row.rep===rep&&row.finished))return;
  const cpuBefore=await esperarEquipoLibre(profile+' '+variant+' '+rep);
@@ -40,12 +42,21 @@ async function measure(profile,variant,rep){
  let monitor;
  try{
   const fastHA=profile==='ha'&&process.env.QA_HA_FAST_BASE==='1';
-  if(fastHA)await instrumentarBaseHA(context);
+  const exportBase=fastHA&&process.env.QA_HA_EXPORT_DIR;
+  if(exportBase)await habilitarExportacionHA(p,exportBase);
+  if(fastHA)await instrumentarBaseHA(context,{exportBase:!!exportBase});
   if(process.env.QA_KUBEADM_ARCHIVE)await context.route('https://s2ktux-recursos.pages.dev/kubernetes/kubeadm-ha-v1/**/kubeadm-ha.tar.gz',route=>route.fulfill({status:200,contentType:'application/gzip',body:fs.readFileSync(process.env.QA_KUBEADM_ARCHIVE)}));
   if(variant==='anterior')await context.route('**/disco-kubernetes.mjs*',route=>route.fulfill({contentType:'text/javascript',body:prior}));
   p.on('pageerror',error=>row.errors.push(error.message));
   const cdp=await context.newCDPSession(p),requests=new Map();await cdp.send('Network.enable');
-  cdp.on('Network.requestWillBeSent',e=>requests.set(e.requestId,{url:e.request.url,timestamp:e.timestamp}));
+  let haResourceRequests=0,haFragmentRequests=0;
+  cdp.on('Network.requestWillBeSent',e=>{
+   requests.set(e.requestId,{url:e.request.url,timestamp:e.timestamp});
+   if(e.request.url.startsWith('https://s2ktux-recursos.pages.dev/kubernetes/ha/')){
+    haResourceRequests++;
+    if(new URL(e.request.url).pathname.includes('/fragmentos/'))haFragmentRequests++;
+   }
+  });
   cdp.on('Network.loadingFinished',e=>{row.networkBytes+=e.encodedDataLength;const req=requests.get(e.requestId);if(req&&e.timestamp-req.timestamp>10)row.slowRequests.push({...req,seconds:e.timestamp-req.timestamp});});
   cdp.on('Network.loadingFailed',e=>row.errors.push('HTTP '+(requests.get(e.requestId)?.url||'')+' '+e.errorText));
   const url=new URL('/laboratorios/kubernetes-real/debian/multinodo.html',origin);
@@ -54,12 +65,13 @@ async function measure(profile,variant,rep){
   monitor=setInterval(async()=>{try{row.phases.push({at:new Date().toISOString(),...await p.evaluate(()=>({status:document.querySelector('#cluster-status')?.textContent,nodes:globalThis.kubeDebianClusterNodes?.size,ready:globalThis.kubeDebianClusterReady,errors:globalThis.kubeDebianClusterErrors}))});save();console.log(profile,variant,rep,row.phases.at(-1).status);}catch{}},30000);
   const start=performance.now();await p.locator('#start-cluster').click();
   await p.waitForFunction(()=>globalThis.kubeDebianClusterReady===true||globalThis.kubeDebianClusterErrors?.length,null,{timeout:profile==='ha'?Number(process.env.QA_HA_TIMEOUT_MS||2400000):600000});
+  if(profile==='ha'&&process.env.QA_REQUIRE_HA_BASE==='1'&&!await p.evaluate(()=>globalThis.kubeDebianCleanBaseUsed===true&&globalThis.kubeDebianClusterRecovered!==true))throw Error('La primera apertura no usó la base limpia alojada');
   const errors=await p.evaluate(()=>globalThis.kubeDebianClusterErrors||[]);if(errors.length)throw Error(errors.join('; '));
   await p.waitForFunction(()=>[...globalThis.kubeDebianClusterNodes.values()].every(n=>n.window.kubeDebianSnapshot?.terminalOpened&&n.window.kubeDebianSnapshot.idle),null,{timeout:180000});
   const count=profile==='ha'?3:1;
   const command=`set -eu; response=$(kubectl get --raw=/readyz --request-timeout=30s); test "$response" = ok; object=$(kubectl get nodes -o json --request-timeout=30s); test -n "$object"; printf '%s\\n' "$object" | jq -e '(.items|length)==${count} and all(.items[];any(.status.conditions[];.type=="Ready" and .status=="True"))'`;
   const result=await p.evaluate(cmd=>kubeDebianClusterCheck('controlplane','Verificar clúster de la medición',cmd,180000),command);row.healthResult=result;if(result?.ok!==true)throw Error('API o nodos no Ready');
-  row.readyMs=Math.round(performance.now()-start);row.bytesAtReady=row.networkBytes;row.nodeCount=count;
+  row.readyMs=Math.round(performance.now()-start);row.bytesAtReady=row.networkBytes;row.nodeCount=count;row.haResourceRequests=haResourceRequests;row.haFragmentRequests=haFragmentRequests;
   row.nativeStages=await p.evaluate(()=>globalThis.kubeDebianClusterStages);
   if(fastHA)row.capture=await p.evaluate(()=>globalThis.qaHACapture);
   save();
@@ -69,8 +81,8 @@ async function measure(profile,variant,rep){
   row.privateBytes=Number(execFileSync('powershell.exe',['-NoProfile','-Command','(Get-Process -Id '+ids+' -ErrorAction SilentlyContinue | Measure-Object PrivateMemorySize64 -Sum).Sum'],{encoding:'utf8'}).trim());
   row.nodes=await p.evaluate(()=>[...kubeDebianClusterNodes.values()].map(n=>({id:n.id,disk:n.window.kubeDebianDisk?.stats,components:n.window.kubeDebianComponentDisk?.stats})));
   row.stillReady=await p.evaluate(()=>globalThis.kubeDebianClusterReady===true);row.ok=row.stillReady&&row.errors.length===0;
-  if(fastHA){
-   if(!row.capture?.ok)throw Error('No se pudo capturar la base HA: '+(row.capture?.error||'sin resultado'));
+  if(fastHA||(profile==='ha'&&process.env.QA_HA_REOPEN==='1')){
+   if(fastHA&&!row.capture?.ok)throw Error('No se pudo capturar la base HA: '+(row.capture?.error||'sin resultado'));
    // Solo en el perfil desechable de esta comparación. La reapertura usa
    // otras VMs, inicializadas a partir del registro limpio ya comprobado.
    await p.evaluate(()=>Promise.all([...kubeDebianClusterNodes.values()].map(node=>node.window.kubeDebianVM.stop())));
@@ -84,9 +96,12 @@ async function measure(profile,variant,rep){
    if(!recovered.used||recovered.saved||recovered.errors.length)throw Error('La reapertura no usó una base limpia de HA');
    await p.waitForFunction(()=>[...kubeDebianClusterNodes.values()].every(n=>n.window.kubeDebianSnapshot?.terminalOpened&&n.window.kubeDebianSnapshot.idle),null,{timeout:180000});
    const restored=await p.evaluate(cmd=>kubeDebianClusterCheck('controlplane','Verificar HA restaurado',cmd,180000),command);
-   row.warm.ok=restored?.ok===true;row.warm.readyMs=Math.round(performance.now()-restoreStarted);
+   row.warm.ok=restored?.ok===true;row.warm.readyMs=Math.round(performance.now()-restoreStarted);row.warm.haResourceRequests=haResourceRequests-row.haResourceRequests;row.warm.haFragmentRequests=haFragmentRequests-row.haFragmentRequests;
    row.warm.nativeStages=await p.evaluate(()=>globalThis.kubeDebianClusterStages);save();
    if(!row.warm.ok)throw Error('La API o los nodos del HA restaurado no están Ready');
+   // La consulta del manifiesto está permitida si el navegador conserva
+   // los fragmentos en Cache Storage y no el registro agregado en IndexedDB.
+   if(process.env.QA_HA_REOPEN==='1'&&row.warm.haFragmentRequests!==0)throw Error('La reapertura volvió a descargar fragmentos de la base HA');
    await p.waitForTimeout(60000);
    const warmInfo=await browserCDP.send('SystemInfo.getProcessInfo');
    row.warm.privateBytes=Number(execFileSync('powershell.exe',['-NoProfile','-Command','(Get-Process -Id '+warmInfo.processInfo.map(x=>x.id).join(',')+' -ErrorAction SilentlyContinue | Measure-Object PrivateMemorySize64 -Sum).Sum'],{encoding:'utf8'}).trim());

@@ -3,6 +3,7 @@ import {readFileSync} from 'node:fs';
 // Solo política de interfaz. La topología HA real tiene su prueba nativa aparte.
 test('HA · guardado propio y lectura sin sobrescribir las prácticas',async({page})=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
+ await page.route('**/debian/base-ha-publicada.mjs*',route=>route.fulfill({contentType:'text/javascript',body:'export const BASE_HA_PUBLICADA=null;'}));
  await page.route('**/debian/ha-curso.mjs*',route=>route.fulfill({contentType:'text/javascript',body:`export const etcdHA='etcdctl';export const clienteHAQuery=()=>'';export async function prepararClusterHA({context}){if(!context.fresh||context.studentSession||context.nodeCount!==0)throw Error('No es una sesión nueva');globalThis.qaFreshHA=(globalThis.qaFreshHA||0)+1;return {uiOnly:true};}`}));
  const source=readFileSync(new URL('../../laboratorios/kubernetes-real/debian/sesiones-ha.mjs',import.meta.url),'utf8');
  await page.route('**/debian/sesiones-ha.mjs*',route=>route.fulfill({contentType:'text/javascript',body:source+`\nSesionesHA.prototype.getRawCluster=async function(){globalThis.qaHAReads=(globalThis.qaHAReads||0)+1;return null;};for(const name of ['saveNodes','resetCluster'])SesionesHA.prototype[name]=async function(){globalThis.qaHAPersistence=(globalThis.qaHAPersistence||0)+1;throw Error('No sobrescribir sin guardar expresamente');};BasesLimpiasHA.prototype.read=async function(){globalThis.qaHAPersistence=(globalThis.qaHAPersistence||0)+1;throw Error('No leer caché HA');};`}));
@@ -13,4 +14,17 @@ test('HA · guardado propio y lectura sin sobrescribir las prácticas',async({pa
  await expect(page.locator('#lab-course-note')).toContainText('guardado es independiente');expect(await page.evaluate(()=>qaHAReads)).toBe(1);await expect(page.locator('#save-cluster')).toBeEnabled();
  await expect(page.locator('#lab-equipment-note')).toBeVisible();await expect(page.locator('#lab-equipment-note')).toContainText('32 GB');await expect(page.locator('#lab-equipment-note')).toContainText('14,8 GB');
  expect(await page.evaluate(()=>globalThis.qaHAPersistence||0)).toBe(0);expect(errors).toEqual([]);
+});
+
+test('HA · reintento visible si los recursos no están disponibles',async({page})=>{
+ await page.route('**/debian/base-ha-publicada.mjs*',route=>route.fulfill({contentType:'text/javascript',body:`export const BASE_HA_PUBLICADA={sha256:'${'a'.repeat(64)}'};`}));
+ await page.route('**/debian/fabrica-ha.mjs*',route=>route.fulfill({contentType:'text/javascript',body:`export async function cargarBaseHA(){globalThis.qaHAAttempts=(globalThis.qaHAAttempts||0)+1;throw Error('Sin conexión');}`}));
+ await page.goto('/laboratorios/kubernetes-real/debian/multinodo.html?mode=course&level=avanzado&clase=24&escenario=ha-cluster&enter=1');
+ const start=page.locator('#start-cluster');
+ await start.click();
+ await expect(page.locator('#cluster-status')).toContainText('Puedes volver a pulsar Iniciar laboratorio');
+ await expect(start).toBeEnabled();
+ await start.click();
+ await expect.poll(()=>page.evaluate(()=>globalThis.qaHAAttempts)).toBe(2);
+ await expect(page.locator('#nodes iframe')).toHaveCount(0);
 });

@@ -3,6 +3,7 @@
 // Compatibilidad verificada de almacenamiento, reloj del emulador y lecturas.
 // Se conservan imágenes y perfiles de Linux. No ampliar al cambiar la VM.
 export const revisionesCompatibles=Object.freeze({
+ "6e40f88996c112003099ff05cb101d72a940cc1bc8252fda830331082ecf315b":Object.freeze(["36ef32c026b2798b12f974f63bf82a151f02f29d7c28892d8ea1c1a61e31e4c2","2865a208976d945518cff48de1438f520488edffd0b7cb3934ae5c491277a607","c7a3f374e211737a7604a3486229d8269431ef8476270d2cc966e7c5ccf70ef8","a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8"]),
  "36ef32c026b2798b12f974f63bf82a151f02f29d7c28892d8ea1c1a61e31e4c2":Object.freeze(["2865a208976d945518cff48de1438f520488edffd0b7cb3934ae5c491277a607","c7a3f374e211737a7604a3486229d8269431ef8476270d2cc966e7c5ccf70ef8","a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8"]),
  "2865a208976d945518cff48de1438f520488edffd0b7cb3934ae5c491277a607":Object.freeze(["c7a3f374e211737a7604a3486229d8269431ef8476270d2cc966e7c5ccf70ef8","a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8"]),
  "c7a3f374e211737a7604a3486229d8269431ef8476270d2cc966e7c5ccf70ef8":Object.freeze(["a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8"]),
@@ -356,8 +357,8 @@ export const revisionesCompatibles=Object.freeze({
   'd66a99f2ca13236a8e3e61cec1afdee442d6ed3a6126998ade42c5a437e9e8be'
  ])
 });
-export const basesPublicadas=Object.freeze([Object.freeze({"level":"avanzado","revision":"36ef32c026b2798b12f974f63bf82a151f02f29d7c28892d8ea1c1a61e31e4c2","sha256":"281fe2c18540ccee381e67cb2ea41f82c5463b17533b4c4cc382ffcd5448e0d6","url":"https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/7156e2d223ac6476e1e62c2d0565314951283e15/kubernetes/advanced-clean-v1/cluster.json"}),Object.freeze({level:'inicial',revision:'36ef32c026b2798b12f974f63bf82a151f02f29d7c28892d8ea1c1a61e31e4c2',sha256:'55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d',url:'https://s2ktux-recursos.pages.dev/kubernetes/55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d/cluster.json'}),Object.freeze({
- level:'intermedio',revision:'36ef32c026b2798b12f974f63bf82a151f02f29d7c28892d8ea1c1a61e31e4c2',
+export const basesPublicadas=Object.freeze([Object.freeze({"level":"avanzado","revision":"6e40f88996c112003099ff05cb101d72a940cc1bc8252fda830331082ecf315b","sha256":"281fe2c18540ccee381e67cb2ea41f82c5463b17533b4c4cc382ffcd5448e0d6","url":"https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/7156e2d223ac6476e1e62c2d0565314951283e15/kubernetes/advanced-clean-v1/cluster.json"}),Object.freeze({level:'inicial',revision:'6e40f88996c112003099ff05cb101d72a940cc1bc8252fda830331082ecf315b',sha256:'55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d',url:'https://s2ktux-recursos.pages.dev/kubernetes/55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d/cluster.json'}),Object.freeze({
+ level:'intermedio',revision:'6e40f88996c112003099ff05cb101d72a940cc1bc8252fda830331082ecf315b',
  sha256:'2e88dd5f575ae0f338fdcb333aa0c55f0e5bec24e467bb4bf182f25050fc59a0',
  url:'https://raw.githubusercontent.com/S2KTUX/s2ktux.github.io/91502ceb011e65b550c7c10875a60b83cb7c9ea0/kubernetes/clean-v1/intermedio/cluster.json'
 })]);

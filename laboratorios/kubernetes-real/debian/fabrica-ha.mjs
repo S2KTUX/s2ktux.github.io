@@ -20,7 +20,9 @@ export async function validarBaseHA(manifest,config){
 export async function cargarBaseHA(config,{revision,sessions,notify=()=>{},fetcher=fetch,download=verifiedDownload}={}){
  if(!sha(config?.sha256)||!sha(revision)||config.revision!==revision)throw Error('Revisión HA no autorizada');
  const url=new URL(config.url);
- if(url.origin!=='https://raw.githubusercontent.com'||!/^\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/ha-clean-v1\/cluster\.json$/.test(url.pathname)||url.search||url.hash)throw Error('Origen HA no autorizado');
+ const repository=url.origin==='https://raw.githubusercontent.com'&&/^\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/ha-clean-v1\/cluster\.json$/.test(url.pathname);
+ const resources=url.origin==='https://s2ktux-recursos.pages.dev'&&url.pathname==='/kubernetes/ha/'+config.sha256+'/cluster.json';
+ if((!repository&&!resources)||url.search||url.hash||url.username||url.password)throw Error('Origen HA no autorizado');
  const response=await fetcher(url,{signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('Base HA no disponible');
  const bytes=await response.arrayBuffer();if(bytes.byteLength>1048576||await digest(bytes)!==config.sha256)throw Error('Manifiesto HA alterado');
  const manifest=await validarBaseHA(JSON.parse(new TextDecoder().decode(bytes)),config);

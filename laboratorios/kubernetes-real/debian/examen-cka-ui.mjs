@@ -75,7 +75,7 @@ async function begin(resume){
  $('begin-exam').disabled=$('resume-exam').disabled=true;$('exam-error').textContent='';
  try{
   globalThis.kubeDebianExamResumeRequested=resume;
-  await import('./multinodo.mjs?v=a6edc0f3f6e9f899');
+  await import('./multinodo.mjs?v=d2b6c0b0aecbd5de');
   document.querySelector('h1').textContent=say('Simulacro CKA','CKA mock exam');
   await $('start-cluster').onclick();
   if(!globalThis.kubeDebianClusterReady||globalThis.kubeDebianClusterErrors?.length)throw Error(say('El clúster no está disponible. No ha comenzado el tiempo.','The cluster is not ready. The timer has not started.'));

@@ -1,6 +1,6 @@
 import {apartarManifiestosHA,restaurarManifiestosHA,arrancarAPIsHAEnOrden} from './arranque-ha-discos.mjs?v=409ac9a11399d82f';
 import {SesionesDiscosHA} from './sesiones-ha-discos.mjs?v=47182e9f6caade91';
-import {BasesLimpiasExamen,REVISION_EXAMEN,PREPARACIONES_EXAMEN_COMPATIBLES} from './examen-cache.mjs?v=792af6757b3ffec6';
+import {BasesLimpiasExamen,REVISION_EXAMEN,PREPARACIONES_EXAMEN_COMPATIBLES} from './examen-cache.mjs?v=24391949a08b4c94';
 import {BASE_EXAMEN_PUBLICADA,cargarBaseExamen} from './examen-base-publicada.mjs?v=d29813af99384114';
 import {cargarBaseAvanzada} from './base-avanzada-publicada.mjs?v=e68e2f3d5d35ad48';
 import {ordenRetirarWorkerExamen} from './examen-runtime.mjs?v=bf0f315f540fa13e';
@@ -15,20 +15,22 @@ import {prepararRedPoliticasDebian,instalarPoliticasDebian} from './politicas-cl
 import {persistirNatDebian,persistirRutaDebian,persistirNamespacesDebian} from './red-persistente.mjs';
 import {modoCurso,siguienteWorker,textoWorker,permitirAplicacionesIniciales,separarControlPlane} from './progresion-curso.mjs';
 import {NIVELES,nivelDesdeURL} from './niveles.mjs';
-import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=8c5a516b6906b0c0';
+import {montarInterfazNiveles} from './interfaz-niveles.mjs?v=1eeed3c28578e14a';
 import {ordenSaludAPIHA,esperarAPIsHARecuperadas} from './salud-ha.mjs?v=4319be87a1d35356';
 import {ordenSaludInicial} from './salud-inicial.mjs?v=c634a9a627305264';
 import {ordenEsperarFirmaJWS} from './esperar-firma-jws.mjs';
 import {claseDisponible,nivelDisponible,limiteNodos} from './disponibilidad-curso.mjs?v=88821d6eaeb21bd5';
 import {BasesLimpias,capturarCluster} from './bases-limpias.mjs?v=0b809b3940f9dc11';
-import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=493167e487d79578';
+import {basesPublicadas,revisionesCompatibles} from './bases-publicadas.mjs?v=0906ebae2268074f';
 import {cargarBasePublicada} from './fabrica-cluster.mjs?v=c320e045489d6b44';
 import {escenarioCurso} from './escenarios-curso.mjs?v=4fe1a4528b2e23b6';
 import {prepararMontajeManual} from './montaje-manual-curso.mjs?v=9d4672bb487ea6e8';
 import {prepararClusterHA,clienteHAQuery} from './ha-curso.mjs?v=f57c1fa861fe1343';
 import {SesionesHA,BasesLimpiasHA} from './sesiones-ha.mjs?v=da53704e47cf028e';
 import {perfilNodoHA,miembrosHA} from './perfil-ha.mjs?v=60a21559ace773d9';
-const cleanRevision='36ef32c026b2798b12f974f63bf82a151f02f29d7c28892d8ea1c1a61e31e4c2';
+import {BASE_HA_PUBLICADA} from './base-ha-publicada.mjs?v=189642186a604ccb';
+import {cargarBaseHA} from './fabrica-ha.mjs?v=91edc5bbcfa6fbbb';
+const cleanRevision='6e40f88996c112003099ff05cb101d72a940cc1bc8252fda830331082ecf315b';
 const examRuntime=document.documentElement.dataset.ckaExam==='true';
 const releaseAvailable=()=>{if(examRuntime)return scenario?.exam===true&&factoryVersion==='v15'&&level==='avanzado';const requestedClass=new URLSearchParams(location.search).get('clase');return globalThis.kubeDebianLearningMode==='practice'&&progressive&&nivelDisponible(level)&&(requestedClass===null||claseDisponible(Number(requestedClass)));};
 const progressive=modoCurso(new URLSearchParams(location.search));
@@ -56,7 +58,8 @@ const persistSession=true;
 const haBootToken=crypto.randomUUID().replaceAll('-',''),stagedHANodes=new Set();
 const nodeName=id=>scenario?.ha?perfilNodoHA(id).name:id==='controlplane'?'cka-cp1':perfilWorker(id.slice(-1)).name;
 if(scenario?.ha)for(const button of document.querySelectorAll('button[data-node]'))button.textContent=nodeName(button.dataset.node);
-const cleanBases=scenario?.ha?new BasesLimpiasHA(cleanRevision):new (factoryVersion==='v15'?BasesLimpiasCheckpointV15:BasesLimpias)(cleanRevision,{workerComponents,factoryVersion,progressive,level,compatibleRevisions:revisionesCompatibles[cleanRevision]||[]});
+const publishedHA=scenario?.ha&&!persistentHA?BASE_HA_PUBLICADA:null;
+const cleanBases=scenario?.ha?new BasesLimpiasHA(publishedHA?.sha256||cleanRevision):new (factoryVersion==='v15'?BasesLimpiasCheckpointV15:BasesLimpias)(cleanRevision,{workerComponents,factoryVersion,progressive,level,compatibleRevisions:revisionesCompatibles[cleanRevision]||[]});
 const examCleanBases=examRuntime?new BasesLimpiasExamen():null;
 const failedPublishedKey='s2ktux-kubernetes-base-failed:'+level+':'+cleanRevision;
 const failedExamKey='s2ktux-kubernetes-exam-base-failed:'+REVISION_EXAMEN;
@@ -154,6 +157,16 @@ start.onclick=async()=>{
   }catch(error){console.warn('No se ha recuperado la base publicada del examen:',error.message);}
   globalThis.kubeDebianExamBaseUsed=!!preparedExam;
   let cleanBase=preparedExam||(scenario?.ha||(!persistSession&&!examRuntime)||saved||scenario?.manual?null:await cleanBases.read());
+  if(publishedHA&&!saved){
+   status.textContent='Buscando la base preparada de HA…';
+   cleanBase=await cleanBases.read();
+   if(!cleanBase){
+    try{cleanBase=await cargarBaseHA(publishedHA,{revision:publishedHA.revision,sessions:cleanBases,notify:text=>status.textContent=text});}
+    catch(error){throw Error('No se ha podido cargar la base de HA. Puedes volver a pulsar Iniciar laboratorio',{cause:error});}
+    try{await cleanBases.write(cleanBase.nodes);}
+    catch(error){console.warn('La base HA no se almacenó en este navegador:',error.message);}
+   }
+  }
   if(!saved&&!cleanBase&&!scenario?.manual&&!scenario?.ha){
    const published=basePublicadaBloqueada()?null:basesPublicadas.find(base=>base.level===level&&base.revision===cleanRevision);
    if(published)try{
@@ -313,5 +326,5 @@ async function runForPractice(id,label,command,timeout=180000){
  return node.window.kubeDebianRun(label,command,timeout);
 }
 globalThis.kubeDebianClusterCheck=runForPractice;
-if(progressive&&!examRuntime)levelUI=montarInterfazNiveles({level,getState:()=>({busy,initialized,canSave:persistSession,level,factoryVersion,scenarioId:scenario?.id||null,scenarioIndependent:!!scenario,nodeCount:nodes.size,nodes:[...nodes].map(([id,node])=>({name:nodeName(id),consoleReady:!!node.window.kubeDebianReady,error:!!node.window.kubeDebianErrors?.length}))}),run:runForPractice,setBusy:value=>{busy=value;updateControls();},save:()=>kubeDebianClusterSave(),stop:stopForLevelChange});
+if(progressive&&!examRuntime)levelUI=montarInterfazNiveles({level,getState:()=>({busy,initialized,canSave:persistSession,level,factoryVersion,scenarioId:scenario?.id||null,scenarioIndependent:!!scenario,haDownloadBytes:publishedHA?.bytes,nodeCount:nodes.size,nodes:[...nodes].map(([id,node])=>({name:nodeName(id),consoleReady:!!node.window.kubeDebianReady,error:!!node.window.kubeDebianErrors?.length}))}),run:runForPractice,setBusy:value=>{busy=value;updateControls();},save:()=>kubeDebianClusterSave(),stop:stopForLevelChange});
 updateControls();

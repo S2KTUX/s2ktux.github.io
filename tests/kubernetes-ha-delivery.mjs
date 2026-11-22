@@ -11,6 +11,10 @@ for(const change of [{format:'s2ktux-kubernetes-clean-cluster-v1'},{sourceRevisi
 let downloads=0,validated=0;
 const dependencies={revision,fetcher:async()=>new Response(bytes),download:async(url,options)=>{downloads++;assert.equal(options.hash,hash(data));assert.equal(options.bytes,data.length);assert.equal(url.pathname.split('/').at(-1),hash(data)+'.part');return data.buffer;},sessions:{validate:async records=>{validated++;assert.equal(records.length,3);for(const record of records){assert.equal(record.terminalText,'');assert.equal(hash(Buffer.from(await record.packed.arrayBuffer())),record.sha256);}return manifest.sha256;}}};
 assert.equal((await cargarBaseHA(config,dependencies)).nodes.length,3);assert.equal(downloads,3);assert.equal(validated,1);
+const cloudflare={...config,url:'https://s2ktux-recursos.pages.dev/kubernetes/ha/'+config.sha256+'/cluster.json'};
+assert.equal((await cargarBaseHA(cloudflare,dependencies)).nodes.length,3);
+await assert.rejects(cargarBaseHA({...cloudflare,url:cloudflare.url.replace(config.sha256,'a'.repeat(64))},dependencies),/Origen/);
+await assert.rejects(cargarBaseHA({...cloudflare,url:cloudflare.url.replace('https://','https://otro@')},dependencies),/Origen/);
 await assert.rejects(cargarBaseHA({...config,revision:'e'.repeat(64)},dependencies),/Revisión/);
 await assert.rejects(cargarBaseHA({...config,url:'https://otro.example/cluster.json'},dependencies),/Origen/);
 await assert.rejects(cargarBaseHA({...config,url:config.url+'?otra=1'},dependencies),/Origen/);
