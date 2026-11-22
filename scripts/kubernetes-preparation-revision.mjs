@@ -3,6 +3,8 @@ import {createHash} from 'node:crypto';
 // Los enunciados y la presentación no forman parte del estado de la VM.
 // Todo módulo nuevo se incluye por defecto: excluirlo exige decidirlo aquí.
 const presentationOnly=new Set([
+ // Cambiar dónde se descarga la misma base HA no cambia la preparación.
+ 'debian/base-ha-publicada.mjs',
  'debian/entrada-laboratorio.mjs','debian/interfaz-niveles.mjs','debian/bases-publicadas.mjs',
  'debian/clases-curso.mjs','debian/disponibilidad-curso.mjs',
  'debian/herramientas-practicas.mjs','debian/criterios-equivalentes.mjs',

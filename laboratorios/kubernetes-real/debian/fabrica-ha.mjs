@@ -20,7 +20,9 @@ export async function validarBaseHA(manifest,config){
 export async function cargarBaseHA(config,{revision,sessions,notify=()=>{},fetcher=fetch,download=verifiedDownload}={}){
  if(!sha(config?.sha256)||!sha(revision)||config.revision!==revision)throw Error('Revisión HA no autorizada');
  const url=new URL(config.url);
- if(url.origin!=='https://raw.githubusercontent.com'||!/^\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/ha-clean-v1\/cluster\.json$/.test(url.pathname)||url.search||url.hash)throw Error('Origen HA no autorizado');
+ const repository=url.origin==='https://raw.githubusercontent.com'&&/^\/S2KTUX\/s2ktux\.github\.io\/[a-f0-9]{40}\/kubernetes\/ha-clean-v1\/cluster\.json$/.test(url.pathname);
+ const resources=url.origin==='https://s2ktux-recursos.pages.dev'&&url.pathname==='/kubernetes/ha/'+config.sha256+'/cluster.json';
+ if((!repository&&!resources)||url.search||url.hash||url.username||url.password)throw Error('Origen HA no autorizado');
  const response=await fetcher(url,{signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error('Base HA no disponible');
  const bytes=await response.arrayBuffer();if(bytes.byteLength>1048576||await digest(bytes)!==config.sha256)throw Error('Manifiesto HA alterado');
  const manifest=await validarBaseHA(JSON.parse(new TextDecoder().decode(bytes)),config);
@@ -28,7 +30,10 @@ export async function cargarBaseHA(config,{revision,sessions,notify=()=>{},fetch
  const jobs=manifest.nodes.flatMap((node,nodeIndex)=>node.parts.map((part,partIndex)=>({part,nodeIndex,partIndex}))),buffers=manifest.nodes.map(node=>new Array(node.parts.length));let next=0,failure;
  await Promise.all(Array.from({length:Math.min(4,jobs.length)},async()=>{
   try{while(!failure){const jobIndex=next++,job=jobs[jobIndex];if(!job)return;const {part,nodeIndex,partIndex}=job;
-   buffers[nodeIndex][partIndex]=await descargarFragmentoBase(new URL('fragmentos/'+part.file,url),{hash:part.sha256,bytes:part.bytes,cacheGroup:'kubernetes-base',notify:count=>{progress.set(jobIndex,count);notify('Descargando base HA preparada… '+Math.floor([...progress.values()].reduce((a,b)=>a+b,0)/total*100)+' %');}},download);
+   const value=await descargarFragmentoBase(new URL('fragmentos/'+part.file,url),{hash:part.sha256,bytes:part.bytes,cacheGroup:'kubernetes-base',notify:count=>{progress.set(jobIndex,count);notify('Descargando base HA preparada… '+Math.floor([...progress.values()].reduce((a,b)=>a+b,0)/total*100)+' %');}},download);
+   // No retener todos los ArrayBuffer junto a los Blob finales de los tres nodos.
+   // Cada fragmento conserva su posición y ya llega verificado por SHA-256.
+   buffers[nodeIndex][partIndex]=new Blob([value]);
   }}catch(error){failure??=error;}
  }));
  // No seguir descargando gigabytes ni arrancar otra preparación mientras

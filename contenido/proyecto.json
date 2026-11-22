@@ -1,10 +1,10 @@
 {
-  "version": "3.8",
+  "version": "3.9",
   "pendientes": [
     {
-      "id": "kubernetes-memoria-ha",
+      "id": "kubernetes-tamano-ha",
       "tema": "Kubernetes",
-      "texto": "Medir el consumo de HA con los tres control planes listos y completar su nota de equipo."
+      "texto": "Reducir el tamaño de la primera descarga de HA y medir su consumo en equipos con menos memoria."
     },
     {
       "id": "kubernetes-dos-practicas",
@@ -63,6 +63,16 @@
     }
   ],
   "versiones": [
+    {
+      "version": "3.9",
+      "fecha": "2026-11-22",
+      "resumen": "El laboratorio de alta disponibilidad de Kubernetes ya puede arrancar desde sus tres control planes preparados.",
+      "cambios": [
+        "Al abrir HA por primera vez se descarga una base que evita preparar el clúster desde cero. El navegador puede reutilizarla en las siguientes aperturas.",
+        "Se ha comprobado que los dos control planes restantes pueden escribir datos cuando se detiene el que tiene la dirección virtual. Al recuperarlo, los tres vuelven a responder con los datos conservados.",
+        "La pantalla de HA indica el tamaño de la descarga y la memoria recomendada."
+      ]
+    },
     {
       "version": "3.8",
       "fecha": "2026-11-21",

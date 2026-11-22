@@ -28,5 +28,6 @@ for(const [parent,child,relative]of [['debian/cliente.mjs','disco-kubernetes.mjs
 assert.doesNotMatch(page,/Versión preliminar/);assert.match(page,/versión simulada antigua/);assert.doesNotMatch(page,/Prototipo local|pendientes|completo de CKA/i);assert.match(hub,/location.href='\/laboratorios\/kubernetes-real\/'/);
 assert.match(await readFile(new URL('../sw.js',import.meta.url),'utf8'),/pathname\.startsWith\('\/laboratorios\/kubernetes-real\/'\)/);
 assert.match(await read('perfil-motor.mjs'),/checked\(recursoPesado\(wasm\)/);
-assert.match(await read('disco-kubernetes.mjs'),/packed\.length!==part\.packedBytes\|\|await digest\(packed\)!==part\.packedSha256/);
+assert.match(await read('disco-kubernetes.mjs'),/bloqueVerificado\(url,\{hash:part\.packedSha256,bytes:part\.packedBytes/);
+assert.match(await read('cache-bloques.mjs'),/data\.byteLength===bytes&&await sha\(data\)===hash/);
 console.log('✓ Kubernetes: entrada principal real, interfaz íntegra, recursos inmutables y sin perfiles o informes privados publicados.');

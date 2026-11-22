@@ -23,7 +23,11 @@ assert.deepEqual(revisionesCompatibles[oldPreparation],[release34,...revisionesC
 assert.notEqual(current,oldPreparation,'La captura normalizada utiliza otra revisión de caché limpia');
 const stablePreparation='a5183e3b9be378f239c8748d48400cb0968b1b3644d02146b9d984d54240c4f8';
 assert.equal(revisionesCompatibles[stablePreparation],undefined,'La caché estable no debe migrar la captura inicial con reinicios');
-assert.deepEqual(revisionesCompatibles[current],[stablePreparation],'El arreglo HTTP de HA conserva solo las bases estables idénticas');
+const previousPreparation='c7a3f374e211737a7604a3486229d8269431ef8476270d2cc966e7c5ccf70ef8';
+const previousCandidate='2865a208976d945518cff48de1438f520488edffd0b7cb3934ae5c491277a607';
+const haCorrection='36ef32c026b2798b12f974f63bf82a151f02f29d7c28892d8ea1c1a61e31e4c2';
+assert.deepEqual(revisionesCompatibles[current],[haCorrection,previousCandidate,previousPreparation,stablePreparation],'La entrada rápida HA no cambia las bases de estudio ni sus bytes');
+assert.deepEqual(revisionesCompatibles[previousPreparation],[stablePreparation],'Conservar también la compatibilidad publicada');
 const publishedInitial=basesPublicadas.find(base=>base.level==='inicial');
 assert.equal(publishedInitial.sha256,'55b800526efcc81eca0043ab101853739beb21b13420728d45211f922d40783d');
 assert.equal(publishedInitial.url,'https://s2ktux-recursos.pages.dev/kubernetes/'+publishedInitial.sha256+'/cluster.json');
