@@ -7,6 +7,7 @@ import {chromium} from 'playwright';
 import {abrirEspacioK8s} from './k8s-abrir-espacio.mjs';
 import {esperarEquipoLibre} from './k8s-cpu-guard.mjs';
 import {randomUUID} from 'node:crypto';
+import {instrumentarBaseHA} from './ha-base-rapida.mjs';
 let activePage,closeRequested=false;const controlToken=randomUUID();
 const root=path.resolve('_site'),output=process.env.QA_OUTPUT||'qa/evidencia/k8s-medicion-real-20261121.json';
 fs.mkdirSync(path.dirname(output),{recursive:true});
@@ -38,6 +39,8 @@ async function measure(profile,variant,rep){
  const row={profile,variant,rep,cpuBefore,browser:browser.version(),phases:[],errors:[],networkBytes:0,slowRequests:[],started:new Date().toISOString()};rows.push(row);save();
  let monitor;
  try{
+  const fastHA=profile==='ha'&&process.env.QA_HA_FAST_BASE==='1';
+  if(fastHA)await instrumentarBaseHA(context);
   if(process.env.QA_KUBEADM_ARCHIVE)await context.route('https://s2ktux-recursos.pages.dev/kubernetes/kubeadm-ha-v1/**/kubeadm-ha.tar.gz',route=>route.fulfill({status:200,contentType:'application/gzip',body:fs.readFileSync(process.env.QA_KUBEADM_ARCHIVE)}));
   if(variant==='anterior')await context.route('**/disco-kubernetes.mjs*',route=>route.fulfill({contentType:'text/javascript',body:prior}));
   p.on('pageerror',error=>row.errors.push(error.message));
@@ -56,13 +59,38 @@ async function measure(profile,variant,rep){
   const count=profile==='ha'?3:1;
   const command=`set -eu; response=$(kubectl get --raw=/readyz --request-timeout=30s); test "$response" = ok; object=$(kubectl get nodes -o json --request-timeout=30s); test -n "$object"; printf '%s\\n' "$object" | jq -e '(.items|length)==${count} and all(.items[];any(.status.conditions[];.type=="Ready" and .status=="True"))'`;
   const result=await p.evaluate(cmd=>kubeDebianClusterCheck('controlplane','Verificar clúster de la medición',cmd,180000),command);row.healthResult=result;if(result?.ok!==true)throw Error('API o nodos no Ready');
-  row.readyMs=Math.round(performance.now()-start);row.bytesAtReady=row.networkBytes;row.nodeCount=count;save();
+  row.readyMs=Math.round(performance.now()-start);row.bytesAtReady=row.networkBytes;row.nodeCount=count;
+  row.nativeStages=await p.evaluate(()=>globalThis.kubeDebianClusterStages);
+  if(fastHA)row.capture=await p.evaluate(()=>globalThis.qaHACapture);
+  save();
   await p.waitForTimeout(60000);
   const browserCDP=await browser.newBrowserCDPSession(),info=await browserCDP.send('SystemInfo.getProcessInfo');
   const ids=info.processInfo.map(x=>x.id).join(',');
   row.privateBytes=Number(execFileSync('powershell.exe',['-NoProfile','-Command','(Get-Process -Id '+ids+' -ErrorAction SilentlyContinue | Measure-Object PrivateMemorySize64 -Sum).Sum'],{encoding:'utf8'}).trim());
   row.nodes=await p.evaluate(()=>[...kubeDebianClusterNodes.values()].map(n=>({id:n.id,disk:n.window.kubeDebianDisk?.stats,components:n.window.kubeDebianComponentDisk?.stats})));
   row.stillReady=await p.evaluate(()=>globalThis.kubeDebianClusterReady===true);row.ok=row.stillReady&&row.errors.length===0;
+  if(fastHA){
+   if(!row.capture?.ok)throw Error('No se pudo capturar la base HA: '+(row.capture?.error||'sin resultado'));
+   // Solo en el perfil desechable de esta comparación. La reapertura usa
+   // otras VMs, inicializadas a partir del registro limpio ya comprobado.
+   await p.evaluate(()=>Promise.all([...kubeDebianClusterNodes.values()].map(node=>node.window.kubeDebianVM.stop())));
+   row.warm={cpuBefore:await esperarEquipoLibre('HA restauración local')};save();
+   await p.reload();await abrirEspacioK8s(p);
+   const restoreStarted=performance.now();
+   await p.locator('#start-cluster').click();
+   await p.waitForFunction(()=>globalThis.kubeDebianClusterReady||globalThis.kubeDebianClusterErrors?.length,null,{timeout:720000});
+   const recovered=await p.evaluate(()=>({used:globalThis.kubeDebianCleanBaseUsed===true,saved:globalThis.kubeDebianClusterRecovered===true,errors:globalThis.kubeDebianClusterErrors}));
+   row.warm={...row.warm,...recovered};
+   if(!recovered.used||recovered.saved||recovered.errors.length)throw Error('La reapertura no usó una base limpia de HA');
+   await p.waitForFunction(()=>[...kubeDebianClusterNodes.values()].every(n=>n.window.kubeDebianSnapshot?.terminalOpened&&n.window.kubeDebianSnapshot.idle),null,{timeout:180000});
+   const restored=await p.evaluate(cmd=>kubeDebianClusterCheck('controlplane','Verificar HA restaurado',cmd,180000),command);
+   row.warm.ok=restored?.ok===true;row.warm.readyMs=Math.round(performance.now()-restoreStarted);
+   row.warm.nativeStages=await p.evaluate(()=>globalThis.kubeDebianClusterStages);save();
+   if(!row.warm.ok)throw Error('La API o los nodos del HA restaurado no están Ready');
+   await p.waitForTimeout(60000);
+   const warmInfo=await browserCDP.send('SystemInfo.getProcessInfo');
+   row.warm.privateBytes=Number(execFileSync('powershell.exe',['-NoProfile','-Command','(Get-Process -Id '+warmInfo.processInfo.map(x=>x.id).join(',')+' -ErrorAction SilentlyContinue | Measure-Object PrivateMemorySize64 -Sum).Sum'],{encoding:'utf8'}).trim());
+  }
  }catch(error){row.error=error.message;row.ok=false;row.diagnostics=await p.evaluate(()=>({status:document.querySelector('#cluster-status')?.textContent,stages:globalThis.kubeDebianClusterStages,nodes:[...(globalThis.kubeDebianClusterNodes?.values()||[])].map(n=>({id:n.id,serial:n.window.kubeDebianTranscript?.slice(-24000)}))})).catch(()=>null);await p.screenshot({path:output.replace('.json','-'+profile+'-'+variant+'-'+rep+'.png')}).catch(()=>{});}
  finally{clearInterval(monitor);row.finished=true;save();console.log('RESULTADO',profile,variant,rep,row.ok,row.readyMs,row.privateBytes,row.error||'');if(process.env.QA_KEEP_OPEN==='1'&&profile==='ha'){console.log('Máquinas conservadas para diagnóstico QA local');const until=Date.now()+3600000;while(!closeRequested&&Date.now()<until)await new Promise(resolve=>setTimeout(resolve,1000));}await browser.close();}
 }

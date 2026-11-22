@@ -4,7 +4,7 @@
     {
       "id": "kubernetes-memoria-ha",
       "tema": "Kubernetes",
-      "texto": "Publicar la corrección de kubeadm para HA, ya validada en local con tres nodos Ready, escritura durante la caída de uno y recuperación de los tres conservando los datos. Preparar una entrada rápida: la primera preparación todavía tarda unos 30 minutos bajo carga. La mejora del cargador de una futura base HA sigue pendiente de integrar y validar."
+      "texto": "Publicar la corrección de kubeadm para HA, validada en local con tres nodos Ready, escritura durante la caída de uno y recuperación de los tres. La base limpia local permitió reabrir HA en unos dos minutos y superó la misma prueba de caída. Falta comprobar su descarga desde cero y reducir el tamaño del paquete de 1,31 GB antes de ofrecer la entrada rápida."
     },
     {
       "id": "kubernetes-dos-practicas",

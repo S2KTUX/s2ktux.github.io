@@ -2,7 +2,7 @@
 
 Esta lista cambia con el proyecto. Las mejoras comprobadas salen de aquí y pasan al historial de Sobre.
 
-- **Kubernetes:** Publicar la corrección de kubeadm para HA, ya validada en local con tres nodos Ready, escritura durante la caída de uno y recuperación de los tres conservando los datos. Preparar una entrada rápida: la primera preparación todavía tarda unos 30 minutos bajo carga. La mejora del cargador de una futura base HA sigue pendiente de integrar y validar.
+- **Kubernetes:** Publicar la corrección de kubeadm para HA, validada en local con tres nodos Ready, escritura durante la caída de uno y recuperación de los tres. La base limpia local permitió reabrir HA en unos dos minutos y superó la misma prueba de caída. Falta comprobar su descarga desde cero y reducir el tamaño del paquete de 1,31 GB antes de ofrecer la entrada rápida.
 - **Kubernetes:** Mantener dos prácticas por contenido, como en Linux y Docker: una sencilla y otra para aplicar lo aprendido. Revisar su relación con el curso, sin añadir una tercera práctica ni ejercicios a la clase 00.
 - **Laboratorios:** Comprobar la persistencia tras reiniciar antes de puntuar el simulacro, con respaldo y tratamiento de máquinas que no consiguen arrancar.
 - **Laboratorios:** Aplicar al simulacro de Linux el guardado conjunto de máquinas, intento y cronómetro. En Kubernetes ya se puede guardar y reanudar el intento tras recargar.
